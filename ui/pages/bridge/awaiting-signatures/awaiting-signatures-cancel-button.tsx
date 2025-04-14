@@ -10,6 +10,8 @@ import { Button } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
 
 const AwaitingSignaturesCancelButton = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const history = useHistory();
 

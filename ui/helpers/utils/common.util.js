@@ -1,4 +1,6 @@
 export function camelCaseToCapitalize(str = '') {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   return str.replace(/([A-Z])/gu, ' $1').replace(/^./u, (s) => s.toUpperCase());
 }
 

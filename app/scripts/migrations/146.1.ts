@@ -34,9 +34,13 @@ function transformState(state: Record<string, unknown>) {
       state.NetworkController.networkConfigurationsByChainId,
     );
     const allNetworkClientIds = allNetworkConfigurations
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       .flatMap((n) =>
         isObject(n) && Array.isArray(n.rpcEndpoints) ? n.rpcEndpoints : [],
       )
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       .map((e) => e.networkClientId);
 
     if (!allNetworkClientIds.includes(networkState.selectedNetworkClientId)) {

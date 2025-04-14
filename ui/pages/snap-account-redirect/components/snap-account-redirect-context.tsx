@@ -31,6 +31,8 @@ const SnapAccountRedirectContent = ({
   message,
   onSubmit,
 }: SnapAccountRedirectProps) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const learnMoreAboutBlockedUrls =
     'https://support.metamask.io/troubleshooting/deceptive-site-ahead-when-trying-to-connect-to-a-site/';

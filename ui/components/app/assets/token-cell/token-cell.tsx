@@ -60,6 +60,8 @@ export default function TokenCell({
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
@@ -81,6 +83,8 @@ export default function TokenCell({
   });
 
   const handleClick = useCallback(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     (e?: React.MouseEvent<HTMLAnchorElement>) => {
       e?.preventDefault();
 

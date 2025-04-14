@@ -74,6 +74,8 @@ export const DropdownEditor = <Item,>({
   renderTooltip: (item: Item, isList: boolean) => string | undefined;
   buttonDataTestId: string;
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dropdown = useRef(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -113,6 +115,8 @@ export const DropdownEditor = <Item,>({
                 iconName={IconName.Trash}
                 data-testid={`delete-item-${index}`}
                 color={IconColor.errorDefault}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
 

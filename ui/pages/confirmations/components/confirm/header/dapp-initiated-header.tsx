@@ -15,6 +15,8 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 export const DAppInitiatedHeader = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   return (

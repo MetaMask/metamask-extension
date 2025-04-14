@@ -48,6 +48,8 @@ export const ConnectedAccountsMenu = ({
   activeTabOrigin: string;
 }) => {
   const dispatch = useDispatch();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const popoverDialogRef = useRef<HTMLDivElement | null>(null);
   const [showPermissionModal, setShowPermissionModal] = useState(false);

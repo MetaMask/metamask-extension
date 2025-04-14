@@ -71,6 +71,8 @@ export function validateAddEthereumChainParams(params) {
 
   const otherKeys = Object.keys(otherParams).filter(
     // iconUrls is a valid optional but not currently used parameter
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     (v) => !['iconUrls'].includes(v),
   );
 

@@ -106,6 +106,8 @@ const AccountListItem = ({
   shouldScrollToWhenSelected = true,
   privacyMode = false,
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   const locale = useSelector(getIntlLocale);
@@ -347,6 +349,8 @@ const AccountListItem = ({
               ) : null}
               <Text
                 as="button"
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onClick={(e) => {
                   e.stopPropagation();
                   onClick?.(account);
@@ -466,6 +470,8 @@ const AccountListItem = ({
           iconName={IconName.MoreVertical}
           size={IconSize.Sm}
           ref={setAccountListItemMenuRef}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onClick={(e) => {
             e.stopPropagation();
             if (!accountOptionsMenuOpen) {

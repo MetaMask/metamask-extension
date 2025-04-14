@@ -48,6 +48,8 @@ export type OnCancelHandler = ({
 
 function reviewAlertButtonText(
   unconfirmedDangerAlerts: Alert[],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: ReturnType<typeof useI18nContext>,
 ) {
   if (unconfirmedDangerAlerts.length === 1) {
@@ -88,6 +90,8 @@ const ConfirmButton = ({
   onSubmit: () => void;
   onCancel: OnCancelHandler;
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const [confirmModalVisible, setConfirmModalVisible] =
@@ -160,6 +164,8 @@ const ConfirmButton = ({
 
 const Footer = () => {
   const dispatch = useDispatch();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { onTransactionConfirm } = useTransactionConfirm();
 

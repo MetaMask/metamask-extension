@@ -8,6 +8,8 @@ import { getQueuedRequestCount } from '../../../../../selectors';
 import { useQueuedConfirmationsEvent } from '../../useQueuedConfirmationEvents';
 
 export function useQueuedConfirmationsAlerts(): Alert[] {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const queuedRequestCount = useSelector(getQueuedRequestCount);

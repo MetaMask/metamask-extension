@@ -20,6 +20,8 @@ export function getCustomTxParamsData(
   } else if (!customSpendingCapMethods.includes(tokenData.name)) {
     throw new Error(
       `Invalid data; should be ${customSpendingCapMethods
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         .map((m) => `'${m}'`)
         .join(' or ')} method, but instead is '${tokenData.name}'`,
     );

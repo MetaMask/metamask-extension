@@ -86,6 +86,8 @@ export const NetworksForm = ({
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -335,6 +337,8 @@ export const NetworksForm = ({
           }),
         );
       }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       console.error(e);
     } finally {
@@ -404,7 +408,8 @@ export const NetworksForm = ({
               </>
             )
           }
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-length
           onChange={(e: any) => {
             setName(e.target?.value);
           }}
@@ -486,6 +491,8 @@ export const NetworksForm = ({
           placeholder={t('enterChainId')}
           paddingTop={4}
           data-testid="network-form-chain-id-input"
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onChange={(e) => {
             setChainId(e.target?.value.trim());
           }}
@@ -573,7 +580,8 @@ export const NetworksForm = ({
               </Text>
             ) : null
           }
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-length
           onChange={(e: any) => {
             setTicker(e.target?.value);
           }}
@@ -663,6 +671,8 @@ export const NetworksForm = ({
             !chainId ||
             !ticker ||
             !rpcUrls?.rpcEndpoints?.length ||
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             Object.values(errors).some((e) => e)
           }
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879

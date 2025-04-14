@@ -470,6 +470,8 @@ function sanitizeUrlsFromErrorMessages(report) {
         ) {
           newErrorMessage = newErrorMessage.replace(url, '**');
         }
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       } catch (e) {
         newErrorMessage = newErrorMessage.replace(url, '**');
       }

@@ -4,6 +4,8 @@ import {
   MetaMetricsEventAccountType,
 } from '../../../../../shared/constants/metametrics';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 function getValues(pendingApproval, t, actions, _history, _data, contexts) {
   const { origin: snapId, snapName } = pendingApproval;
   const { url, message, isBlockedUrl } = pendingApproval.requestData;

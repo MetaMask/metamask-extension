@@ -17,9 +17,13 @@ export default function SelectedToken({
   selectedToken,
   testId,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const hasIcon = selectedToken?.iconUrl && selectedToken?.symbol;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const onKeyUp = (e) => {
     if (e.key === 'Escape') {
       onClose();

@@ -29,6 +29,8 @@ const AddRpcUrlModal = ({
 }: {
   onAdded: (url: string, name?: string) => void;
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const [url, setUrl] = useState<string>();
@@ -66,6 +68,8 @@ const AddRpcUrlModal = ({
           inputProps={{
             'data-testid': 'rpc-url-input-test',
           }}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onChange={(e) => setUrl(e.target.value)}
           autoFocus
         />

@@ -57,6 +57,8 @@ export const getStateChangeType = (
 
 export const getStateChangeToolip = (
   nftTransactionType: StateChangeType | undefined,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: ReturnType<typeof useI18nContext>,
 ): string | undefined => {
   if (nftTransactionType === StateChangeType.NFTListingReceive) {
@@ -77,6 +79,8 @@ const stateChangeOrder = {
 };
 
 const getStateChangeLabelMap = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: ReturnType<typeof useI18nContext>,
   changeType: string,
   stateChangeType?: StateChangeType,
@@ -105,6 +109,8 @@ const StateChangeRow = ({
   chainId: Hex;
   shouldDisplayLabel: boolean;
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { assetType, changeType, amount, contractAddress, tokenID } =
     stateChange;
@@ -155,6 +161,8 @@ const StateChangeRow = ({
 };
 
 const DecodedSimulation: React.FC<object> = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const chainId = currentConfirmation.chainId as Hex;

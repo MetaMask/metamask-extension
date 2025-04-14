@@ -1276,6 +1276,8 @@ export default class MetaMetricsController extends BaseController<
       this.previousUserTraits &&
       !isEqual(this.previousUserTraits, currentTraits)
     ) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       const updates = pickBy(currentTraits, (v, k) => {
         // @ts-expect-error It's okay that `k` may not be a key of `this.previousUserTraits`, because we assume `isEqual` can handle it
         const previous = this.previousUserTraits[k];

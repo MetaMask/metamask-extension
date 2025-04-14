@@ -587,6 +587,8 @@ export default class SecurityTab extends PureComponent {
               <TextField
                 type="text"
                 value={this.state.ipfsGateway}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onChange={(e) => handleIpfsGatewayChange(e.target.value)}
                 error={this.state.ipfsGatewayError}
                 fullWidth

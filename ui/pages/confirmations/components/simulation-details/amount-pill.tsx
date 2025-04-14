@@ -42,6 +42,8 @@ export const AmountPill: React.FC<{
   isAllApproval?: boolean;
   isUnlimitedApproval?: boolean;
 }> = ({ asset, amount, isApproval, isAllApproval, isUnlimitedApproval }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
 

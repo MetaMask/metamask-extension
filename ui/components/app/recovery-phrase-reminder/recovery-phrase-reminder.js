@@ -20,6 +20,8 @@ import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { Text } from '../../component-library';
 
 export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const history = useHistory();
 

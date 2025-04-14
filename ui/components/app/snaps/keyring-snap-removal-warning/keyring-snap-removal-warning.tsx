@@ -51,6 +51,8 @@ export default function KeyringRemovalSnapWarning({
   onBack: () => void;
   isOpen: boolean;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmedRemoval, setConfirmedRemoval] = useState(false);
@@ -144,12 +146,16 @@ export default function KeyringRemovalSnapWarning({
                 {/* @ts-ignore TODO: fix TextField props */}
                 <TextField
                   value={confirmationInput}
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                  // eslint-disable-next-line id-length
                   onChange={(e: { target: { value: string } }) => {
                     setConfirmationInput(e.target.value);
                     setConfirmedRemoval(
                       validateConfirmationInput(e.target.value),
                     );
                   }}
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                  // eslint-disable-next-line id-length
                   onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
                     e.preventDefault();
                   }}

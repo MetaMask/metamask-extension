@@ -60,6 +60,8 @@ const HeaderInfo = () => {
   const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const { balance: balanceToUse } = useBalance(fromAddress);

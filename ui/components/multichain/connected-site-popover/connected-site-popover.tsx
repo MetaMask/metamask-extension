@@ -40,6 +40,8 @@ export const ConnectedSitePopover = ({
   onClose,
   referenceElement,
 }: ConnectedSitePopoverProps) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const siteName = getURLHost(activeTabOrigin);

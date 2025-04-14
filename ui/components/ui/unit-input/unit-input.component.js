@@ -120,6 +120,8 @@ export default class UnitInput extends PureComponent {
     this.props.onChange(value);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   handleOnKeyPress = (e) => {
     const isNumericInput = DECIMAL_INPUT_REGEX.test(e.key);
     if (!isNumericInput) {

@@ -118,6 +118,8 @@ export function AssetPicker({
   autoFocus = true,
 }: AssetPickerProps) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   ///: END:ONLY_INCLUDE_IF
 
@@ -162,6 +164,8 @@ export function AssetPicker({
     const newChainId = networkProps?.network?.chainId;
     newChainId &&
       !selectedChainIds.includes(newChainId) &&
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       setSelectedChainIds((c) => [...c, newChainId]);
   }, [networkProps?.network?.chainId]);
 

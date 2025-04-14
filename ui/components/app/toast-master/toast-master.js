@@ -102,6 +102,8 @@ export function ToastMaster() {
 }
 
 function ConnectAccountToast() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -159,6 +161,8 @@ function ConnectAccountToast() {
 }
 
 function SurveyToastMayDelete() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const showSurveyToast = useSelector(selectShowSurveyToast);
@@ -187,6 +191,8 @@ function SurveyToastMayDelete() {
 }
 
 function PrivacyPolicyToast() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate } =
@@ -219,6 +225,8 @@ function PrivacyPolicyToast() {
 }
 
 function SwitchedNetworkToast() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -264,6 +272,8 @@ function SwitchedNetworkToast() {
 }
 
 function NftEnablementToast() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -293,6 +303,8 @@ function NftEnablementToast() {
 }
 
 function PermittedNetworkToast() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -333,6 +345,8 @@ function PermittedNetworkToast() {
 }
 
 function NewSrpAddedToast() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 

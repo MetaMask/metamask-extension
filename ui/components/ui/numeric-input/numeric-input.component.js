@@ -29,11 +29,15 @@ export default function NumericInput({
       <input
         type="number"
         value={value}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         onKeyDown={(e) => {
           if (!allowDecimals && (e.key === '.' || e.key === ',')) {
             e.preventDefault();
           }
         }}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         onChange={(e) => {
           const newValue = e.target.value;
           const match = DECIMAL_REGEX.exec(newValue);

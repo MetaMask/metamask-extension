@@ -25,6 +25,8 @@ const textStyle = {
 } as const;
 
 const FiatNotAvailableDisplay: React.FC = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return <Text {...textStyle}>{t('simulationDetailsFiatNotAvailable')}</Text>;
 };
@@ -82,6 +84,8 @@ export const TotalFiatDisplay: React.FC<{
   fiatAmounts: FiatAmount[];
 }> = ({ fiatAmounts }) => {
   const shouldShowFiat = useSelector(getShouldShowFiat);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
   const totalFiat = calculateTotalFiat(fiatAmounts);

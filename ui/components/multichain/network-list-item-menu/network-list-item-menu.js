@@ -21,6 +21,8 @@ export const NetworkListItemMenu = ({
   onDiscoverClick,
   isOpen,
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   return (
@@ -42,6 +44,8 @@ export const NetworkListItemMenu = ({
           {onDiscoverClick ? (
             <MenuItem
               iconName={IconName.Eye}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onClick={(e) => {
                 e.stopPropagation();
                 onDiscoverClick();
@@ -54,6 +58,8 @@ export const NetworkListItemMenu = ({
           {onEditClick ? (
             <MenuItem
               iconName={IconName.Edit}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onClick={(e) => {
                 e.stopPropagation();
                 onEditClick();
@@ -67,6 +73,8 @@ export const NetworkListItemMenu = ({
             <MenuItem
               iconName={IconName.Trash}
               iconColor={IconColor.errorDefault}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onClick={(e) => {
                 e.stopPropagation();
                 onDeleteClick();

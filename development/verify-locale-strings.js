@@ -106,6 +106,8 @@ async function writeLocale(code, locale) {
       `${JSON.stringify(locale, null, 2)}\n`,
       'utf8',
     );
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   } catch (e) {
     if (e.code === 'ENOENT') {
       log.error('Locale file not found');

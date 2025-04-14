@@ -15,6 +15,8 @@ import { shortenAddress } from '../../../../helpers/utils/util';
 import { Text, Box, ButtonLink, IconName } from '../../../component-library';
 
 const DetectedTokenAddress = ({ tokenAddress }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
 

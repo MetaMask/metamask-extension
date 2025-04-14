@@ -35,6 +35,8 @@ export function useTokenTracker({
       // TODO: improve this pattern for adding this field when we improve support for
       // EIP721 tokens.
       const matchingTokensWithIsERC721Flag = matchingTokens.map((token) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         const additionalTokenData = memoizedTokens.find((t) =>
           isEqualCaseInsensitive(t.address, token.address),
         );

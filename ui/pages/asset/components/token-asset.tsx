@@ -68,6 +68,8 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   // Fetch token data from tokenList
   const tokenData = Object.values(tokenList).find(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     (t) =>
       isEqualCaseInsensitive(t.symbol, symbol) &&
       isEqualCaseInsensitive(t.address, address),

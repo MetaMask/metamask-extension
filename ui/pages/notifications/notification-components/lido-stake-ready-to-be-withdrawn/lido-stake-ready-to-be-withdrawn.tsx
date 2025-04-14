@@ -45,6 +45,8 @@ const isLidoReadyWithDrawnNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN,
 ]);
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getDescription = (n: LidoReadyWithDrawnNotification) => {
   const amount = formatAmount(parseFloat(n.data.staked_eth.amount), {
     shouldEllipse: true,

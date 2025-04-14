@@ -16,12 +16,16 @@ import {
 } from '../../../../../helpers/constants/design-system';
 
 const NftDetailDescription = ({ value }: { value: string | null }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { contentRef, isOverflowing } = useIsOverflowing();
   const [isOpen, setIsOpen] = useState(false);
 
   const shouldDisplayButton = !isOpen && isOverflowing;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsOpen(!isOpen);

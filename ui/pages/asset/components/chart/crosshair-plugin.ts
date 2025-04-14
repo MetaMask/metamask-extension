@@ -25,7 +25,11 @@ export const CrosshairPlugin = {
       const point = data[index];
       if (point) {
         const { x: xAxis, y: yAxis } = chart.scales;
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         const x = xAxis.getPixelForValue(point.x);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         const y = yAxis.getPixelForValue(point.y);
 
         chart.ctx.lineWidth = 1;

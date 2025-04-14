@@ -581,6 +581,8 @@ export class AppStateController extends BaseController<
       const currentSlides = state.slides || [];
 
       const newSlides = slides.map((slide) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         const existingSlide = currentSlides.find((s) => s.id === slide.id);
         if (existingSlide) {
           return {

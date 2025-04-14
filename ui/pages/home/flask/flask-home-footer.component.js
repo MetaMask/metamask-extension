@@ -10,6 +10,8 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const FlaskHomeFooter = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 

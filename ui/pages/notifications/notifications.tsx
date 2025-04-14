@@ -56,6 +56,8 @@ const useMetaMaskNotifications = () => {
   const featureAnnouncementNotifications = useMemo(() => {
     return isFeatureAnnouncementsEnabled
       ? (notificationsData ?? []).filter(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           (n) => n.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
         )
       : [];
@@ -64,6 +66,8 @@ const useMetaMaskNotifications = () => {
   const walletNotifications = useMemo(() => {
     return isMetamaskNotificationsEnabled
       ? (notificationsData ?? []).filter(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           (n) =>
             n.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT &&
             n.type !== TRIGGER_TYPES.SNAP,
@@ -73,6 +77,8 @@ const useMetaMaskNotifications = () => {
 
   const snapNotifications = useMemo(() => {
     return (notificationsData ?? []).filter(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       (n) => n.type === TRIGGER_TYPES.SNAP,
     );
   }, [notificationsData]);
@@ -140,6 +146,8 @@ export const filterNotifications = (
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Notifications() {
   const history = useHistory();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 

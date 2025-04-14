@@ -22,6 +22,8 @@ import { ConnectedSiteMenu } from '../../multichain';
 import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);

@@ -89,6 +89,8 @@ export const AssetPickerModalNetwork = ({
   onMultiselectSubmit?: (selectedChainIds: string[]) => void;
 }) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   ///: END:ONLY_INCLUDE_IF
 
@@ -151,6 +153,8 @@ export const AssetPickerModalNetwork = ({
       Object.keys(checkedChainIds)?.reduce(
         (agg, chainId) => ({
           ...agg,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           [chainId]: !Object.values(checkedChainIds).every((v) => v),
         }),
         {},
@@ -173,6 +177,8 @@ export const AssetPickerModalNetwork = ({
             isMultiselectEnabled && selectedChainIds ? (
               <ButtonLink
                 variant={TextVariant.bodyMdMedium}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 disabled={Object.values(checkedChainIds).every((v) => !v)}
                 onClick={() => {
                   onMultiselectSubmit?.(
@@ -193,8 +199,12 @@ export const AssetPickerModalNetwork = ({
         {isMultiselectEnabled && (
           <Box display={Display.Flex} padding={4}>
             <Checkbox
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               isIndeterminate={Object.values(checkedChainIds).every((v) => v)}
               iconProps={{
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 name: Object.values(checkedChainIds).some((v) => !v)
                   ? IconName.MinusBold
                   : IconName.Add,

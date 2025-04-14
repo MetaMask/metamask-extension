@@ -1,5 +1,7 @@
 import { getPermissionDescription } from '../../../helpers/utils/permission';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export function getSnapInstallWarnings(permissions, t, snapName, getSnapName) {
   const weightOneWarnings = Object.entries(permissions).reduce(
     (filteredWarnings, [permissionName, permissionValue]) => {

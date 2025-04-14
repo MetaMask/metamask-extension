@@ -48,6 +48,8 @@ function ReportLink({
   provider?: SecurityProvider;
   onClickSupportLink?: () => void;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <Text marginTop={1} display={Display.Flex}>
@@ -80,6 +82,8 @@ function AlertDetails({
   onClickSupportLink?: () => void;
   provider?: SecurityProvider;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   if (!details) {
     return null;

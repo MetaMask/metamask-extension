@@ -263,6 +263,8 @@ describe('ManifestPlugin', () => {
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           it("throws in test mode when manifest already contains 'tabs' permission", () => {
             assert(transform, 'transform should be truthy');
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             const p = () => {
               transform(manifest, 'chrome');
             };

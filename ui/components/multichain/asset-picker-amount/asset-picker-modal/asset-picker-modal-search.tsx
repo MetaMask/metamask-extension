@@ -40,6 +40,8 @@ export const Search = ({
   placeholder?: JSX.Element | string | null;
   autoFocus?: boolean;
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   return (
@@ -51,6 +53,8 @@ export const Search = ({
           t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
         }
         value={searchQuery}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         onChange={(e) => onChange(e.target.value)}
         error={false}
         autoFocus={autoFocus}

@@ -58,6 +58,8 @@ describe('migrations', () => {
 
     it('should include all migrations', () => {
       migrationNumbers.forEach((num) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         const migration = liveMigrations.find((m) => m.version === num);
         expect(migration.version).toStrictEqual(num);
       });

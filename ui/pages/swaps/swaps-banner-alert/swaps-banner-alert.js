@@ -35,6 +35,8 @@ export default function SwapsBannerAlert({
   showTransactionSettingsLink,
   currentSlippage,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   let severity = SEVERITIES.DANGER;
@@ -44,6 +46,8 @@ export default function SwapsBannerAlert({
   const transactionSettingsLink = (
     <Text variant={TextVariant.bodyMd}>
       <ButtonLink
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         onClick={(e) => {
           e.preventDefault();
           dispatch(setTransactionSettingsOpened(true));

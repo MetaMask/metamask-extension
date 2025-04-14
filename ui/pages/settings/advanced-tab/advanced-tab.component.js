@@ -91,11 +91,15 @@ export default class AdvancedTab extends PureComponent {
   async getTextFromFile(file) {
     return new Promise((resolve, reject) => {
       const reader = new window.FileReader();
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       reader.onload = (e) => {
         const text = e.target.result;
         resolve(text);
       };
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       reader.onerror = (e) => {
         reject(e);
       };
@@ -464,6 +468,8 @@ export default class AdvancedTab extends PureComponent {
               data-testid="auto-lockout-time"
               placeholder="0"
               value={this.state.autoLockTimeLimitBeforeNormalization}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
               fullWidth

@@ -27,6 +27,8 @@ export const AssetPickerModalTabs = ({
   children: ReactElement[];
   visibleTabs?: TabName[];
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   if (visibleTabs.length > 1) {

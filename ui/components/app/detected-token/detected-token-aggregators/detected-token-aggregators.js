@@ -13,6 +13,8 @@ import { Box, ButtonLink, Text } from '../../../component-library';
 const NUMBER_OF_AGGREGATORS_TO_DISPLAY = 2;
 
 const DetectedTokenAggregators = ({ aggregators }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const numOfHiddenAggregators =
     parseInt(aggregators.length, 10) - NUMBER_OF_AGGREGATORS_TO_DISPLAY;

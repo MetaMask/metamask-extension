@@ -10,6 +10,8 @@ import { useConfirmContext } from '../../../context/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 
 export function useSigningOrSubmittingAlerts(): Alert[] {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { type } = (currentConfirmation ?? {}) as TransactionMeta;

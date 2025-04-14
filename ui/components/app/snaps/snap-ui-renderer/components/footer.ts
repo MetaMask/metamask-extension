@@ -33,6 +33,8 @@ export const DEFAULT_FOOTER = {
 
 const getDefaultButtons = (
   footer: FooterElement,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: (value: string) => string,
   onCancel?: () => void,
 ) => {

@@ -83,6 +83,8 @@ export const NetworkListItem = ({
   disabled?: boolean;
   variant?: TextVariant;
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
 
@@ -105,6 +107,8 @@ export const NetworkListItem = ({
         ref={setNetworkListItemMenuRef}
         data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
           setNetworkOptionsMenuOpen(true);
@@ -127,6 +131,8 @@ export const NetworkListItem = ({
     }
   }, [networkRef, focus]);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.stopPropagation(); // Prevent the event from reaching the parent container
@@ -208,6 +214,8 @@ export const NetworkListItem = ({
             display={Display.Flex}
             alignItems={AlignItems.center}
             data-testid={`network-rpc-name-button-${chainId}`}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               onRpcEndpointClick?.();

@@ -55,13 +55,19 @@ const isERC1155Notification = isOfTypeNodeGuard([
   TRIGGER_TYPES.ERC1155_SENT,
 ]);
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const isSent = (n: ERC1155Notification) =>
   n.type === TRIGGER_TYPES.ERC1155_SENT;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const title = (n: ERC1155Notification) =>
   isSent(n)
     ? t('notificationItemNFTSentTo')
     : t('notificationItemNFTReceivedFrom');
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getTitle = (n: ERC1155Notification) => {
   const address = shortenAddress(isSent(n) ? n.data.to : n.data.from);
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
@@ -70,6 +76,8 @@ const getTitle = (n: ERC1155Notification) => {
   return items;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getDescription = (n: ERC1155Notification) => {
   const items = createTextItems(
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880

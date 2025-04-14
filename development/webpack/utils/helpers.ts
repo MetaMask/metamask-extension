@@ -81,6 +81,8 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   }
 
   // add content_scripts to entries
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   manifest.content_scripts?.forEach((s) => s.js?.forEach(addManifestScript));
 
   if (manifest.manifest_version === 3) {

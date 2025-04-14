@@ -45,6 +45,8 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
   onAccountsUpdate,
   activeTabOrigin,
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   return (

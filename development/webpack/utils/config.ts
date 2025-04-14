@@ -103,6 +103,8 @@ export function getVariables(
   function set(key: Record<string, unknown>): void;
   function set(key: string | Record<string, unknown>, value?: unknown): void {
     if (typeof key === 'object') {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       Object.entries(key).forEach(([k, v]) => variables.set(k, v));
     } else {
       variables.set(key, value);

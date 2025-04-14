@@ -118,6 +118,8 @@ export function isValidUTF8(inputString: string) {
     decoder.decode(encoded);
 
     return true;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   } catch (e) {
     return false;
   }

@@ -107,12 +107,16 @@ export function parseArgv(
   // set up feature flags
   const active = new Set<string>();
   const defaultFeaturesForBuildType = buildTypes[config.type].features ?? [];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const setActive = (f: string) => omit.includes(f) || active.add(f);
   [defaultFeaturesForBuildType, add].forEach((feat) => feat.forEach(setActive));
 
   const ignore = new Set(['$0', 'conf', 'progress', 'stats', 'watch']);
   const cacheKey = Object.entries(args)
     .filter(([key]) => key.length > 1 && !ignore.has(key) && !key.includes('-'))
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     .sort(([x], [y]) => x.localeCompare(y));
   return {
     // narrow the `config` type to only the options we're returning

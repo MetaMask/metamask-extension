@@ -49,6 +49,8 @@ import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-set
 import { useIsMultichainSwap } from './hooks/useIsMultichainSwap';
 
 const CrossChainSwap = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
 
   // Load swaps feature flags so that we can use smart transactions

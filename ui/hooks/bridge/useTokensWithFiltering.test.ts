@@ -23,6 +23,8 @@ const mockFetchBridgeTokens = jest.fn().mockResolvedValue({
 });
 jest.mock('@metamask/bridge-controller', () => ({
   ...jest.requireActual('@metamask/bridge-controller'),
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   fetchBridgeTokens: (c: string) => mockFetchBridgeTokens(c),
 }));
 
@@ -32,6 +34,8 @@ const mockFetchTopAssetsList = jest.fn().mockResolvedValue([
   { address: '0xdac17f958d2ee523a2206206994597c13d831ec7' }, // USDT
 ]);
 jest.mock('../../pages/swaps/swaps.util', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   fetchTopAssetsList: (c: string) => mockFetchTopAssetsList(c),
 }));
 
@@ -159,7 +163,8 @@ describe('useTokensWithFiltering', () => {
     expect(mockFetchBridgeTokens).toHaveBeenCalledWith('0x89');
     // The first 10 tokens returned
     const first10Tokens = [
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-length
       ...result.current((_s: any, _a: any, c: string) => c === '0x89'),
     ].slice(0, 10);
     expect(first10Tokens).toMatchSnapshot();

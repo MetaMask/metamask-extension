@@ -263,6 +263,8 @@ async function main() {
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
       FLASK_ONLY_TESTS.every((filteredTest) => !p.endsWith(filteredTest)),
     );

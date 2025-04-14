@@ -17,6 +17,8 @@ export default function SettingsSearch({
   error,
   settingsRoutesList,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,6 +98,8 @@ export default function SettingsSearch({
       placeholder={t('search')}
       type="text"
       value={searchQuery}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       onChange={(e) => handleSearch(e.target.value)}
       error={error}
       fullWidth

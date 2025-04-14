@@ -217,6 +217,8 @@ function getState(pendingApproval) {
   return {};
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;

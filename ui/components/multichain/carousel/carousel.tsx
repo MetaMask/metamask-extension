@@ -39,6 +39,8 @@ export const Carousel = React.forwardRef(
     ref: React.Ref<HTMLDivElement>,
   ) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const t = useI18nContext();
     const trackEvent = useContext(MetaMetricsContext);
 
@@ -80,6 +82,8 @@ export const Carousel = React.forwardRef(
       }
     }, [visibleSlides, onRenderSlides, isLoading]);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const handleClose = (e: React.MouseEvent<HTMLElement>, slideId: string) => {
       e.preventDefault();
       e.stopPropagation();
@@ -243,6 +247,8 @@ export const Carousel = React.forwardRef(
               }}
               onClose={
                 Boolean(handleClose) && !slide.undismissable
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                  // eslint-disable-next-line id-length
                   ? (e: React.MouseEvent<HTMLElement>) =>
                       handleClose(e, slide.id)
                   : undefined

@@ -28,6 +28,8 @@ export function calcGasTotal(gasLimit = '0', gasPrice = '0') {
  * @param {number} precision - The maximum number of significant digits in the return value
  * @returns {string} The number in decimal form, with <= precision significant digits and no decimal trailing zeros
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export function toPrecisionWithoutTrailingZeros(n, precision) {
   return new BigNumber(n)
     .toPrecision(precision)

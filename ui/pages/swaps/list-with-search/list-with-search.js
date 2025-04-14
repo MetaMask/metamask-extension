@@ -38,6 +38,8 @@ export default function ListWithSearch({
   setSearchQuery,
 }) {
   const itemListRef = useRef();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
 
   const [items, setItems] = useState(itemsToSearch);
@@ -58,6 +60,8 @@ export default function ListWithSearch({
         setItems([token]);
         return;
       }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       log.error('Token not found, show 0 results.', e);
     }
@@ -122,6 +126,8 @@ export default function ListWithSearch({
         <TextFieldSearch
           id="list-with-search__text-search"
           marginBottom={4}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onChange={(e) => handleSearch(e.target.value)}
           clearButtonOnClick={handleOnClear}
           value={searchQuery}

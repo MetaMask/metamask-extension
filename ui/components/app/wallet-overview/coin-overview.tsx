@@ -220,6 +220,8 @@ export const CoinOverview = ({
   }
   ///: END:ONLY_INCLUDE_IF
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

@@ -41,6 +41,8 @@ const NetworkListItem = ({
       networkConfiguration.defaultRpcEndpointIndex
     ];
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [isOpenTooltip, setIsOpenTooltip] = useState(false);
   const dispatch = useDispatch();

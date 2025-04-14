@@ -58,6 +58,8 @@ class RestoreVaultPage extends Component {
           <Box className="import-account">
             <a
               className="import-account__back-button"
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onClick={(e) => {
                 e.preventDefault();
                 this.props.leaveImportSeedScreenState();

@@ -25,6 +25,8 @@ Connector.propTypes = {
 };
 
 export default function RadioGroup({ options, name, selectedValue, onChange }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
 
   const hasRecommendation = Boolean(

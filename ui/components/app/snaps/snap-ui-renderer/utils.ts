@@ -146,6 +146,8 @@ export const FIELD_ELEMENT_TYPES = [
  * @returns Number, representing index of a primary field in the array of children elements.
  */
 export const getPrimaryChildElementIndex = (children: JSXElement[]) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   return children.findIndex((c) => FIELD_ELEMENT_TYPES.includes(c.type));
 };
 

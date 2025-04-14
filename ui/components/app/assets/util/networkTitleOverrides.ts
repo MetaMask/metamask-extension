@@ -9,6 +9,8 @@ export type TranslateFunction = (arg: string) => string;
 // overrides certain token titles to display network name over token title
 // usually in the case of native tokens for L1 networks
 export const networkTitleOverrides = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: TranslateFunction, // translate function from useI18nContext() hook
   token: Partial<TokenFiatDisplayInfo>,
 ) => {

@@ -1,4 +1,5 @@
-// eslint-disable-next-line no-unused-vars
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line no-unused-vars, id-length
 function getValues(pendingApproval, t, actions, _history) {
   const { id, requestState } = pendingApproval;
   return {

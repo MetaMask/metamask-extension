@@ -76,6 +76,8 @@ export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const { privacyMode } = useSelector(getPreferences);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const nftsStillFetchingIndication = useSelector(

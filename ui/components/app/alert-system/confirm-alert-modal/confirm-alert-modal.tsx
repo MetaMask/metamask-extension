@@ -50,6 +50,8 @@ function ConfirmButtons({
   onSubmit: () => void;
   isConfirmed: boolean;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const onAlertCancel = useCallback(() => {
     onCancel({ location: MetaMetricsEventLocation.AlertFrictionModal });
@@ -88,6 +90,8 @@ function ConfirmDetails({
 }: {
   onAlertLinkClick?: () => void;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <>
@@ -124,6 +128,8 @@ export function ConfirmAlertModal({
   onSubmit,
   ownerId,
 }: ConfirmAlertModalProps) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { fieldAlerts, alerts, hasUnconfirmedFieldDangerAlerts } =
     useAlerts(ownerId);

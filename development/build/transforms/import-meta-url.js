@@ -16,6 +16,8 @@ const { join } = require('node:path');
  * @param {{ types: import('@babel/types') }} babel - Babel types
  * @returns {PluginObj} The plugin object
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 module.exports = function ({ types: t }) {
   /**
    * Checks if the node is a `new URL(relativePath, import.meta.url)` expression.
@@ -51,6 +53,8 @@ module.exports = function ({ types: t }) {
     if (t.isStringLiteral(arg)) {
       return arg.value;
     }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     return arg.quasis.map((q) => q.value.raw).join('___');
   }
 

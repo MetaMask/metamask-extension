@@ -23,6 +23,8 @@ export const AccountDetailsAuthenticate = ({
   setPrivateKey,
   setShowHoldToReveal,
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -45,6 +47,8 @@ export const AccountDetailsAuthenticate = ({
   }, [dispatch, password, address, setPrivateKey, setShowHoldToReveal]);
 
   const handleKeyPress = useCallback(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     (e) => {
       if (e.key === 'Enter') {
         onSubmit();
@@ -62,6 +66,8 @@ export const AccountDetailsAuthenticate = ({
         placeholder={t('password')}
         error={Boolean(warning)}
         helpText={warning}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         onChange={(e) => setPassword(e.target.value)}
         value={password}
         variant={TextVariant.bodySm}

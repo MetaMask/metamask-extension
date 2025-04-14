@@ -30,6 +30,8 @@ export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
   loading,
   isExpanded,
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),

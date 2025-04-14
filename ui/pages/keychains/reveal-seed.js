@@ -48,6 +48,8 @@ export default function RevealSeedPage() {
   const history = useHistory();
   const { keyringId } = useParams();
   const dispatch = useDispatch();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -115,6 +117,8 @@ export default function RevealSeedPage() {
 
         setIsShowingHoldModal(true);
       })
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       .catch((e) => {
         trackEvent({
           category: MetaMetricsEventCategory.Keys,

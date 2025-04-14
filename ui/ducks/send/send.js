@@ -767,6 +767,8 @@ export const initializeSendState = createAsyncThunk(
 
     const swapsBlockedTokens =
       getIsSwapsChain(state) && getUseExternalServices(state)
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
         : [];
 
@@ -2491,6 +2493,8 @@ export function updateRecipientUserInput(userInput) {
               sendingAddress,
             );
             isProbablyAnAssetContract = Boolean(standard);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           } catch (e) {
             console.log(e);
           }

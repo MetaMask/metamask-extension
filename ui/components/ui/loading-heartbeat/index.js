@@ -29,6 +29,8 @@ export default function LoadingHeartBeat({
       className={classNames('loading-heartbeat', {
         [LOADING_CLASS]: active,
       })}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();

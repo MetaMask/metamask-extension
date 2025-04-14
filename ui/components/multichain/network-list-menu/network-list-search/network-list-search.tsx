@@ -22,6 +22,8 @@ const NetworkListSearch = ({
   setSearchQuery: (query: string) => void;
   setFocusSearch: (val: boolean) => void;
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   return (
@@ -34,6 +36,8 @@ const NetworkListSearch = ({
         value={searchQuery}
         onFocus={() => setFocusSearch(true)}
         onBlur={() => setFocusSearch(false)}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         onChange={(e) => setSearchQuery(e.target.value)}
         clearButtonOnClick={() => setSearchQuery('')}
         clearButtonProps={{

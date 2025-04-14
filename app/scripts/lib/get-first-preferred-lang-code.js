@@ -23,6 +23,8 @@ export default async function getFirstPreferredLangCode() {
 
   try {
     userPreferredLocaleCodes = await browser.i18n.getAcceptLanguages();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   } catch (e) {
     // Brave currently throws when calling getAcceptLanguages, so this handles that.
     userPreferredLocaleCodes = [];

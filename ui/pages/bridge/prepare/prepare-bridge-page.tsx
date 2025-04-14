@@ -136,6 +136,8 @@ import { TmpBridgeToken } from './types';
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const isSwap = useIsMultichainSwap();
@@ -377,6 +379,8 @@ const PrepareBridgePage = () => {
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     debounce((p: Partial<GenericQuoteRequest>) => {
       dispatch(updateQuoteRequestParams(p));
     }, 300),
@@ -480,6 +484,8 @@ const PrepareBridgePage = () => {
         <BridgeInputGroup
           header={isSwap ? t('swapSwapFrom') : t('bridgeFrom')}
           token={fromToken}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
           }}

@@ -59,6 +59,8 @@ function Option({
   onClick: (option: FormComboFieldOption) => void;
 }) {
   const handleClick = useCallback(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -106,6 +108,8 @@ function Dropdown<Option extends FormComboFieldOption>({
   options: Option[];
   width: number;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -168,6 +172,8 @@ export default function FormComboField<Option extends FormComboFieldOption>({
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inputRef = useRef<any>(null);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
 
   useEffect(() => {
@@ -176,7 +182,8 @@ export default function FormComboField<Option extends FormComboFieldOption>({
 
   const handleBlur = useCallback(
     // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-length
     (e?: any) => {
       if (e?.relatedTarget?.className !== 'form-combo-field__option') {
         setDropdownVisible(false);
@@ -187,7 +194,8 @@ export default function FormComboField<Option extends FormComboFieldOption>({
 
   const handleChange = useCallback(
     // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-length
     (e: any) => {
       onChange?.(e.target.value);
     },
@@ -227,7 +235,8 @@ export default function FormComboField<Option extends FormComboFieldOption>({
           placeholder={placeholder}
           onBlur={handleBlur}
           // TODO: Replace `any` with type
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-length
           onKeyUp={(e: any) => {
             if (e.key === 'Enter') {
               handleBlur();

@@ -71,6 +71,8 @@ export default function BridgeExplorerLinks({
   destBlockExplorerUrl,
 }: ExplorerLinksProps) {
   const trackEvent = useContext(MetaMetricsContext);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   // Not sure why but the text is not being changed to white on hover, unless it's put into a variable before the render

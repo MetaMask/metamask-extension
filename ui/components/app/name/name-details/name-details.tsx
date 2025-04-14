@@ -101,6 +101,8 @@ const LOCALIZED_PROVIDERS = ['ens', 'etherscan', 'lens', 'token'];
 
 function getProviderLabel(
   sourceId: string,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: ReturnType<typeof useI18nContext>,
   nameSources: NameControllerState['nameSources'],
 ) {
@@ -115,6 +117,8 @@ function getProviderLabel(
 
 function generateComboOptions(
   proposedNameEntries: NameEntry['proposedNames'],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: ReturnType<typeof useI18nContext>,
   nameSources: NameControllerState['nameSources'],
 ): ProposedNameOption[] {
@@ -242,6 +246,8 @@ export default function NameDetails({
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
   const [selectedSourceName, setSelectedSourceName] = useState<string>();
   const dispatch = useDispatch();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const isRecognizedUnsaved = !hasSavedPetname && Boolean(displayName);

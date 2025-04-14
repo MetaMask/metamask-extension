@@ -11,6 +11,8 @@ import { useConfirmContext } from '../context/confirm';
 import { selectNetworkConfigurationByChainId } from '../../../selectors';
 
 function useConfirmationNetworkInfo() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const chainId = currentConfirmation?.chainId as Hex;

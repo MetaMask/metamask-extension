@@ -2629,10 +2629,14 @@ describe('Actions', () => {
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         actions.markMetamaskNotificationsAsRead(notifications.map((n) => n.id)),
       );
       expect(
         markMetamaskNotificationsAsReadStub.calledOnceWith(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           notifications.map((n) => n.id),
         ),
       ).toBe(true);
@@ -2666,6 +2670,8 @@ describe('Actions', () => {
       await expect(
         store.dispatch(
           actions.markMetamaskNotificationsAsRead(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             notifications.map((n) => n.id),
           ),
         ),

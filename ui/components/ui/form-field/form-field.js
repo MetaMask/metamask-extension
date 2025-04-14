@@ -124,6 +124,8 @@ export default function FormField({
               'form-field__input--error': error,
               'form-field__input--warning': warning,
             })}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             onChange={(e) => onChange(e.target.value)}
             value={value}
             type={password ? 'password' : 'text'}

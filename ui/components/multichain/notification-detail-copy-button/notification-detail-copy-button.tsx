@@ -58,6 +58,8 @@ export const NotificationDetailCopyButton: FC<
   color = TextColor.textAlternative,
 }): JSX.Element => {
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 

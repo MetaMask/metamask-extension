@@ -27,6 +27,8 @@ import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { TERMS_OF_USE_LINK } from '../../../../../shared/constants/terms';
 
 export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired();

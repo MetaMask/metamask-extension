@@ -20,6 +20,8 @@ import SwapsFooter from '../swaps-footer';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 
 export default function NotificationPage({ notificationKey }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();

@@ -80,6 +80,8 @@ import { Setting } from './setting';
 const ANIMATION_TIME = 500;
 
 export default function PrivacySettings() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -596,6 +598,8 @@ export default function PrivacySettings() {
                             value={ipfsURL}
                             style={{ width: '100%' }}
                             inputProps={{ 'data-testid': 'ipfs-input' }}
+                            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                            // eslint-disable-next-line id-length
                             onChange={(e) => {
                               handleIPFSChange(e.target.value);
                             }}

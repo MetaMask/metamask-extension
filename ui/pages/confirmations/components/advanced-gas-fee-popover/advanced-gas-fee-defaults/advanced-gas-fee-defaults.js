@@ -21,6 +21,8 @@ import { Checkbox, Box } from '../../../../../components/component-library';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 
 const AdvancedGasFeeDefaults = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const {

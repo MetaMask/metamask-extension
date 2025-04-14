@@ -52,6 +52,8 @@ function extractTokenDetailsByPrimaryType(
 }
 
 const PermitSimulation: React.FC<object> = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const msgData = currentConfirmation.msgParams?.data;

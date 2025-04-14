@@ -13,6 +13,8 @@ import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
 
 const NetworkStatistics = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const { gasFeeEstimates } = useGasFeeContext();
   const formattedLatestBaseFee = formatGasFeeOrFeeRange(

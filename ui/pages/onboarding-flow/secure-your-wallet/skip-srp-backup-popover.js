@@ -31,6 +31,8 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();

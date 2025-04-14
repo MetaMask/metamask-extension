@@ -25,6 +25,8 @@ export default function SnapRemoveWarning({
   onSubmit,
   snapName,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <Modal isOpen={isOpen} onClose={onCancel}>

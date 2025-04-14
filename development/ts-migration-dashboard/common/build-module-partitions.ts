@@ -294,6 +294,8 @@ function buildModulesWithLevels(
 
       if (
         !existingDependencyModule.dependents.some(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           (m) => m.id === currentModule.id,
         )
       ) {
@@ -302,6 +304,8 @@ function buildModulesWithLevels(
 
       if (
         !currentModule.dependencies.some(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           (m) => m.id === existingDependencyModule.id,
         )
       ) {

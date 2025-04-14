@@ -21,12 +21,16 @@ export function getSettingsRoutes() {
  * @param {string} tabMessage
  * @returns {SettingRouteConfig[]}
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 function getFilteredSettingsRoutes(t, tabMessage) {
   return getSettingsRoutes().filter((routeObject) => {
     return routeObject.tabMessage(t) === tabMessage;
   });
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export function getSpecificSettingsRoute(t, tabMessage, sectionMessage) {
   return getSettingsRoutes().find((routeObject) => {
     return (
@@ -41,10 +45,14 @@ export function getSpecificSettingsRoute(t, tabMessage, sectionMessage) {
  * @param {string} tabMessage
  * @returns {number}
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export function getNumberOfSettingRoutesInTab(t, tabMessage) {
   return getFilteredSettingsRoutes(t, tabMessage).length;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export function handleSettingsRefs(t, tabMessage, settingsRefs) {
   const settingsSearchJsonFiltered = getFilteredSettingsRoutes(t, tabMessage);
   const settingsRefsIndex = settingsSearchJsonFiltered.findIndex(

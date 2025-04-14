@@ -24,6 +24,8 @@ describe('getFetchWithTimeout', () => {
     const fetchWithTimeout = getFetchWithTimeout(MILLISECOND * 123);
 
     await expect(async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       await fetchWithTimeout('https://api.infura.io/moon').then(async (r) =>
         r.json(),
       );
@@ -39,6 +41,8 @@ describe('getFetchWithTimeout', () => {
     const fetchWithTimeout = getFetchWithTimeout(MILLISECOND * 123);
 
     await expect(async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       await fetchWithTimeout('https://api.infura.io/moon').then(async (r) =>
         r.json(),
       );
@@ -58,6 +62,8 @@ describe('getFetchWithTimeout', () => {
     await expect(async () => {
       await fetchWithTimeout('https://api.infura.io/moon', {
         signal: abortSignal.signal,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       }).then(async (r) => r.json());
     }).rejects.toThrow('The user aborted a request.');
   });

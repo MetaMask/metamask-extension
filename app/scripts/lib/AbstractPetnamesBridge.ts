@@ -257,7 +257,11 @@ export abstract class AbstractPetnamesBridge<
     const updated: PetnameEntry[] = [];
     const deleted: PetnameEntry[] = [];
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const prevEntriesMap = new Map(prevEntries.map((e) => [getKey(e), e]));
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const newEntriesMap = new Map(newEntries.map((e) => [getKey(e), e]));
 
     newEntriesMap.forEach((newEntry, newKey) => {

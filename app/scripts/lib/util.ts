@@ -172,6 +172,8 @@ export const generateRandomId = () => {
   return result;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export const isValidDate = (d: Date | number) => {
   return d instanceof Date;
 };

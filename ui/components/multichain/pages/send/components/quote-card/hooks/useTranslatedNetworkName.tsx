@@ -6,6 +6,8 @@ import { getCurrentChainId } from '../../../../../../../../shared/modules/select
 
 export default function useTranslatedNetworkName() {
   const chainId = useSelector(getCurrentChainId);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   switch (toHex(chainId)) {

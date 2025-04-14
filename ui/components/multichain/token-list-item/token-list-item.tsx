@@ -106,6 +106,8 @@ export const TokenListItemComponent = ({
   showPercentage = false,
   privacyMode = false,
 }: TokenListItemProps) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
@@ -199,6 +201,8 @@ export const TokenListItemComponent = ({
         {...(onClick && {
           as: 'a',
           href: '#',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
             e.preventDefault();
 
@@ -293,6 +297,8 @@ export const TokenListItemComponent = ({
               <ButtonIcon
                 iconName={IconName.Danger}
                 onClick={(
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                  // eslint-disable-next-line id-length
                   e: React.MouseEvent<HTMLButtonElement>,
                 ) => {
                   e.preventDefault();

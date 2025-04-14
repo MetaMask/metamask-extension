@@ -77,6 +77,8 @@ export const AssetPickerAmount = ({
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const { swapQuotesError, sendAsset, receiveAsset } = useSelector(

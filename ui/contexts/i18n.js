@@ -15,6 +15,8 @@ export const I18nProvider = (props) => {
   const current = useSelector(getCurrentLocaleMessages);
   const en = useSelector(getEnLocaleMessages);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||

@@ -78,6 +78,8 @@ const HD_PATHS = {
   oneKey: TREZOR_HD_PATHS,
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getErrorMessage = (errorCode, t) => {
   switch (errorCode) {
     case '0x650f':
@@ -216,6 +218,8 @@ class ConnectHardwareForm extends Component {
           });
         }
       })
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       .catch((e) => {
         const errorMessage = typeof e === 'string' ? e : e.message;
         const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
@@ -275,6 +279,8 @@ class ConnectHardwareForm extends Component {
           unlocked: false,
         });
       })
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       .catch((e) => {
         this.setState({ error: e.message });
       });
@@ -318,6 +324,8 @@ class ConnectHardwareForm extends Component {
         });
         history.push(mostRecentOverviewPage);
       })
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       .catch((e) => {
         this.context.trackEvent({
           category: MetaMetricsEventCategory.Accounts,
@@ -484,6 +492,8 @@ const mapDispatchToProps = (dispatch) => {
     setHardwareWalletDefaultHdPath: ({ device, path }) => {
       return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }));
     },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     connectHardware: (deviceName, page, hdPath, loadHid, t) => {
       return dispatch(
         actions.connectHardware(deviceName, page, hdPath, loadHid, t),

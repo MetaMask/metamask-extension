@@ -53,11 +53,17 @@ const isETHNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.ETH_SENT,
 ]);
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const isSent = (n: ETHNotification) => n.type === TRIGGER_TYPES.ETH_SENT;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const title = (n: ETHNotification) =>
   isSent(n) ? t('notificationItemSentTo') : t('notificationItemReceivedFrom');
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getNativeCurrency = (n: ETHNotification) => {
   const chainId = decimalToHex(n.chain_id);
   const nativeCurrency = getNetworkDetailsByChainId(
@@ -66,6 +72,8 @@ const getNativeCurrency = (n: ETHNotification) => {
   return nativeCurrency;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getTitle = (n: ETHNotification) => {
   const address = shortenAddress(isSent(n) ? n.data.to : n.data.from);
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
@@ -74,6 +82,8 @@ const getTitle = (n: ETHNotification) => {
   return items;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getDescription = (n: ETHNotification) => {
   const { nativeCurrencySymbol } = getNativeCurrency(n);
   const items = createTextItems([nativeCurrencySymbol], TextVariant.bodyMd);

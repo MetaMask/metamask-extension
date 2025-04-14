@@ -55,6 +55,8 @@ type ErrorPageProps = {
 };
 
 const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
@@ -72,6 +74,8 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
     setIsFeedbackModalOpen(false);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const handleSubmitFeedback = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const eventId = Sentry.lastEventId();
@@ -210,6 +214,8 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
                   cols={32}
                   rows={6}
                   placeholder={t('errorPageSentryMessagePlaceholder')}
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                  // eslint-disable-next-line id-length
                   onChange={(e) => setFeedbackMessage(e.target.value)}
                   data-testid="error-page-sentry-feedback-textarea"
                 />

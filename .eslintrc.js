@@ -153,6 +153,8 @@ module.exports = {
      * TypeScript files
      */
     {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       files: tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)),
       parserOptions: {
         project: tsconfigPath,

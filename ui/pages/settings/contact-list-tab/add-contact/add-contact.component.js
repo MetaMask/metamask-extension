@@ -142,6 +142,8 @@ export default class AddContact extends PureComponent {
               id="nickname"
               placeholder={this.context.t('addAlias')}
               value={this.state.newName}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onChange={(e) => this.handleNameChange(e.target.value)}
               fullWidth
               margin="dense"

@@ -63,6 +63,8 @@ import TimerIcon from './timer-icon';
 
 export default function SmartTransactionStatusPage() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -271,6 +273,8 @@ export default function SmartTransactionStatusPage() {
         <a
           className="smart-transaction-status__cancel-swap-link"
           href="#"
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onClick={(e) => {
             e?.preventDefault();
             setCancelSwapLinkClicked(true); // We want to hide it after a user clicks on it.

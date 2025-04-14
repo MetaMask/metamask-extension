@@ -25,6 +25,8 @@ NetworkStatusTooltip.propTypes = {
 };
 
 export const BaseFeeTooltip = ({ children }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <NetworkStatusTooltip
@@ -53,6 +55,8 @@ BaseFeeTooltip.propTypes = {
 };
 
 export const PriorityFeeTooltip = ({ children }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <NetworkStatusTooltip title={t('networkStatusPriorityFeeTooltip')}>
@@ -66,6 +70,8 @@ PriorityFeeTooltip.propTypes = {
 };
 
 export const NetworkStabilityTooltip = ({ children, color, tooltipLabel }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   return (

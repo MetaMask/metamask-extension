@@ -93,6 +93,8 @@ export const BridgeInputGroup = ({
   | 'isTokenListLoading'
   | 'isMultiselectEnabled'
 >) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const { isLoading } = useSelector(getBridgeQuotes);
@@ -199,6 +201,8 @@ export const BridgeInputGroup = ({
           type={TextFieldType.Text}
           className="amount-input"
           placeholder="0"
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
             if (e) {
               // Only allow numbers and at most one decimal point
@@ -212,6 +216,8 @@ export const BridgeInputGroup = ({
               }
             }
           }}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
             e.preventDefault();
             const cleanedValue = sanitizeAmountInput(
@@ -219,6 +225,8 @@ export const BridgeInputGroup = ({
             );
             onAmountChange?.(cleanedValue ?? '');
           }}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onChange={(e) => {
             e.preventDefault();
             e.stopPropagation();

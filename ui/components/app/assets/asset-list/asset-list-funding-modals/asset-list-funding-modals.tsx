@@ -17,6 +17,8 @@ import { RAMPS_CARD_VARIANT_TYPES } from '../../../../multichain/ramps-card/ramp
 ///: END:ONLY_INCLUDE_IF
 
 const AssetListFundingModals = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedAccount);
 

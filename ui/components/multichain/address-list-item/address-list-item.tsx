@@ -48,6 +48,8 @@ export const AddressListItem = ({
   isDuplicate = false,
   onClick,
 }: AddressListItemProps) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
 
   const useBlockie = useSelector(getUseBlockie);
@@ -64,6 +66,8 @@ export const AddressListItem = ({
       display={Display.Flex}
       padding={4}
       as="button"
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       onClick={(e: React.MouseEvent) => {
         e.stopPropagation();
         onClick();

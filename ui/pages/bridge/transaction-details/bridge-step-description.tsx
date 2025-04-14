@@ -43,6 +43,8 @@ type I18nFunction = (
  * @param networkConfigurationsByChainId - The network configurations by chain id
  */
 const getBridgeActionText = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: I18nFunction,
   stepStatus: StatusTypes | null,
   step: Step,
@@ -113,6 +115,8 @@ const getSwapActionStatus = (
 };
 
 const getSwapActionText = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: I18nFunction,
   status: StatusTypes | null,
   step: Step,
@@ -170,6 +174,8 @@ export default function BridgeStepDescription({
   time,
   stepStatus,
 }: BridgeStepProps) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext() as I18nFunction;
   return (
     <Box

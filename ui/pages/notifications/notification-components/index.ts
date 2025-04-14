@@ -71,5 +71,7 @@ export const NotificationComponents = {
 };
 
 export const hasNotificationComponents = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: NotificationServicesController.Constants.TRIGGER_TYPES,
 ): t is keyof typeof NotificationComponents => t in NotificationComponents;

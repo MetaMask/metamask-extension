@@ -222,6 +222,8 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();

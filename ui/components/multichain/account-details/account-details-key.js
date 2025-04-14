@@ -30,6 +30,8 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 const inTest = Boolean(process.env.IN_TEST);
 
 export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const [showSelectDisableWarn, setShowDisableSelectWarn] = useState(false);

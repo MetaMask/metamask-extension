@@ -18,6 +18,8 @@ import createDupeReqFilterStream, {
 
 const { Transform } = OurReadableStream;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 function createTestStream(output: JsonRpcRequest[] = [], S = Transform) {
   const transformStream = createDupeReqFilterStream();
   const testOutStream = new S({
@@ -36,6 +38,8 @@ function createTestStream(output: JsonRpcRequest[] = [], S = Transform) {
 async function runStreamTest(
   requests: (JsonRpcRequest | JsonRpcNotification)[] = [],
   advanceTimersTime = 10,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   S = Transform,
 ) {
   return new Promise((resolve, reject) => {
@@ -356,6 +360,8 @@ describe('createDupeReqFilterStream', () => {
           string,
           typeof streamsImpl.Writable,
         ],
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       ].forEach(([className, S]) => {
         it(`handles a mix of request types coming through a ${className} stream`, async () => {
           const requests = [

@@ -65,6 +65,8 @@ import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();

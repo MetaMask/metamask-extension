@@ -88,6 +88,8 @@ export const SnapUIMarkdown = ({ children, markdown }) => {
           a: ({ children: value, href }) => {
             return (
               <Link
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onClick={(e) => {
                   e.stopPropagation();
                   if (isMetaMaskUrl(href)) {

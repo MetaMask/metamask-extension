@@ -44,6 +44,8 @@ export const TokenCellSecondaryDisplay = React.memo(
       return (
         <ButtonIcon
           iconName={IconName.Danger}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
             e.stopPropagation();

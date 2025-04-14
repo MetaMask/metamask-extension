@@ -67,6 +67,8 @@ describe('Stream Utils', () => {
             string,
             typeof streamsImpl.Writable,
           ],
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         ].forEach(([className, S]) => {
           it(`should return true for fresh ${className}`, () => {
             const stream = new S();
@@ -93,6 +95,8 @@ describe('Stream Utils', () => {
             string,
             typeof streamsImpl.Readable,
           ],
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         ].forEach(([className, S]) => {
           it(`should return false for fresh ${className}`, () => {
             const stream = new S();

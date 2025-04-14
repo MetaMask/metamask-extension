@@ -77,6 +77,8 @@ function wrapElementWithAPI(element, driver) {
   element.click = async () => {
     try {
       await element.originalClick();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       if (e.name === 'ElementClickInterceptedError') {
         if (e.message.includes('<div class="mm-box loading-overlay"')) {
@@ -109,6 +111,8 @@ until.elementIsNotPresent = function elementIsNotPresent(locator) {
   });
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 until.foundElementCountIs = function foundElementCountIs(locator, n) {
   return new Condition(`Element count is ${n}`, function (driver) {
     return driver.findElements(locator).then(function (elements) {
@@ -320,6 +324,8 @@ class Driver {
   async wait(condition, timeout = this.timeout, catchError = false) {
     try {
       await this.driver.wait(condition, timeout);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       if (!catchError) {
         throw e;
@@ -421,11 +427,15 @@ class Driver {
    * @param timeout
    * @returns {Promise} promise resolving when the count of elements is matched.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   async elementCountBecomesN(rawLocator, n, timeout = this.timeout) {
     const locator = this.buildLocator(rawLocator);
     try {
       await this.driver.wait(until.foundElementCountIs(locator, n), timeout);
       return true;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       const elements = await this.findElements(locator);
       console.error(
@@ -726,6 +736,8 @@ class Driver {
         this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
       ]);
       await elements[0].click();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
@@ -754,6 +766,8 @@ class Driver {
    * @param {number} y - coordinate to click at y
    * @returns {Promise<void>} promise resolving after a click
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   async clickPoint(rawLocator, x, y) {
     const element = await this.findElement(rawLocator);
     await this.driver
@@ -1082,6 +1096,8 @@ class Driver {
   async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
     // In the MV3 build, there is an extra windowHandle with a title of "MetaMask Offscreen Page"
     // So we add 1 to the expected number of window handles
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const x = isManifestV3 ? _x + 1 : _x;
 
     let timeElapsed = 0;
@@ -1347,6 +1363,8 @@ class Driver {
           await this.takeScreenshot(testTitle, screenshotTitle);
         }
       }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       console.error('Failed to take screenshot', e);
     }
@@ -1362,6 +1380,8 @@ class Driver {
           htmlSource,
         );
       }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       console.error('Failed to capture DOM snapshot', e);
     }
@@ -1382,6 +1402,8 @@ class Driver {
           );
         }
       }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       console.error('Failed to take state', e);
     }

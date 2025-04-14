@@ -791,7 +791,8 @@ export enum StxErrorTypes {
 export const getTranslatedStxErrorMessage = (
   errorType: StxErrorTypes,
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, id-length
   t: (...args: any[]) => string,
 ): string => {
   switch (errorType) {

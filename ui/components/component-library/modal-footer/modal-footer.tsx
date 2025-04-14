@@ -29,6 +29,8 @@ export const ModalFooter: ModalFooterComponent = React.forwardRef(
     }: ModalFooterProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const t = useI18nContext();
     return (
       <Box

@@ -111,6 +111,8 @@ export function Container({
   noPadding?: boolean;
   transactionData?: string;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   return (
@@ -137,6 +139,8 @@ export function Container({
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function RawDataRow({ transactionData }: { transactionData: string }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <ConfirmInfoRow label={t('advancedDetailsHexDesc')}>
@@ -161,6 +165,8 @@ function FunctionContainer({
   isExpandable: boolean;
   chainId: string;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const paramRows = (

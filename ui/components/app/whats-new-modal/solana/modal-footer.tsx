@@ -22,6 +22,8 @@ const CREATE_SOLANA_ACCOUNT_ACTION = 'create-solana-account';
 const GOT_IT_ACTION = 'got-it';
 
 export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
   const trackEvent = useContext(MetaMetricsContext);

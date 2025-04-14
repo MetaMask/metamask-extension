@@ -46,6 +46,8 @@ import {
 import { Nav } from '../confirmations/components/confirm/nav';
 
 const Header = ({ approvalId }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <>
@@ -64,6 +66,8 @@ const Header = ({ approvalId }) => {
 };
 
 const Account = ({ fromAccount, nativeCurrency }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const nativeCurrencyBalance = new Numeric(
@@ -139,6 +143,8 @@ const ScrollToBottomButton = ({
   hasError,
   scrollToBottom,
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const isScrollToBottomVisible =
@@ -187,6 +193,8 @@ const MessageBody = forwardRef(
   ) => {
     const dispatch = useDispatch();
     const trackEvent = useContext(MetaMetricsContext);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const t = useI18nContext();
 
     const [copyToClipboardPressed, setCopyToClipboardPressed] = useState(false);
@@ -328,6 +336,8 @@ const Footer = ({
 }) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -391,6 +401,8 @@ Footer.propTypes = {
 };
 
 const ConfirmDecryptMessage = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [rawMessage, setRawMessage] = useState('');
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);

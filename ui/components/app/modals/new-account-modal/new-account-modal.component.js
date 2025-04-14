@@ -20,6 +20,8 @@ export default class NewAccountModal extends Component {
     ]),
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   onChange = (e) => {
     this.setState({
       alias: e.target.value,
@@ -30,6 +32,8 @@ export default class NewAccountModal extends Component {
     await this.props.onSave(this.state.alias).then(this.props.hideModal);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   onKeyPress = (e) => {
     if (e.key === 'Enter' && this.state.alias) {
       this.onSubmit();

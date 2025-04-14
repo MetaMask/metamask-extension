@@ -36,6 +36,8 @@ import { getUseExternalServices } from '../../../../selectors';
 
 const ProfileSyncToggle = () => {
   const trackEvent = useContext(MetaMetricsContext);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const basicFunctionality: boolean = useSelector(getUseExternalServices);

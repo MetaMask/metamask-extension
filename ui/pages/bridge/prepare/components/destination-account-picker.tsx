@@ -163,6 +163,8 @@ export const DestinationAccountPicker = ({
               : t('destinationAccountPickerSearchPlaceholderToMainnet')
           }
           value={searchQuery}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onChange={(e) => setSearchQuery(e.target.value)}
           clearButtonOnClick={() => setSearchQuery('')}
           className="text-field-search"

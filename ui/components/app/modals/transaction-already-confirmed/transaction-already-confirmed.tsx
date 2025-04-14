@@ -33,6 +33,8 @@ export default function TransactionAlreadyConfirmed() {
     hideModal,
     props: { originalTransactionId },
   } = useModalProps();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const transaction: TransactionMeta = useSelector(

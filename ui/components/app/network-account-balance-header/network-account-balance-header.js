@@ -25,6 +25,8 @@ export default function NetworkAccountBalanceHeader({
   accountAddress,
   chainId,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const networkIcon = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
   const networkIconWrapperClass = networkIcon

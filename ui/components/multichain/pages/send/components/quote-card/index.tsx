@@ -58,6 +58,8 @@ const REFRESH_INTERVAL = 30;
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function QuoteCard({ scrollRef }: QuoteCardProps) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const sendAnalytics = useSelector(getSendAnalyticProperties);

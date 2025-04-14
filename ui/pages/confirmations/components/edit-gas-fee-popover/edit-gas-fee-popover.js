@@ -24,6 +24,8 @@ import NetworkStatistics from './network-statistics';
 
 const EditGasFeePopover = () => {
   const { balanceError, editGasMode } = useGasFeeContext();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { closeAllModals, closeModal, currentModal, openModalCount } =
     useTransactionModalContext();

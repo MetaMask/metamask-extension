@@ -79,6 +79,8 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
 
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 

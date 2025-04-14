@@ -54,20 +54,28 @@ export default class AdvancedGasInputs extends Component {
     }
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   onChangeGasLimit = (e) => {
     this.setState({ gasLimit: e.target.value });
     this.changeGasLimit({ target: { value: e.target.value } });
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   changeGasLimit = (e) => {
     this.props.updateCustomGasLimit(Number(e.target.value));
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   onChangeGasPrice = (e) => {
     this.setState({ gasPrice: e.target.value });
     this.changeGasPrice({ target: { value: e.target.value } });
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   changeGasPrice = (e) => {
     this.props.updateCustomGasPrice(Number(e.target.value));
   };

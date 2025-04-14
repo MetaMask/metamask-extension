@@ -25,6 +25,8 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function TermsOfUsePopup({ onAccept }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const [isTermsOfUseChecked, setIsTermsOfUseChecked] = useState(false);
@@ -33,6 +35,8 @@ export default function TermsOfUsePopup({ onAccept }) {
   const popoverRef = useRef();
   const bottomRef = React.createRef();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const handleScrollDownClick = (e) => {
     e.stopPropagation();
     bottomRef.current.scrollIntoView({
@@ -46,6 +50,8 @@ export default function TermsOfUsePopup({ onAccept }) {
     );
   }, 100);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const handleScroll = (e) => {
     handleDebouncedScroll(e.target);
   };

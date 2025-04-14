@@ -295,8 +295,14 @@ export class Delegation7702PublishHook {
   }
 
   #decodeAuthorizationSignature(signature: Hex) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const r = signature.slice(0, 66) as Hex;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const s = `0x${signature.slice(66, 130)}`;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     const v = parseInt(signature.slice(130, 132), 16);
     const yParity = v - 27 === 0 ? ('0x' as const) : ('0x1' as const);
 

@@ -22,6 +22,8 @@ const AssetOptions = ({
   tokenSymbol,
   isNativeAsset,
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const history = useHistory();
@@ -102,6 +104,8 @@ const AssetOptions = ({
   );
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const isNotFunc = (p) => {
   return typeof p !== 'function';
 };

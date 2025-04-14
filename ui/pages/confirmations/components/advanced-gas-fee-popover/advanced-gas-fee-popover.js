@@ -12,6 +12,8 @@ import AdvancedGasFeeSaveButton from './advanced-gas-fee-save';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 
 const AdvancedGasFeePopover = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { closeAllModals, currentModal } = useTransactionModalContext();
 

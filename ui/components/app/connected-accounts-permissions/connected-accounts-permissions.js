@@ -25,6 +25,8 @@ import { getSnapName } from '../../../helpers/utils/util';
 import { getSnapsMetadata } from '../../../selectors';
 
 const ConnectedAccountsPermissions = ({ permissions }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [expanded, setExpanded] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);

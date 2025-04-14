@@ -26,6 +26,8 @@ import {
 } from '../../../../components/component-library';
 
 export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const {
     editGasMode,

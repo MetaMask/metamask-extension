@@ -7,6 +7,8 @@ import { Icon, IconName } from '../../../components/component-library';
 import { Size } from '../../../helpers/constants/design-system';
 
 export default function SettingsSearchList({ results, onClickSetting }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
 
   useEffect(highlightSearchedText, [results]);

@@ -31,6 +31,8 @@ export default function SrpInput({ onChange, srpText }) {
   );
   const [numberOfWords, setNumberOfWords] = useState(defaultNumberOfWords);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const onSrpChange = useCallback(
@@ -184,6 +186,8 @@ export default function SrpInput({ onChange, srpText }) {
                 id={id}
                 data-testid={id}
                 type={showSrp[index] ? 'text' : 'password'}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onChange={(e) => {
                   e.preventDefault();
                   onSrpWordChange(index, e.target.value);

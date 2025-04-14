@@ -59,6 +59,8 @@ const getTitle = () => {
   return items;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getDescription = (n: LidoWithdrawalRequestedNotification) => {
   const amount = getAmount(n.data.stake_in.amount, n.data.stake_in.decimals, {
     shouldEllipse: true,

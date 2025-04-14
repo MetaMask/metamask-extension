@@ -16,6 +16,8 @@ import {
  * @param {object} contexts - Context objects passed into the template from the confirmation page.
  * @returns {object} An object containing templated values for the confirmation page.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 function getValues(pendingApproval, t, actions, _history, _data, contexts) {
   const { origin: snapId, snapName, requestData } = pendingApproval;
   const { snapSuggestedAccountName } = requestData;

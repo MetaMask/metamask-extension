@@ -479,6 +479,8 @@ export function getURLHostName(url) {
 const MINUTE_CUTOFF = 90 * 60;
 const SECOND_CUTOFF = 90;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export const toHumanReadableTime = (t, milliseconds) => {
   if (milliseconds === undefined || milliseconds === null) {
     return '';
@@ -641,6 +643,8 @@ export async function getAssetImageURL(image, ipfsGateway) {
     // no longer using multiform's CID.parse() method within the assets-controller
     try {
       return await getFormattedIpfsUrl(ipfsGateway, image, true);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       logErrorWithMessage(e);
       return '';
@@ -831,6 +835,8 @@ export const hexToText = (hex) => {
     const stripped = stripHexPrefix(hex);
     const buff = Buffer.from(stripped, 'hex');
     return buff.length === 32 ? hex : buff.toString('utf8');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   } catch (e) {
     return hex;
   }
@@ -887,6 +893,8 @@ export const transformOriginToTitle = (rawOrigin) => {
 
     const parts = url.hostname.split('.');
     return parts.slice(-2).join('.');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   } catch (e) {
     return 'Unknown Origin';
   }

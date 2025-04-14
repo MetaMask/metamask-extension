@@ -22,6 +22,8 @@ export default function DeprecatedNetworks() {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const [isClosed, setIsClosed] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 

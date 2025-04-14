@@ -172,6 +172,8 @@ export enum ACTION_MODE {
 }
 
 export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -286,6 +288,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       const newOrderedNetworks = [...orderedNetworks];
       const [removed] = newOrderedNetworks.splice(result.source.index, 1);
       newOrderedNetworks.splice(result.destination.index, 0, removed);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       dispatch(updateNetworksList(newOrderedNetworks.map((n) => n.chainId)));
       setOrderedNetworks(newOrderedNetworks);
     }
@@ -757,6 +761,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         <AddRpcUrlModal
           onAdded={(url, name) => {
             // Note: We could choose to rename the URL if it already exists with a different name
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             if (rpcUrls.rpcEndpoints?.every((e) => !URI.equal(e.url, url))) {
               setRpcUrls({
                 rpcEndpoints: [
@@ -774,6 +780,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       return (
         <AddBlockExplorerModal
           onAdded={(url) => {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             if (blockExplorers.blockExplorerUrls?.every((u) => u !== url)) {
               setBlockExplorers({
                 blockExplorerUrls: [...blockExplorers.blockExplorerUrls, url],

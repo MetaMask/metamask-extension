@@ -76,6 +76,8 @@ function MultichainBridgeTransactionDetailsModal({
   transaction,
   onClose,
 }: MultichainBridgeTransactionDetailsModalProps): JSX.Element {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -201,6 +203,8 @@ function MultichainBridgeTransactionDetailsModal({
       return formattedDecimal.length > 0
         ? `${integerPart}.${formattedDecimal}`
         : `${integerPart}`;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       console.error('Error formatting destination token amount:', e);
       return amount.toString();

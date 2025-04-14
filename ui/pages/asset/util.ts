@@ -49,6 +49,8 @@ export const getPricePrecision = (price: number) => {
     return 1;
   }
   let precision = 2;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   for (let p = Math.abs(price); p < 1; precision++) {
     p *= 10;
   }

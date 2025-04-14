@@ -74,6 +74,8 @@ const useLedgerConnection = () => {
                 : HardwareTransportStates.unknownFailure,
             ),
           );
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         } catch (e: unknown) {
           if ((e as Error).message.match('Failed to open the device')) {
             dispatch(

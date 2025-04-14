@@ -39,6 +39,8 @@ import {
 import { getSnapRoute } from '../../../helpers/utils/util';
 
 const SnapList = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const history = useHistory();
   const settingsRef = useRef();

@@ -18,6 +18,8 @@ import { SignatureRequestType } from '../../types/confirm';
 const CHANGE_THRESHOLD_MS = 60 * 1000; // 1 Minute
 
 export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const { currentConfirmation } = useConfirmContext();

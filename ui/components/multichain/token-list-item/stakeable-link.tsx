@@ -28,6 +28,8 @@ type StakeableLinkProps = {
 };
 
 export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -43,6 +45,8 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
       paddingInlineStart={1}
       paddingInlineEnd={1}
       tabIndex={0}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();

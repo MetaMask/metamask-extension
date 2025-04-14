@@ -22,6 +22,8 @@ export const AppHeaderLockedContent = ({
   currentNetwork,
   networkOpenCallback,
 }: AppHeaderLockedContentProps) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const history = useHistory();
 
@@ -40,6 +42,8 @@ export const AppHeaderLockedContent = ({
           aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
           label={currentNetwork.name}
           src={networkIconSrc}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           onClick={(e: React.MouseEvent<HTMLElement>) => {
             e.stopPropagation();
             e.preventDefault();

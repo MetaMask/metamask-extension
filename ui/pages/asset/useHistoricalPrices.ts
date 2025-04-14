@@ -45,11 +45,15 @@ export const useHistoricalPrices = ({
       })
         .catch(() => ({}))
         .then((resp?: { prices?: number[][] }) => {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           const prices = resp?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] }));
 
           let edges;
           if (prices && prices.length > 0) {
             let [xMin, xMax, yMin, yMax]: Point[] = [];
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             for (const p of prices) {
               xMin = !xMin || p.x < xMin.x ? p : xMin;
               xMax = !xMax || p.x > xMax.x ? p : xMax;

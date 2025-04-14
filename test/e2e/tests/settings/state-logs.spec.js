@@ -16,6 +16,8 @@ const getStateLogsJson = async () => {
     await fs.access(stateLogs);
     const contents = await fs.readFile(stateLogs);
     return JSON.parse(contents.toString());
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   } catch (e) {
     return null;
   }

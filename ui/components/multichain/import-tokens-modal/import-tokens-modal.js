@@ -129,6 +129,8 @@ const TAB_NAMES = {
 };
 
 export const ImportTokensModal = ({ onClose }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -903,6 +905,8 @@ export const ImportTokensModal = ({ onClose }) => {
                           paddingTop={6}
                           label={t('tokenContractAddress')}
                           value={customAddress}
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                          // eslint-disable-next-line id-length
                           onChange={(e) => {
                             if (selectedNetworkForCustomImport) {
                               handleCustomAddressChange(e.target.value);
@@ -940,6 +944,8 @@ export const ImportTokensModal = ({ onClose }) => {
                               paddingTop={4}
                               label={<>{t('tokenSymbol')}</>}
                               value={customSymbol}
+                              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                              // eslint-disable-next-line id-length
                               onChange={(e) =>
                                 handleCustomSymbolChange(e.target.value)
                               }
@@ -962,6 +968,8 @@ export const ImportTokensModal = ({ onClose }) => {
                               label={t('decimal')}
                               type="number"
                               value={customDecimals}
+                              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                              // eslint-disable-next-line id-length
                               onChange={(e) =>
                                 handleCustomDecimalsChange(e.target.value)
                               }

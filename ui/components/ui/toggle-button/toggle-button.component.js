@@ -83,6 +83,8 @@ const ToggleButton = (props) => {
   return (
     <label
       tabIndex="0"
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
           onToggle(value);

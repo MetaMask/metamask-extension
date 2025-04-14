@@ -55,12 +55,18 @@ const isERC721Notification = isOfTypeNodeGuard([
   TRIGGER_TYPES.ERC721_SENT,
 ]);
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const isSent = (n: ERC721Notification) => n.type === TRIGGER_TYPES.ERC721_SENT;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const title = (n: ERC721Notification) =>
   isSent(n)
     ? t('notificationItemNFTSentTo')
     : t('notificationItemNFTReceivedFrom');
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getTitle = (n: ERC721Notification) => {
   const address = shortenAddress(isSent(n) ? n.data.to : n.data.from);
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
@@ -69,6 +75,8 @@ const getTitle = (n: ERC721Notification) => {
   return items;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getDescription = (n: ERC721Notification) => {
   const items = createTextItems(
     [n.data.nft.collection.name],

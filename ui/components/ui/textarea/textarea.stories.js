@@ -50,6 +50,8 @@ export default {
 export const DefaultStory = (args) => {
   const [{ value }, updateArgs] = useArgs();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const handleOnChange = (e) => {
     updateArgs({
       value: e.target.value,
@@ -84,6 +86,8 @@ DefaultStory.args = {
 export const Scrollable = (args) => {
   const [{ value }, updateArgs] = useArgs();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const handleOnChange = (e) => {
     updateArgs({
       value: e.target.value,

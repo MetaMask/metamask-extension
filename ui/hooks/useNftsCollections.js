@@ -12,6 +12,8 @@ import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
 
 export function useNftsCollections() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const previouslyOwnedText = t('nftsPreviouslyOwned');
   const unknownCollectionText = t('unknownCollection');

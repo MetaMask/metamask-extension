@@ -20,6 +20,8 @@ import { getSwapsDefaultToken } from '../../../selectors';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function CreateNewSwap({ sensitiveTrackingProperties }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);

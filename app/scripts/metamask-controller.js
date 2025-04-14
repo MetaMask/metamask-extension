@@ -2296,6 +2296,8 @@ export default class MetamaskController extends EventEmitter {
       cacheRefreshTime: MINUTE * 20,
     })
       .then(this.onFeatureFlagResponseReceived)
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       .catch((e) => {
         // API unreachable (?)
         log.warn('Feature flag endpoint is unreachable', e);
@@ -4480,6 +4482,8 @@ export default class MetamaskController extends EventEmitter {
           decimals: tokenDetails.decimals,
           symbol: tokenDetails.symbol,
         };
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       } catch (e) {
         // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
         // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4498,6 +4502,8 @@ export default class MetamaskController extends EventEmitter {
             userAddress,
             tokenId,
           );
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       } catch (e) {
         log.warn(`Failed to get token standard and details. Error: ${e}`);
       }
@@ -4526,6 +4532,8 @@ export default class MetamaskController extends EventEmitter {
             ...details,
             balance: balanceToUse,
           };
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         } catch (e) {
           // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
           // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4605,6 +4613,8 @@ export default class MetamaskController extends EventEmitter {
           decimals: tokenDetails.decimals,
           symbol: tokenDetails.symbol,
         };
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       } catch (e) {
         // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
         // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4633,6 +4643,8 @@ export default class MetamaskController extends EventEmitter {
             tokenId,
             networkClientId,
           );
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       } catch (e) {
         log.warn(`Failed to get token standard and details. Error: ${e}`);
       }
@@ -4661,6 +4673,8 @@ export default class MetamaskController extends EventEmitter {
             ...details,
             balance: balanceToUse,
           };
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
         } catch (e) {
           // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
           // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4681,6 +4695,8 @@ export default class MetamaskController extends EventEmitter {
       const details =
         await this.assetsContractController.getTokenStandardAndDetails(address);
       return details?.symbol;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       return null;
     }
@@ -4929,6 +4945,8 @@ export default class MetamaskController extends EventEmitter {
         keyring,
       );
       ///: END:ONLY_INCLUDE_IF
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
@@ -5074,6 +5092,8 @@ export default class MetamaskController extends EventEmitter {
 
         await this.keyringController.submitEncryptionKey(loginToken, loginSalt);
       }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       // If somehow this login token doesn't work properly,
       // remove it and the user will get shown back to the unlock screen
@@ -6769,6 +6789,8 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController.revokePermissions({
               [origin]: permissionKeys,
             });
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           } catch (e) {
             // we dont want to handle errors here because
             // the revokePermissions api method should just
@@ -6785,6 +6807,8 @@ export default class MetamaskController extends EventEmitter {
               target,
               caveatType,
             );
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           } catch (e) {
             if (e instanceof PermissionDoesNotExistError) {
               // suppress expected error in case that the origin
@@ -7202,6 +7226,8 @@ export default class MetamaskController extends EventEmitter {
               target,
               caveatType,
             );
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
           } catch (e) {
             if (e instanceof PermissionDoesNotExistError) {
               // suppress expected error in case that the origin
@@ -7846,6 +7872,8 @@ export default class MetamaskController extends EventEmitter {
       : LedgerTransportTypes.u2f;
 
     if (keyring?.updateTransportMethod) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       return keyring.updateTransportMethod(transportType).catch((e) => {
         throw e;
       });

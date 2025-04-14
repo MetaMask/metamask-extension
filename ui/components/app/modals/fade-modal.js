@@ -152,6 +152,8 @@ class FadeModal extends Component {
 
   addTransitionListener = (node, handle) => {
     if (node) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       const endListener = function (e) {
         if (e && e.target !== node) {
           return;

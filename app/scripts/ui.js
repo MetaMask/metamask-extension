@@ -295,6 +295,8 @@ async function queryCurrentActiveTab(windowType) {
 
   const tabs = await browser.tabs
     .query({ active: true, currentWindow: true })
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     .catch((e) => {
       checkForLastErrorAndLog() || log.error(e);
     });

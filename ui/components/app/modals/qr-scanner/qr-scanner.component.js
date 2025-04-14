@@ -54,6 +54,8 @@ const parseContent = (content) => {
 };
 
 export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [isReady, setIsReady] = useState(READY_STATE.ACCESSING_CAMERA);
   const previousIsReady = usePrevious(isReady);

@@ -24,6 +24,8 @@ jest.mock('../../../hooks/useOriginThrottling');
 
 const renderComponent = (isOpen: boolean, onConfirmationCancel: jest.Mock) => {
   const store = configureStore()(mockState);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = (key: string) => key;
   return renderWithProvider(
     <I18nContext.Provider value={t}>

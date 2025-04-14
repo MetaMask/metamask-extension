@@ -23,6 +23,8 @@ export default function RevealSRPModal({
   onClose,
   isOpen,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const [password, setPassword] = useState('');
@@ -42,6 +44,8 @@ export default function RevealSRPModal({
         <ModalHeader onClose={onClose}>{t('revealSeedWords')}</ModalHeader>
         <Box paddingLeft={4} paddingRight={4}>
           <form
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             onSubmit={(e) => {
               e.preventDefault();
               onSubmit(password);
@@ -52,6 +56,8 @@ export default function RevealSRPModal({
               id="account-details-authenticate"
               label={t('enterYourPassword')}
               placeholder={t('password')}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               variant={TextVariant.bodySm}

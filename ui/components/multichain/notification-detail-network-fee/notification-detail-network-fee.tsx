@@ -94,12 +94,16 @@ const FeeDetail = ({ label, value }: { label: string; value: string }) => (
 export const NotificationDetailNetworkFee: FC<
   NotificationDetailNetworkFeeProps
 > = ({ notification }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [networkFees, setNetworkFees] = useState<NetworkFees>(null);
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const getNativeCurrency = (n: OnChainRawNotificationsWithNetworkFields) => {
     const chainId = decimalToHex(n.chain_id);
     return getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);

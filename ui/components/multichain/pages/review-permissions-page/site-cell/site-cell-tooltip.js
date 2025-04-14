@@ -28,6 +28,8 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 
 export const SiteCellTooltip = ({ accounts, networks }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const AVATAR_GROUP_LIMIT = 4;
   const TOOLTIP_LIMIT = 4;

@@ -214,6 +214,8 @@ function transformState(
           // the duplicates are the selected network, we'll take the first one seen.
           const duplicateAlreadyAdded = [
             // Chains we've already proccessed
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             ...Object.values(acc).flatMap((n) =>
               isObject(n) ? n.rpcEndpoints : [],
             ),
@@ -295,6 +297,8 @@ function transformState(
     const name =
       NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ??
       tieBreaker?.nickname ??
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       networks.find((n) => n.nickname)?.nickname;
 
     const nativeCurrency =
@@ -302,6 +306,8 @@ function transformState(
         chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
       ] ??
       tieBreaker?.ticker ??
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       networks.find((n) => n.ticker)?.ticker;
 
     acc[chainId] = {
@@ -321,6 +327,8 @@ function transformState(
   // Given a network client id, returns the chain id it used to point to
   const networkClientIdToChainId = (networkClientId: unknown) => {
     const networkConfiguration = networkConfigurations.find(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       (n) => isObject(n) && n.id === networkClientId,
     );
 
@@ -333,10 +341,14 @@ function transformState(
   // Ensure that selectedNetworkClientId points to
   // some endpoint of some network configuration.
   let selectedNetworkClientId = Object.values(networkConfigurationsByChainId)
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     .flatMap((n) =>
       isObject(n) && Array.isArray(n.rpcEndpoints) ? n.rpcEndpoints : [],
     )
     .find(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       (e) => e.networkClientId === networkState.selectedNetworkClientId,
     )?.networkClientId;
 

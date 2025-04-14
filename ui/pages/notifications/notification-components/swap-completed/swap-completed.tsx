@@ -50,6 +50,8 @@ const isSwapCompletedNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.METAMASK_SWAP_COMPLETED,
 ]);
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getTitle = (n: SwapCompletedNotification) => {
   const items = createTextItems(
     [
@@ -66,6 +68,8 @@ const getTitle = (n: SwapCompletedNotification) => {
   return items;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getDescription = (n: SwapCompletedNotification) => {
   const items = createTextItems([n.data.token_out.symbol], TextVariant.bodyMd);
   return items;

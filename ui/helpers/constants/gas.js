@@ -9,6 +9,8 @@ export const GAS_FORM_ERRORS = {
   GAS_PRICE_TOO_LOW: 'editGasPriceTooLow',
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export function getGasFormErrorText(type, t, { minimumGasLimit } = {}) {
   switch (type) {
     case GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS:

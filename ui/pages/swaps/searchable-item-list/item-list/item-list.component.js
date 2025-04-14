@@ -30,6 +30,8 @@ export default function ItemList({
   hideItemIf,
   listContainerClassName,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
@@ -100,6 +102,8 @@ export default function ItemList({
               })}
               data-testid="searchable-item-list__item"
               onClick={onClick}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onKeyUp={(e) => e.key === 'Enter' && onClick()}
               key={`searchable-item-list-item-${i}`}
               title={blocked ? t('swapTokenNotAvailable') : null}

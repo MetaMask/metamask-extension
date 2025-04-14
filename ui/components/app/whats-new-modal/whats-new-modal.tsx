@@ -91,6 +91,8 @@ const renderNotification = ({
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =

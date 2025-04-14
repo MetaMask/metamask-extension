@@ -51,6 +51,8 @@ export default function ListItemSearch({
         });
         return;
       }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       log.error('Token not found, show 0 results.', e);
     }
@@ -121,6 +123,8 @@ export default function ListItemSearch({
       placeholder={searchPlaceholderText}
       type="text"
       value={searchQuery}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       onChange={(e) => handleSearch(e.target.value)}
       error={error}
       fullWidth

@@ -57,6 +57,8 @@ import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
 
 export const ImportNftsModal = ({ onClose }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -233,6 +235,8 @@ export const ImportNftsModal = ({ onClose }) => {
                 id="address"
                 placeholder="0x..."
                 value={nftAddress}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onChange={(e) => {
                   validateAndSetAddress(e.target.value);
                   setNftAddFailed(false);
@@ -267,6 +271,8 @@ export const ImportNftsModal = ({ onClose }) => {
                 id="token-id"
                 placeholder={t('nftTokenIdPlaceholder')}
                 value={tokenId}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                // eslint-disable-next-line id-length
                 onChange={(e) => {
                   validateAndSetTokenId(e.target.value);
                   setNftAddFailed(false);

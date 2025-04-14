@@ -142,6 +142,8 @@ export default function useSolanaBridgeTransactionMapping(
             hexChainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
           ] ??
           NETWORK_TO_NAME_MAP[hexChainId as keyof typeof NETWORK_TO_NAME_MAP];
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       } catch (e) {
         console.error('Error converting chain ID', e);
       }

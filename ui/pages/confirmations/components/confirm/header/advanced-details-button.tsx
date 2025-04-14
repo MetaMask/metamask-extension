@@ -21,6 +21,8 @@ import { setConfirmationAdvancedDetailsOpen } from '../../../../../store/actions
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
 
 export const AdvancedDetailsButton = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
 

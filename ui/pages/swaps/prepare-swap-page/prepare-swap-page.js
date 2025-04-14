@@ -159,6 +159,8 @@ export default function PrepareSwapPage({
   selectedAccountAddress,
   shuffledTokensList,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -1176,6 +1178,8 @@ export default function PrepareSwapPage({
                       variant: TextVariant.bodyMd,
                       alignItems: AlignItems.flexStart,
                     }}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                    // eslint-disable-next-line id-length
                     onClick={(e) => {
                       e.preventDefault();
                       setVerificationClicked(true);

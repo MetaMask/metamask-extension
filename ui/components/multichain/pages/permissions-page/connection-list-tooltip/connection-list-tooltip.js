@@ -25,6 +25,8 @@ import { getUseBlockie } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export const ConnectionListTooltip = ({ connection }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const AVATAR_GROUP_LIMIT = 4;
   const TOOLTIP_LIMIT = 4;

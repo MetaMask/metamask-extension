@@ -48,6 +48,8 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
 };
 
 const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const dispatch = useDispatch();
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);

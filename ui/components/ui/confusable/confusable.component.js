@@ -7,6 +7,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Text } from '../../component-library';
 
 const Confusable = ({ input, asText, confusableWrapperName = '' }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const confusableData = useMemo(() => {
     return confusables(input);

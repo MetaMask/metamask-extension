@@ -65,6 +65,8 @@ export default class EditContact extends PureComponent {
     return !isDuplicateContact(addressBook, internalAccounts, newName);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   handleNameChange = (e) => {
     const newName = e.target.value;
 
@@ -160,6 +162,8 @@ export default class EditContact extends PureComponent {
               id="address"
               value={this.state.newAddress}
               error={this.state.addressError}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onChange={(e) => this.setState({ newAddress: e.target.value })}
               fullWidth
               multiline
@@ -182,6 +186,8 @@ export default class EditContact extends PureComponent {
               id="memo"
               placeholder={memo}
               value={this.state.newMemo}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
               onChange={(e) => this.setState({ newMemo: e.target.value })}
               fullWidth
               margin="dense"

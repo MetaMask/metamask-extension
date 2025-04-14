@@ -27,6 +27,8 @@ function transformState(state) {
     const newAddressBook = {};
 
     // add all of the chainIds to a set
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     Object.values(ab).forEach((v) => {
       chainIds.add(v.chainId);
     });

@@ -38,6 +38,8 @@ export const ExternalAccountListItem: React.FC<
   ExternalAccountListItemProps
 > = ({ account, selected, onClick }) => {
   const useBlockie = useSelector(getUseBlockie);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const isEnsName = account.metadata.name.endsWith('.eth');
 

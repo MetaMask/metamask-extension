@@ -8,6 +8,8 @@ import { I18nContext } from '../../../../../contexts/i18n';
 import Box from '../../../../../components/ui/box';
 import LoadingHeartBeat from '../../../../../components/ui/loading-heartbeat';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 function determineTrendInfo(trend, t) {
   switch (trend) {
     case 'up':
@@ -34,6 +36,8 @@ function determineTrendInfo(trend, t) {
 }
 
 const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const trendInfo = determineTrendInfo(trend, t);
   return (

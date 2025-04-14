@@ -46,6 +46,8 @@ import Tooltip from '../../../ui/tooltip';
 import { SnapIcon } from '../snap-icon';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const subjectMetadata = useSelector((state) =>

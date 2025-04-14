@@ -36,11 +36,15 @@ const isFeatureAnnouncementNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
 ]);
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getTitle = (n: FeatureAnnouncementNotification) => {
   const items = createTextItems([n.data.title], TextVariant.bodySm);
   return items;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 const getDescription = (n: FeatureAnnouncementNotification) => {
   const items = createTextItems([n.data.shortDescription], TextVariant.bodyMd);
   return items;

@@ -91,6 +91,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       }: CreateAccountProps<C>,
       ref?: PolymorphicRef<C>,
     ) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       const t = useI18nContext();
 
       const history = useHistory();
@@ -197,11 +199,15 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             id="account-name"
             label={t('accountName')}
             placeholder={defaultAccountName}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setNewAccountName(e.target.value)
             }
             helpText={errorMessage}
             error={!isValidAccountName}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
             onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
               if (e.key === 'Enter') {
                 onSubmit(e);

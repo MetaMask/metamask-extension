@@ -47,6 +47,8 @@ export default function EditGasPopover({
   onClose,
   minimumGasLimit = GAS_LIMITS.SIMPLE,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 

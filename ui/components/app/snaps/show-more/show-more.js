@@ -11,12 +11,16 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export const ShowMore = ({ children, className = '', ...props }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { contentRef, isOverflowing } = useIsOverflowing();
   const [isOpen, setIsOpen] = useState(false);
 
   const shouldDisplayButton = isOverflowing && !isOpen;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const handleClick = (e) => {
     e.stopPropagation();
     setIsOpen(true);

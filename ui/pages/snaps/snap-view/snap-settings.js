@@ -58,6 +58,8 @@ import { KeyringSnapRemovalResultStatus } from './constants';
 
 function SnapSettings({ snapId, initRemove, resetInitRemove }) {
   const history = useHistory();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const snaps = useSelector(getSnaps);
   const dispatch = useDispatch();

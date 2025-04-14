@@ -58,6 +58,8 @@ expect.extend({
     let rejectionValue = UNRESOLVED;
     try {
       await promise;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       rejectionValue = e;
     }
@@ -103,6 +105,8 @@ expect.extend({
         promise,
         treatUnresolvedAfter(TIME_TO_WAIT_UNTIL_UNRESOLVED),
       ]);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       rejectionValue = e;
     }

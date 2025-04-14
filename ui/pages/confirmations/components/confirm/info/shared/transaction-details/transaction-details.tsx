@@ -40,6 +40,8 @@ import {
 import { Box, Text } from '../../../../../../../components/component-library';
 
 export const OriginRow = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -64,6 +66,8 @@ export const OriginRow = () => {
 };
 
 export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { from } = currentConfirmation?.txParams ?? {};
@@ -97,6 +101,8 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
 };
 
 export const MethodDataRow = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { txParams } = currentConfirmation ?? {};
@@ -120,6 +126,8 @@ export const MethodDataRow = () => {
 };
 
 const AmountRow = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { currency } = useUserPreferencedCurrency(PRIMARY);
@@ -143,6 +151,8 @@ const AmountRow = () => {
 };
 
 const PaymasterRow = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
@@ -205,6 +215,8 @@ export const TransactionDetails = () => {
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function SmartContractWithLogo() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <Box

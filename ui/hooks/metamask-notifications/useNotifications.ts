@@ -62,6 +62,8 @@ export function useListNotifications(): {
       );
       setNotificationsData(data as unknown as Notification[]);
       return data as unknown as Notification[];
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       log.error(e);
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
@@ -99,6 +101,8 @@ export function useCreateNotifications(): {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(createOnChainTriggers());
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
@@ -135,6 +139,8 @@ export function useEnableNotifications(): {
 
     try {
       await dispatch(enableMetamaskNotifications());
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
@@ -167,6 +173,8 @@ export function useDisableNotifications(): {
 
     try {
       await dispatch(disableMetamaskNotifications());
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
@@ -198,6 +206,8 @@ export function useMarkNotificationAsRead(): {
     async (notifications: MarkAsReadNotificationsParam) => {
       try {
         dispatch(markMetamaskNotificationsAsRead(notifications));
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       } catch (e) {
         log.error(e);
         throw e;

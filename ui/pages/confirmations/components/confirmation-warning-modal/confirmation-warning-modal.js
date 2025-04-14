@@ -28,6 +28,8 @@ import { ModalContent } from '../../../../components/component-library/modal-con
 import { ModalHeader } from '../../../../components/component-library/modal-header/deprecated';
 
 const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   return (
     <Modal

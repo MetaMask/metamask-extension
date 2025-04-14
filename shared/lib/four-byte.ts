@@ -71,6 +71,8 @@ export async function getMethodDataAsync(
   try {
     let fourByteSig = null;
     if (allow4ByteRequests) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
       fourByteSig = await getMethodFrom4Byte(fourBytePrefix).catch((e) => {
         console.error(e);
         return null;

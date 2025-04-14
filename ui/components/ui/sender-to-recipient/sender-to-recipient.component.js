@@ -32,6 +32,8 @@ function SenderAddress({
   senderAddress,
   warnUserOnAccountMismatch,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [addressCopied, setAddressCopied] = useState(false);
   let tooltipHtml = <p>{t('copiedExclamation')}</p>;
@@ -106,6 +108,8 @@ export function RecipientWithAddress({
   recipientIsOwnedAccount,
   chainId,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const [addressCopied, setAddressCopied] = useState(false);
 
@@ -194,6 +198,8 @@ export default function SenderToRecipient({
   recipientIsOwnedAccount,
   chainId,
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const checksummedSenderAddress = toChecksumHexAddress(senderAddress);
   const checksummedRecipientAddress = toChecksumHexAddress(recipientAddress);

@@ -40,6 +40,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AwaitingSignatures() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes, shallowEqual);
   const fromAmount = activeQuote?.sentAmount?.amount?.toNumber();

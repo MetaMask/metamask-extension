@@ -196,6 +196,8 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
  * @returns The title for this action mode.
  */
 export const getActionTitle = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   t: (text: string, args?: string[]) => string,
   actionMode: ActionMode,
 ) => {
@@ -251,6 +253,8 @@ export const AccountListMenu = ({
     SolAccountType.DataAccount,
   ],
 }: AccountListMenuProps) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -938,6 +942,8 @@ export const AccountListMenu = ({
                   width={BlockSize.Full}
                   placeholder={t('searchAccounts')}
                   value={searchQuery}
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                  // eslint-disable-next-line id-length
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setSearchQuery(e.target.value)
                   }

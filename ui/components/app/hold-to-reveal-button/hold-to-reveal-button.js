@@ -21,6 +21,8 @@ const strokeWidth = 2;
 const radiusWithStroke = radius - strokeWidth / 2;
 
 export default function HoldToRevealButton({ buttonText, onLongPressed }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const isLongPressing = useRef(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
@@ -32,6 +34,8 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    *
    * @param e - Native animation event - React.AnimationEvent<HTMLDivElement>
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const preventPropogation = (e) => {
     e.stopPropagation();
   };
@@ -70,6 +74,8 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    * @param e - Native animation event - React.AnimationEvent<HTMLDivElement>
    */
   const triggerOnLongPressed = useCallback(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
     (e) => {
       trackEvent({
         category: MetaMetricsEventCategory.Keys,

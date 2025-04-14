@@ -63,6 +63,8 @@ import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { Nav } from '../confirmations/components/confirm/nav';
 
 const ConfirmAddSuggestedNFT = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+  // eslint-disable-next-line id-length
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -417,6 +419,8 @@ const ConfirmAddSuggestedNFT = () => {
                       iconName={IconName.Close}
                       size={ButtonIconSize.Sm}
                       color={IconColor.iconMuted}
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                      // eslint-disable-next-line id-length
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();

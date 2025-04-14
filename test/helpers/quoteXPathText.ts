@@ -5,6 +5,8 @@
  * @param s - The text to quote. May contain single or double quotes.
  * @returns The quoted text.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+// eslint-disable-next-line id-length
 export function quoteXPathText(s: string = '') {
   if (!s.includes('"')) {
     return `"${s}"`;
