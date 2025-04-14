@@ -45,6 +45,7 @@ type MatchedAccountInfoProps = {
   label?: string;
   displayAvatar?: boolean;
   handleClear: () => void;
+  disabled?: boolean;
 };
 
 const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
@@ -54,6 +55,7 @@ const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
   value,
   displayName,
   handleClear,
+  disabled,
 }) => (
   <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
     {label && (
@@ -62,6 +64,7 @@ const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
     <Box
       display={Display.Flex}
       backgroundColor={BackgroundColor.backgroundDefault}
+      className="snap-ui-renderer__matched-account-info"
       alignItems={AlignItems.center}
       borderWidth={1}
       borderRadius={BorderRadius.LG}
@@ -71,6 +74,8 @@ const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
       gap={2}
       style={{
         height: '48px',
+        opacity: disabled ? 0.5 : 1,
+        cursor: disabled ? 'not-allowed' : 'auto',
       }}
     >
       {displayAvatar && (
@@ -100,11 +105,18 @@ const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
         </Box>
       </Box>
       <Icon
-        onClick={handleClear}
+        className="snap-ui-renderer__matched-account-info__clear-button"
+        onClick={
+          disabled
+            ? () => {
+                /** noop */
+              }
+            : handleClear
+        }
         name={IconName.Close}
         color={IconColor.infoDefault}
         style={{
-          cursor: 'pointer',
+          cursor: disabled ? 'not-allowed' : 'pointer',
           flexShrink: 0,
         }}
       />
@@ -122,7 +134,16 @@ export type SnapUIAddressInputProps = {
 
 export const SnapUIAddressInput: FunctionComponent<
   SnapUIAddressInputProps & FormTextFieldProps<'div'>
-> = ({ name, form, label, chainId, displayAvatar = true, error, ...props }) => {
+> = ({
+  name,
+  form,
+  label,
+  chainId,
+  displayAvatar = true,
+  error,
+  disabled,
+  ...props
+}) => {
   const { handleInputChange, getValue, focusedInput, setCurrentFocusedInput } =
     useSnapInterfaceContext();
 
@@ -200,7 +221,7 @@ export const SnapUIAddressInput: FunctionComponent<
     handleInputChange(name, '', form);
   };
 
-  if (displayName) {
+  if (displayName && !error) {
     return (
       <MatchedAccountInfo
         chainId={chainId}
@@ -209,6 +230,7 @@ export const SnapUIAddressInput: FunctionComponent<
         displayAvatar={displayAvatar}
         displayName={displayName}
         handleClear={handleClear}
+        disabled={disabled}
       />
     );
   }
@@ -225,6 +247,7 @@ export const SnapUIAddressInput: FunctionComponent<
       value={value}
       onChange={handleChange}
       label={label}
+      disabled={disabled}
       error={Boolean(error)}
       size={FormTextFieldSize.Lg}
       helpText={error}
@@ -239,10 +262,17 @@ export const SnapUIAddressInput: FunctionComponent<
       endAccessory={
         value ? (
           <Icon
-            onClick={handleClear}
+            className="snap-ui-renderer__address-input__clear-button"
+            onClick={
+              disabled
+                ? () => {
+                    /** noop */
+                  }
+                : handleClear
+            }
             name={IconName.Close}
             color={IconColor.infoDefault}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
           />
         ) : null
       }
