@@ -1,11 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, {
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IF
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
@@ -32,9 +27,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   getMetaMaskHdKeyrings,
-  ///: END:ONLY_INCLUDE_IF
   getOriginOfCurrentTab,
   getSelectedAccount,
   getSwitchedNetworkDetails,
@@ -60,9 +53,7 @@ import {
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectSwitchedNetworkNeverShowMessage,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   selectNewSrpAdded,
-  ///: END:ONLY_INCLUDE_IF
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -70,9 +61,7 @@ import {
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
   setSwitchedNetworkNeverShowMessage,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   setShowNewSrpAddedToast,
-  ///: END:ONLY_INCLUDE_IF
 } from './utils';
 
 export function ToastMaster() {
@@ -96,11 +85,7 @@ export function ToastMaster() {
         <SwitchedNetworkToast />
         <NftEnablementToast />
         <PermittedNetworkToast />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-          <NewSrpAddedToast />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <NewSrpAddedToast />
       </ToastContainer>
     );
   }
@@ -347,7 +332,6 @@ function PermittedNetworkToast() {
   );
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 function NewSrpAddedToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -390,4 +374,3 @@ function NewSrpAddedToast() {
     )
   );
 }
-///: END:ONLY_INCLUDE_IF

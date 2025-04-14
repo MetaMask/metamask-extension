@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Trang web này muốn được cấp quyền để chi tiêu số token của bạn."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Trang web này đang yêu cầu chuyển về tài khoản tiêu chuẩn."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Một trang web yêu cầu bạn đăng nhập để chứng minh quyền sở hữu tài khoản này."
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Xóa quyền"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Đặt lại tài khoản"
-  },
   "confirmTitleSIWESignature": {
     "message": "Yêu cầu đăng nhập"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Yêu cầu giao dịch"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Nếu bạn xác nhận yêu cầu này, tài khoản của bạn sẽ được cập nhật thành tài khoản thông minh."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Hủy giao dịch"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Hủy cập nhật & giao dịch"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Nếu bạn không muốn cập nhật tài khoản của mình, bạn có thể hủy tại đây.\n\nĐể hoàn tất giao dịch này mà không cập nhật, bạn sẽ cần thực hiện lại yêu cầu này trên trang web. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Hủy giao dịch"
   },
   "confirmationAlertDetails": {
     "message": "Để bảo vệ tài sản của bạn, chúng tôi đề nghị bạn từ chối yêu cầu này."
@@ -6142,9 +6121,6 @@
   },
   "transactionErrored": {
     "message": "Giao dịch đã gặp lỗi."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Giao dịch này sẽ khiến bạn tốn thêm phí, vì vậy chúng tôi đã dừng lại. Tiền của bạn vẫn còn trong ví."
   },
   "transactionFlowNetwork": {
     "message": "Mạng"
