@@ -8,6 +8,7 @@ import FixtureBuilder from './fixture-builder';
 import { Mockttp } from 'mockttp';
 import HomePage from './page-objects/pages/home/homepage';
 import { mockFeatureFlag } from './tests/bridge/bridge-test-utils';
+import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './tests/bridge/constants';
 import {
   logInWithBalanceValidation,
@@ -125,6 +126,7 @@ async function bridgeUserActions(): Promise<any> {
     async ({ driver }: { driver: Driver }) => {
       await logInWithBalanceValidation(driver);
       const homePage = new HomePage(driver);
+      const quotePage = new BridgeQuotePage(driver);
 
       const timestampBeforeLoadPage = new Date();
       await homePage.startBridgeFlow();
@@ -134,7 +136,7 @@ async function bridgeUserActions(): Promise<any> {
         timestampAfterLoadPage.getTime() - timestampBeforeLoadPage.getTime();
 
       const timestampBeforeClickAssetPicker = new Date();
-      await driver.clickElement('[data-testid="bridge-source-button"]');
+      await driver.clickElement(quotePage.sourceAssetPickerButton);
       const timestampAfterClickAssetPicker = new Date();
 
       loadAssetPicker =
@@ -143,13 +145,10 @@ async function bridgeUserActions(): Promise<any> {
 
       const tokenToSearch = 'FXS';
       const timestampBeforeTokenSearch = new Date();
-      await driver.fill(
-        '[data-testid="asset-picker-modal-search-input"]',
-        tokenToSearch,
-      );
+      await driver.fill(quotePage.assetPrickerSearchInput, tokenToSearch);
       await driver.waitForSelector({
         text: tokenToSearch,
-        css: '[data-testid="multichain-token-list-button"]',
+        css: quotePage.tokenButton,
       });
       const timestampAferTokenSearch = new Date();
 
