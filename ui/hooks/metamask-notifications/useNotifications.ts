@@ -55,6 +55,8 @@ export function useListNotifications(): {
     const previewToken = urlParams.get('previewToken');
 
     try {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const data = await dispatch(
         fetchAndUpdateMetamaskNotifications(previewToken ?? undefined),
       );
@@ -94,6 +96,8 @@ export function useCreateNotifications(): {
     setError(null);
 
     try {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(createOnChainTriggers());
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');

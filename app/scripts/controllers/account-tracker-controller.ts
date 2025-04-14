@@ -845,6 +845,8 @@ export default class AccountTrackerController extends BaseController<
     provider: Provider,
     chainId: Hex,
   ): Promise<void> {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const ethContract = await new Contract(
       deployedContractAddress,
       SINGLE_CALL_BALANCES_ABI,

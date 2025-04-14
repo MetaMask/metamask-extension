@@ -280,6 +280,8 @@ export class MMIController {
 
     const accountDetails = this.custodyController.getAccountDetails(address);
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await this.custodyController.storeSupportedChainsForAddress(
       toChecksumHexAddress(address),
       supportedChains,
@@ -939,6 +941,8 @@ export class MMIController {
 
   async logAndStoreApiRequest(logData: IApiCallLogEntry) {
     try {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const logs = await this.custodyController.sanitizeAndLogApiCall(logData);
       return logs;
     } catch (error) {

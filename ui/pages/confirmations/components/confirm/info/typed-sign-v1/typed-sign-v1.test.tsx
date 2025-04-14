@@ -77,6 +77,8 @@ describe('TypedSignInfo', () => {
 
     const requestFromLabel = queryByText('Request from');
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await requestFromLabel?.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );
@@ -100,6 +102,8 @@ describe('TypedSignInfo', () => {
 
     const requestFromLabel = queryByText('Request from');
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await requestFromLabel?.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );

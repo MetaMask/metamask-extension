@@ -88,6 +88,8 @@ describe('PrepareBridgePage', () => {
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await act(() => {
       fireEvent.change(getByTestId('from-amount'), { target: { value: '2' } });
     });
@@ -165,11 +167,15 @@ describe('PrepareBridgePage', () => {
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await act(() => {
       fireEvent.change(getByTestId('from-amount'), { target: { value: '1' } });
     });
     expect(getByTestId('from-amount').closest('input')).toHaveValue('1');
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await act(() => {
       fireEvent.change(getByTestId('from-amount'), { target: { value: '2' } });
     });

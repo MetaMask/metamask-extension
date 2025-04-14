@@ -277,6 +277,8 @@ class SmartTransactionHook {
 
   async #endApprovalFlow(flowId: string): Promise<void> {
     try {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await this.#controllerMessenger.call('ApprovalController:endFlow', {
         id: flowId,
       });
@@ -310,6 +312,8 @@ class SmartTransactionHook {
     }
 
     // Create a new approval flow
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const { id: approvalFlowId } = await this.#controllerMessenger.call(
       'ApprovalController:startFlow',
     );
@@ -378,6 +382,8 @@ class SmartTransactionHook {
   }: {
     smartTransaction: SmartTransaction;
   }) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     return await this.#controllerMessenger.call(
       'ApprovalController:updateRequestState',
       {

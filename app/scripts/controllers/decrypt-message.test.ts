@@ -310,6 +310,8 @@ describe('DecryptMessageController', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await decryptMessageController.rejectUnapproved('reason to cancel');
 
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863

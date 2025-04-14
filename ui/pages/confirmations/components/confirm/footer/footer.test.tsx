@@ -184,6 +184,8 @@ describe('ConfirmFooter', () => {
 
   it('displays a danger "Confirm" button there are danger alerts', async () => {
     const mockSecurityAlertId = '8';
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const { getAllByRole } = await render(
       getMockPersonalSignConfirmStateForRequest(
         { ...unapprovedPersonalSignMsg, id: '123' },

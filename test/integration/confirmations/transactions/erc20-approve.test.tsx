@@ -390,6 +390,8 @@ describe('ERC20 Approve Confirmation', () => {
     expect(approveDetailsNonce).toBeInTheDocument();
 
     expect(
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await screen.queryByTestId('edit-nonce-icon'),
     ).not.toBeInTheDocument();
   });

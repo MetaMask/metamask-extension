@@ -56,6 +56,8 @@ const executePollingWithPendingStatus = async () => {
   );
 
   // Execution
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+  // eslint-disable-next-line @typescript-eslint/await-thenable
   await bridgeStatusController.startPollingForBridgeTxStatus(
     getMockStartPollingForBridgeTxStatusArgs(),
   );
@@ -92,6 +94,8 @@ describe('BridgeStatusController', () => {
       });
 
       // Execution
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await bridgeStatusController.startPollingForBridgeTxStatus(
         getMockStartPollingForBridgeTxStatusArgs(),
       );
@@ -134,6 +138,8 @@ describe('BridgeStatusController', () => {
       });
 
       // Execution
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await bridgeStatusController.startPollingForBridgeTxStatus(
         getMockStartPollingForBridgeTxStatusArgs(),
       );
@@ -179,6 +185,8 @@ describe('BridgeStatusController', () => {
       );
 
       // Execution
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await bridgeStatusController.startPollingForBridgeTxStatus(
         getMockStartPollingForBridgeTxStatusArgs(),
       );

@@ -63,9 +63,13 @@ describe('getFetchWithTimeout', () => {
   });
 
   it('throws on invalid timeout', async () => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await expect(() => getFetchWithTimeout(-1)).toThrow(
       'Must specify positive integer timeout.',
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await expect(() => getFetchWithTimeout(true)).toThrow(
       'Must specify positive integer timeout.',
     );

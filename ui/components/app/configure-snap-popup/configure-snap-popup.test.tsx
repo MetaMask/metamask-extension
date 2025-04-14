@@ -66,6 +66,8 @@ describe('ConfigureSnapPopup', () => {
       mockStore,
     );
     const link = getByText('mockLink');
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await fireEvent.click(link);
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: 'mockLink',

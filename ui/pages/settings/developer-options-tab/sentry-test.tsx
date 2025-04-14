@@ -148,6 +148,8 @@ function GeneratePageCrash({ currentLocale }: { currentLocale: string }) {
   const dispatch = useDispatch();
   const handleClick = async () => {
     const localeMessages = await fetchLocale(currentLocale);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(
       setCurrentLocale(currentLocale, {
         ...localeMessages,

@@ -182,6 +182,8 @@ function useProposedNames(value: string, type: NameType, variation: string) {
     };
 
     const update = async () => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const result = (await dispatch(
         updateProposedNames({
           value,
@@ -291,6 +293,8 @@ export default function NameDetails({
   const handleSaveClick = useCallback(async () => {
     trackPetnamesSaveEvent();
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(
       saveName({
         value,

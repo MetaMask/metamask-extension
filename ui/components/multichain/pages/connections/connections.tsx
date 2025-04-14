@@ -127,6 +127,8 @@ export const Connections = () => {
     };
   }
   const requestAccountsPermission = async () => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const requestId = await dispatch(
       requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
     );

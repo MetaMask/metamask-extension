@@ -52,6 +52,8 @@ export function useTransactionConfirm() {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
     ///: END:ONLY_INCLUDE_IF
   }, [

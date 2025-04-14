@@ -162,6 +162,8 @@ export default function useHandleTx() {
     // Move to activity tab before submitting a transaction
     // This is a temporary solution to avoid the transaction not being shown in the activity tab
     // We should find a better solution in the future
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(setDefaultHomeActiveTabName('activity'));
     // Submit a signing request to the snap
     const snapResponse = await snapSender.send({
