@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
 import { useDispatch } from 'react-redux';
 
 import { setAccountDetailsAddress } from '../../../../store/actions';
@@ -49,8 +50,13 @@ export const ConfirmContextProvider: React.FC<{
   // The was account details modal is build has a complexity in routing and closing it from within account details modal
   // routes it back to home page which also closes confirmation modal.
   useEffect(() => {
-    dispatch(setAccountDetailsAddress(''));
-  }, [dispatch]);
+    if (
+      currentConfirmation.type === TransactionType.revokeDelegation ||
+      currentConfirmation.type === TransactionType.batch
+    ) {
+      dispatch(setAccountDetailsAddress(''));
+    }
+  }, [dispatch, currentConfirmation]);
 
   return (
     <ConfirmContext.Provider value={value}>{children}</ConfirmContext.Provider>
