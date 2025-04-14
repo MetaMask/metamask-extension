@@ -48,6 +48,8 @@ export default function BridgeStepList({
   srcChainTxMeta,
   networkConfigurationsByChainId,
 }: BridgeStepsProps) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const steps = bridgeHistoryItem?.quote.steps || [];
   const stepStatuses = steps.map((step) =>
     getStepStatus({ bridgeHistoryItem, step: step as Step, srcChainTxMeta }),
@@ -80,7 +82,11 @@ export default function BridgeStepList({
           getTime(
             i,
             i === steps.length - 1,
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             bridgeHistoryItem?.startTime || srcChainTxMeta?.time,
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             bridgeHistoryItem?.estimatedProcessingTimeInSeconds || 0,
           ),
           'hh:mm a',

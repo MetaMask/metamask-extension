@@ -266,6 +266,8 @@ export function AssetPickerModal({
       | AssetWithDisplayData<NativeAsset>) => {
       const isDisabled = sendingAsset?.symbol
         ? !isEqualCaseInsensitive(sendingAsset.symbol, symbol) &&
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           memoizedSwapsBlockedTokens.has(address || '')
         : false;
 

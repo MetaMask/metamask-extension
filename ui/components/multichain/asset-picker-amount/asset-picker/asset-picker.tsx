@@ -264,6 +264,8 @@ export function AssetPicker({
       />
 
       {/** If a child prop is passed in, use it as the trigger button instead of the default */}
+      {/* TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880 */}
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
       {children?.(handleButtonClick, networkImageSrc) || (
         <ButtonBase
           data-testid="asset-picker-button"

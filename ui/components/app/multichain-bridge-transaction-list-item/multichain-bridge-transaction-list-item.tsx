@@ -126,6 +126,8 @@ const MultichainBridgeTransactionListItem: React.FC<
   let title = capitalize(type);
   if (transaction.isBridgeTx && bridgeInfo) {
     const { destChainName, provider, destChainId } = bridgeInfo;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const displayChainName = destChainName || destChainId;
     title = `${t('bridge')} ${t('to')} ${displayChainName}`;
     if (provider) {

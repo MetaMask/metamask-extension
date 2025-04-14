@@ -68,6 +68,8 @@ const getNativeCurrency = (n: ETHNotification) => {
 
 const getTitle = (n: ETHNotification) => {
   const address = shortenAddress(isSent(n) ? n.data.to : n.data.from);
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const items = createTextItems([title(n) || '', address], TextVariant.bodySm);
   return items;
 };
@@ -149,12 +151,18 @@ export const components: NotificationComponent<ETHNotification> = {
             color: TextColor.successDefault,
             backgroundColor: BackgroundColor.successMuted,
           }}
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           label={t('notificationItemStatus') || ''}
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           detail={t('notificationItemConfirmed') || ''}
           action={
             <NotificationDetailCopyButton
               notification={notification}
               text={notification.tx_hash}
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               displayText={t('notificationItemTransactionId') || ''}
             />
           }
@@ -173,6 +181,8 @@ export const components: NotificationComponent<ETHNotification> = {
                 position: BadgeWrapperPosition.topRight,
               },
             }}
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('asset') || ''}
             detail={nativeCurrencySymbol}
             fiatValue={`$${formatAmount(
@@ -197,6 +207,8 @@ export const components: NotificationComponent<ETHNotification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />

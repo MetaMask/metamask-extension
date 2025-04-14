@@ -29,6 +29,8 @@ export function useNonContractAddressAlerts(): Alert[] {
   const { value, pending } = useAsyncResult(async () => {
     return await readAddressAsContract(
       global.ethereumProvider,
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       (currentConfirmation?.txParams?.to || '0x') as Hex,
     );
   }, [currentConfirmation?.txParams?.to]);

@@ -72,6 +72,8 @@ const createMiddleware = (
 
   const networkController = {
     state: {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
       ...(chainId === null ? { providerConfig: {} } : undefined),
     },

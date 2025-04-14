@@ -162,6 +162,8 @@ function useIncompleteAssetEvent(
     const displayName = displayNamesByAddress[assetAddress];
 
     const isIncomplete =
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       (change.asset.address && !change.fiatAmount) ||
       getPetnameType(change, displayName) === PetnameType.Unknown;
 

@@ -124,6 +124,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               decimals,
               nativeBalances,
               selectedAccountTokenBalancesAcrossChains,
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             }) || '0';
 
           const tokenFiatAmount = calculateTokenFiatAmount({
@@ -153,6 +155,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
             if (token.isNative) {
               title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
             } else {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               title = token.name || token.symbol;
             }
 

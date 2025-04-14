@@ -140,11 +140,15 @@ export const DataTree = ({
 };
 
 function isDateField(label: string, primaryType?: PrimaryType) {
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   return (FIELD_DATE_PRIMARY_TYPES[label] || [])?.includes(primaryType || '');
 }
 
 function isTokenUnitsField(label: string, primaryType?: PrimaryType) {
   return (FIELD_TOKEN_UTILS_PRIMARY_TYPES[label] || [])?.includes(
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     primaryType || '',
   );
 }

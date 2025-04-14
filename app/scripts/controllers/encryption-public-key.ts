@@ -391,6 +391,8 @@ export default class EncryptionPublicKeyController extends BaseController<
 
   private _requestApproval(msgParams: AbstractMessageParamsMetamask) {
     const id = msgParams.metamaskId as string;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const origin = msgParams.origin || ORIGIN_METAMASK;
 
     this.messagingSystem

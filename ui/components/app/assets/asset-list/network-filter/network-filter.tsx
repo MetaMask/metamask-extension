@@ -116,6 +116,8 @@ const NetworkFilter = ({
   ).map((chain) => {
     return allNetworks[chain].name;
   });
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const filter = networkFilter || tokenNetworkFilter;
 
   return (
@@ -225,6 +227,8 @@ const NetworkFilter = ({
           </Box>
           <AvatarNetwork
             size={AvatarNetworkSize.Sm}
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             name={currentNetwork?.nickname || ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />

@@ -359,6 +359,8 @@ export const NetworksForm = ({
           data-testid="network-form-name-input"
           autoFocus
           helpText={
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ((name && warnings?.name?.msg) || suggestedName) && (
               <>
                 {name && warnings?.name?.msg && (
@@ -423,6 +425,8 @@ export const NetworksForm = ({
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
           renderItem={(item, isList) =>
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
             ) : (

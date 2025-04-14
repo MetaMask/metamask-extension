@@ -67,6 +67,8 @@ export const Textarea: TextareaComponent = React.forwardRef(
           'mm-textarea',
           `mm-textarea--resize-${resize}`,
           {
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             'mm-textarea--disabled': Boolean(isDisabled || disabled),
           },
           className,
@@ -78,6 +80,8 @@ export const Textarea: TextareaComponent = React.forwardRef(
         required={required}
         autoFocus={autoFocus}
         defaultValue={defaultValue}
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         disabled={isDisabled || disabled}
         {...(error && { 'aria-invalid': error })}
         id={id}

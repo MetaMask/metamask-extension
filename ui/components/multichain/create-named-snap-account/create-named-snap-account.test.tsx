@@ -77,6 +77,8 @@ const render = (
             metadata: {
               ...mockSnapAccount1.metadata,
               name:
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 overrideAccountNames?.[mockSnapAccount1.id] ||
                 mockSnapAccount1.metadata.name,
             },
@@ -86,6 +88,8 @@ const render = (
             metadata: {
               ...mockSnapAccount2.metadata,
               name:
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 overrideAccountNames?.[mockSnapAccount2.id] ||
                 mockSnapAccount2.metadata.name,
             },

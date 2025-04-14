@@ -316,6 +316,8 @@ export class Numeric {
     denomination?: EtherDenomination,
   ) {
     if (value instanceof Numeric) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       if (base || denomination) {
         throw new Error(
           `Numeric.from was called with a value (${value.toString()}) that is already a Numeric but a base and/or denomination was provided. Only supply base or denomination when creating a new Numeric`,

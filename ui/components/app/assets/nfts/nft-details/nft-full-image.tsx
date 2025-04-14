@@ -54,6 +54,8 @@ export default function NftFullImage() {
   const nftSrcUrl = imageOriginal ?? image;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted =
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
   const history = useHistory();
@@ -91,6 +93,8 @@ export default function NftFullImage() {
           >
             <Box>
               <NftItem
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 src={isImageHosted ? image || imageFromTokenURI : nftImageURL}
                 alt={nftImageAlt}
                 name={name}

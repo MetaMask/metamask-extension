@@ -93,6 +93,8 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
               ref: setBoxRef,
             })}
           <Popover
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             isOpen={isOpen || isUncontrolledOpen}
             position={PopoverPosition.Bottom}
             onClickOutside={handleClickOutside}
@@ -104,6 +106,8 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
             {...popoverProps}
             className={classnames(
               'mm-select-wrapper__popover',
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               popoverProps?.className || '',
             )}
           >

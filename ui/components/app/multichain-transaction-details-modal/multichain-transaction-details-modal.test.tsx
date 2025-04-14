@@ -189,6 +189,8 @@ describe('MultichainTransactionDetailsModal', () => {
     renderComponent();
 
     const feeElement =
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       screen.queryByTestId('transaction-network-fee') ||
       screen.queryByTestId('transaction-base-fee');
 
@@ -326,12 +328,16 @@ describe('MultichainTransactionDetailsModal', () => {
 
     const addressStart = userAddress.substring(0, 6);
     const addressElements = screen.getAllByText((_content, element) => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       return element?.textContent?.includes(addressStart) || false;
     });
 
     expect(addressElements.length).toBeGreaterThan(0);
 
     const feeElement =
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       screen.queryByTestId('transaction-network-fee') ||
       screen.queryByTestId('transaction-base-fee');
 
