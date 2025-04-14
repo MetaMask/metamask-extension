@@ -18,6 +18,7 @@ buildTypes:
     features:
       - build-main
       - keyring-snaps
+      - multi-srp
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -146,14 +147,30 @@ features:
       - ./{app,shared,ui}/**/institutional/**
   build-flask:
     assets:
+      - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
+        dest: snaps/account-watcher.json
+      - src: ./node_modules/@metamask/preinstalled-example-snap/dist/preinstalled-snap.json
+        dest: snaps/preinstalled-example-snap.json
       - src: ./app/build-types/flask/images/
         dest: images
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
     assets:
+      - src: ./node_modules/@metamask/message-signing-snap/dist/preinstalled-snap.json
+        dest: snaps/message-signing-snap.json
+      - src: ./node_modules/@metamask/ens-resolver-snap/dist/preinstalled-snap.json
+        dest: snaps/ens-resolver-snap.json
+      - src: ./node_modules/@metamask/institutional-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/institutional-wallet-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
+    assets:
+      - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/bitcoin-wallet-snap.json
   solana:
+    assets:
+      - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/solana-wallet-snap.json
   multi-srp:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
@@ -353,3 +370,12 @@ env:
   # Public key used to verify EIP-7702 contract address signatures set in LaunchDarkly.
   ###
   - EIP_7702_PUBLIC_KEY: '0x3c7a1cCCe462e96D186B8ca9a1BCB2010C3dABa3'
+
+  # URL of transaction relay API
+  - TRANSACTION_RELAY_API_URL: null
+
+  # Address of DelegationManager smart contract
+  - DELEGATION_MANAGER_ADDRESS: null
+
+  # Address of enforcer used for gasless EIP-7702 transactions
+  - GASLESS_7702_ENFORCER_ADDRESS: null

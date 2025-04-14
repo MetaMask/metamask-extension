@@ -271,7 +271,8 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean"
+    "manageInstitutionalWallets": "boolean",
+    "disabledUpgradeAccountsByChain": "object"
   },
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
