@@ -69,7 +69,6 @@ describe('Import flow', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-
         await accountListPage.openAccountDetailsModal('Account 1');
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
@@ -84,9 +83,9 @@ describe('Import flow', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withAccountsControllerImportedAccount()
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
-          .withAccountsControllerImportedAccount()
           .withProfileSyncDisabled()
           .build(),
         testSpecificMock: mockAccountsApi,
