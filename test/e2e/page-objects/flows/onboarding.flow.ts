@@ -18,7 +18,6 @@ import { E2E_SRP } from '../../default-fixture';
  * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
- * @param options.isFlask
  */
 export const createNewWalletOnboardingFlow = async ({
   driver,
@@ -26,14 +25,12 @@ export const createNewWalletOnboardingFlow = async ({
   participateInMetaMetrics = false,
   needNavigateToNewPage = true,
   dataCollectionForMarketing = false,
-  isFlask = false,
 }: {
   driver: Driver;
   password?: string;
   participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
   dataCollectionForMarketing?: boolean;
-  isFlask?: boolean;
 }): Promise<void> => {
   console.log('Starting the creation of a new wallet onboarding flow');
   if (needNavigateToNewPage) {
@@ -41,7 +38,7 @@ export const createNewWalletOnboardingFlow = async ({
   }
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
-  await startOnboardingPage.checkTermsCheckbox(isFlask);
+  await startOnboardingPage.checkTermsCheckbox();
   await startOnboardingPage.clickCreateWalletButton();
 
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -126,7 +123,6 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
  * @param params.fillSrpWordByWord - Whether to fill the SRP word by word. Defaults to false.
  * @param params.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
  * @param params.dataCollectionForMarketing - Whether to enable data collection for marketing. Defaults to false.
- * @param params.isFlask
  * @returns A promise that resolves when the onboarding flow is complete.
  */
 export const importSRPOnboardingFlow = async ({
@@ -136,7 +132,6 @@ export const importSRPOnboardingFlow = async ({
   fillSrpWordByWord = false,
   participateInMetaMetrics = false,
   dataCollectionForMarketing = false,
-  isFlask = false,
 }: {
   driver: Driver;
   seedPhrase?: string;
@@ -144,14 +139,13 @@ export const importSRPOnboardingFlow = async ({
   fillSrpWordByWord?: boolean;
   participateInMetaMetrics?: boolean;
   dataCollectionForMarketing?: boolean;
-  isFlask?: boolean;
 }): Promise<void> => {
   console.log('Starting the import of SRP onboarding flow');
   await driver.navigate();
 
   const startOnboardingPage = new StartOnboardingPage(driver);
-  await startOnboardingPage.check_pageIsLoaded(isFlask);
-  await startOnboardingPage.checkTermsCheckbox(isFlask);
+  await startOnboardingPage.check_pageIsLoaded();
+  await startOnboardingPage.checkTermsCheckbox();
   await startOnboardingPage.clickImportWalletButton();
 
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -226,7 +220,6 @@ export const completeCreateNewWalletOnboardingFlow = async ({
  * @param [options.fillSrpWordByWord] - Whether to fill the SRP word by word. Defaults to false.
  * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
  * @param [options.dataCollectionForMarketing] - Whether to enable data collection for marketing. Defaults to false.
- * @param options.isFlask
  * @returns A promise that resolves when the onboarding flow is complete.
  */
 export const completeImportSRPOnboardingFlow = async ({
@@ -236,7 +229,6 @@ export const completeImportSRPOnboardingFlow = async ({
   fillSrpWordByWord = false,
   participateInMetaMetrics = false,
   dataCollectionForMarketing = false,
-  isFlask = false,
 }: {
   driver: Driver;
   seedPhrase?: string;
@@ -244,7 +236,6 @@ export const completeImportSRPOnboardingFlow = async ({
   fillSrpWordByWord?: boolean;
   participateInMetaMetrics?: boolean;
   dataCollectionForMarketing?: boolean;
-  isFlask?: boolean;
 }): Promise<void> => {
   console.log('Starting to complete import SRP onboarding flow');
   await importSRPOnboardingFlow({
@@ -254,7 +245,6 @@ export const completeImportSRPOnboardingFlow = async ({
     fillSrpWordByWord,
     participateInMetaMetrics,
     dataCollectionForMarketing,
-    isFlask,
   });
 
   const onboardingCompletePage = new OnboardingCompletePage(driver);
