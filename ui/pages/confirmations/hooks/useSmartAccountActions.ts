@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { JsonRpcError, rpcErrors, serializeError } from '@metamask/rpc-errors';
+import { JsonRpcError, serializeError } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -8,7 +8,7 @@ import {
   rejectPendingApproval,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
-import { EIP5792ErrorCode } from '../../../../app/scripts/lib/transaction/eip5792';
+import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
 
 export function useSmartAccountActions() {
   const dispatch = useDispatch();
