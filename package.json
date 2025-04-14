@@ -416,6 +416,7 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
+    "viem": "^2.26.5",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
@@ -651,7 +652,6 @@
     "tsx": "^4.19.2",
     "typescript": "~5.4.5",
     "unzipper": "^0.12.3",
-    "viem": "^2.21.8",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
