@@ -68,9 +68,6 @@
         }
       }
     },
-    "DelegationController": {
-      "delegations": {}
-    },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
       "gasEstimateType": "none",

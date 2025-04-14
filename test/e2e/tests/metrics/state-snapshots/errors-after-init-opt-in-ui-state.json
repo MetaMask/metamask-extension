@@ -128,7 +128,7 @@
     "throttledOrigins": "object",
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
-    "delegations": {},
+    "delegations": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",
