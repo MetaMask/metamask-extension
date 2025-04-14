@@ -5030,9 +5030,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:*":
-  version: 13.0.0
-  resolution: "@metamask/bridge-controller@npm:13.0.0"
+"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@13.0.0-preview-fa0d6d4b":
+  version: 13.0.0-preview-fa0d6d4b
+  resolution: "@metamask-previews/bridge-controller@npm:13.0.0-preview-fa0d6d4b"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5041,18 +5041,21 @@ __metadata:
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/gas-fee-controller": "npm:^23.0.0"
     "@metamask/keyring-api": "npm:^17.4.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-network-controller": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^13.0.0"
-    "@metamask/snaps-utils": "npm:^8.10.0"
     "@metamask/utils": "npm:^11.2.0"
+    bignumber.js: "npm:^9.1.2"
+    reselect: "npm:^5.1.1"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
+    "@metamask/assets-controllers": ^56.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^9.19.0
     "@metamask/transaction-controller": ^54.0.0
-  checksum: 10/ab444a9694da8a373af45755c2382cb3288c21520ffaca3125ac05e2affbc5ad60af83119dd1ceee82a75659407cb3f5abec5e71c658f60c728e4fe37bf2db7f
+  checksum: 10/3b64abd419893aa925f9c40f09e3bf87298b5bbe5a7c6fc98238dc604ee7ea2f22f5e1fecbada3d0b73cc4004e1b713eb6bf8be29365e0fcc195aac388ea9fd1
   languageName: node
   linkType: hard
 
@@ -5585,6 +5588,27 @@ __metadata:
     "@babel/runtime": ^7.0.0
     "@metamask/network-controller": ^22.0.0
   checksum: 10/91d637bed896d69d1b8f7c79bdb9a3d2295d85160c3eae2019d27e07034a51bac32b341e2978531039200df83a33cad7dc3a8c64adf019774eb44a635b31056a
+  languageName: node
+  linkType: hard
+
+"@metamask/gas-fee-controller@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "@metamask/gas-fee-controller@npm:23.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.6.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/utils": "npm:^11.2.0"
+    "@types/bn.js": "npm:^5.1.5"
+    "@types/uuid": "npm:^8.3.0"
+    bn.js: "npm:^5.2.1"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/network-controller": ^23.0.0
+  checksum: 10/bbe8de36fd066b25549fe02fda1927e7dac9568a514e5891340c78280acd95cb56ae4c315c5ebd8f07d93103e5dbeaf83cd4052b6b4466c2bd9f6f5976a906c8
   languageName: node
   linkType: hard
 
@@ -27332,7 +27356,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
-    "@metamask/bridge-controller": "npm:*"
+    "@metamask/bridge-controller": "npm:^13.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
