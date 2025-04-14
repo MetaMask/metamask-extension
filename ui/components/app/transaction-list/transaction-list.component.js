@@ -730,11 +730,10 @@ const MultichainTransactionListItem = ({
   const t = useI18nContext();
   const { from, to, type, timestamp, isRedeposit, title } =
     useMultichainTransactionDisplay(transaction, networkConfig);
-  const { chainId } = networkConfig;
-  const networkLogo = MULTICHAIN_TOKEN_IMAGE_MAP[chainId];
+  const networkLogo = MULTICHAIN_TOKEN_IMAGE_MAP[transaction.chain];
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
-  // A redeposit transaction is a special case where the outputs list is emtpy because we are sending to ourselves and only pay the fees
+  // A redeposit transaction is a special case where the outputs list is empty because we are sending to ourselves and only pay the fees
   // Mainly used for consolidation transactions
   if (isRedeposit) {
     return (
@@ -751,7 +750,7 @@ const MultichainTransactionListItem = ({
                 className="activity-tx__network-badge"
                 data-testid="activity-tx-network-badge"
                 size={AvatarNetworkSize.Xs}
-                name={chainId}
+                name={transaction.chain}
                 src={networkLogo}
                 borderColor={BackgroundColor.backgroundDefault}
               />

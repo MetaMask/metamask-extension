@@ -424,13 +424,6 @@ export function getSelectedAccountMultichainTransactions(
   | undefined {
   const selectedAccount = getSelectedInternalAccount(state);
 
-  const selectedNetwork = getSelectedMultichainNetworkConfiguration(state);
-
-  // TODO: Remove
-  if (selectedNetwork.chainId === MultichainNetworks.SOLANA_DEVNET) {
-    return undefined;
-  }
-
   if (isEvmAccountType(selectedAccount.type)) {
     return undefined;
   }
