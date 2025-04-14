@@ -8,15 +8,33 @@ import browser from 'webextension-polyfill';
 
 export class ExtensionUpdateManager {
   private updatePending = false;
+  private isIdle = false;
 
   /**
    * Initializes the update manager by setting up event listeners
    * for update detection.
    */
   public initialize(): void {
+    // Ensure we start in a non-idle state during initialization
+    this.isIdle = false;
+
     browser.runtime.onUpdateAvailable.addListener(
       this.handleUpdateAvailable.bind(this),
     );
+  }
+
+  /**
+   * Sets the idle state of the extension.
+   *
+   * @param idle - Whether the extension is currently idle
+   */
+  public setIdleState(idle: boolean): void {
+    this.isIdle = idle;
+
+    // If we're now idle and there's a pending update, apply it immediately
+    if (idle && this.updatePending) {
+      this.applyPendingUpdateIfNeeded();
+    }
   }
 
   /**
@@ -25,7 +43,7 @@ export class ExtensionUpdateManager {
    * the extension without disrupting user activity.
    */
   public applyPendingUpdateIfNeeded(): void {
-    if (this.updatePending) {
+    if (this.updatePending && this.isIdle) {
       try {
         browser.runtime.reload();
       } catch (error) {
@@ -37,6 +55,7 @@ export class ExtensionUpdateManager {
   /**
    * Handles the onUpdateAvailable event by marking an update as pending.
    * The listener is removed after the first notification to prevent duplicate handlers.
+   * If the extension is already idle, applies the update immediately.
    *
    * @private
    */
@@ -45,15 +64,11 @@ export class ExtensionUpdateManager {
       this.handleUpdateAvailable.bind(this),
     );
     this.updatePending = true;
-  }
 
-  /**
-   * Simulates an update being available by manually setting the update pending flag.
-   * This should only be used for testing purposes.
-   */
-  public simulateUpdateAvailable(): void {
-    this.updatePending = true;
-    console.log('Update simulation: marked update as pending');
+    // If we're already idle, apply the update immediately
+    if (this.isIdle) {
+      this.applyPendingUpdateIfNeeded();
+    }
   }
 }
 

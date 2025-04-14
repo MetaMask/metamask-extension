@@ -188,6 +188,15 @@ const {
   reject: rejectInitialization,
 } = deferredPromise();
 
+// Define this function at the top level, before it's used
+const isClientOpenStatus = () => {
+  return (
+    openPopupCount > 0 ||
+    Boolean(Object.keys(openMetamaskTabsIDs).length) ||
+    notificationIsOpen
+  );
+};
+
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
  * the backend is not active. It is required to re-connect dapps after service worker re-activates.
@@ -522,6 +531,11 @@ async function initialize() {
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
 
+    // Check for pending updates after initialization is complete
+    // This handles the case where the user never opens the UI
+    extensionUpdateManager.setIdleState(true);
+    extensionUpdateManager.applyPendingUpdateIfNeeded();
+
     resolveInitialization();
   } catch (error) {
     rejectInitialization(error);
@@ -763,6 +777,9 @@ function trackAppOpened(environment) {
   const isAlreadyOpen =
     isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
 
+  // Set extension idle state based on UI open status
+  extensionUpdateManager.setIdleState(!isAlreadyOpen);
+
   // Only emit event if no UI is open and environment is valid
   if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
     emitAppOpenedMetricEvent();
@@ -845,21 +862,17 @@ export function setupController(
 
   setupSentryGetStateGlobal(controller);
 
-  const isClientOpenStatus = () => {
-    return (
-      openPopupCount > 0 ||
-      Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen
-    );
-  };
-
   const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
       controller.onClientClosed();
+      // Set extension to idle when all UI instances are closed
+      extensionUpdateManager.setIdleState(true);
       // Only check for updates when explicitly closed, not during initialization.
       extensionUpdateManager.applyPendingUpdateIfNeeded();
     } else {
+      // Set extension to not idle when UI instances are open
+      extensionUpdateManager.setIdleState(false);
       // in the case of fullscreen environment a user might have multiple tabs open so we don't want to disconnect all of
       // its corresponding polling tokens unless all tabs are closed.
       if (
@@ -1264,6 +1277,8 @@ async function triggerUi() {
     !currentlyActiveMetamaskTab
   ) {
     uiIsTriggering = true;
+    // Set extension to not idle when UI is being triggered
+    extensionUpdateManager.setIdleState(false);
     try {
       const currentPopupId = controller.appStateController.getCurrentPopupId();
       await notificationManager.showPopup(
@@ -1273,6 +1288,10 @@ async function triggerUi() {
       );
     } finally {
       uiIsTriggering = false;
+      // Check if UI is still open after triggering
+      const isClientOpen = isClientOpenStatus();
+      // Only set to idle if no UI is open
+      extensionUpdateManager.setIdleState(!isClientOpen);
     }
   }
 }
@@ -1340,6 +1359,10 @@ async function initBackground() {
   onNavigateToTab();
   try {
     await initialize();
+
+    // Set the extension to idle state after initialization is complete
+    extensionUpdateManager.setIdleState(true);
+
     if (process.env.IN_TEST) {
       // Send message to offscreen document
       if (browser.offscreen) {

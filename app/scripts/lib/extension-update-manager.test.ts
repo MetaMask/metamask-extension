@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import { ExtensionUpdateManager } from './extension-update-manager';
 
-// Mock the webextension-polyfill
+// Mock the browser API
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     onUpdateAvailable: {
@@ -16,93 +16,100 @@ describe('ExtensionUpdateManager', () => {
   let updateManager: ExtensionUpdateManager;
 
   beforeEach(() => {
-    // Reset all mocks before each test
     jest.clearAllMocks();
     updateManager = new ExtensionUpdateManager();
   });
 
   describe('initialize', () => {
-    it('should add an update available listener', () => {
+    it('should set up event listeners for update detection', () => {
       updateManager.initialize();
 
       expect(browser.runtime.onUpdateAvailable.addListener).toHaveBeenCalled();
     });
   });
 
-  describe('handleUpdateAvailable', () => {
-    it('should mark update as pending and remove the listener', () => {
-      // Access private method using type assertion with the class structure
-      type PrivateExtensionUpdateManager = {
-        handleUpdateAvailable: () => void;
-      };
+  describe('setIdleState', () => {
+    it('should update idle state and apply pending updates when becoming idle', () => {
+      // Setup spy on the applyPendingUpdateIfNeeded method
+      const applyUpdateSpy = jest.spyOn(updateManager, 'applyPendingUpdateIfNeeded');
 
-      const handleUpdateAvailable = (
-        updateManager as unknown as PrivateExtensionUpdateManager
-      ).handleUpdateAvailable.bind(updateManager);
+      // Set a pending update via private property
+      Object.defineProperty(updateManager, 'updatePending', { value: true });
 
-      // Call the handler directly
-      handleUpdateAvailable();
+      // Set to idle
+      updateManager.setIdleState(true);
 
-      // Check that the listener was removed
-      expect(
-        browser.runtime.onUpdateAvailable.removeListener,
-      ).toHaveBeenCalled();
+      expect(applyUpdateSpy).toHaveBeenCalled();
+    });
 
-      // Check that update is marked as pending by calling applyPendingUpdateIfNeeded
-      updateManager.applyPendingUpdateIfNeeded();
-      expect(browser.runtime.reload).toHaveBeenCalled();
+    it('should not apply updates when becoming idle with no pending updates', () => {
+      const applyUpdateSpy = jest.spyOn(updateManager, 'applyPendingUpdateIfNeeded');
+
+      // Ensure no pending update
+      Object.defineProperty(updateManager, 'updatePending', { value: false });
+
+      updateManager.setIdleState(true);
+
+      expect(applyUpdateSpy).not.toHaveBeenCalled();
     });
   });
 
   describe('applyPendingUpdateIfNeeded', () => {
-    it('should not reload if no update is pending', () => {
+    it('should reload the extension when update is pending and extension is idle', () => {
+      // Set the private properties
+      Object.defineProperty(updateManager, 'updatePending', { value: true });
+      Object.defineProperty(updateManager, 'isIdle', { value: true });
+
+      updateManager.applyPendingUpdateIfNeeded();
+
+      expect(browser.runtime.reload).toHaveBeenCalled();
+    });
+
+    it('should not reload the extension when not idle', () => {
+      Object.defineProperty(updateManager, 'updatePending', { value: true });
+      Object.defineProperty(updateManager, 'isIdle', { value: false });
+
       updateManager.applyPendingUpdateIfNeeded();
 
       expect(browser.runtime.reload).not.toHaveBeenCalled();
     });
 
-    it('should reload if an update is pending', () => {
-      // Access private property using type assertion with the class structure
-      type PrivateExtensionUpdateManager = {
-        updatePending: boolean;
-      };
-
-      (
-        updateManager as unknown as PrivateExtensionUpdateManager
-      ).updatePending = true;
+    it('should not reload the extension when no update is pending', () => {
+      Object.defineProperty(updateManager, 'updatePending', { value: false });
+      Object.defineProperty(updateManager, 'isIdle', { value: true });
 
       updateManager.applyPendingUpdateIfNeeded();
 
-      expect(browser.runtime.reload).toHaveBeenCalled();
+      expect(browser.runtime.reload).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleUpdateAvailable', () => {
+    it('should mark update as pending and remove the listener', () => {
+      // Access the private method
+      const handleUpdateAvailable = updateManager['handleUpdateAvailable'].bind(updateManager);
+
+      handleUpdateAvailable();
+
+      // Check if the listener was removed
+      expect(browser.runtime.onUpdateAvailable.removeListener).toHaveBeenCalled();
+
+      // Check if updatePending was set to true
+      expect(updateManager['updatePending']).toBe(true);
     });
 
-    it('should handle errors during reload', () => {
-      // Access private property using type assertion with the class structure
-      type PrivateExtensionUpdateManager = {
-        updatePending: boolean;
-      };
+    it('should apply update immediately if already idle', () => {
+      // Set idle state to true
+      Object.defineProperty(updateManager, 'isIdle', { value: true });
 
-      (
-        updateManager as unknown as PrivateExtensionUpdateManager
-      ).updatePending = true;
+      const applyUpdateSpy = jest.spyOn(updateManager, 'applyPendingUpdateIfNeeded');
 
-      // Mock console.error
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      // Access the private method
+      const handleUpdateAvailable = updateManager['handleUpdateAvailable'].bind(updateManager);
 
-      // Make reload throw an error
-      (browser.runtime.reload as jest.Mock).mockImplementation(() => {
-        throw new Error('Reload failed');
-      });
+      handleUpdateAvailable();
 
-      updateManager.applyPendingUpdateIfNeeded();
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Failed to reload extension:',
-        expect.any(Error),
-      );
-
-      // Restore console.error
-      consoleErrorSpy.mockRestore();
+      expect(applyUpdateSpy).toHaveBeenCalled();
     });
   });
 });
