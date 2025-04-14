@@ -61,7 +61,7 @@ export const commonSolanaTxConfirmedDetailsFixture = {
 export const commonSolanaTxFailedDetailsFixture = {
   status: 'Failed',
   amount: '0.000000005 SOL',
-  networkFee: '0.000005 SOL',
+  networkFee: '-0.000005',
   fromAddress: 's3zTLVvDbrBzbQ36sr2Z4xrzpRHFv3noWChbNi6vcjr',
   toAddress: 'AL9Z5JgZdeCKnaYg6jduy9PQGzo3moo7vZYVSTJwnSEq',
   txHash:

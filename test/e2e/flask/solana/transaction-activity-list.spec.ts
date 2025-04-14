@@ -53,8 +53,6 @@ describe('Transaction activity list', function (this: Suite) {
       },
     );
   });
-
-describe('Transaction activity list', function (this: Suite) {
   it('user can see activity list and a failed transaction details', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -74,9 +72,10 @@ describe('Transaction activity list', function (this: Suite) {
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.check_failedTxNumberDisplayedInActivity(1);
-        await activityList.check_txAction('Send', 1);
+        await activityList.check_txAction('Interaction', 1);
         await activityList.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
+
         await transactionDetails.check_transactionStatus(
           commonSolanaTxFailedDetailsFixture.status,
         );
@@ -84,6 +83,9 @@ describe('Transaction activity list', function (this: Suite) {
           commonSolanaTxFailedDetailsFixture.txHash,
         );
         await transactionDetails.check_transactionViewDetailsLink();
+        await transactionDetails.check_networkFeeTransaction(
+          commonSolanaTxFailedDetailsFixture.networkFee,
+        );
       },
     );
   });
