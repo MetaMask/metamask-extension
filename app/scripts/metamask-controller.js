@@ -264,6 +264,9 @@ import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+import { addDiscoveredSolanaAccounts } from '../../shared/lib/accounts';
+///: END:ONLY_INCLUDE_IF
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -1859,6 +1862,7 @@ export default class MetamaskController extends EventEmitter {
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
+      TokenRatesController: TokenRatesControllerInit,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
@@ -1866,7 +1870,6 @@ export default class MetamaskController extends EventEmitter {
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       ///: END:ONLY_INCLUDE_IF
       MultichainNetworkController: MultichainNetworkControllerInit,
-      TokenRatesController: TokenRatesControllerInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
@@ -4816,10 +4819,26 @@ export default class MetamaskController extends EventEmitter {
         ? { id: keyringId }
         : { type: KeyringTypes.hd };
 
-      const accounts = await this.keyringController.withKeyring(
+      const {
+        accounts,
+        ///: BEGIN:ONLY_INCLUDE_IF(solana)
+        entropySource,
+        ///: END:ONLY_INCLUDE_IF
+      } = await this.keyringController.withKeyring(
         keyringSelector,
-        async ({ keyring }) => {
-          return await keyring.getAccounts();
+        async ({
+          keyring,
+          ///: BEGIN:ONLY_INCLUDE_IF(solana)
+          metadata,
+          ///: END:ONLY_INCLUDE_IF
+        }) => {
+          const keyringAccounts = await keyring.getAccounts();
+          return {
+            accounts: keyringAccounts,
+            ///: BEGIN:ONLY_INCLUDE_IF(solana)
+            entropySource: metadata.id,
+            ///: END:ONLY_INCLUDE_IF
+          };
         },
       );
       let address = accounts[accounts.length - 1];
@@ -4860,6 +4879,14 @@ export default class MetamaskController extends EventEmitter {
           },
         );
       }
+      ///: BEGIN:ONLY_INCLUDE_IF(solana)
+      const keyring = await this.getSnapKeyring();
+      await addDiscoveredSolanaAccounts(
+        this.controllerMessenger,
+        entropySource,
+        keyring,
+      );
+      ///: END:ONLY_INCLUDE_IF
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {

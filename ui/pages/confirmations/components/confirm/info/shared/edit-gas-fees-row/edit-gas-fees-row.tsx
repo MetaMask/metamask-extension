@@ -97,7 +97,11 @@ export const EditGasFeesRow = ({
         justifyContent={JustifyContent.spaceBetween}
         paddingInline={2}
       >
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Text
+          data-testid="gas-fee-token-fee"
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+        >
           {gasFeeToken
             ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
             : ' '}

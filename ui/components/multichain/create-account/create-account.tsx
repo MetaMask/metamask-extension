@@ -9,6 +9,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { CaipChainId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 
 import {
@@ -37,7 +38,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
-
 import { SelectSrp } from '../multi-srp/select-srp/select-srp';
 import { getSnapAccountsByKeyringId } from '../../../selectors/multi-srp/multi-srp';
 
@@ -56,6 +56,11 @@ type Props = {
    * Callback called once the account has been created
    */
   onActionComplete: (completed: boolean) => Promise<void>;
+
+  /**
+   * The scope of the account
+   */
+  scope?: CaipChainId;
 
   /**
    * Callback to select the SRP
@@ -80,6 +85,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         onSelectSrp,
         selectedKeyringId,
         onActionComplete,
+        scope,
       }: CreateAccountProps<C>,
       ref?: PolymorphicRef<C>,
     ) => {
@@ -142,6 +148,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 account_type: MetaMetricsEventAccountType.Default,
                 location: 'Home',
                 hd_entropy_index: hdEntropyIndex,
+                chain_id_caip: scope,
                 is_suggested_name:
                   !trimmedAccountName ||
                   trimmedAccountName === defaultAccountName,
@@ -149,15 +156,29 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             });
             history.push(mostRecentOverviewPage);
           } catch (error) {
-            trackEvent({
-              category: MetaMetricsEventCategory.Accounts,
-              event: MetaMetricsEventName.AccountAddFailed,
-              properties: {
-                account_type: MetaMetricsEventAccountType.Default,
-                error: (error as Error).message,
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
+            if (selectedKeyringId) {
+              trackEvent({
+                category: MetaMetricsEventCategory.Accounts,
+                event: MetaMetricsEventName.AccountImportFailed,
+                properties: {
+                  account_type: MetaMetricsEventAccountType.Imported,
+                  error: (error as Error).message,
+                  hd_entropy_index: hdEntropyIndex,
+                  chain_id_caip: scope,
+                },
+              });
+            } else {
+              trackEvent({
+                category: MetaMetricsEventCategory.Accounts,
+                event: MetaMetricsEventName.AccountAddFailed,
+                properties: {
+                  account_type: MetaMetricsEventAccountType.Default,
+                  error: (error as Error).message,
+                  hd_entropy_index: hdEntropyIndex,
+                  chain_id_caip: scope,
+                },
+              });
+            }
           }
         },
         [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],

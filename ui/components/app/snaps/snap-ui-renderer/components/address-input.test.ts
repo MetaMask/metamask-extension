@@ -163,4 +163,23 @@ describe('SnapUIAddressInput', () => {
     expect(avatar).toBeNull();
     expect(container).toMatchSnapshot();
   });
+
+  it('renders with an invalid CAIP Account ID', () => {
+    const testAddress = 'https://foobar.baz/foobar';
+
+    const { container, getByRole } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+          displayAvatar: false,
+        }),
+      }),
+      { state: { input: null } },
+    );
+
+    const input = getByRole('textbox') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: testAddress } });
+    expect(container).toMatchSnapshot();
+  });
 });

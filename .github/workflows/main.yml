@@ -14,6 +14,14 @@ on:
       - synchronize
   merge_group:
 
+env:
+  # For a `pull_request` event, the branch is `github.head_ref``.
+  # For a `push` event, the branch is `github.ref_name`.
+  BRANCH: ${{ github.head_ref || github.ref_name }}
+  # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
+  # For a `push` event, the fork is `github.event.repository.fork`.
+  IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+
 jobs:
   prep-deps:
     runs-on: ubuntu-latest
@@ -124,10 +132,6 @@ jobs:
     needs:
       - prep-deps
     runs-on: ubuntu-latest
-    env:
-      # For a `pull_request` event, the branch is `github.head_ref``.
-      # For a `push` event, the branch is `github.ref_name`.
-      BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -175,12 +179,6 @@ jobs:
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
-      # For a `pull_request` event, the branch is `github.head_ref``.
-      # For a `push` event, the branch is `github.ref_name`.
-      BRANCH: ${{ github.head_ref || github.ref_name }}
-      # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
-      # For a `push` event, the fork is `github.event.repository.fork`.
-      IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
     permissions:
       contents: read
       # id-token permission is required for uploading to s3
@@ -203,7 +201,7 @@ jobs:
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
 
       - name: Record bundle size at commit
-        if: ${{ env.BRANCH == 'main' && !env.IS_FORK }}
+        if: ${{ env.BRANCH == 'main' && env.IS_FORK == 'false'}}
         run: ./.github/scripts/bundle-stats-commit.sh
 
       - name: Upload 'bundle-size' to S3

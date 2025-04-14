@@ -12,10 +12,18 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
 
   private readonly batchTxList = '[data-testid="batch-txs=]';
 
-  private readonly confirmUpgradeButton = 'Use smart account';
+  private readonly confirmUpgradeButton = {
+    tag: 'button',
+    text: 'Use smart account',
+  };
 
   private readonly interactingWith =
     '[data-testid="transaction-details-section"]';
+
+  private readonly rejectUpgradeButton = {
+    tag: 'button',
+    text: 'Don’t use smart account',
+  };
 
   private readonly txType = '[data-testid="tx-type"]';
 
@@ -39,10 +47,13 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     });
   }
 
-  async tickSplashUpgradeButton(): Promise<void> {
-    await this.driver.clickElement({
-      text: this.confirmUpgradeButton,
-      tag: 'button',
-    });
+  async clickUseSmartAccountButton(): Promise<void> {
+    await this.driver.clickElement(this.confirmUpgradeButton);
+  }
+
+  async clickDontUseSmartAccountButton(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.rejectUpgradeButton,
+    );
   }
 }

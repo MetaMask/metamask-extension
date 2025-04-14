@@ -101,7 +101,7 @@ describe('GasFeeTokenModal', () => {
       store,
     );
 
-    expect(result.queryAllByTestId('gas-fee-token-list-item')[1]).toHaveClass(
+    expect(result.getByTestId('gas-fee-token-list-item-USDC')).toHaveClass(
       'gas-fee-token-list-item--selected',
     );
   });
@@ -112,7 +112,7 @@ describe('GasFeeTokenModal', () => {
       configureStore(getState({ noSelectedGasFeeToken: true })),
     );
 
-    expect(result.queryAllByTestId('gas-fee-token-list-item')[0]).toHaveClass(
+    expect(result.getByTestId('gas-fee-token-list-item-ETH')).toHaveClass(
       'gas-fee-token-list-item--selected',
     );
   });
@@ -124,7 +124,7 @@ describe('GasFeeTokenModal', () => {
     );
 
     await act(async () => {
-      result.queryAllByTestId('gas-fee-token-list-item')[2].click();
+      result.getByTestId('gas-fee-token-list-item-WETH').click();
     });
 
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1);
