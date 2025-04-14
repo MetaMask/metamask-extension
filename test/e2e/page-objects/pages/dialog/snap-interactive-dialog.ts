@@ -9,12 +9,10 @@ const selectors = {
       text: 'Interactive UI Example Snap',
       tag: 'p',
     },
-    exampleSelectorDropdown: '[data-testid="snap-ui-renderer-card"]',
-    rendererPanel: '#snap-ui-renderer-panel',
-    selectorButton: '.mm-button-base--size-md',
-    exampleCheckbox: '.mm-checkbox__input',
-
-
+  exampleSelectorDropdown: '[data-testid="snap-ui-renderer-card"]',
+  rendererPanel: '#snap-ui-renderer-panel',
+  selectorButton: '.mm-button-base--size-md',
+  exampleCheckbox: '.mm-checkbox__input',
 } satisfies Record<string, Json>
 
 class SnapInteractiveDialog {

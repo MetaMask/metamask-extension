@@ -57,8 +57,6 @@ describe('Interactive UI Snap', function () {
         await interactiveUI.checkElementDisabled('exampleDropdown');
         await interactiveUI.checkElementDisabled('exampleCheckbox');
         await interactiveUI.checkElementDisabled('selectorButton');
-
-         //await interactiveUI.checkElementDisabled('Submit');
         await interactiveUI.clickButton('Cancel');
       },
     );
