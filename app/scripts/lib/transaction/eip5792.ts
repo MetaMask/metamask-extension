@@ -21,6 +21,7 @@ import {
 } from '@metamask/eth-json-rpc-middleware';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { generateSecurityAlertId } from '../ppom/ppom-util';
+import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
 
 type Actions =
   | AccountsControllerGetSelectedAccountAction
@@ -33,13 +34,6 @@ export enum AtomicCapabilityStatus {
   Supported = 'supported',
   Ready = 'ready',
   Unsupported = 'unsupported',
-}
-
-export enum EIP5792ErrorCode {
-  UnsupportedNonOptionalCapability = 5700,
-  UnsupportedChainId = 5710,
-  UnknownBundleId = 5730,
-  RejectedUpgrade = 5750,
 }
 
 const VERSION = '2.0.0';
