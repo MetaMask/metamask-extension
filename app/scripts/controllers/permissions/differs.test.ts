@@ -1,7 +1,6 @@
 import {
   diffMap,
   getChangedAuthorizations,
-  getRemovedAuthorizations,
 } from './differs';
 
 describe('PermissionController selectors', () => {
@@ -163,107 +162,6 @@ describe('PermissionController selectors', () => {
           ],
         ]),
       );
-    });
-  });
-
-  describe('getRemovedAuthorizations', () => {
-    it('returns an empty map if the previous value is undefined', () => {
-      expect(getRemovedAuthorizations(new Map(), undefined)).toStrictEqual(
-        new Map(),
-      );
-    });
-
-    it('returns an empty map if the new and previous values are the same', () => {
-      const newAuthorizations = new Map();
-      expect(
-        getRemovedAuthorizations(newAuthorizations, newAuthorizations),
-      ).toStrictEqual(new Map());
-    });
-
-    it('returns a new map of the removed scopes in authorizations', () => {
-      const previousAuthorizations = new Map([
-        [
-          'foo.bar',
-          {
-            requiredScopes: {
-              'eip155:1': {
-                accounts: [],
-              },
-            },
-            optionalScopes: {
-              'eip155:5': {
-                accounts: [],
-              },
-              'eip155:10': {
-                accounts: [],
-              },
-            },
-            isMultichainOrigin: true,
-            sessionProperties: {},
-          },
-        ],
-      ]);
-
-      const newAuthorizations = new Map([
-        [
-          'foo.bar',
-          {
-            requiredScopes: {
-              'eip155:1': {
-                accounts: [],
-              },
-            },
-            optionalScopes: {
-              'eip155:10': {
-                accounts: [],
-              },
-            },
-            isMultichainOrigin: true,
-            sessionProperties: {},
-          },
-        ],
-      ]);
-
-      expect(
-        getRemovedAuthorizations(newAuthorizations, previousAuthorizations),
-      ).toStrictEqual(
-        new Map([
-          [
-            'foo.bar',
-            {
-              requiredScopes: {},
-              optionalScopes: {
-                'eip155:5': {
-                  accounts: [],
-                },
-              },
-            },
-          ],
-        ]),
-      );
-    });
-
-    it('returns a new map of the revoked authorizations', () => {
-      const mockAuthorization = {
-        requiredScopes: {
-          'eip155:1': {
-            accounts: [],
-          },
-        },
-        optionalScopes: {},
-        isMultichainOrigin: true,
-        sessionProperties: {},
-      };
-      const previousAuthorizations = new Map([
-        ['foo.bar', mockAuthorization],
-        ['bar.baz', mockAuthorization],
-      ]);
-
-      const newAuthorizations = new Map([['foo.bar', mockAuthorization]]);
-
-      expect(
-        getRemovedAuthorizations(newAuthorizations, previousAuthorizations),
-      ).toStrictEqual(new Map([['bar.baz', mockAuthorization]]));
     });
   });
 });

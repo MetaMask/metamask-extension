@@ -337,7 +337,6 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
-  getRemovedAuthorizations,
   getChangedAuthorizations,
   getAuthorizedScopesByOrigin,
   getPermittedAccountsForScopesByOrigin,
