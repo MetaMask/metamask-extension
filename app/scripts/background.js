@@ -81,7 +81,6 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
-const { chrome } = globalThis;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
@@ -142,7 +141,7 @@ export const statePersistenceEvents = new EventEmitter();
 
 let updatePending = false;
 
-chrome.runtime.onUpdateAvailable.addListener(() => {
+browser.runtime.onUpdateAvailable.addListener(() => {
   updatePending = true;
 });
 
@@ -156,7 +155,7 @@ chrome.runtime.onUpdateAvailable.addListener(() => {
 function onExtensionIdle() {
   if (updatePending) {
     try {
-      chrome.runtime.reload();
+      browser.runtime.reload();
     } catch (error) {
       console.error('Failed to reload extension:', error);
     }
