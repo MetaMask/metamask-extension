@@ -28,7 +28,7 @@ export const METAMASK_CLIENT_SIDE_DETECTION_REGEX =
   /^https:\/\/client-side-detection\.api\.cx\.metamask\.io\/$/u;
 export const ACCOUNTS_API =
   /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/0x5cfe73b6021e818b776b421b1c4db2474086a7e1\/$/u;
-
+export const SOLANA_TOKEN_PROGRAM = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export enum SendFlowPlaceHolders {
   AMOUNT = 'Enter amount to send',
   RECIPIENT = 'Enter receiving address',
@@ -127,12 +127,48 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
     statusCode: 200,
     json: {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        usd: 198.42,
+        id: "solana",
+        price: 112.87,
+        marketCap: 58245152246,
+        allTimeHigh: 293.31,
+        allTimeLow: 0.500801,
+        totalVolume: 6991628445,
+        high1d: 119.85,
+        low1d: 105.87,
+        circulatingSupply: 515615042.5147497,
+        dilutedMarketCap: 67566552200,
+        marketCapPercentChange1d: 6.43259,
+        priceChange1d: 6.91,
+        pricePercentChange1h: -0.10747351712871725,
+        pricePercentChange1d: 6.517062579985171,
+        pricePercentChange7d: -1.2651850097746231,
+        pricePercentChange14d: -17.42211401987578,
+        pricePercentChange30d: -7.317068682545842,
+        pricePercentChange200d: -22.09390252653303,
+        pricePercentChange1y: -31.856951873653344
       },
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
         {
-          usd: 0.01157283,
-        },
+        id: "usd-coin",
+        price: 0.9999,
+        marketCap: 59878237545,
+        allTimeHigh: 1.17,
+        allTimeLow: 0.877647,
+        totalVolume: 15910794136,
+        high1d: 1.001,
+        low1d: 0.999781,
+        circulatingSupply: 59884477611.62816,
+        dilutedMarketCap: 59993084685,
+        marketCapPercentChange1d: -0.54935,
+        priceChange1d: -0.00000967395266227,
+        pricePercentChange1h: -0.0036230127807169886,
+        pricePercentChange1d: -0.0009674830537401128,
+        pricePercentChange7d: -0.0040353282511238105,
+        pricePercentChange14d: 0.008577550625780632,
+        pricePercentChange30d: 0.004483705121822349,
+        pricePercentChange200d: 0.029482859180996183,
+        pricePercentChange1y: -0.11068819291624574
+      },
     },
   };
   return await mockServer.forGet(SOLANA_SPOT_PRICE_API).thenCallback(() => {
@@ -1939,11 +1975,21 @@ export async function mockGetFeeForMessageDevnet(mockServer: Mockttp) {
     });
 }
 
-export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
+export async function mockGetTokenAccountsByOwner(mockServer: Mockttp, programId: string) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getTokenAccountsByOwner',
+      params: [
+        '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
+        {
+          programId: programId,
+        },
+        {
+          encoding: 'jsonParsed',
+          commitment: 'confirmed',
+        },
+      ],
     })
     .thenCallback(() => {
       return {
@@ -2269,7 +2315,7 @@ export async function withSolanaAccountSnap(
           mockList.push(...[
             await mockSolanaBalanceQuote(mockServer),
             await mockSolanaBalanceQuoteDevnet(mockServer),
-            await mockGetTokenAccountsByOwner(mockServer),
+            await mockGetTokenAccountsByOwner(mockServer, SOLANA_TOKEN_PROGRAM),
             await mockGetTokenAccountsByOwnerDevnet(mockServer),
             await mockMultiCoinPrice(mockServer),
             await mockGetLatestBlockhash(mockServer),
