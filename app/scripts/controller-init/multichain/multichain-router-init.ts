@@ -35,5 +35,7 @@ export const MultichainRouterInit: ControllerInitFunction<
 
   return {
     controller,
+    persistedStateKey: null,
+    memStateKey: null,
   };
 };
