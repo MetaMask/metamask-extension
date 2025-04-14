@@ -106,13 +106,7 @@ const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
       </Box>
       <Icon
         className="snap-ui-renderer__matched-account-info__clear-button"
-        onClick={
-          disabled
-            ? () => {
-                /** noop */
-              }
-            : handleClear
-        }
+        onClick={handleClear}
         name={IconName.Close}
         color={IconColor.infoDefault}
         style={{
@@ -217,8 +211,10 @@ export const SnapUIAddressInput: FunctionComponent<
   const handleBlur = () => setCurrentFocusedInput(null);
 
   const handleClear = () => {
-    setValue('');
-    handleInputChange(name, '', form);
+    if (!disabled) {
+      setValue('');
+      handleInputChange(name, '', form);
+    }
   };
 
   if (displayName && !error) {
@@ -263,13 +259,7 @@ export const SnapUIAddressInput: FunctionComponent<
         value ? (
           <Icon
             className="snap-ui-renderer__address-input__clear-button"
-            onClick={
-              disabled
-                ? () => {
-                    /** noop */
-                  }
-                : handleClear
-            }
+            onClick={handleClear}
             name={IconName.Close}
             color={IconColor.infoDefault}
             style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
