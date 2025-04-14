@@ -9,13 +9,13 @@ import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors'
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
 
-export type NetworkSupportingAtomicBatch = MultichainNetworkConfiguration & {
+export type EIP7702NetworkConfiguration = MultichainNetworkConfiguration & {
   chainIdHex: Hex;
   isSupported: boolean;
   upgradeContractAddress?: Hex;
 };
 
-export const useNetworkSupporting7702 = (address: string) => {
+export const useEIP7702Networks = (address: string) => {
   const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -55,13 +55,13 @@ export const useNetworkSupporting7702 = (address: string) => {
     });
   }, [address, networkList]);
 
-  const network7702List: NetworkSupportingAtomicBatch[] | undefined =
+  const network7702List: EIP7702NetworkConfiguration[] | undefined =
     useMemo(() => {
       if (!value) {
         return [];
       }
 
-      const networksSupporting7702: NetworkSupportingAtomicBatch[] = [];
+      const networksSupporting7702: EIP7702NetworkConfiguration[] = [];
       Object.values(networkList).forEach((network) => {
         const chainIdHex = convertCaipToHexChainId(network.chainId);
         const atomicBatchResult = value.find(

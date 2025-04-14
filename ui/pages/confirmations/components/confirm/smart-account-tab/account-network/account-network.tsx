@@ -1,14 +1,15 @@
 import React, { useCallback } from 'react';
 import { Hex } from '@metamask/utils';
 
-import { getNetworkIcon } from '../../../../../../shared/modules/network.utils';
+import { getNetworkIcon } from '../../../../../../../shared/modules/network.utils';
+import Preloader from '../../../../../../components/ui/icon/preloader';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
   ButtonLink,
   Text,
-} from '../../../../../components/component-library';
+} from '../../../../../../components/component-library';
 import {
   AlignItems,
   BorderColor,
@@ -17,27 +18,21 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
-import { useEIP7702Account } from '../../../hooks/useEIP7702Account';
-import { NetworkSupportingAtomicBatch } from '../../../hooks/useNetworkSupporting7702';
-import { useBatchAuthorizationRequests } from '../../../hooks/useBatchAuthorizationRequests';
-import Preloader from '../../../../../components/ui/icon/preloader';
-import {
-  setAccountDetailsAddress,
-  showConfTxPage,
-} from '../../../../../store/actions';
-import { useDispatch } from 'react-redux';
-import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../../helpers/constants/routes';
-import { useHistory } from 'react-router-dom';
+} from '../../../../../../helpers/constants/design-system';
+import { getAvatarNetworkColor } from '../../../../../../helpers/utils/accounts';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { EIP7702NetworkConfiguration } from '../../../../hooks/useEIP7702Networks';
+import { useBatchAuthorizationRequests } from '../../../../hooks/useBatchAuthorizationRequests';
+import { useEIP7702Account } from '../../../../hooks/useEIP7702Account';
 
 export const AccountNetwork = ({
   address,
   networkConfiguration,
 }: {
   address: Hex;
-  networkConfiguration: NetworkSupportingAtomicBatch;
+  networkConfiguration: EIP7702NetworkConfiguration;
 }) => {
+  const t = useI18nContext();
   const { downgradeAccount, upgradeAccount } = useEIP7702Account();
   const { name, isSupported, upgradeContractAddress } = networkConfiguration;
   const networkIcon = getNetworkIcon(networkConfiguration);
@@ -45,7 +40,6 @@ export const AccountNetwork = ({
     address,
     networkConfiguration.chainIdHex,
   );
-  const dispatch = useDispatch();
 
   const onSwitch = useCallback(async () => {
     if (isSupported) {
@@ -86,7 +80,9 @@ export const AccountNetwork = ({
             {name}
           </Text>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
-            {isSupported ? 'Smart Account' : 'Standard Account'}
+            {isSupported
+              ? t('confirmAccountTypeSmartContract')
+              : t('confirmAccountTypeStandard')}
           </Text>
         </Box>
       </Box>
@@ -95,7 +91,7 @@ export const AccountNetwork = ({
           <Preloader size={12} />
         </Box>
       ) : (
-        <ButtonLink onClick={onSwitch}>Switch</ButtonLink>
+        <ButtonLink onClick={onSwitch}>{t('switch')}</ButtonLink>
       )}
     </Box>
   );

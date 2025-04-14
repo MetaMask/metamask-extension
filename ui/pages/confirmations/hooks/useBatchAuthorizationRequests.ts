@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 
 import { getTransactions } from '../../../selectors';
 
-export type NetworkSupportingAtomicBatch = MultichainNetworkConfiguration & {
+export type EIP7702NetworkConfiguration = MultichainNetworkConfiguration & {
   chainIdHex: Hex;
   isSupported: boolean;
   upgradeContractAddress?: Hex;

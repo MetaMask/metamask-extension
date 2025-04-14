@@ -12,18 +12,20 @@ import {
   Box,
 } from '../../../../../components/component-library';
 import Preloader from '../../../../../components/ui/icon/preloader';
-import { useNetworkSupporting7702 } from '../../../hooks/useNetworkSupporting7702';
-import { AccountNetwork } from './account-network';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useEIP7702Networks } from '../../../hooks/useEIP7702Networks';
+import { AccountNetwork } from './account-network/account-network';
 
 export const SmartAccountTab = ({ address }: { address: Hex }) => {
-  const { network7702List, pending } = useNetworkSupporting7702(address);
+  const t = useI18nContext();
+  const { network7702List, pending } = useEIP7702Networks(address);
 
   return (
     <>
       <BannerAlert
-        title="Switch to smart account"
+        title={t('smartAccountUpgradeBannerTitle')}
         severity={BannerAlertSeverity.Info}
-        description="Same address. Smarter features. Learn more."
+        description={t('smartAccountUpgradeBannerDescription')}
         marginTop={4}
       />
       {pending && (
@@ -33,6 +35,7 @@ export const SmartAccountTab = ({ address }: { address: Hex }) => {
           display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
+          data-testid="network-loader"
         >
           <Preloader size={18} />
         </Box>

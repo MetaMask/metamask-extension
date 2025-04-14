@@ -5107,6 +5107,12 @@
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
   },
+  "smartAccountUpgradeBannerTitle":  {
+    "message": "Switch to smart account"
+  },
+  "smartAccountUpgradeBannerDescription":  {
+    "message": "Same address. Smarter features. Learn more."
+  },
   "smartContracts": {
     "message": "Smart contracts"
   },
