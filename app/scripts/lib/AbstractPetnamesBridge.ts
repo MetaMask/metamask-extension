@@ -182,6 +182,8 @@ export abstract class AbstractPetnamesBridge<
     this.#synchronizingDirection = direction;
 
     const [newEntries, prevEntries] =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       direction === 'Source->Petnames'
         ? [this.getSourceEntries(), this.#getPetnameEntries()]
         : [this.#getPetnameEntries(), this.getSourceEntries()];

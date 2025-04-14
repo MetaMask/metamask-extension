@@ -69,7 +69,11 @@ function rejectApproval({
   const interfaceId = approvalRequest.requestData?.id as string;
 
   switch (type) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     case ApprovalType.SnapDialogAlert:
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     case ApprovalType.SnapDialogPrompt:
     case DIALOG_APPROVAL_TYPES.default:
       log('Rejecting snap dialog', { id, interfaceId, origin, type });
@@ -79,6 +83,8 @@ function rejectApproval({
       deleteInterface?.(interfaceId);
       break;
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     case ApprovalType.SnapDialogConfirmation:
       log('Rejecting snap confirmation', { id, interfaceId, origin, type });
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878

@@ -53,6 +53,8 @@ export function useUpdateEthereumChainAlerts(
         ],
         key: 'pendingConfirmationFromSameOrigin',
         message: t(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
           pendingConfirmation.type === ApprovalType.AddEthereumChain
             ? 'pendingConfirmationAddNetworkAlertMessage'
             : 'pendingConfirmationSwitchNetworkAlertMessage',

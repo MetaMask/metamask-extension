@@ -10,14 +10,20 @@ const useConfirmationAlertActions = () => {
   const processAction = useCallback(
     (actionKey: string) => {
       switch (actionKey) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         case AlertActionKey.Buy:
           openBuyCryptoInPdapp();
           break;
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         case AlertActionKey.ShowAdvancedGasFeeModal:
           openModal('advancedGasFee');
           break;
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         case AlertActionKey.ShowGasFeeModal:
           openModal('editGasFee');
           break;

@@ -96,6 +96,8 @@ const useBlockaidAlerts = (): Alert[] => {
     const { chainId, msgParams, origin, type, txParams } =
       currentConfirmation as SignatureRequestType & TransactionMeta;
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     const isFailedResultType = resultType === BlockaidResultType.Errored;
 
     const reportData = {

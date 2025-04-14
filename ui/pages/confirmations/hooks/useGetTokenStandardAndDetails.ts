@@ -37,6 +37,8 @@ export const useGetTokenStandardAndDetails = (
 
   const { decimals, standard } = details || {};
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (standard === TokenStandard.ERC20) {
     const parsedDecimals =
       parseTokenDetailDecimals(decimals) ?? ERC20_DEFAULT_DECIMALS;

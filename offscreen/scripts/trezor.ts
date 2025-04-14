@@ -30,7 +30,8 @@ export default function init() {
       sendResponse,
     ) => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line id-denylist, @typescript-eslint/no-unsafe-enum-comparison
       if (msg.target !== OffscreenCommunicationTarget.trezorOffscreen) {
         return;
       }

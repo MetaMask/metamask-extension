@@ -81,15 +81,21 @@ export const CreateSnapAccount = ({
 
     switch (clientType) {
       case WalletClientType.Bitcoin: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         if (chainId === MultichainNetworks.BITCOIN_TESTNET) {
           return `Bitcoin Testnet Account ${accountNumber}`;
         }
         return `Bitcoin Account ${accountNumber}`;
       }
       case WalletClientType.Solana: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         if (chainId === MultichainNetworks.SOLANA_TESTNET) {
           return `Solana Testnet Account ${accountNumber}`;
         }
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         if (chainId === MultichainNetworks.SOLANA_DEVNET) {
           return `Solana Devnet Account ${accountNumber}`;
         }

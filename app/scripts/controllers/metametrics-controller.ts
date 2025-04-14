@@ -1400,6 +1400,8 @@ export default class MetaMetricsController extends BaseController<
   #getNumberOfHDEntropies(metamaskState: MetaMaskState): number {
     return (
       metamaskState.keyrings?.filter(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         (keyring) => keyring.type === KeyringType.hdKeyTree,
       ).length ?? 0
     );

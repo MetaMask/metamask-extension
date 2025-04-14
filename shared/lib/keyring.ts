@@ -17,6 +17,8 @@ export function findKeyringId(
       return (
         keyring.accounts.some((account) =>
           isEqualCaseInsensitive(account, selector.address as string),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         ) && keyring.type === selector.type
       );
     }
@@ -26,6 +28,8 @@ export function findKeyringId(
       );
     }
     if (selector.type) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       return keyring.type === selector.type;
     }
 

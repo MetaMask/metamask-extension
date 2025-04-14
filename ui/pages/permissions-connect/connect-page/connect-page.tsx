@@ -215,6 +215,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             chain: { namespace },
           } = parseCaipAccountId(caipAccountId);
           // EIP155 (EVM) addresses are not case sensitive
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
           if (namespace === KnownCaipNamespace.Eip155) {
             return isEqualCaseInsensitive(caipAccountId, account);
           }

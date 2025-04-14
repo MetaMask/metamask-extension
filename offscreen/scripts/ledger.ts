@@ -24,6 +24,8 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
   // eslint-disable-next-line no-restricted-globals
   window.addEventListener('message', ({ origin, data, source }) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (origin !== KnownOrigins.ledger || source !== iframe.contentWindow) {
       return;
     }
@@ -65,7 +67,8 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
       sendResponse,
     ) => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line id-denylist, @typescript-eslint/no-unsafe-enum-comparison
       if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
         return;
       }

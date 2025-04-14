@@ -18,6 +18,8 @@ export const useTypedSignSignatureInfo = (
     if (
       !confirmation ||
       !isSignatureTransactionType(confirmation) ||
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       confirmation?.type !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA
     ) {
       return undefined;
