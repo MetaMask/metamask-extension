@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "इस साइट पर धोखाधड़ी के लिए जाने जाने वाले एक थर्ड पार्टी की पहुँच है। यदि आप आगे बढ़ते हैं, तो आप अपनी एसेट्स खो देंगे।"
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "साइट सुरक्षित लग सकती है, लेकिन किसी थर्ड पार्टी को इसकी जानकारी तक पहुंच हो सकती है। अगर आप साइन इन करते हैं, तो आपकी एसेट्स चोरी हो सकती है।"
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "यदि आप इसकी पुष्टि करते हैं, तो आप अपने सारे फंड्स और एसेट्स खो सकते हैं।"
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "यदि आप साइन इन करते हैं, तो OpenSea पर सूचीबद्ध आपकी कोई भी या सभी एसेट्स खतरे में हैं।"
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "यदि आप साइन इन करते हैं, तो Blur पर सूचीबद्ध आपकी कोई भी या सभी एसेट्स खतरे में हैं।"
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "इस साइट को बुरी नीयत वाला डोमेन के रूप में पहचाना गया है। यदि आप साइन इन करते हैं, तो आप फंड्स और एसेट्स खो देंगे। हम दृढ़ता से सुझाव देते हैं कि आप इस अनुरोध को कैंसिल करें।"
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "यदि आप साइन इन करते हैं, तो आप अपनी सभी एसेट्स खो सकते हैं। हम आपको यह अनुरोध कैंसिल करने की सलाह देते हैं।"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "यदि आप इस रिक्वेस्ट को स्वीकार करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है।"
   },
@@ -1118,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "यह साइट आपके टोकन खर्च करने की अनुमति चाहती है।"
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "यह साइट मानक अकाउंट पर वापस स्विच करने का अनुरोध कर रही है।"
-  },
   "confirmTitleDescSIWESignature": {
     "message": "एक साइट चाहती है कि आप यह साबित करने के लिए साइन इन करें कि यह आपका अकाउंट है।"
   },
@@ -1133,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "अनुमति हटाएं"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "अकाउंट रीसेट करें"
-  },
   "confirmTitleSIWESignature": {
     "message": "साइन-इन अनुरोध"
   },
@@ -1147,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "ट्रांसेक्शन अनुरोध"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आपका अकाउंट स्मार्ट अकाउंट में अपडेट हो जाएगा।"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "ट्रांसेक्शन कैंसिल करें"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "अपडेट एवं ट्रांसेक्शन कैंसिल करें"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "यदि आप अपना अकाउंट अपडेट नहीं करना चाहते हैं, तो आप इसे यहाँ कैंसिल कर सकते हैं।\n\nइस ट्रांसेक्शन को अपडेट किए बिना पूरा करने के लिए, आपको साइट पर फिर से यह अनुरोध करना होगा। $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "ट्रांसेक्शन कैंसिल करें"
   },
   "confirmationAlertDetails": {
     "message": "आपकी एसेट्स की सुरक्षा के लिए, हम आपको अनुरोध को रिजेक्ट करने का सुझाव देते हैं।"
@@ -3735,9 +3693,6 @@
     "message": "1Y",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं। $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -5475,13 +5430,6 @@
     "message": "$1 अनलॉक करने के लिए डाउनलोड करें, सेट करें और अपना पासवर्ड डालें।",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "अपना OneKey कनेक्ट करें"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "अपने OneKey को सीधे अपने कंप्यूटर में प्लग करें और इसे अनलॉक करें। सुनिश्चित करें कि आप सही पासफ्रेज़ का इस्तेमाल कर रहे हैं।",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "अपने Trezor को कनेक्ट करें"
   },
@@ -6173,9 +6121,6 @@
   },
   "transactionErrored": {
     "message": "ट्रांसेक्शन में गड़बड़ी हुई।"
-  },
-  "transactionFailedBannerMessage": {
-    "message": "इस ट्रांसेक्शन पर आपको अतिरिक्त शुल्क देना पड़ता, इसलिए हमने इसे रोक दिया। आपका पैसा अभी भी आपके वॉलेट में है।"
   },
   "transactionFlowNetwork": {
     "message": "नेटवर्क"

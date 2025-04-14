@@ -37,22 +37,29 @@ describe('Interactive UI Snap', function () {
 
         // fill in the details in the example dialog
         await interactiveUI.fillMessage('foo bar');
+        await interactiveUI.scrollToSelectorDropDown();
         await interactiveUI.selectDropDownOption('selector','Option 3');
-        await interactiveUI.selectCheckbox();
         await interactiveUI.selectRadioOption('Option 1');
         await interactiveUI.selectDropDownOption('dropDown','Option 2');
+        await interactiveUI.selectCheckbox();
         await interactiveUI.clickButton('Submit');
 
         // check for returned values and close the dialog
         await interactiveUI.check_optionSelected();
-        await interactiveUI.clickButton('Approve');
-
-        // switch to test snaps tab and check for the result
+        await interactiveUI.clickButton('OK');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await driver.waitForSelector({
-          text: 'true',
-          css: '#interactiveUIResult',
-        });
+        await testSnaps.check_messageResultSpan('interactiveUIResultSpan', 'null');
+
+        //validate the disabled elements in the dialog
+        await testSnaps.clickButton('createDialogDisabledButton');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await interactiveUI.checkElementDisabled('exampleInput');
+        await interactiveUI.checkElementDisabled('exampleDropdown');
+        await interactiveUI.checkElementDisabled('exampleCheckbox');
+        await interactiveUI.checkElementDisabled('selectorButton');
+
+         //await interactiveUI.checkElementDisabled('Submit');
+        await interactiveUI.clickButton('Cancel');
       },
     );
   });

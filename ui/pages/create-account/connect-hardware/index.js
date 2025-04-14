@@ -313,6 +313,7 @@ class ConnectHardwareForm extends Component {
             // For now we keep using the device name to avoid any discrepancies with our current metrics.
             // TODO: This will be addressed later, see: https://github.com/MetaMask/metamask-extension/issues/29777
             account_hardware_type: deviceName,
+            is_suggested_name: true,
           },
         });
         history.push(mostRecentOverviewPage);

@@ -9,6 +9,7 @@ import { formatWithThreshold } from '../components/app/assets/util/formatWithThr
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
 import { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
+import { useI18nContext } from './useI18nContext';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {
   [KeyringTransactionStatus.Failed]: TransactionStatus.failed,
@@ -40,37 +41,52 @@ export function useMultichainTransactionDisplay(
   networkConfig: MultichainProviderConfig,
 ) {
   const locale = useSelector(getIntlLocale);
-  const isNegative = transaction.type === TransactionType.Send;
+  const t = useI18nContext();
 
-  const assetInputs = aggregateAmount(
+  const from = aggregateAmount(
     transaction.from as Movement[],
-    isNegative,
+    true,
     locale,
     networkConfig.decimals,
   );
-  const assetOutputs = aggregateAmount(
+  const to = aggregateAmount(
     transaction.to as Movement[],
-    isNegative,
+    transaction.type === TransactionType.Send,
     locale,
     networkConfig.decimals,
   );
   const baseFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'base') as Movement[],
-    isNegative,
+    true,
     locale,
   );
   const priorityFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'priority') as Movement[],
-    isNegative,
+    true,
     locale,
   );
 
+  const typeToTitle: Partial<Record<TransactionType, string>> = {
+    // TODO: Add support for other transaction types
+    [TransactionType.Send]: t('send'),
+    [TransactionType.Receive]: t('receive'),
+    [TransactionType.Swap]: `${t('swap')} ${from?.unit} ${t(
+      'to',
+    ).toLowerCase()} ${to?.unit}`,
+    [TransactionType.Unknown]: t('interaction'),
+  };
+
   return {
-    assetInputs,
-    assetOutputs,
+    ...transaction,
+    title: typeToTitle[transaction.type],
+    from,
+    to,
     baseFee,
     priorityFee,
-    isRedeposit: assetOutputs.length === 0,
+    isRedeposit:
+      Boolean(from) === true &&
+      Boolean(to) === false &&
+      transaction.type === TransactionType.Send,
   };
 }
 
@@ -99,10 +115,10 @@ function aggregateAmount(
     amountByAsset[assetId].amount += parseFloat(mv.asset.amount);
   }
 
-  // Convert to a proper display array.
+  // We make an assumption that there is only one asset in the transaction.
   return Object.entries(amountByAsset).map(([_, mv]) =>
     parseAsset(mv, locale, isNegative, decimals),
-  );
+  )[0];
 }
 
 function parseAsset(

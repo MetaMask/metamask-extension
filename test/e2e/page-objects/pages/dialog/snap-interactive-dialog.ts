@@ -1,15 +1,24 @@
+import { Json } from '@metamask/utils';
 import { Driver } from '../../../webdriver/driver';
+import { strict as assert } from 'assert';
+
+const selectors = {
+  exampleDropdown: '[data-testid="snaps-dropdown"]',
+  exampleInput: '#example-input',
+  interactiveUITitle: {
+      text: 'Interactive UI Example Snap',
+      tag: 'p',
+    },
+    exampleSelectorDropdown: '[data-testid="snap-ui-renderer-card"]',
+    rendererPanel: '#snap-ui-renderer-panel',
+    selectorButton: '.mm-button-base--size-md',
+    exampleCheckbox: '.mm-checkbox__input',
+
+
+} satisfies Record<string, Json>
 
 class SnapInteractiveDialog {
   private driver: Driver;
-  private readonly exampleCheckbox = { tag: 'span', text: 'Checkbox' };
-  private readonly exampleDropdown = '[data-testid="snaps-dropdown"]';
-  private readonly exampleInput = '#example-input';
-  private readonly interactiveUITitle = {
-    text: 'Interactive UI Example Snap',
-    tag: 'p',
-  };
-  private readonly exampleSelectorDropdown = '[data-testid="snap-ui-renderer-card"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -18,8 +27,8 @@ class SnapInteractiveDialog {
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.interactiveUITitle,
-        this.exampleInput,
+        selectors.interactiveUITitle,
+        selectors.exampleInput,
       ]);
     } catch (e) {
       console.log(
@@ -33,25 +42,30 @@ class SnapInteractiveDialog {
 
   async clickButton(buttonName: string) {
     console.log(`Clicking button ${buttonName}`);
-    await this.driver.clickElement({ text: buttonName, tag: 'button' });
+    await this.driver.clickElement({ text: buttonName, tag: 'span' });
   }
 
   async fillMessage(message: string) {
     console.log(`Filling message in example field`);
-    await this.driver.fill(this.exampleInput, message);
+    await this.driver.fill(selectors.exampleInput, message);
   }
 
   async selectDropDownOption(exampleDropName: string, option: string) {
     console.log(`Select dropdown option`);
     if (exampleDropName === 'selector') {
-      console.log(`Select selector dropdown option`);
-      await this.driver.clickElement(this.exampleSelectorDropdown);
-      await this.driver.clickElement({ text: option, css: '[data-testid="snap-ui-renderer-card"]' });
+      await this.driver.clickElement(selectors.exampleSelectorDropdown);
+      await this.driver.clickElement({ text: option, css: selectors.exampleSelectorDropdown });
     } else {
-      await this.driver.clickElement(this.exampleDropdown);
+      await this.driver.clickElement(selectors.exampleDropdown);
       await this.driver.clickElement({ text: option, tag: `option` });
     }
+  }
 
+  async scrollToSelectorDropDown() {
+    const selector = await this.driver.findElement(
+      selectors.exampleSelectorDropdown,
+    );
+    await this.driver.scrollToElement(selector);
   }
 
   async selectRadioOption(option: string) {
@@ -61,16 +75,24 @@ class SnapInteractiveDialog {
 
   async selectCheckbox() {
     console.log(`Select checkbox`);
-    await this.driver.clickElement(this.exampleCheckbox);
+    await this.driver.clickElement(selectors.exampleCheckbox);
   }
 
   async check_optionSelected() {
     console.log(`Check all the option is selected appear`);
-    await this.driver.waitForSelector({ text: 'foo bar', css: '#snap-ui-renderer-panel' });
-    await this.driver.waitForSelector({ text: 'option2', css: '#snap-ui-renderer-panel'  });
-    await this.driver.waitForSelector({ text: 'option1', css: '#snap-ui-renderer-panel' });
-    await this.driver.waitForSelector({ text: 'option3', css: '#snap-ui-renderer-panel'  });
-    await this.driver.waitForSelector({ text: 'true', css: '#snap-ui-renderer-panel'  });
+    await this.driver.waitForSelector({ text: 'foo bar', css: selectors.rendererPanel });
+    await this.driver.waitForSelector({ text: 'option2', css: selectors.rendererPanel });
+    await this.driver.waitForSelector({ text: 'option1', css: selectors.rendererPanel });
+    await this.driver.waitForSelector({ text: 'option3', css: selectors.rendererPanel });
+    await this.driver.waitForSelector({ text: 'true', css: selectors.rendererPanel });
+  }
+
+  async checkElementDisabled(element: keyof typeof selectors) {
+    console.log(`Check if ${element} is disabled`);
+    const elementDisabled = await this.driver.findElement(
+      selectors[element],
+    );
+    assert.equal(await elementDisabled.isEnabled(), false);
   }
 }
 
