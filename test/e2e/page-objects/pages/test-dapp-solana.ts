@@ -1,10 +1,10 @@
-import { connect } from 'http2';
+import { text } from 'stream/consumers';
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { dataTestIds } from '@metamask/test-dapp-solana'
 import { By } from 'selenium-webdriver';
 
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
+const DAPP_HOST_ADDRESS = '127.0.0.1:8081';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappSolana {
@@ -40,17 +40,17 @@ export class TestDappSolana {
   async getWalletModal() {
     await this.driver.waitForSelector('.wallet-adapter-modal-list');
 
-    const walletButtons = await this.driver.findElements('.wallet-adapter-modal-list .wallet-adapter-modal-button');
+    const walletButtons = await this.driver.findElements('.wallet-adapter-modal-list .wallet-adapter-button ');
 
     return {
       connectToMetaMaskWallet: async () => {
-        const metamaskButton = await asyncFind(walletButtons, async (button) => (await button.getText()) === 'MetaMask‎');
+        const metaMaskButton = walletButtons[0]; // Assuming MetaMask is allways the first button
 
-        if (!metamaskButton) {
+        if (!metaMaskButton) {
           throw new Error('MetaMask button not found');
         }
 
-        await metamaskButton.click()
+        await metaMaskButton.click()
       },
     }
   }
@@ -61,17 +61,17 @@ export class TestDappSolana {
    * @returns The Header component helper methods.
    */
   async getHeader() {
-    await this.waitSelectorTestId(dataTestIds.header.id);
+    await this.waitSelectorTestId(dataTestIds.testPage.header.id);
 
     return {
-      setEndpoint: async (endpoint: string) => await this.setInputValue(dataTestIds.header.endpoint, endpoint),
+      setEndpoint: async (endpoint: string) => await this.setInputValue(dataTestIds.testPage.header.endpoint, endpoint),
       getConnectionStatus: async () => {
-        const element = await this.driver.findElement(this.getElementSelectorTestId(dataTestIds.header.connectionStatus));
+        const element = await this.driver.findElement(this.getElementSelectorTestId(dataTestIds.testPage.header.connectionStatus));
         return element.getText();
       },
-      connect: async () => await this.clickElement(dataTestIds.header.connect),
-      disconnect: async () => await this.clickElement(dataTestIds.header.disconnect),
-      getAccount: async () => await this.getSolscanShortContent(dataTestIds.header.account)
+      connect: async () => await this.clickElement(dataTestIds.testPage.header.connect),
+      disconnect: async () => await this.clickElement(dataTestIds.testPage.header.disconnect),
+      getAccount: async () => await this.getSolscanShortContent(dataTestIds.testPage.header.account)
     }
   }
 
@@ -195,7 +195,7 @@ export class TestDappSolana {
    * @returns
    */
   private async waitSelectorTestId(id: string) {
-    return this.driver.waitForSelector(this.getElementSelectorTestId(id));
+    await this.driver.findElement(this.getElementSelectorTestId(id));
   }
 
   /**
@@ -278,20 +278,4 @@ export class TestDappSolana {
 
     return contents.map((content) => content.getText());
   }
-}
-
-/**
- * Asynchronous function to find the first element in an array that satisfies the provided async predicate function.
- *
- * @param array
- * @param asyncPredicate
- * @returns The first element that satisfies the predicate, or undefined if no such element is found.
- */
-async function asyncFind<T>(array: T[], asyncPredicate: (item: T) => Promise<boolean>): Promise<T | undefined> {
-  for (const item of array) {
-    if (await asyncPredicate(item)) {
-      return item;
-    }
-  }
-  return undefined;
 }

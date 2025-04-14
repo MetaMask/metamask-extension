@@ -1,4 +1,5 @@
 import {
+  largeDelayMs,
   regularDelayMs,
   WINDOW_TITLES,
 } from '../../helpers';
@@ -7,7 +8,6 @@ import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
-
 /**
  * Connects the Solana test dapp to the wallet.
  */
@@ -15,7 +15,7 @@ export const connectSolanaTestDapp = async (
   driver: Driver,
   testDapp: TestDappSolana
 ): Promise<void> => {
-  const header = testDapp.getHeader();
+  const header = await testDapp.getHeader();
   await header.connect();
 
   // wait to display wallet connect modal
@@ -27,11 +27,14 @@ export const connectSolanaTestDapp = async (
   // wait to display metamask dialog
   await driver.delay(regularDelayMs)
 
-  // Switch to the metamask dialog window
+  // Get to extension modal, and click on the "Connect" button
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  // @TODO: Click on Connect in Metamask Dialog
+  await driver.delay(regularDelayMs);
+  await driver.clickElementAndWaitForWindowToClose({
+    text: 'Connect',
+    tag: 'button',
+  });
 
   // Go back to the test dapp window
-  testDapp.switchTo();
+  await testDapp.switchTo();
 };
