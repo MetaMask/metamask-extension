@@ -16,6 +16,7 @@ import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
+import { getProviderConfig } from '../../../../../shared/modules/selectors/networks';
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
@@ -43,6 +44,7 @@ jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
     useIsOriginalTokenSymbol: jest.fn(),
   };
 });
+
 describe('Token Cell', () => {
   const mockState = {
     metamask: {
@@ -57,6 +59,24 @@ describe('Token Cell', () => {
           conversionRate: 7.0,
         },
       },
+      networkConfigurationsByChainId: {
+        '0x1': {
+          chainId: '0x1',
+          name: 'Ethereum',
+          nativeCurrency: 'ETH',
+          defaultRpcEndpointIndex: 0,
+          ticker: 'ETH',
+          rpcEndpoints: [
+            {
+              type: 'custom',
+              url: 'https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY',
+              networkClientId: 'eth-mainnet',
+            },
+          ],
+          blockExplorerUrls: [],
+        },
+      },
+      selectedNetworkClientId: 'eth-mainnet',
       preferences: {},
     },
   };
@@ -150,6 +170,13 @@ describe('Token Cell', () => {
     }
     if (selector === getCurrencyRates) {
       return { POL: '' };
+    }
+    if (selector === getProviderConfig) {
+      return {
+        chainId: '0x1',
+        ticker: 'ETH',
+        rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+      };
     }
     return undefined;
   });

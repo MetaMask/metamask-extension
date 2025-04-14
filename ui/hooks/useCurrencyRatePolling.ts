@@ -36,18 +36,18 @@ const useCurrencyRatePolling = () => {
           ? n.nativeCurrency
           : null;
       });
+
       // Wait for all asynchronous calls to complete.
       const nativeCurrenciesArray = await Promise.all(
         currencyRateCheckPromises,
       );
       console.log('nativeCurrenciesArray ***********', nativeCurrenciesArray);
 
-      // Filter out null values explicitly and extract unique currencies.
+      // Use a type predicate to filter out null values.
       const filteredCurrencies = nativeCurrenciesArray.filter(
-        (currency) => currency !== null,
+        (currency): currency is string => currency !== null,
       );
       const uniqueCurrencies = [...new Set(filteredCurrencies)];
-      console.log('uniqueCurrencies ***********', uniqueCurrencies);
       setNativeCurrencies(uniqueCurrencies);
     };
 

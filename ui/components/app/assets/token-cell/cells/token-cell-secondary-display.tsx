@@ -14,7 +14,6 @@ import {
   SensitiveText,
   SensitiveTextLength,
 } from '../../../../component-library';
-import { getCurrencyRates } from '../../../../../selectors';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import { TokenFiatDisplayInfo } from '../../types';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
@@ -33,10 +32,8 @@ export const TokenCellSecondaryDisplay = React.memo(
     privacyMode,
   }: TokenCellSecondaryDisplayProps) => {
     const isEvm = useSelector(getMultichainIsEvm);
-    // const currencyRates = useSelector(getCurrencyRates);
+    const test = useSelector(getProviderConfig);
     const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
-
-    // const isOriginalTokenSymbol = token.symbol && currencyRates[token.symbol];
 
     const isOriginalNativeToken = useIsOriginalNativeTokenSymbol(
       token.chainId,

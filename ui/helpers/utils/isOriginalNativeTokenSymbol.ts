@@ -1,9 +1,8 @@
 import { Hex } from '@metamask/utils';
-import { CHAIN_SPEC_URL } from '../../../shared/constants/network';
-
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
+  CHAIN_SPEC_URL,
 } from '../../../shared/constants/network';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../shared/constants/time';
@@ -29,11 +28,9 @@ export const isOriginalNativeTokenSymbol = async ({
         chainId as Hex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION
       ];
 
-    const isMappedCollision =
-      mappedAsNetworkCollision &&
-      mappedAsNetworkCollision.some(
-        (network) => network.currencySymbol === ticker,
-      );
+    const isMappedCollision = mappedAsNetworkCollision?.some(
+      (network) => network.currencySymbol === ticker,
+    );
 
     if (isMappedCollision) {
       return true;
