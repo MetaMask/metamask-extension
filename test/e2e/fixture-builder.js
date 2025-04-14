@@ -770,6 +770,11 @@ class FixtureBuilder {
     return this;
   }
 
+  withUserStorageController(data) {
+    merge(this.fixture.data.UserStorageController, data);
+    return this;
+  }
+
   withPreferencesControllerAdditionalAccountIdentities() {
     return this.withPreferencesController({
       identities: {
@@ -1706,6 +1711,12 @@ class FixtureBuilder {
           id: 'zksync-mainnet',
         },
       },
+    });
+  }
+
+  withProfileSyncDisabled() {
+    return this.withUserStorageController({
+      isProfileSyncingEnabled: false,
     });
   }
 

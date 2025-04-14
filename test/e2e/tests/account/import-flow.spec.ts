@@ -40,22 +40,6 @@ async function mockAccountsApi(mockServer) {
           },
         };
       }),
-    await mockServer
-      .forGet('https://accounts.api.cx.metamask.io/v2/accounts/0x0961ca10d49b9b8e371aa0bcf77fe5730b18f2e4/transactions')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            data: [],
-            unprocessedNetworks: [],
-            pageInfo: {
-              hasNextPage: false,
-              cursor: null,
-              count: 0,
-            }
-          },
-        };
-      }),
   ]
 };
 
@@ -63,7 +47,9 @@ describe('Import flow', function () {
   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withProfileSyncDisabled()
+          .build(),
         testSpecificMock: mockAccountsApi,
         title: this.test?.fullTitle(),
       },
@@ -83,6 +69,7 @@ describe('Import flow', function () {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
+
         await accountListPage.openAccountDetailsModal('Account 1');
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
@@ -100,6 +87,7 @@ describe('Import flow', function () {
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
           .withAccountsControllerImportedAccount()
+          .withProfileSyncDisabled()
           .build(),
         testSpecificMock: mockAccountsApi,
         title: this.test?.fullTitle(),
@@ -147,6 +135,7 @@ describe('Import flow', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
+          .withProfileSyncDisabled()
           .build(),
         testSpecificMock: mockAccountsApi,
         title: this.test?.fullTitle(),
