@@ -2729,10 +2729,11 @@ export default class MetamaskController extends EventEmitter {
       getPermittedAccountsByOrigin,
     );
 
+
     // This handles CAIP-25 authorization changes every time relevant permission state
     // changes, for any reason.
     if (process.env.MULTICHAIN_API) {
-      // wallet_sessionChanged and eth_subscription setup/teardown
+      // wallet_sessionChanged
       this.controllerMessenger.subscribe(
         `${this.permissionController.name}:stateChange`,
         async (currentValue, previousValue) => {
@@ -2740,54 +2741,81 @@ export default class MetamaskController extends EventEmitter {
             currentValue,
             previousValue,
           );
-
-          const removedAuthorizations = getRemovedAuthorizations(
-            currentValue,
-            previousValue,
-          );
-
-          // remove any existing notification subscriptions for removed authorizations
-          for (const [
-            origin,
-            authorization,
-          ] of removedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization, {
-              getNonEvmSupportedMethods:
-                this.getNonEvmSupportedMethods.bind(this),
-            });
-            // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-            // then remove middleware and unsubscribe
-            Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-              if (
-                scopeObject.notifications.includes('eth_subscription') &&
-                scopeObject.methods.includes('eth_subscribe')
-              ) {
-                this.removeMultichainApiEthSubscriptionMiddleware({
-                  scope,
-                  origin,
-                });
-              }
-            });
-          }
-
-          // add new notification subscriptions for added/changed authorizations
           for (const [
             origin,
             authorization,
           ] of changedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization, {
+            this._notifyAuthorizationChange(origin, authorization);
+          }
+        },
+        getAuthorizedScopesByOrigin,
+      );
+
+      // eth_subscription setup/teardown
+      this.controllerMessenger.subscribe(
+        `${this.permissionController.name}:stateChange`,
+        async (currentValue, previousValue) => {
+          const scopeObjectHasEthSub = (scopeObject) => {
+            if (!scopeObject) {
+              return false
+            }
+            return scopeObject.notifications.includes('eth_subscription') &&
+            scopeObject.methods.includes('eth_subscribe')
+          }
+
+          const origins = uniq([
+            ...previousValue.keys(),
+            ...currentValue.keys(),
+          ]);
+          origins.forEach((origin) => {
+            const previousCaveatValue = previousValue.get(origin);
+            const currentCaveatValue = currentValue.get(origin);
+
+            const previousSessionScopes = previousCaveatValue ? getSessionScopes(previousCaveatValue, {
               getNonEvmSupportedMethods:
                 this.getNonEvmSupportedMethods.bind(this),
-            });
+            }): null;
 
-            // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-            // then get the subscriptionManager going for that scope
-            Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-              if (
-                scopeObject.notifications.includes('eth_subscription') &&
-                scopeObject.methods.includes('eth_subscribe')
-              ) {
-                // for each tabId
+            const currentSessionScopes = currentCaveatValue ? getSessionScopes(currentCaveatValue, {
+              getNonEvmSupportedMethods:
+                this.getNonEvmSupportedMethods.bind(this),
+            }): null;
+
+            if (!previousSessionScopes && currentSessionScopes) {
+              Object.entries(currentSessionScopes).forEach(([_scope, scopeObject]) => {
+                if (scopeObjectHasEthSub(scopeObject)) {
+                  Object.values(this.connections[origin]).forEach(({ tabId }) => {
+                    this.addMultichainApiEthSubscriptionMiddleware({
+                      scope,
+                      origin,
+                      tabId,
+                    });
+                  });
+                }
+              })
+            }
+
+            if (previousSessionScopes && !currentSessionScopes) {
+              Object.entries(previousSessionScopes).forEach(([_scope, scopeObject]) => {
+                if (scopeObjectHasEthSub(scopeObject)) {
+                  this.removeMultichainApiEthSubscriptionMiddleware({
+                    scope,
+                    origin,
+                  });
+                }
+              })
+            }
+
+            const scopes = uniq([
+              ...Object.keys(previousSessionScopes),
+              ...Object.keys(currentSessionScopes)
+            ])
+
+            scopes.forEach(scope => {
+              const previousEthSub = scopeObjectHasEthSub(previousSessionScopes[scope])
+              const currentEthSub = scopeObjectHasEthSub(currentSessionScopes[scope])
+
+              if(!previousEthSub && currentEthSub) {
                 Object.values(this.connections[origin]).forEach(({ tabId }) => {
                   this.addMultichainApiEthSubscriptionMiddleware({
                     scope,
@@ -2795,15 +2823,15 @@ export default class MetamaskController extends EventEmitter {
                     tabId,
                   });
                 });
-              } else {
+              }
+              if(previousEthSub && !currentEthSub) {
                 this.removeMultichainApiEthSubscriptionMiddleware({
                   scope,
                   origin,
                 });
               }
-            });
-            this._notifyAuthorizationChange(origin, authorization);
-          }
+            })
+          })
         },
         getAuthorizedScopesByOrigin,
       );
