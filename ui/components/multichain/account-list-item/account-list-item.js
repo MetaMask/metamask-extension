@@ -56,6 +56,7 @@ import {
   getShowFiatInTestnets,
   getChainIdsToPoll,
   getSnapsMetadata,
+  getSnap,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -114,7 +115,7 @@ const AccountListItem = ({
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
 
-  const snaps = useSelector((state) => getSnap(state, account.metadata?.snap?.id));
+  const snap = useSelector((state) => getSnap(state, account.metadata?.snap?.id));
   const snapMetadata = useSelector(getSnapsMetadata);
   const accountLabel = getAccountLabel(
     account.metadata.keyring.type,
