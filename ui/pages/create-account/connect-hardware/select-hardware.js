@@ -266,8 +266,8 @@ export default class SelectHardware extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
-        <Box>
-          {this.state.selectedDevice === HardwareDeviceNames.ledger && (
+        {this.state.selectedDevice === HardwareDeviceNames.ledger && (
+          <Box>
             <BannerAlert
               marginTop={6}
               title={this.context.t(
@@ -278,8 +278,8 @@ export default class SelectHardware extends Component {
                 'ledgerMultipleDevicesUnsupportedInfoDescription',
               )}
             </BannerAlert>
-          )}
-        </Box>
+          </Box>
+        )}
 
         <Box
           display={Display.Flex}
