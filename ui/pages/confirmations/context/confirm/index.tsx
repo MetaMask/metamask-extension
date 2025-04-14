@@ -45,6 +45,9 @@ export const ConfirmContextProvider: React.FC<{
     ],
   );
 
+  // The code below is added to close address details modal when opening confirmation from account details modal
+  // The was account details modal is build has a complexity in routing and closing it from within account details modal
+  // routes it back to home page which also closes confirmation modal.
   useEffect(() => {
     dispatch(setAccountDetailsAddress(''));
   }, [dispatch]);

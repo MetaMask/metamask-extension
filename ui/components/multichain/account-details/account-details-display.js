@@ -120,6 +120,7 @@ export const AccountDetailsDisplay = ({
           }}
           onClick={handleClick}
           ariaLabel="copy-button"
+          data-testid="address-copy-button-text"
         />
       </Box>
       <Tabs
