@@ -19,6 +19,14 @@ class TransactionConfirmation extends Confirmation {
 
   private advancedDetailsHexData: RawLocator;
 
+  private gasFeeFiatText: RawLocator;
+
+  private gasFeeText: RawLocator;
+
+  private gasFeeTokenArrow: RawLocator;
+
+  private gasFeeTokenFeeText: RawLocator;
+
   private gasFeeTokenPill: RawLocator;
 
   constructor(driver: Driver) {
@@ -45,6 +53,10 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="advanced-details-data-param-0"]';
     this.advancedDetailsHexData =
       '[data-testid="advanced-details-transaction-hex"]';
+    this.gasFeeFiatText = '[data-testid="native-currency"]';
+    this.gasFeeText = '[data-testid="first-gas-field"]';
+    this.gasFeeTokenArrow = '[data-testid="selected-gas-fee-token-arrow"]';
+    this.gasFeeTokenFeeText = '[data-testid="gas-fee-token-fee"]';
     this.gasFeeTokenPill = '[data-testid="selected-gas-fee-token"]';
   }
 
@@ -58,14 +70,14 @@ class TransactionConfirmation extends Confirmation {
 
   async check_gasFee(amountToken: string) {
     await this.driver.findElement({
-      css: '[data-testid="first-gas-field"]',
+      css: this.gasFeeText,
       text: amountToken,
     });
   }
 
   async check_gasFeeFiat(amountFiat: string) {
     await this.driver.findElement({
-      css: '[data-testid="native-currency"]',
+      css: this.gasFeeFiatText,
       text: amountFiat,
     });
   }
@@ -79,7 +91,7 @@ class TransactionConfirmation extends Confirmation {
 
   async check_gasFeeTokenFee(amountFiat: string) {
     await this.driver.findElement({
-      css: '[data-testid="gas-fee-token-fee"]',
+      css: this.gasFeeTokenFeeText,
       text: amountFiat,
     });
   }
@@ -89,7 +101,7 @@ class TransactionConfirmation extends Confirmation {
   }
 
   async clickGasFeeTokenPill() {
-    await this.driver.clickElement(this.gasFeeTokenPill);
+    await this.driver.clickElement(this.gasFeeTokenArrow);
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {

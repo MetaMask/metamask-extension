@@ -10,9 +10,6 @@ export default class GasFeeTokenModal {
   private readonly listItem = (symbol: string) =>
     `[data-testid="gas-fee-token-list-item-${symbol}"]`;
 
-  private readonly listItemSymbol =
-    '[data-testid="gas-fee-token-list-item-symbol"]';
-
   private readonly listItemAmountFiat =
     '[data-testid="gas-fee-token-list-item-amount-fiat"]';
 
@@ -21,6 +18,9 @@ export default class GasFeeTokenModal {
 
   private readonly listItemBalance =
     '[data-testid="gas-fee-token-list-item-balance"]';
+
+  private readonly listItemSymbol =
+    '[data-testid="gas-fee-token-list-item-symbol"]';
 
   async check_AmountFiat(symbol: string, amountFiat: string): Promise<void> {
     await this.driver.findElement({
@@ -43,7 +43,7 @@ export default class GasFeeTokenModal {
   }
 
   async clickToken(symbol: string): Promise<void> {
-    await this.driver.clickElement({
+    await this.driver.clickElementAndWaitToDisappear({
       css: this.listItemSymbol,
       text: symbol,
     });
