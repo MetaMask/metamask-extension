@@ -5055,10 +5055,13 @@ __metadata:
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^9.19.0
     "@metamask/transaction-controller": ^54.0.0
+  checksum: 10/3b64abd419893aa925f9c40f09e3bf87298b5bbe5a7c6fc98238dc604ee7ea2f22f5e1fecbada3d0b73cc4004e1b713eb6bf8be29365e0fcc195aac388ea9fd1
+  languageName: node
+  linkType: hard
 
 "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller::locator=metamask-crx%40workspace%3A.":
   version: 12.0.1
-  resolution: "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller#../core/packages/bridge-status-controller::hash=aa1252&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller#../core/packages/bridge-status-controller::hash=7bea03&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bridge-controller": "npm:^13.0.0"
@@ -5069,18 +5072,18 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
+    "@metamask/assets-controllers": ^56.0.0
     "@metamask/network-controller": ^23.0.0
+    "@metamask/preferences-controller": ^17.0.0
     "@metamask/snaps-controllers": ^9.19.0
     "@metamask/transaction-controller": ^54.0.0
-  checksum: 10/b4cc7e19d9a16c96236db721937838e5f2b0880d020f497a054a28890eb24217e2c8a9f96022aff08445ca1f159c269175bdcb11233b76133f1b1d726bd08de4
+    "@metamask/user-operation-controller": ^31.0.0
+  checksum: 10/53617ad8d0a460061ba239fba52adb006d17b278692fdfaadc43345e6c87a13edc78bbe28fec5e8ea0eb0ce643a56065ffd3093062550c311b460c145b5aed62
   languageName: node
   linkType: hard
 
 "@metamask/browser-passworder@npm:^4.3.0":
-  version: 4.3.0
   resolution: "@metamask/browser-passworder@npm:4.3.0"
-  dependencies:
-    "@metamask/utils": "npm:^8.2.0"
   checksum: 10/8ba5c50cd6274b0cc0f90a1ee16b960ee150f14c29083f3515f4abe018a28ead32c21f5f4a62a6e27a946b1228adc2ff1f195e71e38782fa39fa8fff116173e6
   languageName: node
   linkType: hard
@@ -6739,7 +6742,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^8.2.0, @metamask/utils@npm:^8.3.0":
+"@metamask/utils@npm:^8.3.0":
   version: 8.5.0
   resolution: "@metamask/utils@npm:8.5.0"
   dependencies:
@@ -27373,8 +27376,8 @@ __metadata:
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
-    "@metamask/bridge-status-controller": "npm:*"
     "@metamask/bridge-controller": "npm:^13.0.0"
+    "@metamask/bridge-status-controller": "npm:*"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
