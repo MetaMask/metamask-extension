@@ -1,0 +1,34 @@
+import type {
+  IsEquivalent,
+  ControllerStatePropertiesEnumerated,
+  FlattenedBackgroundStateProxy,
+} from './background';
+
+abstract class _ {
+  abstract readonly _: symbol;
+}
+
+/**
+ * The purpose of this function is to cause a compiler error to be emitted if the types are not equivalent.
+ */
+type Expect<
+  X extends IsEquivalent<X, V> extends true ? V : V & _,
+  V = true,
+> = IsEquivalent<V, never> extends true
+  ? X
+  : IsEquivalent<X, never> extends true
+  ? Expect<X, V>
+  : X;
+
+/**
+ * If this type triggers the following error
+ * `Type instantiation is excessively deep and possibly infinite.ts(2589)`
+ * it indicates one of the following regarding `ControllerStatePropertiesEnumerated`:
+ * 1) One or more properties are missing.
+ * 2) One or more properties need to be removed.
+ * 3) One or more properties need to be marked as optional (`?:`).
+ */
+export type Test_FlattenedBackgroundStateProxy = Expect<
+  FlattenedBackgroundStateProxy,
+  { isInitialized: boolean } & ControllerStatePropertiesEnumerated
+>;
