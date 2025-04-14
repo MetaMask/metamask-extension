@@ -1,14 +1,25 @@
 import { TransactionType } from '@metamask/transaction-controller';
 
+import BigNumber from 'bignumber.js';
 import { createTestProviderTools } from '../../test/stub/provider';
+import {
+  buildApproveTransactionData,
+  buildIncreaseAllowanceTransactionData,
+} from '../../test/data/confirmations/token-approve';
+import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
 import {
   determineTransactionType,
   hasTransactionData,
   isEIP1559Transaction,
   isLegacyTransaction,
+  parseApprovalTransactionData,
   parseStandardTokenTransactionData,
   parseTypedDataMessage,
 } from './transaction.utils';
+
+const DATA_MOCK = '0x12345678';
+const ADDRESS_MOCK = '0x1234567890123456789012345678901234567890';
+const AMOUNT_MOCK = 123;
 
 describe('Transaction.utils', function () {
   describe('parseStandardTokenTransactionData', () => {
@@ -431,5 +442,59 @@ describe('Transaction.utils', function () {
         expect(hasTransactionData(data)).toBe(false);
       },
     );
+  });
+
+  describe('parseApprovalTransactionData', () => {
+    it('returns undefined if function does not match', () => {
+      expect(parseApprovalTransactionData(DATA_MOCK)).toBeUndefined();
+    });
+
+    it('returns parsed data if approve', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildApproveTransactionData(ADDRESS_MOCK, AMOUNT_MOCK),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        isApproveAll: false,
+        isRevokeAll: false,
+      });
+    });
+
+    it('returns parsed data if increaseAllowance', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildIncreaseAllowanceTransactionData(ADDRESS_MOCK, AMOUNT_MOCK),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        isApproveAll: false,
+        isRevokeAll: false,
+      });
+    });
+
+    it('returns parsed data if approved setApproveForAll', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildSetApproveForAllTransactionData(ADDRESS_MOCK, true),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: undefined,
+        isApproveAll: true,
+        isRevokeAll: false,
+      });
+    });
+
+    it('returns parsed data if revoked setApproveForAll', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildSetApproveForAllTransactionData(ADDRESS_MOCK, false),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: undefined,
+        isApproveAll: false,
+        isRevokeAll: true,
+      });
+    });
   });
 });

@@ -15,7 +15,6 @@ import { useApproveTokenSimulation } from './hooks/use-approve-token-simulation'
 import { useIsNFT } from './hooks/use-is-nft';
 import { RevokeDetails } from './revoke-details/revoke-details';
 import { RevokeStaticSimulation } from './revoke-static-simulation/revoke-static-simulation';
-import { SpendingCap } from './spending-cap/spending-cap';
 
 const ApproveInfo = () => {
   const { currentConfirmation: transactionMeta } =
@@ -55,14 +54,11 @@ const ApproveInfo = () => {
       {showRevokeVariant ? (
         <RevokeStaticSimulation />
       ) : (
-        <ApproveStaticSimulation />
-      )}
-      {showRevokeVariant ? <RevokeDetails /> : <ApproveDetails />}
-      {!isNFT && !showRevokeVariant && (
-        <SpendingCap
+        <ApproveStaticSimulation
           setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
         />
       )}
+      {showRevokeVariant ? <RevokeDetails /> : <ApproveDetails />}
       <GasFeesSection />
       <AdvancedDetails />
       <EditSpendingCapModal

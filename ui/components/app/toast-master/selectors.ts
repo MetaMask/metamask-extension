@@ -7,7 +7,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../../../helpers/constants/survey';
-import { getPermittedAccountsForCurrentTab } from '../../../selectors';
+import { getPermittedEVMAccountsForCurrentTab } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
 import { getIsPrivacyToastRecent } from './utils';
 
@@ -15,6 +15,7 @@ import { getIsPrivacyToastRecent } from './utils';
 type State = Omit<MetaMaskReduxState, 'appState'> & {
   appState: {
     showNftDetectionEnablementToast?: boolean;
+    showNewSrpAddedToast?: boolean;
   };
   metamask: {
     newPrivacyPolicyToastClickedOrClosed?: boolean;
@@ -85,7 +86,7 @@ export function selectShowConnectAccountToast(
   account: InternalAccount,
 ): boolean {
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
   const isEvmAccount = isEvmAccountType(account?.type);
 
   return (
@@ -106,4 +107,14 @@ export function selectShowConnectAccountToast(
  */
 export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
   return Boolean(state.metamask.switchedNetworkNeverShowMessage);
+}
+
+/**
+ * Retrieves user preference to see the "New SRP Added" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectNewSrpAdded(state: State): boolean {
+  return Boolean(state.appState.showNewSrpAddedToast);
 }

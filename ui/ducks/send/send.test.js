@@ -2729,9 +2729,13 @@ describe('Send Slice', () => {
             payload: 'sendFlow - user added custom hexData 0x1',
           },
           { type: 'send/updateUserInputHexData', payload: hexData },
+          {
+            payload: null,
+            type: 'send/updateUserInputHexDataError',
+          },
         ];
 
-        expect(actionResult).toHaveLength(2);
+        expect(actionResult).toHaveLength(3);
         expect(actionResult).toStrictEqual(expectActionResult);
       });
     });
@@ -2926,6 +2930,7 @@ describe('Send Slice', () => {
             gasLimit: GAS_LIMITS.SIMPLE,
           },
         }),
+        metamask: {},
       };
 
       it('should show confirm tx page when no other conditions for signing have been met', async () => {
@@ -3207,7 +3212,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(6);
         expect(
           checkIfTypesExistInActionResult(actionResult, [
             {

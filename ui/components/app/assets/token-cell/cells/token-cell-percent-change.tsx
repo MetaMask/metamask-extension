@@ -2,20 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import {
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { Text } from '../../../../component-library';
+import { Box } from '../../../../component-library';
 import { getMarketData } from '../../../../../selectors';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TokenFiatDisplayInfo } from '../../types';
 import { PercentageChange } from '../../../../multichain/token-list-item/price/percentage-change';
-import {
-  TranslateFunction,
-  networkTitleOverrides,
-} from '../../util/networkTitleOverrides';
 
 type TokenCellPercentChangeProps = {
   token: TokenFiatDisplayInfo;
@@ -24,7 +15,6 @@ type TokenCellPercentChangeProps = {
 export const TokenCellPercentChange = React.memo(
   ({ token }: TokenCellPercentChangeProps) => {
     const isEvm = useSelector(getMultichainIsEvm);
-    const t = useI18nContext();
     const multiChainMarketData = useSelector(getMarketData);
 
     // We do not want to display any percentage with non-EVM since we don't have the data for this yet.
@@ -52,17 +42,9 @@ export const TokenCellPercentChange = React.memo(
       );
     }
 
-    // fallback value (is this valid?)
-    return (
-      <Text
-        variant={TextVariant.bodySmMedium}
-        color={TextColor.textAlternative}
-        data-testid="multichain-token-list-item-token-name"
-        ellipsis
-      >
-        {networkTitleOverrides(t as TranslateFunction, token)}
-      </Text>
-    );
+    // we don't support non-evm price changes yet.
+    // annoyingly, we need an empty component here for flexbox to align everything nicely
+    return <Box></Box>;
   },
   (prevProps, nextProps) => prevProps.token.address === nextProps.token.address,
 );

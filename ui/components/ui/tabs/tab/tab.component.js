@@ -77,6 +77,7 @@ Tab.propTypes = {
   tabIndex: PropTypes.number, // required, but added using React.cloneElement
   children: PropTypes.node, // required, but we are not rendering it explicitly
   textProps: PropTypes.object, // props to spread to the Text component
+  width: PropTypes.string,
 };
 
 Tab.defaultProps = {

@@ -89,6 +89,11 @@ const renderUseMultichainAccountTotalFiatBalance = (
           conversionRate: '100000',
         },
       },
+      conversionRates: {
+        'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+          rate: '100000',
+        },
+      },
       currentCurrency: 'usd',
       currencyRates: {
         ETH: {

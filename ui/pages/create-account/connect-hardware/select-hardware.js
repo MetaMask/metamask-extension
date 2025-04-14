@@ -14,7 +14,6 @@ import {
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';
-import LogoOnekey from '../../../components/ui/logo/logo-onekey';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
 
 import {
@@ -69,11 +68,7 @@ export default class SelectHardware extends Component {
   connect = async () => {
     const { selectedDevice } = this.state;
     if (selectedDevice) {
-      if (
-        (selectedDevice === HardwareDeviceNames.trezor ||
-          selectedDevice === HardwareDeviceNames.oneKey) &&
-        isUSBSupported
-      ) {
+      if (selectedDevice === HardwareDeviceNames.trezor && isUSBSupported) {
         this.setState({
           trezorRequestDevicePending: true,
         });
@@ -111,22 +106,6 @@ export default class SelectHardware extends Component {
         }
       >
         <LogoTrezor className="hw-connect__btn__img" ariaLabel="Trezor" />
-      </button>
-    );
-  }
-
-  renderConnectToOnekeyButton() {
-    return (
-      <button
-        data-testid="connect-onekey-btn"
-        className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === HardwareDeviceNames.oneKey,
-        })}
-        onClick={(_) =>
-          this.setState({ selectedDevice: HardwareDeviceNames.oneKey })
-        }
-      >
-        <LogoOnekey className="hw-connect__btn__img" ariaLabel="OneKey" />
       </button>
     );
   }
@@ -185,13 +164,12 @@ export default class SelectHardware extends Component {
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
-          {this.renderConnectToLatticeButton()}
         </div>
         <div
           className="hw-connect__btn-wrapper"
           style={{ margin: '10px 0 0 0' }}
         >
-          {this.renderConnectToOnekeyButton()}
+          {this.renderConnectToLatticeButton()}
           {this.renderConnectToQRButton()}
         </div>
       </>
@@ -287,6 +265,25 @@ export default class SelectHardware extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
+        {this.state.selectedDevice === HardwareDeviceNames.ledger && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+            marginTop={6}
+          >
+            <Text
+              className="hw-connect__error"
+              variant={TextVariant.bodyMd}
+              as="h5"
+              marginTop={5}
+              marginBottom={3}
+            >
+              {this.context.t('ledgerMultipleDevicesUnsupportedErrorMessage')}
+            </Text>
+          </Box>
+        )}
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
@@ -332,8 +329,6 @@ export default class SelectHardware extends Component {
         return this.renderLedgerTutorialSteps();
       case HardwareDeviceNames.trezor:
         return this.renderTrezorTutorialSteps();
-      case HardwareDeviceNames.oneKey:
-        return this.renderOneKeyTutorialSteps();
       case HardwareDeviceNames.lattice:
         return this.renderLatticeTutorialSteps();
       case HardwareDeviceNames.qr:
@@ -601,86 +596,6 @@ export default class SelectHardware extends Component {
     );
   }
 
-  renderOneKeyTutorialSteps() {
-    const steps = [
-      {
-        asset: 'plug-in-wallet',
-        dimensions: { width: '225px', height: '75px' },
-        title: this.context.t('step1OneKeyWallet'),
-        message: this.context.t('step1OneKeyWalletMsg', [
-          <a
-            className="hw-connect__msg-link"
-            href={ZENDESK_URLS.HARDWARE_CONNECTION}
-            rel="noopener noreferrer"
-            target="_blank"
-            key="onekey-support-link"
-          >
-            {this.context.t('hardwareWalletSupportLinkConversion')}
-          </a>,
-        ]),
-      },
-    ];
-
-    return (
-      <div className="hw-tutorial">
-        {steps.map((step, index) => (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            className="hw-connect"
-            key={index}
-          >
-            <h3 className="hw-connect__title">{step.title}</h3>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.center}
-              marginBottom={2}
-            >
-              <Button
-                className="hw-connect__external-btn-first"
-                variant={BUTTON_VARIANT.SECONDARY}
-                onClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Clicked OneKey Buy Now',
-                  });
-                  openWindow(HardwareAffiliateLinks.onekey);
-                }}
-              >
-                {this.context.t('buyNow')}
-              </Button>
-              <Button
-                className="hw-connect__external-btn"
-                variant={BUTTON_VARIANT.SECONDARY}
-                onClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Clicked OneKey Tutorial',
-                  });
-                  openWindow(HardwareAffiliateTutorialLinks.onekey);
-                }}
-              >
-                {this.context.t('tutorial')}
-              </Button>
-            </Box>
-
-            <p className="hw-connect__msg">{step.message}</p>
-            {step.asset && (
-              <img
-                className="hw-connect__step-asset"
-                src={`images/${step.asset}.svg`}
-                {...step.dimensions}
-                alt=""
-              />
-            )}
-          </Box>
-        ))}
-      </div>
-    );
-  }
-
   renderQRHardwareWalletSteps() {
     const steps = [];
     steps.push(
@@ -854,41 +769,6 @@ export default class SelectHardware extends Component {
                   event: 'Clicked imToken Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.imtoken);
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
-          </>
-        ),
-      },
-      {
-        message: (
-          <>
-            <p className="hw-connect__QR-subtitle">
-              {this.context.t('onekey')}
-            </p>
-            <Button
-              className="hw-connect__external-btn-first"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked OneKey Learn More',
-                });
-                openWindow(HardwareAffiliateLinks.onekey);
-              }}
-            >
-              {this.context.t('buyNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked OneKey Tutorial',
-                });
-                openWindow(HardwareAffiliateTutorialLinks.onekey);
               }}
             >
               {this.context.t('tutorial')}

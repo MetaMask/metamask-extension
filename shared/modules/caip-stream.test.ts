@@ -77,5 +77,20 @@ describe('CAIP Stream', () => {
         { type: 'caip-x', data: { foo: 'bar' } },
       ]);
     });
+
+    it('ends the substream when the source stream ends', async () => {
+      // using a fake stream here instead of PassThrough to prevent a loop
+      // when sourceStream gets written back to at the end of the CAIP pipeline
+      const sourceStream = new MockStream();
+
+      const providerStream = createCaipStream(sourceStream);
+
+      const { promise, resolve } = createDeferredPromise();
+      providerStream.on('close', () => resolve?.());
+
+      sourceStream.destroy();
+
+      await expect(promise).resolves.toBe(undefined);
+    });
   });
 });

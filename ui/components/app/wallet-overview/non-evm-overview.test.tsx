@@ -86,6 +86,10 @@ const mockBuyableChainsWithBtc = [...mockBuyableChainsWithoutBtc, mockBtcChain];
 
 const mockMetamaskStore = {
   ...mockState.metamask,
+  useExternalServices: true,
+  accountsAssets: {
+    [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
+  },
   internalAccounts: {
     accounts: {
       [mockNonEvmAccount.id]: mockNonEvmAccount,
@@ -103,7 +107,7 @@ const mockMetamaskStore = {
   },
   // (Multichain) RatesController
   fiatCurrency: 'usd',
-  rates: {
+  conversionRates: {
     [Cryptocurrency.Btc]: {
       conversionRate: '1.000',
       conversionDate: 0,
@@ -125,6 +129,9 @@ const mockRampsStore = {
 function getStore(state?: Record<string, unknown>) {
   return configureMockStore([thunk])({
     metamask: mockMetamaskStore,
+    localeMessages: {
+      currentLocale: 'en',
+    },
     ramps: mockRampsStore,
     ...state,
   });
@@ -178,6 +185,13 @@ describe('NonEvmOverview', () => {
           preferences: {
             showNativeTokenAsMainBalance: false,
             tokenNetworkFilter: {},
+            privacyMode: false,
+          },
+          currentCurrency: 'usd',
+          conversionRates: {
+            [MultichainNativeAssets.BITCOIN]: {
+              rate: '1',
+            },
           },
         },
       }),
@@ -196,6 +210,9 @@ describe('NonEvmOverview', () => {
           ...mockMetamaskStore,
           // The balances won't be available
           balances: {},
+          accountsAssets: {
+            [mockNonEvmAccount.id]: [],
+          },
         },
       }),
     );
@@ -401,5 +418,24 @@ describe('NonEvmOverview', () => {
       },
       expect.any(Object),
     );
+  });
+
+  it('disables the Send and Bridge buttons if external services are disabled', () => {
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          useExternalServices: false,
+        },
+      }),
+    );
+
+    const sendButton = queryByTestId(BTC_OVERVIEW_SEND);
+    const bridgeButton = queryByTestId(BTC_OVERVIEW_BRIDGE);
+    expect(sendButton).toBeInTheDocument();
+    expect(sendButton).toBeDisabled();
+    expect(bridgeButton).toBeInTheDocument();
+    expect(bridgeButton).toBeDisabled();
   });
 });

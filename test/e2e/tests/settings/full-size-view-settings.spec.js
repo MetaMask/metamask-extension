@@ -21,7 +21,6 @@ describe('Full-size View Setting', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test.fullTitle(),

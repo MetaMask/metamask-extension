@@ -19,7 +19,10 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../ducks/metamask/metamask';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
@@ -38,6 +41,7 @@ import {
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
+import { getHDEntropyIndex } from '../../selectors/selectors';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -58,10 +62,12 @@ export default function OnboardingFlow() {
   const { pathname, search } = useLocation();
   const history = useHistory();
   const t = useI18nContext();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
+  const isUnlocked = useSelector(getIsUnlocked);
 
   useEffect(() => {
     setOnboardingDate();
@@ -72,6 +78,25 @@ export default function OnboardingFlow() {
       history.push(DEFAULT_ROUTE);
     }
   }, [history, completedOnboarding, isFromReminder]);
+
+  useEffect(() => {
+    if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
+      const needsSRP = [
+        ONBOARDING_REVIEW_SRP_ROUTE,
+        ONBOARDING_CONFIRM_SRP_ROUTE,
+      ].some((route) => pathname.startsWith(route));
+
+      if (needsSRP) {
+        history.push(ONBOARDING_UNLOCK_ROUTE);
+      }
+    }
+  }, [
+    isUnlocked,
+    completedOnboarding,
+    secretRecoveryPhrase,
+    pathname,
+    history,
+  ]);
 
   const handleCreateNewAccount = async (password) => {
     const newSecretRecoveryPhrase = await dispatch(
@@ -204,6 +229,7 @@ export default function OnboardingFlow() {
                 text: t('followUsOnTwitter'),
                 location: MetaMetricsEventName.OnboardingWalletCreationComplete,
                 url: TWITTER_URL,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
           }}

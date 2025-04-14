@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import { mockedSourcifyTokenSend } from '../confirmations/transactions/erc20-token-send-redesign.spec';
+import { mockedSourcifyTokenSend } from '../confirmations/helpers';
 import {
   withFixtures,
   openDapp,

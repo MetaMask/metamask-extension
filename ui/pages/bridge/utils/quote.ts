@@ -1,12 +1,13 @@
-import { zeroAddress } from 'ethereumjs-util';
 import { BigNumber } from 'bignumber.js';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
-  QuoteResponse,
-  Quote,
-  L1GasFees,
-  TokenAmountValues,
-} from '../../../../shared/types/bridge';
+  type QuoteResponse,
+  type Quote,
+  type L1GasFees,
+  type TokenAmountValues,
+  type SolanaFees,
+  isNativeAddress,
+} from '@metamask/bridge-controller';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
   hexToDecimal,
   sumDecimals,
@@ -28,8 +29,26 @@ export const isQuoteExpired = (
       Date.now() - quotesLastFetchedMs > refreshRate,
   );
 
-export const isNativeAddress = (address?: string | null) =>
-  address === zeroAddress() || address === '' || !address;
+export const calcSolanaTotalNetworkFee = (
+  bridgeQuote: QuoteResponse & SolanaFees,
+  nativeToDisplayCurrencyExchangeRate?: number,
+  nativeToUsdExchangeRate?: number,
+) => {
+  const { solanaFeesInLamports } = bridgeQuote;
+  const solanaFeeInNative = calcTokenAmount(
+    new BigNumber(solanaFeesInLamports ?? '0'),
+    9,
+  );
+  return {
+    amount: solanaFeeInNative,
+    valueInCurrency: nativeToDisplayCurrencyExchangeRate
+      ? solanaFeeInNative.mul(nativeToDisplayCurrencyExchangeRate.toString())
+      : null,
+    usd: nativeToUsdExchangeRate
+      ? solanaFeeInNative.mul(nativeToUsdExchangeRate.toString())
+      : null,
+  };
+};
 
 export const calcToAmount = (
   { destTokenAmount, destAsset }: Quote,

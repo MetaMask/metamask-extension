@@ -14,7 +14,9 @@ import {
 import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
 import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
-import { SendPageRow } from '.';
+import { SendPageRow } from './send-page-row';
+
+const AccountListItemProps = { showOptions: false };
 
 export const SendPageAccountPicker = () => {
   const t = useContext(I18nContext);
@@ -24,7 +26,6 @@ export const SendPageAccountPicker = () => {
 
   const sendStage = useSelector(getSendStage);
   const disabled = SEND_STAGES.EDIT === sendStage;
-  const accountListItemProps = { showOptions: false };
   const onAccountListMenuClose = useCallback(() => {
     setShowAccountPicker(false);
   }, []);
@@ -64,7 +65,7 @@ export const SendPageAccountPicker = () => {
       />
       {showAccountPicker ? (
         <AccountListMenu
-          accountListItemProps={accountListItemProps}
+          accountListItemProps={AccountListItemProps}
           showAccountCreation={false}
           onClose={onAccountListMenuClose}
           allowedAccountTypes={[EthAccountType.Eoa, EthAccountType.Erc4337]}

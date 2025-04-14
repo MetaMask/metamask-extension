@@ -15,7 +15,6 @@ export const MultichainAssetsControllerInit: ControllerInitFunction<
   MultichainAssetsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
   const controller = new MultichainAssetsController({
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     messenger: controllerMessenger,
     state: persistedState.MultichainAssetsController,
   });

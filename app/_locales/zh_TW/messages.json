@@ -568,9 +568,6 @@
     "message": "匯入",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "匯入帳戶"
-  },
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
   },
@@ -996,9 +993,6 @@
   "seedPhraseIntroTitle": {
     "message": "保護您的錢包"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "在開始之前，觀賞這段短片來了解何謂助憶詞，以及如何保持您錢包的安全。"
-  },
   "seedPhraseReq": {
     "message": "助憶詞為 12, 15, 18, 21 或 24 個單字"
   },
@@ -1047,13 +1041,6 @@
   },
   "showHexDataDescription": {
     "message": "在交易時顯示十六進位資料"
-  },
-  "showIncomingTransactions": {
-    "message": "顯示傳入的交易"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "選擇此項來利用 Etherscan 在交易列表裡顯示傳入的交易",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "顯示權限"

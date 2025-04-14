@@ -24,10 +24,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../shared/modules/selectors/networks';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -47,7 +43,14 @@ import {
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
-import { getImageForChainId } from '../../../../selectors/multichain';
+import {
+  getMultichainCurrentChainId,
+  getMultichainCurrentNetwork,
+  getImageForChainId,
+  getMultichainNetworkConfigurationsByChainId,
+} from '../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { getNftImage } from '../../../../helpers/utils/nfts';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -127,12 +130,15 @@ export function AssetPicker({
       : symbol;
 
   // Badge details
-  const currentChainId = useSelector(getCurrentChainId);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const currentNetwork = allNetworks[currentChainId];
-  const selectedNetwork =
-    networkProps?.network ??
-    (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
+  // These 2 have similar data but different types
+  const currentNetworkConfiguration =
+    allNetworks[currentChainId as keyof typeof allNetworks];
+  const currentNetworkProviderConfig = useMultichainSelector(
+    getMultichainCurrentNetwork,
+  );
+  const selectedNetwork = networkProps?.network ?? currentNetworkConfiguration;
 
   const allNetworksToUse = networkProps?.networks ?? Object.values(allNetworks);
   const { balanceByChainId } = useMultichainBalances();
@@ -192,7 +198,7 @@ export function AssetPicker({
             // If there is only 1 selected network switch to that network to populate tokens
             if (
               chainIds.length === 1 &&
-              chainIds[0] !== currentNetwork?.chainId
+              chainIds[0] !== currentNetworkProviderConfig?.chainId
             ) {
               if (networkProps?.onNetworkChange) {
                 networkProps.onNetworkChange(
@@ -236,7 +242,7 @@ export function AssetPicker({
         networks={networkProps?.networks}
         selectedChainIds={selectedChainIds}
         onNetworkPickerClick={
-          networkProps
+          networkProps?.networks
             ? () => {
                 setShowAssetPickerModal(false);
                 setIsSelectingNetwork(true);
@@ -302,7 +308,7 @@ export function AssetPicker({
               >
                 <AvatarToken
                   borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-                  src={primaryTokenImage ?? undefined}
+                  src={getNftImage(primaryTokenImage) ?? undefined}
                   size={AvatarTokenSize.Md}
                   name={symbol}
                   {...(isNFT && {

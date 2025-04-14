@@ -33,6 +33,10 @@ html {
     &:not([data-theme]) {
       color: var(--brand-colors-white);
       background-color: var(--brand-colors-grey-grey900);
+
+      body {
+        color: var(--brand-colors-white);
+      }
     }
 
     @include design-system.screen-sm-max {

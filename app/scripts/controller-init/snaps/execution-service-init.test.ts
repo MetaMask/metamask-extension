@@ -24,6 +24,7 @@ function getInitRequestMock(): jest.Mocked<
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getExecutionServiceMessenger(baseMessenger),
+    initMessenger: undefined,
   };
 
   return requestMock;

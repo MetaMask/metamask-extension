@@ -431,6 +431,7 @@
       "unconnectedAccount": true
     },
     "featureFlags": {},
+    "remoteFeatureFlags": {},
     "networkConfigurationsByChainId": {
       "0x1": {
         "chainId": "0x1",
@@ -625,6 +626,28 @@
         "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
       }
     ],
+    "keyringsMetadata": [
+      {
+        "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
+        "name": ""
+      },
+      {
+        "id": "01JKAF3KP7VPAG0YXEDTDRB6ZV",
+        "name": ""
+      },
+      {
+        "id": "01JKAF3PJ247KAM6C03G5Q0NP8",
+        "name": ""
+      },
+      {
+        "id": "01JKAF3SSWRQK818R830GE8PHX",
+        "name": ""
+      },
+      {
+        "id": "01JKAF3WYGWF7JX6PC4YYVSK2Q",
+        "name": ""
+      }
+    ],
     "identities": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
         "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -656,6 +679,22 @@
         "status": "available"
       }
     },
+    "multichainNetworkConfigurationsByChainId": {
+      "bip122:000000000019d6689c085ae165831e93": {
+        "chainId": "bip122:000000000019d6689c085ae165831e93",
+        "name": "Bitcoin Mainnet",
+        "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0",
+        "isEvm": false
+      },
+      "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "name": "Solana Mainnet",
+        "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+        "isEvm": false
+      }
+    },
+    "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
+    "isEvmSelected": true,
     "frequentRpcListDetail": [],
     "subjectMetadata": {
       "npm:@metamask/test-snap-bip44": {
@@ -693,14 +732,6 @@
           "balance": "0x15f6f0b9d4f8d000"
         }
       }
-    },
-    "incomingTransactionsPreferences": {
-      "0x1": true,
-      "0xe708": false,
-      "0xfa": true,
-      "0x5": false,
-      "0xaa36a7": true,
-      "0xe704": true
     },
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "accounts": {
@@ -1939,7 +1970,6 @@
     "watchEthereumAccountEnabled": false,
     "bitcoinSupportEnabled": false,
     "bitcoinTestnetSupportEnabled": false,
-    "solanaSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",

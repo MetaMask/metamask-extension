@@ -4,11 +4,19 @@
   &__container {
     display: grid;
     grid-template-areas:
-      'title dropdown'
-      'paste-tip paste-tip'
-      'input input'
-      'error error'
-      'too-many-words-error too-many-words-error';
+      'title'
+      'paste-tip'
+      'input'
+      'error'
+      'too-many-words-error';
+  }
+
+  &__dropdown-container {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
   }
 
   @include design-system.screen-md-max {
@@ -30,10 +38,11 @@
 
   &__number-of-words-dropdown {
     grid-area: dropdown;
+    width: 100%;
   }
 
   &__paste-tip {
-    margin: 24px 0;
+    margin: 24px 0 12px 0;
     grid-area: paste-tip;
     width: auto;
     margin-left: auto;
@@ -48,7 +57,7 @@
 
   @include design-system.screen-md-max {
     &__srp {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
     }
   }
 

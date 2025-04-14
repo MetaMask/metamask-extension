@@ -20,6 +20,7 @@ function buildInitRequestMock(): jest.Mocked<
     controllerMessenger: getMultichainTransactionsControllerMessenger(
       baseControllerMessenger,
     ),
+    initMessenger: undefined,
   };
 }
 

@@ -34,7 +34,7 @@ ul.two-steps {
   content: counter(step);
   counter-increment: step;
   line-height: 30px;
-  border: 2px solid var(--color-border-muted);
+  border: 2px solid var(--color-background-alternative);
   display: flex;
   justify-content: center;
   align-items: center;

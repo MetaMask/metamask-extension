@@ -1,10 +1,8 @@
 [
   "*.btc*.quiknode.pro",
-  "*solana*.mainnet.rpcpool.com",
   "accounts.api.cx.metamask.io",
   "acl.execution.metamask.io",
   "api.blockchair.com",
-  "api.devnet.solana.com",
   "api.lens.dev",
   "api.segment.io",
   "api.simplehash.com",
@@ -31,6 +29,7 @@
   "etherscan.io",
   "execution.metamask.io",
   "fonts.gstatic.com",
+  "foo.io",
   "gas.api.cx.metamask.io",
   "github.com",
   "goerli.infura.io",
@@ -67,8 +66,8 @@
   "sepolia.infura.io",
   "signature-insights.api.cx.metamask.io",
   "snaps.metamask.io",
+  "solana-devnet.infura.io",
   "solana-mainnet.infura.io",
-  "solana.rpc.grove.city",
   "sourcify.dev",
   "start.metamask.io",
   "static.cx.metamask.io",
@@ -85,5 +84,6 @@
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "api.web3modal.org"
 ]

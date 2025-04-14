@@ -19,7 +19,9 @@ export const SnapInterfaceControllerInit: ControllerInitFunction<
     // with the expected type.
     // TODO: Look into the type mismatch.
     state: persistedState.SnapInterfaceController,
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
+    // @ts-expect-error: `controllerMessenger` is not compatible with the
+    // expected type.
+    // TODO: Look into the type mismatch.
     messenger: controllerMessenger,
   });
 

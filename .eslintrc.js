@@ -299,14 +299,8 @@ module.exports = {
       rules: {
         'react/no-unused-prop-types': 'warn',
         'react/no-unused-state': 'warn',
-        'react/jsx-boolean-value': 'warn',
-        'react/jsx-curly-brace-presence': [
-          'warn',
-          {
-            props: 'never',
-            children: 'never',
-          },
-        ],
+        'react/jsx-boolean-value': 'off',
+        'react/jsx-curly-brace-presence': 'off',
         'react/no-deprecated': 'warn',
         'react/default-props-match-prop-types': 'warn',
         'react/jsx-no-duplicate-props': 'warn',
@@ -335,7 +329,7 @@ module.exports = {
      * Mocha library.
      */
     {
-      files: ['test/e2e/**/*.spec.js'],
+      files: ['test/e2e/**/*.spec.{js,ts}'],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         // In Mocha tests, it is common to use `this` to store values or do
@@ -359,7 +353,6 @@ module.exports = {
         'app/scripts/controllers/alert-controller.test.ts',
         'app/scripts/metamask-controller.actions.test.js',
         'app/scripts/detect-multiple-instances.test.js',
-        'app/scripts/controllers/bridge.test.ts',
         'app/scripts/controllers/swaps/**/*.test.js',
         'app/scripts/controllers/swaps/**/*.test.ts',
         'app/scripts/controllers/metametrics.test.js',

@@ -9,14 +9,14 @@ import {
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import {
-  ENTRYPOINT,
-  ERC_4337_ACCOUNT_SNAP_URL,
   BUNDLER_URL,
-  SIMPLE_ACCOUNT_FACTORY,
-  GANACHE_PRIVATE_KEY,
-  ERC_4337_ACCOUNT_SALT,
+  ENTRYPOINT,
   ERC_4337_ACCOUNT,
-  GANACHE_ACCOUNT,
+  ERC_4337_ACCOUNT_SALT,
+  ERC_4337_ACCOUNT_SNAP_URL,
+  LOCAL_NODE_ACCOUNT,
+  LOCAL_NODE_PRIVATE_KEY,
+  SIMPLE_ACCOUNT_FACTORY,
   VERIFYING_PAYMASTER,
 } from '../constants';
 import { buildQuote, reviewQuote } from '../tests/swaps/shared';
@@ -200,7 +200,11 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
 }
 
 async function withAccountSnap(
-  { title, paymaster }: { title?: string; paymaster?: string },
+  {
+    title,
+    paymaster,
+    localNodeOptions,
+  }: { title?: string; paymaster?: string; localNodeOptions?: object },
   test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
 ) {
   await withFixtures(
@@ -210,7 +214,7 @@ async function withAccountSnap(
       useBundler: true,
       usePaymaster: Boolean(paymaster),
       dapp: true,
-      localNodeOptions: {
+      localNodeOptions: localNodeOptions || {
         hardfork: 'london',
         mnemonic:
           'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
@@ -236,7 +240,7 @@ async function withAccountSnap(
 
       await createSnapAccount(
         driver,
-        GANACHE_PRIVATE_KEY,
+        LOCAL_NODE_PRIVATE_KEY,
         ERC_4337_ACCOUNT_SALT,
       );
 
@@ -254,11 +258,11 @@ async function withAccountSnap(
 }
 
 describe('User Operations', function () {
-  it('from dApp transaction', async function (this: Mocha.Context) {
+  it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
       await createDappTransaction(driver, {
         from: ERC_4337_ACCOUNT,
-        to: GANACHE_ACCOUNT,
+        to: LOCAL_NODE_ACCOUNT,
         value: convertETHToHexGwei(1),
         maxFeePerGas: '0x0',
         maxPriorityFeePerGas: '0x0',
@@ -268,11 +272,11 @@ describe('User Operations', function () {
     });
   });
 
-  it('from send transaction', async function (this: Mocha.Context) {
+  it('from send transaction', async function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
-        await sendTransaction(driver, GANACHE_ACCOUNT, 1, true);
+        await sendTransaction(driver, LOCAL_NODE_ACCOUNT, 1, true);
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
@@ -280,7 +284,7 @@ describe('User Operations', function () {
     );
   });
 
-  it('from swap', async function (this: Mocha.Context) {
+  it('from swap', async function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
@@ -291,13 +295,26 @@ describe('User Operations', function () {
     );
   });
 
-  it('with paymaster', async function (this: Mocha.Context) {
+  it('with paymaster', async function () {
     await withAccountSnap(
-      { title: this.test?.fullTitle(), paymaster: VERIFYING_PAYMASTER },
+      {
+        title: this.test?.fullTitle(),
+        paymaster: VERIFYING_PAYMASTER,
+        localNodeOptions: [
+          {
+            type: 'ganache',
+            options: {
+              hardfork: 'london',
+              mnemonic:
+                'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+            },
+          },
+        ],
+      },
       async (driver, bundlerServer) => {
         await createDappTransaction(driver, {
           from: ERC_4337_ACCOUNT,
-          to: GANACHE_ACCOUNT,
+          to: LOCAL_NODE_ACCOUNT,
           value: convertETHToHexGwei(1),
           maxFeePerGas: '0x0',
           maxPriorityFeePerGas: '0x0',

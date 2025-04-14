@@ -28,6 +28,10 @@ export function isBeta() {
   return process.env.METAMASK_BUILD_TYPE === 'beta';
 }
 
+export function isFlask() {
+  return process.env.METAMASK_BUILD_TYPE === 'flask';
+}
+
 // Returns a specific version of an asset based on
 // the current metamask version (i.e. main, beta, etc.)
 export function getBuildSpecificAsset(assetName) {

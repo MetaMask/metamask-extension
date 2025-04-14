@@ -306,9 +306,6 @@
   "history": {
     "message": "Sejarah"
   },
-  "importAccount": {
-    "message": "Import Akaun"
-  },
   "importAccountMsg": {
     "message": "Akaun yang diimport tidak akan dikaitkan dengan frasa benih akaun MetaMask asal yang anda cipta. Ketahui lebih lanjut tentang akaun import"
   },

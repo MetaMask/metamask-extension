@@ -18,6 +18,7 @@ function getInitRequestMock(): jest.Mocked<
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getSnapsRegistryMessenger(baseMessenger),
+    initMessenger: undefined,
   };
 
   return requestMock;

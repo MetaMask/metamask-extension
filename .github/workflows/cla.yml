@@ -1,9 +1,9 @@
-name: "CLA Signature Bot"
+name: 'CLA Signature Bot'
 on:
   issue_comment:
     types: [created]
   pull_request_target:
-    types: [opened,closed,synchronize]
+    types: [opened, closed, synchronize]
 
 jobs:
   CLABot:
@@ -13,7 +13,7 @@ jobs:
       pull-requests: write
       contents: write
     steps:
-      - name: "CLA Signature Bot"
+      - name: 'CLA Signature Bot'
         uses: MetaMask/cla-signature-bot@v4.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
