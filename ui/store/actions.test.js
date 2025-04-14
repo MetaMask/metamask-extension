@@ -5,9 +5,9 @@ import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import enLocale from '../../app/_locales/en/messages.json';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
