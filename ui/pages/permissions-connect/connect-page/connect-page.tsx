@@ -302,11 +302,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   });
 
   const solanaAccountCreated = useMemo(() => {
-    return selectedCaipAccountAddresses.some((caipAccountId) => {
+    return allAccounts.some(({ caipAccountId }) => {
       const { chain } = parseCaipAccountId(caipAccountId);
       return chain.namespace === KnownCaipNamespace.Solana;
     });
-  }, [selectedCaipAccountAddresses]);
+  }, [allAccounts]);
 
   const onConfirm = () => {
     const _request = {
