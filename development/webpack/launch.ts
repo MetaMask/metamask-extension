@@ -13,7 +13,11 @@
  */
 
 // Note: minimize non-`type` imports to decrease load time.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { join } from 'node:path';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { spawn, type StdioOptions } from 'node:child_process';
 import parser from 'yargs-parser';
 import type { Child, PTY, Stdio, StdName } from './types.ts';
@@ -52,7 +56,8 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
   // node recommends using 75% of the available memory for `max-old-space-size`
   // https://github.com/nodejs/node/blob/dd67bf08cb1ab039b4060d381cc68179ee78701a/doc/api/cli.md#--max-old-space-sizesize-in-megabytes
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+  // eslint-disable-next-line no-restricted-globals, import/no-nodejs-modules
   const maxOldSpaceMB = ~~((require('node:os').totalmem() * 0.75) / (1 << 20));
   // `--huge-max-old-generation-size` and `--max-semi-space-size=128` reduce
   // garbage collection pauses; 128MB provided max benefit in perf testing.
@@ -85,7 +90,8 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
  */
 function createOutputStreams(process: NodeJS.Process) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+  // eslint-disable-next-line no-restricted-globals, import/no-nodejs-modules
   const { isatty } = require('node:tty');
   const isWindows = process.platform === 'win32';
   // use IPC for communication on Windows, as it doesn't support POSIX signals

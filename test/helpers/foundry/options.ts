@@ -1,4 +1,8 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { platform } from 'node:os';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { argv, stdout } from 'node:process';
 import yargs from 'yargs/yargs';
 import { normalizeSystemArchitecture } from './utils';

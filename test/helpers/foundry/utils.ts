@@ -1,4 +1,8 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { execFileSync, execSync } from 'node:child_process';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { arch } from 'node:os';
 import {
   type Checksums,

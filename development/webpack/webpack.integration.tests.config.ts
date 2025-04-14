@@ -2,7 +2,11 @@
  * @file The webpack configuration file to enable debug previewing for UI integration tests.
  */
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { readFileSync } from 'node:fs';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { join } from 'node:path';
 import {
   type Configuration,

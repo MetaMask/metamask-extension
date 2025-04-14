@@ -1,4 +1,8 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { readdirSync } from 'node:fs';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { parse, join, relative, sep } from 'node:path';
 import type { Chunk, EntryObject, Stats } from 'webpack';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

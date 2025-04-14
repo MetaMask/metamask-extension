@@ -1,4 +1,8 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { describe, it, afterEach } from 'node:test';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import assert from 'node:assert';
 import { LoaderContext } from 'webpack';
 import swcLoader, {

@@ -1,4 +1,8 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import type { Agent as HttpsAgent } from 'node:https';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import type { Agent as HttpAgent } from 'node:http';
 import type { InferredOptionTypes, Options } from 'yargs';
 

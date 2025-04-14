@@ -1,6 +1,10 @@
 #!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { stderr } from 'node:process';
 import chalk from 'chalk';
 import madge, { type MadgeConfig, type MadgeInstance } from 'madge';

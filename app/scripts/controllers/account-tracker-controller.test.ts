@@ -1,5 +1,6 @@
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line @typescript-eslint/naming-convention, import/no-nodejs-modules
 import EventEmitter from 'events';
 import { Messenger } from '@metamask/base-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';

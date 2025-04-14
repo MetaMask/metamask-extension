@@ -1,4 +1,8 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { mkdirSync, writeFileSync } from 'fs';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { dirname, join } from 'path';
 import { ModulePartition } from './build-module-partitions';
 import { INTERMEDIATE_BUILD_DIRECTORY_PATH } from './constants';

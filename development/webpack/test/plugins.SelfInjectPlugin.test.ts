@@ -1,4 +1,8 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import { describe, it } from 'node:test';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import assert from 'node:assert';
 import { SelfInjectPlugin } from '../utils/plugins/SelfInjectPlugin';
 import { generateCases, type Combination, mockWebpack } from './helpers';

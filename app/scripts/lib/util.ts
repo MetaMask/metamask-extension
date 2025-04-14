@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
+// eslint-disable-next-line import/no-nodejs-modules
 import urlLib from 'url';
 import { AccessList } from '@ethereumjs/tx';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
