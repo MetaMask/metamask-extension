@@ -7663,7 +7663,7 @@ export default class MetamaskController extends EventEmitter {
       txParams: { from },
     } = transactionMeta;
     this.accountTrackerController.updateAccountByAddress({
-      from,
+      address: from,
       networkClientId,
     });
   }
