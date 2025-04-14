@@ -5032,7 +5032,7 @@ __metadata:
 
 "@metamask/bridge-controller@file:../core/packages/bridge-controller::locator=metamask-crx%40workspace%3A.":
   version: 13.0.0
-  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=44b935&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=89e8c6&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5041,6 +5041,7 @@ __metadata:
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/gas-fee-controller": "npm:^22.0.3"
     "@metamask/keyring-api": "npm:^17.4.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-network-controller": "npm:^0.3.0"
@@ -5054,7 +5055,7 @@ __metadata:
     "@metamask/snaps-controllers": ^9.19.0
     "@metamask/transaction-controller": ^54.0.0
     reselect: ^5.1.1
-  checksum: 10/dc963529d82fbecc808f4f085e3aa50e5219f3fba52fc3ac1eb8f8a9f2b7a0e3ce8ea185a5cab7a50ae3c1f0a010513de5fb6057ca0cacce6b466dd979708917
+  checksum: 10/8f62928305617f5db542b4b5563342742fb0667add0fb9da764f6e0e8294008dbac1b4fbe091db0467587e0eeb4aa94c54f75576e9b0bf549a114d7f1954b53b
   languageName: node
   linkType: hard
 
