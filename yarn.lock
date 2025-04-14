@@ -5030,9 +5030,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@file:../core/packages/bridge-controller::locator=metamask-crx%40workspace%3A.":
+"@metamask/bridge-controller@npm:*":
   version: 13.0.0
-  resolution: "@metamask/bridge-controller@file:../core/packages/bridge-controller#../core/packages/bridge-controller::hash=89e8c6&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/bridge-controller@npm:13.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5041,21 +5041,18 @@ __metadata:
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.7.0"
-    "@metamask/gas-fee-controller": "npm:^22.0.3"
     "@metamask/keyring-api": "npm:^17.4.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-network-controller": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/snaps-utils": "npm:^8.10.0"
     "@metamask/utils": "npm:^11.2.0"
-    bignumber.js: "npm:^9.1.2"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
-    "@metamask/assets-controllers": ^56.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^9.19.0
     "@metamask/transaction-controller": ^54.0.0
-    reselect: ^5.1.1
-  checksum: 10/8f62928305617f5db542b4b5563342742fb0667add0fb9da764f6e0e8294008dbac1b4fbe091db0467587e0eeb4aa94c54f75576e9b0bf549a114d7f1954b53b
+  checksum: 10/ab444a9694da8a373af45755c2382cb3288c21520ffaca3125ac05e2affbc5ad60af83119dd1ceee82a75659407cb3f5abec5e71c658f60c728e4fe37bf2db7f
   languageName: node
   linkType: hard
 

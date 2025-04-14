@@ -147,7 +147,7 @@
     "error@^7.0.0": "patch:error@npm%3A7.0.2#./.yarn/patches/error-npm-7.0.2-6dfbeab4da.patch",
     "eslint-import-resolver-typescript@^2.5.0": "patch:eslint-import-resolver-typescript@npm%3A2.5.0#./.yarn/patches/eslint-import-resolver-typescript-npm-2.5.0-3b8adf0d03.patch",
     "borc@^2.1.2": "patch:borc@npm%3A2.1.2#./.yarn/patches/borc-npm-2.1.2-8ffcc2dd81.patch",
-    "@metamask/bridge-controller": "file:../core/packages/bridge-controller",
+    "@metamask-previews/bridge-controller": "13.0.0-preview-fa0d6d4b",
     "convert-source-map@^1.7.0": "patch:convert-source-map@npm%3A1.1.3#./.yarn/patches/convert-source-map-npm-1.1.3-7f1bfeabd4.patch",
     "convert-source-map@1.7.0": "patch:convert-source-map@npm%3A1.1.3#./.yarn/patches/convert-source-map-npm-1.1.3-7f1bfeabd4.patch",
     "convert-source-map@^1.0.0": "patch:convert-source-map@npm%3A1.1.3#./.yarn/patches/convert-source-map-npm-1.1.3-7f1bfeabd4.patch",
