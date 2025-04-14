@@ -381,6 +381,8 @@ browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   try {
     await isInitialized;
+
+    // `connectRemote` is set in `setupController`, which is called as part of initialization
     connectRemote(...args);
   } catch (error) {
     const port = args[0];
@@ -394,19 +396,17 @@ browser.runtime.onConnect.addListener(async (...args) => {
       metamaskState: JSON.stringify(_state),
     });
   }
-
-  // This is set in `setupController`, which is called as part of initialization
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
-  // This is set in `setupController`, which is called as part of initialization
-
   const port = args[0];
   const isDappConnecting = port.sender.tab?.id;
   if (isDappConnecting && process.env.MULTICHAIN_API) {
+    // `connectExternalCaip` is set in `setupController`, which is called as part of initialization
     connectExternalCaip(...args);
   } else {
+    // `connectExternalExtension` is set in `setupController`, which is called as part of initialization
     connectExternalExtension(...args);
   }
 });
