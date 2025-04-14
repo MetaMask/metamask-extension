@@ -60,6 +60,8 @@ export default class UnitInput extends PureComponent {
   }
 
   handleFocus = () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     if (!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
       this.unitInput.focus();
     }
@@ -67,11 +69,15 @@ export default class UnitInput extends PureComponent {
 
   componentDidMount() {
     if (this.props.isFocusOnInput) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.addEventListener('keypress', this.handleFocus);
     }
   }
 
   componentWillUnmount() {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     document.removeEventListener('keypress', this.handleFocus);
   }
 

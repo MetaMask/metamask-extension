@@ -36,6 +36,8 @@ describe('SnapUIFileInput', () => {
       }),
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const file = new File(['foo'], 'foo.svg', { type: 'image/svg' });
 
     // JSDOM doesn't support array buffer so we overwrite it
@@ -43,6 +45,8 @@ describe('SnapUIFileInput', () => {
       return new Uint8Array([102, 111, 111]);
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const input = container.querySelector('#input') as HTMLInputElement;
     expect(input).toBeDefined();
     await userEvent.upload(input, file);

@@ -2052,6 +2052,8 @@ describe('Box', () => {
     });
   });
   it('should accept a ref prop that is passed down to the html element', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const mockRef = React.createRef<HTMLDivElement>();
     render(<Box ref={mockRef}>hello</Box>);
     expect(mockRef.current).toBeInTheDocument();

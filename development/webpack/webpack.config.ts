@@ -59,10 +59,14 @@ if (args.manifest_version === 3) {
 }
 // #endregion short circuit for unsupported build configurations
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const context = join(__dirname, '../../app');
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
 const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const manifest: Manifest = require(manifestPath);
 const { entry, canBeChunked } = collectEntries(manifest, context);
 const codeFenceLoader = getCodeFenceLoader(features);
@@ -89,11 +93,15 @@ const cache = args.cache
       // Disable allowCollectingMemory because it can slow the build by 10%!
       allowCollectingMemory: false,
       buildDependencies: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         defaultConfig: [__filename],
         // Invalidates the build cache when the listed files change.
         // `__filename` makes all `require`d dependencies of *this* file
         // `buildDependencies`
         config: [
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           __filename,
           join(context, '../.metamaskrc'),
           join(context, '../builds.yml'),
@@ -185,10 +193,14 @@ const plugins: WebpackPluginInstance[] = [
 ];
 // enable React Refresh in 'development' mode when `watch` is enabled
 if (__HMR_READY__ && isDevelopment && args.watch) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
   plugins.push(new ReactRefreshWebpackPlugin());
 }
 if (args.progress) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
 }
@@ -243,19 +255,33 @@ const config = {
     fallback: {
       // #region conditionally remove developer tooling
       'react-devtools': isDevelopment
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         ? require.resolve('react-devtools')
         : false,
       // remove remote-redux-devtools unless METAMASK_DEBUG is enabled
       'remote-redux-devtools': variables.get('METAMASK_DEBUG')
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         ? require.resolve('remote-redux-devtools')
         : false,
       // #endregion conditionally remove developer tooling
       // #region node polyfills
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       crypto: require.resolve('crypto-browserify'),
       fs: false,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       http: require.resolve('stream-http'),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       https: require.resolve('https-browserify'),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       path: require.resolve('path-browserify'),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       stream: require.resolve('stream-browserify'),
       vm: false,
       zlib: false,

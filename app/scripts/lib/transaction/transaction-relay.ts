@@ -16,6 +16,8 @@ export type RelaySubmitResponse = {
 export async function submitRelayTransaction(
   request: RelaySubmitRequest,
 ): Promise<RelaySubmitResponse> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const baseUrl = process.env.TRANSACTION_RELAY_API_URL as string;
 
   const response = await fetch(baseUrl, {

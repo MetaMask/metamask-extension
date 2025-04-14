@@ -33,6 +33,8 @@ function transformState(state: VersionedData['data']) {
     !hasProperty(state, 'PreferencesController') ||
     !isObject(state.PreferencesController)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Invalid PreferencesController state: ${typeof state.PreferencesController}`,

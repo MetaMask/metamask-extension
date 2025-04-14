@@ -54,6 +54,8 @@ const getEnvironmentTypeMemo = memoize((url) => {
  * @param [url] - the URL of the window
  * @returns the environment ENUM
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const getEnvironmentType = (url = window.location.href) =>
   getEnvironmentTypeMemo(url);
 
@@ -63,6 +65,8 @@ const getEnvironmentType = (url = window.location.href) =>
  * @returns the platform ENUM
  */
 const getPlatform = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const { navigator } = window;
   const { userAgent } = navigator;
 

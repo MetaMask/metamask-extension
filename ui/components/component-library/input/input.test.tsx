@@ -21,6 +21,8 @@ describe('Input', () => {
   });
   it('should render and be able to input text', () => {
     const { getByTestId } = render(<Input data-testid="input" />);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const InputComponent = getByTestId('input') as HTMLInputElement;
 
     expect(InputComponent.value).toBe(''); // initial value is empty string
@@ -54,6 +56,8 @@ describe('Input', () => {
     expect(onBlur).toHaveBeenCalledTimes(1);
   });
   it('should pass ref to allow input to focus through another element', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const ref = React.createRef<HTMLInputElement>();
     const { getByRole } = renderWithUserEvent(<Input ref={ref} />);
 
@@ -100,6 +104,8 @@ describe('Input', () => {
   });
   it('should render with a defaultValue', () => {
     const { getByRole } = render(<Input defaultValue="default value" />);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect((getByRole('textbox') as HTMLInputElement).value).toBe(
       'default value',
     );
@@ -116,6 +122,8 @@ describe('Input', () => {
   });
   it('should render with maxLength and not allow more than the set characters', async () => {
     const { getByRole, user } = renderWithUserEvent(<Input maxLength={5} />);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const InputComponent = getByRole('textbox') as HTMLInputElement;
     await user.type(InputComponent, '1234567890');
     expect(getByRole('textbox')).toBeDefined();
@@ -129,6 +137,8 @@ describe('Input', () => {
     );
     const InputComponent = getByTestId('read-only');
     await user.type(InputComponent, '1234567890');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect((getByRole('textbox') as HTMLInputElement).value).toBe('');
     expect(getByRole('textbox')).toHaveAttribute('readonly', '');
   });

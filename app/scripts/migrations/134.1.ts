@@ -38,6 +38,8 @@ function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
   if (!hasProperty(state, 'AccountsController')) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(`Migration ${version}: Missing AccountsController.`),
     );
@@ -47,6 +49,8 @@ function transformState(
   const accountsControllerState =
     state.AccountsController as AccountsControllerState;
   if (!isObject(accountsControllerState)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: AccountsController is type '${typeof accountsControllerState}', expected object.`,
@@ -59,6 +63,8 @@ function transformState(
     !hasProperty(accountsControllerState, 'internalAccounts') ||
     !isObject(accountsControllerState.internalAccounts)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Missing or invalid AccountsController.internalAccounts.`,
@@ -73,6 +79,8 @@ function transformState(
     typeof internalAccounts.selectedAccount !== 'string' ||
     internalAccounts.selectedAccount === ''
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(`Migration ${version}: Invalid or missing selectedAccount.`),
     );
@@ -84,6 +92,8 @@ function transformState(
     !hasProperty(internalAccounts, 'accounts') ||
     !isObject(internalAccounts.accounts)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Missing or invalid internalAccounts.accounts.`,
@@ -97,6 +107,8 @@ function transformState(
     !hasProperty(accounts, selectedAccountKey) ||
     !isObject(accounts[selectedAccountKey])
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Selected account entry not found in internalAccounts.accounts.`,
@@ -110,6 +122,8 @@ function transformState(
     typeof selectedAccountEntry.address !== 'string' ||
     selectedAccountEntry.address === ''
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid or missing address in selected account entry.`,
@@ -120,6 +134,8 @@ function transformState(
   const selectedAccountAddress = selectedAccountEntry.address;
 
   if (!hasProperty(state, 'NetworkController')) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(`Migration ${version}: Missing NetworkController.`),
     );
@@ -128,6 +144,8 @@ function transformState(
 
   const networkControllerState = state.NetworkController;
   if (!isObject(networkControllerState)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: NetworkController is type '${typeof networkControllerState}', expected object.`,
@@ -141,6 +159,8 @@ function transformState(
     typeof networkControllerState.selectedNetworkClientId !== 'string' ||
     !networkControllerState.selectedNetworkClientId
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid or missing selectedNetworkClientId.`,
@@ -155,6 +175,8 @@ function transformState(
     !hasProperty(networkControllerState, 'networkConfigurationsByChainId') ||
     !isObject(networkControllerState.networkConfigurationsByChainId)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Missing or invalid networkConfigurationsByChainId.`,
@@ -171,6 +193,8 @@ function transformState(
   );
 
   if (!currentChainId) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Could not find chainId for networkClientId '${selectedNetworkClientId}'.`,
@@ -180,6 +204,8 @@ function transformState(
   }
 
   if (!hasProperty(state, 'TokensController')) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(`Migration ${version}: Missing TokensController.`),
     );
@@ -188,6 +214,8 @@ function transformState(
 
   const tokensControllerState = state.TokensController;
   if (!isObject(tokensControllerState)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: TokensController is type '${typeof tokensControllerState}', expected object.`,
@@ -200,6 +228,8 @@ function transformState(
     !hasProperty(tokensControllerState, 'allTokens') ||
     !isObject(tokensControllerState.allTokens)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Missing or invalid TokensController.allTokens.`,
@@ -217,6 +247,8 @@ function transformState(
     tokens.length > 0 &&
     !isObject(allTokensForChain)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: tokens is not an empty array, but allTokensForChain is not an object.`,
@@ -253,6 +285,8 @@ function getChainIdForNetworkClientId(
       }
     }
   }
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   global.sentry?.captureException?.(
     new Error(
       `Migration ${version}: No chainId found for "${networkClientId}".`,

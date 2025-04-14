@@ -94,6 +94,8 @@ NetworkListItemMenu.propTypes = {
   /**
    * Element that the menu should display next to
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   anchorElement: PropTypes.instanceOf(window.Element),
   /**
    * Function that executes when the menu is closed

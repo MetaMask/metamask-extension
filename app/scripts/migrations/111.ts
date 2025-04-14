@@ -36,6 +36,8 @@ function transformState(state: Record<string, any>) {
   }
 
   if (!isObject(state.SelectedNetworkController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `state.SelectedNetworkController is type: ${typeof state.SelectedNetworkController}`,
@@ -43,12 +45,16 @@ function transformState(state: Record<string, any>) {
     );
     state.SelectedNetworkController = {};
   } else if (!hasProperty(state.SelectedNetworkController, 'domains')) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `state.SelectedNetworkController.domains is missing from SelectedNetworkController state`,
       ),
     );
   } else if (!isObject(state.SelectedNetworkController.domains)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `state.SelectedNetworkController.domains is type: ${typeof state

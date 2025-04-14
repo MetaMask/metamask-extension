@@ -35,13 +35,19 @@ describe('useConfirmationAlertActions', () => {
       openModal: openModalMock,
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform = { openTab: jest.fn() } as unknown as Platform;
   });
 
   it('opens portfolio tab if action key is Buy', () => {
     processAlertActionKey(AlertActionKey.Buy);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(global.platform.openTab).toHaveBeenCalledTimes(1);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: EXPECTED_BUY_URL,
     });

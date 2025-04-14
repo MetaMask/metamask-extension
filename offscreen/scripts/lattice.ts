@@ -4,6 +4,8 @@ import {
 } from '../../shared/constants/offscreen-communication';
 
 async function openConnectorTab(url: string) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const browserTab = window.open(url);
   if (!browserTab) {
     throw new Error('Failed to open Lattice connector.');
@@ -52,6 +54,8 @@ export default function init() {
       // the response from the lattice connector with the deviceID and password.
       // We can then forward that response to the lattice-offscreen-keyring's
       // _getCreds method using sendResponse API from the chrome runtime.
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.addEventListener(
         'message',
         (event) => {

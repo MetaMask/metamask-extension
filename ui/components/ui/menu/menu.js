@@ -23,6 +23,8 @@ const Menu = ({
 }) => {
   const [popperElement, setPopperElement] = useState(null);
   const popoverContainerElement = useRef(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     document.getElementById('popover-content'),
   );
 
@@ -54,6 +56,8 @@ const Menu = ({
 };
 
 Menu.propTypes = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   anchorElement: PropTypes.instanceOf(window.Element),
   children: PropTypes.node.isRequired,
   className: PropTypes.string,

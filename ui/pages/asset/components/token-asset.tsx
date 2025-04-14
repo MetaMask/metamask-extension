@@ -153,6 +153,8 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
                 block_explorer_domain: getURLHostName(tokenTrackerLink),
               },
             });
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             global.platform.openTab({ url: blockExplorerLink });
           }}
           tokenSymbol={token.symbol}

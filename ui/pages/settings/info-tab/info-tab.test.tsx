@@ -13,7 +13,11 @@ import InfoTab from '.';
 describe('InfoTab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
   describe('validate links', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     let getByText: (text: string) => HTMLElement;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     let getByTestId: (testId: string) => HTMLElement;
 
     beforeEach(() => {

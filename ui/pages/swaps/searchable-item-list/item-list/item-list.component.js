@@ -219,6 +219,8 @@ ItemList.propTypes = {
   maxListItems: PropTypes.number,
   searchQuery: PropTypes.string,
   containerRef: PropTypes.shape({
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     current: PropTypes.instanceOf(window.Element),
   }),
   hideRightLabels: PropTypes.bool,

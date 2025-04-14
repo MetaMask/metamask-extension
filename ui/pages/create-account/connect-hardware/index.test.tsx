@@ -175,6 +175,8 @@ describe('ConnectHardwareForm', () => {
 
     it('renders a different U2F error for firefox', async () => {
       jest
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         .spyOn(window.navigator, 'userAgent', 'get')
         .mockReturnValue(
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0) Gecko/20100101 Firefox/95.0',
@@ -230,6 +232,8 @@ describe('ConnectHardwareForm', () => {
 
   describe('Select Hardware', () => {
     it('checks link buttons for Ngrave Zero brand', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.open = jest.fn();
 
       const { getByLabelText, getByTestId } = renderWithProvider(
@@ -244,11 +248,15 @@ describe('ConnectHardwareForm', () => {
       const buyNowButton = getByTestId('ngrave-brand-buy-now-btn');
       expect(buyNowButton).toBeInTheDocument();
       fireEvent.click(buyNowButton);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       expect(window.open).toHaveBeenCalled();
 
       const learnMoreButton = getByTestId('ngrave-brand-learn-more-btn');
       expect(learnMoreButton).toBeInTheDocument();
       fireEvent.click(learnMoreButton);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       expect(window.open).toHaveBeenCalled();
     });
   });

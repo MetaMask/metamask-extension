@@ -74,8 +74,11 @@ describe('Review Recovery Phrase Component', () => {
       mockStore,
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     jest.spyOn(window, 'prompt').mockImplementation();
-    // eslint-disable-next-line jest/prefer-spy-on
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line jest/prefer-spy-on, no-restricted-globals
     document.execCommand = jest.fn();
 
     const revealRecoveryPhraseButton = queryByTestId('recovery-phrase-reveal');
@@ -86,6 +89,8 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(copyToClipboard);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.execCommand).toHaveBeenCalledWith('copy');
   });
 

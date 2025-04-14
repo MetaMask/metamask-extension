@@ -147,10 +147,14 @@ function ConnectAccountToast() {
           setTimeout(() => {
             // Trigger a mouseenter on the header's connection icon
             // to display the informative connection tooltip
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             document
               .querySelector(
                 '[data-testid="connection-menu"] [data-tooltipped]',
               )
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+              // eslint-disable-next-line no-restricted-globals
               ?.dispatchEvent(new CustomEvent('mouseenter', {}));
           }, 250 * MILLISECOND);
         }}
@@ -359,6 +363,8 @@ function NewSrpAddedToast() {
   // This will close the toast if the user clicks the account menu.
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const dismissElement = document.querySelector(
         '[data-testid="account-menu-icon"]',
       );
@@ -367,8 +373,12 @@ function NewSrpAddedToast() {
       }
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [dispatch]);

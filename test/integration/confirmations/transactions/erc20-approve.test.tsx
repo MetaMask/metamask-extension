@@ -139,7 +139,8 @@ describe('ERC20 Approve Confirmation', () => {
       chainId: '0xaa36a7',
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-globals
     global.ethereumProvider = provider as any;
   });
 
@@ -164,7 +165,8 @@ describe('ERC20 Approve Confirmation', () => {
   });
 
   afterAll(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-globals
     delete (global as any).ethereumProvider;
   });
 
@@ -366,6 +368,8 @@ describe('ERC20 Approve Confirmation', () => {
   });
 
   it('disables nonce editing when STX is on', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedApproveTransaction({
@@ -397,6 +401,8 @@ describe('ERC20 Approve Confirmation', () => {
   });
 
   it('enables nonce editing when STX is off', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedApproveTransaction({

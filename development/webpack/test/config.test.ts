@@ -18,6 +18,8 @@ describe('./utils/config.ts', () => {
     const originalReadFileSync = fs.readFileSync;
     function mockRc(env: Record<string, string> = {}) {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         if (path === resolve(__dirname, '../../../.metamaskrc')) {
           // mock `.metamaskrc`, as users might have customized it which may
           // break our tests

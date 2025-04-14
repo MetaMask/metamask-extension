@@ -2,6 +2,8 @@ import type { ReactElement } from 'react';
 import type { EtherDenomination } from '../../../../shared/constants/common';
 
 export type CurrencyDisplayProps = OverridingUnion<
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   React.HTMLAttributes<HTMLElement>,
   {
     currency: string;

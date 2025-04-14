@@ -59,8 +59,14 @@ type ArrangeMocksParams<T extends boolean> = {
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 type ArrangeMocksReturn<T extends boolean> = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   toggleBasicFunctionalityButton: HTMLElement;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   cancelButton: HTMLElement;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   agreementCheckbox: T extends true ? HTMLElement : null;
 };
 

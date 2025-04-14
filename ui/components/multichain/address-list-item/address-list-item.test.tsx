@@ -41,6 +41,8 @@ describe('AddressListItem', () => {
 
     expect(getByText(shortenAddress(SAMPLE_ADDRESS))).toBeInTheDocument();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector(
         '.address-list-item__duplicate-contact-warning-icon',
       ),
@@ -54,19 +56,24 @@ describe('AddressListItem', () => {
     });
     expect(container).toMatchSnapshot();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.querySelector('.confusable__point')).toBeInTheDocument();
   });
 
   it('does not force red text when unnecessary', () => {
     render({ label: 'metamask.eth' });
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.confusable__point'),
     ).not.toBeInTheDocument();
   });
 
   it('fires onClick when the item is clicked', () => {
     render();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, no-restricted-globals
     fireEvent.click(document.querySelector('button')!);
 
     expect(mockOnClick).toHaveBeenCalled();
@@ -77,6 +84,8 @@ describe('AddressListItem', () => {
 
     expect(container).toMatchSnapshot();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector(
         '.address-list-item__duplicate-contact-warning-icon',
       ),

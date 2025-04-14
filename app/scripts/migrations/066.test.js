@@ -72,6 +72,8 @@ describe('migration #66', () => {
       },
     };
     jest
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       .spyOn(window, 'navigator', 'get')
       .mockImplementation(() => ({ hid: true }));
     const newStorage = await migration66.migrate(oldStorage);
@@ -90,6 +92,8 @@ describe('migration #66', () => {
       },
     };
     jest
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       .spyOn(window, 'navigator', 'get')
       .mockImplementation(() => ({ hid: true }));
     const newStorage = await migration66.migrate(oldStorage);

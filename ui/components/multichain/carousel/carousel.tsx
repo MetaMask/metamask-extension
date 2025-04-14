@@ -36,6 +36,8 @@ export const Carousel = React.forwardRef(
       onRenderSlides,
       ...props
     }: CarouselProps,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     ref: React.Ref<HTMLDivElement>,
   ) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -83,7 +85,8 @@ export const Carousel = React.forwardRef(
     }, [visibleSlides, onRenderSlides, isLoading]);
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line id-length, no-restricted-globals
     const handleClose = (e: React.MouseEvent<HTMLElement>, slideId: string) => {
       e.preventDefault();
       e.stopPropagation();
@@ -218,6 +221,8 @@ export const Carousel = React.forwardRef(
                   return;
                 }
                 if (slide.href) {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                  // eslint-disable-next-line no-restricted-globals
                   global.platform.openTab({ url: slide.href });
                 }
                 onClick?.(slide.id);
@@ -248,7 +253,8 @@ export const Carousel = React.forwardRef(
               onClose={
                 Boolean(handleClose) && !slide.undismissable
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-                  // eslint-disable-next-line id-length
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                  // eslint-disable-next-line id-length, no-restricted-globals
                   ? (e: React.MouseEvent<HTMLElement>) =>
                       handleClose(e, slide.id)
                   : undefined

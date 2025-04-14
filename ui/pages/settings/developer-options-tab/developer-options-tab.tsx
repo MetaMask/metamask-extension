@@ -96,6 +96,8 @@ const DeveloperOptionsTab = () => {
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
     if (isPopup) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const { platform } = global;
       if (platform?.openExtensionInBrowser) {
         platform?.openExtensionInBrowser(backUpSRPRoute, null, true);
@@ -117,6 +119,8 @@ const DeveloperOptionsTab = () => {
   const renderAnnouncementReset = () => {
     return (
       <Box
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         ref={settingsRefs[1] as React.RefObject<HTMLDivElement>}
         className="settings-page__content-row"
         display={Display.Flex}
@@ -164,6 +168,8 @@ const DeveloperOptionsTab = () => {
   const renderOnboardingReset = () => {
     return (
       <Box
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         ref={settingsRefs[2] as React.RefObject<HTMLDivElement>}
         className="settings-page__content-row"
         display={Display.Flex}
@@ -223,6 +229,8 @@ const DeveloperOptionsTab = () => {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onToggle={async (value) => handleToggleServiceWorkerAlive(!value)}
         dataTestId="developer-options-service-worker-alive-toggle"
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         settingsRef={settingsRefs[3] as React.RefObject<HTMLDivElement>}
       />
     );
@@ -268,6 +276,8 @@ const DeveloperOptionsTab = () => {
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}
         paddingTop={6}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
       >
         Current States
@@ -279,6 +289,8 @@ const DeveloperOptionsTab = () => {
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}
         paddingTop={6}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
       >
         Reset States

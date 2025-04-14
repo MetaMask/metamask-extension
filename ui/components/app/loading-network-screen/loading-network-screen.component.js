@@ -93,6 +93,8 @@ export default class LoadingNetworkScreen extends PureComponent {
     return (
       <Popover
         onClose={() => {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           window.clearTimeout(this.cancelCallTimeout);
           this.setState({ showErrorScreen: false });
         }}
@@ -115,6 +117,8 @@ export default class LoadingNetworkScreen extends PureComponent {
         <Box display={DISPLAY.FLEX} padding={4} gap={2}>
           <ButtonSecondary
             onClick={() => {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+              // eslint-disable-next-line no-restricted-globals
               window.clearTimeout(this.cancelCallTimeout);
               this.setState({ showErrorScreen: false });
               showNetworkDropdown();
@@ -129,6 +133,8 @@ export default class LoadingNetworkScreen extends PureComponent {
               onClick={() => {
                 this.setState({ showErrorScreen: false });
                 setActiveNetwork(...setProviderArgs);
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                // eslint-disable-next-line no-restricted-globals
                 window.clearTimeout(this.cancelCallTimeout);
                 this.cancelCallTimeout = setTimeout(
                   this.cancelCall,
@@ -173,6 +179,8 @@ export default class LoadingNetworkScreen extends PureComponent {
     const { providerConfig } = this.props;
     const { providerConfig: prevProvider } = prevProps;
     if (providerConfig.type !== prevProvider.type) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.clearTimeout(this.cancelCallTimeout);
       this.setState({ showErrorScreen: false });
       this.cancelCallTimeout = setTimeout(
@@ -183,6 +191,8 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   componentWillUnmount = () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.clearTimeout(this.cancelCallTimeout);
   };
 

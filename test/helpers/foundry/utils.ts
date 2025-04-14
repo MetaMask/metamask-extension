@@ -62,6 +62,8 @@ export function say(message: string) {
  * @returns The `--version` reported by the binary
  * @throws If the binary fails to report its version
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 export function getVersion(binPath: string): Buffer {
   try {
     return execFileSync(binPath, ['--version']).subarray(0, -1); // ignore newline

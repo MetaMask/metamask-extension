@@ -31,6 +31,8 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
   if (!isObject(state.PreferencesController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `typeof state.PreferencesController is ${typeof state.PreferencesController}`,
@@ -42,6 +44,8 @@ function transformState(state: Record<string, unknown>) {
     !hasProperty(state, 'NetworkController') ||
     !isObject(state.NetworkController)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `typeof state.NetworkController is ${typeof state.NetworkController}`,
@@ -57,6 +61,8 @@ function transformState(state: Record<string, unknown>) {
       state.NetworkController.networkConfigurations &&
       state.PreferencesController.frequentRpcListDetail === undefined;
     if (!inPost077SupplementFor082State) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `typeof state.PreferencesController.frequentRpcListDetail is ${typeof state
@@ -71,6 +77,8 @@ function transformState(state: Record<string, unknown>) {
       state.PreferencesController.frequentRpcListDetail.find(
         (element) => !isObject(element),
       );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `state.PreferencesController.frequentRpcListDetail contains an element of type ${typeof erroneousElement}`,

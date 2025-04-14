@@ -51,6 +51,8 @@ describe('AwaitingSwap', () => {
     expect(getByText('USDC')).toBeInTheDocument();
     expect(getByText('View in activity')).toBeInTheDocument();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.awaiting-swap__main-description'),
     ).toMatchSnapshot();
     expect(getByText('View in activity')).toBeInTheDocument();

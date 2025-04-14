@@ -3,6 +3,8 @@ import { useWindowFocus } from './useWindowFocus';
 
 describe('useWindowFocus', () => {
   it('return true if the window is focused initially', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     jest.spyOn(document, 'hasFocus').mockReturnValue(true);
 
     const { result } = renderHook(() => useWindowFocus());
@@ -11,6 +13,8 @@ describe('useWindowFocus', () => {
   });
 
   it('return false if the window is not focused initially', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     jest.spyOn(document, 'hasFocus').mockReturnValue(false);
 
     const { result } = renderHook(() => useWindowFocus());
@@ -22,6 +26,8 @@ describe('useWindowFocus', () => {
     const { result } = renderHook(() => useWindowFocus());
 
     act(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.dispatchEvent(new Event('focus'));
     });
 
@@ -32,6 +38,8 @@ describe('useWindowFocus', () => {
     const { result } = renderHook(() => useWindowFocus());
 
     act(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.dispatchEvent(new Event('blur'));
     });
 

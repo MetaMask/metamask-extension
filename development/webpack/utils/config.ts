@@ -7,6 +7,8 @@ import type { Variables } from '../../lib/variables';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const BUILDS_YML_PATH = join(__dirname, '../../../builds.yml');
 
 /**
@@ -29,6 +31,8 @@ function coerce(value: string) {
  */
 function loadEnv(): Map<string, unknown> {
   const definitions = new Map<string, unknown>();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   Object.entries(process.env).forEach(([key, value]) => {
     if (typeof value === 'undefined') return;
     definitions.set(key, coerce(value));
@@ -206,6 +210,8 @@ function loadConfigVars(
   { env, features }: BuildConfig,
 ) {
   const definitions = loadEnv();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   addRc(definitions, join(__dirname, '../../../.metamaskrc'));
   addVars(activeBuild.env);
   activeBuild.features?.forEach((feature) => addVars(features[feature]?.env));

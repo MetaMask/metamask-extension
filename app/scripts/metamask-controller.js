@@ -7867,6 +7867,8 @@ export default class MetamaskController extends EventEmitter {
    * Only webhid connections are supported in chrome and u2f in firefox.
    */
   async setLedgerTransportPreference(keyring) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const transportType = window.navigator.hid
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f;

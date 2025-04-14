@@ -38,6 +38,8 @@ function transformState(state: Record<string, unknown>): void {
   const accountsControllerState = state.AccountsController;
 
   if (!isObject(accountsControllerState)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid AccountsController state of type '${typeof accountsControllerState}'`,
@@ -45,6 +47,8 @@ function transformState(state: Record<string, unknown>): void {
     );
     return;
   } else if (!hasProperty(accountsControllerState, 'internalAccounts')) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid AccountsController state, missing internalAccounts`,
@@ -52,6 +56,8 @@ function transformState(state: Record<string, unknown>): void {
     );
     return;
   } else if (!isObject(accountsControllerState.internalAccounts)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid AccountsController internalAccounts state of type '${typeof accountsControllerState.internalAccounts}'`,
@@ -61,6 +67,8 @@ function transformState(state: Record<string, unknown>): void {
   } else if (
     !hasProperty(accountsControllerState.internalAccounts, 'selectedAccount')
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid AccountsController internalAccounts state, missing selectedAccount`,
@@ -70,6 +78,8 @@ function transformState(state: Record<string, unknown>): void {
   } else if (
     typeof accountsControllerState.internalAccounts.selectedAccount !== 'string'
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid AccountsController internalAccounts.selectedAccount state of type '${typeof accountsControllerState
@@ -80,6 +90,8 @@ function transformState(state: Record<string, unknown>): void {
   } else if (
     !hasProperty(accountsControllerState.internalAccounts, 'accounts')
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid AccountsController internalAccounts state, missing accounts`,
@@ -87,6 +99,8 @@ function transformState(state: Record<string, unknown>): void {
     );
     return;
   } else if (!isObject(accountsControllerState.internalAccounts.accounts)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid AccountsController internalAccounts.accounts state of type '${typeof accountsControllerState
@@ -112,6 +126,8 @@ function transformState(state: Record<string, unknown>): void {
     accountsControllerState.internalAccounts.accounts,
   )[0];
   if (!isObject(firstAccount)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid AccountsController internalAccounts.accounts state, entry found of type '${typeof firstAccount}'`,
@@ -119,6 +135,8 @@ function transformState(state: Record<string, unknown>): void {
     );
     return;
   } else if (!hasProperty(firstAccount, 'id')) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid AccountsController internalAccounts.accounts state, entry found that is missing an id`,
@@ -126,6 +144,8 @@ function transformState(state: Record<string, unknown>): void {
     );
     return;
   } else if (typeof firstAccount.id !== 'string') {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid AccountsController internalAccounts.accounts state, entry found with an id of type '${typeof firstAccount.id}'`,

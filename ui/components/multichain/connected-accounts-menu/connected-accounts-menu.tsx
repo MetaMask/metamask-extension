@@ -41,6 +41,8 @@ export const ConnectedAccountsMenu = ({
 }: {
   isOpen: boolean;
   account: Identity;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   anchorElement: HTMLElement | null;
   disableAccountSwitcher: boolean;
   onClose: () => void;
@@ -51,6 +53,8 @@ export const ConnectedAccountsMenu = ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
   // eslint-disable-next-line id-length
   const t = useI18nContext();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const popoverDialogRef = useRef<HTMLDivElement | null>(null);
   const [showPermissionModal, setShowPermissionModal] = useState(false);
   const permissions = useSelector(getPermissionsForActiveTab);
@@ -68,9 +72,13 @@ export const ConnectedAccountsMenu = ({
   );
 
   useEffect(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [handleClickOutside]);

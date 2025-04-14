@@ -33,6 +33,8 @@ export function generateCases<T extends object>(obj: T): Combination<T>[] {
 
 export function mockWebpack(
   files: string[],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   contents: (string | Buffer)[],
   maps: (string | null)[],
   devtool: 'source-map' | 'hidden-source-map' | false = 'source-map',

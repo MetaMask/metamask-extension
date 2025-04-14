@@ -46,7 +46,8 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
       paddingInlineEnd={1}
       tabIndex={0}
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line id-length, no-restricted-globals
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
@@ -57,6 +58,8 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
           isMetaMetricsEnabled,
           isMarketingEnabled,
         );
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         global.platform.openTab({ url });
         // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
         // eslint-disable-next-line @typescript-eslint/no-floating-promises

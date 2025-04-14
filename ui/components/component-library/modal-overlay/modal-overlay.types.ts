@@ -13,6 +13,8 @@ export interface ModalOverlayStyleUtilityProps extends StyleUtilityProps {
    * onClick handler for the overlay
    * Not necessary when used with Modal and closeOnClickOutside is true
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
   /**
    * Additional className to add to the ModalOverlay

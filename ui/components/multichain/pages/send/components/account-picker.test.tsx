@@ -111,6 +111,8 @@ describe('SendPageAccountPicker', () => {
       const { getByTestId } = render();
       fireEvent.click(getByTestId('send-page-account-picker'));
       expect(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         document.querySelector('.multichain-account-menu-popover'),
       ).toBeInTheDocument();
     });

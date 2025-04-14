@@ -38,6 +38,8 @@ function transformState(state: Record<string, unknown>): void {
   const tokensControllerState = state.TokensController;
 
   if (!isObject(tokensControllerState)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid TokensController state of type '${typeof tokensControllerState}'`,
@@ -54,6 +56,8 @@ function transformState(state: Record<string, unknown>): void {
         'allTokens',
       );
     } else {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException(
         new Error(
           `Migration ${version}: Invalid allTokens state of type '${typeof tokensControllerState.allTokens}'`,
@@ -70,6 +74,8 @@ function transformState(state: Record<string, unknown>): void {
         'allDetectedTokens',
       );
     } else {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException(
         new Error(
           `Migration ${version}: Invalid allDetectedTokens state of type '${typeof tokensControllerState.allDetectedTokens}'`,
@@ -91,6 +97,8 @@ function transformState(state: Record<string, unknown>): void {
           token.decimals === null &&
           hasProperty(token, 'address')
         ) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           global.sentry?.captureMessage(
             `Migration ${version}: Removed token with decimals === null in tokens. Address: ${token.address}`,
           );
@@ -100,6 +108,8 @@ function transformState(state: Record<string, unknown>): void {
       },
     );
   } else if (hasProperty(tokensControllerState, 'tokens')) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid tokens state of type '${typeof tokensControllerState.tokens}'`,
@@ -120,6 +130,8 @@ function transformState(state: Record<string, unknown>): void {
           token.decimals === null &&
           hasProperty(token, 'address')
         ) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           global.sentry?.captureMessage(
             `Migration ${version}: Removed token with decimals === null in detectedTokens. Address: ${token.address}`,
           );
@@ -128,6 +140,8 @@ function transformState(state: Record<string, unknown>): void {
         return true;
       });
   } else if (hasProperty(tokensControllerState, 'detectedTokens')) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException(
       new Error(
         `Migration ${version}: Invalid detectedTokens state of type '${typeof tokensControllerState.detectedTokens}'`,
@@ -163,6 +177,8 @@ function transformTokenCollection(
               token.decimals === null &&
               hasProperty(token, 'address')
             ) {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+              // eslint-disable-next-line no-restricted-globals
               global.sentry?.captureMessage(
                 `Migration ${version}: Removed token with decimals === null in ${propertyName}. Address: ${token.address}`,
               );

@@ -14,6 +14,8 @@ describe('Four Byte', () => {
     const fetchMock = jest.fn();
 
     beforeEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       jest.spyOn(global, 'fetch').mockImplementation(fetchMock);
     });
 

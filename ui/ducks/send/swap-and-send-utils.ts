@@ -152,6 +152,8 @@ const SWAP_AND_SEND_SLIPPAGE = '2';
 
 const SWAPS_API_VERSION = 'v2';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const BASE_URL = process.env.SWAPS_USE_DEV_APIS
   ? SWAPS_DEV_API_V2_BASE_URL
   : SWAPS_API_V2_BASE_URL;

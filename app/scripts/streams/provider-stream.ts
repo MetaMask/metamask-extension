@@ -321,6 +321,8 @@ function extensionStreamMessageListener(msg: MessageType) {
     msg.data.method === 'metamask_chainChanged'
   ) {
     METAMASK_EXTENSION_CONNECT_SENT = false;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.postMessage(
       {
         target: METAMASK_INPAGE, // the post-message-stream "target"
@@ -333,6 +335,8 @@ function extensionStreamMessageListener(msg: MessageType) {
           },
         },
       },
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.location.origin,
     );
   }
@@ -344,6 +348,8 @@ function extensionStreamMessageListener(msg: MessageType) {
  * Relies on @metamask/object-multiplex and post-message-stream implementation details.
  */
 function notifyInpageOfStreamFailure() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.postMessage(
     {
       target: METAMASK_INPAGE, // the post-message-stream "target"
@@ -356,6 +362,8 @@ function notifyInpageOfStreamFailure() {
         },
       },
     },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.location.origin,
   );
 }

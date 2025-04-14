@@ -118,6 +118,8 @@ function transformState(oldState: Record<string, unknown>) {
   }
 
   if (!isObject(newState.PermissionController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.PermissionController is ${typeof newState.PermissionController}`,
@@ -130,6 +132,8 @@ function transformState(oldState: Record<string, unknown>) {
     !hasProperty(newState, 'NetworkController') ||
     !isObject(newState.NetworkController)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.NetworkController is ${typeof newState.NetworkController}`,
@@ -150,6 +154,8 @@ function transformState(oldState: Record<string, unknown>) {
   }
 
   if (!isObject(newState.SelectedNetworkController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.SelectedNetworkController is ${typeof newState.SelectedNetworkController}`,
@@ -167,6 +173,8 @@ function transformState(oldState: Record<string, unknown>) {
   } = newState;
 
   if (!isObject(subjects)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.PermissionController.subjects is ${typeof subjects}`,
@@ -176,6 +184,8 @@ function transformState(oldState: Record<string, unknown>) {
   }
 
   if (!selectedNetworkClientId || typeof selectedNetworkClientId !== 'string') {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.NetworkController.selectedNetworkClientId is ${typeof selectedNetworkClientId}`,
@@ -185,6 +195,8 @@ function transformState(oldState: Record<string, unknown>) {
   }
 
   if (!isObject(networkConfigurationsByChainId)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId is ${typeof newState
@@ -199,6 +211,8 @@ function transformState(oldState: Record<string, unknown>) {
     !isObject(newState.SelectedNetworkController.domains)
   ) {
     const { domains } = newState.SelectedNetworkController;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.SelectedNetworkController.domains is ${typeof domains}`,
@@ -219,6 +233,8 @@ function transformState(oldState: Record<string, unknown>) {
       networkConfigurationsByChainId,
     )) {
       if (!isObject(networkConfiguration)) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         global.sentry?.captureException(
           new Error(
             `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"] is ${typeof networkConfiguration}`,
@@ -228,6 +244,8 @@ function transformState(oldState: Record<string, unknown>) {
         continue;
       }
       if (!Array.isArray(networkConfiguration.rpcEndpoints)) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         global.sentry?.captureException(
           new Error(
             `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints is ${typeof networkConfiguration.rpcEndpoints}`,
@@ -239,6 +257,8 @@ function transformState(oldState: Record<string, unknown>) {
 
       for (const rpcEndpoint of networkConfiguration.rpcEndpoints) {
         if (!isObject(rpcEndpoint)) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           global.sentry?.captureException(
             new Error(
               `Migration ${version}: typeof state.NetworkController.networkConfigurationsByChainId["${chainId}"].rpcEndpoints[] is ${typeof rpcEndpoint}`,
@@ -263,6 +283,8 @@ function transformState(oldState: Record<string, unknown>) {
 
     const builtInChainId = BUILT_IN_NETWORKS.get(networkClientId);
     if (!builtInChainId) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException(
         new Error(
           `Migration ${version}: No chainId found for ${propertyName} "${networkClientId}"`,
@@ -283,6 +305,8 @@ function transformState(oldState: Record<string, unknown>) {
   // perform mutations on the cloned state
   for (const [origin, subject] of Object.entries(subjects)) {
     if (!isObject(subject)) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `Migration ${version}: Invalid subject for origin "${origin}" of type ${typeof subject}`,
@@ -295,6 +319,8 @@ function transformState(oldState: Record<string, unknown>) {
       !hasProperty(subject, 'permissions') ||
       !isObject(subject.permissions)
     ) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `Migration ${version}: Invalid permissions for origin "${origin}" of type ${typeof subject.permissions}`,
@@ -319,6 +345,8 @@ function transformState(oldState: Record<string, unknown>) {
       continue;
     }
     if (!isPermissionConstraint(ethAccountsPermission)) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
@@ -330,6 +358,8 @@ function transformState(oldState: Record<string, unknown>) {
     }
     const accountsCaveatValue = ethAccountsPermission.caveats?.[0]?.value;
     if (!isNonEmptyArrayOfStrings(accountsCaveatValue)) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
@@ -349,6 +379,8 @@ function transformState(oldState: Record<string, unknown>) {
     // this permission is new so it may not exist
     if (permittedChainsPermission) {
       if (!isPermissionConstraint(permittedChainsPermission)) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         global.sentry?.captureException?.(
           new Error(
             `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${
@@ -360,6 +392,8 @@ function transformState(oldState: Record<string, unknown>) {
       }
       const chainsCaveatValue = permittedChainsPermission.caveats?.[0]?.value;
       if (!isNonEmptyArrayOfStrings(chainsCaveatValue)) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         global.sentry?.captureException?.(
           new Error(
             `Migration ${version}: Invalid state.PermissionController.subjects[${origin}].permissions[${

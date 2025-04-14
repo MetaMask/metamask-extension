@@ -33,6 +33,8 @@ describe('I18N Module', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     clearCaches();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.IN_TEST = 'true';
   });
 
@@ -99,6 +101,8 @@ describe('I18N Module', () => {
 
         describe('if using fallback locale', () => {
           it('logs error', () => {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             delete process.env.IN_TEST;
 
             expect(
@@ -134,7 +138,11 @@ describe('I18N Module', () => {
           });
 
           it('throws if ENABLE_SETTINGS_PAGE_DEV_OPTIONS is set true', () => {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             process.env.IN_TEST = String(false);
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS = String(true);
             expect(() =>
               getMessage(
@@ -341,6 +349,8 @@ describe('I18N Module', () => {
     it('adds locale data if function exists', async () => {
       const addMock = jest.fn();
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.Intl = {
         RelativeTimeFormat: {
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
@@ -362,6 +372,8 @@ describe('I18N Module', () => {
     it('does not add locale data if language tag already processed', async () => {
       const addMock = jest.fn();
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.Intl = {
         RelativeTimeFormat: {
           // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

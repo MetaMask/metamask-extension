@@ -54,6 +54,8 @@ export const TextField: TextFieldComponent = React.forwardRef(
     }: TextFieldProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const internalInputRef = useRef<HTMLInputElement | null>(null);
     const [focused, setFocused] = useState(false);
 
@@ -65,6 +67,8 @@ export const TextField: TextFieldComponent = React.forwardRef(
       }
     }, [disabled]);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleClick = (event: React.MouseEvent<HTMLInputElement>) => {
       const { current } = internalInputRef;
 
@@ -78,16 +82,22 @@ export const TextField: TextFieldComponent = React.forwardRef(
       }
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
       setFocused(false);
       onBlur?.(event);
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
       setFocused(true);
       onFocus?.(event);
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleInputRef = (inputElementRef: HTMLInputElement | null) => {
       // Assign the input element reference to the internal reference
       internalInputRef.current = inputElementRef;

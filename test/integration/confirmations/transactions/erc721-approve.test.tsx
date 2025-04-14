@@ -138,7 +138,8 @@ describe('ERC721 Approve Confirmation', () => {
       chainId: '0xaa36a7',
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-globals
     global.ethereumProvider = provider as any;
   });
 
@@ -163,7 +164,8 @@ describe('ERC721 Approve Confirmation', () => {
   });
 
   afterAll(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-globals
     delete (global as any).ethereumProvider;
   });
 

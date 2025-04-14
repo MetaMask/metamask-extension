@@ -104,6 +104,8 @@ console.log('I am Groot.');
       const result = getCodeFenceLoader(features);
 
       assert.deepStrictEqual(result, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         loader: require.resolve('../utils/loaders/codeFenceLoader'),
         options: { features },
       });

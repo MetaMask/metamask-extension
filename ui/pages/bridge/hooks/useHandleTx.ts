@@ -167,6 +167,8 @@ export default function useHandleTx() {
     await dispatch(setDefaultHomeActiveTabName('activity'));
     // Submit a signing request to the snap
     const snapResponse = await snapSender.send({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       id: crypto.randomUUID(),
       jsonrpc: '2.0',
       method: KeyringRpcMethod.SubmitRequest,
@@ -179,6 +181,8 @@ export default function useHandleTx() {
           },
           method: 'signAndSendTransaction',
         },
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         id: crypto.randomUUID(),
         account: selectedAccount.id,
         scope: currentChainId,
@@ -221,6 +225,8 @@ export default function useHandleTx() {
     // Create a transaction meta object with bridge-specific fields
     const txMeta: TransactionMeta = {
       ...fieldsToAddToTxMeta,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       id: crypto.randomUUID(),
       chainId: currentChainId as Hex,
       networkClientId: selectedAccount.id,

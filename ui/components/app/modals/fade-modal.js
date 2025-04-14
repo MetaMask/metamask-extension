@@ -7,7 +7,11 @@ let extraSheet;
 const insertRule = (css) => {
   if (!extraSheet) {
     // First time, create an extra stylesheet for adding rules
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     extraSheet = document.createElement('style');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     document.getElementsByTagName('head')[0].appendChild(extraSheet);
     // Keep reference to actual StyleSheet object (`styleSheet` for IE < 9)
     extraSheet = extraSheet.sheet || extraSheet.styleSheet;
@@ -108,6 +112,8 @@ const addEndEventListener = (node, eventListener) => {
   if (endEvents.length === 0) {
     // If CSS transitions are not supported, trigger an "end animation"
     // event immediately.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.setTimeout(eventListener, 0);
     return;
   }
@@ -287,10 +293,14 @@ class FadeModal extends Component {
   };
 
   UNSAFE_componentDidMount = () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.addEventListener('keydown', this.listenKeyboard, true);
   };
 
   UNSAFE_componentWillUnmount = () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.removeEventListener('keydown', this.listenKeyboard, true);
   };
 }

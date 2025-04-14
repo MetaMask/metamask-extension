@@ -23,6 +23,8 @@ const cache: Map<string, Commit> = new Map();
  * @returns The latest commit's hash and timestamp.
  */
 export function getLatestCommit(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   gitDir: string = join(__dirname, '../../../.git'),
 ): Commit {
   const cached = cache.get(gitDir);
@@ -42,6 +44,8 @@ export function getLatestCommit(
   ] as const;
   const { stdout } = spawnSync('git', args, {
     encoding: 'buffer',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     env: process.env,
     maxBuffer: 256, // we really only need like 19 bytes
     stdio: ['ignore', 'pipe', 'ignore'],

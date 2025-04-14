@@ -57,6 +57,8 @@ export function handleSettingsRefs(t, tabMessage, settingsRefs) {
   const settingsSearchJsonFiltered = getFilteredSettingsRoutes(t, tabMessage);
   const settingsRefsIndex = settingsSearchJsonFiltered.findIndex(
     (routeObject) =>
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       routeObject.route.substring(1) === window.location.hash.substring(1),
   );
   if (settingsRefsIndex === -1) {
@@ -73,7 +75,11 @@ export function handleSettingsRefs(t, tabMessage, settingsRefs) {
       behavior: 'smooth',
     });
     settingsRef.current.focus();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const historySettingsUrl = window.location.hash.split('#')[1];
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.location.hash = historySettingsUrl;
   }
 }
@@ -105,8 +111,12 @@ export const escapeRegExp = (input) => {
 };
 
 export function highlightSearchedText() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const searchElem = document.getElementById('search-settings');
   const searchRegex = new RegExp(escapeRegExp(searchElem.value), 'gi');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const results = document.querySelectorAll(
     '.settings-page__header__search__list__item',
   );

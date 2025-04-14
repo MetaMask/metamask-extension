@@ -51,6 +51,8 @@ export function useListNotifications(): {
     setLoading(true);
     setError(null);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const urlParams = new URLSearchParams(window.location.search);
     const previewToken = urlParams.get('previewToken');
 

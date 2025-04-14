@@ -555,6 +555,8 @@ function MultichainBridgeTransactionDetailsModal({
             size={ButtonSize.Md}
             variant={ButtonVariant.Link}
             onClick={() => {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+              // eslint-disable-next-line no-restricted-globals
               global.platform.openTab({
                 url: getTransactionUrl(id, chain),
               });

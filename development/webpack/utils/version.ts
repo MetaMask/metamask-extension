@@ -16,6 +16,8 @@ export const getExtensionVersion = (
   { id, isPrerelease }: Pick<BuildType, 'id' | 'isPrerelease'>,
   releaseVersion: number,
 ): { version: string; versionName: string } => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const { version } = require('../../../package.json') as { version: string };
 
   if (id < 10 || id > 64 || releaseVersion < 0 || releaseVersion > 999) {

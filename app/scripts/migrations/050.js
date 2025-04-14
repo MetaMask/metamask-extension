@@ -24,6 +24,8 @@ export default {
     versionedData.meta.version = version;
 
     LEGACY_LOCAL_STORAGE_KEYS.forEach((key) =>
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.localStorage?.removeItem(key),
     );
 

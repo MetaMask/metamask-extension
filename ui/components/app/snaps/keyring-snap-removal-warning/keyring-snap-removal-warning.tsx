@@ -155,7 +155,8 @@ export default function KeyringRemovalSnapWarning({
                     );
                   }}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-                  // eslint-disable-next-line id-length
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                  // eslint-disable-next-line id-length, no-restricted-globals
                   onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
                     e.preventDefault();
                   }}

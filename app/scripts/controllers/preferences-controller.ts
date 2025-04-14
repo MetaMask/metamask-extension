@@ -216,6 +216,8 @@ export const getDefaultPreferencesControllerState =
     useAddressBarEnsResolution: true,
     // Ledger transport type is deprecated. We currently only support webhid
     // on chrome, and u2f on firefox.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     ledgerTransportType: window.navigator.hid
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f,

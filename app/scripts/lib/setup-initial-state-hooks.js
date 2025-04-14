@@ -42,6 +42,8 @@ const persistedStateMask = {
  */
 globalThis.stateHooks.getSentryState = function () {
   const sentryState = {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     browser: window.navigator.userAgent,
     // we use the manifest.json version from getVersion and not
     // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`

@@ -275,6 +275,8 @@ function setupStateHooks(store) {
      *
      * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
      */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.stateHooks.throwTestError = async function (msg = 'Test Error') {
       const error = new Error(msg);
       error.name = 'TestError';
@@ -287,6 +289,8 @@ function setupStateHooks(store) {
      *
      * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
      */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.stateHooks.throwTestBackgroundError = async function (
       msg = 'Test Error',
     ) {
@@ -294,19 +298,27 @@ function setupStateHooks(store) {
     };
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     // we use the manifest.json version from getVersion and not
     // `process.env.METAMASK_VERSION` as they can be different (see `getVersion`
     // for more info)
     state.version = global.platform.getVersion();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     state.browser = window.navigator.userAgent;
     return state;
   };
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();
     return maskObject(reduxState, SENTRY_UI_STATE);
   };
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.stateHooks.getLogs = function () {
     // These logs are logged by LoggingController
     const reduxState = store.getState();
@@ -320,8 +332,14 @@ function setupStateHooks(store) {
   };
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 window.logStateString = async function (cb) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const state = await window.stateHooks.getCleanAppState();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const logs = window.stateHooks.getLogs();
   browser.runtime
     .getPlatformInfo()
@@ -336,7 +354,11 @@ window.logStateString = async function (cb) {
     });
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 window.logState = function (toClipboard) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   return window.logStateString((err, result) => {
     if (err) {
       console.error(err.message);

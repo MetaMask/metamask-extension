@@ -42,6 +42,8 @@ function removeObsoleteSnapControllerState(
   if (!hasProperty(state, 'SnapController')) {
     return;
   } else if (!isObject(state.SnapController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid SnapController state of type '${typeof state.SnapController}'`,
@@ -95,6 +97,8 @@ function removeObsoleteNetworkControllerState(
   if (!hasProperty(state, 'NetworkController')) {
     return;
   } else if (!isObject(state.NetworkController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid NetworkController state of type '${typeof state.NetworkController}'`,
@@ -113,6 +117,8 @@ function removeObsoleteNetworkControllerState(
     networkControllerState.providerConfig !== undefined
   ) {
     if (!isObject(networkControllerState.providerConfig)) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `Migration ${version}: Invalid NetworkController providerConfig state of type '${typeof state
@@ -126,6 +132,8 @@ function removeObsoleteNetworkControllerState(
     const validNetworkConfigurationIds = [];
     if (hasProperty(networkControllerState, 'networkConfigurations')) {
       if (!isObject(networkControllerState.networkConfigurations)) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         global.sentry?.captureException?.(
           new Error(
             `Migration ${version}: Invalid NetworkController networkConfigurations state of type '${typeof networkControllerState.networkConfigurations}'`,
@@ -173,6 +181,8 @@ function removeObsoletePhishingControllerState(
   if (!hasProperty(state, 'PhishingController')) {
     return;
   } else if (!isObject(state.PhishingController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry.captureException(
       new Error(
         `Migration ${version}: Invalid PhishingController state of type '${typeof state.PhishingController}'`,

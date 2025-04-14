@@ -317,6 +317,8 @@ describe('toast display', () => {
 
   it('renders toastContainer on default route', async () => {
     await render([DEFAULT_ROUTE], getToastDisplayTestState(new Date('9999')));
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const toastContainer = document.querySelector('.toasts-container');
     expect(toastContainer).toBeInTheDocument();
   });
@@ -326,6 +328,8 @@ describe('toast display', () => {
       [CONFIRMATION_V_NEXT_ROUTE],
       getToastDisplayTestState(new Date(0)),
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const toastContainer = document.querySelector('.toasts-container');
     expect(toastContainer).not.toBeInTheDocument();
   });

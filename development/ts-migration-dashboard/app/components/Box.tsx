@@ -21,6 +21,8 @@ export default function Box({
 }) {
   const isTest = /\.test\.(?:js|tsx?)/u.test(module.id);
   const isStorybookModule = /\.stories\.(?:js|tsx?)/u.test(module.id);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,6 +45,8 @@ export default function Box({
     }
   }, [ref]);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     toggleConnectionsFor(module.id);

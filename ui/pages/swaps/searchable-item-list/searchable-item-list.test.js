@@ -59,9 +59,13 @@ describe('SearchableItemList', () => {
       getByText(props.itemsToSearch[0].rightSecondaryLabel),
     ).toBeInTheDocument();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.searchable-item-list__search'),
     ).toMatchSnapshot();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.searchable-item-list__item'),
     ).toMatchSnapshot();
   });

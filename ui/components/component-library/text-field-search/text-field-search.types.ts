@@ -33,6 +33,8 @@ export interface TextFieldSearchStyleUtilityProps
   /**
    * The onChange handler of the TextFieldSearch
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   /**
    * The clear button for the TextFieldSearch.

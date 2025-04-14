@@ -306,8 +306,14 @@ const PrepareBridgePage = () => {
   }, []);
 
   // Scroll to bottom of the page when banners are shown
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (isInsufficientGasForQuote(nativeAssetBalance)) {

@@ -85,6 +85,8 @@ describe('AdvancedGasFeePopover', () => {
 
   it('should enable save button if priority fee 0 is entered', async () => {
     await render();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[1], {
       target: { value: 0 },
     });
@@ -93,6 +95,8 @@ describe('AdvancedGasFeePopover', () => {
 
   it('should disable save button if priority fee entered is greater than base fee', async () => {
     await render();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[1], {
       target: { value: 100000 },
     });
@@ -102,14 +106,20 @@ describe('AdvancedGasFeePopover', () => {
   it('should disable save button if gas limit beyond range is entered', async () => {
     await render();
     fireEvent.click(screen.queryByText('Edit'));
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[3], {
       target: { value: 0 },
     });
     expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[3], {
       target: { value: 30000 },
     });
     expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[3], {
       target: { value: MAX_GAS_LIMIT_DEC + 1 },
     });

@@ -46,6 +46,8 @@ const useLedgerConnection = () => {
         ledgerTransportType === LedgerTransportTypes.webhid &&
         webHidConnectedStatus !== WebHIDConnectedStatuses.connected
       ) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const devices = await window.navigator?.hid?.getDevices();
         const webHidIsConnected = devices?.some(
           (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),

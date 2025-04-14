@@ -11,6 +11,8 @@ export type UIComponentParams<T extends JSXElement> = {
   useFooter?: boolean;
   onCancel?: () => void;
   promptLegacyProps?: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     onInputChange: (event: ReactChangeEvent<HTMLInputElement>) => void;
     inputValue: string;
     placeholder?: string;

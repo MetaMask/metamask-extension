@@ -40,8 +40,14 @@ export async function exportAsFile(filename, data, contentType) {
  */
 function supportsShowSaveFilePicker() {
   return (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     typeof window !== 'undefined' &&
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     typeof window.showSaveFilePicker !== 'undefined' &&
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     typeof window.Blob !== 'undefined'
   );
 }
@@ -55,9 +61,13 @@ function supportsShowSaveFilePicker() {
  * @returns {Promise<void>}
  */
 async function saveFileUsingFilePicker(filename, data, contentType) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const blob = new window.Blob([data], { contentType });
   const fileExtension = ExtensionForContentType[contentType];
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const handle = await window.showSaveFilePicker({
     suggestedName: filename,
     types: [
@@ -86,10 +96,16 @@ async function saveFileUsingFilePicker(filename, data, contentType) {
  */
 function saveFileUsingDataUri(filename, data, contentType) {
   const b64 = Buffer.from(data, 'utf8').toString('base64');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const elem = document.createElement('a');
   elem.href = `data:${contentType};Base64,${b64}`;
   elem.download = filename;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   document.body.appendChild(elem);
   elem.click();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   document.body.removeChild(elem);
 }

@@ -70,6 +70,8 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       return;
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const currentRef = ref?.current as null | HTMLDivElement;
     if (!currentRef) {
       return;

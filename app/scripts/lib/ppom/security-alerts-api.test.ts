@@ -36,6 +36,8 @@ describe('Security Alerts API', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.fetch = fetchMock;
 
     fetchMock.mockResolvedValue({
@@ -43,6 +45,8 @@ describe('Security Alerts API', () => {
       json: async () => RESPONSE_MOCK,
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.SECURITY_ALERTS_API_URL = BASE_URL;
   });
 
@@ -82,6 +86,8 @@ describe('Security Alerts API', () => {
     });
 
     it('throws an error if SECURITY_ALERTS_API_URL is not set', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       delete process.env.SECURITY_ALERTS_API_URL;
 
       await expect(
@@ -90,6 +96,8 @@ describe('Security Alerts API', () => {
     });
 
     it('throws an error if SECURITY_ALERTS_API_ENABLED is false', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       process.env.SECURITY_ALERTS_API_ENABLED = 'false';
 
       const isEnabled = isSecurityAlertsAPIEnabled();

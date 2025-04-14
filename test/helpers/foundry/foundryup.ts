@@ -167,6 +167,8 @@ export function main() {
 }
 
 // Only run `main` if this is the main module (not being imported for tests)
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 if (require.main === module) {
   main();
 }

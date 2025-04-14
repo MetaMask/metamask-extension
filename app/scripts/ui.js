@@ -40,6 +40,8 @@ const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 const METHOD_START_UI_SYNC = 'startUISync';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const container = document.getElementById('app-content');
 
 let extensionPort;
@@ -177,6 +179,8 @@ async function loadPhishingWarningPage() {
     // error.
     extensionStartupPhishingPageUrl.hash = '#extensionStartup';
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     iframe = window.document.createElement('iframe');
     iframe.setAttribute('src', extensionStartupPhishingPageUrl.href);
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
@@ -194,6 +198,8 @@ async function loadPhishingWarningPage() {
     iframe.addEventListener('load', deferredResolve);
 
     // This step initiates the page loading.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.document.body.appendChild(iframe);
 
     // This timeout ensures that this iframe gets cleaned up in a reasonable
@@ -248,6 +254,8 @@ async function initializeUiWithTab(
     isUIInitialised = true;
 
     if (process.env.IN_TEST) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.document?.documentElement?.classList.add('controller-loaded');
     }
 
@@ -272,6 +280,8 @@ async function queryCurrentActiveTab(windowType) {
   // Shims the activeTab for E2E test runs only if the
   // "activeTabOrigin" querystring key=value is set
   if (process.env.IN_TEST) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const searchParams = new URLSearchParams(window.location.search);
     const mockUrl = searchParams.get('activeTabOrigin');
     if (mockUrl) {
@@ -328,6 +338,8 @@ async function displayCriticalError(errorKey, err, metamaskState) {
 
   container.innerHTML = html;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const button = document.getElementById('critical-error-button');
 
   button?.addEventListener('click', (_) => {

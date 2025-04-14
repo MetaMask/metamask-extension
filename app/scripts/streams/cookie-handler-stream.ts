@@ -26,6 +26,8 @@ import { logStreamDisconnectWarning } from './stream-utils';
 
 export const isDetectedCookieMarketingSite: boolean =
   COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     (origin) => origin === window.location.origin,
   );
 
@@ -40,6 +42,8 @@ function setupCookieHandlerStreamsFromOrigin(origin: string): void {
   const cookieHandlerPageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: 'CookieHandlerPage',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     targetWindow: window,
     targetOrigin: origin,
   });
@@ -87,6 +91,8 @@ export const setupCookieHandlerExtStreams = (): void => {
     cookieHandlerMux,
     (err: Error) => {
       logStreamDisconnectWarning('MetaMask Background Multiplex', err);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.postMessage(
         {
           target: 'CookieHandlerPage',
@@ -99,6 +105,8 @@ export const setupCookieHandlerExtStreams = (): void => {
             },
           },
         },
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         window.location.origin,
       );
     },
@@ -190,6 +198,8 @@ const onMessageSetUpCookieHandlerStreams = (msg: {
  * reset the streams if the service worker resets.
  */
 export const initializeCookieHandlerSteam = (): void => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const { origin } = window.location;
   setupCookieHandlerStreamsFromOrigin(origin);
   setupCookieHandlerExtStreams();

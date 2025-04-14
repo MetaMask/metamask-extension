@@ -90,6 +90,8 @@ export default class AdvancedTab extends PureComponent {
 
   async getTextFromFile(file) {
     return new Promise((resolve, reject) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const reader = new window.FileReader();
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
       // eslint-disable-next-line id-length
@@ -144,6 +146,8 @@ export default class AdvancedTab extends PureComponent {
               large
               data-testid="advanced-setting-state-logs-button"
               onClick={() => {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                // eslint-disable-next-line no-restricted-globals
                 window.logStateString(async (err, result) => {
                   if (err) {
                     displayErrorInSettings(t('stateLogError'));

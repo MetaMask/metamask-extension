@@ -216,6 +216,8 @@ describe('NetworkListMenu', () => {
 
   it('disables toggle when on test network', () => {
     render(false, { currentChainId: CHAIN_IDS.GOERLI });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.querySelector('.toggle-button--disabled')).toBeDefined();
   });
 
@@ -238,11 +240,15 @@ describe('NetworkListMenu', () => {
     });
 
     // Contains Mainnet, Linea Mainnet and the two custom networks
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const networkItems = document.querySelectorAll(
       '.multichain-network-list-item',
     );
     expect(networkItems).toHaveLength(4);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const selectedNodes = document.querySelectorAll(
       '.multichain-network-list-item--selected',
     );
@@ -276,6 +282,8 @@ describe('NetworkListMenu', () => {
   it('does not allow deleting networks when locked', () => {
     render({ isUnlocked: false });
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelectorAll('multichain-network-list-item__delete'),
     ).toHaveLength(0);
   });

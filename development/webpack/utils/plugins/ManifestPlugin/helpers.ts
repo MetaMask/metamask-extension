@@ -49,9 +49,15 @@ export function transformManifest(
 
     if (manifestOverridesPath) {
       try {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const fs = require('node:fs');
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const path = require('node:path');
         const manifestFlagsContent = fs.readFileSync(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           path.resolve(process.cwd(), manifestOverridesPath),
           'utf8',
         );

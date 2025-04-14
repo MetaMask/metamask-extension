@@ -67,12 +67,16 @@ function transformState(state: Record<string, unknown>) {
       NetworkController: state.NetworkController,
     };
   } else if (!isObject(state.NetworkController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `typeof state.NetworkController is ${typeof state.NetworkController}`,
       ),
     );
   } else if (!isObject(state.NetworkController.providerConfig)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `typeof state.NetworkController.providerConfig is ${typeof state

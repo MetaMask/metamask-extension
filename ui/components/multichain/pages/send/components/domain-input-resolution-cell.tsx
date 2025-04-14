@@ -49,6 +49,8 @@ export const DomainInputResolutionCell = ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
   // eslint-disable-next-line id-length
   const t: (key: string, params: unknown[]) => string = useContext(I18nContext);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const titleRef = useRef<null | HTMLDivElement>(null);
   const breakpointRef = useRef<null | number>(null);
   const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);

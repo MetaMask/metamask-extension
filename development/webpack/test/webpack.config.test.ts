@@ -50,11 +50,23 @@ describe('webpack.config.test.ts', () => {
     process.argv = [process.argv0, process.argv[1]];
     // each test needs to load a fresh config, so we need to clear webpack's cache
     // TODO: can we use `await import` instead to get a fresh copy each time?
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const cliPath = require.resolve('../utils/cli.ts');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const helpersPath = require.resolve('../utils/helpers.ts');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const webpackConfigPath = require.resolve('../webpack.config.ts');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     delete require.cache[cliPath];
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     delete require.cache[helpersPath];
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     delete require.cache[webpackConfigPath];
     mock.restoreAll();
   });
@@ -65,6 +77,8 @@ describe('webpack.config.test.ts', () => {
     process.argv = [...process.argv.slice(0, 2), ...args];
     process.env = { ...env };
     mock.method(fs, 'readFileSync', (path: string, options?: null) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       if (path === resolve(__dirname, '../../../.metamaskrc')) {
         // mock `.metamaskrc`, as users might have customized it which may
         // break our tests
@@ -76,6 +90,8 @@ ${Object.entries(env)
       }
       return originalReadFileSync.call(fs, path, options);
     });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     return require('../webpack.config.ts').default;
   }
 

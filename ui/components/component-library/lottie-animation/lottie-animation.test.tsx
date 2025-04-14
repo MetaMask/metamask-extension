@@ -47,6 +47,8 @@ describe('LottieAnimation', () => {
     const { container } = render(
       <LottieAnimation data={mockData} style={customStyle} />,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveStyle('width: 100px');
     expect(element).toHaveStyle('height: 100px');
@@ -63,6 +65,8 @@ describe('LottieAnimation', () => {
         loop: false,
         autoplay: false,
         renderer: 'svg',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         container: expect.any(HTMLElement),
       }),
     );
@@ -79,6 +83,8 @@ describe('LottieAnimation', () => {
         loop: true,
         autoplay: true,
         renderer: 'svg',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         container: expect.any(HTMLElement),
       }),
     );

@@ -126,6 +126,8 @@ export default function TransactionSettings({
     if (
       inputRef &&
       enteringCustomValue &&
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.document.activeElement !== inputRef
     ) {
       inputRef.focus();

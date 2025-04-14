@@ -63,6 +63,8 @@ export function SurveyToast() {
             signal: controller.signal,
           },
           functionName: 'fetchSurveys',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           cacheOptions: { cacheRefreshTime: process.env.IN_TEST ? 0 : DAY },
         });
 
@@ -103,6 +105,8 @@ export function SurveyToast() {
     if (!survey) {
       return;
     }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform.openTab({
       url: survey.url,
     });

@@ -15,7 +15,8 @@ export type ManifestV3 = chrome.runtime.ManifestV3;
 // TODO: remove this variable when HMR is ready. The env var is for tests and
 // must also be removed everywhere.
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line @typescript-eslint/naming-convention, no-restricted-globals
 export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
 
 /**
@@ -132,6 +133,8 @@ function assertValidEntryFileName(filename: string, appRoot: string) {
     return;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const relativeFile = relative(process.cwd(), join(appRoot, filename));
   const error = `Invalid Entrypoint Filename Detected\nPath: ${relativeFile}`;
   const reason = `Filenames at the root of the extension directory starting with "_" are reserved for use by the browser.`;
@@ -157,6 +160,8 @@ function assertValidEntryFileName(filename: string, appRoot: string) {
  * It gets minimizers for the webpack build.
  */
 export function getMinimizers() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
   return [
     new TerserPlugin({
@@ -188,6 +193,8 @@ export const { colors, toGreen, toOrange, toPurple } = ((depth, esc) => {
     toOrange: (message: string) => `${esc}[1;${orange}m${message}${esc}[0m`,
     toPurple: (message: string) => `${esc}[1;${purple}m${message}${esc}[0m`,
   };
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 })((process.stderr.getColorDepth?.() as 1 | 4 | 8 | 24) || 1, '\u001b');
 
 /**
@@ -228,6 +235,8 @@ export function logStats(err?: Error | null, stats?: Stats) {
     const { name } = stats.compilation;
     const status = toGreen('successfully');
     const time = `${stats.endTime - stats.startTime} ms`;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const { version } = require('webpack');
     console.error(`${name} (webpack ${version}) compiled ${status} in ${time}`);
   }

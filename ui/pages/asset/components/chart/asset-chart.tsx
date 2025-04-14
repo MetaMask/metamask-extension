@@ -167,6 +167,8 @@ const AssetChart = ({
               onMouseMove={(event) => {
                 const data = chartRef?.current?.data?.datasets?.[0]?.data;
                 if (data) {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                  // eslint-disable-next-line no-restricted-globals
                   const target = event.target as HTMLElement;
                   const index = Math.max(
                     0,

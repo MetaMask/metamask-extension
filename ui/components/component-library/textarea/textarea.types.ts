@@ -57,18 +57,26 @@ export interface TextareaStyleUtilityProps extends StyleUtilityProps {
   /**
    * Callback fired on blur
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
   /**
    * Callback fired when the value is changed.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   /**
    * Callback fired when the Textarea is clicked on
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onClick?: (event: React.MouseEvent<HTMLTextAreaElement>) => void;
   /**
    * Callback fired on focus
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onFocus?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
   /**
    * The short hint displayed in the textarea before the user enters a value.

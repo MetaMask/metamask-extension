@@ -110,7 +110,11 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
 // TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const isDev = debugModeEnabled && !process.env.IN_TEST;
   const enhancers: StoreEnhancer[] = [];
 

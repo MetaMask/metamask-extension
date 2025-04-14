@@ -45,10 +45,14 @@ const Tooltip = React.forwardRef(
   ) => {
     const [isOpen, setIsOpen] = useState(false);
     const [referenceElement, setReferenceElement] =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       useState<HTMLSpanElement | null>(null);
 
     const handleMouseEnter = () => setIsOpen(true);
     const handleMouseLeave = () => setIsOpen(false);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const setBoxRef = (newRef: HTMLSpanElement | null) =>
       setReferenceElement(newRef);
 

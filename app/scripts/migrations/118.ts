@@ -35,6 +35,8 @@ function transformState(state: Record<string, any>) {
 
   if (!isObject(state.PreferencesController)) {
     const controllerType = typeof state.PreferencesController;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(`state.PreferencesController is type: ${controllerType}`),
     );

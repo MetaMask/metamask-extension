@@ -47,16 +47,22 @@ export const Textarea: TextareaComponent = React.forwardRef(
     }: TextareaProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleClick = (event: React.MouseEvent<HTMLTextAreaElement>) => {
       if (onClick && (!isDisabled || !disabled)) {
         onClick?.(event);
       }
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleBlur = (event: React.FocusEvent<HTMLTextAreaElement>) => {
       onBlur?.(event);
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleFocus = (event: React.FocusEvent<HTMLTextAreaElement>) => {
       onFocus?.(event);
     };

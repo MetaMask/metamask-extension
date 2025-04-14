@@ -70,6 +70,8 @@ export function checkForLastErrorAndWarn() {
  * @returns {boolean} Whether the browser is affected by the prerender regression
  */
 export function getIsBrowserPrerenderBroken(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   bowser = Bowser.getParser(window.navigator.userAgent),
 ) {
   return (

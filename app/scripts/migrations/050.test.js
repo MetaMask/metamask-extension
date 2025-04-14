@@ -18,7 +18,8 @@ describe('migration #50', () => {
 
   beforeEach(() => {
     mockLocalStorageRemoveItem = jest
-      // eslint-disable-next-line no-undef
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-undef, no-restricted-globals
       .spyOn(Storage.prototype, 'removeItem')
       .mockImplementation();
   });

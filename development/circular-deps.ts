@@ -91,6 +91,8 @@ async function update(): Promise<void> {
     console.error(
       chalk.red('Error while updating circular dependencies: ', error),
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.exit(1);
   }
 }
@@ -114,6 +116,8 @@ async function check(): Promise<void> {
     if (!existsSync(TARGET_FILE)) {
       console.error(chalk.red(`Error: ${TARGET_FILE} does not exist.`));
       console.error(RESOLUTION_STEPS);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       process.exit(1);
     }
 
@@ -136,6 +140,8 @@ async function check(): Promise<void> {
         ),
       );
       console.error(RESOLUTION_STEPS);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       process.exit(1);
     }
 
@@ -146,6 +152,8 @@ async function check(): Promise<void> {
     console.error(
       chalk.red('Error while checking circular dependencies: ', error),
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.exit(1);
   }
 }
@@ -247,6 +255,8 @@ function failIfDisallowedCircularDepsFound(tree: MadgeInstance): void {
 
   const { skipped } = tree.warnings();
   if (!maybeLogErrors(disallowedCycles, skipped)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.exit(1);
   }
 
@@ -276,6 +286,8 @@ function failIfDisallowedCircularDepsFound(tree: MadgeInstance): void {
         'You must remove or update unused patterns in the .madgerc file then commit the changes.\n',
       ),
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.exit(1);
   }
 }
@@ -284,10 +296,14 @@ function failIfDisallowedCircularDepsFound(tree: MadgeInstance): void {
  * Main function that implement the CLI interface.
  */
 async function main(): Promise<void> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const command = process.argv[2];
 
   if (command !== 'check' && command !== 'update') {
     console.error('Usage: circular-deps.ts [check|update]');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.exit(1);
   }
 
@@ -300,5 +316,7 @@ async function main(): Promise<void> {
 
 main().catch((error) => {
   console.error(chalk.red('Unexpected error: ', error));
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   process.exit(1);
 });

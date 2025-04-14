@@ -41,6 +41,8 @@ function transformState(state: Record<string, unknown>) {
     };
   }
   if (!isObject(state.NetworkController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `typeof state.NetworkController is ${typeof state.NetworkController}`,

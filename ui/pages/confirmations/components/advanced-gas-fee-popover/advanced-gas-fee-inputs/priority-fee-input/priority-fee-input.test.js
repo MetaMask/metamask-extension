@@ -86,6 +86,8 @@ describe('PriorityfeeInput', () => {
     await render({
       userFeeLevel: 'high',
     });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
@@ -96,6 +98,8 @@ describe('PriorityfeeInput', () => {
       },
       { editGasMode: EditGasModes.swaps },
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')[0]).toHaveValue(
       parseInt(
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates.high
@@ -127,6 +131,8 @@ describe('PriorityfeeInput', () => {
             maxPriorityFeePerGas,
           },
         });
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         expect(document.getElementsByTagName('input')[0]).toHaveValue(
           expectedValue,
         );
@@ -163,6 +169,8 @@ describe('PriorityfeeInput', () => {
     expect(
       screen.queryByText('Priority fee must be greater than 0.'),
     ).not.toBeInTheDocument();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 0 },
     });

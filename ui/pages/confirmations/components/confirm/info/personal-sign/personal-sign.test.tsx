@@ -138,6 +138,8 @@ describe('PersonalSignInfo', () => {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await requestFromLabel.dispatchEvent(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       new MouseEvent('mouseenter', { bubbles: true }),
     );
 
@@ -166,6 +168,8 @@ describe('PersonalSignInfo', () => {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await requestFromLabel.dispatchEvent(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       new MouseEvent('mouseenter', { bubbles: true }),
     );
 
@@ -190,6 +194,8 @@ describe('PersonalSignInfo', () => {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await requestFromLabel.dispatchEvent(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       new MouseEvent('mouseenter', { bubbles: true }),
     );
 

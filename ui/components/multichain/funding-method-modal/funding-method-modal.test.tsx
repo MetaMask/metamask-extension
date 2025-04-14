@@ -93,6 +93,8 @@ describe('FundingMethodModal', () => {
   });
 
   it('should open a new tab with the correct URL when Transfer Crypto item is clicked', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform.openTab = jest.fn();
 
     const { getByText } = renderWithProvider(
@@ -106,6 +108,8 @@ describe('FundingMethodModal', () => {
     );
 
     fireEvent.click(getByText('Transfer crypto'));
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: expect.stringContaining('transfer'),
     });

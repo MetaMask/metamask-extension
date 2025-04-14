@@ -49,6 +49,8 @@ describe('TransactionSettings', () => {
     expect(getByText('3%')).toBeInTheDocument();
     expect(getByText('custom')).toBeInTheDocument();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.transaction-settings__button-group'),
     ).toMatchSnapshot();
     expect(queryByText('Smart Swaps')).not.toBeInTheDocument();
@@ -106,6 +108,8 @@ describe('TransactionSettings', () => {
     );
     const input = getByTestId('transaction-settings-custom-slippage');
     fireEvent.change(input, { target: { value: 5 } });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.click(document);
     expect(input).toHaveAttribute('value', '5');
   });

@@ -76,6 +76,8 @@ describe('NicknamePopover', () => {
   });
 
   it('opens EVM block explorer', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     // Accounts controlelr addresses are lower cased but it gets converted to checksummed in this util
@@ -86,12 +88,16 @@ describe('NicknamePopover', () => {
 
     const viewExplorerButton = getByText('View on block explorer');
     fireEvent.click(viewExplorerButton);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: expectedExplorerUrl,
     });
   });
 
   it('opens non-EVM block explorer', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const expectedExplorerUrl = formatBlockExplorerAddressUrl(
       MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
@@ -107,6 +113,8 @@ describe('NicknamePopover', () => {
     const viewExplorerButton = getByText('View on block explorer');
 
     fireEvent.click(viewExplorerButton);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: expectedExplorerUrl,
     });

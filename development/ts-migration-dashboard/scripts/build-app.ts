@@ -31,6 +31,8 @@ const promisifiedPipeline = pify(pipeline);
 
 main().catch((error) => {
   console.error(error);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   process.exit(1);
 });
 
@@ -178,6 +180,8 @@ async function rebuild({ isInitial = false } = {}): Promise<void> {
  * dashboard will be built on file changes, or builds the dashboard immediately.
  */
 async function main() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const opts = yargs(hideBin(process.argv))
     .usage('Usage: $0 [options]')
     .option('watch', {

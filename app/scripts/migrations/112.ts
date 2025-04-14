@@ -34,6 +34,8 @@ function transformState(state: Record<string, any>) {
   }
 
   if (!isObject(state.SelectedNetworkController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `state.SelectedNetworkController is type: ${typeof state.SelectedNetworkController}`,
@@ -43,6 +45,8 @@ function transformState(state: Record<string, any>) {
   } else if (
     !hasProperty(state.SelectedNetworkController, 'perDomainNetwork')
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `state.SelectedNetworkController.perDomainNetwork is missing from SelectedNetworkController state`,
@@ -51,6 +55,8 @@ function transformState(state: Record<string, any>) {
   } else if (
     typeof state.SelectedNetworkController.perDomainNetwork !== 'boolean'
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `state.SelectedNetworkController.perDomainNetwork is type: ${typeof state

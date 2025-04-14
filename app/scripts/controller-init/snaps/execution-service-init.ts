@@ -60,6 +60,8 @@ export const ExecutionServiceInit: ControllerInitFunction<
     };
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const iframeUrl = process.env.IFRAME_EXECUTION_ENVIRONMENT_URL;
   assert(iframeUrl, 'Missing iframe URL.');
 

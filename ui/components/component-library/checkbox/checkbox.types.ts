@@ -47,6 +47,8 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
   /*
    * onChange - the function to call when the Checkbox is changed
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   /*
    * label is the string or ReactNode to be rendered next to the Checkbox
@@ -64,7 +66,11 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
    * Use inputRef to pass a ref to the html input element
    */
   inputRef?:
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     | React.RefObject<HTMLInputElement>
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     | ((instance: HTMLInputElement | null) => void);
   /*
    * iconProps - additional props to be spread to the Icon component used for the Checkbox

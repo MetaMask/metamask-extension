@@ -117,6 +117,8 @@ async function switchToDialogPopoverValidateDetailsRedesign(
   // Get state details
   await driver.waitForControllersLoaded();
   const notificationWindowState = await driver.executeScript(() =>
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.stateHooks?.getCleanAppState?.(),
   );
 

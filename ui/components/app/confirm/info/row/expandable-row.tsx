@@ -24,6 +24,8 @@ export const ConfirmInfoExpandableRow = (
 ) => {
   const { content, children, startExpanded, ...rowProps } = props;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const ref = useRef() as React.MutableRefObject<HTMLSpanElement | null>;
 
   const [expanded, setExpanded] = useState<boolean>(Boolean(startExpanded));

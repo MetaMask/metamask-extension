@@ -44,11 +44,15 @@ const render = (account = mockAccount) => {
 
 describe('ViewExplorerMenuItem', () => {
   it('renders "View on explorer"', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     const { getByText, getByTestId } = render();
     expect(getByText('View on explorer')).toBeInTheDocument();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const openExplorerTabSpy = jest.spyOn(global.platform, 'openTab');
     fireEvent.click(getByTestId('account-list-menu-open-explorer'));
     expect(openExplorerTabSpy).toHaveBeenCalled();
@@ -62,12 +66,16 @@ describe('ViewExplorerMenuItem', () => {
       mockNonEvmAccount.address,
     );
     const expectedExplorerUrlHost = new URL(expectedExplorerUrl).host;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     const { getByText, getByTestId } = render(mockNonEvmAccount);
     expect(getByText('View on explorer')).toBeInTheDocument();
     expect(getByText(expectedExplorerUrlHost)).toBeInTheDocument();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const openExplorerTabSpy = jest.spyOn(global.platform, 'openTab');
     fireEvent.click(getByTestId('account-list-menu-open-explorer'));
     expect(openExplorerTabSpy).toHaveBeenCalledWith({

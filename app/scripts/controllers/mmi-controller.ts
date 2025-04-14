@@ -164,6 +164,8 @@ export class MMIController {
     );
 
     // Get configuration from MMIConfig controller
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     if (!process.env.IN_TEST) {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       // eslint-disable-next-line @typescript-eslint/no-floating-promises

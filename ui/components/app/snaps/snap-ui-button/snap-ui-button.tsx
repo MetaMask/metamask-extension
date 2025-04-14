@@ -42,6 +42,8 @@ export const SnapUIButton: FunctionComponent<
 }) => {
   const { handleEvent } = useSnapInterfaceContext();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const handleClick = (event: ReactMouseEvent<HTMLElement>) => {
     if (type === ButtonType.Button) {
       event.preventDefault();

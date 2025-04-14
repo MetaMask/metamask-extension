@@ -210,6 +210,8 @@ export function createNewVaultAndRestore(
     // Encode the secret recovery phrase as an array of integers so that it is
     // serialized as JSON properly.
     const encodedSeedPhrase = Array.from(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       Buffer.from(seedPhrase, 'utf8').values(),
     );
 
@@ -394,6 +396,8 @@ export async function getSeedPhrase(password: string, keyringId: string) {
     'getSeedPhrase',
     [password, keyringId],
   );
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
 
@@ -644,6 +648,8 @@ export function connectHardware(
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const connectedDevices = await window.navigator.hid.requestDevice({
           // The types for web hid were provided by @types/w3c-web-hid and may
           // not be fully formed or correct, because LEDGER_USB_VENDOR_ID is a
@@ -5108,6 +5114,8 @@ export async function attemptCloseNotificationPopup() {
   //
   // Note: we opted for window.close() instead of browser.windows.remove(id) because the latter closes the
   // entire window and all its tabs (if there are other tabs open).
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.close();
 
   // Second attempt: If we reach here, window.close() failed

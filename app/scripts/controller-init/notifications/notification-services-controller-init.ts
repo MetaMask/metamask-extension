@@ -12,7 +12,11 @@ export const NotificationServicesControllerInit: ControllerInitFunction<
     env: {
       featureAnnouncements: {
         platform: 'extension',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? '',
       },
     },

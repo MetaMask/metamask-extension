@@ -75,7 +75,11 @@ const mockGetSafeChains = useSafeChains;
 
 describe('TokenListItem', () => {
   beforeAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     (mockGetIntlLocale as unknown as jest.Mock).mockReturnValue('en-US');
   });

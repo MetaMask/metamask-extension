@@ -62,6 +62,8 @@ export default class NotificationManager extends EventEmitter {
         // The following properties are more than likely 0, due to being
         // opened from the background chrome process for the extension that
         // has no physical dimensions
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const { screenX, screenY, outerWidth } = window;
         top = Math.max(screenY, 0);
         left = Math.max(screenX + (outerWidth - NOTIFICATION_WIDTH), 0);

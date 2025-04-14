@@ -201,6 +201,8 @@ export function getSwcLoader(
   swcConfig: SwcConfig,
 ) {
   return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     loader: __filename,
     options: {
       env: {

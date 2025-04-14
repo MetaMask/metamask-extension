@@ -21,6 +21,8 @@ type NftDetailInformationRowProps = {
   valueColor?: TextColor;
   value?: string | null;
   icon?: React.ReactNode;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   buttonAddressValue?: React.ButtonHTMLAttributes<HTMLButtonElement> | null;
   withPopover?: boolean;
   fullValue?: string;

@@ -85,6 +85,8 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
   // eslint-disable-next-line id-length
   const t = useI18nContext();
   const { handleFileChange } = useSnapInterfaceContext();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const ref = useRef<HTMLInputElement>(null);
   const [active, setActive] = useState(false);
 
@@ -92,21 +94,29 @@ export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
     ref.current?.click();
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
     handleFileChange(name, file, form);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const handleDragOver = (event: DragEvent<HTMLSpanElement>) => {
     event.preventDefault();
     setActive(true);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const handleDragLeave = (event: DragEvent<HTMLSpanElement>) => {
     event.preventDefault();
     setActive(false);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const handleDrop = (event: DragEvent<HTMLSpanElement>) => {
     event.preventDefault();
     setActive(false);

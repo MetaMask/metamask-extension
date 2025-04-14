@@ -5,6 +5,8 @@ import ExtensionStore from './extension-store';
 
 const MOCK_STATE = { data: {}, meta: { version: 1 } };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 global.sentry = global.sentry || {};
 
 jest.mock('webextension-polyfill', () => ({
@@ -31,6 +33,8 @@ const setup = (
 };
 describe('ExtensionStore', () => {
   beforeEach(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     jest.replaceProperty(global, 'sentry', { captureException: jest.fn() });
   });
 

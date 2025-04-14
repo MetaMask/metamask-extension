@@ -15,6 +15,8 @@ export const SnapsRegistryInit: ControllerInitFunction<
   JsonSnapsRegistry,
   SnapsRegistryMessenger
 > = ({ controllerMessenger, persistedState }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
 
   const controller = new JsonSnapsRegistry({

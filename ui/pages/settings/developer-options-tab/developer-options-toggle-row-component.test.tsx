@@ -13,6 +13,8 @@ describe('ToggleFeatureRow Component', () => {
   const mockTitle = 'Test Title';
   const mockDescription = 'Test Description';
   const mockDataTestId = 'Test id';
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const mockSettingsRef = { current: document.createElement('div') };
 
   const mockStore = configureMockStore([thunk])(mockState);

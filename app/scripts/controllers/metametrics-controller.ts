@@ -536,6 +536,8 @@ export default class MetaMetricsController extends BaseController<
   generateMetaMetricsId(): string {
     return bufferToHex(
       keccak(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         Buffer.from(
           String(Date.now()) +
             String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
@@ -795,6 +797,8 @@ export default class MetaMetricsController extends BaseController<
     };
     if (participateInMetaMetrics) {
       // We only want to track these things if a user opted into metrics.
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       query.mmi = Buffer.from(metaMetricsId).toString('base64');
       query.env = this.#environment;
     }
@@ -1102,6 +1106,8 @@ export default class MetaMetricsController extends BaseController<
         ...mmiProps,
         ///: END:ONLY_INCLUDE_IF
       },
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       userAgent: window.navigator.userAgent,
       page,
       referrer,

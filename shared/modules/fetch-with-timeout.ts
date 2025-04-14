@@ -19,7 +19,11 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
   return async function fetchWithTimeout(
     url: RequestInfo,
     opts?: RequestInit,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   ): Promise<Response> {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const abortController = new window.AbortController();
 
     // Add the provided signal to the list of signals that can abort the request
@@ -33,7 +37,8 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
     abortSignals.forEach((sig) => sig.addEventListener('abort', abortHandler));
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line id-length, no-restricted-globals
     const f = window.fetch(url, {
       ...opts,
       signal: combinedAbortController.signal,

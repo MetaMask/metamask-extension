@@ -2,6 +2,8 @@ import shouldInjectProvider from './provider-injection';
 
 describe('shouldInjectProvider', () => {
   let mockedWindow: jest.SpyInstance;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   let originalDocument: Document;
 
   function mockUrl(urlString: string) {
@@ -18,17 +20,27 @@ describe('shouldInjectProvider', () => {
   }
 
   beforeEach(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     mockedWindow = jest.spyOn(window, 'window', 'get');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     originalDocument = global.document;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.document = {
       documentElement: {
         nodeName: 'html',
       },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     } as typeof global.document;
   });
 
   afterEach(() => {
     mockedWindow.mockRestore();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.document = originalDocument;
   });
 

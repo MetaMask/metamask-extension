@@ -133,11 +133,15 @@ describe('AssetPage', () => {
 
   beforeAll(() => {
     jest.clearAllMocks();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     Object.defineProperty(global, 'platform', {
       value: {
         openTab: jest.fn(),
       },
     });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -279,6 +283,8 @@ describe('AssetPage', () => {
     expect(buyButton).toBeInTheDocument();
     expect(buyButton).not.toBeDisabled();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.click(buyButton as HTMLElement);
     expect(openTabSpy).toHaveBeenCalledTimes(1);
 
@@ -298,6 +304,8 @@ describe('AssetPage', () => {
     expect(bridgeButton).toBeInTheDocument();
     expect(bridgeButton).not.toBeDisabled();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.click(bridgeButton as HTMLElement);
 
     await waitFor(() => {

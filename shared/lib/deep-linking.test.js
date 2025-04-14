@@ -70,7 +70,11 @@ describe('#openCustomProtocol', () => {
 
     it('throws when protocol not found', async () => {
       jest.useFakeTimers();
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const setTimeoutSpy = jest.spyOn(window, 'setTimeout');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
 
       const openCustomProtocolPromise = openCustomProtocol('TEST PROTOCOL');

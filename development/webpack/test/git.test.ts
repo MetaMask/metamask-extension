@@ -6,6 +6,8 @@ import { getLatestCommit } from '../utils/git';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 describe('getLatestCommit', () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const gitDir = join(__dirname, '.', 'fixtures', 'git');
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
   // eslint-disable-next-line @typescript-eslint/no-floating-promises

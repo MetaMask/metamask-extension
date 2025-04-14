@@ -185,6 +185,8 @@ describe('ImportNftsModal', () => {
     const onClose = jest.fn();
     renderWithProvider(<ImportNftsModal onClose={onClose} />, store);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.click(document.querySelector('button[aria-label="Close"]'));
 
     expect(useHistory().push).toHaveBeenCalledWith(DEFAULT_ROUTE);

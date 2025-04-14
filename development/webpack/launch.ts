@@ -18,6 +18,8 @@ import { spawn, type StdioOptions } from 'node:child_process';
 import parser from 'yargs-parser';
 import type { Child, PTY, Stdio, StdName } from './types.ts';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const rawArgv = process.argv.slice(2);
 
 const alias = { cache: 'c', help: 'h', watch: 'h' };
@@ -27,8 +29,12 @@ const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 if (args.cache === false || args.help === true || args.watch === true) {
   // there are no time savings to running the build in a child process if: the
   // cache is disabled, we need to output "help", or we're in watch mode.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   require('./build.ts').build();
 } else {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   fork(process, join(__dirname, 'fork.mts'), rawArgv);
 }
 
@@ -45,6 +51,8 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
   const env = { NODE_OPTIONS: '', ...process.env, PPID: `${process.pid}` };
   // node recommends using 75% of the available memory for `max-old-space-size`
   // https://github.com/nodejs/node/blob/dd67bf08cb1ab039b4060d381cc68179ee78701a/doc/api/cli.md#--max-old-space-sizesize-in-megabytes
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const maxOldSpaceMB = ~~((require('node:os').totalmem() * 0.75) / (1 << 20));
   // `--huge-max-old-generation-size` and `--max-semi-space-size=128` reduce
   // garbage collection pauses; 128MB provided max benefit in perf testing.
@@ -76,6 +84,8 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
  * @returns The stdio streams for the child process to use
  */
 function createOutputStreams(process: NodeJS.Process) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const { isatty } = require('node:tty');
   const isWindows = process.platform === 'win32';
   // use IPC for communication on Windows, as it doesn't support POSIX signals
@@ -145,6 +155,8 @@ function createNonTTYStream(stream: NodeJS.WriteStream, name: StdName): Stdio {
 function createTTYStream(stream: NodeJS.WriteStream): Stdio {
   // create a PTY (Pseudo TTY) so the child stream behaves like a TTY
   const options = { cols: stream.columns, encoding: null, rows: stream.rows };
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const pty: PTY = require('@lydell/node-pty').open(options);
 
   return {

@@ -85,6 +85,8 @@ export default function RevealSeedPage() {
   }, [trackEvent, hdEntropyIndex]);
 
   useEffect(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const passwordBox = document.getElementById('password-box');
     if (passwordBox) {
       passwordBox.focus();

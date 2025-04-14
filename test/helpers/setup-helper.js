@@ -66,13 +66,23 @@ const jsdom = new JSDOM();
 global.window = jsdom.window;
 
 // required by `trezor-connect/node_modules/whatwg-fetch`
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 global.self = window;
 // required by `dom-helpers` and various other libraries
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 global.document = window.document;
 // required by `react-tippy`
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 global.navigator = window.navigator;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 global.Element = window.Element;
 // required by `react-popper`
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 global.HTMLElement = window.HTMLElement;
 
 // Jest no longer adds the following timers so we use set/clear Timeouts
@@ -82,8 +92,12 @@ global.clearImmediate =
   global.clearImmediate || ((id) => global.clearTimeout(id));
 
 // required by any components anchored on `popover-content`
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const popoverContent = window.document.createElement('div');
 popoverContent.setAttribute('id', 'popover-content');
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 window.document.body.appendChild(popoverContent);
 
 // Fetch
@@ -91,44 +105,75 @@ window.document.body.appendChild(popoverContent);
 // eslint-disable-next-line no-shadow
 const { default: fetch, Headers, Request, Response } = require('node-fetch');
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 Object.assign(window, { fetch, Headers, Request, Response });
 // some of our libraries currently assume that `fetch` is globally available,
 // so we need to assign this for tests to run
 global.fetch = fetch;
 
 // localStorage
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 window.localStorage = {
   removeItem: () => null,
 };
 
 // used for native dark/light mode detection
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 window.matchMedia = () => true;
 
 // override @metamask/logo
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 window.requestAnimationFrame = () => undefined;
 
 // crypto.getRandomValues
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 if (!window.crypto) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.crypto = {};
 }
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 if (!window.crypto.getRandomValues) {
-  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line node/global-require, no-restricted-globals
   window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
 }
 
 // TextEncoder/TextDecoder
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 window.TextEncoder = TextEncoder;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 window.TextDecoder = TextDecoder;
 
 // Used to test `clearClipboard` function
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 if (!window.navigator.clipboard) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.navigator.clipboard = {};
 }
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 if (!window.navigator.clipboard.writeText) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   window.navigator.clipboard.writeText = () => undefined;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 window.SVGPathElement = window.SVGPathElement || { prototype: {} };
 
 // scrollIntoView is not available in JSDOM
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 window.HTMLElement.prototype.scrollIntoView = () => undefined;

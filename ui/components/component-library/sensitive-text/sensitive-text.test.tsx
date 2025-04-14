@@ -76,8 +76,12 @@ describe('SensitiveText', () => {
   });
 
   it('should forward ref to the Text component', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const ref = React.createRef<HTMLParagraphElement>();
     render(<SensitiveText {...testProps} ref={ref} />);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(ref.current).toBeInstanceOf(HTMLParagraphElement);
   });
 });

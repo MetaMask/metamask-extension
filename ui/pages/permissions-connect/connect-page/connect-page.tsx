@@ -388,6 +388,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             size={ButtonLinkSize.Inherit}
             target="_blank"
             onClick={() => {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+              // eslint-disable-next-line no-restricted-globals
               global.platform.openTab({
                 url: ZENDESK_URLS.USER_GUIDE_DAPPS,
               });

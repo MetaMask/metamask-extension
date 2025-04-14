@@ -3,6 +3,8 @@ import { Hex } from '@metamask/utils';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const getShortDateFormatter = () =>
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   Intl.DateTimeFormat(navigator.language, {
     month: 'short',
     day: 'numeric',
@@ -12,6 +14,8 @@ export const getShortDateFormatter = () =>
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 2030' */
 export const getShortDateFormatterV2 = () =>
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   Intl.DateTimeFormat(navigator.language, {
     year: 'numeric',
     month: 'short',

@@ -13,6 +13,8 @@ describe('DetectedTokensBanner', () => {
   };
   it('should render correctly', () => {
     const { getByTestId } = render(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       <ProductTour anchorElement={document.body} {...props} />,
     );
     const menuContainer = getByTestId('multichain-product-tour-menu-popover');
@@ -21,6 +23,8 @@ describe('DetectedTokensBanner', () => {
 
   it('should render prev Icon', () => {
     const { getByTestId } = render(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       <ProductTour anchorElement={document.body} {...props} prevIcon />,
     );
     const prevIcon = getByTestId(
@@ -31,6 +35,8 @@ describe('DetectedTokensBanner', () => {
   it('should render correct steps', () => {
     const { getByText } = render(
       <ProductTour
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         anchorElement={document.body}
         {...props}
         prevIcon

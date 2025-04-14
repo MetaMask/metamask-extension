@@ -74,6 +74,8 @@ describe('AddContact component', () => {
     const store = configureMockStore(middleware)(state);
     const { getByText } = renderWithProvider(<AddContact {...props} />, store);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const input = document.getElementById('nickname');
     fireEvent.change(input, { target: { value: '' } });
 
@@ -93,6 +95,8 @@ describe('AddContact component', () => {
       store,
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const nameInput = document.getElementById('nickname');
     fireEvent.change(nameInput, { target: { value: 'friend' } });
 
@@ -117,6 +121,8 @@ describe('AddContact component', () => {
       store,
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const nameInput = document.getElementById('nickname');
     fireEvent.change(nameInput, { target: { value: 'friend' } });
 
@@ -143,6 +149,8 @@ describe('AddContact component', () => {
       store,
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const nameInput = document.getElementById('nickname');
     fireEvent.change(nameInput, { target: { value: duplicateName } });
 
@@ -165,6 +173,8 @@ describe('AddContact component', () => {
       store,
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const nameInput = document.getElementById('nickname');
     fireEvent.change(nameInput, { target: { value: duplicateName } });
 
@@ -188,6 +198,8 @@ describe('AddContact component', () => {
       store,
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const nameInput = document.getElementById('nickname');
 
     fireEvent.change(nameInput, { target: { value: duplicateName } });
@@ -205,6 +217,8 @@ describe('AddContact component', () => {
 
     const { getByText } = renderWithProvider(<AddContact {...props} />, store);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const nameInput = document.getElementById('nickname');
 
     fireEvent.change(nameInput, { target: { value: duplicateName } });

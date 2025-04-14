@@ -43,6 +43,8 @@ import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import useGetConversionRate from './hooks/useGetConversionRate';
 
 type QuoteCardProps = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   scrollRef: React.RefObject<HTMLDivElement>;
 };
 
@@ -262,6 +264,8 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
                             event: 'Clicked "Gas Fees: Learn More" Link',
                             category: MetaMetricsEventCategory.Swaps,
                           });
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                          // eslint-disable-next-line no-restricted-globals
                           global.platform.openTab({
                             url: GAS_FEES_LEARN_MORE_URL,
                           });

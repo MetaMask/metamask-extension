@@ -20,7 +20,11 @@ let originalPortfolioView: string | undefined;
 describe('useTokenDetectionPolling', () => {
   beforeEach(() => {
     // Mock process.env.PORTFOLIO_VIEW
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     originalPortfolioView = process.env.PORTFOLIO_VIEW;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.PORTFOLIO_VIEW = 'true'; // Set your desired mock value here
 
     mockPromises = [];
@@ -29,10 +33,14 @@ describe('useTokenDetectionPolling', () => {
 
   afterEach(() => {
     // Restore the original value
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.PORTFOLIO_VIEW = originalPortfolioView;
   });
 
   it('should poll token detection for chain IDs when enabled and stop on dismount', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.PORTFOLIO_VIEW = 'true';
     const state = {
       metamask: {

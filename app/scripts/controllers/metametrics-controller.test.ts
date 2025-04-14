@@ -97,6 +97,8 @@ const DEFAULT_TEST_CONTEXT = {
   },
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
   referrer: undefined,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   userAgent: window.navigator.userAgent,
   marketingCampaignCookieId: null,
 };

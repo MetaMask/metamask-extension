@@ -322,22 +322,32 @@ describe('Settings Search Utils', () => {
     let mockMenuSectionElement;
 
     beforeEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       searchElem = document.createElement('input');
       searchElem.id = 'search-settings';
       searchElem.value = 'test';
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.body.appendChild(searchElem);
 
       // Mock result list items
       mockResultItems = [...Array(2)].map(() => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const item = document.createElement('div');
         item.classList.add('settings-page__header__search__list__item');
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         mockMenuTabElement = document.createElement('div');
         mockMenuTabElement.classList.add(
           'settings-page__header__search__list__item__tab',
         );
         mockMenuTabElement.innerHTML = 'Test tab';
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         mockMenuSectionElement = document.createElement('div');
         mockMenuSectionElement.classList.add(
           'settings-page__header__search__list__item__section',
@@ -350,10 +360,14 @@ describe('Settings Search Utils', () => {
         return item;
       });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       mockResultItems.forEach((item) => document.body.appendChild(item));
     });
 
     afterEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.body.innerHTML = '';
     });
 

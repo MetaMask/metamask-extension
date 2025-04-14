@@ -108,11 +108,17 @@ describe('AdvancedGasFeeDefaults', () => {
         [CHAIN_IDS.GOERLI]: { maxBaseFee: '50', priorityFee: '2' },
       },
     });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')[2]).toBeChecked();
     expect(screen.queryByText(TEXT_SELECTOR)).toBeInTheDocument();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 75 },
     });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')[0]).toHaveValue(75);
     expect(screen.queryByText(TEXT_SELECTOR)).toBeInTheDocument();
     expect(screen.queryByText(TEXT_SELECTOR)).toBeInTheDocument();
@@ -123,11 +129,17 @@ describe('AdvancedGasFeeDefaults', () => {
         [CHAIN_IDS.GOERLI]: { maxBaseFee: '50', priorityFee: '2' },
       },
     });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')[2]).toBeChecked();
     expect(screen.queryByText(TEXT_SELECTOR)).toBeInTheDocument();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[1], {
       target: { value: 5 },
     });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')[1]).toHaveValue(5);
     expect(screen.queryByText(TEXT_SELECTOR)).toBeInTheDocument();
     expect(screen.queryByText(TEXT_SELECTOR)).toBeInTheDocument();
@@ -145,6 +157,8 @@ describe('AdvancedGasFeeDefaults', () => {
     const checkboxLabel = screen.queryByText(TEXT_SELECTOR);
     fireEvent.click(checkboxLabel);
     expect(mock).toHaveBeenCalledTimes(1);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const checkbox = document.querySelector('input[type=checkbox]');
     fireEvent.click(checkbox);
     expect(mock).toHaveBeenCalledTimes(2);
@@ -153,6 +167,8 @@ describe('AdvancedGasFeeDefaults', () => {
   it('should not render option to set default gas options in a swaps transaction', async () => {
     await render({}, { editGasMode: EditGasModes.swaps });
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('input[type=checkbox]'),
     ).not.toBeInTheDocument();
   });

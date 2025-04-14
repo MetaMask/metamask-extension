@@ -470,6 +470,8 @@ export default function ConfirmationPage({
           to_network:
             pendingConfirmation.requestData.toNetworkConfiguration.chainId,
           referrer: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             url: window.location.origin,
           },
         },

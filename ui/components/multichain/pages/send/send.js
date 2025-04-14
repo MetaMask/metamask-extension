@@ -217,6 +217,8 @@ export const SendPage = () => {
   }, [draftTransactionExists, dispatch]);
 
   useEffect(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.addEventListener('beforeunload', cleanup);
   }, [cleanup]);
 
@@ -225,8 +227,14 @@ export const SendPage = () => {
       dispatch(showQrScanner());
 
       // Clear the queryString param after showing the modal
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const [cleanUrl] = window.location.href.split('?');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.history.pushState({}, null, `${cleanUrl}`);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.location.hash = '#send';
     }
   }, [location, dispatch]);
@@ -234,6 +242,8 @@ export const SendPage = () => {
   useEffect(() => {
     return () => {
       dispatch(resetSendState());
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.removeEventListener('beforeunload', cleanup);
     };
   }, [dispatch, cleanup]);

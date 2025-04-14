@@ -25,6 +25,8 @@ import {
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const { sentry } = global;
 
 const METHOD_SEND_TRANSACTION = 'eth_sendTransaction';

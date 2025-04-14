@@ -32,6 +32,8 @@ export async function migrate(
 
 function transformState(state: Record<string, unknown>) {
   if (!hasProperty(state, 'CurrencyController')) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(`Migration ${version}: Missing CurrencyController in state`),
     );
@@ -41,6 +43,8 @@ function transformState(state: Record<string, unknown>) {
   const currencyController = state.CurrencyController as CurrencyController;
 
   if (!isObject(currencyController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid CurrencyController state type '${typeof currencyController}'`,
@@ -52,6 +56,8 @@ function transformState(state: Record<string, unknown>) {
   const { currentCurrency } = currencyController;
 
   if (!currentCurrency) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Missing currentCurrency in CurrencyController, defaulting to ${DEFAULT_CURRENCY}`,

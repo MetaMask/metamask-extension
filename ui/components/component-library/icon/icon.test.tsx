@@ -55,15 +55,23 @@ describe('Icon', () => {
         <Icon name={IconName.Calculator} data-testid="calculator" />
       </>,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(window.getComputedStyle(getByTestId('add-square')).maskImage).toBe(
       `url('./images/icons/add-square.svg')`,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(window.getComputedStyle(getByTestId('bank')).maskImage).toBe(
       `url('./images/icons/bank.svg')`,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(window.getComputedStyle(getByTestId('bookmark')).maskImage).toBe(
       `url('./images/icons/bookmark.svg')`,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(window.getComputedStyle(getByTestId('calculator')).maskImage).toBe(
       `url('./images/icons/calculator.svg')`,
     );

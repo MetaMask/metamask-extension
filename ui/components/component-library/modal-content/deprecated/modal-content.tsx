@@ -49,13 +49,19 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
       restoreFocus,
       autoFocus,
     } = useModalContext();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const modalDialogRef = useRef<HTMLElement>(null);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleEscKey = (event: KeyboardEvent) => {
       if (isClosedOnEscapeKey && event.key === 'Escape') {
         onClose();
       }
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleClickOutside = (event: MouseEvent) => {
       // Popover should be launched from within Modal but
       // the Popover containing element is a sibling to modal,
@@ -63,6 +69,8 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
       // when clicking on a popover item
       if (
         isClosedOnOutsideClick &&
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         (event.target as HTMLElement).closest('.mm-popover')
       ) {
         return;
@@ -71,6 +79,8 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
       if (
         isClosedOnOutsideClick &&
         modalDialogRef?.current &&
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         !modalDialogRef.current.contains(event.target as Node)
       ) {
         onClose();
@@ -78,11 +88,19 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
     };
 
     useEffect(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.addEventListener('keydown', handleEscKey);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.addEventListener('mousedown', handleClickOutside);
 
       return () => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         document.removeEventListener('keydown', handleEscKey);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }, []);

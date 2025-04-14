@@ -26,6 +26,8 @@ function transformState(state: VersionedData['data']) {
     !hasProperty(state, 'OnboardingController') ||
     !isObject(state.OnboardingController)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Invalid OnboardingController state: ${typeof state.OnboardingController}`,
@@ -38,6 +40,8 @@ function transformState(state: VersionedData['data']) {
     !hasProperty(state, 'UserStorageController') ||
     !isObject(state.UserStorageController)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Invalid UserStorageController state: ${typeof state.UserStorageController}`,

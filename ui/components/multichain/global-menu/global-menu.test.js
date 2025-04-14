@@ -13,6 +13,8 @@ const render = (metamaskStateChanges = {}) => {
   });
   return renderWithProvider(
     <GlobalMenu
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       anchorElement={document.body}
       isOpen
       closeMenu={() => undefined}
@@ -31,6 +33,8 @@ jest.mock('../../../store/actions', () => ({
 describe('Global Menu', () => {
   it('locks MetaMask when item is clicked', async () => {
     render();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.click(document.querySelector('[data-testid="global-menu-lock"]'));
     await waitFor(() => {
       expect(mockLockMetaMask).toHaveBeenCalled();
@@ -80,6 +84,8 @@ describe('Global Menu', () => {
 
     render();
     fireEvent.click(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('[data-testid="global-menu-expand"]'),
     );
     await waitFor(() => {

@@ -12,15 +12,21 @@ import {
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import { DeleteRegulationStatus } from '../../../shared/constants/metametrics';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const inTest = process.env.IN_TEST;
 const fallbackSourceId = 'test';
 const fallbackDataDeletionEndpoint = 'https://metametrics.metamask.test';
 
 const DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID = inTest
   ? fallbackSourceId
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   : process.env.ANALYTICS_DATA_DELETION_SOURCE_ID ?? fallbackSourceId;
 const DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT = inTest
   ? fallbackDataDeletionEndpoint
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   : process.env.ANALYTICS_DATA_DELETION_ENDPOINT ??
     fallbackDataDeletionEndpoint;
 

@@ -382,7 +382,11 @@ const CoinButtons = ({
       });
       dispatch(setSwapsFromToken(defaultSwapsToken));
       if (usingHardwareWallet) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         if (global.platform.openExtensionInBrowser) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
         }
       } else {

@@ -32,6 +32,8 @@ function transformState(state: Record<string, unknown>) {
     log.warn('Skipping migration, TokenListController state is missing');
     return state;
   } else if (!isObject(state.TokenListController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `typeof state.TokenListController is ${typeof state.TokenListController}`,

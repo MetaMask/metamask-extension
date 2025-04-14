@@ -18,6 +18,8 @@ import CopyPlugin from 'copy-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const context = join(__dirname, '../../app');
 const browsersListPath = join(context, '../.browserslistrc');
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');

@@ -129,6 +129,8 @@ export function MultichainTransactionDetailsModal({
               // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () =>
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                // eslint-disable-next-line no-restricted-globals
                 navigator.clipboard.writeText(
                   getAddressUrl(address, chain),
                 )
@@ -262,6 +264,8 @@ export function MultichainTransactionDetailsModal({
                     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
                     // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () =>
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                      // eslint-disable-next-line no-restricted-globals
                       navigator.clipboard.writeText(
                         getTransactionUrl(id, chain),
                       )
@@ -316,6 +320,8 @@ export function MultichainTransactionDetailsModal({
             size={ButtonSize.Md}
             variant={ButtonVariant.Link}
             onClick={() => {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+              // eslint-disable-next-line no-restricted-globals
               global.platform.openTab({
                 url: getTransactionUrl(id, chain),
               });

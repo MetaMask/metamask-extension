@@ -19,6 +19,8 @@ const renderProviderWithTheme: any = (
 ) => {
   /** This value found in the document should reflect the user's setting, and if applicable, their OS setting */
   jest
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     .spyOn(global.document.documentElement, 'getAttribute')
     .mockReturnValue(documentTheme);
 

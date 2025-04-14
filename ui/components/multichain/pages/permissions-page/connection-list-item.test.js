@@ -25,6 +25,8 @@ describe('ConnectionListItem', () => {
     expect(getByTestId('connection-list-item')).toBeInTheDocument();
     expect(getByText('Test Snap 1')).toBeInTheDocument();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.connection-list-item__snap-avatar'),
     ).toBeInTheDocument();
   });

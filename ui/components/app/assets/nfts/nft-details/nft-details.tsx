@@ -439,6 +439,8 @@ export function NftDetailsComponent({
               if (!openSeaLink) {
                 return null;
               }
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+              // eslint-disable-next-line no-restricted-globals
               return global.platform.openTab({ url: openSeaLink });
             }}
             // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
@@ -547,6 +549,8 @@ export function NftDetailsComponent({
                         padding={2}
                         color={IconColor.iconMuted}
                         onClick={() => {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                          // eslint-disable-next-line no-restricted-globals
                           global.platform.openTab({
                             url: getBoughtForLink() as string,
                           });
@@ -601,6 +605,8 @@ export function NftDetailsComponent({
                         padding={2}
                         color={IconColor.iconMuted}
                         onClick={() => {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                          // eslint-disable-next-line no-restricted-globals
                           global.platform.openTab({
                             url: collection?.floorAsk?.source?.url as string,
                           });
@@ -656,6 +662,8 @@ export function NftDetailsComponent({
                   <button
                     className="nft-details__addressButton"
                     onClick={() => {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                      // eslint-disable-next-line no-restricted-globals
                       global.platform.openTab({
                         url: blockExplorerTokenLink(address),
                       });
@@ -698,6 +706,8 @@ export function NftDetailsComponent({
                   <button
                     className="nft-details__addressButton"
                     onClick={() => {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                      // eslint-disable-next-line no-restricted-globals
                       global.platform.openTab({
                         url: blockExplorerTokenLink(address),
                       });
@@ -788,6 +798,8 @@ export function NftDetailsComponent({
                   size={ButtonIconSize.Sm}
                   color={IconColor.iconMuted}
                   onClick={() => {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                    // eslint-disable-next-line no-restricted-globals
                     global.platform.openTab({
                       url: getBoughtForLink() as string,
                     });
@@ -808,6 +820,8 @@ export function NftDetailsComponent({
                   size={ButtonIconSize.Sm}
                   color={IconColor.iconMuted}
                   onClick={() => {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                    // eslint-disable-next-line no-restricted-globals
                     global.platform.openTab({
                       url: getTopBidSourceDomain() as string, // Adding cast here because verification has been done on line 594
                     });
@@ -848,6 +862,8 @@ export function NftDetailsComponent({
                 <button
                   className="nft-details__addressButton"
                   onClick={() => {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                    // eslint-disable-next-line no-restricted-globals
                     global.platform.openTab({
                       url: getAccountLink(
                         collection?.creator as string,

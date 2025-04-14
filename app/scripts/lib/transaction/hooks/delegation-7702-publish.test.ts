@@ -74,7 +74,11 @@ describe('Delegation 7702 Publish Hook', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.DELEGATION_MANAGER_ADDRESS = DELEGATION_MANAGER_ADDRESS_MOCK;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.GASLESS_7702_ENFORCER_ADDRESS = ENFORCE_ADDRESS_MOCK;
 
     const baseMessenger = new Messenger<
@@ -200,6 +204,8 @@ describe('Delegation 7702 Publish Hook', () => {
       data: expect.any(String),
       maxFeePerGas: TRANSACTION_META_MOCK.txParams.maxFeePerGas,
       maxPriorityFeePerGas: TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       to: process.env.DELEGATION_MANAGER_ADDRESS,
     });
   });

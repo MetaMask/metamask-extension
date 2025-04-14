@@ -31,6 +31,8 @@ export function useIsGaslessSupported() {
   const supportsGaslessBundle = isSmartTransaction;
 
   const supportsGasless7702 =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.TRANSACTION_RELAY_API_URL &&
     Boolean(atomicBatchChainSupport) &&
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880

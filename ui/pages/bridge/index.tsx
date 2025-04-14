@@ -72,12 +72,14 @@ const CrossChainSwap = () => {
   useEffect(() => {
     // Reset controller and inputs before unloading the page
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-restricted-globals
     window.addEventListener('beforeunload', resetControllerAndInputStates);
 
     return () => {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-restricted-globals
       window.removeEventListener('beforeunload', resetControllerAndInputStates);
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
       // eslint-disable-next-line @typescript-eslint/no-floating-promises

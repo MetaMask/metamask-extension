@@ -25,6 +25,8 @@ export async function migrate(originalVersionedData: {
 
 function transformState(state: Record<string, unknown>) {
   if (!isObject(state.NetworkController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `typeof state.NetworkController is ${typeof state.NetworkController}`,
@@ -35,6 +37,8 @@ function transformState(state: Record<string, unknown>) {
   const { NetworkController } = state;
 
   if (!isObject(NetworkController.networkConfigurations)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `typeof NetworkController.networkConfigurations is ${typeof NetworkController.networkConfigurations}`,

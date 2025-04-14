@@ -54,6 +54,8 @@ export const SnapUIFooterButton: FunctionComponent<
     getHideSnapBranding(state, snapId),
   );
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const handleSnapAction = (event: ReactMouseEvent<HTMLElement>) => {
     if (type === ButtonType.Button) {
       event.preventDefault();

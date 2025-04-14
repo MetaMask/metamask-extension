@@ -33,6 +33,8 @@ describe('useLatestBalance', () => {
       chainId: CHAIN_IDS.MAINNET,
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.ethereumProvider = provider;
   });
 
@@ -49,6 +51,8 @@ describe('useLatestBalance', () => {
 
     expect(mockCalcLatestSrcBalance).toHaveBeenCalledTimes(1);
     expect(mockCalcLatestSrcBalance).toHaveBeenCalledWith(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.ethereumProvider,
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       '0x0000000000000000000000000000000000000000',
@@ -73,6 +77,8 @@ describe('useLatestBalance', () => {
 
     expect(mockCalcLatestSrcBalance).toHaveBeenCalledTimes(1);
     expect(mockCalcLatestSrcBalance).toHaveBeenCalledWith(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.ethereumProvider,
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -97,6 +103,8 @@ describe('useLatestBalance', () => {
 
     expect(mockCalcLatestSrcBalance).toHaveBeenCalledTimes(1);
     expect(mockCalcLatestSrcBalance).toHaveBeenCalledWith(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.ethereumProvider,
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',

@@ -71,7 +71,8 @@ function importAllScripts() {
   loadFile('../scripts/sentry-install.js');
 
   if (useSnow) {
-    // eslint-disable-next-line no-undef
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-undef, no-restricted-globals
     const isWorker = !self.document;
     if (!isWorker) {
       loadFile('../scripts/snow.js');
@@ -130,7 +131,8 @@ function importAllScripts() {
 }
 
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
-// eslint-disable-next-line no-undef
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-undef, no-restricted-globals
 self.addEventListener('install', importAllScripts);
 
 /*
@@ -157,7 +159,8 @@ chrome.runtime.onMessage.addListener(() => {
  * that whenever the already installed service worker is stopped and then restarted, the state
  * is 'activated'.
  */
-// eslint-disable-next-line no-undef
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-undef, no-restricted-globals
 if (self.serviceWorker.state === 'activated') {
   importAllScripts();
 }

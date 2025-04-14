@@ -9,6 +9,8 @@ const MOCK_ADDRESS_2 = '0x1';
 
 const sentryCaptureExceptionMock = jest.fn();
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 global.sentry = {
   startSession: jest.fn(),
   endSession: jest.fn(),

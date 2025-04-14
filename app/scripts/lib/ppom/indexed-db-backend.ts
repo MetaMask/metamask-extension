@@ -10,6 +10,8 @@ const validateChecksum = async (
   data: ArrayBuffer,
   checksum: string,
 ) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const hash = await crypto.subtle.digest('SHA-256', data);
   const hashString = Array.from(new Uint8Array(hash))
     .map((b) => b.toString(16).padStart(2, '0'))
@@ -30,8 +32,12 @@ export class IndexedDBPPOMStorage implements StorageBackend {
     this.dbVersion = dbVersion;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   async #getObjectStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
     return new Promise((resolve, reject) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const request = indexedDB.open(this.storeName, this.dbVersion);
 
       request.onerror = (event: Event) => {
@@ -47,6 +53,8 @@ export class IndexedDBPPOMStorage implements StorageBackend {
       };
 
       request.onupgradeneeded = (event) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const db = (event.target as IDBOpenDBRequest).result;
 
         if (!db.objectStoreNames.contains(this.storeName)) {
@@ -57,6 +65,8 @@ export class IndexedDBPPOMStorage implements StorageBackend {
       };
 
       request.onsuccess = (event) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const db = (event.target as IDBOpenDBRequest).result;
         const transaction = db.transaction([this.storeName], mode);
         const objectStore = transaction.objectStore(this.storeName);

@@ -36,6 +36,8 @@ function transformState(state: VersionedData['data']) {
   }
 
   if (!isObject(state.PermissionController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.PermissionController is ${typeof state.PermissionController}`,
@@ -47,6 +49,8 @@ function transformState(state: VersionedData['data']) {
   const { subjects } = state.PermissionController;
 
   if (!isObject(subjects)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: typeof state.PermissionController.subjects is ${typeof subjects}`,

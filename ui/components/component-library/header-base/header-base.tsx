@@ -28,7 +28,11 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
     }: HeaderBaseProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const startAccessoryRef = useRef<HTMLDivElement>(null);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const endAccessoryRef = useRef<HTMLDivElement>(null);
     const [accessoryMinWidth, setAccessoryMinWidth] = useState<number>();
 
@@ -50,9 +54,13 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
       }
 
       handleResize();
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.addEventListener('resize', handleResize);
 
       return () => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         window.removeEventListener('resize', handleResize);
       };
     }, [startAccessoryRef, endAccessoryRef, children]);

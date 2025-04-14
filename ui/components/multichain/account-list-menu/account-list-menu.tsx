@@ -840,6 +840,8 @@ export const AccountListMenu = ({
                     },
                   });
                   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                    // eslint-disable-next-line no-restricted-globals
                     global.platform.openExtensionInBrowser?.(
                       CONNECT_HARDWARE_ROUTE,
                     );
@@ -876,7 +878,11 @@ export const AccountListMenu = ({
                           hd_entropy_index: hdEntropyIndex,
                         },
                       });
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                      // eslint-disable-next-line no-restricted-globals
                       global.platform.openTab({
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                        // eslint-disable-next-line no-restricted-globals
                         url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL as string,
                       });
                     }}
@@ -943,7 +949,8 @@ export const AccountListMenu = ({
                   placeholder={t('searchAccounts')}
                   value={searchQuery}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-                  // eslint-disable-next-line id-length
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                  // eslint-disable-next-line id-length, no-restricted-globals
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setSearchQuery(e.target.value)
                   }

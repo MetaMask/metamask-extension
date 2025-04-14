@@ -146,6 +146,8 @@ function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
     // use the scriptName in `--help` output
     .scriptName(name)
     // wrap output at a maximum of 120 characters or `process.stdout.columns`
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     .wrap(Math.min(120, process.stdout.columns))
     // enable the `--config` command, which allows the user to specify a custom
     // config file containing webpack options

@@ -16,6 +16,8 @@ describe('Textarea', () => {
   });
   it('should render and be able to input text', () => {
     const { getByTestId } = render(<Textarea data-testid="textarea" />);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const textarea = getByTestId('textarea') as HTMLTextAreaElement;
     expect(textarea.value).toBe(''); // initial value is empty string
     fireEvent.change(textarea, { target: { value: 'text value' } });
@@ -66,6 +68,8 @@ describe('Textarea', () => {
   });
   it('should render with rows and cols', () => {
     const { getByRole } = render(<Textarea rows={4} cols={50} />);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const textarea = getByRole('textbox') as HTMLTextAreaElement;
     expect(textarea.rows).toBe(4);
     expect(textarea.cols).toBe(50);
@@ -81,6 +85,8 @@ describe('Textarea', () => {
         data-testid="textarea-default-value"
       />,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const textarea = getByRole('textbox') as HTMLTextAreaElement;
     expect(textarea.value).toBe('default value');
   });
@@ -141,6 +147,8 @@ describe('Textarea', () => {
     const { getByTestId, getByRole, user } = renderWithUserEvent(
       <Textarea readOnly data-testid="read-only" />,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const textarea = getByTestId('read-only') as HTMLTextAreaElement;
     await user.type(textarea, '1234567890');
     expect(textarea.value).toBe('');

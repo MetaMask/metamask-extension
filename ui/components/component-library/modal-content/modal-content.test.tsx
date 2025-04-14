@@ -110,11 +110,15 @@ describe('ModalContent', () => {
     fireEvent.mouseDown(getByRole('dialog'));
     expect(onClose).not.toHaveBeenCalled();
     // close when clicked outside
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.mouseDown(document.body);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it('should not close when isClosedOnOutsideClick is false and clicked outside', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const ref: React.RefObject<HTMLDivElement> = React.createRef();
     const { getByTestId } = render(
       <Modal isOpen={true} onClose={onClose} isClosedOnOutsideClick={false}>
@@ -127,11 +131,15 @@ describe('ModalContent', () => {
     fireEvent.mouseDown(getByTestId('modal-dialog'));
     expect(onClose).not.toHaveBeenCalled();
     // don't close when clicked outside
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.mouseDown(document.body);
     expect(onClose).not.toHaveBeenCalled();
   });
 
   it('should focus initial focus ref when autoFocus is false', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const initialRef: React.RefObject<HTMLInputElement> = React.createRef();
     const { getByTestId } = render(
       <Modal isOpen={true} onClose={onClose} initialFocusRef={initialRef}>
@@ -145,6 +153,8 @@ describe('ModalContent', () => {
   });
 
   it('should focus final focus ref when modal is closed', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const finalRef: React.RefObject<HTMLButtonElement> = React.createRef();
     const { rerender } = render(
       <>

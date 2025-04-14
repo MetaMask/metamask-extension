@@ -24,6 +24,8 @@ const ToggleRow = ({
   isEnabled: boolean;
   onToggle: (value: boolean) => void;
   dataTestId: string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   settingsRef: React.RefObject<HTMLDivElement>;
 }) => {
   return (

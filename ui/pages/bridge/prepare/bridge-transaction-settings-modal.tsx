@@ -107,7 +107,8 @@ export const BridgeTransactionSettingsModal = ({
                   key={hardcodedSlippage}
                   size={ButtonSize.Sm}
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-                  // eslint-disable-next-line id-length
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                  // eslint-disable-next-line id-length, no-restricted-globals
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -159,7 +160,8 @@ export const BridgeTransactionSettingsModal = ({
                     : BackgroundColor.primaryMuted
                 }
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-                // eslint-disable-next-line id-length
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                // eslint-disable-next-line id-length, no-restricted-globals
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();

@@ -17,6 +17,8 @@ import ConfigureSnapPopup, {
 const mockOnClose = jest.fn();
 const mockStore = configureMockStore([])(mockState);
 describe('ConfigureSnapPopup', () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
   it('should show configure popup title and description', async () => {
@@ -69,6 +71,8 @@ describe('ConfigureSnapPopup', () => {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await fireEvent.click(link);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: 'mockLink',
     });

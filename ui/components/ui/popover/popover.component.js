@@ -241,6 +241,8 @@ Popover.propTypes = {
    * The ref of the popover-wrap element
    */
   popoverRef: PropTypes.shape({
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     current: PropTypes.instanceOf(window.Element),
   }),
   /**
@@ -280,8 +282,12 @@ Popover.propTypes = {
 export default class PopoverPortal extends PureComponent {
   static propTypes = Popover.propTypes;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   rootNode = document.getElementById('popover-content');
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   instanceNode = document.createElement('div');
 
   componentDidMount() {

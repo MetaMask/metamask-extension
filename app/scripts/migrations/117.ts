@@ -40,6 +40,8 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!isObject(selectedNetworkControllerState)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error('SelectedNetworkController is not an object.'),
     );
@@ -47,6 +49,8 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!hasProperty(selectedNetworkControllerState, 'domains')) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error('Domains key is missing in SelectedNetworkController state.'),
     );
@@ -54,6 +58,8 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!isObject(selectedNetworkControllerState.domains)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error('Domains state is not an object.'),
     );

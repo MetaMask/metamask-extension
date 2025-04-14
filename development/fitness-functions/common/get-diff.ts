@@ -7,14 +7,20 @@ function getDiffByAutomationType(
 ): string | undefined {
   if (!Object.values(AUTOMATION_TYPE).includes(automationType)) {
     console.error('Invalid automation type.');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.exit(1);
   }
 
   let diff;
   if (automationType === AUTOMATION_TYPE.CI) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const optionalArguments = process.argv.slice(3);
     if (optionalArguments.length !== 1) {
       console.error('Invalid number of arguments.');
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       process.exit(1);
     }
 

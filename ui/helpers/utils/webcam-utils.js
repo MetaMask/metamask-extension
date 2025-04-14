@@ -15,6 +15,8 @@ class WebcamUtils {
     const isFirefoxOrBrave =
       getPlatform() === (PLATFORM_FIREFOX || PLATFORM_BRAVE);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const devices = await window.navigator.mediaDevices.enumerateDevices();
     const webcams = devices.filter((device) => device.kind === 'videoinput');
     const hasWebcam = webcams.length > 0;

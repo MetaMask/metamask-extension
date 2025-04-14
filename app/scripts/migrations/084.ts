@@ -27,6 +27,8 @@ function transformState(state: Record<string, unknown>) {
     !hasProperty(state, 'NetworkController') ||
     !isObject(state.NetworkController)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `typeof state.NetworkController is ${typeof state.NetworkController}`,
@@ -38,6 +40,8 @@ function transformState(state: Record<string, unknown>) {
     const thePost077SupplementFor084HasNotModifiedState =
       state.NetworkController.networkId === undefined;
     if (thePost077SupplementFor084HasNotModifiedState) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.sentry?.captureException?.(
         new Error(
           `typeof state.NetworkController.network is ${typeof state

@@ -427,6 +427,8 @@ export default class DecryptMessageController extends BaseController<
 
   private _parseMessageData(data: string) {
     const stripped = stripHexPrefix(data);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const buff = Buffer.from(stripped, 'hex');
     return JSON.parse(buff.toString('utf8'));
   }

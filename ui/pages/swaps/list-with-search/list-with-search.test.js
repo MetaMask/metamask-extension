@@ -51,6 +51,8 @@ describe('ListWithSearch', () => {
       getByPlaceholderText('Enter token name or paste address'),
     ).toBeInTheDocument();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.list-with-search__text-search'),
     ).toMatchSnapshot();
   });

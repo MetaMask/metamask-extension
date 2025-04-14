@@ -53,6 +53,8 @@ export type Loader = RuleSetRule & { options: CodeFenceLoaderOptions };
 
 export function getCodeFenceLoader(features: FeatureLabels): Loader {
   return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     loader: __filename,
     options: { features },
   };

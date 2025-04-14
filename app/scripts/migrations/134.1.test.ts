@@ -2,18 +2,26 @@ import { NetworkConfiguration } from '@metamask/network-controller';
 import { migrate, version } from './134.1';
 
 describe(`Migration ${version}`, () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   let originalSentry: typeof global.sentry;
   let sentryCaptureExceptionMock: jest.Mock;
 
   beforeAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     originalSentry = global.sentry;
     sentryCaptureExceptionMock = jest.fn();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry = {
       captureException: sentryCaptureExceptionMock,
     };
   });
 
   afterAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry = originalSentry;
   });
 

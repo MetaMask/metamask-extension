@@ -21,6 +21,8 @@ describe('useFetchNftDetailsFromTokenURI', () => {
   });
 
   it('should return when fetch fails', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     jest.spyOn(global, 'fetch').mockImplementation(
       jest.fn(async () =>
         Promise.resolve({
@@ -52,6 +54,8 @@ describe('useFetchNftDetailsFromTokenURI', () => {
         'https://ipfs.io/ipfs/bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     jest.spyOn(global, 'fetch').mockImplementation(
       jest.fn(async () =>
         Promise.resolve({

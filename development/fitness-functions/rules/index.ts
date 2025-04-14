@@ -32,6 +32,8 @@ function runFitnessFunctionRule(rule: IRule, diff: string): void {
   } else {
     console.log(`...FAILED. Changes not accepted by the fitness function.`);
     console.log(errorMessage);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.exit(1);
   }
 }

@@ -35,6 +35,8 @@ describe('ModalFocus', () => {
   });
 
   it('should focus initialFocusRef on render', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const ref: React.RefObject<HTMLInputElement> = React.createRef();
     const { getByTestId } = render(
       <ModalFocus initialFocusRef={ref}>
@@ -47,6 +49,8 @@ describe('ModalFocus', () => {
   });
 
   it('should focus final focus ref when closed', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const finalRef: React.RefObject<HTMLButtonElement> = React.createRef();
     const { rerender, getByRole } = render(
       <>

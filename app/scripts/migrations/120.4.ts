@@ -46,6 +46,8 @@ function removeObsoleteCurrencyControllerState(
   if (!hasProperty(state, 'CurrencyController')) {
     return;
   } else if (!isObject(state.CurrencyController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid CurrencyController state of type '${typeof state.CurrencyController}'`,
@@ -73,6 +75,8 @@ function removeObsoletePhishingControllerState(
   if (!hasProperty(state, 'PhishingController')) {
     return;
   } else if (!isObject(state.PhishingController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid PhishingController state of type '${typeof state.PhishingController}'`,
@@ -96,6 +100,8 @@ function removeObsoleteNetworkControllerState(
   if (!hasProperty(state, 'NetworkController')) {
     return;
   } else if (!isObject(state.NetworkController)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: Invalid NetworkController state of type '${typeof state.NetworkController}'`,

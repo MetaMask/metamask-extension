@@ -38,6 +38,8 @@ const renderUseBridging = (mockStoreState: object) =>
 describe('useBridging', () => {
   beforeAll(() => {
     jest.clearAllMocks();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     Object.defineProperty(global, 'platform', {
       value: {
         openTab: jest.fn(),
@@ -85,6 +87,8 @@ describe('useBridging', () => {
         location: string,
         urlSuffix: string | undefined,
       ) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging({
           metamask: {
@@ -155,6 +159,8 @@ describe('useBridging', () => {
         location: string,
         urlSuffix: string | undefined,
       ) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging({
           metamask: {

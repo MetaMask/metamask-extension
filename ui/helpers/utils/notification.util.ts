@@ -424,6 +424,8 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
   const rpcUrl = getRpcUrlByChainId(`0x${chainId}` as HexChainId);
   const connection = {
     url: rpcUrl,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     headers: process.env.STORYBOOK
       ? undefined
       : {

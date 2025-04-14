@@ -269,7 +269,11 @@ export const CoinOverview = ({
   };
 
   const [referenceElement, setReferenceElement] =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     useState<HTMLSpanElement | null>(null);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const setBoxRef = (ref: HTMLSpanElement | null) => {
     if (ref) {
       setReferenceElement(ref);
@@ -285,6 +289,8 @@ export const CoinOverview = ({
       isMetaMetricsEnabled,
       isMarketingEnabled,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform.openTab({ url });
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

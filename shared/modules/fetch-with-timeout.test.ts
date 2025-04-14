@@ -54,6 +54,8 @@ describe('getFetchWithTimeout', () => {
       .get('/moon')
       .delay(SECOND * 2)
       .reply(200, '{"moon": "2012-12-21T11:11:11Z"}');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const abortSignal = new window.AbortController();
 
     const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);

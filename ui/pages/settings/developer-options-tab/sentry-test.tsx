@@ -57,6 +57,8 @@ const SentryTest = () => {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function GenerateUIError() {
   const handleClick = useCallback(async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     await window.stateHooks.throwTestError?.('Developer Options');
   }, []);
 
@@ -78,6 +80,8 @@ function GenerateUIError() {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function GenerateBackgroundError() {
   const handleClick = useCallback(async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     await window.stateHooks.throwTestBackgroundError?.('Developer Options');
   }, []);
 

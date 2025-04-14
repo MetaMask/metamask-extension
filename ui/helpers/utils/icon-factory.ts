@@ -29,6 +29,8 @@ export class IconFactory {
   /**
    * Cache for storing generated SVG elements to avoid re-rendering.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   cache: { [key: string]: SVGSVGElement };
 
   /**
@@ -58,6 +60,8 @@ export class IconFactory {
     address: string,
     diameter: number,
     tokenMetadata?: Partial<TokenMetadata>,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   ): HTMLElement | SVGSVGElement {
     if (iconExistsFor(address, tokenMetadata)) {
       return imageElFor(tokenMetadata);
@@ -73,11 +77,17 @@ export class IconFactory {
    * @param diameter - The diameter of the identicon.
    * @returns A Jazzicon SVG element.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   generateIdenticonSvg(address: string, diameter: number): SVGSVGElement {
     const cacheId = `${address}:${diameter}`;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const identicon: SVGSVGElement =
       this.cache[cacheId] ||
       (this.cache[cacheId] = this.generateNewIdenticon(address, diameter));
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const cleanCopy: SVGSVGElement = identicon.cloneNode(true) as SVGSVGElement;
     return cleanCopy;
   }
@@ -89,6 +99,8 @@ export class IconFactory {
    * @param diameter - The diameter of the identicon.
    * @returns A new Jazzicon SVG element.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   generateNewIdenticon(address: string, diameter: number): SVGSVGElement {
     const numericRepresentation = this.generateSeed(address);
     const identicon = this.jazzicon(diameter, numericRepresentation);
@@ -136,7 +148,11 @@ function iconExistsFor(
  * @param tokenMetadata - Metadata containing the icon URL. Defaults to an empty object.
  * @returns An HTMLImageElement with the source set to the icon URL.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 function imageElFor(tokenMetadata: TokenMetadata): HTMLImageElement {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const img = document.createElement('img');
   img.src = tokenMetadata.iconUrl;
   img.style.width = '100%';

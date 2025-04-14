@@ -28,7 +28,11 @@ const start = () => {
   if (shouldInjectProvider()) {
     initStreams();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     if (document.prerendering && getIsBrowserPrerenderBroken()) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.addEventListener('prerenderingchange', () => {
         onDisconnectDestroyStreams(
           new Error('Prerendered page has become active.'),
@@ -36,6 +40,8 @@ const start = () => {
       });
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.addEventListener('pageshow', (event) => {
       if (event.persisted) {
         console.warn('BFCached page has become active. Restoring the streams.');
@@ -43,6 +49,8 @@ const start = () => {
       }
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     window.addEventListener('pagehide', (event) => {
       if (event.persisted) {
         console.warn('Page may become BFCached. Destroying the streams.');

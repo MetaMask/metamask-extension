@@ -191,7 +191,8 @@ export type BackgroundColorArray = [
  * Help to migrate this component by submitting a PR
  */
 // TODO: Convert to a `type` in a future major version.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, no-restricted-globals
 export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * The content of the Box component.
@@ -402,6 +403,8 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * The ref of the Box component.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   ref?: React.Ref<HTMLElement>;
 }
 /**

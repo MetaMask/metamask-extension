@@ -7,9 +7,11 @@ const _contractAddressLink =
 // eslint-disable-next-line prefer-destructuring
 export const METAMETRICS_SETTINGS_LINK =
   'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings';
-// eslint-disable-next-line prefer-destructuring
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line prefer-destructuring, no-restricted-globals
 export const SUPPORT_REQUEST_LINK = process.env.SUPPORT_REQUEST_LINK;
-// eslint-disable-next-line prefer-destructuring
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line prefer-destructuring, no-restricted-globals
 export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 export const CONTRACT_ADDRESS_LINK = _contractAddressLink;
 export const PASSWORD_MIN_LENGTH = 8;

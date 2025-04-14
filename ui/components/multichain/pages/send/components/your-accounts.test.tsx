@@ -56,6 +56,8 @@ describe('SendPageYourAccounts', () => {
     it('sets the recipient upon item click', () => {
       render();
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const firstItem = document.querySelector('.multichain-account-list-item');
       if (firstItem) {
         fireEvent.click(firstItem);

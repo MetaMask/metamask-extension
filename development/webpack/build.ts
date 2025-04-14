@@ -7,6 +7,8 @@ import config from './webpack.config';
 
 // disable browserslist stats as it needlessly traverses the filesystem multiple
 // times looking for a stats file that doesn't exist.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 require('browserslist/node').getStat = noop;
 
 /**
@@ -22,6 +24,8 @@ export function build(onComplete: () => void = noop) {
   if (__HMR_READY__ && watch) {
     // DISABLED BECAUSE WE AREN'T `__HMR_READY__` YET
     // Use `webpack-dev-server` to enable HMR
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const WebpackDevServer: typeof WebpackDevServerType = require('webpack-dev-server');
     const serverOptions = {
       hot: isDevelopment,

@@ -36,6 +36,8 @@ const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
  * @param zip - The zip file to add the asset to
  */
 function addAssetToZip(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   asset: Buffer,
   assetName: string,
   compress: boolean,
@@ -60,6 +62,8 @@ function addAssetToZip(
   // See: https://github.com/101arrowz/fflate/issues/227#issuecomment-2540024304
   // this can probably be simplified to `zipFile.push(Buffer.from(asset), true);`
   // if the above issue is resolved.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   zipFile.push(compress ? new Uint8Array(asset) : Buffer.from(asset), true);
 }
 
@@ -150,6 +154,8 @@ export class ManifestPlugin<Z extends boolean> {
             errored = true;
             reject(error);
           } else {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             zipSource.add(new RawSource(Buffer.from(data)));
             // we've received our final bit of data, return the zipSource
             if (final) resolve(zipSource);
@@ -268,6 +274,8 @@ export class ManifestPlugin<Z extends boolean> {
         // merge browser-specific overrides into the browser manifest
         manifest = {
           ...manifest,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           ...require(browserManifestPath),
         };
       } catch {

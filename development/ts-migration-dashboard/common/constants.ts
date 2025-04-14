@@ -1,5 +1,7 @@
 import path from 'path';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 export const ROOT_DIRECTORY_PATH = path.resolve(__dirname, '../../..');
 export const PROJECT_DIRECTORY_PATH = path.join(
   ROOT_DIRECTORY_PATH,

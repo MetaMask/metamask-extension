@@ -45,7 +45,8 @@ const useRamps = (
         }
 
         // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-restricted-globals
         const url = new URL(process.env.PORTFOLIO_URL || '');
         url.pathname = 'buy';
         url.search = params.toString();
@@ -62,6 +63,8 @@ const useRamps = (
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       const buyUrl = getBuyURI(_chainId || chainId);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       global.platform.openTab({
         url: buyUrl,
       });

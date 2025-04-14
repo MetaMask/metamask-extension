@@ -47,6 +47,8 @@ describe('Toast', () => {
 
   it('executes onClose properly', () => {
     render(<Toast {...ToastArgs} />);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const closeButton = document.querySelector('.mm-banner-base__close-button');
     if (closeButton) {
       fireEvent.click(closeButton);

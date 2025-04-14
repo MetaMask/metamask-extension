@@ -84,14 +84,20 @@ describe('AdvancedGasFeeGasLimit', () => {
 
   it('should show input when edit link is clicked', async () => {
     await render();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')).toHaveLength(0);
     fireEvent.click(screen.queryByText('Edit'));
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByTagName('input')[0]).toHaveValue(21000);
   });
 
   it('should show error if gas limit is not in range', async () => {
     await render();
     fireEvent.click(screen.queryByText('Edit'));
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 20000 },
     });
@@ -100,6 +106,8 @@ describe('AdvancedGasFeeGasLimit', () => {
         `Gas limit must be greater than 20999 and less than ${MAX_GAS_LIMIT_DEC}`,
       ),
     ).toBeInTheDocument();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 80000000 },
     });
@@ -108,6 +116,8 @@ describe('AdvancedGasFeeGasLimit', () => {
         `Gas limit must be greater than 20999 and less than ${MAX_GAS_LIMIT_DEC}`,
       ),
     ).toBeInTheDocument();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 7000000 },
     });
@@ -121,6 +131,8 @@ describe('AdvancedGasFeeGasLimit', () => {
   it('should validate gas limit against minimumGasLimit it is passed to context', async () => {
     await render({ minimumGasLimit: '0x5208' });
     fireEvent.click(screen.queryByText('Edit'));
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 2500 },
     });

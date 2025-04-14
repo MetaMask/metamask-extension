@@ -111,6 +111,8 @@ export const BridgeInputGroup = ({
     (text: string) => void,
   ];
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const isAmountReadOnly =
@@ -202,7 +204,8 @@ export const BridgeInputGroup = ({
           className="amount-input"
           placeholder="0"
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line id-length, no-restricted-globals
           onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
             if (e) {
               // Only allow numbers and at most one decimal point
@@ -217,7 +220,8 @@ export const BridgeInputGroup = ({
             }
           }}
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line id-length, no-restricted-globals
           onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
             e.preventDefault();
             const cleanedValue = sanitizeAmountInput(

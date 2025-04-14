@@ -18,6 +18,8 @@ const EnhancedReader = ({ handleScan }) => {
   }, []);
 
   useEffect(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const videoElem = document.getElementById('video');
     const canplayListener = () => {
       setCanplay(true);

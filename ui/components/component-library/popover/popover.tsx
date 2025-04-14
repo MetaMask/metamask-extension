@@ -49,10 +49,16 @@ export const Popover: PopoverComponent = React.forwardRef(
     }: PopoverProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const [popperElement, setPopperElement] = useState<HTMLElement | null>(
       null,
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const [arrowElement, setArrowElement] = useState<HTMLElement | null>(null);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const popoverRef = React.useRef<HTMLElement | null>(null);
 
     // Define Popper options
@@ -89,6 +95,8 @@ export const Popover: PopoverComponent = React.forwardRef(
     };
 
     // Esc key press
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         // Close the popover when the "Esc" key is pressed
@@ -98,10 +106,14 @@ export const Popover: PopoverComponent = React.forwardRef(
       }
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const handleClickOutside = (event: MouseEvent) => {
       if (
         isOpen &&
         popoverRef.current &&
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         !popoverRef.current.contains(event.target as Node)
       ) {
         if (onClickOutside) {
@@ -111,15 +123,25 @@ export const Popover: PopoverComponent = React.forwardRef(
     };
 
     useEffect(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.addEventListener('keydown', handleEscKey);
       if (isOpen) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         document.addEventListener('click', handleClickOutside);
       } else {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         document.removeEventListener('click', handleClickOutside);
       }
 
       return () => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         document.removeEventListener('keydown', handleEscKey);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         document.removeEventListener('click', handleClickOutside);
       };
     }, [onPressEscKey, isOpen, onClickOutside]);
@@ -174,6 +196,8 @@ export const Popover: PopoverComponent = React.forwardRef(
     return (
       <>
         {isPortal
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           ? isOpen && createPortal(PopoverContent, document.body)
           : isOpen && PopoverContent}
       </>

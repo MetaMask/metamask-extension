@@ -356,21 +356,30 @@ describe('./utils/helpers.ts', () => {
 
       let testHelpers: typeof import('../utils/helpers');
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line @typescript-eslint/unbound-method, no-restricted-globals
       const originalGetColorDepth = process.stderr.getColorDepth;
       beforeEach(() => {
         // getColorDepth is undefined sometimes, so we need to mock it like this
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         process.stderr.getColorDepth = (
           colorDepth ? mock.fn(() => colorDepth) : colorDepth
         ) as (env?: object | undefined) => number;
 
         // helpers caches `getColorDepth` on initialization, so we need to a new
         // one after we mock `getColorDepth`.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         delete require.cache[require.resolve('../utils/helpers')];
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         testHelpers = require('../utils/helpers');
       });
 
       afterEach(() => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         process.stderr.getColorDepth = originalGetColorDepth;
       });
 

@@ -6,6 +6,8 @@ export const COOKIE_ID_MARKETING_WHITELIST = [
   'https://support.metamask.io',
 ];
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 if (process.env.IN_TEST) {
   COOKIE_ID_MARKETING_WHITELIST.push('http://127.0.0.1:8080');
 }

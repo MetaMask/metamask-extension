@@ -302,6 +302,8 @@ describe('submitSmartTransactionHook', () => {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request, messenger }) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {
           status: 'cancelled',
@@ -329,6 +331,8 @@ describe('submitSmartTransactionHook', () => {
         updateRequestStateSpy,
         endFlowSpy,
       }) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
             status: 'pending',
@@ -417,6 +421,8 @@ describe('submitSmartTransactionHook', () => {
         updateRequestStateSpy,
         endFlowSpy,
       }) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
             status: 'pending',
@@ -515,6 +521,8 @@ describe('submitSmartTransactionHook', () => {
         updateRequestStateSpy,
         endFlowSpy,
       }) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
             status: 'pending',
@@ -627,6 +635,8 @@ describe('submitSmartTransactionHook', () => {
       async ({ request }) => {
         // Mock the transaction success for both submissions
         // We do this outside the messenger to avoid type issues
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         setImmediate(() => {
           request.smartTransactionsController.submitSignedTransactions = jest
             .fn()
@@ -702,6 +712,8 @@ describe('submitBatchSmartTransactionHook', () => {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request, messenger }) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {
           status: 'cancelled',
@@ -753,6 +765,8 @@ describe('submitBatchSmartTransactionHook', () => {
           },
         );
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
             status: 'pending',
@@ -814,6 +828,8 @@ describe('submitBatchSmartTransactionHook', () => {
           },
         );
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
             status: 'pending',
@@ -885,6 +901,8 @@ describe('submitBatchSmartTransactionHook', () => {
         },
       );
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {
           status: 'success',

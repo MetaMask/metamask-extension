@@ -44,6 +44,8 @@ describe('AddContact component', () => {
     const store = configureMockStore(middleware)(state);
     const { getByText } = renderWithProvider(<EditContact {...props} />, store);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const addressInput = document.getElementById('address');
     fireEvent.change(addressInput, { target: { value: 'invalid address' } });
 
@@ -58,6 +60,8 @@ describe('AddContact component', () => {
     const store = configureMockStore(middleware)(state);
     const { getByText } = renderWithProvider(<EditContact {...props} />, store);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const input = document.getElementById('nickname');
     fireEvent.change(input, { target: { value: '' } });
 
@@ -69,6 +73,8 @@ describe('AddContact component', () => {
     const store = configureMockStore(middleware)(state);
     const { getByText } = renderWithProvider(<EditContact {...props} />, store);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const input = document.getElementById('nickname');
     fireEvent.change(input, { target: { value: MOCK_ADDRESS_BOOK[0].name } });
 
@@ -82,6 +88,8 @@ describe('AddContact component', () => {
     const store = configureMockStore(middleware)(state);
     const { getByText } = renderWithProvider(<EditContact {...props} />, store);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const input = document.getElementById('nickname');
     fireEvent.change(input, { target: { value: mockAccount2.metadata.name } });
 
@@ -98,6 +106,8 @@ describe('AddContact component', () => {
       store,
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const input = document.getElementById('nickname');
     fireEvent.change(input, { target: { value: mockAccount1.metadata.name } });
 

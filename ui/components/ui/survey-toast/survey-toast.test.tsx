@@ -68,6 +68,8 @@ describe('SurveyToast', () => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.platform = {
       openTab: jest.fn(),
       closeCurrentWindow: jest.fn(),
@@ -130,6 +132,8 @@ describe('SurveyToast', () => {
 
     fireEvent.click(screen.getByText(surveyData.valid.cta));
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: surveyData.valid.url,
     });

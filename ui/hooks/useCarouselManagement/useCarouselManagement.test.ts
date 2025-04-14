@@ -141,6 +141,8 @@ describe('useCarouselManagement', () => {
   let invalidTestDate: string;
 
   beforeEach(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     delete process.env.IN_TEST;
     // Test dates
     validTestDate = new Date(SWEEPSTAKES_START.getTime() + 1000).toISOString(); // 1 day after
@@ -170,6 +172,8 @@ describe('useCarouselManagement', () => {
   });
 
   afterEach(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.IN_TEST = 'true';
   });
 

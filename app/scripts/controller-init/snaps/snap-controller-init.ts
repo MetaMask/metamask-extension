@@ -39,9 +39,15 @@ export const SnapControllerInit: ControllerInitFunction<
   removeAllConnections,
   preinstalledSnaps,
 }) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
   const rejectInvalidPlatformVersion = getBooleanFlag(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION,
   );
 

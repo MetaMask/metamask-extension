@@ -191,7 +191,8 @@ async function waitForAllPromises(): Promise<void> {
   // we are testing some asynchronous execution flows that are started by
   // synchronous calls.
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31863
-  // eslint-disable-next-line @typescript-eslint/unbound-method
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line @typescript-eslint/unbound-method, no-restricted-globals
   await new Promise(process.nextTick);
 }
 

@@ -17,6 +17,8 @@ jest.mock('../../../shared/lib/swaps-utils', () => ({
   validateData: jest.fn(),
 }));
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 const BASE_URL = process.env.SWAPS_USE_DEV_APIS
   ? SWAPS_DEV_API_V2_BASE_URL
   : SWAPS_API_V2_BASE_URL;

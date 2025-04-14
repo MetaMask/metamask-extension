@@ -96,8 +96,12 @@ describe('FeeCard', () => {
     expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
     expect(getByText('Includes a 0.875% MetaMask fee.')).toBeInTheDocument();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.querySelector('.info-tooltip')).toMatchSnapshot();
     expect(getByText('Edit limit')).toBeInTheDocument();
   });
@@ -117,6 +121,8 @@ describe('FeeCard', () => {
     expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
     expect(getByText('Includes a 0.875% MetaMask fee.')).toBeInTheDocument();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
   });

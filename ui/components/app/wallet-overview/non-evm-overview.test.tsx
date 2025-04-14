@@ -294,10 +294,14 @@ describe('NonEvmOverview', () => {
       storeWithBtcBuyable,
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
     const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
     expect(buyButton).toBeInTheDocument();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.click(buyButton as HTMLElement);
 
     expect(openTabSpy).toHaveBeenCalledTimes(1);
@@ -329,6 +333,8 @@ describe('NonEvmOverview', () => {
     const buyButton = queryByTestId(BTC_OVERVIEW_BUY);
     expect(buyButton).toBeInTheDocument();
     expect(buyButton).not.toBeDisabled();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.click(buyButton as HTMLElement);
 
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
@@ -416,6 +422,8 @@ describe('NonEvmOverview', () => {
     const sendButton = queryByTestId(BTC_OVERVIEW_SEND);
     expect(sendButton).toBeInTheDocument();
     expect(sendButton).not.toBeDisabled();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     fireEvent.click(sendButton as HTMLElement);
 
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);

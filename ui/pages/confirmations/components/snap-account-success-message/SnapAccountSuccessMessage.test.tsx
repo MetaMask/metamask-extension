@@ -12,6 +12,8 @@ import SnapAccountSuccessMessage from './SnapAccountSuccessMessage';
 const store = configureStore(mockState);
 
 // If you're using some kind of global variable (like `global.platform` in your component), you might want to mock it.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+// eslint-disable-next-line no-restricted-globals
 global.platform = {
   openTab: jest.fn(),
   closeCurrentWindow: jest.fn(),

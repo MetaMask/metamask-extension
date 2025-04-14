@@ -107,6 +107,8 @@ describe('EditGasFeeButton', () => {
     });
     expect(screen.queryByText('🌐')).toBeInTheDocument();
     expect(screen.queryByText('Site suggested')).toBeInTheDocument();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     expect(document.getElementsByClassName('info-tooltip')).toHaveLength(1);
   });
 

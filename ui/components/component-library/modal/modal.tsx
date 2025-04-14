@@ -24,6 +24,8 @@ export const Modal = forwardRef(
       restoreFocus,
       ...props
     }: ModalProps,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     ref: Ref<HTMLDivElement>,
   ) => {
     const context = {
@@ -47,6 +49,8 @@ export const Modal = forwardRef(
               {children}
             </div>
           </ModalContext.Provider>,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
           document.body,
         )
       : null;

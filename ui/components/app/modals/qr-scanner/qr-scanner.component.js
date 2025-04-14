@@ -160,6 +160,8 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
         !environmentReady &&
         getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN
       ) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const currentUrl = getURL(window.location.href);
         const currentHash = currentUrl?.hash;
         const currentRoute = currentHash ? currentHash.substring(1) : null;

@@ -129,6 +129,8 @@ export async function signDelegation({
       chainId: String(hexToNumber(chainId)),
       name: DOMAIN_NAME,
       version: '1',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       verifyingContract: process.env.DELEGATION_MANAGER_ADDRESS as Hex,
     },
     message: { ...delegation, chainId: hexToNumber(chainId) },

@@ -5,6 +5,8 @@
  */
 export default function shouldInjectProvider() {
   return (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     checkURLForProviderInjection(new URL(window.location)) &&
     checkDocumentForProviderInjection()
   );
@@ -103,6 +105,8 @@ export function checkDocumentForProviderInjection() {
  * @returns {boolean} {@code true} if the doctype is html or if none exists
  */
 function doctypeCheck() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const { doctype } = window.document;
   if (doctype) {
     return doctype.name === 'html';
@@ -116,6 +120,8 @@ function doctypeCheck() {
  * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
  */
 function documentElementCheck() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const documentElement = document.documentElement.nodeName;
   if (documentElement) {
     return documentElement.toLowerCase() === 'html';

@@ -21,6 +21,8 @@ describe('ManifestPlugin', () => {
           {
             // will be compressed
             name: 'filename.js',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             source: Buffer.from('console.log(1 + 2);', 'utf8'),
           },
         ],
@@ -28,16 +30,22 @@ describe('ManifestPlugin', () => {
           {
             // will be compressed
             name: 'filename.js',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             source: Buffer.from('console.log(1 + 2);', 'utf8'),
           },
           {
             // will be omitted
             name: 'filename.js.map',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             source: Buffer.alloc(0),
           },
           {
             // will not be compressed
             name: 'pixel.png',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+            // eslint-disable-next-line no-restricted-globals
             source: Buffer.from([
               137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
               0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 55, 110, 249, 36, 0, 0, 0, 10,
@@ -67,7 +75,11 @@ describe('ManifestPlugin', () => {
         webAccessibleResources,
         zip,
       } = testCase;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const context = join(__dirname, `fixtures/ManifestPlugin/${fixture}`);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       const baseManifest = require(join(
         context,
         `manifest/v${manifestVersion}`,
@@ -327,8 +339,14 @@ describe('ManifestPlugin', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const mockFlags = { _flags: { remoteFeatureFlags: { testFlag: true } } };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const fs = require('node:fs');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const { mock } = require('node:test');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const { resolve } = require('node:path');
 
     afterEach(() => mock.restoreAll());
@@ -337,6 +355,8 @@ describe('ManifestPlugin', () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('adds manifest flags in development mode with path provided and empty manifest', () => {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
           return JSON.stringify(mockFlags);
         }
@@ -362,6 +382,8 @@ describe('ManifestPlugin', () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('overwrites existing manifest properties with override values but keeps original properties', () => {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
           return JSON.stringify(mockFlags);
         }

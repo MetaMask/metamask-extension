@@ -102,8 +102,12 @@ export const TransactionControllerInit: ControllerInitFunction<
     incomingTransactions: {
       etherscanApiKeysByChainId: {
         // @ts-expect-error Controller does not support undefined values
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         [CHAIN_IDS.MAINNET]: process.env.ETHERSCAN_API_KEY,
         // @ts-expect-error Controller does not support undefined values
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
       },
       includeTokenTransfers: false,
@@ -128,7 +132,11 @@ export const TransactionControllerInit: ControllerInitFunction<
         );
       },
     },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     publicKeyEIP7702: process.env.EIP_7702_PUBLIC_KEY as Hex | undefined,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     testGasFeeFlows: Boolean(process.env.TEST_GAS_FEE_FLOWS === 'true'),
     // @ts-expect-error Controller uses string for names rather than enum
     trace,

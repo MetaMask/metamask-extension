@@ -36,6 +36,8 @@ function transformState(state: VersionedData['data']) {
     !hasProperty(state, 'AuthenticationController') ||
     !isObject(state.AuthenticationController)
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     global.sentry?.captureException?.(
       new Error(
         `Invalid AuthenticationController state: ${typeof state.AuthenticationController}`,

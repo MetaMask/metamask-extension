@@ -86,6 +86,8 @@ export const NetworkListItem = ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
   // eslint-disable-next-line id-length
   const t = useI18nContext();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const networkRef = useRef<HTMLInputElement>(null);
 
   const [networkListItemMenuElement, setNetworkListItemMenuElement] =

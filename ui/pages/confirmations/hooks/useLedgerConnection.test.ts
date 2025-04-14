@@ -76,8 +76,12 @@ describe('useLedgerConnection', () => {
   let originalNavigatorHid: HID;
 
   beforeEach(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     originalNavigatorHid = window.navigator.hid;
     jest.resetAllMocks();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     Object.defineProperty(window.navigator, 'hid', {
       value: {
         getDevices: jest
@@ -93,6 +97,8 @@ describe('useLedgerConnection', () => {
   });
 
   afterAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     Object.defineProperty(window.navigator, 'hid', {
       value: originalNavigatorHid,
       configurable: true,
@@ -127,6 +133,8 @@ describe('useLedgerConnection', () => {
       state.appState.ledgerWebHidConnectedStatus =
         WebHIDConnectedStatuses.unknown;
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       (window.navigator.hid.getDevices as jest.Mock).mockImplementationOnce(
         async () => Promise.resolve([]),
       );

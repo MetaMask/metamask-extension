@@ -30,6 +30,8 @@ export function getSweepstakesCampaignActive(currentDate: Date) {
 export const useCarouselManagement = ({
   testDate,
 }: UseSlideManagementProps = {}) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
   const slides = useSelector(getSlides);

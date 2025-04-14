@@ -285,8 +285,12 @@ export default function Swap() {
     };
     if (isLoadingQuotesRoute && !beforeUnloadEventAddedRef.current) {
       beforeUnloadEventAddedRef.current = true;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       window.addEventListener('beforeunload', fn);
     }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     return () => window.removeEventListener('beforeunload', fn);
   }, [dispatch, isLoadingQuotesRoute]);
 

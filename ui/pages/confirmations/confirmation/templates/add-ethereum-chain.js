@@ -395,6 +395,8 @@ function getValues(pendingApproval, t, actions, history, data) {
           nickname: pendingApproval.requestData.chainName,
         });
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         const locationPath = document.location.hash.replace('#', '/');
         const isOnboardingRoute =
           locationPath === ONBOARDING_PRIVACY_SETTINGS_ROUTE;

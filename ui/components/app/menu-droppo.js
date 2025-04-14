@@ -51,7 +51,11 @@ export default class MenuDroppoComponent extends Component {
   };
 
   componentDidMount() {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     if (this && document.body) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.body.addEventListener('click', this.globalClickOccurred);
       // eslint-disable-next-line react/no-find-dom-node
       const container = findDOMNode(this);
@@ -60,7 +64,11 @@ export default class MenuDroppoComponent extends Component {
   }
 
   componentWillUnmount() {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     if (this && document.body) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.body.removeEventListener('click', this.globalClickOccurred);
     }
   }

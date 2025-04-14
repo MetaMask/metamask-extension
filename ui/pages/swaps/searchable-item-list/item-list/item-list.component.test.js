@@ -48,6 +48,8 @@ describe('ItemList', () => {
     const { getByText } = renderWithProvider(<ItemList {...props} />, store);
     expect(getByText(props.listTitle)).toBeInTheDocument();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.searchable-item-list__item'),
     ).toMatchSnapshot();
   });

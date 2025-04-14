@@ -83,12 +83,18 @@ describe('SortList', () => {
     expect(getByText('$14.26')).toBeInTheDocument();
     expect(getByText('$13.27')).toBeInTheDocument();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.select-quote-popover__receiving'),
     ).toMatchSnapshot();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.select-quote-popover__network-fees-header'),
     ).toMatchSnapshot();
     expect(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       document.querySelector('.select-quote-popover__row--selected'),
     ).toMatchSnapshot();
   });

@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
 export async function sha256(str: string): Promise<string> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const buf = await crypto.subtle.digest(
     'SHA-256',
     new TextEncoder().encode(str),

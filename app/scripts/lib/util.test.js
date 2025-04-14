@@ -151,6 +151,8 @@ describe('app utils', () => {
     let userAgent, setBrowserSpecificWindow;
 
     beforeEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+      // eslint-disable-next-line no-restricted-globals
       userAgent = jest.spyOn(window.navigator, 'userAgent', 'get');
 
       setBrowserSpecificWindow = (browser) => {

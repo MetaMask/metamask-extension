@@ -119,6 +119,8 @@ describe('AvatarAccount', () => {
     );
   });
   it('should forward a ref to the root html element', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const ref = React.createRef<HTMLDivElement>();
     render(
       <AvatarAccount

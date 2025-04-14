@@ -50,6 +50,8 @@ async function init(): Promise<void> {
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 init().then(() => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   if (process.env.IN_TEST) {
     chrome.runtime.onMessage.addListener((message) => {
       if (
@@ -59,6 +61,8 @@ init().then(() => {
           OffscreenCommunicationEvents.metamaskBackgroundReady &&
         message.target === OffscreenCommunicationTarget.extension
       ) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
         window.document?.documentElement?.classList?.add('controller-loaded');
       }
     });
@@ -72,6 +76,8 @@ init().then(() => {
 
     // This message is being sent from the Offscreen Document to the Service Worker.
     // The Service Worker has no way to query `navigator.webdriver`, so we send it here.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     webdriverPresent: navigator.webdriver,
   });
 });

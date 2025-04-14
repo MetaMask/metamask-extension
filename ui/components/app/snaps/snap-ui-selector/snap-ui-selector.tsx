@@ -136,6 +136,8 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
     }
   }, [initialValue]);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
   const handleModalOpen = (event: ReactMouseEvent<HTMLElement>) => {
     event.preventDefault();
     setIsModalOpen(true);

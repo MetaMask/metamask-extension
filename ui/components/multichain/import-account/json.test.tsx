@@ -53,6 +53,8 @@ describe('Json', () => {
     const importButton = getByText('Import');
     const fileInput = getByTestId('file-input');
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const mockFile = new File(['0'], 'test.json');
 
     expect(importButton).toBeInTheDocument();
@@ -85,6 +87,8 @@ describe('Json', () => {
     const importButton = getByText('Import');
     const fileInput = getByTestId('file-input');
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const mockFile = new File(['0'], 'test.json');
 
     expect(importButton).toBeInTheDocument();
