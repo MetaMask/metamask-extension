@@ -62,6 +62,8 @@ export const OriginRow = () => {
 };
 
 export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
+  console.log('RecipientRow >>>>');
+
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { from } = currentConfirmation?.txParams ?? {};
@@ -71,6 +73,7 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
     Boolean(nestedTransactions?.length) &&
     to?.toLowerCase() === from.toLowerCase();
 
+  console.log('<>>>>>>>', to, from, isBatch);
   if (!to || !isValidAddress(to)) {
     return null;
   }
@@ -182,13 +185,19 @@ export const TransactionDetails = () => {
   if (currentConfirmation?.type === TransactionType.revokeDelegation) {
     return null;
   }
+  const { nestedTransactions, txParams } = currentConfirmation ?? {};
+  const { from, to } = txParams ?? {};
+
+  const isBatch =
+    Boolean(nestedTransactions?.length) &&
+    to?.toLowerCase() === from.toLowerCase();
 
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
         <NetworkRow isShownWithAlertsOnly />
         <OriginRow />
-        <RecipientRow />
+        {!isBatch && <RecipientRow />}
         {showAdvancedDetails && <MethodDataRow />}
         <SigningInWithRow />
       </ConfirmInfoSection>

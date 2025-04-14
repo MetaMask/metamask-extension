@@ -20,6 +20,7 @@ import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
+import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -32,6 +33,7 @@ function useSignatureAlerts(): Alert[] {
 }
 
 function useTransactionAlerts(): Alert[] {
+  const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
@@ -49,6 +51,7 @@ function useTransactionAlerts(): Alert[] {
 
   return useMemo(
     () => [
+      ...accountTypeUpgradeAlerts,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
       ...gasTooLowAlerts,
@@ -65,6 +68,7 @@ function useTransactionAlerts(): Alert[] {
       ...nonContractAddressAlerts,
     ],
     [
+      accountTypeUpgradeAlerts,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
       gasTooLowAlerts,
