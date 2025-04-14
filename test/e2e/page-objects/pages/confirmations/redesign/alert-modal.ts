@@ -8,10 +8,6 @@ class AlertModal {
     text: 'You do not have enough ETH in your account to pay for network fees.',
   };
 
-  private inlineAlertButton = {
-    css: '[data-testid="inline-alert"]',
-    text: 'Alert',
-  };
 
   private confirmAlertButton = '[data-testid="alert-modal-button"]';
 
@@ -19,10 +15,10 @@ class AlertModal {
     this.driver = driver;
   }
 
-  async clickAlertModalButton(): Promise<void> {
+  async clickConfirmButton(): Promise<void> {
     await this.driver.clickElement(this.confirmAlertButton);
   }
-  async check_AlertInsufficientBalance(): Promise<void> {
+  async check_messageForInsufficientBalance(): Promise<void> {
     await this.driver.clickElement(this.insufficientFundsAlert);
   }
 }
