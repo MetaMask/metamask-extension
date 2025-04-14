@@ -51,8 +51,9 @@ export const ConfirmContextProvider: React.FC<{
   // routes it back to home page which also closes confirmation modal.
   useEffect(() => {
     if (
-      currentConfirmation.type === TransactionType.revokeDelegation ||
-      currentConfirmation.type === TransactionType.batch
+      currentConfirmation &&
+      (currentConfirmation.type === TransactionType.revokeDelegation ||
+        currentConfirmation.type === TransactionType.batch)
     ) {
       dispatch(setAccountDetailsAddress(''));
     }
