@@ -122,6 +122,7 @@ describe('MetaMask onboarding', function () {
         await homePage.check_pageIsLoaded();
 
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await homePage.check_expectedBalanceIsDisplayed();
         await homePage.refreshErc20TokenList();
 
         // intended delay to allow for network requests to complete
