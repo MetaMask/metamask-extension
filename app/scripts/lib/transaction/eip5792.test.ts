@@ -84,11 +84,15 @@ describe('EIP-5792', () => {
     TransactionControllerGetStateAction['handler']
   >;
 
-  let getDisabledAccountUpgradeChainsMock: jest.MockedFn<() => Hex[]>;
+  let getDisabledUpgradeAccountsByChainMock: jest.MockedFn<
+    () => Record<Hex, Hex[]>
+  >;
 
   let validateSecurityMock: jest.MockedFunction<
     Parameters<typeof processSendCalls>[0]['validateSecurity']
   >;
+
+  let getDismissSmartAccountSuggestionEnabledMock: jest.MockedFn<() => boolean>;
 
   let messenger: EIP5792Messenger;
 
@@ -98,8 +102,9 @@ describe('EIP-5792', () => {
     addTransactionBatchMock = jest.fn();
     getTransactionControllerStateMock = jest.fn();
     getNetworkClientByIdMock = jest.fn();
-    getDisabledAccountUpgradeChainsMock = jest.fn();
+    getDisabledUpgradeAccountsByChainMock = jest.fn();
     validateSecurityMock = jest.fn();
+    getDismissSmartAccountSuggestionEnabledMock = jest.fn();
 
     messenger = new Messenger();
 
@@ -123,7 +128,7 @@ describe('EIP-5792', () => {
       batchId: BATCH_ID_MOCK,
     });
 
-    getDisabledAccountUpgradeChainsMock.mockReturnValue([]);
+    getDisabledUpgradeAccountsByChainMock.mockReturnValue({});
   });
 
   describe('processSendCalls', () => {
@@ -131,8 +136,11 @@ describe('EIP-5792', () => {
       await processSendCalls(
         {
           addTransactionBatch: addTransactionBatchMock,
-          getDisabledAccountUpgradeChains: getDisabledAccountUpgradeChainsMock,
+          getDisabledUpgradeAccountsByChain:
+            getDisabledUpgradeAccountsByChainMock,
           validateSecurity: validateSecurityMock,
+          getDismissSmartAccountSuggestionEnabled:
+            getDismissSmartAccountSuggestionEnabledMock,
         },
         messenger,
         SEND_CALLS_MOCK,
@@ -154,9 +162,11 @@ describe('EIP-5792', () => {
         await processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           SEND_CALLS_MOCK,
@@ -170,9 +180,11 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           { ...SEND_CALLS_MOCK, version: '2.0' },
@@ -186,9 +198,11 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           { ...SEND_CALLS_MOCK, chainId: CHAIN_ID_2_MOCK },
@@ -200,15 +214,41 @@ describe('EIP-5792', () => {
     });
 
     it('throws if disabled preference for chain', async () => {
-      getDisabledAccountUpgradeChainsMock.mockReturnValue([CHAIN_ID_MOCK]);
+      getDisabledUpgradeAccountsByChainMock.mockReturnValue({
+        [CHAIN_ID_MOCK]: [FROM_MOCK],
+      });
 
       await expect(
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
+          },
+          messenger,
+          SEND_CALLS_MOCK,
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(
+        `EIP-5792 is not supported for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
+      );
+    });
+
+    it('throws if user enabled preference to dismiss option to upgrade account', async () => {
+      getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
+
+      await expect(
+        processSendCalls(
+          {
+            addTransactionBatch: addTransactionBatchMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
+            validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           SEND_CALLS_MOCK,
@@ -224,9 +264,11 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           {
@@ -247,9 +289,11 @@ describe('EIP-5792', () => {
         processSendCalls(
           {
             addTransactionBatch: addTransactionBatchMock,
-            getDisabledAccountUpgradeChains:
-              getDisabledAccountUpgradeChainsMock,
+            getDisabledUpgradeAccountsByChain:
+              getDisabledUpgradeAccountsByChainMock,
             validateSecurity: validateSecurityMock,
+            getDismissSmartAccountSuggestionEnabled:
+              getDismissSmartAccountSuggestionEnabledMock,
           },
           messenger,
           {

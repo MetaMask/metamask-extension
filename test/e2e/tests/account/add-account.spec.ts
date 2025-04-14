@@ -11,6 +11,8 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import { Mockttp } from 'mockttp';
+import { mockNftApiCall } from '../identity/mocks';
 
 describe('Add account', function () {
   const localNodeOptions = {
@@ -22,6 +24,12 @@ describe('Add account', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         localNodeOptions,
         title: this.test?.fullTitle(),
+        testSpecificMock: async (server: Mockttp) => {
+          await mockNftApiCall(
+            server,
+            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          );
+        },
       },
       async ({ driver, localNodes }) => {
         await completeImportSRPOnboardingFlow({ driver });
