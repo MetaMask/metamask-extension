@@ -333,15 +333,9 @@ export default function TransactionList({
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text
-<<<<<<< HEAD
         paddingBottom={2}
         paddingInline={4}
         variant={TextVariant.bodyMdMedium}
-=======
-        paddingTop={2}
-        paddingInline={4}
-        variant={TextVariant.bodyMd}
->>>>>>> origin/main
         color={TextColor.textAlternative}
         key={dateGroup.dateMillis}
       >
