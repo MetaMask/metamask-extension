@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Este site quer permissão para gastar seus tokens."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Este site está solicitando retornar para uma conta padrão."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Um site quer que você faça login para comprovar que é titular desta conta."
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Remover permissão"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Redefinir conta"
-  },
   "confirmTitleSIWESignature": {
     "message": "Solicitação de entrada"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Solicitação de transação"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Se você confirmar esta solicitação, sua conta será atualizada para uma conta inteligente."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Cancelar transação"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Cancelar atualização e transação"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Se você não deseja atualizar sua conta, pode cancelar a atualização aqui.\n\nPara terminar esta transação sem uma atualização, é necessário fazer esta solicitação novamente no site. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Cancelar transação"
   },
   "confirmationAlertDetails": {
     "message": "Para proteger seus ativos, é recomendável que você recuse a solicitação."
@@ -6139,9 +6118,6 @@
   },
   "transactionErrored": {
     "message": "A transação encontrou um erro."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Esta transação teria lhe custado taxas extras, por isso a interrompemos. Seu dinheiro ainda está na sua carteira."
   },
   "transactionFlowNetwork": {
     "message": "Rede"

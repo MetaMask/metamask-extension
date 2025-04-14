@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Этот сайт хочет получить разрешение на расходование ваших токенов."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Этот сайт запрашивает возврат к стандартному счету."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Сайт требует, чтобы вы вошли в систему и доказали, что вы являетесь владельцем этого счета."
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Удалить разрешение"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Сбросить счет"
-  },
   "confirmTitleSIWESignature": {
     "message": "Запрос на вход"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Запрос транзакции"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Если вы подтвердите этот запрос, ваш счет будет обновлен до смарт-счета."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Отменить транзакцию"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Отменить обновление и транзакцию"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Если вы не хотите обновлять свой счет, вы можете аннулировать его здесь.\n\nЧтобы завершить эту транзакцию без обновления, необходимо будет снова сделать этот запрос на сайте. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Отменить транзакцию"
   },
   "confirmationAlertDetails": {
     "message": "Чтобы защитить свои активы, рекомендуем отклонить запрос."
@@ -6139,9 +6118,6 @@
   },
   "transactionErrored": {
     "message": "Транзакция обнаружила ошибку."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Эта транзакция потребовала бы дополнительных комиссий, поэтому мы остановили ее. Ваши деньги все еще в Вашем кошельке."
   },
   "transactionFlowNetwork": {
     "message": "Сеть"

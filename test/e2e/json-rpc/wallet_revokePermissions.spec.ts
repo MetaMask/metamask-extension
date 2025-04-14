@@ -182,7 +182,7 @@ describe('Revoke Dapp Permissions', function () {
   });
 
   describe('There are pending confirmation in the old network', function () {
-    it.only('rejects the pending confirmations as permissions are revoked for the network', async function () {
+    it('rejects the pending confirmations as permissions are revoked for the network', async function () {
       await withFixtures(
         {
           dapp: true,

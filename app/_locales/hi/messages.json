@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "यह साइट आपके टोकन खर्च करने की अनुमति चाहती है।"
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "यह साइट मानक अकाउंट पर वापस स्विच करने का अनुरोध कर रही है।"
-  },
   "confirmTitleDescSIWESignature": {
     "message": "एक साइट चाहती है कि आप यह साबित करने के लिए साइन इन करें कि यह आपका अकाउंट है।"
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "अनुमति हटाएं"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "अकाउंट रीसेट करें"
-  },
   "confirmTitleSIWESignature": {
     "message": "साइन-इन अनुरोध"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "ट्रांसेक्शन अनुरोध"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आपका अकाउंट स्मार्ट अकाउंट में अपडेट हो जाएगा।"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "ट्रांसेक्शन कैंसिल करें"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "अपडेट एवं ट्रांसेक्शन कैंसिल करें"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "यदि आप अपना अकाउंट अपडेट नहीं करना चाहते हैं, तो आप इसे यहाँ कैंसिल कर सकते हैं।\n\nइस ट्रांसेक्शन को अपडेट किए बिना पूरा करने के लिए, आपको साइट पर फिर से यह अनुरोध करना होगा। $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "ट्रांसेक्शन कैंसिल करें"
   },
   "confirmationAlertDetails": {
     "message": "आपकी एसेट्स की सुरक्षा के लिए, हम आपको अनुरोध को रिजेक्ट करने का सुझाव देते हैं।"
@@ -6139,9 +6118,6 @@
   },
   "transactionErrored": {
     "message": "ट्रांसेक्शन में गड़बड़ी हुई।"
-  },
-  "transactionFailedBannerMessage": {
-    "message": "इस ट्रांसेक्शन पर आपको अतिरिक्त शुल्क देना पड़ता, इसलिए हमने इसे रोक दिया। आपका पैसा अभी भी आपके वॉलेट में है।"
   },
   "transactionFlowNetwork": {
     "message": "नेटवर्क"

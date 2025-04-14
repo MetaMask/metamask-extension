@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Situs ini meminta izin untuk menggunakan token Anda."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Situs ini meminta untuk beralih kembali ke akun standar."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Sebuah situs ingin Anda masuk untuk membuktikan Anda pemilik akun ini."
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Hapus izin"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Reset akun"
-  },
   "confirmTitleSIWESignature": {
     "message": "Permintaan masuk"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Permintaan transaksi"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Jika Anda mengonfirmasi permintaan ini, akun akan diperbarui menjadi akun cerdas."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Batalkan transaksi"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Batalkan pembaruan & transaksi"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Jika tidak ingin memperbarui akun, Anda dapat membatalkannya di sini.\n\nUntuk menyelesaikan transaksi ini tanpa pembaruan, Anda harus mengajukan permintaan ini lagi di situs. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Batalkan transaksi"
   },
   "confirmationAlertDetails": {
     "message": "Untuk melindungi aset Anda, sebaiknya tolak permintaan tersebut."
@@ -6139,9 +6118,6 @@
   },
   "transactionErrored": {
     "message": "Transaksi mengalami kesalahan."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Transaksi ini akan dikenakan biaya tambahan, jadi kami menghentikannya. Uang Anda masih ada di dompet."
   },
   "transactionFlowNetwork": {
     "message": "Jaringan"

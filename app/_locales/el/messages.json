@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Αυτός ο ιστότοπος ζητάει άδεια για να δαπανήσει τα tokens σας."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Αυτός ο ιστότοπος ζητά να αλλάξετε ξανά σε βασικό λογαριασμό."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Ένας ιστότοπος θέλει να συνδεθείτε για να αποδείξετε ότι είστε ο κάτοχος αυτού του λογαριασμού."
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Κατάργηση άδειας"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Επαναφορά λογαριασμού"
-  },
   "confirmTitleSIWESignature": {
     "message": "Αίτημα σύνδεσης"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Αίτημα συναλλαγής"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Εάν επιβεβαιώσετε αυτό το αίτημα, ο λογαριασμός σας θα αναβαθμιστεί σε έξυπνο λογαριασμό."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Ακύρωση συναλλαγής"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Ακύρωση αναβάθμισης & συναλλαγής"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Αν δεν θέλετε να αναβαθμίσετε τον λογαριασμό σας, μπορείτε να το ακυρώσετε εδώ.\n\nΓια να ολοκληρώσετε αυτή τη συναλλαγή χωρίς αναβάθμιση, θα πρέπει να υποβάλετε ξανά αυτό το αίτημα στον ιστότοπο. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Ακύρωση συναλλαγής"
   },
   "confirmationAlertDetails": {
     "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία, σας προτείνουμε να απορρίψετε το αίτημα."
@@ -6139,9 +6118,6 @@
   },
   "transactionErrored": {
     "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Αυτή η συναλλαγή θα σας κόστιζε επιπλέον τέλη, οπότε τη σταματήσαμε. Τα χρήματά σας βρίσκονται ακόμα στο πορτοφόλι σας."
   },
   "transactionFlowNetwork": {
     "message": "Δίκτυο"

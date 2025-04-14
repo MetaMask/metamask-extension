@@ -37,7 +37,7 @@ const getPermittedChains = async (driver: Driver) => {
 };
 
 describe('Add Ethereum Chain', function () {
-  describe('the dapp is not already permitted to use the chain being added and the dapp is on a different chain from the chain being added', () => {
+  describe('the dapp is not already permitted to use the chain being added and the dapp is on a different chain from the chain being added', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added and no rpc endpoint previously existed for the chain', async function () {
       await withFixtures(
         {
@@ -226,7 +226,7 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  describe('the dapp is not already permitted to use the chain being added and the dapp is on the same chain as the chain being added', () => {
+  describe('the dapp is not already permitted to use the chain being added and the dapp is on the same chain as the chain being added', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
@@ -330,7 +330,7 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  describe('the dapp is already permitted to use the chain being added, and the dapp is on a different chain from the chain being added', () => {
+  describe('the dapp is already permitted to use the chain being added, and the dapp is on a different chain from the chain being added', function () {
     it('automatically switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
@@ -471,7 +471,7 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  describe('the dapp is already permitted to use the chain being added, and the dapp is on the same chain as the chain being added, but the rpcEndpoint being proposed does not match any existing rpcEndpoints for the chain', () => {
+  describe('the dapp is already permitted to use the chain being added, and the dapp is on the same chain as the chain being added, but the rpcEndpoint being proposed does not match any existing rpcEndpoints for the chain', function () {
     it('prompts to add the rpc endpoint to the chain networkConfiguration and set it as the default', async function () {
       await withFixtures(
         {
@@ -532,7 +532,7 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  describe('There are pending confirmation in the old network', () => {
+  describe('There are pending confirmation in the old network', function () {
     it('alert user about pending confirmations', async function () {
       await withFixtures(
         {

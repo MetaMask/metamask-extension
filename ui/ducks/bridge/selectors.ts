@@ -36,6 +36,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/multichain/networks';
 import {
+  getHardwareWalletType,
   getIsBridgeEnabled,
   getMarketData,
   getUSDConversionRate,
@@ -67,6 +68,10 @@ import {
   getImageForChainId,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
+import {
+  HardwareKeyringNames,
+  HardwareKeyringType,
+} from '../../../shared/constants/hardware-wallets';
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
@@ -299,7 +304,7 @@ export const getFromTokenConversionRate = createSelector(
       if (isSolanaChainId(fromChain.chainId)) {
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          assetsRates[fromToken.address]?.rate,
+          assetsRates[fromToken.assetId]?.rate,
           nonEvmNativeConversionRate?.sol?.conversionRate,
         );
         return exchangeRatesFromNativeAndCurrencyRates(
@@ -740,3 +745,19 @@ export const getIsToOrFromSolana = createSelector(
     return toChainIsSolana !== fromChainIsSolana;
   },
 );
+
+export const getHardwareWalletName = (state: BridgeAppState) => {
+  const type = getHardwareWalletType(state);
+  switch (type) {
+    case HardwareKeyringType.ledger:
+      return HardwareKeyringNames.ledger;
+    case HardwareKeyringType.trezor:
+      return HardwareKeyringNames.trezor;
+    case HardwareKeyringType.lattice:
+      return HardwareKeyringNames.lattice;
+    case HardwareKeyringType.oneKey:
+      return HardwareKeyringNames.oneKey;
+    default:
+      return undefined;
+  }
+};
