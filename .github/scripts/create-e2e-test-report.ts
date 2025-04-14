@@ -253,7 +253,7 @@ async function main() {
             }
             for (const test of suite.testCases) {
               if (test.status !== 'failed') continue;
-              console.error(`- ${test.name}`);
+              console.error(`  ${test.name}`);
               console.error(`  ${test.error}\n`);
               core.summary.addRaw(`\n##### ${test.name}\n`);
               core.summary.addRaw(`\n\`\`\`js\n${test.error}\n\`\`\`\n`);
