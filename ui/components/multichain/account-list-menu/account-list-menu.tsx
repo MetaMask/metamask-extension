@@ -586,7 +586,7 @@ export const AccountListMenu = ({
           <Box padding={4}>
             <Text
               variant={TextVariant.bodySmMedium}
-              marginBottom={4}
+              marginBottom={2}
               color={TextColor.textAlternative}
             >
               {t('createNewAccountHeader')}
@@ -694,7 +694,7 @@ export const AccountListMenu = ({
             <Text
               variant={TextVariant.bodySmMedium}
               marginTop={4}
-              marginBottom={4}
+              marginBottom={2}
               color={TextColor.textAlternative}
             >
               {t('importWalletOrAccountHeader')}
@@ -745,7 +745,7 @@ export const AccountListMenu = ({
             <Text
               variant={TextVariant.bodySmMedium}
               marginTop={4}
-              marginBottom={4}
+              marginBottom={2}
               color={TextColor.textAlternative}
             >
               {t('connectAnAccountHeader')}
