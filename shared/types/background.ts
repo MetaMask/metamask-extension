@@ -250,7 +250,6 @@ export type ControllerStatePropertiesEnumerated = {
   useExternalServices: PreferencesControllerState['useExternalServices'];
   textDirection?: PreferencesControllerState['textDirection'];
   manageInstitutionalWallets: PreferencesControllerState['manageInstitutionalWallets'];
-  accountUpgradeDisabledChains?: PreferencesControllerState['accountUpgradeDisabledChains'];
   queuedRequestCount: QueuedRequestControllerState['queuedRequestCount'];
   remoteFeatureFlags: RemoteFeatureFlagControllerState['remoteFeatureFlags'];
   cacheTimestamp: RemoteFeatureFlagControllerState['cacheTimestamp'];

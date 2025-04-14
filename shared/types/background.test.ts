@@ -25,8 +25,8 @@ type Expect<
  * `Type instantiation is excessively deep and possibly infinite.ts(2589)`
  * it indicates one of the following regarding `ControllerStatePropertiesEnumerated`:
  * 1) One or more properties are missing.
- * 2) One or more properties need to be removed.
- * 3) One or more properties need to be marked as optional (`?:`).
+ * 2) One or more properties need to be marked as optional (`?:`).
+ * Superfluous properties will trigger an error in `ControllerStatePropertiesEnumerated` itself.
  */
 export type Test_FlattenedBackgroundStateProxy = Expect<
   FlattenedBackgroundStateProxy,
