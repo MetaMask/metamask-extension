@@ -1,9 +1,7 @@
 import { strict as assert } from 'assert';
+import  { DAPP_URL } from '../../constants'
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-
-const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 class TestDapp {
   private readonly driver: Driver;
@@ -49,6 +47,8 @@ class TestDapp {
   private readonly decryptedMessage = '#cleartextDisplay';
 
   private readonly depositPiggyBankContractButton = '#depositButton';
+
+  private readonly eip5792SendCallsError = '#eip5792SendCallsError';
 
   private readonly eip747ContractAddressInput = '#eip747ContractAddress';
 
@@ -247,6 +247,18 @@ class TestDapp {
       await this.driver.waitForSelector({
         css: this.decryptedMessage,
         text: message,
+      });
+    }
+
+  /**
+    * Verify the EIP-5792 send calls error message on the test dapp.
+    *
+    * @param expectedMessage - The expected error message to verify.
+    */
+    async checkEip5792SendCallsError(expectedMessage: string) {
+      await this.driver.waitForSelector({
+        css: this.eip5792SendCallsError,
+        text: expectedMessage,
       });
     }
 
@@ -953,15 +965,6 @@ class TestDapp {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async request(method: string, params: any[]) {
-    await this.openTestDappPage({
-      url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
-        params,
-      )}`,
-    });
   }
 }
 

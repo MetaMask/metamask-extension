@@ -21,6 +21,7 @@ function getInitRequestMock(): jest.Mocked<
     ...buildControllerInitRequestMock(),
     controllerMessenger: getSnapControllerMessenger(baseMessenger),
     initMessenger: getSnapControllerInitMessenger(baseMessenger),
+    preinstalledSnaps: [],
   };
 
   return requestMock;
