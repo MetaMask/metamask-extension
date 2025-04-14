@@ -24,6 +24,7 @@ import {
   getMultichainAssetsControllerMessenger,
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
+  getMultichainRouterMessenger,
 } from './multichain';
 import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
 import {
@@ -40,6 +41,7 @@ import {
   getNotificationServicesControllerMessenger,
   getNotificationServicesPushControllerMessenger,
 } from './notifications';
+import { getMultichainRouterInitMessenger } from './multichain/multichain-router-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -77,6 +79,10 @@ export const CONTROLLER_MESSENGERS = {
   MultichainNetworkController: {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
+  },
+  MultichainRouter: {
+    getMessenger: getMultichainRouterMessenger,
+    getInitMessenger: getMultichainRouterInitMessenger,
   },
   NotificationServicesController: {
     getMessenger: getNotificationServicesControllerMessenger,
