@@ -7,7 +7,6 @@ import {
   formatEtaInMinutes,
 } from '@metamask/bridge-controller';
 import type { ChainId } from '@metamask/bridge-controller';
-import { BigNumber } from 'bignumber.js';
 import {
   Text,
   PopoverPosition,
@@ -117,9 +116,7 @@ export const MultichainBridgeQuoteCard = () => {
               <Text>
                 {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
                   locale,
-                  new BigNumber(activeQuote.toTokenAmount.amount)
-                    .dividedBy(activeQuote.sentAmount.amount)
-                    .toString(),
+                  activeQuote.swapRate,
                 )} ${activeQuote.quote.destAsset.symbol}`}
               </Text>
             </Row>
