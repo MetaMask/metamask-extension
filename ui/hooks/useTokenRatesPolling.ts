@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
-
 import {
   getChainIdsToPoll,
   getMarketData,
