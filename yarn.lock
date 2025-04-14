@@ -6775,7 +6775,7 @@ __metadata:
 
 "@metamask/test-dapp-solana@file:../wallet-adapter-demo::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/test-dapp-solana@file:../wallet-adapter-demo#../wallet-adapter-demo::hash=f9dc4d&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/test-dapp-solana@file:../wallet-adapter-demo#../wallet-adapter-demo::hash=a4dbdd&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@solana/spl-token": "npm:^0.4.13"
     "@solana/wallet-adapter-base": "npm:^0.9.23"
@@ -6788,7 +6788,7 @@ __metadata:
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     vite-plugin-node-polyfills: "npm:^0.22.0"
-  checksum: 10/988f5d9df147a5f03513762a7c4eeed0a8a62738c78949a71c69d2c00be82becbfed9ddee1364bb95bb7a399f44fabfdecc4d1d2ae9b7f3b6614bc5ba7c935a2
+  checksum: 10/c4ec80083e36ac55616673d21e56addf5e1ea42896639e068fad23cf7446ad799433751eca250b1c7ff73acf679ffee82f4ee603be021852ef40c3753ebc0449
   languageName: node
   linkType: hard
 
