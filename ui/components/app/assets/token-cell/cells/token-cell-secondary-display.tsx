@@ -32,7 +32,6 @@ export const TokenCellSecondaryDisplay = React.memo(
     privacyMode,
   }: TokenCellSecondaryDisplayProps) => {
     const isEvm = useSelector(getMultichainIsEvm);
-    const test = useSelector(getProviderConfig);
     const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
 
     const isOriginalNativeToken = useIsOriginalNativeTokenSymbol(
