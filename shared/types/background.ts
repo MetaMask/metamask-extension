@@ -70,8 +70,7 @@ import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/s
 import { BridgeState } from '../../ui/ducks/bridge/bridge';
 import { BridgeStatusState } from './bridge-status';
 
-export type FlattenedBackgroundStateProxy = {
-  isInitialized: boolean;
+export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
   accounts: AccountTrackerControllerState['accounts'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
@@ -80,11 +79,10 @@ export type FlattenedBackgroundStateProxy = {
   addressBook: AddressBookControllerState['addressBook'];
   alertEnabledness: AlertControllerState['alertEnabledness'];
   unconnectedAccountAlertShownOrigins: AlertControllerState['unconnectedAccountAlertShownOrigins'];
-  web3ShimUsageOrigins: AlertControllerState['web3ShimUsageOrigins'];
+  web3ShimUsageOrigins?: AlertControllerState['web3ShimUsageOrigins'];
   announcements: AnnouncementControllerState['announcements'];
   isSignedIn: AuthenticationController.AuthenticationControllerState['isSignedIn'];
-  sessionData: AuthenticationController.AuthenticationControllerState['sessionData'];
-  orderedNetworkList: NetworkOrderControllerState['orderedNetworkList'];
+  sessionData?: AuthenticationController.AuthenticationControllerState['sessionData'];
   pinnedAccountList: AccountOrderControllerState['pinnedAccountList'];
   hiddenAccountList: AccountOrderControllerState['hiddenAccountList'];
   currentAppVersion: AppMetadataControllerState['currentAppVersion'];
@@ -94,50 +92,45 @@ export type FlattenedBackgroundStateProxy = {
   approvalFlows: ApprovalControllerState['approvalFlows'];
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   pendingApprovalCount: ApprovalControllerState['pendingApprovalCount'];
-  browserEnvironment: AppStateControllerState['browserEnvironment'];
+  timeoutMinutes: AppStateControllerState['timeoutMinutes'];
   connectedStatusPopoverHasBeenShown: AppStateControllerState['connectedStatusPopoverHasBeenShown'];
-  currentPopupId: AppStateControllerState['currentPopupId'];
-  onboardingDate: AppStateControllerState['onboardingDate'];
-  currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
   defaultHomeActiveTabName: AppStateControllerState['defaultHomeActiveTabName'];
-  fullScreenGasPollTokens: AppStateControllerState['fullScreenGasPollTokens'];
-  hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
-  lastInteractedConfirmationInfo: AppStateControllerState['lastInteractedConfirmationInfo'];
-  lastViewedUserSurvey: AppStateControllerState['lastViewedUserSurvey'];
-  nftsDetectionNoticeDismissed: AppStateControllerState['nftsDetectionNoticeDismissed'];
-  nftsDropdownState: AppStateControllerState['nftsDropdownState'];
-  notificationGasPollTokens: AppStateControllerState['notificationGasPollTokens'];
-  outdatedBrowserWarningLastShown: AppStateControllerState['outdatedBrowserWarningLastShown'];
+  browserEnvironment: AppStateControllerState['browserEnvironment'];
   popupGasPollTokens: AppStateControllerState['popupGasPollTokens'];
-  qrHardware: AppStateControllerState['qrHardware'];
+  notificationGasPollTokens: AppStateControllerState['notificationGasPollTokens'];
+  fullScreenGasPollTokens: AppStateControllerState['fullScreenGasPollTokens'];
   recoveryPhraseReminderHasBeenShown: AppStateControllerState['recoveryPhraseReminderHasBeenShown'];
   recoveryPhraseReminderLastShown: AppStateControllerState['recoveryPhraseReminderLastShown'];
-  signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
-  slides: AppStateControllerState['slides'];
+  outdatedBrowserWarningLastShown: AppStateControllerState['outdatedBrowserWarningLastShown'];
+  nftsDetectionNoticeDismissed: AppStateControllerState['nftsDetectionNoticeDismissed'];
+  showTestnetMessageInDropdown: AppStateControllerState['showTestnetMessageInDropdown'];
   showBetaHeader: AppStateControllerState['showBetaHeader'];
   showPermissionsTour: AppStateControllerState['showPermissionsTour'];
   showNetworkBanner: AppStateControllerState['showNetworkBanner'];
   showAccountBanner: AppStateControllerState['showAccountBanner'];
-  switchedNetworkDetails: AppStateControllerState['switchedNetworkDetails'];
-  switchedNetworkNeverShowMessage: AppStateControllerState['switchedNetworkNeverShowMessage'];
-  showTestnetMessageInDropdown: AppStateControllerState['showTestnetMessageInDropdown'];
-  surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
-  snapsInstallPrivacyWarningShown: AppStateControllerState['snapsInstallPrivacyWarningShown'];
-  termsOfUseLastAgreed: AppStateControllerState['termsOfUseLastAgreed'];
-  timeoutMinutes: AppStateControllerState['timeoutMinutes'];
   trezorModel: AppStateControllerState['trezorModel'];
+  currentPopupId?: AppStateControllerState['currentPopupId'];
+  onboardingDate: AppStateControllerState['onboardingDate'];
+  lastViewedUserSurvey: AppStateControllerState['lastViewedUserSurvey'];
   isRampCardClosed: AppStateControllerState['isRampCardClosed'];
-  throttledOrigins: AppStateControllerState['throttledOrigins'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
-  balances: MultichainBalancesControllerState['balances'];
-  nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
-  conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
-  assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
-  accountsAssets: MultichainAssetsControllerState['accountsAssets'];
-  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
-  selectedMultichainNetworkChainId: MultichainNetworkControllerState['selectedMultichainNetworkChainId'];
-  isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];
+  hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
+  qrHardware: AppStateControllerState['qrHardware'];
+  nftsDropdownState: AppStateControllerState['nftsDropdownState'];
+  surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
+  signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
+  switchedNetworkDetails: AppStateControllerState['switchedNetworkDetails'];
+  switchedNetworkNeverShowMessage: AppStateControllerState['switchedNetworkNeverShowMessage'];
+  currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
+  lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
+  termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
+  snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
+  interactiveReplacementToken?: AppStateControllerState['interactiveReplacementToken'];
+  noteToTraderMessage?: AppStateControllerState['noteToTraderMessage'];
+  custodianDeepLink?: AppStateControllerState['custodianDeepLink'];
+  slides: AppStateControllerState['slides'];
+  throttledOrigins: AppStateControllerState['throttledOrigins'];
   bridgeState: BridgeState;
   bridgeStatusState: BridgeStatusState;
   events: CronjobControllerState['events'];
@@ -150,26 +143,18 @@ export type FlattenedBackgroundStateProxy = {
   unapprovedEncryptionPublicKeyMsgCount: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgCount'];
   ensResolutionsByAddress: EnsControllerState['ensResolutionsByAddress'];
   ensEntries: EnsControllerState['ensEntries'];
+  gasFeeEstimatesByChainId?: GasFeeState['gasFeeEstimatesByChainId'];
+  gasFeeEstimates: GasFeeState['gasFeeEstimates'];
   estimatedGasFeeTimeBounds: GasFeeState['estimatedGasFeeTimeBounds'];
   gasEstimateType: GasFeeState['gasEstimateType'];
-  gasFeeEstimates: GasFeeState['gasFeeEstimates'];
-  gasFeeEstimatesByChainId: GasFeeState['gasFeeEstimatesByChainId'];
-  nonRPCGasFeeApisDisabled: GasFeeState['nonRPCGasFeeApisDisabled'];
+  nonRPCGasFeeApisDisabled?: GasFeeState['nonRPCGasFeeApisDisabled'];
   isUnlocked: KeyringControllerState['isUnlocked'];
-  vault: KeyringControllerState['vault'];
+  vault?: KeyringControllerState['vault'];
   keyrings: KeyringControllerState['keyrings'];
   keyringsMetadata: KeyringControllerState['keyringsMetadata'];
+  encryptionKey?: KeyringControllerState['encryptionKey'];
+  encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
-  subscriptionAccountsSeen: NotificationServicesController.NotificationServicesControllerState['subscriptionAccountsSeen'];
-  isMetamaskNotificationsFeatureSeen: NotificationServicesController.NotificationServicesControllerState['isMetamaskNotificationsFeatureSeen'];
-  isNotificationServicesEnabled: NotificationServicesController.NotificationServicesControllerState['isNotificationServicesEnabled'];
-  isFeatureAnnouncementsEnabled: NotificationServicesController.NotificationServicesControllerState['isFeatureAnnouncementsEnabled'];
-  metamaskNotificationsList: NotificationServicesController.NotificationServicesControllerState['metamaskNotificationsList'];
-  metamaskNotificationsReadList: NotificationServicesController.NotificationServicesControllerState['metamaskNotificationsReadList'];
-  isCheckingAccountsPresence: NotificationServicesController.NotificationServicesControllerState['isCheckingAccountsPresence'];
-  isFetchingMetamaskNotifications: NotificationServicesController.NotificationServicesControllerState['isFetchingMetamaskNotifications'];
-  isUpdatingMetamaskNotifications: NotificationServicesController.NotificationServicesControllerState['isUpdatingMetamaskNotifications'];
-  isUpdatingMetamaskNotificationsAccount: NotificationServicesController.NotificationServicesControllerState['isUpdatingMetamaskNotificationsAccount'];
   eventsBeforeMetricsOptIn: MetaMetricsControllerState['eventsBeforeMetricsOptIn'];
   fragments: MetaMetricsControllerState['fragments'];
   metaMetricsId: MetaMetricsControllerState['metaMetricsId'];
@@ -180,70 +165,98 @@ export type FlattenedBackgroundStateProxy = {
   marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
   latestNonAnonymousEventTimestamp: MetaMetricsControllerState['latestNonAnonymousEventTimestamp'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];
-  metaMetricsDataDeletionStatus: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
+  metaMetricsDataDeletionStatus?: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
+  balances: MultichainBalancesControllerState['balances'];
+  nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
+  conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
+  assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
+  accountsAssets: MultichainAssetsControllerState['accountsAssets'];
+  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
+  selectedMultichainNetworkChainId: MultichainNetworkControllerState['selectedMultichainNetworkChainId'];
+  isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];
   names: NameControllerState['names'];
   nameSources: NameControllerState['nameSources'];
   networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
   networksMetadata: NetworkState['networksMetadata'];
   selectedNetworkClientId: NetworkState['selectedNetworkClientId'];
+  orderedNetworkList: NetworkOrderControllerState['orderedNetworkList'];
   allNftContracts: NftControllerState['allNftContracts'];
   allNfts: NftControllerState['allNfts'];
   ignoredNfts: NftControllerState['ignoredNfts'];
+  subscriptionAccountsSeen: NotificationServicesController.NotificationServicesControllerState['subscriptionAccountsSeen'];
+  isMetamaskNotificationsFeatureSeen: NotificationServicesController.NotificationServicesControllerState['isMetamaskNotificationsFeatureSeen'];
+  isNotificationServicesEnabled: NotificationServicesController.NotificationServicesControllerState['isNotificationServicesEnabled'];
+  isFeatureAnnouncementsEnabled: NotificationServicesController.NotificationServicesControllerState['isFeatureAnnouncementsEnabled'];
+  metamaskNotificationsList: NotificationServicesController.NotificationServicesControllerState['metamaskNotificationsList'];
+  metamaskNotificationsReadList: NotificationServicesController.NotificationServicesControllerState['metamaskNotificationsReadList'];
+  isCheckingAccountsPresence: NotificationServicesController.NotificationServicesControllerState['isCheckingAccountsPresence'];
+  isFetchingMetamaskNotifications: NotificationServicesController.NotificationServicesControllerState['isFetchingMetamaskNotifications'];
+  isUpdatingMetamaskNotifications: NotificationServicesController.NotificationServicesControllerState['isUpdatingMetamaskNotifications'];
+  isUpdatingMetamaskNotificationsAccount: NotificationServicesController.NotificationServicesControllerState['isUpdatingMetamaskNotificationsAccount'];
+  isPushEnabled: NotificationServicesPushController.NotificationServicesPushControllerState['isPushEnabled'];
+  fcmToken: NotificationServicesPushController.NotificationServicesPushControllerState['fcmToken'];
+  isUpdatingFCMToken: NotificationServicesPushController.NotificationServicesPushControllerState['isUpdatingFCMToken'];
   completedOnboarding: OnboardingControllerState['completedOnboarding'];
   firstTimeFlowType: OnboardingControllerState['firstTimeFlowType'];
-  onboardingTabs: OnboardingControllerState['onboardingTabs'];
+  onboardingTabs?: OnboardingControllerState['onboardingTabs'];
   seedPhraseBackedUp: OnboardingControllerState['seedPhraseBackedUp'];
-  storageMetadata: PPOMState['storageMetadata'];
-  versionInfo: PPOMState['versionInfo'];
   subjects: PermissionControllerState<PermissionConstraint>['subjects'];
   permissionActivityLog: PermissionLogControllerState['permissionActivityLog'];
   permissionHistory: PermissionLogControllerState['permissionHistory'];
-  advancedGasFee: PreferencesControllerState['advancedGasFee'];
-  currentLocale: PreferencesControllerState['currentLocale'];
-  dismissSeedBackUpReminder: PreferencesControllerState['dismissSeedBackUpReminder'];
-  overrideContentSecurityPolicyHeader: PreferencesControllerState['overrideContentSecurityPolicyHeader'];
+  storageMetadata: PPOMState['storageMetadata'];
+  versionInfo: PPOMState['versionInfo'];
   featureFlags: PreferencesControllerState['featureFlags'];
-  forgottenPassword: PreferencesControllerState['forgottenPassword'];
   identities: PreferencesControllerState['identities'];
-  isIpfsGatewayEnabled: PreferencesControllerState['isIpfsGatewayEnabled'];
   ipfsGateway: PreferencesControllerState['ipfsGateway'];
+  isIpfsGatewayEnabled: PreferencesControllerState['isIpfsGatewayEnabled'];
   isMultiAccountBalancesEnabled: PreferencesControllerState['isMultiAccountBalancesEnabled'];
-  knownMethodData: PreferencesControllerState['knownMethodData'];
-  ledgerTransportType: PreferencesControllerState['ledgerTransportType'];
   lostIdentities: PreferencesControllerState['lostIdentities'];
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
-  preferences: PreferencesControllerState['preferences'];
-  useExternalServices: PreferencesControllerState['useExternalServices'];
   securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
   selectedAddress: PreferencesControllerState['selectedAddress'];
-  snapRegistryList: PreferencesControllerState['snapRegistryList'];
   showIncomingTransactions: PreferencesControllerState['showIncomingTransactions'];
-  theme: PreferencesControllerState['theme'];
-  use4ByteResolution: PreferencesControllerState['use4ByteResolution'];
-  useAddressBarEnsResolution: PreferencesControllerState['useAddressBarEnsResolution'];
-  useBlockie: PreferencesControllerState['useBlockie'];
-  useCurrencyRateCheck: PreferencesControllerState['useCurrencyRateCheck'];
-  useExternalNameSources: PreferencesControllerState['useExternalNameSources'];
-  useMultiAccountBalanceChecker: PreferencesControllerState['useMultiAccountBalanceChecker'];
   useNftDetection: PreferencesControllerState['useNftDetection'];
-  usePhishDetect: PreferencesControllerState['usePhishDetect'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];
-  enableMV3TimestampSave: PreferencesControllerState['enableMV3TimestampSave'];
   useSafeChainsListValidation: PreferencesControllerState['useSafeChainsListValidation'];
+  useBlockie: PreferencesControllerState['useBlockie'];
+  usePhishDetect: PreferencesControllerState['usePhishDetect'];
+  dismissSeedBackUpReminder: PreferencesControllerState['dismissSeedBackUpReminder'];
+  overrideContentSecurityPolicyHeader: PreferencesControllerState['overrideContentSecurityPolicyHeader'];
+  useMultiAccountBalanceChecker: PreferencesControllerState['useMultiAccountBalanceChecker'];
+  use4ByteResolution: PreferencesControllerState['use4ByteResolution'];
+  useCurrencyRateCheck: PreferencesControllerState['useCurrencyRateCheck'];
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: PreferencesControllerState['watchEthereumAccountEnabled'];
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   bitcoinSupportEnabled: PreferencesControllerState['bitcoinSupportEnabled'];
   bitcoinTestnetSupportEnabled: PreferencesControllerState['bitcoinTestnetSupportEnabled'];
-  addSnapAccountEnabled: PreferencesControllerState['addSnapAccountEnabled'];
-  snapsAddSnapAccountModalDismissed: PreferencesControllerState['snapsAddSnapAccountModalDismissed'];
+  ///: END:ONLY_INCLUDE_IF
+  addSnapAccountEnabled?: PreferencesControllerState['addSnapAccountEnabled'];
+  advancedGasFee: PreferencesControllerState['advancedGasFee'];
+  knownMethodData: PreferencesControllerState['knownMethodData'];
+  currentLocale: PreferencesControllerState['currentLocale'];
+  forgottenPassword: PreferencesControllerState['forgottenPassword'];
+  preferences: PreferencesControllerState['preferences'];
+  useAddressBarEnsResolution: PreferencesControllerState['useAddressBarEnsResolution'];
+  ledgerTransportType: PreferencesControllerState['ledgerTransportType'];
+  snapRegistryList: PreferencesControllerState['snapRegistryList'];
+  theme: PreferencesControllerState['theme'];
+  snapsAddSnapAccountModalDismissed?: PreferencesControllerState['snapsAddSnapAccountModalDismissed'];
+  useExternalNameSources: PreferencesControllerState['useExternalNameSources'];
+  enableMV3TimestampSave: PreferencesControllerState['enableMV3TimestampSave'];
+  useExternalServices: PreferencesControllerState['useExternalServices'];
+  textDirection?: PreferencesControllerState['textDirection'];
+  manageInstitutionalWallets: PreferencesControllerState['manageInstitutionalWallets'];
+  accountUpgradeDisabledChains?: PreferencesControllerState['accountUpgradeDisabledChains'];
+  queuedRequestCount: QueuedRequestControllerState['queuedRequestCount'];
   remoteFeatureFlags: RemoteFeatureFlagControllerState['remoteFeatureFlags'];
   cacheTimestamp: RemoteFeatureFlagControllerState['cacheTimestamp'];
-  fcmToken: NotificationServicesPushController.NotificationServicesPushControllerState['fcmToken'];
   fiatCurrency: RatesControllerState['fiatCurrency'];
   rates: RatesControllerState['rates'];
   cryptocurrencies: RatesControllerState['cryptocurrencies'];
-  queuedRequestCount: QueuedRequestControllerState['queuedRequestCount'];
   domains: SelectedNetworkControllerState['domains'];
   unapprovedPersonalMsgCount: SignatureControllerState['unapprovedPersonalMsgCount'];
   unapprovedPersonalMsgs: SignatureControllerState['unapprovedPersonalMsgs'];
@@ -283,3 +296,76 @@ export type FlattenedBackgroundStateProxy = {
   isAccountSyncingReadyToBeDispatched: UserStorageController.UserStorageControllerState['isAccountSyncingReadyToBeDispatched'];
   isAccountSyncingInProgress: UserStorageController.UserStorageControllerState['isAccountSyncingInProgress'];
 };
+
+type ControllerStateTypesMerged = AccountsControllerState &
+  AccountTrackerControllerState &
+  AddressBookControllerState &
+  AlertControllerState &
+  AnnouncementControllerState &
+  AuthenticationController.AuthenticationControllerState &
+  AccountOrderControllerState &
+  AppMetadataControllerState &
+  ApprovalControllerState &
+  AppStateControllerState & { bridgeState: BridgeState } & {
+    bridgeStatusState: BridgeStatusState;
+  } & CronjobControllerState &
+  CurrencyRateState &
+  DecryptMessageControllerState &
+  EncryptionPublicKeyControllerState &
+  EnsControllerState & {
+    // This is necessary due to the nested unions and intersections in the `GasFeeState` type definition
+    [P in keyof GasFeeState]: GasFeeState[P];
+  } & KeyringControllerState &
+  LoggingControllerState &
+  MetaMetricsControllerState &
+  MetaMetricsDataDeletionState &
+  MultichainBalancesControllerState &
+  MultichainTransactionsControllerState &
+  MultichainAssetsRatesControllerState &
+  MultichainAssetsControllerState &
+  MultichainNetworkControllerState &
+  NameControllerState &
+  NetworkState &
+  NetworkOrderControllerState &
+  NftControllerState &
+  NotificationServicesController.NotificationServicesControllerState &
+  NotificationServicesPushController.NotificationServicesPushControllerState &
+  OnboardingControllerState &
+  PermissionControllerState<PermissionConstraint> &
+  PermissionLogControllerState &
+  PPOMState &
+  PreferencesControllerState &
+  QueuedRequestControllerState &
+  RemoteFeatureFlagControllerState &
+  RatesControllerState &
+  SelectedNetworkControllerState &
+  SignatureControllerState &
+  SmartTransactionsControllerState &
+  SnapControllerState &
+  SnapInterfaceControllerState &
+  SnapInsightsControllerState &
+  SnapsRegistryState &
+  SubjectMetadataControllerState &
+  SwapsControllerState &
+  TokenBalancesControllerState &
+  TokensControllerState &
+  TokenListState &
+  TokenRatesControllerState &
+  TransactionControllerState &
+  UserOperationControllerState &
+  UserStorageController.UserStorageControllerState;
+
+export type IsEquivalent<A, B> = [A, B] extends [B, A] ? true : false;
+
+/**
+ * This type contains all controller state top-level properties, and
+ * is the source-of-truth for the type of the Redux store `metamask` slice.
+ *
+ * Evaluates to `never` if the type definition is wrong or incomplete.
+ */
+export type FlattenedBackgroundStateProxy = IsEquivalent<
+  ControllerStatePropertiesEnumerated,
+  ControllerStateTypesMerged
+> extends true
+  ? { isInitialized: boolean } & ControllerStatePropertiesEnumerated
+  : never;
