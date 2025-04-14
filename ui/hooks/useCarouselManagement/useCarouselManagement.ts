@@ -1,8 +1,9 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeSlide, updateSlides } from '../../store/actions';
-import { getSlides } from '../../selectors';
+import { updateSlides } from '../../store/actions';
+import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
+import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
   FUND_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -10,13 +11,15 @@ import {
   ///: END:ONLY_INCLUDE_IF
   CARD_SLIDE,
   CASH_SLIDE,
+  REMOTE_MODE_SLIDE,
   SWEEPSTAKES_SLIDE,
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
+  ZERO_BALANCE,
+  MULTI_SRP_SLIDE,
 } from './constants';
 
 type UseSlideManagementProps = {
-  hasZeroBalance: boolean;
   testDate?: string; // Only used in unit/e2e tests to simulate dates for sweepstakes campaign
 };
 
@@ -25,65 +28,71 @@ export function getSweepstakesCampaignActive(currentDate: Date) {
 }
 
 export const useCarouselManagement = ({
-  hasZeroBalance,
   testDate,
-}: UseSlideManagementProps) => {
+}: UseSlideManagementProps = {}) => {
+  const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
   const slides = useSelector(getSlides);
+  const totalBalance = useSelector(getSelectedAccountCachedBalance);
+  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
-  const buildSlideArray = useCallback(
-    (isSweepstakesActive: boolean) => {
-      const defaultSlides: CarouselSlide[] = [];
-      const fundSlide = {
-        ...FUND_SLIDE,
-        undismissable: hasZeroBalance,
-      };
-
-      if (isSweepstakesActive) {
-        defaultSlides.push({
-          ...SWEEPSTAKES_SLIDE,
-          dismissed: false,
-        });
-      }
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      defaultSlides.push(BRIDGE_SLIDE);
-      ///: END:ONLY_INCLUDE_IF
-      defaultSlides.push(CARD_SLIDE);
-      defaultSlides.push(CASH_SLIDE);
-
-      const fundPosition = isSweepstakesActive ? 1 : 0;
-      defaultSlides.splice(fundPosition, 0, fundSlide);
-
-      return defaultSlides;
-    },
-    [hasZeroBalance],
-  );
-
-  const checkSweepstakesActive = useCallback((currentDate: Date) => {
-    const isActive = getSweepstakesCampaignActive(currentDate);
-
-    return isActive;
-  }, []);
+  const hasZeroBalance = totalBalance === ZERO_BALANCE;
 
   useEffect(() => {
+    const defaultSlides: CarouselSlide[] = [];
+    const existingSweepstakesSlide = slides.find(
+      (slide: CarouselSlide) => slide.id === SWEEPSTAKES_SLIDE.id,
+    );
+    const isSweepstakesSlideDismissed =
+      existingSweepstakesSlide?.dismissed ?? false;
+
+    const fundSlide = {
+      ...FUND_SLIDE,
+      undismissable: hasZeroBalance,
+    };
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    defaultSlides.push(BRIDGE_SLIDE);
+    ///: END:ONLY_INCLUDE_IF
+    defaultSlides.push(CARD_SLIDE);
+    defaultSlides.push(CASH_SLIDE);
+    defaultSlides.push(MULTI_SRP_SLIDE);
+
+    defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
+
+    if (isRemoteModeEnabled) {
+      defaultSlides.unshift(REMOTE_MODE_SLIDE);
+    }
+
+    // Handle sweepstakes slide
     const currentDate = testDate
       ? new Date(testDate)
       : new Date(new Date().toISOString());
-    const isSweepstakesActive = checkSweepstakesActive(currentDate);
+    const isSweepstakesActive = getSweepstakesCampaignActive(currentDate);
 
-    if (!isSweepstakesActive) {
-      const existingSweepstakes = slides.find(
-        (s: CarouselSlide) => s.id === SWEEPSTAKES_SLIDE.id,
-      );
-      if (existingSweepstakes) {
-        dispatch(removeSlide(SWEEPSTAKES_SLIDE.id));
-      }
+    // Only show the sweepstakes slide if:
+    // 1. Not in test mode
+    // 2. Sweepstakes campaign is active
+    // 3. Slide has not been dismissed by user
+    if (!inTest && isSweepstakesActive && !isSweepstakesSlideDismissed) {
+      const newSweepstakesSlide = {
+        ...SWEEPSTAKES_SLIDE,
+        dismissed: false,
+      };
+      defaultSlides.unshift(newSweepstakesSlide);
+    } else if (existingSweepstakesSlide?.dismissed) {
+      // Add the sweepstakes slide with the dismissed state preserved
+      // We need this to maintain the persisted dismissed state
+      const dismissedSweepstakesSlide = {
+        ...SWEEPSTAKES_SLIDE,
+        dismissed: true,
+      };
+
+      defaultSlides.push(dismissedSweepstakesSlide);
     }
 
-    const newSlides = buildSlideArray(isSweepstakesActive);
-    dispatch(updateSlides(newSlides));
-  }, [hasZeroBalance, testDate, buildSlideArray, checkSweepstakesActive]);
+    dispatch(updateSlides(defaultSlides));
+  }, [dispatch, hasZeroBalance, isRemoteModeEnabled, slides, testDate, inTest]);
 
   return { slides };
 };

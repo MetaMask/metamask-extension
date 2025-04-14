@@ -53,17 +53,19 @@ type FilterPredicate = (
  * @param tokenToExclude.symbol
  * @param tokenToExclude.address
  * @param tokenToExclude.chainId
+ * @param accountId - the accountId to use for the token list
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
   tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
+  accountId?: string,
 ) => {
   const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>
     getTopAssetsFromFeatureFlags(state, chainId),
   );
 
   const { assetsWithBalance: multichainTokensWithBalance } =
-    useMultichainBalances();
+    useMultichainBalances(accountId);
 
   const cachedTokens = useSelector(selectERC20TokensByChain);
 

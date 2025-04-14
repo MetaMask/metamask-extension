@@ -117,13 +117,6 @@
   },
   "ignoredNfts": [],
   "ignoredTokens": [],
-  "incomingTransactionsPreferences": {
-    "0x1": true,
-    "0xe708": true,
-    "0x5": true,
-    "0xaa36a7": true,
-    "0xe705": true
-  },
   "interfaces": {},
   "internalAccounts": {
     "accounts": {
