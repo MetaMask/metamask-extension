@@ -12,7 +12,7 @@ export type VersionedData = {
   };
 };
 
-export const version = 152;
+export const version = 153;
 
 function transformState(state: VersionedData['data']) {
   if (
