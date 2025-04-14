@@ -706,27 +706,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "Ένας τρίτος που είναι γνωστός για απάτες έχει πρόσβαση σε αυτόν τον ιστότοπο. Εάν προχωρήσετε, θα χάσετε περιουσιακά σας στοιχεία."
-  },
-  "blockaidAlertInfoDescription2": {
-    "message": "Ο ιστότοπος μπορεί να φαίνεται ασφαλής, αλλά ένας τρίτος μπορεί να έχει πρόσβαση στις πληροφορίες του. Εάν συνδεθείτε, μπορεί να κλέψει τα περιουσιακά σας στοιχεία."
-  },
-  "blockaidAlertInfoDescription3": {
-    "message": "Εάν το επιβεβαιώσετε, μπορεί να χάσετε όλα τα χρήματα και τα περιουσιακά σας στοιχεία."
-  },
-  "blockaidAlertInfoDescription4": {
-    "message": "Εάν συνδεθείτε, όλα ή κάποια από τα περιουσιακά στοιχεία που έχετε καταχωρίσει στο OpenSea βρίσκονται σε κίνδυνο."
-  },
-  "blockaidAlertInfoDescription5": {
-    "message": "Εάν συνδεθείτε, όλα ή κάποια από τα περιουσιακά στοιχεία που έχετε καταχωρίσει στο Blur βρίσκονται σε κίνδυνο."
-  },
-  "blockaidAlertInfoDescription6": {
-    "message": "Αυτός ο ιστότοπος έχει χαρακτηριστεί ως κακόβουλος. Εάν συνδεθείτε, θα χάσετε χρήματα και περιουσιακά σας στοιχεία. Σας συνιστούμε έντονα να ακυρώσετε αυτό το αίτημα."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "Εάν συνδεθείτε, μπορεί να χάσετε όλα τα περιουσιακά σας στοιχεία. Σας συνιστούμε να ακυρώσετε αυτό το αίτημα."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Εάν εγκρίνετε αυτό το αίτημα, ένα τρίτο μέρος που είναι γνωστό για απάτες μπορεί να πάρει όλα τα περιουσιακά σας στοιχεία."
   },
@@ -1118,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Αυτός ο ιστότοπος ζητάει άδεια για να δαπανήσει τα tokens σας."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Αυτός ο ιστότοπος ζητά να αλλάξετε ξανά σε βασικό λογαριασμό."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Ένας ιστότοπος θέλει να συνδεθείτε για να αποδείξετε ότι είστε ο κάτοχος αυτού του λογαριασμού."
   },
@@ -1133,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Κατάργηση άδειας"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Επαναφορά λογαριασμού"
-  },
   "confirmTitleSIWESignature": {
     "message": "Αίτημα σύνδεσης"
   },
@@ -1147,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Αίτημα συναλλαγής"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Εάν επιβεβαιώσετε αυτό το αίτημα, ο λογαριασμός σας θα αναβαθμιστεί σε έξυπνο λογαριασμό."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Ακύρωση συναλλαγής"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Ακύρωση αναβάθμισης & συναλλαγής"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Αν δεν θέλετε να αναβαθμίσετε τον λογαριασμό σας, μπορείτε να το ακυρώσετε εδώ.\n\nΓια να ολοκληρώσετε αυτή τη συναλλαγή χωρίς αναβάθμιση, θα πρέπει να υποβάλετε ξανά αυτό το αίτημα στον ιστότοπο. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Ακύρωση συναλλαγής"
   },
   "confirmationAlertDetails": {
     "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία, σας προτείνουμε να απορρίψετε το αίτημα."
@@ -6163,9 +6121,6 @@
   },
   "transactionErrored": {
     "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
-  },
-  "transactionFailedBannerMessage": {
-    "message": "Αυτή η συναλλαγή θα σας κόστιζε επιπλέον τέλη, οπότε τη σταματήσαμε. Τα χρήματά σας βρίσκονται ακόμα στο πορτοφόλι σας."
   },
   "transactionFlowNetwork": {
     "message": "Δίκτυο"

@@ -129,11 +129,12 @@ export const getMockConfirmState = (args: RootState = { metamask: {} }) => ({
 
 export const getMockConfirmStateForTransaction = (
   transaction: Confirmation,
-  args: RootState = { metamask: {} },
+  args: RootState = { appState: {}, metamask: {} },
 ) =>
   getMockConfirmState(
     merge(
       {
+        appState: args.appState,
         metamask: {
           ...args.metamask,
           pendingApprovals: {

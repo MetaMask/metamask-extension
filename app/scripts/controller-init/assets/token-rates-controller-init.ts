@@ -16,12 +16,15 @@ import { TokenRatesControllerMessenger } from '../messengers/assets';
 export const TokenRatesControllerInit: ControllerInitFunction<
   TokenRatesController,
   TokenRatesControllerMessenger
-> = ({ controllerMessenger, persistedState }) => {
+> = (request) => {
+  const { controllerMessenger, getController, persistedState } = request;
+  const preferencesController = () => getController('PreferencesController');
+
   const controller = new TokenRatesController({
     messenger: controllerMessenger,
     state: persistedState.TokenRatesController,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
-    disabled: !persistedState.PreferencesController?.useCurrencyRateCheck,
+    disabled: !preferencesController().state?.useCurrencyRateCheck,
   });
 
   return {

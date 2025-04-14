@@ -31,12 +31,13 @@ const VERSION_GET_CALLS_STATUS = '1.0';
 export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
-    getDisabledAccountUpgradeChains: () => Hex[];
+    getDisabledUpgradeAccountsByChain: () => Record<Hex, Hex[]>;
     validateSecurity: (
       securityAlertId: string,
       request: ValidateSecurityRequest,
       chainId: Hex,
     ) => Promise<void>;
+    getDismissSmartAccountSuggestionEnabled: () => boolean;
   },
   messenger: EIP5792Messenger,
   params: SendCalls,
@@ -44,8 +45,9 @@ export async function processSendCalls(
 ): Promise<SendCallsResult> {
   const {
     addTransactionBatch,
-    getDisabledAccountUpgradeChains,
+    getDisabledUpgradeAccountsByChain,
     validateSecurity: validateSecurityHook,
+    getDismissSmartAccountSuggestionEnabled,
   } = hooks;
 
   const { calls, from } = params;
@@ -57,9 +59,16 @@ export async function processSendCalls(
     networkClientId,
   ).configuration.chainId;
 
-  const disabledChains = getDisabledAccountUpgradeChains();
+  const disabledUpgradeAccountsByChain = getDisabledUpgradeAccountsByChain();
+  const dismissSmartAccountSuggestionEnabled =
+    getDismissSmartAccountSuggestionEnabled();
 
-  validateSendCalls(params, dappChainId, disabledChains);
+  validateSendCalls(
+    params,
+    dappChainId,
+    disabledUpgradeAccountsByChain,
+    dismissSmartAccountSuggestionEnabled,
+  );
 
   const securityAlertId = generateSecurityAlertId();
   const validateSecurity = validateSecurityHook.bind(null, securityAlertId);
@@ -126,12 +135,18 @@ export async function getCapabilities(_address: Hex, _chainIds?: Hex[]) {
 function validateSendCalls(
   sendCalls: SendCalls,
   dappChainId: Hex,
-  disabledChains: Hex[],
+  disabledUpgradeAccountsByChain: Record<Hex, Hex[]>,
+  dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId);
   validateCapabilities(sendCalls);
-  validateUserDisabled(sendCalls, disabledChains, dappChainId);
+  validateUserDisabled(
+    sendCalls,
+    disabledUpgradeAccountsByChain,
+    dappChainId,
+    dismissSmartAccountSuggestionEnabled,
+  );
 }
 
 function validateSendCallsVersion(sendCalls: SendCalls) {
@@ -186,13 +201,16 @@ function validateCapabilities(sendCalls: SendCalls) {
 
 function validateUserDisabled(
   sendCalls: SendCalls,
-  disabledChains: Hex[],
+  disabledUpgradeAccountsByChain: Record<Hex, Hex[]>,
   dappChainId: Hex,
+  dismissSmartAccountSuggestionEnabled: boolean,
 ) {
   const { from } = sendCalls;
-  const isDisabled = disabledChains.includes(dappChainId);
+  const addressLowerCase = from.toLowerCase() as Hex;
+  const isDisabled =
+    disabledUpgradeAccountsByChain[dappChainId]?.includes(addressLowerCase);
 
-  if (isDisabled) {
+  if (isDisabled || dismissSmartAccountSuggestionEnabled) {
     throw rpcErrors.methodNotSupported(
       `EIP-5792 is not supported for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
     );
