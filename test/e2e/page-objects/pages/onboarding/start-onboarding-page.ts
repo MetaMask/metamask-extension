@@ -14,27 +14,18 @@ class StartOnboardingPage {
     tag: 'h2',
   };
 
-  private readonly acceptFlaskRiskButton = {
-    text: 'I accept the risks',
-    tag: 'button',
-  };
-
   private readonly termsCheckbox = '[data-testid="onboarding-terms-checkbox"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(isFlask: boolean = false): Promise<void> {
+  async check_pageIsLoaded(): Promise<void> {
     try {
-      if (isFlask) {
-        await this.driver.waitForSelector(this.acceptFlaskRiskButton);
-      } else {
-        await this.driver.waitForMultipleSelectors([
-          this.startMessage,
-          this.termsCheckbox,
-        ]);
-      }
+      await this.driver.waitForMultipleSelectors([
+        this.startMessage,
+        this.termsCheckbox,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for start onboarding page to be loaded',
@@ -45,17 +36,8 @@ class StartOnboardingPage {
     console.log('Start onboarding page is loaded');
   }
 
-  async clickAcceptFlaskRiskButton(): Promise<void> {
-    await this.driver.clickElement(this.acceptFlaskRiskButton);
-  }
-
-  async checkTermsCheckbox(isFlask: boolean): Promise<void> {
-    if (isFlask) {
-      await this.driver.clickElement(this.acceptFlaskRiskButton);
-      await this.driver.clickElement(this.termsCheckbox);
-    } else {
-      await this.driver.clickElement(this.termsCheckbox);
-    }
+  async checkTermsCheckbox(): Promise<void> {
+    await this.driver.clickElement(this.termsCheckbox);
   }
 
   async clickCreateWalletButton(): Promise<void> {
