@@ -22,6 +22,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       UserStorageController: {
         isProfileSyncingEnabled: true,
+        isAccountSyncingEnabled: true,
       },
       NotificationServicesController: {
         subscriptionAccountsSeen: [],

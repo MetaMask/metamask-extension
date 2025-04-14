@@ -4242,12 +4242,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // UserStorageController
-      enableProfileSyncing: userStorageController.enableProfileSyncing.bind(
-        userStorageController,
-      ),
-      disableProfileSyncing: userStorageController.disableProfileSyncing.bind(
-        userStorageController,
-      ),
+      setIsBackupAndSyncFeatureEnabled:
+        userStorageController.setIsBackupAndSyncFeatureEnabled.bind(
+          userStorageController,
+        ),
       syncInternalAccountsWithUserStorage:
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,

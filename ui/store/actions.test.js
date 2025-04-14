@@ -5,6 +5,7 @@ import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -2372,23 +2373,37 @@ describe('Actions', () => {
     });
   });
 
-  describe('#enableProfileSyncing', () => {
+  describe('#setIsBackupAndSyncFeatureEnabled', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls enableProfileSyncing in the background', async () => {
+    it('calls setIsBackupAndSyncFeatureEnabled in the background', async () => {
       const store = mockStore();
 
-      const enableProfileSyncingStub = sinon.stub().callsFake((cb) => cb());
+      const setIsBackupAndSyncFeatureEnabledStub = sinon
+        .stub()
+        .callsFake((_feature, _enabled, cb) => {
+          return cb();
+        });
 
       background.getApi.returns({
-        enableProfileSyncing: enableProfileSyncingStub,
+        setIsBackupAndSyncFeatureEnabled: setIsBackupAndSyncFeatureEnabledStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.enableProfileSyncing());
-      expect(enableProfileSyncingStub.calledOnceWith()).toBe(true);
+      await store.dispatch(
+        actions.setIsBackupAndSyncFeatureEnabled(
+          BACKUPANDSYNC_FEATURES.main,
+          true,
+        ),
+      );
+      expect(
+        setIsBackupAndSyncFeatureEnabledStub.calledOnceWith(
+          BACKUPANDSYNC_FEATURES.main,
+          true,
+        ),
+      ).toBe(true);
     });
   });
 
