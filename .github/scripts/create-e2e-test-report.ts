@@ -183,7 +183,7 @@ async function main() {
         core.summary.addRaw(
           total.failed ? `\n<details open>\n` : `\n<details>\n`,
         );
-        core.summary.addRaw(`<summary>${title}</summary>\n`);
+        core.summary.addRaw(`\n<summary>${title}</summary>\n`);
 
         const times = suites.map((suite) => {
           const start = suite.date.getTime();
@@ -204,6 +204,37 @@ async function main() {
 
         console.log(consoleBold(conclusion));
         core.summary.addRaw(`\n${conclusion}\n`);
+
+        if (total.failed) {
+          console.error(`\n❌ Failed tests\n`);
+          core.summary.addRaw(`\n#### ❌ Failed tests\n`);
+          core.summary.addRaw(
+            `\n<hr style="height: 1px; margin-top: -5px; margin-bottom: 10px;">\n`,
+          );
+          for (const suite of suites) {
+            if (!suite.failed) continue;
+            console.error(suite.path);
+            core.summary.addRaw(
+              `\n#### [${suite.path}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path})\n`,
+            );
+            if (suite.job.name && suite.job.id && RUN_ID) {
+              core.summary.addRaw(
+                `\n##### Job: [${
+                  suite.job.name
+                }](https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}/job/${
+                  suite.job.id
+                }${PR_NUMBER ? `?pr=${PR_NUMBER}` : ''})\n`,
+              );
+            }
+            for (const test of suite.testCases) {
+              if (test.status !== 'failed') continue;
+              console.error(`  ${test.name}`);
+              console.error(`  ${test.error}\n`);
+              core.summary.addRaw(`\n##### ${test.name}\n`);
+              core.summary.addRaw(`\n\`\`\`js\n${test.error}\n\`\`\`\n`);
+            }
+          }
+        }
 
         const rows = suites.map((suite) => ({
           'Test suite': suite.path,
@@ -229,37 +260,6 @@ async function main() {
 
         console.table(rows);
         core.summary.addRaw(`\n${table}\n`);
-
-        if (total.failed > 0) {
-          console.error(`❌ Failed tests`);
-          core.summary.addRaw(`\n#### ❌ Failed tests\n`);
-          core.summary.addRaw(
-            `\n<hr style="height: 1px; margin-top: -5px; margin-bottom: 10px;">\n`,
-          );
-          for (const suite of suites) {
-            if (suite.failed === 0) continue;
-            console.error(suite.path);
-            core.summary.addRaw(
-              `\n#### [${suite.path}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path})\n`,
-            );
-            if (suite.job.name && suite.job.id && RUN_ID) {
-              core.summary.addRaw(
-                `\n##### Job: [${
-                  suite.job.name
-                }](https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}/job/${
-                  suite.job.id
-                }${PR_NUMBER ? `?pr=${PR_NUMBER}` : ''})\n`,
-              );
-            }
-            for (const test of suite.testCases) {
-              if (test.status !== 'failed') continue;
-              console.error(`  ${test.name}`);
-              console.error(`  ${test.error}\n`);
-              core.summary.addRaw(`\n##### ${test.name}\n`);
-              core.summary.addRaw(`\n\`\`\`js\n${test.error}\n\`\`\`\n`);
-            }
-          }
-        }
       } else {
         core.summary.addRaw(`\n<details open>\n`);
         core.summary.addRaw(`<summary>${title}</summary>\n`);
