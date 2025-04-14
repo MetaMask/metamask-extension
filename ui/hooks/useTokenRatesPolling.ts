@@ -1,4 +1,6 @@
 import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
+
 import {
   getChainIdsToPoll,
   getMarketData,
@@ -30,10 +32,15 @@ const useTokenRatesPolling = () => {
 
   const enabled = completedOnboarding && isUnlocked && useCurrencyRateCheck;
 
+  const pollingInput = useMemo(
+    () => (enabled ? chainIds : []),
+    [enabled, chainIds],
+  );
+
   useMultiPolling({
     startPolling: tokenRatesStartPolling,
     stopPollingByPollingToken: tokenRatesStopPollingByPollingToken,
-    input: enabled ? chainIds : [],
+    input: pollingInput,
   });
 
   return {
