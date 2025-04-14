@@ -124,6 +124,8 @@ export function MultichainTransactionDetailsModal({
               name={IconName.Export}
               size={IconSize.Sm}
               color={IconColor.primaryDefault}
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () =>
                 navigator.clipboard.writeText(
                   getAddressUrl(address, chain),
@@ -255,6 +257,8 @@ export function MultichainTransactionDetailsModal({
                     name={IconName.Export}
                     size={IconSize.Sm}
                     color={IconColor.primaryDefault}
+                    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () =>
                       navigator.clipboard.writeText(
                         getTransactionUrl(id, chain),
@@ -314,6 +318,8 @@ export function MultichainTransactionDetailsModal({
                 url: getTransactionUrl(id, chain),
               });
 
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               trackEvent({
                 event: MetaMetricsEventName.ExternalLinkClicked,
                 category: MetaMetricsEventCategory.Navigation,

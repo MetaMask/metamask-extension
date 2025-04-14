@@ -327,6 +327,8 @@ export default class DecryptMessageController extends BaseController<
   }
 
   private _acceptApproval(messageId: string) {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
   }
 
@@ -405,6 +407,8 @@ export default class DecryptMessageController extends BaseController<
     const id = messageParams.metamaskId as string;
     const origin = messageParams.origin || ORIGIN_METAMASK;
     try {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.messagingSystem.call(
         'ApprovalController:addRequest',
         {

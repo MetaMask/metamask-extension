@@ -42,6 +42,8 @@ function useUpdateAccountSetting(
       try {
         await switchAccountNotifications([address], state);
         await refetchAccountSettings();
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         refetch();
       } catch {
         // Do nothing (we don't need to propagate this)
@@ -74,6 +76,8 @@ export const NotificationsSettingsPerAccount = ({
   const error = accountError;
 
   const handleToggleAccountNotifications = useCallback(async () => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.NotificationSettings,
       event: MetaMetricsEventName.NotificationsSettingsUpdated,
@@ -99,6 +103,8 @@ export const NotificationsSettingsPerAccount = ({
     <>
       <NotificationsSettingsBox
         value={isEnabled ?? false}
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onToggle={handleToggleAccountNotifications}
         key={address}
         disabled={disabledSwitch}

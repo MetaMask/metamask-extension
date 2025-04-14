@@ -63,6 +63,8 @@ export default function TurnOnMetamaskNotifications() {
 
   const handleTurnOnNotifications = async () => {
     setIsLoading(true);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.NotificationsActivationFlow,
       event: MetaMetricsEventName.NotificationsActivated,
@@ -82,6 +84,8 @@ export default function TurnOnMetamaskNotifications() {
     hideModal();
     setIsLoading((prevLoadingState) => {
       if (!prevLoadingState) {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           category: MetaMetricsEventCategory.NotificationsActivationFlow,
           event: MetaMetricsEventName.NotificationsActivated,
@@ -159,6 +163,8 @@ export default function TurnOnMetamaskNotifications() {
         </ModalBody>
         <ModalFooter
           paddingTop={4}
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={async () => handleTurnOnNotifications()}
           containerProps={{
             flexDirection: FlexDirection.Column,

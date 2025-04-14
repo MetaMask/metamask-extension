@@ -90,6 +90,8 @@ const useBridging = () => {
             token_address_source: token.address,
           },
         });
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           event: MetaMetricsEventName.BridgeLinkClicked,
           category: MetaMetricsEventCategory.Navigation,
@@ -127,6 +129,8 @@ const useBridging = () => {
             portfolioUrlSuffix ?? `&token=${token.address}`
           }`,
         });
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.BridgeLinkClicked,

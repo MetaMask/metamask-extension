@@ -56,6 +56,8 @@ export const NotificationsListTurnOnNotifications = () => {
 
   const handleTurnOnNotifications = async () => {
     await enableNotifications();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.EnablingNotifications,
@@ -118,6 +120,8 @@ export const NotificationsListTurnOnNotifications = () => {
       </Text>
       <Box>
         <Button
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => handleTurnOnNotifications()}
           size={ButtonSize.Md}
           disabled={loading}

@@ -124,6 +124,8 @@ export const useCrossChainSwapsEventTracker = () => {
       category?: MetaMetricsEventCategory;
       properties: CrossChainSwapsEventProperties[EventName];
     }) => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: category ?? MetaMetricsEventCategory.CrossChainSwaps,
         event,

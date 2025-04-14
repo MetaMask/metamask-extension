@@ -314,6 +314,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 
   const handleOpenAccountsModal = () => {
     setShowEditAccountsModal(true);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.ViewPermissionedAccounts,

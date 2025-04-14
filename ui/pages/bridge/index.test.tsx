@@ -19,6 +19,8 @@ import CrossChainSwap from '.';
 
 const mockResetBridgeState = jest.fn();
 const middleware = [thunk];
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
   resetSwapsState: jest.fn(),

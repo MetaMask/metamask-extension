@@ -48,6 +48,8 @@ export default function ClearMetaMetricsData() {
   const deleteMetaMetricsData = async () => {
     try {
       await createMetaMetricsDataDeletionTask();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent(
         {
           category: MetaMetricsEventCategory.Settings,
@@ -59,6 +61,8 @@ export default function ClearMetaMetricsData() {
       );
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent(
         {
           category: MetaMetricsEventCategory.Settings,
@@ -121,6 +125,8 @@ export default function ClearMetaMetricsData() {
               size={ButtonSize.Lg}
               width={BlockSize.Half}
               variant={ButtonVariant.Primary}
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={deleteMetaMetricsData}
               danger
             >

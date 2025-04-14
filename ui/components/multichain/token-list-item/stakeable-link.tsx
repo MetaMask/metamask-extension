@@ -54,6 +54,8 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
           isMarketingEnabled,
         );
         global.platform.openTab({ url });
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           event: MetaMetricsEventName.StakingEntryPointClicked,
           category: MetaMetricsEventCategory.Tokens,

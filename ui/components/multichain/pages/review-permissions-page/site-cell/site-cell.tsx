@@ -99,6 +99,8 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const handleOpenAccountsModal = () => {
     hideAllToasts?.();
     setShowEditAccountsModal(true);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.ViewPermissionedAccounts,
@@ -112,6 +114,8 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const handleOpenNetworksModal = () => {
     hideAllToasts?.();
     setShowEditNetworksModal(true);
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.ViewPermissionedNetworks,

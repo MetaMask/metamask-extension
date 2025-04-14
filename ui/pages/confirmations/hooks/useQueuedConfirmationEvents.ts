@@ -31,6 +31,8 @@ export const useQueuedConfirmationsEvent = (queueType: QueueType) => {
         queue_type: queueType,
       };
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         event: MetaMetricsEventName.ConfirmationQueued,
         category: MetaMetricsEventCategory.Confirmations,

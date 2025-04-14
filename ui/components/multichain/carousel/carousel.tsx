@@ -111,6 +111,8 @@ export const Carousel = React.forwardRef(
 
       // Only track navigation when there's an actual change
       if (selectedIndex !== index) {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           event: MetaMetricsEventName.BannerNavigated,
           category: MetaMetricsEventCategory.Banner,

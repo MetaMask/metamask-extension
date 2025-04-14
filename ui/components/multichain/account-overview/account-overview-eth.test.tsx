@@ -50,6 +50,8 @@ const render = (props: AccountOverviewEthProps) => {
 
 describe('AccountOverviewEth', () => {
   beforeEach(() => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     setBackgroundConnection({
       setBridgeFeatureFlags: jest.fn(),
       tokenBalancesStartPolling: jest.fn(),

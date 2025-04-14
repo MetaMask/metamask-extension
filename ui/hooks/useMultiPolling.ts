@@ -19,6 +19,8 @@ const useMultiPolling = <PollingInput>(
     for (const input of usePollingOptions.input) {
       const key = JSON.stringify(input);
       if (!pollingTokens.current.has(key)) {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         usePollingOptions
           .startPolling(input)
           .then((token) => pollingTokens.current.set(key, token));

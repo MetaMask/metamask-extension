@@ -57,6 +57,8 @@ describe('useMetametrics', () => {
     );
 
     act(() => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       result.current.enableMetametrics();
     });
 
@@ -84,6 +86,8 @@ describe('useMetametrics', () => {
     );
 
     act(() => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       result.current.disableMetametrics();
     });
 

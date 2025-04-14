@@ -220,6 +220,8 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                 );
 
                 onSubmit(selectedAccountAddresses);
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 trackEvent({
                   category: MetaMetricsEventCategory.Permissions,
                   event: MetaMetricsEventName.UpdatePermissionedAccounts,

@@ -769,6 +769,8 @@ export default class SwapsController extends BaseController<
 
   public safeRefetchQuotes() {
     if (!this.#pollingTimeout && this.state.swapsState.fetchParams) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.fetchAndSetQuotes(this.state.swapsState.fetchParams, {
         ...this.state.swapsState.fetchParams.metaData,
       });
@@ -1041,6 +1043,8 @@ export default class SwapsController extends BaseController<
       ? swapsQuoteRefreshTime
       : swapsQuotePrefetchingRefreshTime;
     this.#pollingTimeout = setTimeout(() => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.fetchAndSetQuotes(
         this.state.swapsState.fetchParams as FetchTradesInfoParams,
         this.state.swapsState.fetchParams

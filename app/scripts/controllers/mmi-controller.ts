@@ -165,16 +165,22 @@ export class MMIController {
 
     // Get configuration from MMIConfig controller
     if (!process.env.IN_TEST) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.mmiConfigurationController.storeConfiguration().then(() => {
         // This must happen after the configuration is fetched
         // Otherwise websockets will always be disabled in the first run
 
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.transactionUpdateController.subscribeToEvents();
       });
     }
 
     this.signatureController.hub.on(
       'personal_sign:signed',
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'personal');
       },
@@ -182,6 +188,8 @@ export class MMIController {
 
     this.signatureController.hub.on(
       'eth_signTypedData:signed',
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'v4');
       },
@@ -189,6 +197,8 @@ export class MMIController {
 
     this.transactionUpdateController.on(
       'handshake',
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async ({ channelId }: { channelId: string }) => {
         this.setChannelId(channelId);
       },
@@ -196,6 +206,8 @@ export class MMIController {
 
     this.transactionUpdateController.on(
       'connection.request',
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (payload: ConnectionRequest) => {
         this.setConnectionRequest(payload);
       },
@@ -245,6 +257,8 @@ export class MMIController {
       custodyController: this.custodyController,
       // @ts-expect-error not relevant
       trackTransactionEvent:
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.trackTransactionEventFromCustodianEvent.bind(this),
       captureException,
     });
@@ -284,6 +298,8 @@ export class MMIController {
 
         keyring.on(REFRESH_TOKEN_CHANGE_EVENT, () => {
           log.info(`Refresh token change event for ${type}`);
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.persistKeyringsAfterRefreshTokenChange();
         });
 
@@ -299,6 +315,8 @@ export class MMIController {
         );
 
         keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.logAndStoreApiRequest(logData);
         });
 
@@ -317,6 +335,8 @@ export class MMIController {
         const txList = this.txStateManager.getTransactions(); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           updateCustodianTransactions({
             keyring,
             type,
@@ -359,6 +379,8 @@ export class MMIController {
       await this.mmiConfigurationController.store.getState();
 
     if (mmiConfigData?.mmiConfiguration?.features?.websocketApi) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.transactionUpdateController.getCustomerProofForAddresses(addresses);
     }
   }
@@ -408,6 +430,8 @@ export class MMIController {
 
     keyring.on(REFRESH_TOKEN_CHANGE_EVENT, () => {
       log.info(`Refresh token change event for ${keyring.type}`);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.persistKeyringsAfterRefreshTokenChange();
     });
 
@@ -421,6 +445,8 @@ export class MMIController {
     );
 
     keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.logAndStoreApiRequest(logData);
     });
 
@@ -532,6 +558,8 @@ export class MMIController {
       await this.mmiConfigurationController.store.getState();
 
     if (mmiConfigData?.mmiConfiguration?.features?.websocketApi) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.transactionUpdateController.getCustomerProofForAddresses(
         newAccounts,
       );
@@ -827,6 +855,8 @@ export class MMIController {
     signOperation: string,
   ) {
     if (signature.custodian_transactionId) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.transactionUpdateController.addTransactionToWatchList(
         signature.custodian_transactionId,
         signature.from,

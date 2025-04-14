@@ -3,8 +3,12 @@ import { describe, it } from 'node:test';
 import { join } from 'node:path';
 import { getLatestCommit } from '../utils/git';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 describe('getLatestCommit', () => {
   const gitDir = join(__dirname, '.', 'fixtures', 'git');
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should return some values by default', () => {
     const { hash, timestamp } = getLatestCommit();
 
@@ -12,6 +16,8 @@ describe('getLatestCommit', () => {
     assert.ok(typeof timestamp() === 'number', 'The timestamp type is wrong');
   });
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should return the latest commit hash and timestamp', () => {
     const { hash, timestamp } = getLatestCommit(gitDir);
 
@@ -19,6 +25,8 @@ describe('getLatestCommit', () => {
     assert.strictEqual(timestamp(), 1711385030000, 'The timestamp is wrong');
   });
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should use the cache', () => {
     const firstCallCustom = getLatestCommit(gitDir);
     const firstCallDefault = getLatestCommit();

@@ -49,8 +49,12 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (!isBasicFunctionalityEnabled && isNotificationsEnabled) {
       // Disable notifications
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       disableNotifications();
       // list notifications to reset the counter
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       listNotifications();
     }
   }, [
@@ -67,6 +71,8 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     if (isBasicFunctionalityEnabled && shouldFetchNotifications && isUnlocked) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       listNotifications();
     }
   }, [
@@ -78,6 +84,8 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
 
   return (
     <MetamaskNotificationsContext.Provider
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       value={{ listNotifications, notificationsData, isLoading, error }}
     >
       {children}

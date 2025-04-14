@@ -70,6 +70,8 @@ const VisitSupportDataConsentModal: React.FC<
         supportLinkWithUserId += `?${queryString}`;
       }
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent(
         {
           category: MetaMetricsEventCategory.Settings,
@@ -89,6 +91,8 @@ const VisitSupportDataConsentModal: React.FC<
 
   const handleClickNoShare = useCallback(() => {
     onClose();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent(
       {
         category: MetaMetricsEventCategory.Settings,

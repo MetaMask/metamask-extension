@@ -324,6 +324,8 @@ class SmartTransactionHook {
       this.#addApprovalRequest({
         uuid,
       });
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.#addListenerToUpdateStatusPage({
         uuid,
       });
@@ -335,6 +337,8 @@ class SmartTransactionHook {
       return;
     }
     this.#approvalFlowEnded = true;
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.#endApprovalFlow(this.#approvalFlowId);
 
     // Clear the shared approval flow ID when we end the flow
@@ -390,6 +394,8 @@ class SmartTransactionHook {
   async #addListenerToUpdateStatusPage({ uuid }: { uuid: string }) {
     this.#controllerMessenger.subscribe(
       'SmartTransactionsController:smartTransaction',
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (smartTransaction: SmartTransaction) => {
         if (smartTransaction.uuid === uuid) {
           const { status } = smartTransaction;
@@ -410,6 +416,8 @@ class SmartTransactionHook {
     return new Promise((resolve) => {
       this.#controllerMessenger.subscribe(
         'SmartTransactionsController:smartTransaction',
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async (smartTransaction: SmartTransaction) => {
           if (smartTransaction.uuid === uuid) {
             const { status, statusMetadata } = smartTransaction;

@@ -100,6 +100,8 @@ export function AssetPickerModalNftTab({
   const hasAnyNfts = filteredNfts.length > 0;
 
   const handleNftClick = async (nft: NFT) => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent(
       {
         event: MetaMetricsEventName.sendAssetSelected,
@@ -158,6 +160,8 @@ export function AssetPickerModalNftTab({
       {hasAnyNfts ? (
         <>
           <Box>
+            {/* TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879 */}
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <NftGrid nfts={filteredNfts} handleNftClick={handleNftClick} />
           </Box>
           {nftsStillFetchingIndication && (

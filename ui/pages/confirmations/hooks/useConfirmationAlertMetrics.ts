@@ -141,8 +141,12 @@ export function useConfirmationAlertMetrics() {
     }
 
     if (isSignatureTransactionType(currentConfirmation)) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       updateSignatureEventFragment({ properties });
     } else {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       updateTransactionEventFragment({ properties }, ownerId);
     }
   }, [JSON.stringify(properties), updateTransactionEventFragment, ownerId]);

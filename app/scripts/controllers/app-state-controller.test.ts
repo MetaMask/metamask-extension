@@ -80,6 +80,8 @@ describe('AppStateController', () => {
           .mockReturnValue(false);
         expect(controller.waitingForUnlock).toHaveLength(0);
 
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         controller.getUnlockPromise(true);
         expect(isUnlockedMock).toHaveBeenCalled();
         expect(controller.waitingForUnlock).toHaveLength(1);
@@ -127,6 +129,8 @@ describe('AppStateController', () => {
       await withController({ addRequestMock }, async ({ controller }) => {
         jest.spyOn(controller, 'isUnlocked').mockReturnValue(false);
 
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         controller.getUnlockPromise(true);
 
         expect(addRequestMock).toHaveBeenCalled();
@@ -161,6 +165,8 @@ describe('AppStateController', () => {
             unlockChangeSpy,
           );
 
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           controller.getUnlockPromise(true);
 
           unlockListener();

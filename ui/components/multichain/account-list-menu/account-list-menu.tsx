@@ -356,6 +356,8 @@ export const AccountListMenu = ({
     _options: MultichainWalletSnapOptions,
     action: ActionMode,
   ) => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
@@ -426,6 +428,8 @@ export const AccountListMenu = ({
   const onAccountListItemItemClicked = useCallback(
     (account: MergedInternalAccount) => {
       onClose();
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.NavAccountSwitched,
@@ -521,6 +525,8 @@ export const AccountListMenu = ({
   );
 
   const onSelectSrp = useCallback(() => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
@@ -593,6 +599,8 @@ export const AccountListMenu = ({
             paddingTop={0}
             style={{ overflowY: 'scroll' }}
           >
+            {/* TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879 */}
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <ImportSrp onActionComplete={onActionComplete} />
           </Box>
         )}
@@ -621,6 +629,8 @@ export const AccountListMenu = ({
                 startIconName={IconName.Add}
                 startIconProps={{ size: IconSize.Md }}
                 onClick={() => {
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
@@ -649,6 +659,8 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () => {
                       await handleMultichainSnapAccountCreation(
                         solanaWalletSnapClient,
@@ -687,6 +699,8 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () => {
                       return await handleMultichainSnapAccountCreation(
                         bitcoinWalletSnapClient,
@@ -713,6 +727,8 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () => {
                       return await handleMultichainSnapAccountCreation(
                         bitcoinWalletSnapClient,
@@ -745,6 +761,8 @@ export const AccountListMenu = ({
                   startIconName={IconName.Wallet}
                   startIconProps={{ size: IconSize.Md }}
                   onClick={() => {
+                    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     trackEvent({
                       category: MetaMetricsEventCategory.Navigation,
                       event:
@@ -766,6 +784,8 @@ export const AccountListMenu = ({
                 startIconProps={{ size: IconSize.Md }}
                 data-testid="multichain-account-menu-popover-add-imported-account"
                 onClick={() => {
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
@@ -800,6 +820,8 @@ export const AccountListMenu = ({
                 startIconProps={{ size: IconSize.Md }}
                 onClick={() => {
                   onClose();
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
@@ -835,6 +857,8 @@ export const AccountListMenu = ({
                     startIconProps={{ size: IconSize.Md }}
                     onClick={() => {
                       onClose();
+                      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+                      // eslint-disable-next-line @typescript-eslint/no-floating-promises
                       trackEvent({
                         category: MetaMetricsEventCategory.Navigation,
                         event: MetaMetricsEventName.AccountAddSelected,
@@ -868,6 +892,8 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Eye}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={handleAddWatchAccount}
                     data-testid="multichain-account-menu-popover-add-watch-only-account"
                   >

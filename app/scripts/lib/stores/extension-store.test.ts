@@ -63,6 +63,8 @@ describe('ExtensionStore', () => {
 
       const localStore = setup({ localMock: { set: setMock } });
       await expect(async function () {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         localStore.set(MOCK_STATE);
       }).not.toThrow();
     });

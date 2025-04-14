@@ -279,6 +279,8 @@ async function validateSecurity(request: AddTransactionRequest) {
     const securityAlertId = generateSecurityAlertId();
 
     // Intentionally not awaited to avoid blocking the confirmation process while the validation occurs.
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     validateRequestWithPPOM({
       ppomController,
       request: ppomRequest,

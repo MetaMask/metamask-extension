@@ -67,10 +67,16 @@ const CrossChainSwap = () => {
 
   useEffect(() => {
     // Reset controller and inputs before unloading the page
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     window.addEventListener('beforeunload', resetControllerAndInputStates);
 
     return () => {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       window.removeEventListener('beforeunload', resetControllerAndInputStates);
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       resetControllerAndInputStates();
     };
   }, []);
@@ -105,6 +111,8 @@ const CrossChainSwap = () => {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={redirectToDefaultRoute}
           />
         }

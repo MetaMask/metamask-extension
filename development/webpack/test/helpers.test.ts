@@ -13,14 +13,20 @@ import {
 import * as helpers from '../utils/helpers';
 import { type Combination, generateCases } from './helpers';
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 describe('./utils/helpers.ts', () => {
   afterEach(() => mock.restoreAll());
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should return undefined when noop it called', () => {
     const nothing = helpers.noop();
     assert.strictEqual(nothing, undefined);
   });
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should return all entries listed in the manifest and file system for manifest_version 2', () => {
     const originalReaddirSync = fs.readdirSync;
     const otherHtmlEntries = ['one.html', 'two.html'];
@@ -119,6 +125,8 @@ describe('./utils/helpers.ts', () => {
     assert.strictEqual(canBeChunked({ name: 'anything.js' } as Chunk), true);
   });
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should return all entries listed in the manifest and file system for manifest_version 3', () => {
     const originalReaddirSync = fs.readdirSync;
     const otherHtmlEntries = ['one.html', 'two.html'];
@@ -222,6 +230,8 @@ describe('./utils/helpers.ts', () => {
     assert.strictEqual(canBeChunked({ name: 'anything.js' } as Chunk), true);
   });
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should handle manifest.json files with empty sections', () => {
     const originalReaddirSync = fs.readdirSync;
     const appRoot = '<app-root>';
@@ -254,6 +264,8 @@ describe('./utils/helpers.ts', () => {
     assert.deepStrictEqual(entryv3, {});
   });
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should throw if an entry file starts with an underscore', () => {
     const manifest = {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
@@ -269,6 +281,8 @@ describe('./utils/helpers.ts', () => {
     );
   });
 
+  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   describe('logStats', () => {
     const getStatsMock = (
       stats: 'normal' | 'none',
@@ -296,12 +310,16 @@ describe('./utils/helpers.ts', () => {
       } as const satisfies Stats;
     };
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should log nothing if err and stats are both not defined', () => {
       const { mock: error } = mock.method(console, 'error', helpers.noop);
       helpers.logStats(undefined, undefined);
       assert.strictEqual(error.callCount(), 0, 'error should not be called');
     });
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should log only the error when error and stats are provided', () => {
       const stats = getStatsMock('normal', 'production', false, false);
       const { mock: error } = mock.method(console, 'error', helpers.noop);
@@ -356,6 +374,8 @@ describe('./utils/helpers.ts', () => {
         process.stderr.getColorDepth = originalGetColorDepth;
       });
 
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       it(`should log message when stats is "${level}" and env is "${env}", with errors: \`${hasErrors}\` and warnings: \`${hasWarnings}\``, () => {
         const stats = getStatsMock(level, env, hasErrors, hasWarnings);
         const { mock: error } = mock.method(console, 'error', testHelpers.noop);

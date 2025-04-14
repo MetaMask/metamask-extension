@@ -160,6 +160,8 @@ const AssetListControlBar = ({
 
   const handleImport = () => {
     dispatch(showImportTokensModal());
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.TokenImportButtonClicked,
@@ -173,6 +175,8 @@ const AssetListControlBar = ({
   const handleRefresh = () => {
     dispatch(detectTokens());
     closePopover();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Tokens,
       event: MetaMetricsEventName.TokenListRefreshed,

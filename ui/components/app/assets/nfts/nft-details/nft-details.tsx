@@ -221,6 +221,8 @@ export function NftDetailsComponent({
   const { chainId } = currentChain;
 
   useEffect(() => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.NftDetailsOpened,
       category: MetaMetricsEventCategory.Tokens,
@@ -244,6 +246,8 @@ export function NftDetailsComponent({
       dispatch(setRemoveNftMessage('error'));
     } finally {
       // track event
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         event: MetaMetricsEventName.NFTRemoved,
         category: 'Wallet',
@@ -271,6 +275,8 @@ export function NftDetailsComponent({
   const prevNft = usePrevious(nft);
   useEffect(() => {
     if (!isEqual(prevNft, nft)) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       checkAndUpdateSingleNftOwnershipStatus(nft);
     }
   }, [nft, prevNft]);
@@ -413,6 +419,8 @@ export function NftDetailsComponent({
               }
               return global.platform.openTab({ url: openSeaLink });
             }}
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onRemove={onRemove}
           />
         </Box>
@@ -911,6 +919,8 @@ export function NftDetailsComponent({
       {isCurrentlyOwned === true ? (
         <Footer className="nft-details__content">
           <ButtonPrimary
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSend}
             disabled={sendDisabled}
             size={ButtonPrimarySize.Lg}

@@ -93,7 +93,11 @@ const useLedgerConnection = () => {
         }
       }
     };
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     determineTransportStatus();
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     initialConnectedDeviceCheck();
   }, [
     dispatch,

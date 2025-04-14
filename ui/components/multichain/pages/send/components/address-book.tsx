@@ -107,6 +107,8 @@ export const SendPageAddressBook = () => {
         `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
       ),
     );
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent(
       {
         event: MetaMetricsEventName.sendRecipientSelected,

@@ -42,10 +42,14 @@ export default function useUpdateSwapsState() {
       })
       .catch((error) => console.error(error));
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchTopAssets(chainId).then((topAssets) => {
       dispatch(setTopAssets(topAssets));
     });
 
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchAggregatorMetadata(chainId).then((newAggregatorMetadata) => {
       dispatch(setAggregatorMetadata(newAggregatorMetadata));
     });

@@ -286,6 +286,8 @@ export const NetworksForm = ({
           await dispatch(addNetwork(networkPayload));
         }
 
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
@@ -653,6 +655,8 @@ export const NetworksForm = ({
             !rpcUrls?.rpcEndpoints?.length ||
             Object.values(errors).some((e) => e)
           }
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={onSubmit}
           size={ButtonPrimarySize.Lg}
           width={BlockSize.Full}

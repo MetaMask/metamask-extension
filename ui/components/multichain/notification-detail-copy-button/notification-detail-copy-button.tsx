@@ -67,6 +67,8 @@ export const NotificationDetailCopyButton: FC<
   const onClick = () => {
     typeof handleCopy === 'function' && handleCopy(text);
     if (notification) {
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.NotificationInteraction,
         event: MetaMetricsEventName.NotificationDetailClicked,
