@@ -74,6 +74,8 @@ export function startDownload(
       stream.emit(
         'error',
         new Error(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Request to ${url} failed. Status Code: ${statusCode} - ${statusMessage}`,
         ),
       );

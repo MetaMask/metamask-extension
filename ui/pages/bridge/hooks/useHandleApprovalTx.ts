@@ -59,6 +59,8 @@ export default function useHandleApprovalTx() {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
     // eslint-disable-next-line id-length
     } catch (e) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`${ALLOWANCE_RESET_ERROR}: ${e}`);
     }
   };
@@ -95,6 +97,8 @@ export default function useHandleApprovalTx() {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
     // eslint-disable-next-line id-length
     } catch (e) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`${APPROVAL_TX_ERROR}: ${e}`);
     }
   };

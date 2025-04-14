@@ -181,7 +181,8 @@ const onDisconnectDestroyCookieStreams = () => {
   // eslint-disable-next-line id-denylist
   if (err) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line id-denylist, @typescript-eslint/restrict-template-expressions
     console.warn(`${err} Resetting the phishing streams.`);
     setTimeout(setupCookieHandlerExtStreams, 1000);
   }
