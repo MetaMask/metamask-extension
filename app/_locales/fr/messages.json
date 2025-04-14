@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Détails du compte"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Revenir au compte normal"
-  },
   "accountIdenticon": {
     "message": "Identicon de compte"
   },
@@ -1311,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Copier l’addresse dans le presse-papier"
-  },
-  "copyAddressShort": {
-    "message": "Copier l’adresse"
   },
   "copyPrivateKey": {
     "message": "Copier la clé privée"

@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Account details"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Switch back to regular account"
-  },
   "accountIdenticon": {
     "message": "Account identicon"
   },
@@ -1370,9 +1367,6 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
-  },
-  "copyAddressShort": {
-    "message": "Copy address"
   },
   "copyPrivateKey": {
     "message": "Copy private key"
@@ -5106,6 +5100,12 @@
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
+  },
+  "smartAccountUpgradeBannerDescription": {
+    "message": "Same address. Smarter features. Learn more."
+  },
+  "smartAccountUpgradeBannerTitle": {
+    "message": "Switch to smart account"
   },
   "smartContracts": {
     "message": "Smart contracts"
