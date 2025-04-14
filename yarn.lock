@@ -5291,47 +5291,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@file:.yalc/@metamask/eth-json-rpc-middleware::locator=metamask-crx%40workspace%3A.":
-  version: 16.0.1
-  resolution: "@metamask/eth-json-rpc-middleware@file:.yalc/@metamask/eth-json-rpc-middleware#.yalc/@metamask/eth-json-rpc-middleware::hash=1d4ba0&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@metamask/eth-block-tracker": "npm:^11.0.4"
-    "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
-    "@metamask/eth-sig-util": "npm:^8.1.2"
-    "@metamask/json-rpc-engine": "npm:^10.0.2"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    "@types/bn.js": "npm:^5.1.5"
-    bn.js: "npm:^5.2.1"
-    klona: "npm:^2.0.6"
-    pify: "npm:^5.0.0"
-    safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/5b2fefbcf3b064a6896d734c76f32b9ab7986cbd2dacf1949997ac3a49e595dec316eddf2ed8c3b880dc55a0efd8779ae8f81b72a1d60a74f54f4875eb122eba
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-json-rpc-middleware@npm:^15.0.1":
-  version: 15.3.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:15.3.0"
-  dependencies:
-    "@metamask/eth-block-tracker": "npm:^11.0.4"
-    "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
-    "@metamask/eth-sig-util": "npm:^8.1.2"
-    "@metamask/json-rpc-engine": "npm:^10.0.2"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    "@types/bn.js": "npm:^5.1.5"
-    bn.js: "npm:^5.2.1"
-    klona: "npm:^2.0.6"
-    pify: "npm:^5.0.0"
-    safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/09e595a064b5f45bf0597dad38d04aaa4f2eb09700c70c85ec06ec22a6f642adffdbd1120380fd4b1d485c0d39bfc4b354c39c2b75d7ffa96210a2003189c0db
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-json-rpc-middleware@npm:^16.0.1":
+"@metamask/eth-json-rpc-middleware@npm:16.0.1":
   version: 16.0.1
   resolution: "@metamask/eth-json-rpc-middleware@npm:16.0.1"
   dependencies:
@@ -5348,6 +5308,26 @@ __metadata:
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
   checksum: 10/5c806cbac87c30cc4dcc9a9437a92e8c25aa4f00af34826433529d19ac1dd9e69488795bef9cbe59c7b982f33e0386e1f39426203c0e422e30c74e7f79ade803
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-json-rpc-middleware@patch:@metamask/eth-json-rpc-middleware@npm%3A16.0.1#~/.yarn/patches/@metamask-eth-json-rpc-middleware-npm-16.0.1-cc2be457cc.patch":
+  version: 16.0.1
+  resolution: "@metamask/eth-json-rpc-middleware@patch:@metamask/eth-json-rpc-middleware@npm%3A16.0.1#~/.yarn/patches/@metamask-eth-json-rpc-middleware-npm-16.0.1-cc2be457cc.patch::version=16.0.1&hash=fbc980"
+  dependencies:
+    "@metamask/eth-block-tracker": "npm:^11.0.4"
+    "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
+    "@metamask/eth-sig-util": "npm:^8.1.2"
+    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bn.js: "npm:^5.2.1"
+    klona: "npm:^2.0.6"
+    pify: "npm:^5.0.0"
+    safe-stable-stringify: "npm:^2.4.3"
+  checksum: 10/edbd1d57eb7341a4580873ae572d1c8370f5977a8fb912bcb4811d6b50bcf0c1035eed2a294a14ddaac34f02a93a46106eb7a2047c1880f3bf58b097e93bfbaa
   languageName: node
   linkType: hard
 
@@ -6637,9 +6617,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^54.0.0":
-  version: 54.0.0
-  resolution: "@metamask/transaction-controller@npm:54.0.0"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@54.0.0-preview-493eed9":
+  version: 54.0.0-preview-493eed9
+  resolution: "@metamask-previews/transaction-controller@npm:54.0.0-preview-493eed9"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6669,7 +6649,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/879b66ba5d1df1799bc03ac4b9c30d77dd5d2cc2839315afa0cfb18e4121b60b5fee7283494c13263e5d4d6fc4fd701eecc9cf447ff554d4e261be4730055a23
+  checksum: 10/962d73e92a4606f1269630d737d37fd90e0e10766bcb4d5e4e4c973277522344f8ee4862a7ce5f1adc2c7d90992b52bd801dac78ddacba55c488abac27e9a370
   languageName: node
   linkType: hard
 
@@ -27383,7 +27363,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "file:.yalc/@metamask/eth-json-rpc-middleware"
+    "@metamask/eth-json-rpc-middleware": "patch:@metamask/eth-json-rpc-middleware@npm%3A16.0.1#~/.yarn/patches/@metamask-eth-json-rpc-middleware-npm-16.0.1-cc2be457cc.patch"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^11.0.2"
     "@metamask/eth-sig-util": "npm:^7.0.1"
@@ -27445,7 +27425,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.2.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
-    "@metamask/transaction-controller": "npm:^54.0.0"
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@54.0.0-preview-493eed9"
     "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
