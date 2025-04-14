@@ -800,7 +800,7 @@ const MultichainTransactionListItem = ({
               className="activity-tx__network-badge"
               data-testid="activity-tx-network-badge"
               size={AvatarNetworkSize.Xs}
-              name={chainId}
+              name={transaction.chain}
               src={networkLogo}
               borderColor={BackgroundColor.backgroundDefault}
             />
