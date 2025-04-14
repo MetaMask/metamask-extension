@@ -34,11 +34,12 @@ export const AccountNetwork = ({
 }) => {
   const t = useI18nContext();
   const { downgradeAccount, upgradeAccount } = useEIP7702Account();
-  const { name, isSupported, upgradeContractAddress } = networkConfiguration;
+  const { name, isSupported, upgradeContractAddress, chainIdHex } =
+    networkConfiguration;
   const networkIcon = getNetworkIcon(networkConfiguration);
   const { hasPendingRequests } = useBatchAuthorizationRequests(
     address,
-    networkConfiguration.chainIdHex,
+    chainIdHex,
   );
 
   const onSwitch = useCallback(async () => {
