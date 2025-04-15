@@ -54,6 +54,8 @@ for (const arg of process.argv.slice(2)) {
 
 main().catch((error) => {
   log.error(error);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+  // eslint-disable-next-line n/no-process-exit
   process.exit(1);
 });
 
@@ -72,6 +74,8 @@ async function main() {
         ? await verifyEnglishLocale()
         : await verifyLocale(specifiedLocale);
     if (failed) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+      // eslint-disable-next-line n/no-process-exit
       process.exit(1);
     } else {
       console.log('No invalid entries!');
@@ -89,6 +93,8 @@ async function main() {
     }
 
     if (failed) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+      // eslint-disable-next-line n/no-process-exit
       process.exit(1);
     } else {
       console.log('No invalid entries!');
@@ -113,6 +119,8 @@ async function writeLocale(code, locale) {
     } else {
       log.error(`Error writing your locale ("${code}") file: `, e);
     }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
 }

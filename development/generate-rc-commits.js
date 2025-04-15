@@ -190,6 +190,8 @@ async function main() {
 
   if (args.length !== 2) {
     console.error('Usage: node script.js branchA branchB');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
 

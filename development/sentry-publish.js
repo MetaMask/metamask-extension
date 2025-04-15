@@ -9,6 +9,8 @@ const { loadBuildTypesConfig } = require('./lib/build-type');
 
 start().catch((error) => {
   console.error(error);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+  // eslint-disable-next-line n/no-process-exit
   process.exit(1);
 });
 

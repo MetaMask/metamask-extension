@@ -8,6 +8,8 @@ const http = require('http');
  */
 function defaultOnError(error) {
   console.log(error);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+  // eslint-disable-next-line n/no-process-exit
   process.exit(1);
 }
 

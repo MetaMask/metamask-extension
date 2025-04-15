@@ -1135,11 +1135,15 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
       bundleStream.on('error', (error) => {
         console.error('Bundling failed! See details below.');
         logError(error);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+        // eslint-disable-next-line n/no-process-exit
         process.exit(1);
       });
       pipeline.on('error', (error) => {
         console.error('Pipeline failed! See details below.');
         logError(error);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+        // eslint-disable-next-line n/no-process-exit
         process.exit(1);
       });
     }

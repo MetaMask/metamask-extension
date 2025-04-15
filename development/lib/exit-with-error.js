@@ -19,6 +19,8 @@ function exitWithError(errorMessage) {
     // keeping the event loop from ending. The result is that sometimes jobs
     // fail because of timeout even though none of the individual tests fail.
     // This is a workaround.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+    // eslint-disable-next-line n/no-process-exit
     process.exit();
   }
 }

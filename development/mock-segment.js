@@ -22,6 +22,8 @@ function onRequest(request, response, events) {
 
 function onError(error) {
   console.error(error);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+  // eslint-disable-next-line n/no-process-exit
   process.exit(1);
 }
 

@@ -54,6 +54,8 @@ process.on('exit', () => {
     for (const reason of unhandledRejections.values()) {
       console.error('Unhandled rejection: ', reason);
     }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
 });

@@ -16,6 +16,8 @@ const fsAsync = pify(fs);
 
 start().catch((error) => {
   console.error(error);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+  // eslint-disable-next-line n/no-process-exit
   process.exit(1);
 });
 
@@ -48,6 +50,8 @@ async function start() {
   }
 
   if (!valid) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
 }

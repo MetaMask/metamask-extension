@@ -38,6 +38,8 @@ async function runGitCommands() {
         console.log(`Created and checked out branch: ${branchName}`);
       } else {
         console.error(`Error: ${error.message}`);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+        // eslint-disable-next-line n/no-process-exit
         process.exit(1);
       }
     }
@@ -63,6 +65,8 @@ async function runGitCommands() {
         );
       } else {
         console.error(`Error: ${error.message}`);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+        // eslint-disable-next-line n/no-process-exit
         process.exit(1);
       }
     }
@@ -96,6 +100,8 @@ async function runGitCommands() {
     console.log('You likely now need to do `git push --force`');
   } catch (error) {
     console.error(`Error: ${error.message}`);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
 }

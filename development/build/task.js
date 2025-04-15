@@ -36,6 +36,8 @@ async function runTask(taskName, { skipStats } = {}) {
       `MetaMask build: Encountered an error while running task "${taskName}".`,
     );
     logError(err);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31984
+    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
   taskEvents.emit('complete');
