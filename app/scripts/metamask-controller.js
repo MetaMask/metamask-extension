@@ -4262,7 +4262,8 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // DelegationController
-      signDelegation: delegationController.sign.bind(delegationController),
+      signDelegation:
+        delegationController.signDelegation.bind(delegationController),
       storeDelegationEntry:
         delegationController.store.bind(delegationController),
       listDelegationEntries:
