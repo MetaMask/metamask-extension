@@ -28,7 +28,7 @@ class SnapInteractiveDialog {
         selectors.interactiveUITitle,
         selectors.exampleInput,
       ]);
-    } catch (e) {
+    } catch (e: string) {
       console.log(
         'Timeout while waiting for Snap Interactive UI dialog to load',
         e,
