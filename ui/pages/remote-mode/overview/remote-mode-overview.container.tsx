@@ -2,14 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { getSelectedInternalAccount } from '../../../selectors';
+
 import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
-import { Button, ButtonIcon, ButtonSize, ButtonIconSize, IconName } from '../../../components/component-library';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+  Button,
+  ButtonIcon,
+  ButtonSize,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../../components/component-library';
 import {
   TextVariant,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import {
   Content,
-  Footer,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
@@ -35,8 +47,18 @@ export default function RemoteModeIntroducing() {
   const [currentScreen, setCurrentScreen] = useState<RemoteScreen>(
     RemoteScreen.OVERVIEW,
   );
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
+
+  const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const history = useHistory();
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  useEffect(() => {
+    setIsHardwareAccount(
+      selectedHardwareAccount.metadata.keyring.type === 'Ledger Hardware' ||
+        selectedHardwareAccount.metadata.keyring.type === 'Lattice Hardware',
+    );
+  }, [selectedHardwareAccount]);
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
@@ -54,6 +76,7 @@ export default function RemoteModeIntroducing() {
               style={{ width: '100%' }}
               onClick={() => setCurrentScreen(RemoteScreen.PERMISSIONS)}
               size={ButtonSize.Lg}
+              disabled={!isHardwareAccount}
             >
               Get Remote Mode
             </Button>
@@ -107,6 +130,18 @@ export default function RemoteModeIntroducing() {
       >
         Remote mode
       </Header>
+      {!isHardwareAccount && (
+        <Box padding={4}>
+          <BannerAlert severity={BannerAlertSeverity.Warning} marginBottom={2}>
+            <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
+              Select a hardware wallet
+            </Text>
+            <Text variant={TextVariant.bodyMd}>
+              To continue, select your hardware wallet from the account menu.
+            </Text>
+          </BannerAlert>
+        </Box>
+      )}
       {renderScreen()}
     </Page>
   );

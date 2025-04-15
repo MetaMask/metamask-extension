@@ -7,6 +7,8 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   Button,
   ButtonIcon,
@@ -88,6 +90,7 @@ export default function RemoteModeSetupSwaps() {
     useState<boolean>(false);
   const [selectedAccount, setSelectedAccount] =
     useState<InternalAccount | null>(null);
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -97,6 +100,13 @@ export default function RemoteModeSetupSwaps() {
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  useEffect(() => {
+    setIsHardwareAccount(
+      selectedHardwareAccount.metadata.keyring.type === 'Ledger Hardware' ||
+        selectedHardwareAccount.metadata.keyring.type === 'Lattice Hardware',
+    );
+  }, [selectedHardwareAccount]);
 
   useEffect(() => {
     if (authorizedAccounts.length > 0) {
@@ -630,7 +640,19 @@ export default function RemoteModeSetupSwaps() {
         paddingRight={4}
         width={BlockSize.Full}
       >
-
+        {!isHardwareAccount && (
+          <BannerAlert
+            severity={BannerAlertSeverity.Warning}
+            marginBottom={2}
+          >
+            <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
+              Select a hardware wallet
+            </Text>
+            <Text variant={TextVariant.bodyMd}>
+              To continue, select your hardware wallet from the account menu.
+            </Text>
+          </BannerAlert>
+        )}
         <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
         <Text
           textAlign={TextAlign.Center}
@@ -665,6 +687,7 @@ export default function RemoteModeSetupSwaps() {
           onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
           width={BlockSize.Half}
           size={ButtonSize.Lg}
+          disabled={!isHardwareAccount}
         >
           {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
         </Button>
