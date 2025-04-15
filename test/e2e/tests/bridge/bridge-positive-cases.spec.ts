@@ -14,8 +14,8 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 
-describe('Bridge tests', function (this: Suite) {
-  it('Execute multiple bridge transactions', async function () {
+describe('Bridge functionality', function (this: Suite) {
+  it('should execute multiple bridge transactions', async function () {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),

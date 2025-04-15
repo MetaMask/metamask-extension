@@ -36,6 +36,11 @@ class BridgeQuotePage {
 
   private applyButton = { text: 'Apply', tag: 'button' };
 
+  private noOptionAvailable = {
+    text: `This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option.`,
+    css: '.mm-text--body-md',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -77,6 +82,18 @@ class BridgeQuotePage {
     await this.driver.waitForSelector(this.backButton);
     await this.driver.clickElement(this.backButton);
   };
+
+  async check_noTradeRouteMessageIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.noOptionAvailable);
+    } catch (e) {
+      console.log(
+        `Expected message that "no trade route is avaiable" is not present`,
+      );
+      throw e;
+    }
+    console.log('The message "no trade route is avaiable" is displayed');
+  }
 }
 
 export default BridgeQuotePage;

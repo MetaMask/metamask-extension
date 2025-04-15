@@ -294,3 +294,39 @@ export const getBridgeFixtures = (
     title,
   };
 };
+
+export const getBridgeNegativeCasesFixtures = (
+  mockAPI: (mockServer: Mockttp) => Promise<any>,
+  title?: string,
+) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withTokensControllerERC20({ chainId: 1 });
+
+  return {
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, {
+        'extension-config': {
+          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+          support: true,
+        },
+      }),
+      await mockAPI(mockServer),
+      await mockTopAssets(mockServer),
+    ],
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+        },
+      },
+    ],
+    title,
+  };
+};
