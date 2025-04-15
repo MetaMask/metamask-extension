@@ -102,7 +102,9 @@ describe('ExtensionUpdateManager', () => {
       ).toHaveBeenCalled();
 
       // Check if updatePending was set to true using type assertion
-      expect((updateManager as unknown as { updatePending: boolean }).updatePending).toBe(true);
+      expect(
+        (updateManager as unknown as { updatePending: boolean }).updatePending,
+      ).toBe(true);
     });
 
     it('should apply update immediately if already idle', () => {
