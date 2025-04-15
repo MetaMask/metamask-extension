@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
-import { removeSlide, setSelectedAccount } from '../../../store/actions';
+import {
+  removeSlide,
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  setSelectedAccount,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../store/actions';
 import { Carousel } from '..';
 import {
   getAppIsLoading,
