@@ -1,6 +1,6 @@
 import {
   FieldElement,
-  // https://github.com/MetaMask/metamask-extension/issues/31892
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   InputElement,
   JSXElement,
@@ -8,7 +8,7 @@ import {
   RadioGroupElement,
   CheckboxElement,
   SelectorElement,
-  // https://github.com/MetaMask/metamask-extension/issues/31892
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   AddressInputElement,
   AssetSelectorElement,

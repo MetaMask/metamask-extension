@@ -57,8 +57,8 @@ function testIntrinsic(propertyName) {
         `value of universal property globalThis["${propertyName}"] should be frozen`,
       );
     }
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } catch (err) {
     const lmre = // regex expression for LavaMoat scuttling error message
       /LavaMoat - property "[A-Za-z0-9]*" of globalThis is inaccessible under scuttling mode/u;

@@ -40,9 +40,7 @@ export default function Asset({
 
   const currency = useSelector(getCurrentCurrency);
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
-  const isTokenChainIdInWallet = Boolean(
-    chainId ? allNetworks[chainId] : true,
-  );
+  const isTokenChainIdInWallet = Boolean(chainId ? allNetworks[chainId] : true);
 
   const cachedTokens = useSelector(selectERC20TokensByChain);
 

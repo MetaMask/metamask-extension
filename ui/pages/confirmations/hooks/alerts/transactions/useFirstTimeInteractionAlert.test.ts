@@ -40,14 +40,11 @@ function runHook({
   };
 
   const state = currentConfirmation
-    ? getMockConfirmStateForTransaction(
-        currentConfirmation,
-        {
-          metamask: {
-            internalAccounts,
-          },
+    ? getMockConfirmStateForTransaction(currentConfirmation, {
+        metamask: {
+          internalAccounts,
         },
-      )
+      })
     : {};
 
   const response = renderHookWithConfirmContextProvider(

@@ -306,42 +306,44 @@ class ConnectHardwareForm extends Component {
         ? this.context.t('hardwareWalletLegacyDescription')
         : '';
 
-    return unlockHardwareWalletAccounts(
-      selectedAccounts,
-      deviceName,
-      path || null,
-      description,
-    )
-      .then((_) => {
-        this.context.trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.AccountAdded,
-          properties: {
-            account_type: MetaMetricsEventAccountType.Hardware,
-            // For now we keep using the device name to avoid any discrepancies with our current metrics.
-            // TODO: This will be addressed later, see: https://github.com/MetaMask/metamask-extension/issues/29777
-            account_hardware_type: deviceName,
-            is_suggested_name: true,
-          },
-        });
-        history.push(mostRecentOverviewPage);
-      })
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
-      .catch((e) => {
-        this.context.trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.AccountAddFailed,
-          properties: {
-            account_type: MetaMetricsEventAccountType.Hardware,
-            // See comment above about `account_hardware_type`.
-            account_hardware_type: deviceName,
-            error: e.message,
-            hd_entropy_index: hdEntropyIndex,
-          },
-        });
-        this.setState({ error: e.message });
-      });
+    return (
+      unlockHardwareWalletAccounts(
+        selectedAccounts,
+        deviceName,
+        path || null,
+        description,
+      )
+        .then((_) => {
+          this.context.trackEvent({
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.AccountAdded,
+            properties: {
+              account_type: MetaMetricsEventAccountType.Hardware,
+              // For now we keep using the device name to avoid any discrepancies with our current metrics.
+              // TODO: This will be addressed later, see: https://github.com/MetaMask/metamask-extension/issues/29777
+              account_hardware_type: deviceName,
+              is_suggested_name: true,
+            },
+          });
+          history.push(mostRecentOverviewPage);
+        })
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
+        .catch((e) => {
+          this.context.trackEvent({
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.AccountAddFailed,
+            properties: {
+              account_type: MetaMetricsEventAccountType.Hardware,
+              // See comment above about `account_hardware_type`.
+              account_hardware_type: deviceName,
+              error: e.message,
+              hd_entropy_index: hdEntropyIndex,
+            },
+          });
+          this.setState({ error: e.message });
+        })
+    );
   };
 
   onCancel = () => {

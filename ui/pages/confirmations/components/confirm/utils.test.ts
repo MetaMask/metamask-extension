@@ -7,7 +7,7 @@ import {
   PERSONAL_SIGN_SENDER_ADDRESS,
   unapprovedPersonalSignMsg,
 } from '../../../../../test/data/confirmations/personal_sign';
-// https://github.com/MetaMask/metamask-extension/issues/31892
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SignatureRequestType } from '../../types/confirm';
 import { getConfirmationSender } from './utils';
@@ -23,9 +23,7 @@ describe('confirm - utils', () => {
     });
 
     test("returns the sender address from a transaction if it's passed", () => {
-      const { from } = getConfirmationSender(
-        unapprovedPersonalSignMsg,
-      );
+      const { from } = getConfirmationSender(unapprovedPersonalSignMsg);
 
       expect(from).toEqual(PERSONAL_SIGN_SENDER_ADDRESS);
     });

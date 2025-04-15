@@ -114,6 +114,7 @@ describe('BridgeStatusController', () => {
       );
 
       // Execution
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const bridgeStatusController = new BridgeStatusController({
         messenger: getMessengerMock(),

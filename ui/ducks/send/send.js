@@ -767,9 +767,9 @@ export const initializeSendState = createAsyncThunk(
 
     const swapsBlockedTokens =
       getIsSwapsChain(state) && getUseExternalServices(state)
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
-        ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
+        ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
+          (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
         : [];
 
     const disabledSwapAndSendNetworks =
@@ -2493,8 +2493,8 @@ export function updateRecipientUserInput(userInput) {
               sendingAddress,
             );
             isProbablyAnAssetContract = Boolean(standard);
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
           } catch (e) {
             console.log(e);
           }
@@ -2723,8 +2723,8 @@ export function updateSendAsset(
               details.address,
               details.tokenId,
             );
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-          // eslint-disable-next-line id-denylist
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
           } catch (err) {
             const message = getErrorMessage(err);
             if (message.includes('Unable to verify ownership.')) {

@@ -79,7 +79,9 @@ export function useSimulationMetrics({
 
   const displayNames = useDisplayNames(displayNameRequests);
 
-  const displayNamesByAddress = displayNames.reduce<{ [address: string]: UseDisplayNameResponse }>(
+  const displayNamesByAddress = displayNames.reduce<{
+    [address: string]: UseDisplayNameResponse;
+  }>(
     (acc, displayNameResponse, index) => ({
       ...acc,
       [balanceChanges[index].asset.address ?? '']: displayNameResponse,

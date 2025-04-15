@@ -70,8 +70,8 @@ const getDescription = (n: LidoWithdrawalRequestedNotification) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     t('notificationItemLidoWithdrawalRequestedMessage', [
       `${amount} ${n.data.stake_in.symbol}`,
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     ]) || '';
   const items = createTextItems([description], TextVariant.bodyMd);
   return items;

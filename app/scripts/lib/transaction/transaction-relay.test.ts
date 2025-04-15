@@ -28,7 +28,8 @@ describe('Transaction Relay Utils', () => {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
     // eslint-disable-next-line no-restricted-globals
     fetchMock = jest.spyOn(global, 'fetch').mockReturnValue({
-      json: async () => Promise.resolve({ transactionHash: TRANSACTION_HASH_MOCK }),
+      json: async () =>
+        Promise.resolve({ transactionHash: TRANSACTION_HASH_MOCK }),
       ok: true,
     });
   });

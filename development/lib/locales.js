@@ -24,8 +24,8 @@ async function getLocale(code) {
     const localeFilePath = getLocalePath(code);
     const fileContents = await readFile(localeFilePath, 'utf8');
     return JSON.parse(fileContents);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e) {
     if (e.code === 'ENOENT') {
       log.error('Locale file not found');

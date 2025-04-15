@@ -40,8 +40,8 @@ export default function BottomButtons({
             if (result) {
               onActionComplete(true);
             }
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
           } catch (e) {
             // Take no action
           }

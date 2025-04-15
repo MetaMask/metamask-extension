@@ -76,10 +76,9 @@ export interface TextFieldStyleUtilityProps
   /**
    * Use inputRef to pass a ref to the html input element.
    */
-  inputRef?:
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-    // eslint-disable-next-line no-restricted-globals
-    | React.MutableRefObject<HTMLInputElement | null>
+  inputRef?: // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
+  | React.MutableRefObject<HTMLInputElement | null>
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
     // eslint-disable-next-line no-restricted-globals
     | ((instance: HTMLInputElement | null) => void);

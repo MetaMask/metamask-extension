@@ -212,8 +212,8 @@ const CoinButtons = ({
 
   const getSnapAccountMetaMetricsPropertiesIfAny = (
     internalAccount: InternalAccount,
-  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
   ): { snap_id?: string } => {
     // Some accounts might be Snap accounts, in this case we add some extra properties
     // to the metrics:
@@ -251,15 +251,17 @@ const CoinButtons = ({
             networkClientId: networkConfigurationId,
           }),
         );
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${chainId}, Current chainId: ${currentChainId}.
-        ${        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line id-denylist, @typescript-eslint/restrict-template-expressions
-err}`);
+        ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line id-denylist, @typescript-eslint/restrict-template-expressions
+          err
+        }`);
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
         // eslint-disable-next-line id-denylist
         throw err;

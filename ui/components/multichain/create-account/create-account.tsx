@@ -71,15 +71,21 @@ type Props = {
   selectedKeyringId?: string;
 };
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type CreateAccountProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, Props>;
 
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type CreateAccountComponent = <C extends React.ElementType = 'form'>(
   props: CreateAccountProps<C>,
 ) => React.ReactElement | null;
 
 export const CreateAccount: CreateAccountComponent = React.memo(
   React.forwardRef(
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     <C extends React.ElementType = 'form'>(
       {
         getNextAvailableAccountName,
@@ -110,6 +116,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       // We are not using `accounts` as a dependency here to avoid having the input
       // updating when the new account will be created.
       useEffect(() => {
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         getNextAvailableAccountName(accounts).then(setDefaultAccountName);
       }, []);
 
@@ -147,14 +155,24 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           event.preventDefault();
           try {
             await onCreateAccount(trimmedAccountName || defaultAccountName);
+            // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.AccountAdded,
               properties: {
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 account_type: MetaMetricsEventAccountType.Default,
                 location: 'Home',
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 hd_entropy_index: hdEntropyIndex,
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 chain_id_caip: scope,
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 is_suggested_name:
                   !trimmedAccountName ||
                   trimmedAccountName === defaultAccountName,
@@ -163,24 +181,40 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             history.push(mostRecentOverviewPage);
           } catch (error) {
             if (selectedKeyringId) {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               trackEvent({
                 category: MetaMetricsEventCategory.Accounts,
                 event: MetaMetricsEventName.AccountImportFailed,
                 properties: {
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   account_type: MetaMetricsEventAccountType.Imported,
                   error: (error as Error).message,
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   hd_entropy_index: hdEntropyIndex,
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   chain_id_caip: scope,
                 },
               });
             } else {
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               trackEvent({
                 category: MetaMetricsEventCategory.Accounts,
                 event: MetaMetricsEventName.AccountAddFailed,
                 properties: {
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   account_type: MetaMetricsEventAccountType.Default,
                   error: (error as Error).message,
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   hd_entropy_index: hdEntropyIndex,
+                  // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   chain_id_caip: scope,
                 },
               });
@@ -191,6 +225,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       );
 
       return (
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         <Box as="form" onSubmit={onSubmit}>
           <FormTextField
             data-testid="account-name-input"
@@ -214,6 +250,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             // eslint-disable-next-line id-length, no-restricted-globals
             onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
               if (e.key === 'Enter') {
+                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 onSubmit(e);
               }
             }}
@@ -238,6 +276,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               type={
                 'button' /* needs to be 'button' to prevent submitting form on cancel */
               }
+              // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () => await onActionComplete(false)}
               block
             >

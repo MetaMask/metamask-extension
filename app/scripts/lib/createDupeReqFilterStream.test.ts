@@ -365,8 +365,8 @@ describe('createDupeReqFilterStream', () => {
           string,
           typeof streamsImpl.Writable,
         ],
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       ].forEach(([className, S]) => {
         it(`handles a mix of request types coming through a ${className} stream`, async () => {
           const requests = [

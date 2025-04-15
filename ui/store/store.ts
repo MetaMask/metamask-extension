@@ -107,7 +107,7 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
   localeMessages: RootReducerReturnType['localeMessages'];
 };
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888

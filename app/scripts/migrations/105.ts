@@ -51,7 +51,7 @@ function migrateData(state: Record<string, unknown>): void {
 }
 
 function findInternalAccountByAddress(
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
   address: string,
@@ -64,7 +64,7 @@ function findInternalAccountByAddress(
   );
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createDefaultAccountsController(state: Record<string, any>) {
   state.AccountsController = {

@@ -27,8 +27,8 @@ const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
       const url = new URL(rawOrigin);
       const parts = url.hostname.split('.');
       return parts.slice(-2).join('.');
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       return 'Unknown Origin';
     }

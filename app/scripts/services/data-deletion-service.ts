@@ -20,14 +20,14 @@ const fallbackDataDeletionEndpoint = 'https://metametrics.metamask.test';
 
 const DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID = inTest
   ? fallbackSourceId
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
-  : process.env.ANALYTICS_DATA_DELETION_SOURCE_ID ?? fallbackSourceId;
+  : // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
+    process.env.ANALYTICS_DATA_DELETION_SOURCE_ID ?? fallbackSourceId;
 const DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT = inTest
   ? fallbackDataDeletionEndpoint
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
-  : process.env.ANALYTICS_DATA_DELETION_ENDPOINT ??
+  : // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
+    process.env.ANALYTICS_DATA_DELETION_ENDPOINT ??
     fallbackDataDeletionEndpoint;
 
 /**
@@ -231,21 +231,22 @@ export class DataDeletionService {
   async createDataDeletionRegulationTask(
     metaMetricsId: string,
   ): Promise<string> {
-    const response = await this.#createDataDeletionTaskPolicy.execute(async () =>
-      this.#fetchWithTimeout(
-        `${this.#analyticsDataDeletionEndpoint}/regulations/sources/${
-          this.#analyticsDataDeletionSourceId
-        }`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/vnd.segment.v1+json' },
-          body: JSON.stringify({
-            regulationType: 'DELETE_ONLY',
-            subjectType: 'USER_ID',
-            subjectIds: [metaMetricsId],
-          }),
-        },
-      ),
+    const response = await this.#createDataDeletionTaskPolicy.execute(
+      async () =>
+        this.#fetchWithTimeout(
+          `${this.#analyticsDataDeletionEndpoint}/regulations/sources/${
+            this.#analyticsDataDeletionSourceId
+          }`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/vnd.segment.v1+json' },
+            body: JSON.stringify({
+              regulationType: 'DELETE_ONLY',
+              subjectType: 'USER_ID',
+              subjectIds: [metaMetricsId],
+            }),
+          },
+        ),
     );
     if (!response.ok) {
       throw new Error(

@@ -87,7 +87,6 @@ import { Numeric } from '../../../../../../shared/modules/Numeric';
 import {
   addUrlProtocolPrefix,
   isWebUrl,
-  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
@@ -251,8 +250,8 @@ export function NftDetailsComponent({
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('success'));
       isSuccessfulEvent = true;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('error'));
@@ -335,15 +334,19 @@ export function NftDetailsComponent({
             networkClientId: networkConfigurationId,
           }),
         );
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
       } catch (err) {
         console.error(`Failed to switch chains for NFT.
-          Target chainId: ${nftChainId}, Current chainId: ${currentChain.chainId}.
-          ${          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line id-denylist, @typescript-eslint/restrict-template-expressions
-err}`);
+          Target chainId: ${nftChainId}, Current chainId: ${
+          currentChain.chainId
+        }.
+          ${
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line id-denylist, @typescript-eslint/restrict-template-expressions
+            err
+          }`);
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
         // eslint-disable-next-line id-denylist
         throw err;

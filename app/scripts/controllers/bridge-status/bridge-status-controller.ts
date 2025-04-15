@@ -288,8 +288,8 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
           );
         }
       }
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       console.log('Failed to fetch bridge tx status', e);
     }
@@ -344,7 +344,10 @@ export default class BridgeStatusController extends StaticIntervalPollingControl
 
   // Wipes the bridge status for the given address and chainId
   // Will match only source chainId to the selectedChainId
-  readonly #wipeBridgeStatusByChainId = (address: string, selectedChainId: Hex) => {
+  readonly #wipeBridgeStatusByChainId = (
+    address: string,
+    selectedChainId: Hex,
+  ) => {
     const sourceTxMetaIdsToDelete = Object.keys(
       this.state.bridgeStatusState.txHistory,
     ).filter((txMetaId) => {

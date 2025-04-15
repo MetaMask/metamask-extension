@@ -141,8 +141,7 @@ export function AssetPicker({
   const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
   // These 2 have similar data but different types
-  const currentNetworkConfiguration =
-    allNetworks[currentChainId];
+  const currentNetworkConfiguration = allNetworks[currentChainId];
   const currentNetworkProviderConfig = useMultichainSelector(
     getMultichainCurrentNetwork,
   );

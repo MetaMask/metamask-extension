@@ -77,8 +77,8 @@ function wrapElementWithAPI(element, driver) {
   element.click = async () => {
     try {
       await element.originalClick();
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       if (e.name === 'ElementClickInterceptedError') {
         if (e.message.includes('<div class="mm-box loading-overlay"')) {
@@ -324,8 +324,8 @@ class Driver {
   async wait(condition, timeout = this.timeout, catchError = false) {
     try {
       await this.driver.wait(condition, timeout);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       if (!catchError) {
         throw e;
@@ -434,8 +434,8 @@ class Driver {
     try {
       await this.driver.wait(until.foundElementCountIs(locator, n), timeout);
       return true;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       const elements = await this.findElements(locator);
       console.error(
@@ -490,8 +490,8 @@ class Driver {
         until.elementIsNotPresent(locator),
         timeout - waitAtLeastGuard,
       );
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       throw new Error(
         `Found element ${JSON.stringify(
@@ -738,8 +738,8 @@ class Driver {
         this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
       ]);
       await elements[0].click();
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
@@ -874,8 +874,8 @@ class Driver {
     try {
       await this.findElement(rawLocator);
       return true;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       return false;
     }
@@ -891,8 +891,8 @@ class Driver {
     try {
       await this.findVisibleElement(rawLocator);
       return true;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       return false;
     }
@@ -1369,8 +1369,8 @@ class Driver {
           await this.takeScreenshot(testTitle, screenshotTitle);
         }
       }
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       console.error('Failed to take screenshot', e);
     }
@@ -1386,8 +1386,8 @@ class Driver {
           htmlSource,
         );
       }
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       console.error('Failed to capture DOM snapshot', e);
     }
@@ -1412,8 +1412,8 @@ class Driver {
           );
         }
       }
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       console.error('Failed to take state', e);
     }

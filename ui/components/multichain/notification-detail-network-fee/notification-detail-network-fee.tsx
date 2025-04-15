@@ -128,8 +128,8 @@ export const NotificationDetailNetworkFee: FC<
             maxFeePerGas: networkFeesData.maxFeePerGas,
           });
         }
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
       } catch (err) {
         setNetworkFeesError(true);
       }

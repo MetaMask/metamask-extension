@@ -152,15 +152,17 @@ const TokenButtons = ({
             networkClientId: networkConfigurationId,
           }),
         );
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
-        ${        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line id-denylist, @typescript-eslint/restrict-template-expressions
-err}`);
+        ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line id-denylist, @typescript-eslint/restrict-template-expressions
+          err
+        }`);
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
         // eslint-disable-next-line id-denylist
         throw err;

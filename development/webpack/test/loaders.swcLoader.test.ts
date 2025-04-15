@@ -132,9 +132,9 @@ describe('swcLoader', () => {
         delete require.cache[require.resolve('../utils/loaders/swcLoader')];
         const {
           getSwcLoader,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        }: // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
         // eslint-disable-next-line no-restricted-globals
-        }: typeof import('../utils/loaders/swcLoader') = require('../utils/loaders/swcLoader');
+        typeof import('../utils/loaders/swcLoader') = require('../utils/loaders/swcLoader');
 
         // note: this test isn't exhaustive of all possible `swcConfig`
         // properties; it is mostly intended as sanity check.

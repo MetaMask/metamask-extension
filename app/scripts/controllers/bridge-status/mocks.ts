@@ -85,35 +85,39 @@ export const MockStatusResponse = {
 };
 
 let mockFetchBridgeTxStatusCount = 0;
-export const mockFetchBridgeTxStatus: () => Promise<StatusResponse> = async () => {
-  return new Promise((resolve) => {
-    console.log('HELLO mockFetchBridgeTxStatus', mockFetchBridgeTxStatusCount);
-    setTimeout(() => {
-      if (mockFetchBridgeTxStatusCount === 0) {
-        resolve(
-          MockStatusResponse.getPending({
-            srcTxHash:
-              '0xe3e223b9725765a7de557effdb2b507ace3534bcff2c1fe3a857e0791e56a518',
-            srcChainId: 1,
-            destChainId: 42161,
-          }),
-        );
-      } else {
-        resolve(
-          MockStatusResponse.getComplete({
-            srcTxHash:
-              '0xe3e223b9725765a7de557effdb2b507ace3534bcff2c1fe3a857e0791e56a518',
-            destTxHash:
-              '0x010e1bffe8288956012e6b6132d7eb3eaf9d0bbf066bd13aae13b973c678508f',
-            srcChainId: 1,
-            destChainId: 42161,
-          }),
-        );
-      }
-      mockFetchBridgeTxStatusCount += 1;
-    }, 2000);
-  });
-};
+export const mockFetchBridgeTxStatus: () => Promise<StatusResponse> =
+  async () => {
+    return new Promise((resolve) => {
+      console.log(
+        'HELLO mockFetchBridgeTxStatus',
+        mockFetchBridgeTxStatusCount,
+      );
+      setTimeout(() => {
+        if (mockFetchBridgeTxStatusCount === 0) {
+          resolve(
+            MockStatusResponse.getPending({
+              srcTxHash:
+                '0xe3e223b9725765a7de557effdb2b507ace3534bcff2c1fe3a857e0791e56a518',
+              srcChainId: 1,
+              destChainId: 42161,
+            }),
+          );
+        } else {
+          resolve(
+            MockStatusResponse.getComplete({
+              srcTxHash:
+                '0xe3e223b9725765a7de557effdb2b507ace3534bcff2c1fe3a857e0791e56a518',
+              destTxHash:
+                '0x010e1bffe8288956012e6b6132d7eb3eaf9d0bbf066bd13aae13b973c678508f',
+              srcChainId: 1,
+              destChainId: 42161,
+            }),
+          );
+        }
+        mockFetchBridgeTxStatusCount += 1;
+      }, 2000);
+    });
+  };
 
 export const getMockQuote = ({
   srcChainId = 42161,

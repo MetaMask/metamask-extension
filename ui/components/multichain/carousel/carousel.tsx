@@ -252,10 +252,10 @@ export const Carousel = React.forwardRef(
               }}
               onClose={
                 Boolean(handleClose) && !slide.undismissable
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-                  // eslint-disable-next-line id-length, no-restricted-globals
-                  ? (e: React.MouseEvent<HTMLElement>) =>
+                  ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+                    // eslint-disable-next-line id-length, no-restricted-globals
+                    (e: React.MouseEvent<HTMLElement>) =>
                       handleClose(e, slide.id)
                   : undefined
               }

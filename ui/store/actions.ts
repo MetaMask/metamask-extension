@@ -164,30 +164,32 @@ export function tryUnlockMetamask(
     dispatch(unlockInProgress());
     log.debug(`background.submitPassword`);
 
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('submitPassword', [password], (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+    return (
+      new Promise<void>((resolve, reject) => {
+        callBackgroundMethod('submitPassword', [password], (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
 
-        resolve();
-      });
-    })
-      .then(async () => {
-        dispatch(unlockSucceeded());
-        return forceUpdateMetamaskState(dispatch);
+          resolve();
+        });
       })
-      .then(() => {
-        dispatch(hideLoadingIndication());
-      })
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
-      .catch(async (err) => {
-        dispatch(unlockFailed(getErrorMessage(err)));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
+        .then(async () => {
+          dispatch(unlockSucceeded());
+          return forceUpdateMetamaskState(dispatch);
+        })
+        .then(() => {
+          dispatch(hideLoadingIndication());
+        })
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
+        .catch(async (err) => {
+          dispatch(unlockFailed(getErrorMessage(err)));
+          dispatch(hideLoadingIndication());
+          return Promise.reject(err);
+        })
+    );
   };
 }
 
@@ -217,35 +219,37 @@ export function createNewVaultAndRestore(
       Buffer.from(seedPhrase, 'utf8').values(),
     );
 
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod(
-        'createNewVaultAndRestore',
-        [password, encodedSeedPhrase],
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-        // eslint-disable-next-line id-denylist
-        (err) => {
+    return (
+      new Promise<void>((resolve, reject) => {
+        callBackgroundMethod(
+          'createNewVaultAndRestore',
+          [password, encodedSeedPhrase],
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
           // eslint-disable-next-line id-denylist
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve();
-        },
-      );
-    })
-      .then(() => dispatch(unMarkPasswordForgotten()))
-      .then(() => {
-        dispatch(showAccountsPage());
-        dispatch(hideLoadingIndication());
+          (err) => {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve();
+          },
+        );
       })
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
-      .catch(async (err) => {
-        dispatch(displayWarning(err));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
+        .then(() => dispatch(unMarkPasswordForgotten()))
+        .then(() => {
+          dispatch(showAccountsPage());
+          dispatch(hideLoadingIndication());
+        })
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
+        .catch(async (err) => {
+          dispatch(displayWarning(err));
+          dispatch(hideLoadingIndication());
+          return Promise.reject(err);
+        })
+    );
   };
 }
 
@@ -258,29 +262,31 @@ export function importMnemonicToVault(
     dispatch(showLoadingIndication());
     log.debug(`background.importMnemonicToVault`);
 
-    return new Promise<void>((resolve, reject) => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
-      callBackgroundMethod('importMnemonicToVault', [mnemonic], (err) => {
+    return (
+      new Promise<void>((resolve, reject) => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
         // eslint-disable-next-line id-denylist
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    })
-      .then(async () => {
-        dispatch(hideLoadingIndication());
+        callBackgroundMethod('importMnemonicToVault', [mnemonic], (err) => {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve();
+        });
       })
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
-      .catch(async (err) => {
-        dispatch(displayWarning(err));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
+        .then(async () => {
+          dispatch(hideLoadingIndication());
+        })
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
+        .catch(async (err) => {
+          dispatch(displayWarning(err));
+          dispatch(hideLoadingIndication());
+          return Promise.reject(err);
+        })
+    );
   };
 }
 
@@ -296,29 +302,31 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
     dispatch(showLoadingIndication());
     log.debug(`background.generateNewMnemonicAndAddToVault`);
 
-    return new Promise<void>((resolve, reject) => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
-      callBackgroundMethod('generateNewMnemonicAndAddToVault', [], (err) => {
+    return (
+      new Promise<void>((resolve, reject) => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
         // eslint-disable-next-line id-denylist
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    })
-      .then(async () => {
-        dispatch(hideLoadingIndication());
+        callBackgroundMethod('generateNewMnemonicAndAddToVault', [], (err) => {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve();
+        });
       })
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
-      .catch(async (err) => {
-        dispatch(displayWarning(err));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
+        .then(async () => {
+          dispatch(hideLoadingIndication());
+        })
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
+        .catch(async (err) => {
+          dispatch(displayWarning(err));
+          dispatch(hideLoadingIndication());
+          return Promise.reject(err);
+        })
+    );
   };
 }
 export function createNewVaultAndGetSeedPhrase(
@@ -749,8 +757,8 @@ export function unlockHardwareWalletAccounts(
           hdPath,
           hdPathDescription,
         ]);
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
       } catch (err) {
         logErrorWithMessage(err);
         dispatch(displayWarning(err));
@@ -1257,53 +1265,55 @@ export function updateAndApproveTx(
     const getIsSendActive = () =>
       Boolean(getState().send.stage !== SEND_STAGES.INACTIVE);
 
-    return new Promise((resolve, reject) => {
-      const actionId = generateActionId();
+    return (
+      new Promise((resolve, reject) => {
+        const actionId = generateActionId();
 
-      callBackgroundMethod(
-        'resolvePendingApproval',
-        [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-        // eslint-disable-next-line id-denylist
-        (err) => {
-          dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
+        callBackgroundMethod(
+          'resolvePendingApproval',
+          [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
+          (err) => {
+            dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
 
+            if (!getIsSendActive()) {
+              dispatch(resetSendState());
+            }
+
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
+            if (err) {
+              dispatch(goHome());
+              logErrorWithMessage(err);
+              reject(err);
+              return;
+            }
+
+            resolve(txMeta);
+          },
+        );
+      })
+        .then(async () => forceUpdateMetamaskState(dispatch))
+        .then(() => {
           if (!getIsSendActive()) {
             dispatch(resetSendState());
           }
-
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-          // eslint-disable-next-line id-denylist
-          if (err) {
-            dispatch(goHome());
-            logErrorWithMessage(err);
-            reject(err);
-            return;
-          }
-
-          resolve(txMeta);
-        },
-      );
-    })
-      .then(async () => forceUpdateMetamaskState(dispatch))
-      .then(() => {
-        if (!getIsSendActive()) {
-          dispatch(resetSendState());
-        }
-        dispatch(completedTx(txMeta.id));
-        dispatch(hideLoadingIndication());
-        dispatch(updateCustomNonce(''));
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        dispatch(closeCurrentNotificationWindow());
-        ///: END:ONLY_INCLUDE_IF
-        return txMeta;
-      })
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
-      .catch(async (err) => {
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
+          dispatch(completedTx(txMeta.id));
+          dispatch(hideLoadingIndication());
+          dispatch(updateCustomNonce(''));
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+          dispatch(closeCurrentNotificationWindow());
+          ///: END:ONLY_INCLUDE_IF
+          return txMeta;
+        })
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
+        .catch(async (err) => {
+          dispatch(hideLoadingIndication());
+          return Promise.reject(err);
+        })
+    );
   };
 }
 
@@ -1815,9 +1825,7 @@ export function updateMetamaskState(
     }
 
     // track when gasFeeEstimates change
-    if (
-      !isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates)
-    ) {
+    if (!isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates)) {
       dispatch({
         type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
         payload: {
@@ -3514,8 +3522,8 @@ export function setCompletedOnboarding(): ThunkAction<
     try {
       await submitRequestToBackground('completeOnboarding');
       dispatch(completeOnboarding());
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       dispatch(displayWarning(err));
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
@@ -3547,8 +3555,8 @@ export function resetOnboarding(): ThunkAction<
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setSeedPhraseBackedUp(false));
       dispatch(resetOnboardingAction());
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       console.error(err);
     }
@@ -3941,8 +3949,8 @@ export function toggleExternalServices(
     try {
       await submitRequestToBackground('toggleExternalServices', [val]);
       await forceUpdateMetamaskState(dispatch);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       dispatch(displayWarning(err));
     }
@@ -4580,8 +4588,8 @@ export function setFirstTimeFlowType(
         type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
         value: type,
       });
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       dispatch(displayWarning(err));
     }
@@ -5421,8 +5429,8 @@ export function fetchSmartTransactionFees(
         payload: null,
       });
       return smartTransactionFees;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       logErrorWithMessage(err);
       if (isErrorWithMessage(err)) {
@@ -5505,8 +5513,8 @@ export function signAndSendSmartTransaction({
         ],
       ); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
       return response.uuid;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       logErrorWithMessage(err);
       if (isErrorWithMessage(err)) {
@@ -5540,8 +5548,8 @@ export function updateSmartTransaction(
           ...txMeta,
         },
       ]);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       logErrorWithMessage(err);
       if (isErrorWithMessage(err)) {
@@ -5574,8 +5582,8 @@ export function setSmartTransactionsRefreshInterval(
       await submitRequestToBackground('setStatusRefreshInterval', [
         refreshInterval,
       ]);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       logErrorWithMessage(err);
     }
@@ -5590,8 +5598,8 @@ export function cancelSmartTransaction(
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('cancelSmartTransaction', [uuid]);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       logErrorWithMessage(err);
       if (isErrorWithMessage(err)) {
@@ -5616,8 +5624,8 @@ export function fetchSmartTransactionsLiveness() {
   return async () => {
     try {
       await submitRequestToBackground('fetchSmartTransactionsLiveness');
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       logErrorWithMessage(err);
     }

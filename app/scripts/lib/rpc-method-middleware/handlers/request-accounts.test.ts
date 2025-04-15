@@ -1,6 +1,6 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
-  // https://github.com/MetaMask/metamask-extension/issues/31892
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   JsonRpcParams,
   JsonRpcRequest,
@@ -52,9 +52,7 @@ const createMockedHandler = () => {
     id: 0,
     result: undefined,
   };
-  const handler = async (
-    request: JsonRpcRequest & { origin: string },
-  ) =>
+  const handler = async (request: JsonRpcRequest & { origin: string }) =>
     requestEthereumAccounts.implementation(request, response, next, end, {
       getAccounts,
       getUnlockPromise,

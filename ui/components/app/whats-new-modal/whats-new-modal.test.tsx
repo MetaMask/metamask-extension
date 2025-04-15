@@ -1,6 +1,8 @@
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+// TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../../../shared/notifications';
@@ -179,6 +181,8 @@ describe('WhatsNewModal', () => {
           );
           fireEvent.click(submitButton);
 
+          // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
+          // eslint-disable-next-line @typescript-eslint/await-thenable
           await expect(mockCreateAccount).toHaveBeenCalledWith({
             scope: MultichainNetworks.SOLANA,
             entropySource: KEYRING_ID,

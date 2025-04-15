@@ -10,16 +10,18 @@ function buildShapePoints(coordinates: [number, number][]): string {
 }
 
 function buildPathD(coordinates: [number, number][]): string {
-  return coordinates
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
-    .map(([x, y], index) => {
-      if (index === 0) {
-        return `M ${x},${y}`;
-      }
-      return `L ${x},${y}`;
-    })
-    .join(' ');
+  return (
+    coordinates
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
+      .map(([x, y], index) => {
+        if (index === 0) {
+          return `M ${x},${y}`;
+        }
+        return `L ${x},${y}`;
+      })
+      .join(' ')
+  );
 }
 
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

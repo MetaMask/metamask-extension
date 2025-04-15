@@ -124,8 +124,7 @@ export const AggregatedPercentageOverviewCrossChains = () => {
 
   let formattedAmountChangeCrossChains = '';
   if (isValidAmount(amountChangeCrossChains)) {
-    formattedAmountChangeCrossChains =
-      (amountChangeCrossChains) >= 0 ? '+' : '';
+    formattedAmountChangeCrossChains = amountChangeCrossChains >= 0 ? '+' : '';
 
     const options = {
       notation: 'compact',
@@ -153,9 +152,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   let color = TextColor.textDefault;
 
   if (!privacyMode && isValidAmount(amountChangeCrossChains)) {
-    if ((amountChangeCrossChains) === 0) {
+    if (amountChangeCrossChains === 0) {
       color = TextColor.textDefault;
-    } else if ((amountChangeCrossChains) > 0) {
+    } else if (amountChangeCrossChains > 0) {
       color = TextColor.successDefault;
     } else {
       color = TextColor.errorDefault;

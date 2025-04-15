@@ -422,7 +422,11 @@ class SmartTransactionHook {
     );
   }
 
-  async #waitForTransactionHash({ uuid }: { uuid: string }): Promise<string | null> {
+  async #waitForTransactionHash({
+    uuid,
+  }: {
+    uuid: string;
+  }): Promise<string | null> {
     return new Promise((resolve) => {
       this.#controllerMessenger.subscribe(
         'SmartTransactionsController:smartTransaction',

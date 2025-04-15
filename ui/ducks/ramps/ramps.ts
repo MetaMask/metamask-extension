@@ -102,8 +102,8 @@ export const getIsNativeTokenBuyable = createSelector(
           }
           return String(network.chainId) === hexToDecimal(currentChainId);
         });
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       return false;
     }

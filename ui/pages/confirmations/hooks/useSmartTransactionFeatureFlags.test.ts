@@ -81,7 +81,9 @@ describe('useSmartTransactionFeatureFlags', () => {
     jest.resetAllMocks();
     useDispatchMock.mockReturnValue(jest.fn());
     fetchSwapsFeatureFlagsMock.mockResolvedValue({});
-    fetchSmartTransactionsLivenessMock.mockReturnValue(async () => Promise.resolve());
+    fetchSmartTransactionsLivenessMock.mockReturnValue(async () =>
+      Promise.resolve(),
+    );
   });
 
   it('updates feature flags', async () => {

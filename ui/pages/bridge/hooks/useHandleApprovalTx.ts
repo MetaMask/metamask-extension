@@ -56,8 +56,8 @@ export default function useHandleApprovalTx() {
           },
         });
       }
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -94,8 +94,8 @@ export default function useHandleApprovalTx() {
       });
 
       return txMeta;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions

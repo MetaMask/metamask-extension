@@ -207,28 +207,27 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   // all requested accounts that are found in the wallet
-  const supportedRequestedAccounts = requestedCaipAccountIds.reduce<MergedInternalAccountWithCaipAccountId[]>(
-    (acc, account) => {
-      const supportedRequestedAccount =
-        supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) => {
-          const {
-            chain: { namespace },
-          } = parseCaipAccountId(caipAccountId);
-          // EIP155 (EVM) addresses are not case sensitive
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-          if (namespace === KnownCaipNamespace.Eip155) {
-            return isEqualCaseInsensitive(caipAccountId, account);
-          }
-          return caipAccountId === account;
-        });
-      if (supportedRequestedAccount) {
-        acc.push(supportedRequestedAccount);
-      }
-      return acc;
-    },
-    [],
-  );
+  const supportedRequestedAccounts = requestedCaipAccountIds.reduce<
+    MergedInternalAccountWithCaipAccountId[]
+  >((acc, account) => {
+    const supportedRequestedAccount =
+      supportedAccountsForRequestedNamespaces.find(({ caipAccountId }) => {
+        const {
+          chain: { namespace },
+        } = parseCaipAccountId(caipAccountId);
+        // EIP155 (EVM) addresses are not case sensitive
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+        if (namespace === KnownCaipNamespace.Eip155) {
+          return isEqualCaseInsensitive(caipAccountId, account);
+        }
+        return caipAccountId === account;
+      });
+    if (supportedRequestedAccount) {
+      acc.push(supportedRequestedAccount);
+    }
+    return acc;
+  }, []);
 
   const defaultAccounts = getDefaultAccounts(
     requestedNamespaces,
@@ -258,8 +257,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               const { namespace: chainNamespace } =
                 parseCaipChainId(caipChainId);
               return accountNamespace === chainNamespace;
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-            // eslint-disable-next-line id-denylist
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+              // eslint-disable-next-line id-denylist
             } catch (err) {
               return false;
             }
@@ -272,8 +271,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               const { namespace: chainNamespace } =
                 parseCaipChainId(caipChainId);
               return accountNamespace === chainNamespace;
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-            // eslint-disable-next-line id-denylist
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+              // eslint-disable-next-line id-denylist
             } catch (err) {
               return false;
             }

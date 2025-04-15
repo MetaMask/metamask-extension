@@ -566,15 +566,15 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(
         `Must specify success event and category. Success event was: ${
           options.event
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         }. Category was: ${options.category}. Payload keys were: ${Object.keys(
           options,
         )}. ${
           typeof options.properties === 'object'
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            ? `Payload property keys were: ${Object.keys(options.properties)}`
+            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Payload property keys were: ${Object.keys(options.properties)}`
             : ''
         }`,
       );
@@ -933,8 +933,8 @@ export default class MetaMetricsController extends BaseController<
         },
         context: this.#buildContext(referrer, page),
       });
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       this.#captureException(err);
     }
@@ -1032,15 +1032,15 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(
         `Must specify event and category. Event was: ${
           payload.event
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
           payload,
         )}. ${
           typeof payload.properties === 'object'
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Payload property keys were: ${Object.keys(payload.properties)}`
             : ''
         }`,
       );
@@ -1360,11 +1360,13 @@ export default class MetaMetricsController extends BaseController<
    *
    * @param allNfts
    */
-  readonly #getAllNFTsFlattened = memoize((allNfts: MetaMaskState['allNfts'] = {}) => {
-    return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
-      return result.concat(...Object.values(chainNFTs));
-    }, []);
-  });
+  readonly #getAllNFTsFlattened = memoize(
+    (allNfts: MetaMaskState['allNfts'] = {}) => {
+      return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
+        return result.concat(...Object.values(chainNFTs));
+      }, []);
+    },
+  );
 
   /**
    * Returns the number of unique NFT addresses the user
@@ -1426,8 +1428,8 @@ export default class MetaMetricsController extends BaseController<
         userId: metaMetricsId ?? undefined,
         traits: userTraits,
       });
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       this.#captureException(err);
     }
@@ -1498,8 +1500,8 @@ export default class MetaMetricsController extends BaseController<
       metaMetricsId: metaMetricsIdOverride,
       matomoEvent,
       flushImmediately,
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     } = options || {};
     let idType: 'userId' | 'anonymousId' = 'userId';
     let idValue = this.state.metaMetricsId;

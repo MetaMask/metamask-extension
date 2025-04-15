@@ -88,8 +88,8 @@ export async function extractFrom(
     await rename(tempDir, dir);
     // return the list of extracted binaries
     return paths;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e) {
     // if things fail for any reason try to clean up a bit. it is very important
     // to not leave `dir` behind, as its existence is a signal that the binaries

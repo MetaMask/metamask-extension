@@ -111,8 +111,8 @@ export default function useSubmitBridgeTransaction() {
           quoteResponse,
         });
       }
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       debugLog('Approve transaction failed', e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
@@ -143,14 +143,14 @@ export default function useSubmitBridgeTransaction() {
 
       // Get tx statuses
       const allowanceResetTransaction = isAllowanceResetError(e)
-        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        ? { allowance_reset_transaction: StatusTypes.FAILED }
+        ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          { allowance_reset_transaction: StatusTypes.FAILED }
         : undefined;
       const approvalTransaction = isApprovalTxError(e)
-        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        ? { approval_transaction: StatusTypes.FAILED }
+        ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          { approval_transaction: StatusTypes.FAILED }
         : undefined;
 
       trackCrossChainSwapsEvent({
@@ -195,8 +195,8 @@ export default function useSubmitBridgeTransaction() {
         quoteResponse,
         approvalTxId: approvalTxMeta?.id,
       });
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       debugLog('Bridge transaction failed', e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {

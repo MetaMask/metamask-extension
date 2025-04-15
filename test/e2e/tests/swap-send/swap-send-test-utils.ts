@@ -8,12 +8,9 @@ import { SWAP_SEND_QUOTES_RESPONSE_ETH_TST } from './mocks/eth-data';
 export const NATIVE_TOKEN_SYMBOL = 'ETH';
 
 export class SwapSendPage {
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   driver: any;
 
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(driver: any) {
     this.driver = driver;
   }
@@ -127,8 +124,7 @@ export class SwapSendPage {
     const inputAmounts = await this.driver.findElements('.asset-picker-amount');
     assert.equal(inputAmounts.length, 2);
     await Promise.all(
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       inputAmounts.map(async (e: any, index: number) => {
         await this.driver.delay(delayInMs);
         const i = await this.driver.findNestedElement(e, 'input');

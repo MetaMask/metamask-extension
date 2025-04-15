@@ -366,10 +366,13 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
       dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
     } else {
-      const allOpts = Object.keys(evmNetworks).reduce<Record<string, boolean>>((acc, id) => {
-        acc[id] = true;
-        return acc;
-      }, {});
+      const allOpts = Object.keys(evmNetworks).reduce<Record<string, boolean>>(
+        (acc, id) => {
+          acc[id] = true;
+          return acc;
+        },
+        {},
+      );
       dispatch(setTokenNetworkFilter(allOpts));
     }
 

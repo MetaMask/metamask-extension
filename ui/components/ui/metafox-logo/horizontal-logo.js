@@ -12,9 +12,9 @@ export default function MetaFoxHorizontalLogo({
 }) {
   const [theme, setTheme] = useState(() =>
     themeProps === undefined
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-      // eslint-disable-next-line no-restricted-globals
-      ? document.documentElement.getAttribute('data-theme')
+      ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+        // eslint-disable-next-line no-restricted-globals
+        document.documentElement.getAttribute('data-theme')
       : themeProps,
   );
 

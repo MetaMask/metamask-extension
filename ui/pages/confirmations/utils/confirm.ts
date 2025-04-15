@@ -106,8 +106,8 @@ export const toPunycodeURL = (urlString: string): string | undefined => {
     const isWithoutEndSlash = url.pathname === '/' && !urlString.endsWith('/');
 
     return isWithoutEndSlash ? url.href.slice(0, -1) : url.href;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } catch (err: unknown) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893

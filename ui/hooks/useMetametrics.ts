@@ -32,8 +32,8 @@ export function useEnableMetametrics(): {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setParticipateInMetaMetrics(true));
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
@@ -78,8 +78,8 @@ export function useDisableMetametrics(): {
       // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setParticipateInMetaMetrics(false));
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       throw e;

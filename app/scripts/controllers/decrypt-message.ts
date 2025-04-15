@@ -127,12 +127,12 @@ export type DecryptMessageControllerMessenger = RestrictedMessenger<
 >;
 
 export type DecryptMessageControllerOptions = {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getState: () => any;
   managerMessenger: DecryptMessageManagerMessenger;
   messenger: DecryptMessageControllerMessenger;
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
 };
@@ -145,11 +145,11 @@ export default class DecryptMessageController extends BaseController<
   DecryptMessageControllerState,
   DecryptMessageControllerMessenger
 > {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly _getState: () => any;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly _metricsEvent: (payload: any, options?: any) => void;
 
@@ -365,7 +365,7 @@ export default class DecryptMessageController extends BaseController<
       `${managerName}:stateChange`,
       (state: MessageManagerState<AbstractMessage>) => {
         const newMessages = this._migrateMessages(
-          // TODO: Replace `any` with type
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           state.unapprovedMessages as any,
         );

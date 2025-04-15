@@ -91,7 +91,7 @@ export const AggregatedPercentageOverview = () => {
 
   let formattedAmountChange = '';
   if (isValidAmount(amountChange)) {
-    formattedAmountChange = (amountChange) >= 0 ? '+' : '';
+    formattedAmountChange = amountChange >= 0 ? '+' : '';
 
     const options = {
       notation: 'compact',
@@ -119,9 +119,9 @@ export const AggregatedPercentageOverview = () => {
   let color = TextColor.textAlternative;
 
   if (!privacyMode && isValidAmount(amountChange)) {
-    if ((amountChange) === 0) {
+    if (amountChange === 0) {
       color = TextColor.textAlternative;
-    } else if ((amountChange) > 0) {
+    } else if (amountChange > 0) {
       color = TextColor.successDefault;
     } else {
       color = TextColor.errorDefault;

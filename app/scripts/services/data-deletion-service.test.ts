@@ -320,6 +320,7 @@ describe('DataDeletionService', () => {
             mockMetaMetricsId,
           );
         // Initial calls to exhaust maximum allowed failures
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(async () =>
@@ -364,6 +365,7 @@ describe('DataDeletionService', () => {
           );
 
         // Initial calls to exhaust maximum allowed failures
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(async () =>
@@ -401,6 +403,7 @@ describe('DataDeletionService', () => {
             mockMetaMetricsId,
           );
         // Initial calls to exhaust maximum allowed failures
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(async () =>
@@ -459,6 +462,7 @@ describe('DataDeletionService', () => {
             mockMetaMetricsId,
           );
         // Initial calls to exhaust maximum allowed failures
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(async () =>
@@ -531,6 +535,7 @@ describe('DataDeletionService', () => {
             mockMetaMetricsId,
           );
         // Initial calls to exhaust maximum allowed failures
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(async () => {
@@ -868,6 +873,7 @@ describe('DataDeletionService', () => {
         const fetchOperation = async () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(async () =>
@@ -910,6 +916,7 @@ describe('DataDeletionService', () => {
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
 
         // Initial calls to exhaust maximum allowed failures
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(async () =>
@@ -945,6 +952,8 @@ describe('DataDeletionService', () => {
         const fetchOperation = async () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(async () =>
@@ -1002,6 +1011,8 @@ describe('DataDeletionService', () => {
         const fetchOperation = async () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(async () =>
@@ -1075,6 +1086,8 @@ describe('DataDeletionService', () => {
         const fetchOperation = async () =>
           dataDeletionService.fetchDeletionRegulationStatus(mockTaskId);
         // Initial calls to exhaust maximum allowed failures
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const _ of Array(attemptsToTriggerBreak).keys()) {
           await expect(async () => {
@@ -1147,6 +1160,8 @@ async function fetchWithFakeTimers({
 
   // Advance timer enough to exceed max possible retry delay for initial call and all
   // subsequent retries, until request has resolved.
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const _ of Array(retries + 1).keys()) {
     if (resolved) {
@@ -1156,6 +1171,8 @@ async function fetchWithFakeTimers({
     // waiting period, and to prevent unnecessarily long waiting.
     const intervalLength = defaultMaxRetryDelay / 10;
     const numberOfIntervals = defaultMaxRetryDelay / intervalLength;
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const _interval of new Array(numberOfIntervals).keys()) {
       if (resolved) {

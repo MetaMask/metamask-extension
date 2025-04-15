@@ -37,14 +37,15 @@ export type TransactionMetricsRequest = {
   ) => Promise<'hardware' | 'imported' | 'MetaMask'>;
   getDeviceModel: (
     address: string,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
   getHardwareTypeForMetric: (address: string) => Promise<HardwareKeyringType>;
   // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
   // doesn't include some properties used in buildEventFragmentProperties,
   // hence returning any here to avoid type errors.
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
   getParticipateInMetrics: () => boolean;
@@ -58,7 +59,8 @@ export type TransactionMetricsRequest = {
   getTransaction: (transactionId: string) => TransactionMeta;
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackEvent: (payload: any) => void;
   getIsSmartTransaction: () => boolean;

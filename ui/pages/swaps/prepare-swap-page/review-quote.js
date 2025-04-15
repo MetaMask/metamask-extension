@@ -1031,8 +1031,8 @@ export default function ReviewQuote({
           l1ApprovalFeeTotal,
         );
         setMultiLayerL1FeeTotal(l1FeeTotal);
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         captureException(e);
         setMultiLayerL1FeeTotal(null);

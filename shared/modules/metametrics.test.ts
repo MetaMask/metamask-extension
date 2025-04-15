@@ -1,4 +1,4 @@
-// https://github.com/MetaMask/metamask-extension/issues/31892
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Provider } from '@metamask/network-controller';
 import {
@@ -39,7 +39,8 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getTokenStandardAndDetails: jest.fn(),
     getTransaction: jest.fn(),
     provider,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     snapAndHardwareMessenger: jest.fn() as any,
     trackEvent: jest.fn(),
@@ -108,7 +109,8 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
@@ -137,7 +139,8 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
@@ -162,7 +165,8 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );

@@ -456,8 +456,8 @@ export function bnLessThanEqualTo(a, b) {
 export function getURL(url) {
   try {
     return new URL(url);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } catch (err) {
     return '';
   }
@@ -657,8 +657,8 @@ export async function getAssetImageURL(image, ipfsGateway) {
     // no longer using multiform's CID.parse() method within the assets-controller
     try {
       return await getFormattedIpfsUrl(ipfsGateway, image, true);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       logErrorWithMessage(e);
       return '';
@@ -836,8 +836,8 @@ export const fetchTokenExchangeRates = async (
       tokenAddresses,
       chainId,
     });
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } catch (err) {
     return {};
   }
@@ -859,8 +859,8 @@ export const hexToText = (hex) => {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
     // eslint-disable-next-line id-denylist
     return buff.length === 32 ? hex : buff.toString('utf8');
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
     // eslint-disable-next-line id-denylist
@@ -919,8 +919,8 @@ export const transformOriginToTitle = (rawOrigin) => {
 
     const parts = url.hostname.split('.');
     return parts.slice(-2).join('.');
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e) {
     return 'Unknown Origin';
   }

@@ -440,8 +440,8 @@ export function rewriteReport(report) {
     });
 
     report.tags.installType = installType;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } catch (err) {
     log('Error rewriting report', err);
   }
@@ -472,8 +472,8 @@ function sanitizeUrlsFromErrorMessages(report) {
         ) {
           newErrorMessage = newErrorMessage.replace(url, '**');
         }
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         newErrorMessage = newErrorMessage.replace(url, '**');
       }

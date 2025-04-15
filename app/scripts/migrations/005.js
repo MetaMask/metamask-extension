@@ -18,8 +18,8 @@ export default {
       const state = versionedData.data;
       const newState = selectSubstateForKeyringController(state);
       versionedData.data = newState;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
       // eslint-disable-next-line id-denylist

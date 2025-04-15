@@ -64,8 +64,8 @@ describe('getFetchWithTimeout', () => {
     await expect(async () => {
       await fetchWithTimeout('https://api.infura.io/moon', {
         signal: abortSignal.signal,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       }).then(async (r) => r.json());
     }).rejects.toThrow('The user aborted a request.');
   });

@@ -181,8 +181,7 @@ export function AssetPickerModal({
   const currentChainId = useSelector(getMultichainCurrentChainId);
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
   const selectedNetwork =
-    network ??
-    (currentChainId && allNetworks[currentChainId]);
+    network ?? (currentChainId && allNetworks[currentChainId]);
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
   // This indicates whether tokens in the wallet's active network are displayed
   const isSelectedNetworkActive = selectedNetwork.chainId === currentChainId;

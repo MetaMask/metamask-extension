@@ -261,15 +261,15 @@ const config = {
     fallback: {
       // #region conditionally remove developer tooling
       'react-devtools': isDevelopment
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-        // eslint-disable-next-line no-restricted-globals
-        ? require.resolve('react-devtools')
+        ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
+          require.resolve('react-devtools')
         : false,
       // remove remote-redux-devtools unless METAMASK_DEBUG is enabled
       'remote-redux-devtools': variables.get('METAMASK_DEBUG')
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-        // eslint-disable-next-line no-restricted-globals
-        ? require.resolve('remote-redux-devtools')
+        ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+          // eslint-disable-next-line no-restricted-globals
+          require.resolve('remote-redux-devtools')
         : false,
       // #endregion conditionally remove developer tooling
       // #region node polyfills

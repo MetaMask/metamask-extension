@@ -2338,8 +2338,8 @@ export default class MetamaskController extends EventEmitter {
     resetMethods.forEach((resetMethod) => {
       try {
         resetMethod();
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
       } catch (err) {
         console.error(err);
       }
@@ -4484,8 +4484,8 @@ export default class MetamaskController extends EventEmitter {
           decimals: tokenDetails.decimals,
           symbol: tokenDetails.symbol,
         };
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
         // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4504,8 +4504,8 @@ export default class MetamaskController extends EventEmitter {
             userAddress,
             tokenId,
           );
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         log.warn(`Failed to get token standard and details. Error: ${e}`);
       }
@@ -4534,8 +4534,8 @@ export default class MetamaskController extends EventEmitter {
             ...details,
             balance: balanceToUse,
           };
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
         } catch (e) {
           // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
           // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4615,8 +4615,8 @@ export default class MetamaskController extends EventEmitter {
           decimals: tokenDetails.decimals,
           symbol: tokenDetails.symbol,
         };
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
         // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4645,8 +4645,8 @@ export default class MetamaskController extends EventEmitter {
             tokenId,
             networkClientId,
           );
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         log.warn(`Failed to get token standard and details. Error: ${e}`);
       }
@@ -4675,8 +4675,8 @@ export default class MetamaskController extends EventEmitter {
             ...details,
             balance: balanceToUse,
           };
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
         } catch (e) {
           // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
           // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
@@ -4697,8 +4697,8 @@ export default class MetamaskController extends EventEmitter {
       const details =
         await this.assetsContractController.getTokenStandardAndDetails(address);
       return details?.symbol;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       return null;
     }
@@ -4947,8 +4947,8 @@ export default class MetamaskController extends EventEmitter {
         keyring,
       );
       ///: END:ONLY_INCLUDE_IF
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
@@ -5094,8 +5094,8 @@ export default class MetamaskController extends EventEmitter {
 
         await this.keyringController.submitEncryptionKey(loginToken, loginSalt);
       }
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       // If somehow this login token doesn't work properly,
       // remove it and the user will get shown back to the unlock screen
@@ -5618,8 +5618,8 @@ export default class MetamaskController extends EventEmitter {
         Caip25EndowmentPermissionName,
         Caip25CaveatType,
       );
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
       // eslint-disable-next-line id-denylist
@@ -6807,8 +6807,8 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController.revokePermissions({
               [origin]: permissionKeys,
             });
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
           } catch (e) {
             // we dont want to handle errors here because
             // the revokePermissions api method should just
@@ -6825,8 +6825,8 @@ export default class MetamaskController extends EventEmitter {
               target,
               caveatType,
             );
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
           } catch (e) {
             if (e instanceof PermissionDoesNotExistError) {
               // suppress expected error in case that the origin
@@ -7244,8 +7244,8 @@ export default class MetamaskController extends EventEmitter {
               target,
               caveatType,
             );
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-          // eslint-disable-next-line id-length
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+            // eslint-disable-next-line id-length
           } catch (e) {
             if (e instanceof PermissionDoesNotExistError) {
               // suppress expected error in case that the origin
@@ -7341,8 +7341,8 @@ export default class MetamaskController extends EventEmitter {
           });
         }
       });
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // noop
     }
@@ -7524,8 +7524,8 @@ export default class MetamaskController extends EventEmitter {
         }
         try {
           this.notifyConnection(conn, await getPayload(origin));
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-        // eslint-disable-next-line id-denylist
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+          // eslint-disable-next-line id-denylist
         } catch (err) {
           console.error(err);
         }
@@ -7549,8 +7549,8 @@ export default class MetamaskController extends EventEmitter {
       if (connection.engine) {
         connection.engine.emit('notification', payload);
       }
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       console.error(err);
     }
@@ -8059,8 +8059,8 @@ export default class MetamaskController extends EventEmitter {
   updateNetworksList = (chainIds) => {
     try {
       this.networkOrderController.updateNetworksList(chainIds);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
       // eslint-disable-next-line id-denylist
@@ -8074,8 +8074,8 @@ export default class MetamaskController extends EventEmitter {
   updateAccountsList = (pinnedAccountList) => {
     try {
       this.accountOrderController.updateAccountsList(pinnedAccountList);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
       // eslint-disable-next-line id-denylist
@@ -8089,8 +8089,8 @@ export default class MetamaskController extends EventEmitter {
   updateHiddenAccountsList = (hiddenAccountList) => {
     try {
       this.accountOrderController.updateHiddenAccountsList(hiddenAccountList);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
       // eslint-disable-next-line id-denylist
@@ -8405,8 +8405,8 @@ export default class MetamaskController extends EventEmitter {
                 contract: singleLog.address,
                 ...parsedLog,
               });
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-            // eslint-disable-next-line id-denylist
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+              // eslint-disable-next-line id-denylist
             } catch (err) {
               // ignore
             }

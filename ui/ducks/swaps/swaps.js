@@ -916,8 +916,8 @@ export const fetchQuotesAndSetQuoteState = (
 
         dispatch(setInitialGasEstimate(selectedAggId));
       }
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       // A newer swap request is running, so simply bail and let the newer request respond
       if (e.message === SWAPS_FETCH_ORDER_CONFLICT) {
@@ -1101,8 +1101,8 @@ export const signAndSendSwapsSmartTransaction = ({
       }
       history.push(SMART_TRANSACTION_STATUS_ROUTE);
       dispatch(setSwapsSTXSubmitLoading(false));
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
       dispatch(setSwapsSTXSubmitLoading(false));
@@ -1361,8 +1361,8 @@ export const signAndSendTransactions = (
           );
           await waitPromise;
         }
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         debugLog('Approve transaction failed', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
@@ -1393,8 +1393,8 @@ export const signAndSendTransactions = (
           },
         },
       });
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       const errorKey = e.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR
@@ -1425,8 +1425,8 @@ export function fetchMetaSwapsGasPriceEstimates() {
     let priceEstimates;
     try {
       priceEstimates = await fetchSwapsGasPrices(chainId);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       log.warn('Fetching swaps gas prices failed:', e);
 
@@ -1476,8 +1476,8 @@ export function fetchSwapsSmartTransactionFees({
       return await dispatch(
         fetchSmartTransactionFees(unsignedTransaction, approveTxParams),
       );
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);
@@ -1497,8 +1497,8 @@ export function cancelSwapsSmartTransaction(uuid) {
   return async (dispatch, getState) => {
     try {
       await dispatch(cancelSmartTransaction(uuid));
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       const {
         swaps: { isFeatureFlagLoaded },

@@ -49,7 +49,9 @@ export const getNftContractsByAddressByChain = createSelector(
       .flat()
       .flat();
 
-    return allNftContracts.reduce<{ [chainId: string]: { [address: string]: NftContract } }>((acc, contract) => {
+    return allNftContracts.reduce<{
+      [chainId: string]: { [address: string]: NftContract };
+    }>((acc, contract) => {
       const { chainId, ...data } = contract;
 
       const chainIdContracts = acc[chainId] ?? {};

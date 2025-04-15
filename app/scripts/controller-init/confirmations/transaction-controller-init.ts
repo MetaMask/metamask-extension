@@ -149,7 +149,9 @@ export const TransactionControllerInit: ControllerInitFunction<
         return response;
       },
 
-      beforeCheckPendingTransactions: async (transactionMeta: TransactionMeta) => {
+      beforeCheckPendingTransactions: async (
+        transactionMeta: TransactionMeta,
+      ) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:beforeCheckPendingTransactionHook',
           transactionMeta,

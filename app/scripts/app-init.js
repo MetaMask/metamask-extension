@@ -28,8 +28,8 @@ function tryImport(...fileNames) {
     });
 
     return true;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e) {
     console.error(e);
   }
@@ -182,8 +182,8 @@ const registerInPageContentScript = async () => {
         allFrames: true,
       },
     ]);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } catch (err) {
     /**
      * An error occurs when app-init.js is reloaded. Attempts to avoid the duplicate script error:

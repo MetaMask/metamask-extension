@@ -68,8 +68,8 @@ export async function checkAndDownloadBinaries(
     say(`checking cache`);
     downloadedBinaries = await opendir(cachePath);
     say(`found binaries in cache`);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e: unknown) {
     say(`binaries not in cache`);
     if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
@@ -103,8 +103,8 @@ export async function installBinaries(
     try {
       // create new symlink
       await symlink(target, path);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       if (!(isCodedError(e) && ['EPERM', 'EXDEV'].includes(e.code))) {
         throw e;

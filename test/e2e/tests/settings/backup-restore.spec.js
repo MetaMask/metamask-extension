@@ -39,8 +39,8 @@ const getBackupJson = async () => {
     const backup = `${downloadsFolder}/${userDataFileName}`;
     const contents = await fs.readFile(backup);
     return JSON.parse(contents.toString());
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e) {
     console.log('Error reading the backup file', e);
     return null;

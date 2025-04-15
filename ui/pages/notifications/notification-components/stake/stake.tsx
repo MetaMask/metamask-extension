@@ -190,12 +190,12 @@ export const components: NotificationComponent<StakeNotification> = {
             }}
             label={
               direction === 'staked'
-                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                ? t('notificationItemStaked') || ''
-                // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                : t('notificationItemUnStaked') || ''
+                ? // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  t('notificationItemStaked') || ''
+                : // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  t('notificationItemUnStaked') || ''
             }
             detail={notification.data.stake_in.symbol}
             fiatValue={`$${getUsdAmount(

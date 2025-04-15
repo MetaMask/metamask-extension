@@ -29,6 +29,8 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
   const trackEvent = useContext(MetaMetricsContext);
 
   const handleCreateSolanaAccount = async () => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WhatsNewClicked,
@@ -41,6 +43,8 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
   };
 
   const handleGotIt = async () => {
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WhatsNewClicked,
@@ -49,6 +53,8 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
         action: GOT_IT_ACTION,
       },
     });
+    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     onCancel();
   };
 
@@ -61,6 +67,8 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
         data-testid={
           hasSolanaAccount ? 'got-it-button' : 'create-solana-account-button'
         }
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={hasSolanaAccount ? handleGotIt : handleCreateSolanaAccount}
       >
         {hasSolanaAccount ? t('gotIt') : t('createSolanaAccount')}
@@ -70,6 +78,8 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
         size={ButtonSize.Md}
         variant={ButtonVariant.Link}
         data-testid="not-now-button"
+        // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={onCancel}
       >
         {t('notNow')}

@@ -57,8 +57,8 @@ export default class Migrator extends EventEmitter {
         versionedData = migratedData;
 
         log.info(`Migration ${migration.version} complete`);
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-      // eslint-disable-next-line id-denylist
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+        // eslint-disable-next-line id-denylist
       } catch (err) {
         // rewrite error message to add context without clobbering stack
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889

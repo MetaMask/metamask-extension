@@ -357,8 +357,8 @@ export const ImportSrp = ({
               await importWallet();
               onActionComplete(true);
               dispatch(setShowNewSrpAddedToast(true));
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-            // eslint-disable-next-line id-length
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+              // eslint-disable-next-line id-length
             } catch (e) {
               setSrpError(
                 e instanceof Error ? e.message : 'An unknown error occurred',

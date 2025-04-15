@@ -21,8 +21,8 @@ const createMetaRPCHandler = (api, outStream) => {
     let error;
     try {
       result = await api[data.method](...data.params);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-    // eslint-disable-next-line id-denylist
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+      // eslint-disable-next-line id-denylist
     } catch (err) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
       // eslint-disable-next-line id-denylist

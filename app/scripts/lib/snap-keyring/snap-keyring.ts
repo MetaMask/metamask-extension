@@ -67,8 +67,8 @@ export async function showAccountCreationDialog(
       ),
     );
     return confirmationResult;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e) {
     throw new Error(
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
@@ -104,8 +104,8 @@ export async function showAccountNameSuggestionDialog(
       true,
     )) as { success: boolean; name?: string };
     return confirmationResult;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-  // eslint-disable-next-line id-length
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+    // eslint-disable-next-line id-length
   } catch (e) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -387,8 +387,8 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         }
 
         trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         // Error occurred while naming the account
         const error = (e as Error).message;
@@ -546,8 +546,8 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           trackSnapAccountEvent(
             MetaMetricsEventName.RemoveSnapAccountSuccessClicked,
           );
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
         } catch (e) {
           const error = (e as Error).message;
 

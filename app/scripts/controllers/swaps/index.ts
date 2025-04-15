@@ -1087,8 +1087,8 @@ export default class SwapsController extends BaseController<
 
     try {
       swapsNetworkConfig = await this._fetchSwapsNetworkConfig(network);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       console.error('Request for Swaps network config failed: ', e);
     }

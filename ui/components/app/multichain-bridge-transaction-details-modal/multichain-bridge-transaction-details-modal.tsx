@@ -90,13 +90,11 @@ function MultichainBridgeTransactionDetailsModal({
   // Use TransactionStatus.submitted as the default
   const sourceTxRawStatus = isBridgeOriginated
     ? TransactionStatus.submitted
-    : (transaction).status;
+    : transaction.status;
   const assetData = from?.[0]?.asset;
   const baseFeeAsset = isBridgeOriginated
     ? null
-    : (transaction).fees?.find(
-        (fee) => fee.type === 'base',
-      )?.asset;
+    : transaction.fees?.find((fee) => fee.type === 'base')?.asset;
   // --- End direct extraction ---
 
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
@@ -120,8 +118,8 @@ function MultichainBridgeTransactionDetailsModal({
   if (finalDisplayStatusKey === TransactionStatus.confirmed) {
     displayStatus = t('bridgeStatusComplete');
     statusColor = TextColor.successDefault;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   } else if (finalDisplayStatusKey === TransactionStatus.failed) {
     displayStatus = t('bridgeStatusFailed');
     statusColor = TextColor.errorDefault;
@@ -209,8 +207,8 @@ function MultichainBridgeTransactionDetailsModal({
       return formattedDecimal.length > 0
         ? `${integerPart}.${formattedDecimal}`
         : `${integerPart}`;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       console.error('Error formatting destination token amount:', e);
       return amount.toString();

@@ -51,8 +51,8 @@ async function start(): Promise<void> {
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
     HOST_URL,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
   } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
@@ -353,18 +353,23 @@ async function start(): Promise<void> {
       common: prBundleSizeStats.common.size,
     };
 
-    const devSizes = Object.keys(prSizes).reduce<Record<keyof typeof prSizes, number>>((sizes, part) => {
+    const devSizes = Object.keys(prSizes).reduce<
+      Record<keyof typeof prSizes, number>
+    >((sizes, part) => {
       sizes[part as keyof typeof prSizes] =
         devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
       return sizes;
     }, {});
 
-    const diffs = Object.keys(prSizes).reduce<Record<string, number>>((output, part) => {
-      output[part] =
-        prSizes[part as keyof typeof prSizes] -
-        devSizes[part as keyof typeof prSizes];
-      return output;
-    }, {});
+    const diffs = Object.keys(prSizes).reduce<Record<string, number>>(
+      (output, part) => {
+        output[part] =
+          prSizes[part as keyof typeof prSizes] -
+          devSizes[part as keyof typeof prSizes];
+        return output;
+      },
+      {},
+    );
 
     const sizeDiffRows = Object.keys(diffs).map(
       (part) =>

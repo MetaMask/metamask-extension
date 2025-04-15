@@ -43,8 +43,8 @@ describe('Settings', function () {
         // into the address bar and listen for address change
         try {
           await driver.openNewPage(ENS_NAME_URL);
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
         } catch (e) {
           // Ignore ERR_PROXY_CONNECTION_FAILED error
           // since all we care about is getting to the correct URL
@@ -90,8 +90,8 @@ describe('Settings', function () {
 
         try {
           await driver.openNewPage(ENS_NAME_URL);
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
         } catch (e) {
           // Ignore ERR_PROXY_CONNECTION_FAILED error
           // since all we care about is getting to the correct URL

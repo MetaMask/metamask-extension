@@ -99,12 +99,11 @@ function filterDiffFileCreations(diff: string): string {
   const filteredDiff = diffBlocks
     .map((block) => block.trim())
     .filter((block) => {
-      const isFileCreationLine =
-        block
-          // get the second line of the block which has the file mode
-          .split('\n')[1]
-          .trim()
-          .startsWith('new file mode');
+      const isFileCreationLine = block
+        // get the second line of the block which has the file mode
+        .split('\n')[1]
+        .trim()
+        .startsWith('new file mode');
 
       return isFileCreationLine;
     })

@@ -197,8 +197,8 @@ export const { colors, toGreen, toOrange, toPurple } = ((depth, esc) => {
     toOrange: (message: string) => `${esc}[1;${orange}m${message}${esc}[0m`,
     toPurple: (message: string) => `${esc}[1;${purple}m${message}${esc}[0m`,
   };
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-// eslint-disable-next-line no-restricted-globals
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+  // eslint-disable-next-line no-restricted-globals
 })((process.stderr.getColorDepth?.() as 1 | 4 | 8 | 24) || 1, '\u001b');
 
 /**

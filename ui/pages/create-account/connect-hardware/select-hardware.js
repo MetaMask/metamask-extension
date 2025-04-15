@@ -84,8 +84,8 @@ export default class SelectHardware extends Component {
               { vendorId: 0x1209, productId: 0x53c1 },
             ],
           });
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-        // eslint-disable-next-line id-length
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+          // eslint-disable-next-line id-length
         } catch (e) {
           if (!e.message.match('No device selected')) {
             throw e;

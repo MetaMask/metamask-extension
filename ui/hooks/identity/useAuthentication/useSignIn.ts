@@ -31,8 +31,8 @@ export function useSignIn(): {
         // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
         // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(performSignIn());
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         // If an error occurs during the sign-in process, silently fail
         const errorMessage =

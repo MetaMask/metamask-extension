@@ -426,8 +426,8 @@ async function withFixtures(options, testSuite) {
       // use a try/catch to avoid an error
       try {
         await mockServer.stop();
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-      // eslint-disable-next-line id-length
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+        // eslint-disable-next-line id-length
       } catch (e) {
         console.log('mockServer already stopped');
       }

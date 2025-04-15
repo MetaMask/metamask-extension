@@ -4,7 +4,7 @@
 import EventEmitter from 'events';
 import { Messenger } from '@metamask/base-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-// https://github.com/MetaMask/metamask-extension/issues/31892
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BlockTracker, Provider } from '@metamask/network-controller';
 

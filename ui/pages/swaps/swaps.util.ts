@@ -655,8 +655,8 @@ export const getClassNameForCharLength = (
   // eslint-disable-next-line id-denylist
   if (!num || num.length <= 10) {
     modifier = 'lg';
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } else if (num.length > 10 && num.length <= 13) {
     modifier = 'md';
   } else {

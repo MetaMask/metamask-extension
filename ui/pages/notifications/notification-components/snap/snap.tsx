@@ -77,9 +77,7 @@ export const components: NotificationComponent<SnapNotification> = {
   details: {
     title: ({ notification }) => (
       <NotificationDetailTitle
-        title={
-          (notification.data as DetailedViewData).detailedView.title
-        }
+        title={(notification.data as DetailedViewData).detailedView.title}
         date={formatIsoDateString(notification.createdAt)}
       />
     ),

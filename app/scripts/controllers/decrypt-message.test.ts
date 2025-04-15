@@ -68,7 +68,7 @@ const createDecryptMessageManagerMock = <T>() =>
     hub: {
       on: jest.fn(),
     },
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any as jest.Mocked<T>);
 
@@ -88,7 +88,7 @@ describe('DecryptMessageController', () => {
 
   const mockMessengerAction = (
     action: string,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (actionName: string, ...args: any[]) => any,
   ) => {
@@ -109,16 +109,19 @@ describe('DecryptMessageController', () => {
     );
 
     decryptMessageController = new DecryptMessageController({
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getState: getStateMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       keyringController: keyringControllerMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messenger: messengerMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
       managerMessenger: managerMessengerMock,
@@ -138,7 +141,8 @@ describe('DecryptMessageController', () => {
   it('should add unapproved messages', async () => {
     await decryptMessageController.newRequestDecryptMessage(
       messageMock,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       undefined as any,
     );
@@ -243,7 +247,7 @@ describe('DecryptMessageController', () => {
     const messageToDecrypt = {
       ...messageMock,
       data: messageDataMock,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
     decryptMessageManagerMock.getMessage.mockReturnValue(messageToDecrypt);
@@ -306,7 +310,7 @@ describe('DecryptMessageController', () => {
   it('should be able to reject all unapproved messages', async () => {
     decryptMessageManagerMock.getUnapprovedMessages.mockReturnValue({
       [messageIdMock]: messageMock,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 

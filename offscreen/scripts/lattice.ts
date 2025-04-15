@@ -88,8 +88,8 @@ export default function init() {
             sendResponse({
               result: creds,
             });
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-          // eslint-disable-next-line id-denylist
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+            // eslint-disable-next-line id-denylist
           } catch (err) {
             sendResponse({
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889

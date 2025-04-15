@@ -1,4 +1,4 @@
-// https://github.com/MetaMask/metamask-extension/issues/31892
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31892
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Provider } from '@metamask/network-controller';
 import {
@@ -1518,7 +1518,10 @@ describe('Transaction metrics', () => {
     ['if submitted', handleTransactionSubmitted],
     [
       'if confirmed',
-      async (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
+      async (
+        request: TransactionMetricsRequest,
+        args: TransactionEventPayload,
+      ) =>
         handleTransactionConfirmed(
           request,
           args.transactionMeta as TransactionMetaEventPayload,

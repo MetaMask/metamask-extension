@@ -1,4 +1,3 @@
-
 // USAGE:
 // Simply run `yarn master-sync` from any branch.
 // This will create/update a local master-sync branch

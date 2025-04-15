@@ -109,13 +109,12 @@ const fetchTokenExchangeRates = async (
       functionName: 'fetchSolanaTokenExchangeRates',
     })) as Record<string, { price: number }>;
 
-    exchangeRates = Object.entries(tokenV3PriceResponse).reduce<Record<string, number>>(
-      (acc, [k, curr]) => {
-        acc[k] = curr.price;
-        return acc;
-      },
-      {},
-    );
+    exchangeRates = Object.entries(tokenV3PriceResponse).reduce<
+      Record<string, number>
+    >((acc, [k, curr]) => {
+      acc[k] = curr.price;
+      return acc;
+    }, {});
   } else {
     exchangeRates = await fetchTokenExchangeRatesUtil(
       currency,

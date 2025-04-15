@@ -56,8 +56,8 @@ const getDescription = (n: LidoReadyWithDrawnNotification) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     t('notificationItemLidoStakeReadyToBeWithdrawnMessage', [
       `${amount} ${n.data.staked_eth.symbol}`,
-    // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     ]) || '';
   const items = createTextItems([description], TextVariant.bodyMd);
   return items;

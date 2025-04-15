@@ -374,9 +374,9 @@ export const handlePostTransactionBalanceUpdate = async (
       );
 
       const quoteVsExecutionRatio = tokensReceived
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        ? `${new BigNumber(tokensReceived, 10)
+        ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `${new BigNumber(tokensReceived, 10)
             .div(transactionMeta.swapMetaData.token_to_amount, 10)
             .times(100)
             .round(2)}%`
@@ -385,9 +385,9 @@ export const handlePostTransactionBalanceUpdate = async (
       const estimatedVsUsedGasRatio =
         transactionMeta.txReceipt?.gasUsed &&
         transactionMeta.swapMetaData.estimated_gas
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          ? `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
+          ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
               .div(transactionMeta.swapMetaData.estimated_gas, 10)
               .times(100)
               .round(2)}%`
@@ -1364,7 +1364,9 @@ async function getNestedMethodNames(
     .filter((tx) => tx.type === TransactionType.contractInteraction && tx.data)
     .map((tx) => tx.data as Hex);
 
-  const results = await Promise.all(allData.map(async (data) => getMethodData(data)));
+  const results = await Promise.all(
+    allData.map(async (data) => getMethodData(data)),
+  );
 
   const names = results
     .map((result) => result?.name)

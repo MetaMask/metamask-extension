@@ -102,8 +102,8 @@ export default class ExtensionPlatform {
       cb(platformInfo);
       // eslint-disable-next-line no-useless-return
       return;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
-    // eslint-disable-next-line id-length
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31887
+      // eslint-disable-next-line id-length
     } catch (e) {
       cb(e);
       // eslint-disable-next-line no-useless-return

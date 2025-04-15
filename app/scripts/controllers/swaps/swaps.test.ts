@@ -777,12 +777,14 @@ describe('SwapsController', function () {
 
         // Make it so approval is not required
         jest
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
@@ -865,12 +867,14 @@ describe('SwapsController', function () {
 
         // Make it so approval is not required
         jest
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);
@@ -954,12 +958,14 @@ describe('SwapsController', function () {
 
         // Make it so approval is not required
         jest
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_getERC20Allowance')
           .mockReturnValue(BigNumber.from(1));
 
         // Make the network fetch error message disappear
         jest
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .spyOn(swapsController as any, '_setSwapsNetworkConfig')
           .mockReturnValue(undefined);

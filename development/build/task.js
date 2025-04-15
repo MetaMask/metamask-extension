@@ -27,8 +27,8 @@ async function runTask(taskName, { skipStats } = {}) {
   }
   try {
     await tasks[taskName]();
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-  // eslint-disable-next-line id-denylist
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
+    // eslint-disable-next-line id-denylist
   } catch (err) {
     console.error(
       `MetaMask build: Encountered an error while running task "${taskName}".`,
