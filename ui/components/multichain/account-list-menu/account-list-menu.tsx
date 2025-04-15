@@ -129,7 +129,6 @@ import { CreateEthAccount } from '../create-eth-account';
 import { CreateSnapAccount } from '../create-snap-account';
 ///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
-import { ImportSrp } from '../multi-srp/import-srp';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { HiddenAccountList } from './hidden-account-list';
