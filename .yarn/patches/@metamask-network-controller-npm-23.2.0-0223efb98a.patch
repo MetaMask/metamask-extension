@@ -1,18 +1,39 @@
-diff --git a/PATCH.txt b/PATCH.txt
-new file mode 100644
-index 0000000000000000000000000000000000000000..376255036ca54b83a3f3c3e0277c2666473df30e
---- /dev/null
-+++ b/PATCH.txt
-@@ -0,0 +1,4 @@
-+We remove lookupNetwork from initializeProvider in the network controller to prevent network requests before user onboarding is completed.
-+The network lookup is done after onboarding is completed, and when the extension reloads if onboarding has been completed.
-+This patch is part of a temporary fix that will be reverted soon to make way for a more permanent solution. https://github.com/MetaMask/metamask-extension/pull/23005
-+You can see the changes before compilation on this branch: https://github.com/MetaMask/core/compare/pnf/ext-23622-review?expand=1
 diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
-index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..c6044c6799a3e444b249c1a1607688cc94758397 100644
+index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..f8173570a5c4719309c09da84d541e19df26b4dd 100644
 --- a/dist/NetworkController.cjs
 +++ b/dist/NetworkController.cjs
-@@ -515,7 +515,6 @@ class NetworkController extends base_controller_1.BaseController {
+@@ -36,7 +36,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _NetworkController_instances, _NetworkController_ethQuery, _NetworkController_infuraProjectId, _NetworkController_previouslySelectedNetworkClientId, _NetworkController_providerProxy, _NetworkController_blockTrackerProxy, _NetworkController_autoManagedNetworkClientRegistry, _NetworkController_autoManagedNetworkClient, _NetworkController_log, _NetworkController_getRpcServiceOptions, _NetworkController_networkConfigurationsByNetworkClientId, _NetworkController_refreshNetwork, _NetworkController_getLatestBlock, _NetworkController_determineEIP1559Compatibility, _NetworkController_validateNetworkFields, _NetworkController_determineNetworkConfigurationToPersist, _NetworkController_registerNetworkClientsAsNeeded, _NetworkController_unregisterNetworkClientsAsNeeded, _NetworkController_updateNetworkConfigurations, _NetworkController_ensureAutoManagedNetworkClientRegistryPopulated, _NetworkController_createAutoManagedNetworkClientRegistry, _NetworkController_applyNetworkSelection;
++var _NetworkController_instances, _NetworkController_ethQuery, _NetworkController_infuraProjectId, _NetworkController_previouslySelectedNetworkClientId, _NetworkController_providerProxy, _NetworkController_blockTrackerProxy, _NetworkController_autoManagedNetworkClientRegistry, _NetworkController_autoManagedNetworkClient, _NetworkController_log, _NetworkController_getBlockTrackerOptions, _NetworkController_getRpcServiceOptions, _NetworkController_networkConfigurationsByNetworkClientId, _NetworkController_refreshNetwork, _NetworkController_getLatestBlock, _NetworkController_determineEIP1559Compatibility, _NetworkController_validateNetworkFields, _NetworkController_determineNetworkConfigurationToPersist, _NetworkController_registerNetworkClientsAsNeeded, _NetworkController_unregisterNetworkClientsAsNeeded, _NetworkController_updateNetworkConfigurations, _NetworkController_ensureAutoManagedNetworkClientRegistryPopulated, _NetworkController_createAutoManagedNetworkClientRegistry, _NetworkController_applyNetworkSelection;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.NetworkController = exports.selectAvailableNetworkClientIds = exports.getAvailableNetworkClientIds = exports.selectNetworkConfigurations = exports.getNetworkConfigurations = exports.getDefaultNetworkControllerState = exports.knownKeysOf = exports.RpcEndpointType = void 0;
+ const base_controller_1 = require("@metamask/base-controller");
+@@ -342,7 +342,7 @@ class NetworkController extends base_controller_1.BaseController {
+      * @param options - The options; see {@link NetworkControllerOptions}.
+      */
+     constructor(options) {
+-        const { messenger, state, infuraProjectId, log, getRpcServiceOptions, additionalDefaultNetworks, } = options;
++        const { messenger, state, infuraProjectId, log, getBlockTrackerOptions, getRpcServiceOptions, additionalDefaultNetworks, } = options;
+         const initialState = {
+             ...getDefaultNetworkControllerState(additionalDefaultNetworks),
+             ...state,
+@@ -379,10 +379,12 @@ class NetworkController extends base_controller_1.BaseController {
+         _NetworkController_autoManagedNetworkClientRegistry.set(this, void 0);
+         _NetworkController_autoManagedNetworkClient.set(this, void 0);
+         _NetworkController_log.set(this, void 0);
++        _NetworkController_getBlockTrackerOptions.set(this, void 0);
+         _NetworkController_getRpcServiceOptions.set(this, void 0);
+         _NetworkController_networkConfigurationsByNetworkClientId.set(this, void 0);
+         __classPrivateFieldSet(this, _NetworkController_infuraProjectId, infuraProjectId, "f");
+         __classPrivateFieldSet(this, _NetworkController_log, log, "f");
++        __classPrivateFieldSet(this, _NetworkController_getBlockTrackerOptions, getBlockTrackerOptions, "f");
+         __classPrivateFieldSet(this, _NetworkController_getRpcServiceOptions, getRpcServiceOptions, "f");
+         __classPrivateFieldSet(this, _NetworkController_previouslySelectedNetworkClientId, this.state.selectedNetworkClientId, "f");
+         __classPrivateFieldSet(this, _NetworkController_networkConfigurationsByNetworkClientId, buildNetworkConfigurationsByNetworkClientId(this.state.networkConfigurationsByChainId), "f");
+@@ -515,7 +517,6 @@ class NetworkController extends base_controller_1.BaseController {
       */
      async initializeProvider() {
          __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_applyNetworkSelection).call(this, this.state.selectedNetworkClientId);
@@ -20,11 +41,83 @@ index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..c6044c6799a3e444b249c1a1607688cc
      }
      /**
       * Refreshes the network meta with EIP-1559 support and the network status
+@@ -1175,7 +1176,7 @@ class NetworkController extends base_controller_1.BaseController {
+     }
+ }
+ exports.NetworkController = NetworkController;
+-_NetworkController_ethQuery = new WeakMap(), _NetworkController_infuraProjectId = new WeakMap(), _NetworkController_previouslySelectedNetworkClientId = new WeakMap(), _NetworkController_providerProxy = new WeakMap(), _NetworkController_blockTrackerProxy = new WeakMap(), _NetworkController_autoManagedNetworkClientRegistry = new WeakMap(), _NetworkController_autoManagedNetworkClient = new WeakMap(), _NetworkController_log = new WeakMap(), _NetworkController_getRpcServiceOptions = new WeakMap(), _NetworkController_networkConfigurationsByNetworkClientId = new WeakMap(), _NetworkController_instances = new WeakSet(), _NetworkController_refreshNetwork = 
++_NetworkController_ethQuery = new WeakMap(), _NetworkController_infuraProjectId = new WeakMap(), _NetworkController_previouslySelectedNetworkClientId = new WeakMap(), _NetworkController_providerProxy = new WeakMap(), _NetworkController_blockTrackerProxy = new WeakMap(), _NetworkController_autoManagedNetworkClientRegistry = new WeakMap(), _NetworkController_autoManagedNetworkClient = new WeakMap(), _NetworkController_log = new WeakMap(), _NetworkController_getBlockTrackerOptions = new WeakMap(), _NetworkController_getRpcServiceOptions = new WeakMap(), _NetworkController_networkConfigurationsByNetworkClientId = new WeakMap(), _NetworkController_instances = new WeakSet(), _NetworkController_refreshNetwork = 
+ /**
+  * Executes a series of steps to switch the network:
+  *
+@@ -1393,6 +1394,7 @@ async function _NetworkController_determineEIP1559Compatibility(networkClientId)
+                     infuraProjectId: __classPrivateFieldGet(this, _NetworkController_infuraProjectId, "f"),
+                     ticker: networkFields.nativeCurrency,
+                 },
++                getBlockTrackerOptions: __classPrivateFieldGet(this, _NetworkController_getBlockTrackerOptions, "f"),
+                 getRpcServiceOptions: __classPrivateFieldGet(this, _NetworkController_getRpcServiceOptions, "f"),
+                 messenger: this.messagingSystem,
+             });
+@@ -1406,6 +1408,7 @@ async function _NetworkController_determineEIP1559Compatibility(networkClientId)
+                     rpcUrl: addedRpcEndpoint.url,
+                     ticker: networkFields.nativeCurrency,
+                 },
++                getBlockTrackerOptions: __classPrivateFieldGet(this, _NetworkController_getBlockTrackerOptions, "f"),
+                 getRpcServiceOptions: __classPrivateFieldGet(this, _NetworkController_getRpcServiceOptions, "f"),
+                 messenger: this.messagingSystem,
+             });
+@@ -1463,6 +1466,7 @@ async function _NetworkController_determineEIP1559Compatibility(networkClientId)
+                             chainId: networkConfiguration.chainId,
+                             ticker: networkConfiguration.nativeCurrency,
+                         },
++                        getBlockTrackerOptions: __classPrivateFieldGet(this, _NetworkController_getBlockTrackerOptions, "f"),
+                         getRpcServiceOptions: __classPrivateFieldGet(this, _NetworkController_getRpcServiceOptions, "f"),
+                         messenger: this.messagingSystem,
+                     }),
+@@ -1478,6 +1482,7 @@ async function _NetworkController_determineEIP1559Compatibility(networkClientId)
+                         rpcUrl: rpcEndpoint.url,
+                         ticker: networkConfiguration.nativeCurrency,
+                     },
++                    getBlockTrackerOptions: __classPrivateFieldGet(this, _NetworkController_getBlockTrackerOptions, "f"),
+                     getRpcServiceOptions: __classPrivateFieldGet(this, _NetworkController_getRpcServiceOptions, "f"),
+                     messenger: this.messagingSystem,
+                 }),
 diff --git a/dist/NetworkController.mjs b/dist/NetworkController.mjs
-index 0efca6773120ea8be324446febfbcee68ca4281d..aecd1d9bf31433742d315c616355924fbd8dc3b7 100644
+index 0efca6773120ea8be324446febfbcee68ca4281d..403434fdff0f8d3d57bfb89afc1e2972c9eb1b8c 100644
 --- a/dist/NetworkController.mjs
 +++ b/dist/NetworkController.mjs
-@@ -491,7 +491,6 @@ export class NetworkController extends BaseController {
+@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _NetworkController_instances, _NetworkController_ethQuery, _NetworkController_infuraProjectId, _NetworkController_previouslySelectedNetworkClientId, _NetworkController_providerProxy, _NetworkController_blockTrackerProxy, _NetworkController_autoManagedNetworkClientRegistry, _NetworkController_autoManagedNetworkClient, _NetworkController_log, _NetworkController_getRpcServiceOptions, _NetworkController_networkConfigurationsByNetworkClientId, _NetworkController_refreshNetwork, _NetworkController_getLatestBlock, _NetworkController_determineEIP1559Compatibility, _NetworkController_validateNetworkFields, _NetworkController_determineNetworkConfigurationToPersist, _NetworkController_registerNetworkClientsAsNeeded, _NetworkController_unregisterNetworkClientsAsNeeded, _NetworkController_updateNetworkConfigurations, _NetworkController_ensureAutoManagedNetworkClientRegistryPopulated, _NetworkController_createAutoManagedNetworkClientRegistry, _NetworkController_applyNetworkSelection;
++var _NetworkController_instances, _NetworkController_ethQuery, _NetworkController_infuraProjectId, _NetworkController_previouslySelectedNetworkClientId, _NetworkController_providerProxy, _NetworkController_blockTrackerProxy, _NetworkController_autoManagedNetworkClientRegistry, _NetworkController_autoManagedNetworkClient, _NetworkController_log, _NetworkController_getBlockTrackerOptions, _NetworkController_getRpcServiceOptions, _NetworkController_networkConfigurationsByNetworkClientId, _NetworkController_refreshNetwork, _NetworkController_getLatestBlock, _NetworkController_determineEIP1559Compatibility, _NetworkController_validateNetworkFields, _NetworkController_determineNetworkConfigurationToPersist, _NetworkController_registerNetworkClientsAsNeeded, _NetworkController_unregisterNetworkClientsAsNeeded, _NetworkController_updateNetworkConfigurations, _NetworkController_ensureAutoManagedNetworkClientRegistryPopulated, _NetworkController_createAutoManagedNetworkClientRegistry, _NetworkController_applyNetworkSelection;
+ function $importDefault(module) {
+     if (module?.__esModule) {
+         return module.default;
+@@ -318,7 +318,7 @@ export class NetworkController extends BaseController {
+      * @param options - The options; see {@link NetworkControllerOptions}.
+      */
+     constructor(options) {
+-        const { messenger, state, infuraProjectId, log, getRpcServiceOptions, additionalDefaultNetworks, } = options;
++        const { messenger, state, infuraProjectId, log, getBlockTrackerOptions, getRpcServiceOptions, additionalDefaultNetworks, } = options;
+         const initialState = {
+             ...getDefaultNetworkControllerState(additionalDefaultNetworks),
+             ...state,
+@@ -355,10 +355,12 @@ export class NetworkController extends BaseController {
+         _NetworkController_autoManagedNetworkClientRegistry.set(this, void 0);
+         _NetworkController_autoManagedNetworkClient.set(this, void 0);
+         _NetworkController_log.set(this, void 0);
++        _NetworkController_getBlockTrackerOptions.set(this, void 0);
+         _NetworkController_getRpcServiceOptions.set(this, void 0);
+         _NetworkController_networkConfigurationsByNetworkClientId.set(this, void 0);
+         __classPrivateFieldSet(this, _NetworkController_infuraProjectId, infuraProjectId, "f");
+         __classPrivateFieldSet(this, _NetworkController_log, log, "f");
++        __classPrivateFieldSet(this, _NetworkController_getBlockTrackerOptions, getBlockTrackerOptions, "f");
+         __classPrivateFieldSet(this, _NetworkController_getRpcServiceOptions, getRpcServiceOptions, "f");
+         __classPrivateFieldSet(this, _NetworkController_previouslySelectedNetworkClientId, this.state.selectedNetworkClientId, "f");
+         __classPrivateFieldSet(this, _NetworkController_networkConfigurationsByNetworkClientId, buildNetworkConfigurationsByNetworkClientId(this.state.networkConfigurationsByChainId), "f");
+@@ -491,7 +493,6 @@ export class NetworkController extends BaseController {
       */
      async initializeProvider() {
          __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_applyNetworkSelection).call(this, this.state.selectedNetworkClientId);
@@ -32,3 +125,176 @@ index 0efca6773120ea8be324446febfbcee68ca4281d..aecd1d9bf31433742d315c616355924f
      }
      /**
       * Refreshes the network meta with EIP-1559 support and the network status
+@@ -1368,6 +1369,7 @@ async function _NetworkController_determineEIP1559Compatibility(networkClientId)
+                     infuraProjectId: __classPrivateFieldGet(this, _NetworkController_infuraProjectId, "f"),
+                     ticker: networkFields.nativeCurrency,
+                 },
++                getBlockTrackerOptions: __classPrivateFieldGet(this, _NetworkController_getBlockTrackerOptions, "f"),
+                 getRpcServiceOptions: __classPrivateFieldGet(this, _NetworkController_getRpcServiceOptions, "f"),
+                 messenger: this.messagingSystem,
+             });
+@@ -1381,6 +1383,7 @@ async function _NetworkController_determineEIP1559Compatibility(networkClientId)
+                     rpcUrl: addedRpcEndpoint.url,
+                     ticker: networkFields.nativeCurrency,
+                 },
++                getBlockTrackerOptions: __classPrivateFieldGet(this, _NetworkController_getBlockTrackerOptions, "f"),
+                 getRpcServiceOptions: __classPrivateFieldGet(this, _NetworkController_getRpcServiceOptions, "f"),
+                 messenger: this.messagingSystem,
+             });
+@@ -1438,6 +1441,7 @@ async function _NetworkController_determineEIP1559Compatibility(networkClientId)
+                             chainId: networkConfiguration.chainId,
+                             ticker: networkConfiguration.nativeCurrency,
+                         },
++                        getBlockTrackerOptions: __classPrivateFieldGet(this, _NetworkController_getBlockTrackerOptions, "f"),
+                         getRpcServiceOptions: __classPrivateFieldGet(this, _NetworkController_getRpcServiceOptions, "f"),
+                         messenger: this.messagingSystem,
+                     }),
+@@ -1453,6 +1457,7 @@ async function _NetworkController_determineEIP1559Compatibility(networkClientId)
+                         rpcUrl: rpcEndpoint.url,
+                         ticker: networkConfiguration.nativeCurrency,
+                     },
++                    getBlockTrackerOptions: __classPrivateFieldGet(this, _NetworkController_getBlockTrackerOptions, "f"),
+                     getRpcServiceOptions: __classPrivateFieldGet(this, _NetworkController_getRpcServiceOptions, "f"),
+                     messenger: this.messagingSystem,
+                 }),
+diff --git a/dist/create-auto-managed-network-client.cjs b/dist/create-auto-managed-network-client.cjs
+index 19855d93682b48714df624f5ed2f6ac29bc3c973..1573a631f14b6f67869d9fc6fad9d3fec95304ca 100644
+--- a/dist/create-auto-managed-network-client.cjs
++++ b/dist/create-auto-managed-network-client.cjs
+@@ -34,7 +34,7 @@ const UNINITIALIZED_TARGET = { __UNINITIALIZED__: true };
+  * @param args.messenger - The network controller messenger.
+  * @returns The auto-managed network client.
+  */
+-function createAutoManagedNetworkClient({ networkClientConfiguration, getRpcServiceOptions, messenger, }) {
++function createAutoManagedNetworkClient({ networkClientConfiguration, getBlockTrackerOptions, getRpcServiceOptions, messenger, }) {
+     let networkClient;
+     const providerProxy = new Proxy(UNINITIALIZED_TARGET, {
+         // TODO: Replace `any` with type
+@@ -45,6 +45,7 @@ function createAutoManagedNetworkClient({ networkClientConfiguration, getRpcServ
+             }
+             networkClient ?? (networkClient = (0, create_network_client_1.createNetworkClient)({
+                 configuration: networkClientConfiguration,
++                getBlockTrackerOptions,
+                 getRpcServiceOptions,
+                 messenger,
+             }));
+@@ -81,6 +82,7 @@ function createAutoManagedNetworkClient({ networkClientConfiguration, getRpcServ
+             }
+             networkClient ?? (networkClient = (0, create_network_client_1.createNetworkClient)({
+                 configuration: networkClientConfiguration,
++                getBlockTrackerOptions,
+                 getRpcServiceOptions,
+                 messenger,
+             }));
+@@ -97,6 +99,7 @@ function createAutoManagedNetworkClient({ networkClientConfiguration, getRpcServ
+             }
+             networkClient ?? (networkClient = (0, create_network_client_1.createNetworkClient)({
+                 configuration: networkClientConfiguration,
++                getBlockTrackerOptions,
+                 getRpcServiceOptions,
+                 messenger,
+             }));
+@@ -133,6 +136,7 @@ function createAutoManagedNetworkClient({ networkClientConfiguration, getRpcServ
+             }
+             networkClient ?? (networkClient = (0, create_network_client_1.createNetworkClient)({
+                 configuration: networkClientConfiguration,
++                getBlockTrackerOptions,
+                 getRpcServiceOptions,
+                 messenger,
+             }));
+diff --git a/dist/create-auto-managed-network-client.mjs b/dist/create-auto-managed-network-client.mjs
+index f1448a8252813e80a5c96ccb06067bd401bf7f83..febb852b747848fdcd7ddd3a0d1d42cb5a3cb423 100644
+--- a/dist/create-auto-managed-network-client.mjs
++++ b/dist/create-auto-managed-network-client.mjs
+@@ -31,7 +31,7 @@ const UNINITIALIZED_TARGET = { __UNINITIALIZED__: true };
+  * @param args.messenger - The network controller messenger.
+  * @returns The auto-managed network client.
+  */
+-export function createAutoManagedNetworkClient({ networkClientConfiguration, getRpcServiceOptions, messenger, }) {
++export function createAutoManagedNetworkClient({ networkClientConfiguration, getBlockTrackerOptions, getRpcServiceOptions, messenger, }) {
+     let networkClient;
+     const providerProxy = new Proxy(UNINITIALIZED_TARGET, {
+         // TODO: Replace `any` with type
+@@ -42,6 +42,7 @@ export function createAutoManagedNetworkClient({ networkClientConfiguration, get
+             }
+             networkClient ?? (networkClient = createNetworkClient({
+                 configuration: networkClientConfiguration,
++                getBlockTrackerOptions,
+                 getRpcServiceOptions,
+                 messenger,
+             }));
+@@ -78,6 +79,7 @@ export function createAutoManagedNetworkClient({ networkClientConfiguration, get
+             }
+             networkClient ?? (networkClient = createNetworkClient({
+                 configuration: networkClientConfiguration,
++                getBlockTrackerOptions,
+                 getRpcServiceOptions,
+                 messenger,
+             }));
+@@ -94,6 +96,7 @@ export function createAutoManagedNetworkClient({ networkClientConfiguration, get
+             }
+             networkClient ?? (networkClient = createNetworkClient({
+                 configuration: networkClientConfiguration,
++                getBlockTrackerOptions,
+                 getRpcServiceOptions,
+                 messenger,
+             }));
+@@ -130,6 +133,7 @@ export function createAutoManagedNetworkClient({ networkClientConfiguration, get
+             }
+             networkClient ?? (networkClient = createNetworkClient({
+                 configuration: networkClientConfiguration,
++                getBlockTrackerOptions,
+                 getRpcServiceOptions,
+                 messenger,
+             }));
+diff --git a/dist/create-network-client.cjs b/dist/create-network-client.cjs
+index ff32f95adc9dc07d94144bac0db0247df90df90e..0a5264d8e4e0b9ea62d6b202cce92bb260bf1809 100644
+--- a/dist/create-network-client.cjs
++++ b/dist/create-network-client.cjs
+@@ -21,7 +21,7 @@ const SECOND = 1000;
+  * See {@link NetworkControllerOptions.getRpcServiceOptions}.
+  * @returns The network client.
+  */
+-function createNetworkClient({ configuration, getRpcServiceOptions, messenger, }) {
++function createNetworkClient({ configuration, getBlockTrackerOptions, getRpcServiceOptions, messenger, }) {
+     const primaryEndpointUrl = configuration.type === types_1.NetworkClientType.Infura
+         ? `https://${configuration.network}.infura.io/v3/${configuration.infuraProjectId}`
+         : configuration.rpcUrl;
+@@ -71,7 +71,9 @@ function createNetworkClient({ configuration, getRpcServiceOptions, messenger, }
+     const rpcProvider = (0, eth_json_rpc_provider_1.providerFromMiddleware)(rpcApiMiddleware);
+     const blockTrackerOpts = process.env.IN_TEST && configuration.type === types_1.NetworkClientType.Custom
+         ? { pollingInterval: SECOND }
+-        : {};
++        : getBlockTrackerOptions
++          ? getBlockTrackerOptions(primaryEndpointUrl)
++          : {};
+     const blockTracker = new eth_block_tracker_1.PollingBlockTracker({
+         ...blockTrackerOpts,
+         provider: rpcProvider,
+diff --git a/dist/create-network-client.mjs b/dist/create-network-client.mjs
+index c5034345b61a5797507fbaf7a4e2a765aed424dc..47a5b68a73dd4a0ba2af748af2d6926bc1b7037f 100644
+--- a/dist/create-network-client.mjs
++++ b/dist/create-network-client.mjs
+@@ -18,7 +18,7 @@ const SECOND = 1000;
+  * See {@link NetworkControllerOptions.getRpcServiceOptions}.
+  * @returns The network client.
+  */
+-export function createNetworkClient({ configuration, getRpcServiceOptions, messenger, }) {
++export function createNetworkClient({ configuration, getBlockTrackerOptions, getRpcServiceOptions, messenger, }) {
+     const primaryEndpointUrl = configuration.type === NetworkClientType.Infura
+         ? `https://${configuration.network}.infura.io/v3/${configuration.infuraProjectId}`
+         : configuration.rpcUrl;
+@@ -66,9 +66,11 @@ export function createNetworkClient({ configuration, getRpcServiceOptions, messe
+         })
+         : createFetchMiddleware({ rpcService });
+     const rpcProvider = providerFromMiddleware(rpcApiMiddleware);
+-    const blockTrackerOpts = process.env.IN_TEST && configuration.type === NetworkClientType.Custom
++    const blockTrackerOpts = process.env.IN_TEST && configuration.type === types_1.NetworkClientType.Custom
+         ? { pollingInterval: SECOND }
+-        : {};
++        : getBlockTrackerOptions
++          ? getBlockTrackerOptions(primaryEndpointUrl)
++          : {};
+     const blockTracker = new PollingBlockTracker({
+         ...blockTrackerOpts,
+         provider: rpcProvider,
