@@ -296,7 +296,7 @@ export const ImportNftsModal = ({ onClose }) => {
                 setActionMode(ACTION_MODES.NETWORK_SELECTOR)
               }
             />
-            <Box>
+            <Box marginRight={4} marginLeft={4}>
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -331,7 +331,7 @@ export const ImportNftsModal = ({ onClose }) => {
                 error={Boolean(nftAddressValidationError)}
               />
             </Box>
-            <Box>
+            <Box marginRight={4} marginLeft={4}>
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
