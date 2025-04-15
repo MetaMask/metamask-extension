@@ -304,6 +304,12 @@ class FixtureBuilder {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
   }
 
+  withNetworkControllerOnLinea() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'linea-mainnet',
+    });
+  }
+
   withNetworkControllerOnOptimism() {
     return this.withNetworkController({
       networkConfigurations: {
