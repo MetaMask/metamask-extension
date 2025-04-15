@@ -43,7 +43,9 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
+  getMultichainNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getSelectedAccountMultichainTransactions,
   ///: END:ONLY_INCLUDE_IF
@@ -507,13 +509,18 @@ export default function TransactionList({
   const multichainNetwork = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );
+  // TODO: refactor getMultichainAccountUrl to not rely on legacy data types
+  const accountConfigForBlockExplorerLink = useMultichainSelector(
+    getMultichainNetwork,
+    selectedAccount,
+  );
 
   const trackEvent = useContext(MetaMetricsContext);
 
   if (!isEvmAccountType(selectedAccount.type)) {
     const addressLink = getMultichainAccountUrl(
       selectedAccount.address,
-      multichainNetwork,
+      accountConfigForBlockExplorerLink,
     );
 
     const metricsLocation = 'Activity Tab';
