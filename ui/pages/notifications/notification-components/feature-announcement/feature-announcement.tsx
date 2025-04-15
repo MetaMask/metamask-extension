@@ -1,5 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { sanitize } from 'dompurify';
 import { isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
@@ -95,8 +96,9 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             <Text
               variant={TextVariant.bodyMd}
               as="div"
+              // TODO - we can replace the raw HTML string injection with react components
               dangerouslySetInnerHTML={{
-                __html: notification.data.longDescription,
+                __html: sanitize(notification.data.longDescription),
               }}
             />
           </Box>
