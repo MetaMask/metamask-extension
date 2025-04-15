@@ -12,7 +12,12 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
-import { type CaipChainId, type Hex, type Json } from '@metamask/utils';
+import {
+  type CaipChainId,
+  type Hex,
+  type Json,
+  hexToNumber,
+} from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -48,9 +53,8 @@ import {
   DelegationFilter,
 } from '@metamask/delegation-controller';
 import {
-  Delegation,
-  getDelegationHashOffchain,
   getDeleGatorEnvironment,
+  UnsignedDelegation,
 } from '@metamask/delegation-toolkit';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -6187,11 +6191,16 @@ export function setTransactionActive(
   };
 }
 
-export const signDelegation = async (
-  delegation: Delegation,
-  chainId: number,
-): Promise<Hex> => {
-  const verifyingContract = getDeleGatorEnvironment(chainId).DelegationManager;
+export const signDelegation = async ({
+  delegation,
+  chainId,
+}: {
+  delegation: UnsignedDelegation;
+  chainId: Hex;
+}): Promise<Hex> => {
+  const verifyingContract = getDeleGatorEnvironment(
+    hexToNumber(chainId),
+  ).DelegationManager;
   return await submitRequestToBackground('signDelegation', [
     { delegation, verifyingContract, chainId },
   ]);
@@ -6200,8 +6209,7 @@ export const signDelegation = async (
 export const storeDelegationEntry = async (
   entry: DelegationEntry,
 ): Promise<void> => {
-  const hash = getDelegationHashOffchain(entry.data);
-  return await submitRequestToBackground('storeDelegationEntry', [hash, entry]);
+  return await submitRequestToBackground('storeDelegationEntry', [{ entry }]);
 };
 
 export const listDelegationEntries = async (
