@@ -127,7 +127,6 @@ import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
-// eslint-disable-next-line import/order
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import {
   getMultichainBalances,

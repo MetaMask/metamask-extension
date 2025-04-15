@@ -753,7 +753,8 @@
       "@metamask/test-dapp-multichain>react-scripts>react-app-polyfill>core-js": false,
       "@lavamoat/allow-scripts>@lavamoat/preinstall-always-fail": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>bigint-buffer": false,
-      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
+      "@metamask/notification-services-controller>firebase>@firebase/util": false
     }
   },
   "packageManager": "yarn@4.7.0",

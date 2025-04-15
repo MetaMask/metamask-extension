@@ -98,7 +98,6 @@ describe('EncryptionPublicKeyController', () => {
     );
 
     encryptionPublicKeyController = new EncryptionPublicKeyController({
-
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messenger: messengerMock as any,
@@ -139,8 +138,8 @@ describe('EncryptionPublicKeyController', () => {
         unapprovedEncryptionPublicKeyMsgs: {
           [messageIdMock]: messageMock,
 
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
         unapprovedEncryptionPublicKeyMsgCount: 1,
       }));
@@ -161,7 +160,6 @@ describe('EncryptionPublicKeyController', () => {
         [messageIdMock2]: messageMock,
       };
       encryptionPublicKeyManagerMock.getUnapprovedMessages.mockReturnValueOnce(
-
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         messages as any,
@@ -169,7 +167,6 @@ describe('EncryptionPublicKeyController', () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       encryptionPublicKeyController.update(() => ({
-
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         unapprovedEncryptionPublicKeyMsgs: messages as any,

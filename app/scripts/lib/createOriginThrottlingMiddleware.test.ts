@@ -78,8 +78,8 @@ describe('createOriginThrottlingMiddleware', () => {
       error: null,
       id: 1,
       jsonrpc: '2.0',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
     } as unknown as JsonRpcResponse<Json>;
 
     mockGetThrottledOriginState.mockReturnValue({
@@ -114,8 +114,8 @@ describe('createOriginThrottlingMiddleware', () => {
       },
       id: 1,
       jsonrpc: '2.0',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
     } as unknown as JsonRpcResponse<Json>;
 
     mockGetThrottledOriginState.mockReturnValueOnce({
@@ -152,8 +152,8 @@ describe('createOriginThrottlingMiddleware', () => {
       }),
       id: 1,
       jsonrpc: '2.0',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
     } as unknown as JsonRpcResponse<Json>;
 
     mockGetThrottledOriginState.mockReturnValueOnce({
