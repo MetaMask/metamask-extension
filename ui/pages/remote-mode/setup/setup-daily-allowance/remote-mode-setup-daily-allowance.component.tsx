@@ -4,8 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { createDelegation } from '@metamask/delegation-toolkit';
 
-import { createDelegation } from '@metamask/delegation-controller/sdk';
-import { hexToNumber } from '@metamask/utils';
 import {
   Box,
   Button,
@@ -158,7 +156,7 @@ export default function RemoteModeSetupDailyAllowance({
   };
 
   const handleConfigureRemoteSwaps = async () => {
-    const chainId = hexToNumber(selectedNetwork.configuration.chainId);
+    const { chainId } = selectedNetwork.configuration;
 
     const delegation = createDelegation({
       caveats: [],
@@ -166,14 +164,14 @@ export default function RemoteModeSetupDailyAllowance({
       to: selectedAccount.address,
     });
 
-    const signature = await signDelegation(delegation, chainId);
+    const signature = await signDelegation({ delegation, chainId });
 
     delegation.signature = signature;
 
     storeDelegationEntry({
-      data: delegation,
+      delegation,
       tags: ['daily-allowance'],
-      chainId: hexToNumber(selectedNetwork.configuration.chainId),
+      chainId: selectedNetwork.configuration.chainId,
     });
     history.replace(REMOTE_ROUTE);
   };
