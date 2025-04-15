@@ -1,24 +1,3 @@
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-/* eslint-disable node/global-require */
 /* eslint-disable-next-line */
 import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
@@ -169,6 +148,115 @@ if (!window.crypto) {
 if (!window.crypto.getRandomValues) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line node/global-require
   // eslint-disable-next-line node/global-require, no-restricted-globals, n/global-require
   window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
 }

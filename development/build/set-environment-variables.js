@@ -1,15 +1,3 @@
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-/* eslint-disable node/global-require */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
 // eslint-disable-next-line n/no-sync
 const { readFileSync } = require('node:fs');
@@ -200,8 +188,7 @@ function getPhishingWarningPageUrl({ variables, testing }) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
       : `https://metamask.github.io/phishing-warning/v${
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-          // eslint-disable-next-line node/global-require, n/global-require
+          // eslint-disable-next-line n/global-require
           require('@metamask/phishing-warning/package.json').version
         }/`;
   }

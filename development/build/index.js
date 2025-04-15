@@ -33,18 +33,6 @@ const {
 } = require('./utils');
 const { getConfig } = require('./config');
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
-/* eslint-disable node/global-require */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31993
 // eslint-disable-next-line no-constant-condition
 if (false) {
@@ -118,7 +106,6 @@ if (false) {
   // eslint-disable-next-line n/global-require
   require('eslint-plugin-jest');
 }
-/* eslint-enable no-constant-condition, node/global-require */
 
 defineAndRunBuildTasks().catch((error) => {
   console.error(error.stack || error);
