@@ -145,7 +145,8 @@ if (!window.crypto) {
 // eslint-disable-next-line no-restricted-globals
 if (!window.crypto.getRandomValues) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line node/global-require, no-restricted-globals
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line node/global-require, no-restricted-globals, n/global-require
   window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
 }
 

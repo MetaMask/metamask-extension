@@ -40,28 +40,69 @@ if (false) {
   // policy generation. To avoid the case where we need to write policy
   // overrides for these packages we can plop them here and they will be
   // included in the policy. Neat!
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('loose-envify');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('@babel/preset-env');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('@babel/preset-react');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('@babel/preset-typescript');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('@babel/core');
   // ESLint-related
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('@babel/eslint-parser');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('@babel/eslint-plugin');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('@metamask/eslint-config');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('@metamask/eslint-config-nodejs');
-  // eslint-disable-next-line import/no-unresolved
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line import/no-unresolved, n/global-require
   require('@typescript-eslint/parser');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint-config-prettier');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint-import-resolver-node');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint-import-resolver-typescript');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint-plugin-import');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint-plugin-jsdoc');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint-plugin-node');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint-plugin-prettier');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint-plugin-react');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint-plugin-react-hooks');
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+  // eslint-disable-next-line n/global-require
   require('eslint-plugin-jest');
 }
 /* eslint-enable no-constant-condition, node/global-require */

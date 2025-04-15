@@ -184,7 +184,8 @@ function getPhishingWarningPageUrl({ variables, testing }) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
       : `https://metamask.github.io/phishing-warning/v${
-          // eslint-disable-next-line node/global-require
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+          // eslint-disable-next-line node/global-require, n/global-require
           require('@metamask/phishing-warning/package.json').version
         }/`;
   }
