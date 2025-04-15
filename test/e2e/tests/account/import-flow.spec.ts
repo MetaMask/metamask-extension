@@ -142,7 +142,6 @@ describe('Import flow', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
-          .withProfileSyncDisabled()
           .build(),
         testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(

@@ -68,9 +68,7 @@ describe('MetaMask onboarding', function () {
   it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withProfileSyncDisabled()
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
       },
