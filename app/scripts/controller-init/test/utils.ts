@@ -29,5 +29,6 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     showNotification: jest.fn(),
     trackEvent: jest.fn(),
     getMetaMetricsId: jest.fn(),
+    preinstalledSnaps: [],
   };
 }
