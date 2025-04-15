@@ -29,7 +29,6 @@ export async function migrate(
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-
   if (
     hasProperty(state, 'MultichainNetworkController') &&
     isObject(state.MultichainNetworkController) &&

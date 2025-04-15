@@ -2,8 +2,7 @@ import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import  { BtcScope, CaipChainId } from '@metamask/keyring-api';
-import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { BtcScope } from '@metamask/keyring-api';
 import {
   getCurrentCurrency,
   getNativeCurrency,
