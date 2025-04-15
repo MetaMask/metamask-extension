@@ -24,6 +24,8 @@ class AccountListPage {
   private readonly accountMenuButton =
     '[data-testid="account-list-menu-details"]';
 
+  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
+
   private readonly accountNameInput = '#account-name';
 
   private readonly accountOptionsMenuButton =
@@ -414,6 +416,7 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.clickElement(this.accountDetailsTab);
   }
 
   /**
