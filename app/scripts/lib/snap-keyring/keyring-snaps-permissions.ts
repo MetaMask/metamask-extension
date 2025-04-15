@@ -1,13 +1,14 @@
-import {
-  SubjectType,
-  SubjectMetadataController,
-} from '@metamask/permission-controller';
 import { KeyringRpcMethod } from '@metamask/keyring-api';
+import {
+  SubjectMetadataController,
+  SubjectType,
+} from '@metamask/permission-controller';
 
 /**
  * The origins of the Portfolio dapp.
  */
 const PORTFOLIO_ORIGINS: string[] = [
+  'http://localhost:3000',
   'https://portfolio.metamask.io',
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   'https://dev.portfolio.metamask.io',
@@ -23,12 +24,19 @@ const PORTFOLIO_ORIGINS: string[] = [
 const METAMASK_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
+  KeyringRpcMethod.CreateAccount,
+  KeyringRpcMethod.GetAccountBalances,
   KeyringRpcMethod.FilterAccountChains,
+  KeyringRpcMethod.UpdateAccount,
   KeyringRpcMethod.DeleteAccount,
+  KeyringRpcMethod.ExportAccount,
   KeyringRpcMethod.ListRequests,
   KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.SubmitRequest,
+  KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
+  KeyringRpcMethod.ListAccountTransactions,
+  KeyringRpcMethod.ListAccountAssets,
 ];
 
 /**
@@ -39,14 +47,18 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
   KeyringRpcMethod.CreateAccount,
+  KeyringRpcMethod.GetAccountBalances,
   KeyringRpcMethod.FilterAccountChains,
   KeyringRpcMethod.UpdateAccount,
   KeyringRpcMethod.DeleteAccount,
   KeyringRpcMethod.ExportAccount,
   KeyringRpcMethod.ListRequests,
   KeyringRpcMethod.GetRequest,
+  KeyringRpcMethod.SubmitRequest,
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
+  KeyringRpcMethod.ListAccountTransactions,
+  KeyringRpcMethod.ListAccountAssets,
 ];
 
 /**
@@ -55,8 +67,19 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
 const PORTFOLIO_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
+  KeyringRpcMethod.CreateAccount,
   KeyringRpcMethod.GetAccountBalances,
+  KeyringRpcMethod.FilterAccountChains,
+  KeyringRpcMethod.UpdateAccount,
+  KeyringRpcMethod.DeleteAccount,
+  KeyringRpcMethod.ExportAccount,
+  KeyringRpcMethod.ListRequests,
+  KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.SubmitRequest,
+  KeyringRpcMethod.ApproveRequest,
+  KeyringRpcMethod.RejectRequest,
+  KeyringRpcMethod.ListAccountTransactions,
+  KeyringRpcMethod.ListAccountAssets,
 ];
 
 /**

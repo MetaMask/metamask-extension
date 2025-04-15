@@ -71,6 +71,7 @@ export function getAssetsMetadata(state: AssetsState) {
  * @returns An object containing non-EVM assets per accounts.
  */
 export function getAssetsRates(state: AssetsRatesState) {
+  console.log('getAssetsRates', state.metamask.conversionRates);
   return state.metamask.conversionRates;
 }
 
