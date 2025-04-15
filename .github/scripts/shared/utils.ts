@@ -39,12 +39,34 @@ export function getCurrentDateFormatted(): string {
 
 // This mapping is used to know what planning repo is used for each code repo
 export const codeRepoToPlanningRepo: { [key: string]: string } = {
-  "metamask-extension": "MetaMask-planning",
-  "metamask-mobile": "mobile-planning"
-}
+  'metamask-extension': 'MetaMask-planning',
+  'metamask-mobile': 'mobile-planning',
+};
 
 // This mapping is used to know what platform each code repo is used for
 export const codeRepoToPlatform: { [key: string]: string } = {
-  "metamask-extension": "extension",
-  "metamask-mobile": "mobile",
+  'metamask-extension': 'extension',
+  'metamask-mobile': 'mobile',
+};
+
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+export async function retry<T extends (...args: any[]) => any>(
+  fn: T,
+  { retries = 3, delay = 5000 } = { retries: 3, delay: 5000 },
+): Promise<Awaited<ReturnType<T>>> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt === retries) throw err;
+      console.log(
+        `Attempt ${attempt} failed: ${err.message}. Retrying in ${delay}ms...`,
+      );
+      await sleep(delay);
+      delay *= 2;
+    }
+  }
+  throw new Error('Retries exhausted');
 }
