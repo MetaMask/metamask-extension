@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { getSelectedInternalAccount } from '../../../selectors';
-
 import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
+import { isRemoteModeSupported } from '../../../helpers/utils/remote-mode';
+
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -35,7 +36,6 @@ import {
 import RemoteModeOverview from '../introducing/remote-mode-introducing.component';
 import RemoteModeSetup from '../setup/setup-swaps/remote-mode-setup-swaps.component';
 import RemoteModePermissions from './remote-mode-permissions.component';
-import { isRemoteModeSupported } from '../../../helpers/utils/remote-mode';
 
 enum RemoteScreen {
   OVERVIEW = 'OVERVIEW',
