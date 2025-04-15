@@ -152,6 +152,8 @@ export class SelfInjectPlugin {
     newSource.add(`{`);
     newSource.add(`let d=document,s=d.createElement('script');`);
     newSource.add(`s.textContent=`);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31990
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     newSource.add(this.escapeJs(source + sourceMappingURLComment));
     newSource.add(`+`);
     // The browser's dev tools can't map our inline javascript back to its
