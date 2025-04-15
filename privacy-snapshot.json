@@ -6,7 +6,9 @@
   "api.lens.dev",
   "api.segment.io",
   "api.simplehash.com",
+  "api.testnet.solana.com",
   "api.web3modal.com",
+  "api.web3modal.org",
   "app.ens.domains",
   "arbitrum-mainnet.infura.io",
   "authentication.api.cx.metamask.io",
@@ -85,6 +87,5 @@
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
   "www.4byte.directory",
-  "api.web3modal.org",
   "defiadapters.dev-api.cx.metamask.io"
 ]

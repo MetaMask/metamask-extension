@@ -5665,6 +5665,9 @@
   "suggestedTokenName": {
     "message": "Suggested name:"
   },
+  "supplied": {
+    "message": "Supplied"
+  },
   "support": {
     "message": "Support"
   },
