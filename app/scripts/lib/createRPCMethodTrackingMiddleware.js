@@ -128,6 +128,11 @@ const EVENT_NAME_MAP = {
     REJECTED: MetaMetricsEventName.PermissionsRejected,
     REQUESTED: MetaMetricsEventName.PermissionsRequested,
   },
+  [MESSAGE_TYPE.WALLET_CREATE_SESSION]: {
+    APPROVED: MetaMetricsEventName.PermissionsApproved,
+    REJECTED: MetaMetricsEventName.PermissionsRejected,
+    REQUESTED: MetaMetricsEventName.PermissionsRequested,
+  },
   [MESSAGE_TYPE.WALLET_GET_CALLS_STATUS]: {
     REQUESTED: MetaMetricsEventName.Wallet5792Called,
   },
@@ -163,10 +168,16 @@ let globalRateLimitCount = 0;
  * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
  * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
+ * @param {MetaMetricsEventCategory} eventCategory
  */
-function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
+function createSignatureFragment(
+  metaMetricsController,
+  req,
+  fragmentPayload,
+  eventCategory,
+) {
   metaMetricsController.createEventFragment({
-    category: MetaMetricsEventCategory.InpageProvider,
+    category: eventCategory,
 
     initialEvent: MetaMetricsEventName.SignatureRequested,
     successEvent: MetaMetricsEventName.SignatureApproved,
@@ -203,6 +214,13 @@ function finalizeSignatureFragment(
     signatureUniqueId,
     finalizeEventOptions,
   );
+}
+
+function isMultichainRequest(method) {
+  return [
+    MESSAGE_TYPE.WALLET_CREATE_SESSION,
+    MESSAGE_TYPE.WALLET_INVOKE_METHOD,
+  ].includes(method);
 }
 
 /**
@@ -248,13 +266,32 @@ export default function createRPCMethodTrackingMiddleware({
   ) {
     const { origin, method, params } = req;
 
-    const rateLimitType = RATE_LIMIT_MAP[method];
+    console.log('method', method);
+    const _isMultichainRequest = isMultichainRequest(method);
+
+    // requestedThrough and eventCategory are currently redundant so we will want to
+    // disentangle them in the future
+    const requestedThrough = _isMultichainRequest
+      ? 'multichain_api'
+      : 'ethereum_provider';
+
+    const eventCategory = _isMultichainRequest
+      ? MetaMetricsEventCategory.MultichainApi
+      : MetaMetricsEventCategory.InpageProvider;
+
+    let invokedMethod = method;
+    // if the request is through the multichain api, the method is nested in the params
+    if (method === MESSAGE_TYPE.WALLET_INVOKE_METHOD) {
+      invokedMethod = params?.request?.method;
+    }
+
+    const rateLimitType = RATE_LIMIT_MAP[invokedMethod];
 
     let isRateLimited;
     switch (rateLimitType) {
       case RATE_LIMIT_TYPES.TIMEOUT:
         isRateLimited =
-          typeof rateLimitTimeoutsByMethod[method] !== 'undefined';
+          typeof rateLimitTimeoutsByMethod[invokedMethod] !== 'undefined';
         break;
       case RATE_LIMIT_TYPES.NON_RATE_LIMITED:
         isRateLimited = false;
@@ -280,9 +317,11 @@ export default function createRPCMethodTrackingMiddleware({
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
-    const eventType = EVENT_NAME_MAP[method];
+    const eventType = EVENT_NAME_MAP[invokedMethod];
 
-    const eventProperties = {};
+    const eventProperties = {
+      requested_through: requestedThrough,
+    };
     let sensitiveEventProperties;
 
     // Boolean variable that reduces code duplication and increases legibility
@@ -306,7 +345,7 @@ export default function createRPCMethodTrackingMiddleware({
         : MetaMetricsEventName.ProviderMethodCalled;
 
       if (event === MetaMetricsEventName.SignatureRequested) {
-        eventProperties.signature_type = method;
+        eventProperties.signature_type = invokedMethod;
         eventProperties.hd_entropy_index = getHDEntropyIndex();
 
         // In personal messages the first param is data while in typed messages second param is data
@@ -341,7 +380,7 @@ export default function createRPCMethodTrackingMiddleware({
 
         if (
           shouldUseRedesignForSignatures({
-            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
+            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[invokedMethod],
           })
         ) {
           eventProperties.ui_customizations = [
@@ -361,7 +400,7 @@ export default function createRPCMethodTrackingMiddleware({
         Object.assign(eventProperties, snapAndHardwareInfo);
 
         try {
-          if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+          if (invokedMethod === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
               eventProperties.ui_customizations = [
@@ -369,7 +408,7 @@ export default function createRPCMethodTrackingMiddleware({
                 MetaMetricsEventUiCustomization.Siwe,
               ];
             }
-          } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
+          } else if (invokedMethod === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
             const parsedMessageData = parseTypedDataMessage(data);
             sensitiveEventProperties = {};
 
@@ -399,20 +438,42 @@ export default function createRPCMethodTrackingMiddleware({
           console.warn(`createRPCMethodTrackingMiddleware: Errored - ${e}`);
         }
       } else {
-        eventProperties.method = method;
+        eventProperties.method = invokedMethod;
       }
 
-      const transformParams = TRANSFORM_PARAMS_MAP[method];
+      const transformParams = TRANSFORM_PARAMS_MAP[invokedMethod];
       if (transformParams) {
         eventProperties.params = transformParams(params);
       }
 
-      CUSTOM_PROPERTIES_MAP[method]?.(
+      CUSTOM_PROPERTIES_MAP[invokedMethod]?.(
         req,
         undefined,
         STAGE.REQUESTED,
         eventProperties,
       );
+
+      // MULTICHAIN API REQUEST
+      // const isMultichainRequest = isMultichainRequest(method);
+      // if (isMultichainRequest) {
+      //   if (event === MetaMetricsEventName.SignatureRequested) {
+      //     const fragmentPayload = {
+      //       properties: eventProperties,
+      //       sensitiveProperties: sensitiveEventProperties,
+      //     };
+      //     // TODO: modify event category to MultichainApiRequest
+      //     createSignatureFragment(metaMetricsController, req, fragmentPayload);
+      //   } else {
+      //     metaMetricsController.trackEvent({
+      //       event,
+      //       category: MetaMetricsEventCategory.MultichainApiRequest,
+      //       referrer: {
+      //         url: origin,
+      //       },
+      //       properties: eventProperties,
+      //     });
+      //   }
+      // }
 
       if (event === MetaMetricsEventName.SignatureRequested) {
         const fragmentPayload = {
@@ -420,11 +481,16 @@ export default function createRPCMethodTrackingMiddleware({
           sensitiveProperties: sensitiveEventProperties,
         };
 
-        createSignatureFragment(metaMetricsController, req, fragmentPayload);
+        createSignatureFragment(
+          metaMetricsController,
+          req,
+          fragmentPayload,
+          eventCategory,
+        );
       } else {
         metaMetricsController.trackEvent({
           event,
-          category: MetaMetricsEventCategory.InpageProvider,
+          category: eventCategory,
           referrer: {
             url: origin,
           },
@@ -433,8 +499,8 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
-        rateLimitTimeoutsByMethod[method] = setTimeout(() => {
-          delete rateLimitTimeoutsByMethod[method];
+        rateLimitTimeoutsByMethod[invokedMethod] = setTimeout(() => {
+          delete rateLimitTimeoutsByMethod[invokedMethod];
         }, rateLimitTimeout);
       }
 
@@ -477,10 +543,10 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
-      CUSTOM_PROPERTIES_MAP[method]?.(req, res, stage, eventProperties);
+      CUSTOM_PROPERTIES_MAP[invokedMethod]?.(req, res, stage, eventProperties);
 
       let blockaidMetricProps = {};
-      if (SIGNING_METHODS.includes(method)) {
+      if (SIGNING_METHODS.includes(invokedMethod)) {
         const securityAlertResponse =
           appStateController.getSignatureSecurityAlertResponse(
             req.securityAlertResponse?.securityAlertId,
