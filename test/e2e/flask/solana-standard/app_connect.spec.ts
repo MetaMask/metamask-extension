@@ -5,7 +5,7 @@ import {
 } from '../multichain-api/testHelpers';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { connectSolanaTestDapp } from './testHelpers';
+import { connectSolanaTestDapp, DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { largeDelayMs } from '../../helpers';
 
 describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
@@ -15,6 +15,7 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
     it('Should connect', async function () {
       await withSolanaAccountSnap(
         {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
         },
         async (driver) => {
