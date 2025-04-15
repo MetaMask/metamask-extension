@@ -25,6 +25,7 @@ const render = (options?: Options) => {
       useConfusable={options?.useConfusable}
       onClick={mockOnClick}
       isDuplicate={options?.isDuplicate}
+      chainId="0x1"
     />,
     configureStore(mockState),
   );
