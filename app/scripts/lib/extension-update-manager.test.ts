@@ -31,7 +31,10 @@ describe('ExtensionUpdateManager', () => {
   describe('setIdleState', () => {
     it('should update idle state and apply pending updates when becoming idle', () => {
       // Setup spy on the applyPendingUpdateIfNeeded method
-      const applyUpdateSpy = jest.spyOn(updateManager, 'applyPendingUpdateIfNeeded');
+      const applyUpdateSpy = jest.spyOn(
+        updateManager,
+        'applyPendingUpdateIfNeeded',
+      );
 
       // Set a pending update via private property
       Object.defineProperty(updateManager, 'updatePending', { value: true });
@@ -43,7 +46,10 @@ describe('ExtensionUpdateManager', () => {
     });
 
     it('should not apply updates when becoming idle with no pending updates', () => {
-      const applyUpdateSpy = jest.spyOn(updateManager, 'applyPendingUpdateIfNeeded');
+      const applyUpdateSpy = jest.spyOn(
+        updateManager,
+        'applyPendingUpdateIfNeeded',
+      );
 
       // Ensure no pending update
       Object.defineProperty(updateManager, 'updatePending', { value: false });
@@ -87,25 +93,32 @@ describe('ExtensionUpdateManager', () => {
   describe('handleUpdateAvailable', () => {
     it('should mark update as pending and remove the listener', () => {
       // Access the private method
-      const handleUpdateAvailable = updateManager['handleUpdateAvailable'].bind(updateManager);
+      const handleUpdateAvailable =
+        updateManager.handleUpdateAvailable.bind(updateManager);
 
       handleUpdateAvailable();
 
       // Check if the listener was removed
-      expect(browser.runtime.onUpdateAvailable.removeListener).toHaveBeenCalled();
+      expect(
+        browser.runtime.onUpdateAvailable.removeListener,
+      ).toHaveBeenCalled();
 
       // Check if updatePending was set to true
-      expect(updateManager['updatePending']).toBe(true);
+      expect(updateManager.updatePending).toBe(true);
     });
 
     it('should apply update immediately if already idle', () => {
       // Set idle state to true
       Object.defineProperty(updateManager, 'isIdle', { value: true });
 
-      const applyUpdateSpy = jest.spyOn(updateManager, 'applyPendingUpdateIfNeeded');
+      const applyUpdateSpy = jest.spyOn(
+        updateManager,
+        'applyPendingUpdateIfNeeded',
+      );
 
       // Access the private method
-      const handleUpdateAvailable = updateManager['handleUpdateAvailable'].bind(updateManager);
+      const handleUpdateAvailable =
+        updateManager.handleUpdateAvailable.bind(updateManager);
 
       handleUpdateAvailable();
 
