@@ -1,7 +1,11 @@
 import { SECOND } from '../../../../shared/constants/time';
 import Analytics from './analytics';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const SEGMENT_WRITE_KEY = process.env.SEGMENT_WRITE_KEY ?? null;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const SEGMENT_HOST = process.env.SEGMENT_HOST ?? null;
 
 // flushAt controls how many events are sent to segment at once. Segment will
@@ -10,6 +14,8 @@ const SEGMENT_HOST = process.env.SEGMENT_HOST ?? null;
 // see events in real time for debugging, so this is set to 1 to disable the
 // queueing mechanism.
 const SEGMENT_FLUSH_AT =
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   process.env.METAMASK_ENVIRONMENT === 'production' ? undefined : 1;
 
 // flushInterval controls how frequently the queue is flushed to segment.

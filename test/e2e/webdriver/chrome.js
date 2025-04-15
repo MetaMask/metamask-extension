@@ -11,6 +11,8 @@ const { isHeadless } = require('../../helpers/env');
  */
 function getProxyServer(proxyPort) {
   const DEFAULT_PROXY_HOST = '127.0.0.1:8000';
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const { SELENIUM_HTTPS_PROXY } = process.env;
   if (proxyPort) {
     return `127.0.0.1:${proxyPort}`;
@@ -36,6 +38,8 @@ class ChromeDriver {
       '--disable-dev-shm-usage',
     ];
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.MULTIPROVIDER) {
       args.push(
         `load-extension=${process.cwd()}/dist/chrome,${process.cwd()}/dist/chrome2`,
@@ -57,6 +61,8 @@ class ChromeDriver {
     args.push('--log-level=3');
     args.push('--enable-logging');
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.CI || process.env.CODESPACES) {
       args.push('--disable-gpu');
     }
@@ -81,6 +87,8 @@ class ChromeDriver {
     options.setBrowserVersion('126');
 
     // Allow disabling DoT local testing
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
       options.setLocalState({
         'dns_over_https.mode': 'off',
@@ -96,6 +104,8 @@ class ChromeDriver {
     // Enables Chrome logging. Default: enabled
     // Especially useful for discovering why Chrome has crashed, but can also
     // be useful for revealing console errors (from the page or background).
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.ENABLE_CHROME_LOGGING !== 'false') {
       service.setStdio('inherit').enableChromeLogging();
     }

@@ -19,6 +19,8 @@ import VisitSupportDataConsentModal from '../../../components/app/modals/visit-s
 
 export default class InfoTab extends PureComponent {
   state = {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     version: process.env.METAMASK_VERSION,
     isVisitSupportDataConsentModalOpen: false,
   };

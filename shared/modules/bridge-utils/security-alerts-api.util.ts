@@ -12,14 +12,16 @@ const DOMAIN = 'https://metamask.io';
 
 export function isSecurityAlertsAPIEnabled() {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line no-restricted-globals, n/no-process-env
   const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
   return isEnabled?.toString() === 'true';
 }
 
 function getUrl(endpoint: string) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line no-restricted-globals, n/no-process-env
   const host = process.env.SECURITY_ALERTS_API_URL;
 
   if (!host) {

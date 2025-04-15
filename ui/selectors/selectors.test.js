@@ -829,10 +829,14 @@ describe('Selectors', () => {
     };
 
     beforeEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW = 'true';
     });
 
     afterEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW = undefined;
     });
 
@@ -879,10 +883,14 @@ describe('Selectors', () => {
     };
 
     beforeEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW = 'true';
     });
 
     afterEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW = undefined;
     });
 
@@ -1989,6 +1997,8 @@ describe('#getConnectedSitesList', () => {
 
   describe('getIsSwapsChain', () => {
     it('returns true for an allowed chainId in production environment', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.METAMASK_ENVIRONMENT = 'production';
 
       const state = {
@@ -2005,6 +2015,8 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns true for an allowed chainId in development environment', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.METAMASK_ENVIRONMENT = 'development';
 
       const state = {
@@ -2021,6 +2033,8 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns false for a disallowed chainId in production environment', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.METAMASK_ENVIRONMENT = 'production';
 
       const state = {
@@ -2052,6 +2066,8 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns false for a disallowed chainId in development environment', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.METAMASK_ENVIRONMENT = 'development';
 
       const state = {
@@ -2083,6 +2099,8 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('respects the overrideChainId parameter', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.METAMASK_ENVIRONMENT = 'production';
 
       const getCurrentChainIdSpy = jest.spyOn(
@@ -2155,10 +2173,14 @@ describe('#getConnectedSitesList', () => {
 
   describe('getIsTokenNetworkFilterEqualCurrentNetwork', () => {
     beforeEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW = 'true';
     });
 
     afterEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW = undefined;
     });
 
@@ -2214,14 +2236,20 @@ describe('#getConnectedSitesList', () => {
 
   describe('getTokenNetworkFilter', () => {
     beforeEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW = 'true';
     });
 
     afterEach(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW = undefined;
     });
 
     it('always returns an object containing the network if portfolio view is disabled', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW = undefined;
 
       const state = {

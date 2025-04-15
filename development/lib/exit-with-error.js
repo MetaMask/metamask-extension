@@ -11,6 +11,8 @@
 function exitWithError(errorMessage) {
   console.error(errorMessage);
   process.exitCode = 1;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   if (process.env.CI) {
     // For some reason, the CI environment does not exit when process.exitCode
     // is set, or at least doesn't terminate immediately. Something may be

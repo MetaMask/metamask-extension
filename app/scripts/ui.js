@@ -172,6 +172,8 @@ async function loadPhishingWarningPage() {
 
   try {
     const extensionStartupPhishingPageUrl = new URL(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PHISHING_WARNING_PAGE_URL,
     );
     // The `extensionStartup` hash signals to the phishing warning page that it should not bother
@@ -253,6 +255,8 @@ async function initializeUiWithTab(
 
     isUIInitialised = true;
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.IN_TEST) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
       // eslint-disable-next-line no-restricted-globals
@@ -281,6 +285,8 @@ function updateUiStreams(connectionStream) {
 async function queryCurrentActiveTab(windowType) {
   // Shims the activeTab for E2E test runs only if the
   // "activeTabOrigin" querystring key=value is set
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   if (process.env.IN_TEST) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
     // eslint-disable-next-line no-restricted-globals

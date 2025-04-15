@@ -138,6 +138,8 @@ describe('AccountList', () => {
       ...defaultArgs,
       accounts: [defaultAccount, mockNonEvmAccount],
     };
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.DEBUG_PRINT_LIMIT = 10000000000;
     const { getByText, getByTestId, getByTitle } = render(args);
     expect(getByTestId('choose-account-list-0')).toBeInTheDocument();

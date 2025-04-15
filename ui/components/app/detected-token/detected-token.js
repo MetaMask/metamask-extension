@@ -69,6 +69,8 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   );
 
   const totalDetectedTokens = useMemo(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     return process.env.PORTFOLIO_VIEW &&
       !isTokenNetworkFilterEqualCurrentNetwork
       ? Object.values(detectedTokensMultichain).flat().length
@@ -84,6 +86,8 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   useEffect(() => {
     const newTokensList = () => {
       if (
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.PORTFOLIO_VIEW &&
         !isTokenNetworkFilterEqualCurrentNetwork
       ) {
@@ -145,6 +149,8 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     });
 
     if (
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW &&
       !isTokenNetworkFilterEqualCurrentNetwork
     ) {
@@ -204,6 +210,8 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     });
 
     if (
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       process.env.PORTFOLIO_VIEW &&
       !isTokenNetworkFilterEqualCurrentNetwork
     ) {
@@ -307,6 +315,8 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       {totalDetectedTokens > 0 && (
         <DetectedTokenSelectionPopover
           detectedTokens={
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+            // eslint-disable-next-line n/no-process-env
             process.env.PORTFOLIO_VIEW
               ? detectedTokensMultichain
               : detectedTokens

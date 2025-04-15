@@ -18,6 +18,8 @@ export default function LoadingHeartBeat({
   const active = useSelector(getGasLoadingAnimationIsShowing);
 
   if (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.IN_TEST ||
     (estimateUsed && !isMetamaskSuggestedGasEstimate(estimateUsed))
   ) {

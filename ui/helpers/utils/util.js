@@ -720,6 +720,8 @@ export const getDedupedSnaps = (request, permissions) => {
   return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
 const REGEX_LTR_OVERRIDE = /\u202D/giu;

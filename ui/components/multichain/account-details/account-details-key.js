@@ -27,6 +27,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const inTest = Boolean(process.env.IN_TEST);
 
 export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {

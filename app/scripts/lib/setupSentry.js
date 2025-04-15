@@ -19,12 +19,26 @@ const internalLog = createModuleLogger(log, 'internal');
 
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const RELEASE = process.env.METAMASK_VERSION;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const SENTRY_DSN = process.env.SENTRY_DSN;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
 /* eslint-enable prefer-destructuring */
 
@@ -243,6 +257,8 @@ function getSentryEnvironment() {
 
 function getSentryTarget() {
   if (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.IN_TEST &&
     (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
   ) {

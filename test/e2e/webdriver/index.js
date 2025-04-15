@@ -11,6 +11,8 @@ async function buildWebDriver({
   timeOut,
   proxyPort,
 } = {}) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const browser = process.env.SELENIUM_BROWSER;
 
   const {

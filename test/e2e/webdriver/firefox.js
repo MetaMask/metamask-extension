@@ -27,6 +27,8 @@ const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
  */
 function getProxyServerURL(proxyPort) {
   const DEFAULT_PROXY_HOST = 'http://127.0.0.1:8000';
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const { SELENIUM_HTTPS_PROXY } = process.env;
 
   if (proxyPort) {
@@ -83,6 +85,8 @@ class FirefoxDriver {
 
     // For cases where Firefox is installed as snap (Linux)
     const FF_SNAP_GECKO_PATH = '/snap/bin/geckodriver';
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     const service = process.env.FIREFOX_SNAP
       ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
       : new firefox.ServiceBuilder();

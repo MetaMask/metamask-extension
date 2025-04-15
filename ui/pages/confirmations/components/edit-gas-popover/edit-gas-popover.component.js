@@ -186,6 +186,8 @@ export default function EditGasPopover({
           {title}
         </ModalHeader>
         <div className="edit-gas-popover__edit-gas-display">
+          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895 */}
+          {/* eslint-disable-next-line n/no-process-env */}
           {process.env.IN_TEST ? null : <LoadingHeartBeat />}
           <EditGasDisplay
             dappSuggestedGasFeeAcknowledged={dappSuggestedGasFeeAcknowledged}

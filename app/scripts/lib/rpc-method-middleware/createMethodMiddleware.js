@@ -78,6 +78,8 @@ export function makeMethodMiddlewareMaker(handlers) {
             selectHooks(hooks, hookNames),
           );
         } catch (error) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+          // eslint-disable-next-line n/no-process-env
           if (process.env.METAMASK_DEBUG) {
             console.error(error);
           }

@@ -22,6 +22,8 @@ export default function createLoggerMiddleware(opts) {
       if (req.isMetamaskInternal) {
         return;
       }
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       if (process.env.METAMASK_DEBUG) {
         log.info(`RPC (${opts.origin}):`, req, '->', res);
       } else {

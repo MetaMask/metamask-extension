@@ -131,6 +131,8 @@ export const QUOTE_VALIDATORS = [
  * @returns string
  */
 const getBaseUrlForNewSwapsApi = (type, chainId) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const useDevApis = process.env.SWAPS_USE_DEV_APIS;
   const v2ApiBaseUrl = useDevApis
     ? SWAPS_DEV_API_V2_BASE_URL

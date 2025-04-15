@@ -9,6 +9,8 @@ const platform = new ExtensionPlatform();
 
 // This instance of `localStore` is used by Sentry to get the persisted state
 const sentryLocalStore = new PersistenceManager({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   localStore: process.env.IN_TEST
     ? new ReadOnlyNetworkStore()
     : new ExtensionStore(),

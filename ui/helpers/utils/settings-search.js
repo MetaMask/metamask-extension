@@ -10,6 +10,8 @@ export function getSettingsRoutes() {
   }
   settingsRoutes = SETTINGS_CONSTANTS.filter(
     (routeObject) =>
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       (routeObject.featureFlag ? process.env[routeObject.featureFlag] : true) &&
       !routeObject.hidden,
   );

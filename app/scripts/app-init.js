@@ -4,6 +4,8 @@
 // eslint-disable-next-line
 let scriptsLoadInitiated = false;
 const { chrome } = globalThis;
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 const testMode = process.env.IN_TEST;
 
 /**
@@ -57,12 +59,16 @@ function importAllScripts() {
   const startImportScriptsTime = Date.now();
 
   // value of useSnow below is dynamically replaced at build time with actual value
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const useSnow = process.env.USE_SNOW;
   if (typeof useSnow !== 'boolean') {
     throw new Error('Missing USE_SNOW environment variable');
   }
 
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const applyLavaMoat = process.env.APPLY_LAVAMOAT;
   if (typeof applyLavaMoat !== 'boolean') {
     throw new Error('Missing APPLY_LAVAMOAT environment variable');
@@ -95,6 +101,8 @@ function importAllScripts() {
   }
 
   // This environment variable is set to a string of comma-separated relative file paths.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const rawFileList = process.env.FILE_NAMES;
   const fileList = rawFileList.split(',');
   fileList.forEach((fileName) => loadFile(fileName));

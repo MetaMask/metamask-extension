@@ -54,7 +54,11 @@ async function fromIniFile(filepath) {
 function fromEnv(declarations) {
   const definitions = new Map(
     [...declarations]
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       .filter((declaration) => declaration in process.env)
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       .map((declaration) => [declaration, process.env[declaration]]),
   );
   return { definitions, declarations: new Set() };

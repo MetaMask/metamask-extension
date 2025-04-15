@@ -289,6 +289,8 @@ class Driver {
   }
 
   async delayFirefox(time) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.SELENIUM_BROWSER === 'firefox') {
       await new Promise((resolve) => setTimeout(resolve, time));
     }
@@ -1345,6 +1347,8 @@ class Driver {
   async verboseReportOnFailure(testTitle, error) {
     console.error(
       `Failure on testcase: '${testTitle}', for more information see the ${
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
       }\n`,
     );

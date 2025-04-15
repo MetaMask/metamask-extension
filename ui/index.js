@@ -265,8 +265,14 @@ async function runInitialActions(store) {
  */
 function setupStateHooks(store) {
   if (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.METAMASK_DEBUG ||
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.IN_TEST ||
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS
   ) {
     /**

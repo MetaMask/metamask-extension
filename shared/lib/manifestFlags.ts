@@ -84,7 +84,8 @@ export function getManifestFlags(): ManifestFlags {
   // If this is running in a unit test, there's no manifest, so just return an empty object
   if (
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-    // eslint-disable-next-line no-restricted-globals
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line no-restricted-globals, n/no-process-env
     process.env.JEST_WORKER_ID === undefined ||
     !browser.runtime.getManifest
   ) {

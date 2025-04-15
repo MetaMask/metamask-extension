@@ -456,14 +456,20 @@ describe('MetaMaskController', () => {
         },
       );
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       const metamaskVersion = process.env.METAMASK_VERSION;
       afterEach(() => {
         // reset `METAMASK_VERSION` env var
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.METAMASK_VERSION = metamaskVersion;
       });
 
       it('should details with LoggingController', async () => {
         const mockVersion = '1.3.7';
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.METAMASK_VERSION = mockVersion;
 
         jest.spyOn(LoggingController.prototype, 'add');
@@ -490,6 +496,8 @@ describe('MetaMaskController', () => {
 
       it('should openExtensionInBrowser if version is 8.1.0', () => {
         const mockVersion = '8.1.0';
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.METAMASK_VERSION = mockVersion;
 
         const openExtensionInBrowserMock = jest.fn();
@@ -2657,6 +2665,8 @@ describe('MetaMaskController', () => {
     describe('#setupUntrustedCommunicationCaip', () => {
       let localMetamaskController;
       beforeEach(() => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.MULTICHAIN_API = true;
         localMetamaskController = new MetaMaskController({
           showUserConfirmation: noop,
@@ -2683,6 +2693,8 @@ describe('MetaMaskController', () => {
       });
 
       afterAll(() => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.MULTICHAIN_API = false;
         tearDownMockMiddlewareLog();
       });
@@ -3935,7 +3947,11 @@ describe('MetaMaskController', () => {
       });
 
       it('returna config when not matching default mapping', async () => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.METAMASK_BUILD_TYPE = 'non-existent-distribution';
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
 
         const result =

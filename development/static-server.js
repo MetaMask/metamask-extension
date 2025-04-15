@@ -52,6 +52,8 @@ const main = async () => {
   const args = process.argv.slice(2);
 
   const options = {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     port: process.env.port || DEFAULT_PORT,
     rootDirectory: path.resolve('.'),
   };

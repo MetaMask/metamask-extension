@@ -25,6 +25,8 @@ const getStateLogsJson = async () => {
 
 describe('State logs', function () {
   it('should download state logs for the account', async function () {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
       this.skip();

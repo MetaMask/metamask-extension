@@ -13,8 +13,14 @@ const runtimeManifest =
 const isManifestV3 = runtimeManifest
   ? runtimeManifest.manifest_version === 3
   : // Our build system sets this as a boolean, but in a Node.js context (e.g. unit tests) it can be a string
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.ENABLE_MV3 === true ||
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.ENABLE_MV3 === 'true' ||
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.ENABLE_MV3 === undefined;
 
 /**

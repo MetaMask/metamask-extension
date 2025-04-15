@@ -38,6 +38,8 @@ export default function setupEnsIpfsResolver({
       (tabId === -1 || getCurrentChainId() !== '0x1') &&
       // E2E tests use a chain other than 0x1, so for testing,
       // allow the reuqest to pass through
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       !process.env.IN_TEST
     ) {
       return;
@@ -69,6 +71,8 @@ export default function setupEnsIpfsResolver({
 
     // If we're testing ENS domain resolution support,
     // we assume the ENS domains URL
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.IN_TEST) {
       if (useAddressBarEnsResolution || ipfsGateway) {
         await browser.tabs.update(tabId, { url });

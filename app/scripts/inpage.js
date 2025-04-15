@@ -54,6 +54,8 @@ const INPAGE = 'metamask-inpage';
 
 restoreContextAfterImports();
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line n/no-process-env
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 
 //
@@ -73,8 +75,14 @@ if (shouldInjectProvider()) {
     shouldShimWeb3: true,
     providerInfo: {
       uuid: uuid(),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       name: process.env.METAMASK_BUILD_NAME,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       icon: process.env.METAMASK_BUILD_ICON,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       rdns: process.env.METAMASK_BUILD_APP_ID,
     },
   });

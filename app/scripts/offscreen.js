@@ -60,7 +60,8 @@ export async function createOffscreen() {
         // If the Offscreen Document sees `navigator.webdriver === true` and we are in a test environment,
         // start the SocketBackgroundToMocha.
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
-        // eslint-disable-next-line id-denylist
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line id-denylist, n/no-process-env
         if (process.env.IN_TEST && msg.webdriverPresent) {
           getSocketBackgroundToMocha();
         }

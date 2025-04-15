@@ -40,6 +40,8 @@ describe('migration #74', () => {
           provider: {
             chainId: '0x4',
             type: 'rpc',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+            // eslint-disable-next-line n/no-process-env
             rpcUrl: `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
             nickname: 'Rinkeby',
             ticker: 'RinkebyETH',
@@ -48,6 +50,8 @@ describe('migration #74', () => {
         PreferencesController: {
           frequentRpcListDetail: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+              // eslint-disable-next-line n/no-process-env
               rpcUrl: `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x4',
               nickname: 'Rinkeby',
@@ -145,6 +149,8 @@ describe('migration #74', () => {
         PreferencesController: {
           frequentRpcListDetail: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+              // eslint-disable-next-line n/no-process-env
               rpcUrl: `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x4',
               nickname: 'Rinkeby',
@@ -152,6 +158,8 @@ describe('migration #74', () => {
               rpcPrefs: {},
             },
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+              // eslint-disable-next-line n/no-process-env
               rpcUrl: `https://ropsten.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x3',
               nickname: 'Ropsten',
@@ -220,6 +228,8 @@ describe('migration #74', () => {
         PreferencesController: {
           frequentRpcListDetail: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+              // eslint-disable-next-line n/no-process-env
               rpcUrl: `https://kovan.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x2a',
               nickname: 'Kovan',
@@ -283,6 +293,8 @@ describe('migration #74', () => {
       data: {
         NetworkController: {
           provider: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+            // eslint-disable-next-line n/no-process-env
             rpcUrl: `https://kovan.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
             chainId: '0x2a',
             nickname: 'Kovan',
@@ -293,6 +305,8 @@ describe('migration #74', () => {
         PreferencesController: {
           frequentRpcListDetail: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+              // eslint-disable-next-line n/no-process-env
               rpcUrl: `https://kovan.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x2a',
               nickname: 'Kovan',
@@ -300,6 +314,8 @@ describe('migration #74', () => {
               rpcPrefs: {},
             },
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+              // eslint-disable-next-line n/no-process-env
               rpcUrl: `https://ropsten.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x3',
               nickname: 'Ropsten',
@@ -307,6 +323,8 @@ describe('migration #74', () => {
               rpcPrefs: {},
             },
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+              // eslint-disable-next-line n/no-process-env
               rpcUrl: `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
               chainId: '0x4',
               nickname: 'Rinkeby',

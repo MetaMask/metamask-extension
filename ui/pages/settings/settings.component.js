@@ -365,6 +365,8 @@ class SettingsPage extends PureComponent {
       });
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
       tabs.splice(-1, 0, {
         content: t('developerOptions'),
@@ -443,7 +445,11 @@ class SettingsPage extends PureComponent {
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895 */}
+        {/* eslint-disable-next-line n/no-process-env */}
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+          // eslint-disable-next-line n/no-process-env
           process.env.IN_TEST) && (
           <Route
             exact

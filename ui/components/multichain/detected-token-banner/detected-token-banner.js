@@ -49,6 +49,8 @@ export const DetectedTokensBanner = ({
   const chainId = useSelector(getCurrentChainId);
 
   const detectedTokensDetails =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.PORTFOLIO_VIEW && !isTokenNetworkFilterEqualCurrentNetwork
       ? Object.values(detectedTokensMultichain)
           .flat()
@@ -56,6 +58,8 @@ export const DetectedTokensBanner = ({
       : detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`);
 
   const totalTokens =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     process.env.PORTFOLIO_VIEW && !isTokenNetworkFilterEqualCurrentNetwork
       ? Object.values(detectedTokensMultichain).reduce(
           (count, tokenArray) => count + tokenArray.length,

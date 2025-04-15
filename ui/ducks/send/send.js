@@ -3326,6 +3326,8 @@ export function getGasInputMode(state) {
   if (state[name].gasIsSetInModal) {
     return GAS_INPUT_MODES.CUSTOM;
   }
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   if ((!isMainnet && !process.env.IN_TEST) || showAdvancedGasFields) {
     return GAS_INPUT_MODES.INLINE;
   }
@@ -3334,6 +3336,8 @@ export function getGasInputMode(state) {
   // instruct the UI to render the INLINE inputs in this case, only on
   // mainnet or IN_TEST.
   if (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     (isMainnet || process.env.IN_TEST) &&
     gasEstimateType === GasEstimateTypes.ethGasPrice
   ) {

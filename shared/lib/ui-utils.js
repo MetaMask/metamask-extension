@@ -1,5 +1,6 @@
 // no destructuring as process.env detection stops working
-// eslint-disable-next-line prefer-destructuring
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line prefer-destructuring, n/no-process-env
 export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 
 export const COINGECKO_LINK = 'https://www.coingecko.com/';

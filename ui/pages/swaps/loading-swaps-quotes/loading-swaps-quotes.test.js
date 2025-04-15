@@ -28,6 +28,8 @@ const createProps = (customProps = {}) => {
 };
 
 describe('LoadingSwapsQuotes', () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   process.env.METAMASK_BUILD_TYPE = 'main';
   it('renders the component with initial props', () => {
     const store = configureMockStore()(createSwapsMockStore());

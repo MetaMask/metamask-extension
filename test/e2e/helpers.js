@@ -277,12 +277,16 @@ async function withFixtures(options, testSuite) {
     extensionId = wd.extensionId;
     webDriver = driver.driver;
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(ignoredConsoleErrors);
       await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
     }
 
     let driverProxy;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.E2E_DEBUG === 'true') {
       driverProxy = new Proxy(driver, {
         get(target, prop, receiver) {
@@ -341,6 +345,8 @@ async function withFixtures(options, testSuite) {
     const newHosts = difference(mergedReport, privacySnapshot);
 
     if (newHosts.length > 0) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
         writeFileSync(
           './privacy-snapshot.json',
@@ -370,6 +376,8 @@ async function withFixtures(options, testSuite) {
         console.error(verboseReportError);
       }
       if (
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.E2E_LEAVE_RUNNING !== 'true' &&
         (driver.errors.length > 0 || driver.exceptions.length > 0)
       ) {
@@ -383,12 +391,18 @@ async function withFixtures(options, testSuite) {
     }
 
     // Add information to the end of the error message that should surface in the "Tests" tab of CircleCI
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.CIRCLE_NODE_INDEX) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       error.message += `\n  (Ran on CircleCI Node ${process.env.CIRCLE_NODE_INDEX} of ${process.env.CIRCLE_NODE_TOTAL}, Job ${process.env.CIRCLE_JOB})`;
     }
 
     throw error;
   } finally {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
       for (const server of localNodes) {

@@ -42,7 +42,8 @@ const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-// eslint-disable-next-line no-restricted-globals
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+// eslint-disable-next-line no-restricted-globals, n/no-process-env
 if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
 }
@@ -275,7 +276,8 @@ function logTrace(
   const { name } = request;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
-  // eslint-disable-next-line no-restricted-globals
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line no-restricted-globals, n/no-process-env
   if (process.env.IN_TEST) {
     durationsByName[name] = duration;
   }

@@ -483,6 +483,8 @@ export default class MetamaskController extends EventEmitter {
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     const version = process.env.METAMASK_VERSION;
     this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
@@ -606,6 +608,8 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.mmiConfigurationController = new MmiConfigurationController({
       initState: initState.MmiConfigurationController,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       mmiConfigurationServiceUrl: process.env.MMI_CONFIGURATION_SERVICE_URL,
     });
     ///: END:ONLY_INCLUDE_IF
@@ -644,6 +648,8 @@ export default class MetamaskController extends EventEmitter {
       });
 
       let network;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       if (process.env.IN_TEST) {
         network = {
           chainId: CHAIN_IDS.LOCALHOST,
@@ -661,7 +667,11 @@ export default class MetamaskController extends EventEmitter {
         };
         networks[CHAIN_IDS.LOCALHOST] = network;
       } else if (
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.METAMASK_DEBUG ||
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.METAMASK_ENVIRONMENT === 'test'
       ) {
         network = networks[CHAIN_IDS.SEPOLIA];
@@ -684,6 +694,8 @@ export default class MetamaskController extends EventEmitter {
     });
     this.networkController.initializeProvider();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.MULTICHAIN_API) {
       this.multichainSubscriptionManager = new MultichainSubscriptionManager({
         getNetworkClientById: this.networkController.getNetworkClientById.bind(
@@ -802,7 +814,11 @@ export default class MetamaskController extends EventEmitter {
       state: initState.MetaMetricsController,
       messenger: metaMetricsControllerMessenger,
       segment,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       version: process.env.METAMASK_VERSION,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
       captureException,
@@ -836,6 +852,8 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: ['NetworkController:stateChange'],
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     const gasApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
       ? GAS_DEV_API_BASE_URL
       : GAS_API_BASE_URL;
@@ -940,7 +958,11 @@ export default class MetamaskController extends EventEmitter {
     this.phishingController = new PhishingController({
       messenger: phishingControllerMessenger,
       state: initState.PhishingController,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
     });
 
@@ -1488,6 +1510,8 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       trace,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       decodingApiUrl: process.env.DECODING_API_URL,
       isDecodeSignatureRequestEnabled: () =>
         this.preferencesController.state.useTransactionSimulations,
@@ -1758,6 +1782,8 @@ export default class MetamaskController extends EventEmitter {
     }).init();
 
     this.userOperationController = new UserOperationController({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
       getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
         this.gasFeeController,
@@ -2247,11 +2273,15 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Automatic login via config password
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     const password = process.env.PASSWORD;
     if (
       !this.isUnlocked() &&
       this.onboardingController.state.completedOnboarding &&
       password &&
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       !process.env.IN_TEST
     ) {
       this._loginUser(password);
@@ -2686,6 +2716,8 @@ export default class MetamaskController extends EventEmitter {
     let lastSelectedAddress;
     let lastSelectedSolanaAccountAddress;
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.MULTICHAIN_API) {
       // this throws if there is no solana account... perhaps we should handle this better at the controller level
       try {
@@ -2735,6 +2767,8 @@ export default class MetamaskController extends EventEmitter {
 
     // This handles CAIP-25 authorization changes every time relevant permission state
     // changes, for any reason.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.MULTICHAIN_API) {
       // wallet_sessionChanged and eth_subscription setup/teardown
       this.controllerMessenger.subscribe(
@@ -3310,6 +3344,8 @@ export default class MetamaskController extends EventEmitter {
   async getProviderState(origin) {
     const providerNetworkState = await this.getProviderNetworkState(origin);
     const metadata = {};
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.MULTICHAIN_API && isManifestV3) {
       const { chrome } = globalThis;
       metadata.extensionId = chrome?.runtime?.id;
@@ -6222,6 +6258,8 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
   setupUntrustedCommunicationCaip({ connectionStream, sender, subjectType }) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (!process.env.MULTICHAIN_API) {
       return;
     }
@@ -6528,6 +6566,8 @@ export default class MetamaskController extends EventEmitter {
    * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
   setupProviderConnectionCaip(outStream, sender, subjectType) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (!process.env.MULTICHAIN_API) {
       return;
     }
@@ -6634,6 +6674,8 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
     // Add a middleware that will switch chain on each request (as needed)
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
       const requestQueueMiddleware = createQueuedRequestMiddleware({
         enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
@@ -7104,6 +7146,8 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngineCaip({ origin, sender, subjectType, tabId }) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     if (!process.env.MULTICHAIN_API) {
       return null;
     }
@@ -7920,6 +7964,8 @@ export default class MetamaskController extends EventEmitter {
    */
   recordFirstTimeInfo(initState) {
     if (!('firstTimeInfo' in initState)) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       const version = process.env.METAMASK_VERSION;
       initState.firstTimeInfo = {
         version,
@@ -8008,6 +8054,8 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async backToSafetyPhishingWarning() {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     const portfolioBaseURL = process.env.PORTFOLIO_URL;
     const portfolioURL = `${portfolioBaseURL}/?metamaskEntry=phishing_page_portfolio_button`;
 
@@ -8543,10 +8591,14 @@ export default class MetamaskController extends EventEmitter {
 
   _getConfigForRemoteFeatureFlagRequest() {
     const distribution =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
       buildTypeMappingForRemoteFeatureFlag[process.env.METAMASK_BUILD_TYPE] ||
       DistributionType.Main;
     const environment =
       environmentMappingForRemoteFeatureFlag[
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         process.env.METAMASK_ENVIRONMENT
       ] || EnvironmentType.Development;
     return { distribution, environment };

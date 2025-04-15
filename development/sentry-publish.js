@@ -47,7 +47,11 @@ async function start() {
 
   const { buildType, buildVersion, dist, org, project } = argv;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   process.env.SENTRY_ORG = org;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   process.env.SENTRY_PROJECT = project;
 
   const authWorked = await checkIfAuthWorks();

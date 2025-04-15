@@ -88,8 +88,12 @@ export const ConnectedSiteMenu = ({
         justifyContent={JustifyContent.center}
         backgroundColor={BackgroundColor.backgroundDefault}
         ref={referenceElement}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+        // eslint-disable-next-line n/no-process-env
         onClick={process.env.REMOVE_GNS ? () => setShowPopover(true) : onClick}
       >
+        {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895 */}
+        {/* eslint-disable-next-line n/no-process-env */}
         {process.env.REMOVE_GNS ? (
           iconElement
         ) : (

@@ -131,7 +131,11 @@ function runningOnGitHubActions(testPaths) {
   // Determine the test matrix division
   // GitHub Actions uses matrix.index (0-based) and matrix.total values for test splitting
   // Improve test strategy maybe in the future?
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const matrixIndex = parseInt(process.env.MATRIX_INDEX || '0', 10);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const matrixTotal = parseInt(process.env.MATRIX_TOTAL || '1', 10);
 
   console.log(
@@ -303,9 +307,13 @@ async function main() {
 
   let myTestList;
   let changedOrNewTests;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   if (process.env.CIRCLECI) {
     ({ fullTestList: myTestList, changedOrNewTests = [] } =
       runningOnCircleCI(testPaths));
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   } else if (process.env.GITHUB_ACTION) {
     ({ fullTestList: myTestList, changedOrNewTests = [] } =
       runningOnGitHubActions(testPaths));

@@ -127,11 +127,17 @@ function getEnvironment({ buildTarget }) {
   } else if (isTestBuild(buildTarget)) {
     return ENVIRONMENT.TESTING;
   } else if (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
     /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(process.env.CIRCLE_BRANCH)
   ) {
     return ENVIRONMENT.RELEASE_CANDIDATE;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   } else if (process.env.CIRCLE_BRANCH === 'main') {
     return ENVIRONMENT.STAGING;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   } else if (process.env.CIRCLE_PULL_REQUEST) {
     return ENVIRONMENT.PULL_REQUEST;
   }

@@ -25,16 +25,22 @@ const assetList = {
 };
 
 export function isBeta() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   return process.env.METAMASK_BUILD_TYPE === 'beta';
 }
 
 export function isFlask() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   return process.env.METAMASK_BUILD_TYPE === 'flask';
 }
 
 // Returns a specific version of an asset based on
 // the current metamask version (i.e. main, beta, etc.)
 export function getBuildSpecificAsset(assetName) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const buildType = process.env.METAMASK_BUILD_TYPE;
   if (
     !assetList[buildType] ||

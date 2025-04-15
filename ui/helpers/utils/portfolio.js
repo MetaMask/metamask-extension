@@ -7,6 +7,8 @@ export function getPortfolioUrl(
   accountAddress,
   tab,
 ) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+  // eslint-disable-next-line n/no-process-env
   const baseUrl = process.env.PORTFOLIO_URL || '';
   const url = new URL(endpoint, baseUrl);
 
