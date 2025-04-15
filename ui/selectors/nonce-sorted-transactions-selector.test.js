@@ -105,7 +105,6 @@ const getStateTree = ({
     },
     featureFlags: {},
     transactions: [...incomingTxList, ...txList],
-    incomingTransactionsPreferences: {},
   },
 });
 

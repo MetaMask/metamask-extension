@@ -315,8 +315,7 @@ export const CoinOverview = ({
 
     const renderAggregatedView = () => (
       <Box className="wallet-overview__currency-wrapper">
-        {isTokenNetworkFilterEqualCurrentNetwork ||
-        !process.env.PORTFOLIO_VIEW ? (
+        {isTokenNetworkFilterEqualCurrentNetwork ? (
           <AggregatedPercentageOverview />
         ) : (
           <AggregatedPercentageOverviewCrossChains />
@@ -414,37 +413,21 @@ export const CoinOverview = ({
                   </Box>
 
                   <Text variant={TextVariant.bodySm}>
-                    {process.env.PORTFOLIO_VIEW
-                      ? t('crossChainAggregatedBalancePopover', [
-                          <ButtonLink
-                            size={ButtonLinkSize.Inherit}
-                            textProps={{
-                              variant: TextVariant.bodyMd,
-                              alignItems: AlignItems.flexStart,
-                            }}
-                            as="a"
-                            href={`#${showNativeTokenAsMainBalanceRoute.route}`}
-                            rel="noopener noreferrer"
-                            onClick={handleClick}
-                          >
-                            {t('settings')}
-                          </ButtonLink>,
-                        ])
-                      : t('aggregatedBalancePopover', [
-                          <ButtonLink
-                            size={ButtonLinkSize.Inherit}
-                            textProps={{
-                              variant: TextVariant.bodyMd,
-                              alignItems: AlignItems.flexStart,
-                            }}
-                            as="a"
-                            href={`#${showNativeTokenAsMainBalanceRoute.route}`}
-                            rel="noopener noreferrer"
-                            onClick={handleClick}
-                          >
-                            {t('settings')}
-                          </ButtonLink>,
-                        ])}
+                    {t('crossChainAggregatedBalancePopover', [
+                      <ButtonLink
+                        size={ButtonLinkSize.Inherit}
+                        textProps={{
+                          variant: TextVariant.bodyMd,
+                          alignItems: AlignItems.flexStart,
+                        }}
+                        as="a"
+                        href={`#${showNativeTokenAsMainBalanceRoute.route}`}
+                        rel="noopener noreferrer"
+                        onClick={handleClick}
+                      >
+                        {t('settings')}
+                      </ButtonLink>,
+                    ])}
                   </Text>
                 </Box>
               </Popover>
