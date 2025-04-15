@@ -1,12 +1,29 @@
+import * as path from 'path';
 import {
-  largeDelayMs,
   regularDelayMs,
   WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
+import { withSolanaAccountSnap } from '../solana/common-solana';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
+
+/**
+ * Default options for setting up Solana E2E test environment
+ */
+export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
+  dappPaths: [
+    path.join(
+      '..',
+      '..',
+      'node_modules',
+      '@metamask',
+      'test-dapp-solana',
+      'dist',
+    ),
+  ],
+} satisfies Parameters<typeof withSolanaAccountSnap>[0];
 
 /**
  * Connects the Solana test dapp to the wallet.

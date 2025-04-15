@@ -2260,6 +2260,7 @@ export async function withSolanaAccountSnap(
     mockGetTransactionFailed,
     mockZeroBalance,
     sendFailedTransaction,
+    dappPaths
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
@@ -2271,6 +2272,7 @@ export async function withSolanaAccountSnap(
     mockGetTransactionFailed?: boolean;
     mockZeroBalance?: boolean;
     sendFailedTransaction?: boolean;
+    dappPaths?: string[],
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -2285,6 +2287,7 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
+      dappPaths,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList: MockedEndpoint[] = [];
 

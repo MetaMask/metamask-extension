@@ -3,8 +3,7 @@ import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { dataTestIds } from '@metamask/test-dapp-solana'
 import { By } from 'selenium-webdriver';
-
-const DAPP_HOST_ADDRESS = '127.0.0.1:8081';
+const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappSolana {
