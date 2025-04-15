@@ -47,6 +47,7 @@ import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -5608,23 +5609,26 @@ export function performSignOut(): ThunkAction<
 }
 
 /**
- * Enables profile syncing.
+ * Enables or disables a backup and sync feature.
  *
- * This function sends a request to the background script to enable profile syncing across devices.
- * Upon success, it dispatches an action with type `SET_PROFILE_SYNCING_ENABLED` to update the Redux state.
+ * This function sends a request to the background script to enable or disable a specific
+ * backup and sync feature.
  * If the operation encounters an error, it logs the error message and rethrows the error to be handled by the caller.
  *
+ * @param feature - The feature to enable or disable.
+ * @param enabled - A boolean indicating whether to enable or disable the feature.
  * @returns A thunk action that, when dispatched, attempts to enable profile syncing.
  */
-export function enableProfileSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function setIsBackupAndSyncFeatureEnabled(
+  feature: keyof typeof BACKUPANDSYNC_FEATURES,
+  enabled: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('enableProfileSyncing');
+      await submitRequestToBackground('setIsBackupAndSyncFeatureEnabled', [
+        feature,
+        enabled,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
