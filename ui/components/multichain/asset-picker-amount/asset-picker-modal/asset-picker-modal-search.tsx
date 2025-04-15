@@ -47,7 +47,7 @@ export const Search = ({
       paddingRight={4}
       paddingBottom={2}
       {...props}
-      >
+    >
       <TextFieldSearch
         borderRadius={BorderRadius.LG}
         placeholder={
