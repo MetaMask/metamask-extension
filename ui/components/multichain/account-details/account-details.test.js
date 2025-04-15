@@ -64,7 +64,10 @@ describe('AccountDetails', () => {
   });
 
   it('shows export private key contents and password field when clicked', () => {
-    const { queryByText, queryByPlaceholderText, getByTestId } = render();
+    const { queryByText, queryByPlaceholderText, getByTestId, getByRole } =
+      render();
+    fireEvent.click(getByRole('button', { name: 'Details' }));
+
     const exportPrivateKeyButton = getByTestId(
       'account-details-display-export-private-key',
     );
@@ -81,7 +84,10 @@ describe('AccountDetails', () => {
   it('attempts to validate password when submitted', async () => {
     const password = 'password';
 
-    const { queryByPlaceholderText, queryByText, getByTestId } = render();
+    const { queryByPlaceholderText, queryByText, getByTestId, getByRole } =
+      render();
+    fireEvent.click(getByRole('button', { name: 'Details' }));
+
     const exportPrivateKeyButton = getByTestId(
       'account-details-display-export-private-key',
     );
@@ -136,7 +142,8 @@ describe('AccountDetails', () => {
   });
 
   it("shows the `Show Secret Recovery Phrase` button when the account's type is a HD Keyring", () => {
-    const { getByTestId } = render();
+    const { getByTestId, getByRole } = render();
+    fireEvent.click(getByRole('button', { name: 'Details' }));
 
     const showSRPButton = getByTestId('account-details-display-export-srp');
 
@@ -144,7 +151,8 @@ describe('AccountDetails', () => {
   });
 
   it('shows srp flow when the `Show Secret Recovery Phrase` button is clicked', async () => {
-    const { getByTestId } = render();
+    const { getByTestId, getByRole } = render();
+    fireEvent.click(getByRole('button', { name: 'Details' }));
 
     const showSRPButton = getByTestId('account-details-display-export-srp');
     fireEvent.click(showSRPButton);

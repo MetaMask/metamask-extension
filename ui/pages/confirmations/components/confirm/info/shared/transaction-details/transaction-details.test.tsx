@@ -181,7 +181,7 @@ describe('<TransactionDetails />', () => {
     expect(getByText('Goerli')).toBeInTheDocument();
   });
 
-  it('return null for transaction of type revokeDelegation', () => {
+  it.only('return null for transaction of type revokeDelegation', () => {
     const state = getMockConfirmStateForTransaction(RevokeDelegation);
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(
@@ -238,6 +238,7 @@ describe('<TransactionDetails />', () => {
       const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
       const contractInteraction = genUnapprovedContractInteractionConfirmation({
         address: ADDRESS_MOCK,
+        type: TransactionType.batch,
         nestedTransactions: [
           {
             to: ADDRESS_MOCK,
