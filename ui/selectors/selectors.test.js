@@ -212,11 +212,10 @@ describe('Selectors', () => {
       ).toStrictEqual(0);
     });
 
-    it('returns correct number of unapproved transactions and queued requests', () => {
+    it('returns correct number of unapproved transactions', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
-            queuedRequestCount: 5,
             transactions: [
               {
                 id: 0,
@@ -254,7 +253,7 @@ describe('Selectors', () => {
             },
           },
         }),
-      ).toStrictEqual(8);
+      ).toStrictEqual(3);
     });
 
     it('returns correct number of unapproved transactions and messages', () => {
@@ -327,7 +326,6 @@ describe('Selectors', () => {
             ],
           },
         },
-        queuedRequestCount: 0,
         transactions: [],
         selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
         // networkConfigurations:
@@ -391,18 +389,6 @@ describe('Selectors', () => {
               status: TransactionStatus.approved,
             },
           ],
-        },
-      });
-      expect(networkToSwitchTo).toBe(null);
-    });
-
-    it('should return no network to switch to because there are queued requests', () => {
-      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-          queuedRequestCount: 1,
         },
       });
       expect(networkToSwitchTo).toBe(null);

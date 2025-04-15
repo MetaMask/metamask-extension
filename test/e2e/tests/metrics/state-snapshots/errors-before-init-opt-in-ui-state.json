@@ -143,7 +143,6 @@
       "isMultiAccountBalancesEnabled": "boolean",
       "showIncomingTransactions": "object"
     },
-    "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
