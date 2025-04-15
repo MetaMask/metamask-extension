@@ -107,6 +107,8 @@ export default function KeyringRemovalSnapWarning({
             <BannerAlert severity={BannerAlertSeverity.Warning}>
               {t('backupKeyringSnapReminder')}
             </BannerAlert>
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31987 */}
+            {/* eslint-disable-next-line no-negated-condition */}
             {!showConfirmation ? (
               <>
                 <Box

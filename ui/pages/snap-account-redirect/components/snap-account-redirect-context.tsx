@@ -84,6 +84,8 @@ const SnapAccountRedirectContent = ({
             </BannerAlert>
           </Box>
         ) : null}
+        {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31987 */}
+        {/* eslint-disable-next-line no-negated-condition */}
         {!isBlockedUrl ? (
           <Text
             data-testid="snap-account-redirect-content-description"

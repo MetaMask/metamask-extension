@@ -68,6 +68,8 @@ export function useNfts({
       const allNfts: NFT[] = Object.values(nfts).flat() as NFT[];
 
       allNfts.forEach((nft: NFT) => {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31987
+        // eslint-disable-next-line no-negated-condition
         if (!nft?.isCurrentlyOwned) {
           previousNfts.push(nft);
         } else {
