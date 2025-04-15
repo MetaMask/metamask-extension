@@ -11,7 +11,6 @@ describe('Interactive UI Snap', function () {
         await withFixtures(
           {
             fixtures: new FixtureBuilder().build(),
-            failOnConsoleError: false,
             title: this.test?.fullTitle(),
           },
           async ({ driver }: { driver: Driver }) => {
