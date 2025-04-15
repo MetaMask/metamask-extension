@@ -938,6 +938,7 @@ function setupBundlerDefaults(
             './**/node_modules/@solana',
             './**/node_modules/axios',
             './**/node_modules/isows',
+            './**/node_modules/viem',
           ],
           global: true,
         },

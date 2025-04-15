@@ -43,13 +43,15 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { Delegation } from '@metamask/delegation-controller/sdk';
-import { DelegationEntry } from '@metamask/delegation-controller';
 import {
+  DelegationEntry,
+  DelegationFilter,
+} from '@metamask/delegation-controller';
+import {
+  Delegation,
   getDelegationHashOffchain,
   getDeleGatorEnvironment,
 } from '@metamask/delegation-toolkit';
-
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';

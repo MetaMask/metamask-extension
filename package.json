@@ -223,7 +223,8 @@
     "@ethersproject/signing-key/elliptic": "^6.6.1",
     "gridplus-sdk/elliptic": "^6.6.1",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
-    "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch"
+    "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
+    "@metamask/delegation-controller": "npm:@metamask-previews/delegation-controller@0.1.0-preview-c555b24d"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -267,7 +268,7 @@
     "@metamask/chain-agnostic-permission": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.7.0",
-    "@metamask/delegation-controller": "file:.yalc/@metamask/delegation-controller",
+    "@metamask/delegation-controller": "^0.1.0",
     "@metamask/delegation-toolkit": "^0.9.0",
     "@metamask/design-tokens": "^7.0.0",
     "@metamask/ens-controller": "^15.0.2",
@@ -285,9 +286,10 @@
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
-    "@metamask/keyring-api": "^17.4.0",
+    "@metamask/keyring-api": "^17.5.0",
     "@metamask/keyring-controller": "^21.0.1",
     "@metamask/keyring-internal-api": "^6.0.1",
+    "@metamask/keyring-internal-snap-client": "^4.0.1",
     "@metamask/keyring-snap-client": "^4.1.0",
     "@metamask/logging-controller": "^6.0.4",
     "@metamask/logo": "^4.0.0",
@@ -326,7 +328,7 @@
     "@metamask/snaps-rpc-methods": "^12.1.0",
     "@metamask/snaps-sdk": "^6.22.0",
     "@metamask/snaps-utils": "^9.2.0",
-    "@metamask/solana-wallet-snap": "^1.18.1",
+    "@metamask/solana-wallet-snap": "^1.19.0",
     "@metamask/solana-wallet-standard": "^0.1.1",
     "@metamask/transaction-controller": "^54.0.0",
     "@metamask/user-operation-controller": "^31.0.0",
@@ -415,6 +417,7 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
+    "viem": "^2.26.5",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
@@ -650,7 +653,6 @@
     "tsx": "^4.19.2",
     "typescript": "~5.4.5",
     "unzipper": "^0.12.3",
-    "viem": "^2.21.8",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
