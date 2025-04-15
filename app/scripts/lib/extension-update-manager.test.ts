@@ -1,7 +1,6 @@
 import browser from 'webextension-polyfill';
 import { ExtensionUpdateManager } from './extension-update-manager';
 
-// Mock the browser API
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     onUpdateAvailable: {
@@ -30,7 +29,6 @@ describe('ExtensionUpdateManager', () => {
 
   describe('setIdleState', () => {
     it('should update idle state and apply pending updates when becoming idle', () => {
-      // Setup spy on the applyPendingUpdateIfNeeded method
       const applyUpdateSpy = jest.spyOn(
         updateManager,
         'applyPendingUpdateIfNeeded',
@@ -62,7 +60,6 @@ describe('ExtensionUpdateManager', () => {
 
   describe('applyPendingUpdateIfNeeded', () => {
     it('should reload the extension when update is pending and extension is idle', () => {
-      // Set the private properties
       Object.defineProperty(updateManager, 'updatePending', { value: true });
       Object.defineProperty(updateManager, 'isIdle', { value: true });
 
@@ -92,9 +89,10 @@ describe('ExtensionUpdateManager', () => {
 
   describe('handleUpdateAvailable', () => {
     it('should mark update as pending and remove the listener', () => {
-      // Access the private method
-      const handleUpdateAvailable =
-        updateManager.handleUpdateAvailable.bind(updateManager);
+      // Use type assertion to access the private method
+      const handleUpdateAvailable = (
+        updateManager as unknown as { handleUpdateAvailable: () => void }
+      ).handleUpdateAvailable.bind(updateManager);
 
       handleUpdateAvailable();
 
@@ -103,12 +101,11 @@ describe('ExtensionUpdateManager', () => {
         browser.runtime.onUpdateAvailable.removeListener,
       ).toHaveBeenCalled();
 
-      // Check if updatePending was set to true
-      expect(updateManager.updatePending).toBe(true);
+      // Check if updatePending was set to true using type assertion
+      expect((updateManager as unknown as { updatePending: boolean }).updatePending).toBe(true);
     });
 
     it('should apply update immediately if already idle', () => {
-      // Set idle state to true
       Object.defineProperty(updateManager, 'isIdle', { value: true });
 
       const applyUpdateSpy = jest.spyOn(
@@ -116,9 +113,10 @@ describe('ExtensionUpdateManager', () => {
         'applyPendingUpdateIfNeeded',
       );
 
-      // Access the private method
-      const handleUpdateAvailable =
-        updateManager.handleUpdateAvailable.bind(updateManager);
+      // Access the private method using type assertion
+      const handleUpdateAvailable = (
+        updateManager as unknown as { handleUpdateAvailable: () => void }
+      ).handleUpdateAvailable.bind(updateManager);
 
       handleUpdateAvailable();
 
