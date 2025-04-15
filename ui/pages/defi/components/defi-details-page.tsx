@@ -83,6 +83,7 @@ export const DeFiPage = () => {
       <Box paddingLeft={2}>
         <Box display={Display.Flex} paddingBottom={4} paddingTop={4}>
           <ButtonIcon
+            data-testid="defi-details-page-back-button"
             color={IconColor.iconAlternative}
             marginRight={1}
             size={ButtonIconSize.Sm}
@@ -93,11 +94,17 @@ export const DeFiPage = () => {
         </Box>
       </Box>
 
-      <Text variant={TextVariant.headingLg} paddingLeft={4} paddingBottom={2}>
+      <Text
+        variant={TextVariant.headingLg}
+        paddingLeft={4}
+        paddingBottom={2}
+        data-testid="defi-details-page-title"
+      >
         {protocolPosition.protocolDetails.name}
       </Text>
       <Box paddingLeft={4} paddingBottom={4}>
         <SensitiveText
+          data-testid="defi-details-page-market-value"
           className="mm-box--color-text-alternative-soft"
           ellipsis
           variant={TextVariant.inherit}
