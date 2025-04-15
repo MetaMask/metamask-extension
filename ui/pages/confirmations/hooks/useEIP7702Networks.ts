@@ -34,9 +34,8 @@ export const useEIP7702Networks = (address: string) => {
             (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
           } catch (err: unknown) {
             console.error(err);
-          } finally {
-            return [nonTestnetsList, testnetsList];
           }
+          return [nonTestnetsList, testnetsList];
         },
         [
           {} as Record<string, MultichainNetworkConfiguration>,
