@@ -340,7 +340,8 @@ export class MMIController {
           INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
           (payload: IInteractiveRefreshTokenChangeEvent) => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31983
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
             log.info(`Interactive refresh token change event for ${payload}`);
             this.appStateController.showInteractiveReplacementTokenBanner(
               payload,
@@ -476,7 +477,8 @@ export class MMIController {
       INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
       (payload: IInteractiveRefreshTokenChangeEvent) => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31983
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
         log.info(`Interactive refresh token change event for ${payload}`);
         this.appStateController.showInteractiveReplacementTokenBanner(payload);
       },

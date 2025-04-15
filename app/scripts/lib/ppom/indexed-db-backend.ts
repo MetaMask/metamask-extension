@@ -19,7 +19,8 @@ const validateChecksum = async (
 
   if (hashString !== checksum) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31983
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
     throw new Error(`Checksum mismatch for key ${key}`);
   }
 };

@@ -285,7 +285,8 @@ export function onDisconnectDestroyStreams(err: unknown) {
    */
   if (lastErr) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31983
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
     console.warn(`${lastErr} Resetting the streams.`);
     setTimeout(setupExtensionStreams, 1000);
   }

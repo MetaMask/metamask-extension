@@ -173,6 +173,8 @@ function sanitizeRequest(request: JsonRpcRequest): JsonRpcRequest {
   ) {
     if (Array.isArray(request.params) && request.params[1]) {
       const typedDataMessage = parseTypedDataMessage(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31983
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         request.params[1].toString(),
       );
 
