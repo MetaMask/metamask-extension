@@ -14,11 +14,15 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import { mockEmptyPrices } from '../tokens/utils/mocks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { UserStorageMockttpController, UserStorageResponseData } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import { accountsToMockForAccountsSync, getAccountsSyncMockResponse } from '../identity/account-syncing/mock-data';
 import { mockIdentityServices } from '../identity/mocks';
 
-async function mockApis(mockServer: Mockttp, userStorageMockttpController, mockedAccountSyncResponse) {
+async function mockApis(
+  mockServer: Mockttp,
+  userStorageMockttpController: UserStorageMockttpController,
+  mockedAccountSyncResponse: UserStorageResponseData[],
+) {
   userStorageMockttpController.setupPath(
     USER_STORAGE_FEATURE_NAMES.accounts,
     mockServer,
