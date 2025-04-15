@@ -111,7 +111,7 @@ export default function NftFullImage() {
                 alt={nftImageAlt}
                 name={name ?? ''}
                 tokenId={tokenId}
-                networkName={nftChainNetwork.name ?? ''}
+                networkName={nftChainNetwork?.name ?? ''}
                 networkSrc={nftChainImage}
                 isIpfsURL={isIpfsURL}
               />
