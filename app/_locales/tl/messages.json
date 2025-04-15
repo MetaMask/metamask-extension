@@ -255,7 +255,7 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Para i-enable ang $1 network, kailangan mong gumawa ng $1 account.",
+    "message": "Para i-enable ang $1 network, kailangan mong gumawa ng $2 account.",
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
