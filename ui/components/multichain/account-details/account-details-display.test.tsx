@@ -33,7 +33,7 @@ function renderComponent() {
 describe('AccountDetailsDisplay', () => {
   it('renders tabs type and details', async () => {
     const { getByText } = renderComponent();
-    expect(getByText('0x0DCD5D8865...E70Be3E7bc')).toBeInTheDocument();
+    expect(getByText('0x0dcd5d8865...e70be3e7bc')).toBeInTheDocument();
     expect(getByText('Type')).toBeInTheDocument();
     expect(getByText('Details')).toBeInTheDocument();
   });
@@ -47,7 +47,9 @@ describe('AccountDetailsDisplay', () => {
     fireEvent.click(copyButton as HTMLElement);
 
     await waitFor(() => {
-      expect(mockCopy).toHaveBeenCalledWith(toChecksumHexAddress(ADDRESS_MOCK));
+      expect(mockCopy).toHaveBeenCalledWith(
+        toChecksumHexAddress(ADDRESS_MOCK).toLowerCase(),
+      );
     });
   });
 });
