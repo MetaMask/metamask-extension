@@ -5074,6 +5074,12 @@
   "slideRemoteModeTitle": {
     "message": "Remote mode is here!"
   },
+  "slideSolanaDescription": {
+    "message": "Create a Solana account to get started"
+  },
+  "slideSolanaTitle": {
+    "message": "Solana is now supported"
+  },
   "slideSweepStakeDescription": {
     "message": "Mint an NFT now for a chance to win"
   },
