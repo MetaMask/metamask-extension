@@ -30,7 +30,7 @@ class SnapInteractiveDialog {
       ]);
     } catch (e: string) {
       console.log(
-        'Timeout while waiting for Snap Interactive UI dialog to load',
+        'Timed out while waiting for Snap Interactive UI dialog to load',
         e,
       );
       throw e;
