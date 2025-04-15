@@ -492,9 +492,28 @@ class Driver {
   /**
    * Quits the browser session, closing all windows and tabs.
    *
+   * This was previously implemented as just `await this.driver.quit()`, but on Windows,
+   * that was causing Google Chrome for Testing to not close, and sit open indefinitely
+   * taking CPU load. It is also possible that this was causing some cascading errors on CI.
+   *
    * @returns {Promise} promise resolving after quitting
    */
   async quit() {
+    if (this.browser === 'chrome') {
+      try {
+        const handles = await this.driver.getAllWindowHandles();
+
+        for (const handle of handles) {
+          await this.driver.switchTo().window(handle);
+          await this.driver.close();
+        }
+      } catch (e) {
+        console.info(
+          'Problem encountered closing Chrome windows/tabs, but continuing anyway',
+        );
+      }
+    }
+
     await this.driver.quit();
   }
 
