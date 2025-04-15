@@ -3,7 +3,6 @@ import React from 'react';
 import { Box, Text } from '../../../components/component-library';
 import Card from '../../../components/ui/card';
 import {
-  FontWeight,
   TextVariant,
   Display,
   JustifyContent,

@@ -518,10 +518,7 @@ export default function RemoteModeSetupDailyAllowance() {
         width={BlockSize.Full}
       >
         {!isHardwareAccount && (
-          <BannerAlert
-            severity={BannerAlertSeverity.Warning}
-            marginBottom={2}
-          >
+          <BannerAlert severity={BannerAlertSeverity.Warning} marginBottom={2}>
             <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
               Select a hardware wallet
             </Text>

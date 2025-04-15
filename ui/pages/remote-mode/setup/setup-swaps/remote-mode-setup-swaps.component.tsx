@@ -430,14 +430,14 @@ export default function RemoteModeSetupSwaps() {
                       alignItems={AlignItems.center}
                       gap={2}
                     > */}
-                      {/* <AvatarAccount
+                    {/* <AvatarAccount
                         variant={AvatarAccountVariant.Jazzicon}
                         address={selectedHardwareAccount.address}
                         size={AvatarAccountSize.Xs}
                         marginTop={1}
                         paddingRight={2}
                       /> */}
-                      {selectedHardwareAccount.metadata.name}
+                    {selectedHardwareAccount.metadata.name}
                     {/* </Box> */}
                   </Text>
                 </Box>
@@ -499,7 +499,10 @@ export default function RemoteModeSetupSwaps() {
       case 3:
         return (
           <>
-            <Card backgroundColor={BackgroundColor.backgroundMuted} marginBottom={4}>
+            <Card
+              backgroundColor={BackgroundColor.backgroundMuted}
+              marginBottom={4}
+            >
               <Box
                 display={Display.Flex}
                 gap={2}
@@ -641,10 +644,7 @@ export default function RemoteModeSetupSwaps() {
         width={BlockSize.Full}
       >
         {!isHardwareAccount && (
-          <BannerAlert
-            severity={BannerAlertSeverity.Warning}
-            marginBottom={2}
-          >
+          <BannerAlert severity={BannerAlertSeverity.Warning} marginBottom={2}>
             <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
               Select a hardware wallet
             </Text>
