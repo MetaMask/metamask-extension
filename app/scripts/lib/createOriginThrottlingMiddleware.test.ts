@@ -28,7 +28,8 @@ describe('createOriginThrottlingMiddleware', () => {
     const end = jest.fn();
 
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31881
-    // eslint-disable-next-line @typescript-eslint/await-thenable
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+    // eslint-disable-next-line @typescript-eslint/await-thenable, @typescript-eslint/no-unnecessary-type-arguments
     await middleware(req, {} as unknown as JsonRpcResponse<Json>, next, end);
 
     expect(next).toHaveBeenCalled();
@@ -52,6 +53,8 @@ describe('createOriginThrottlingMiddleware', () => {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await middleware(
       req,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
       { error: null } as unknown as JsonRpcResponse<Json>,
       next,
       end,
@@ -75,6 +78,8 @@ describe('createOriginThrottlingMiddleware', () => {
       error: null,
       id: 1,
       jsonrpc: '2.0',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
     } as unknown as JsonRpcResponse<Json>;
 
     mockGetThrottledOriginState.mockReturnValue({
@@ -109,6 +114,8 @@ describe('createOriginThrottlingMiddleware', () => {
       },
       id: 1,
       jsonrpc: '2.0',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
     } as unknown as JsonRpcResponse<Json>;
 
     mockGetThrottledOriginState.mockReturnValueOnce({
@@ -145,6 +152,8 @@ describe('createOriginThrottlingMiddleware', () => {
       }),
       id: 1,
       jsonrpc: '2.0',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
     } as unknown as JsonRpcResponse<Json>;
 
     mockGetThrottledOriginState.mockReturnValueOnce({

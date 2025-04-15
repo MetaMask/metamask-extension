@@ -37,6 +37,8 @@ export const revokePermissionsHandler = {
  */
 function revokePermissionsImplementation(
   req: JsonRpcRequest<Json[]>,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
   res: PendingJsonRpcResponse<Json>,
   _next: AsyncJsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,

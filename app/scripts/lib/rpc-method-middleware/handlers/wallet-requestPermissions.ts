@@ -50,6 +50,8 @@ export const requestPermissionsHandler = {
  */
 async function requestPermissionsImplementation(
   req: JsonRpcRequest<[RequestedPermissions]> & { origin: string },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
   res: PendingJsonRpcResponse<Json>,
   _next: AsyncJsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,

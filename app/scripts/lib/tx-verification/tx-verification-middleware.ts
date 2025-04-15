@@ -46,6 +46,8 @@ export function createTxVerificationMiddleware(
 ) {
   return function txVerificationMiddleware(
     req: JsonRpcRequest,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
     _res: JsonRpcResponse<Json>,
     next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,

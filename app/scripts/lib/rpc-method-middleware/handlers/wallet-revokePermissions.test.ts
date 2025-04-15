@@ -23,6 +23,8 @@ const createMockedHandler = () => {
   const revokePermissionsForOrigin = jest.fn();
   const rejectApprovalRequestsForOrigin = jest.fn();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31995
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
   const response: PendingJsonRpcResponse<Json> = {
     jsonrpc: '2.0' as const,
     id: 0,
