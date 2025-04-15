@@ -1,6 +1,6 @@
 import { retry } from './shared/utils';
 import { z } from 'zod';
-import core from '@actions/core';
+import * as core from '@actions/core';
 
 async function main() {
   const { Octokit } = await import('octokit');
