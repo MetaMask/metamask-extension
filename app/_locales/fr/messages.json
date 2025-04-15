@@ -4454,9 +4454,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "L’opération a été effectuée avec succès."
   },
-  "retryTransaction": {
-    "message": "Retenter la transaction"
-  },
   "reusedTokenNameWarning": {
     "message": "L’un de ces jetons réutilise le symbole d’un autre jeton que vous surveillez, ce qui peut être déroutant ou trompeur."
   },

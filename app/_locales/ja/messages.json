@@ -4454,9 +4454,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "操作が正常に完了しました。"
   },
-  "retryTransaction": {
-    "message": "トランザクションを再試行"
-  },
   "reusedTokenNameWarning": {
     "message": "ここのトークンは、監視する別のトークンのシンボルを再使用します。これは混乱を招いたり紛らわしい場合があります。"
   },

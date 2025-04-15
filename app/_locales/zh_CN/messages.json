@@ -4454,9 +4454,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "操作已成功完成。"
   },
-  "retryTransaction": {
-    "message": "重试交易"
-  },
   "reusedTokenNameWarning": {
     "message": "此处的代币使用了与您关注的另一种代币相同的符号，这可能会让人感到困惑或具有欺骗性。"
   },

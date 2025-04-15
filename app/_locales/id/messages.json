@@ -4454,9 +4454,6 @@
   "resultPageSuccessDefaultMessage": {
     "message": "Operasi berhasil dilakukan."
   },
-  "retryTransaction": {
-    "message": "Coba lagi transaksi"
-  },
   "reusedTokenNameWarning": {
     "message": "Token di sini menggunakan kembali simbol dari token lain yang Anda lihat, ini bisa jadi membingungkan atau menipu."
   },
