@@ -511,6 +511,8 @@ async function setupMocking(
       };
     });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const TOKEN_BLOCKLIST = fs.readFileSync(TOKEN_BLOCKLIST_PATH);
   await server
     .forGet(`${TOKEN_API_BASE_URL}/blocklist`)
@@ -522,6 +524,8 @@ async function setupMocking(
       };
     });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const AGGREGATOR_METADATA = fs.readFileSync(AGGREGATOR_METADATA_PATH);
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/aggregatorMetadata`)
@@ -690,13 +694,29 @@ async function setupMocking(
       };
     });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const PPOM_VERSION_HEADERS = fs.readFileSync(PPOM_VERSION_HEADERS_PATH);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const CDN_CONFIG = fs.readFileSync(CDN_CONFIG_PATH);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const CDN_STALE = fs.readFileSync(CDN_STALE_PATH);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const CDN_STALE_DIFF = fs.readFileSync(CDN_STALE_DIFF_PATH);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const CDN_CONFIG_RES_HEADERS = fs.readFileSync(CDN_CONFIG_RES_HEADERS_PATH);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const CDN_STALE_RES_HEADERS = fs.readFileSync(CDN_STALE_RES_HEADERS_PATH);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const CDN_STALE_DIFF_RES_HEADERS = fs.readFileSync(
     CDN_STALE_DIFF_RES_HEADERS_PATH,
   );
@@ -839,6 +859,8 @@ async function setupMocking(
     });
 
   // On Ramp Content
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
   await server
     .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
@@ -850,6 +872,8 @@ async function setupMocking(
     });
 
   // Chains Metadata
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const CHAIN_ID_NETWORKS = fs.readFileSync(CHAIN_ID_NETWORKS_PATH);
   await server
     .forGet('https://chainid.network/chains.json')
@@ -876,6 +900,8 @@ async function setupMocking(
     });
 
   // Accounts API: tokens
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const ACCOUNTS_API_TOKENS = fs.readFileSync(ACCOUNTS_API_TOKENS_PATH);
   await server
     .forGet('https://account.api.cx.metamask.io/networks')
@@ -887,6 +913,8 @@ async function setupMocking(
     });
 
   // Bridge Feature Flags
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const BRIDGE_GET_ALL_FEATURE_FLAGS = fs.readFileSync(
     BRIDGE_GET_ALL_FEATURE_FLAGS_PATH,
   );
@@ -900,6 +928,8 @@ async function setupMocking(
     });
 
   // Client Side Detecition: Request Blocklist
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
     CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
   );

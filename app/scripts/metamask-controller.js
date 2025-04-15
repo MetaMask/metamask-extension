@@ -2286,6 +2286,8 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this._loginUser(password);
     } else {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+      // eslint-disable-next-line n/no-sync
       this._startUISync();
     }
 
@@ -5095,15 +5097,21 @@ export default class MetamaskController extends EventEmitter {
       // state has account balance before it is synced with UI
       await this.accountTrackerController.updateAccountsAllActiveNetworks();
     } finally {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+      // eslint-disable-next-line n/no-sync
       this._startUISync();
     }
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   _startUISync() {
     // Message startUISync is used to start syncing state with UI
     // Sending this message after login is completed helps to ensure that incomplete state without
     // account details are not flushed to UI.
     this.emit('startUISync');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     this.startUISync = true;
     this.memStore.subscribe(this.sendUpdate.bind(this));
   }
@@ -6424,6 +6432,8 @@ export default class MetamaskController extends EventEmitter {
     // set up postStream transport
     outStream.on('data', createMetaRPCHandler(api, outStream));
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     const startUISync = () => {
       if (!isStreamWritable(outStream)) {
         return;
@@ -6435,9 +6445,15 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     if (this.startUISync) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+      // eslint-disable-next-line n/no-sync
       startUISync();
     } else {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+      // eslint-disable-next-line n/no-sync
       this.once('startUISync', startUISync);
     }
 

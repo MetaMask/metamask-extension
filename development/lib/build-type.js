@@ -155,6 +155,8 @@ function loadBuildTypesConfig() {
   if (cachedBuildTypes !== null) {
     return cachedBuildTypes;
   }
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const buildsData = yaml.parse(fs.readFileSync(BUILDS_YML_PATH, 'utf8'));
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31889
   // eslint-disable-next-line id-denylist

@@ -52,6 +52,8 @@ class FirefoxDriver {
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
   static async build({ responsive, port, constrainWindowSize, proxyPort }) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
 

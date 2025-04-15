@@ -1,4 +1,6 @@
 const path = require('path');
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+// eslint-disable-next-line n/no-sync
 const { readFileSync, writeFileSync } = require('fs');
 const semver = require('semver');
 const { capitalize } = require('lodash');
@@ -297,9 +299,13 @@ function getBuildName({
  * script.
  */
 function makeSelfInjecting(filePath) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const fileContents = readFileSync(filePath, 'utf8');
   const textContent = JSON.stringify(fileContents);
   const js = `{let d=document,s=d.createElement('script');s.textContent=${textContent};s.nonce=btoa((globalThis.browser||chrome).runtime.getURL('/'));d.documentElement.appendChild(s).remove();}`;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   writeFileSync(filePath, js, 'utf8');
 }
 

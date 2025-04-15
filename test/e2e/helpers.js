@@ -1,4 +1,6 @@
 const path = require('path');
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+// eslint-disable-next-line n/no-sync
 const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
@@ -327,6 +329,8 @@ async function withFixtures(options, testSuite) {
     // suite execution. If so, fail the test unless the
     // --update-privacy-snapshot was specified. In that case, update the
     // snapshot file.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     const privacySnapshotRaw = readFileSync('./privacy-snapshot.json');
     const privacySnapshot = JSON.parse(privacySnapshotRaw);
     const privacyReport = getPrivacyReport();
@@ -348,6 +352,8 @@ async function withFixtures(options, testSuite) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
       // eslint-disable-next-line n/no-process-env
       if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+        // eslint-disable-next-line n/no-sync
         writeFileSync(
           './privacy-snapshot.json',
           JSON.stringify(mergedReport, null, 2),

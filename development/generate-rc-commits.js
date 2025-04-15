@@ -209,6 +209,8 @@ async function main() {
     console.log('No unique commits found.');
   } else {
     const csvContent = formatAsCSV(commitsByTeam);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     fs.writeFileSync('commits.csv', csvContent.join('\n'));
     console.log('CSV file "commits.csv" created successfully.');
   }

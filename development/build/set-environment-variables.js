@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+// eslint-disable-next-line n/no-sync
 const { readFileSync } = require('node:fs');
 const assert = require('node:assert');
 const { ENVIRONMENT } = require('./constants');
@@ -81,6 +83,8 @@ function getBuildIcon({ buildType }) {
     BUILD_TYPES_TO_SVG_LOGO_PATH[buildType] ||
     BUILD_TYPES_TO_SVG_LOGO_PATH.main;
   // encode as base64 as its more space-efficient for most SVGs than a data uri
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   return `data:image/svg+xml;base64,${readFileSync(svgLogoPath, 'base64')}`;
 }
 

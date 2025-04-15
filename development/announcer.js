@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { version } = require('../package.json');
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+// eslint-disable-next-line n/no-sync
 const changelog = fs.readFileSync(
   path.join(__dirname, '..', 'CHANGELOG.md'),
   'utf8',

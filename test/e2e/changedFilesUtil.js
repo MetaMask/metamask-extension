@@ -16,6 +16,8 @@ const PR_INFO_PATH = path.join(BASE_PATH, 'changed-files', 'pr-body.txt');
  */
 function readChangedAndNewFilesWithStatus() {
   try {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     const file = fs.readFileSync(CHANGED_FILES_PATH, 'utf8');
     return JSON.parse(file);
   } catch (error) {
@@ -84,6 +86,8 @@ function getChangedAndNewFiles(changedFiles) {
  */
 function shouldE2eQualityGateBeSkipped() {
   try {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     const data = fs.readFileSync(PR_INFO_PATH, 'utf8');
     const lines = data.split('\n');
     const labelsLine = lines.find((line) => line.startsWith('PR labels:'));

@@ -104,6 +104,8 @@ export const FIXTURES_NETWORKS = {
         imageUrl: './images/celo.svg',
       },
     },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     zkSync: {
       id: 'zkSync',
       rpcUrl: 'https://mainnet.era.zksync.io',

@@ -44,6 +44,8 @@ describe('migrations', () => {
     let migrationNumbers;
 
     beforeAll(() => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+      // eslint-disable-next-line n/no-sync
       const fileNames = fs.readdirSync('./app/scripts/migrations/');
       migrationNumbers = fileNames
         .reduce((acc, filename) => {
@@ -71,6 +73,8 @@ describe('migrations', () => {
     });
 
     it('should have tests for all migrations', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+      // eslint-disable-next-line n/no-sync
       const fileNames = fs.readdirSync('./app/scripts/migrations/');
       const testNumbers = fileNames
         .reduce((acc, filename) => {

@@ -1,5 +1,6 @@
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
-// eslint-disable-next-line import/no-nodejs-modules
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+// eslint-disable-next-line import/no-nodejs-modules, n/no-sync
 import { existsSync } from 'fs';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31890
 // eslint-disable-next-line import/no-nodejs-modules
@@ -14,6 +15,8 @@ import {
 describe('NetworkConstants', () => {
   it('has images files that exist for defined networks', () => {
     Object.values(CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP).forEach((image) =>
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+      // eslint-disable-next-line n/no-sync
       expect(existsSync(join('app', image))).toBe(true),
     );
   });

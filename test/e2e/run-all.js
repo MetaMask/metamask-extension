@@ -1,5 +1,7 @@
 const path = require('path');
 const fs = require('fs');
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+// eslint-disable-next-line n/no-sync
 const { execSync } = require('child_process');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
@@ -81,11 +83,15 @@ function runningOnCircleCI(testPaths) {
     : applyQualityGate(testPaths.join('\n'), changedOrNewTests);
 
   console.log('Full test list:', fullTestList);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
 
   // Use `circleci tests run` on `testList.txt` to do two things:
   // 1. split the test files into chunks based on how long they take to run
   // 2. support "Rerun failed tests" on CircleCI
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const result = execSync(
     'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=50s < test/test-results/fullTestList.txt',
   ).toString('utf8');
@@ -97,6 +103,8 @@ function runningOnCircleCI(testPaths) {
   }
 
   // If there's no text file, it means this node has no tests, so exit gracefully
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   if (!fs.existsSync('test/test-results/myTestList.txt')) {
     console.log(
       'run-all.js info: Skipping this node because there is no myTestList.txt',
@@ -105,6 +113,8 @@ function runningOnCircleCI(testPaths) {
   }
 
   // take the space-delimited result and split into an array
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const myTestList = fs
     .readFileSync('test/test-results/myTestList.txt', { encoding: 'utf8' })
     .split(' ');
@@ -126,6 +136,8 @@ function runningOnGitHubActions(testPaths) {
     : applyQualityGate(testPaths.join('\n'), changedOrNewTests);
 
   console.log('Full test list:', fullTestList);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
 
   // Determine the test matrix division
@@ -163,6 +175,8 @@ function runningOnGitHubActions(testPaths) {
   );
 
   // Write the list to a file similar to CircleCI
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   fs.writeFileSync('test/test-results/myTestList.txt', myTestList.join(' '));
 
   return { fullTestList: myTestList, changedOrNewTests };

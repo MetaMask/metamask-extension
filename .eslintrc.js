@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+// eslint-disable-next-line n/no-sync
 const { readFileSync } = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
@@ -15,6 +17,8 @@ module.exports = {
   // Suggested addition from the storybook 6.5 update
   extends: ['plugin:storybook/recommended'],
   // Ignore files which are also in .prettierignore
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
   // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
   parser: '@babel/eslint-parser',

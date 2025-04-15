@@ -1,6 +1,8 @@
 // TODO(ritave): Remove switches on hardcoded build types
 const { callbackify } = require('util');
 const path = require('path');
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+// eslint-disable-next-line n/no-sync
 const { writeFileSync, readFileSync, unlinkSync } = require('fs');
 const EventEmitter = require('events');
 const gulp = require('gulp');
@@ -365,6 +367,8 @@ function createScriptTasks({
         // It's also not useful anyway, as scripts/inpage.js is injected as a
         // `script.textContent`, and not tracked in Sentry or browsers devtools
         // anyway.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+        // eslint-disable-next-line n/no-sync
         unlinkSync(
           path.join(
             __dirname,
@@ -468,11 +472,15 @@ async function createManifestV3AppInitializationBundle({
   // Code below is used to set statsMode to true when testing in MV3
   // This is used to capture module initialisation stats using lavamoat.
   if (isTestBuild(buildTarget)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     const content = readFileSync(
       './dist/chrome/scripts/runtime-lavamoat.js',
       'utf8',
     );
     const fileOutput = content.replace('statsMode = false', 'statsMode = true');
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     writeFileSync('./dist/chrome/scripts/runtime-lavamoat.js', fileOutput);
   }
 
@@ -1218,6 +1226,8 @@ function renderHtmlFile({
     htmlName === 'offscreen'
       ? `./offscreen/${htmlName}.html`
       : `./app/${htmlName}.html`;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta();
@@ -1237,6 +1247,8 @@ function renderHtmlFile({
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     writeFileSync(dest, htmlOutput);
   });
 }

@@ -1,4 +1,6 @@
 const util = require('util');
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+// eslint-disable-next-line n/no-sync
 const { writeFileSync } = require('fs');
 
 const exec = util.promisify(require('node:child_process').exec);
@@ -31,12 +33,16 @@ async function getFileVersions() {
   const etagVersionObject = { Etag: etagVersion };
 
   // updating ppom-version-headers.json file
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   writeFileSync(
     `${MOCK_CDN_FOLDER_URL}ppom-version-headers.json`,
     JSON.stringify(etagVersionObject, null, 2),
   );
 
   // updating ppom-version.json file
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   writeFileSync(
     `${MOCK_CDN_FOLDER_URL}ppom-version.json`,
     JSON.stringify(ppomVersionData, null, 2),
@@ -83,6 +89,8 @@ async function updateMockCdnFiles() {
   const etagConfig = configHeaders.get('etag');
   const etagConfigObject = createHeaderObject(etagConfig);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   writeFileSync(
     `${MOCK_CDN_FOLDER_URL}cdn-config-res-headers.json`,
     JSON.stringify(etagConfigObject, null, 2),
@@ -98,6 +106,8 @@ async function updateMockCdnFiles() {
   const etagStale = staleHeaders.get('etag');
   const etagStaleObject = createHeaderObject(etagStale);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   writeFileSync(
     `${MOCK_CDN_FOLDER_URL}cdn-stale-res-headers.json`,
     JSON.stringify(etagStaleObject, null, 2),
@@ -116,6 +126,8 @@ async function updateMockCdnFiles() {
   const etagStaleDiff = staleDiffHeaders.get('etag');
   const etagStaleDiffObject = createHeaderObject(etagStaleDiff);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+  // eslint-disable-next-line n/no-sync
   writeFileSync(
     `${MOCK_CDN_FOLDER_URL}cdn-stale-diff-res-headers.json`,
     JSON.stringify(etagStaleDiffObject, null, 2),

@@ -158,6 +158,8 @@ function createManifestTasks({
     }
 
     // Get the first 8 characters of the git revision id
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
+    // eslint-disable-next-line n/no-sync
     const gitRevisionStr = childProcess
       .execSync('git rev-parse HEAD')
       .toString()
