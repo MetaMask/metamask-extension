@@ -2064,9 +2064,6 @@
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "To view and confirm your most recent request, you'll need to approve or reject existing requests first."
-  },
   "expandView": {
     "message": "Expand view"
   },
@@ -5061,6 +5058,12 @@
   },
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
+  },
+  "slideMultiSrpDescription": {
+    "message": "Import and use multiple wallets in MetaMask"
+  },
+  "slideMultiSrpTitle": {
+    "message": "Add multiple Secret Recovery Phrases"
   },
   "slideRemoteModeDescription": {
     "message": "Access your hardware wallet without plugging it in"
