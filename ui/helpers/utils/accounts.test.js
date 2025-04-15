@@ -192,14 +192,31 @@ describe('Accounts', () => {
             KeyringType.snap,
             mockSnapAccountWithName,
             mockSnapName,
+            false,
           ),
         ).toBe('Test Snap Name (Beta)');
       });
 
       it('should return generic snap label with beta tag if snap name is not provided', () => {
         expect(
-          getAccountLabel(KeyringType.snap, mockSnapAccountWithoutName),
+          getAccountLabel(
+            KeyringType.snap,
+            mockSnapAccountWithoutName,
+            null,
+            false,
+          ),
         ).toBe('Snaps (Beta)');
+      });
+
+      it('should return null if snap is preinstalled', () => {
+        expect(
+          getAccountLabel(
+            KeyringType.snap,
+            mockSnapAccountWithName,
+            mockSnapName,
+            true,
+          ),
+        ).toBeNull();
       });
     });
   });
