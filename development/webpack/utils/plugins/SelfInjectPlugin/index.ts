@@ -62,6 +62,8 @@ const defaultOptions = {
  * ```
  */
 export class SelfInjectPlugin {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly options: SelfInjectPluginOptions & typeof defaultOptions;
 
   constructor(options: SelfInjectPluginOptions) {
@@ -182,6 +184,8 @@ export class SelfInjectPlugin {
    * @param source
    * @returns
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private escapeJs(source: string): string {
     return (
       JSON.stringify(source)

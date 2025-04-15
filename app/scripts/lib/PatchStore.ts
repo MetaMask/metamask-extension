@@ -9,12 +9,20 @@ import { sanitizeUIState } from './state-utils';
 const log = createProjectLogger('patch-store');
 
 export class PatchStore {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly id: string;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly observableStore: ComposableObservableStore;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly pendingPatches: Map<string, Patch> = new Map();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly listener: (request: {
     controllerKey: string;
     oldState: Record<string, unknown>;
@@ -48,6 +56,8 @@ export class PatchStore {
     log('Destroyed', this.id);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _onStateChange({
     oldState,
     newState,
@@ -81,6 +91,8 @@ export class PatchStore {
     }
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _generatePatches(
     oldState: Record<string, unknown>,
     newState: Record<string, unknown>,

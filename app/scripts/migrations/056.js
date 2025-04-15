@@ -40,6 +40,8 @@ export default {
 
     if (
       PreferencesController?.assetImages &&
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+      // eslint-disable-next-line no-restricted-syntax
       'undefined' in PreferencesController.assetImages
     ) {
       delete PreferencesController.assetImages.undefined;

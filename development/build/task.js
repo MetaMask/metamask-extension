@@ -18,6 +18,8 @@ const { setupTaskDisplay } = require('./display');
 const { logError } = require('./utils');
 
 async function runTask(taskName, { skipStats } = {}) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   if (!(taskName in tasks)) {
     throw new Error(`MetaMask build: Unrecognized task name "${taskName}"`);
   }
@@ -40,6 +42,8 @@ async function runTask(taskName, { skipStats } = {}) {
 }
 
 function createTask(taskName, taskFn) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   if (taskName in tasks) {
     throw new Error(
       `MetaMask build: task "${taskName}" already exists. Refusing to redefine`,

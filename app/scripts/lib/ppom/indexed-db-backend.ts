@@ -25,8 +25,12 @@ const validateChecksum = async (
 };
 
 export class IndexedDBPPOMStorage implements StorageBackend {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly storeName: string;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly dbVersion: number;
 
   constructor(storeName: string, dbVersion: number) {
@@ -77,6 +81,8 @@ export class IndexedDBPPOMStorage implements StorageBackend {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private async objectStoreAction(
     method: 'get' | 'delete' | 'put' | 'getAllKeys',
     // TODO: Replace `any` with type

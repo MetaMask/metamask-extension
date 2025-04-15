@@ -146,13 +146,17 @@ export default class DecryptMessageController extends BaseController<
   DecryptMessageControllerMessenger
 > {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-syntax
   private readonly _getState: () => any;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-syntax
   private readonly _metricsEvent: (payload: any, options?: any) => void;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly _decryptMessageManager: DecryptMessageManager;
 
   /**
@@ -326,12 +330,16 @@ export default class DecryptMessageController extends BaseController<
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _acceptApproval(messageId: string) {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _cancelAbstractMessage(
     messageManager: DecryptMessageManager,
     messageId: string,
@@ -353,6 +361,8 @@ export default class DecryptMessageController extends BaseController<
     return this._getState();
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _subscribeToMessageState(
     controllerMessenger: DecryptMessageControllerMessenger,
     updateState: (
@@ -376,6 +386,8 @@ export default class DecryptMessageController extends BaseController<
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _migrateMessages(
     coreMessages: Record<string, CoreMessage>,
   ): Record<string, StateMessage> {
@@ -390,6 +402,8 @@ export default class DecryptMessageController extends BaseController<
     return stateMessages;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _migrateMessage(coreMessage: CoreMessage): StateMessage {
     const { messageParams, ...coreMessageData } = coreMessage;
 
@@ -403,6 +417,8 @@ export default class DecryptMessageController extends BaseController<
     return stateMessage;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _requestApproval(messageParams: AbstractMessageParamsMetamask) {
     const id = messageParams.metamaskId as string;
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
@@ -425,6 +441,8 @@ export default class DecryptMessageController extends BaseController<
     }
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _parseMessageData(data: string) {
     const stripped = stripHexPrefix(data);
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
@@ -433,6 +451,8 @@ export default class DecryptMessageController extends BaseController<
     return JSON.parse(buff.toString('utf8'));
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _rejectApproval(messageId: string) {
     try {
       this.messagingSystem.call(

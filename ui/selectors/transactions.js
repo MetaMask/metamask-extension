@@ -439,6 +439,8 @@ const groupAndSortTransactionsByNonce = (transactions) => {
           transactionGroup,
         );
       }
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+    // eslint-disable-next-line no-restricted-syntax
     } else if (nonce in nonceToTransactionsMap) {
       const nonceProps = nonceToTransactionsMap[nonce];
       insertTransactionByTime(nonceProps.transactions, transaction);
@@ -482,6 +484,8 @@ const groupAndSortTransactionsByNonce = (transactions) => {
         // on-chain, submitted to the network, or waiting for user approval.
         // These statuses typically indicate a transaction that needs to have
         // its status reflected in the UI.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+        // eslint-disable-next-line no-restricted-syntax
         hasPriorityStatus: status in PRIORITY_STATUS_HASH,
         // A confirmed transaction is the most valid transaction status to
         // display because no other transaction of the same nonce can have a
@@ -497,6 +501,8 @@ const groupAndSortTransactionsByNonce = (transactions) => {
         // group should be marked as having had a retry.
         isValidRetry:
           type === TransactionType.retry &&
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+          // eslint-disable-next-line no-restricted-syntax
           (status in PRIORITY_STATUS_HASH ||
             status === TransactionStatus.dropped),
         // We only allow users to cancel the transaction in certain scenarios
@@ -505,6 +511,8 @@ const groupAndSortTransactionsByNonce = (transactions) => {
         // group should be marked as having had a cancel.
         isValidCancel:
           type === TransactionType.cancel &&
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+          // eslint-disable-next-line no-restricted-syntax
           (status in PRIORITY_STATUS_HASH ||
             status === TransactionStatus.dropped),
         eligibleForInitial:
@@ -559,10 +567,14 @@ const groupAndSortTransactionsByNonce = (transactions) => {
         primaryTransaction: transaction,
         hasRetried:
           type === TransactionType.retry &&
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+          // eslint-disable-next-line no-restricted-syntax
           (status in PRIORITY_STATUS_HASH ||
             status === TransactionStatus.dropped),
         hasCancelled:
           type === TransactionType.cancel &&
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+          // eslint-disable-next-line no-restricted-syntax
           (status in PRIORITY_STATUS_HASH ||
             status === TransactionStatus.dropped),
       };
@@ -628,6 +640,8 @@ export const nonceSortedPendingTransactionsSelectorAllChains = createSelector(
   (transactions = []) =>
     transactions.filter(
       ({ primaryTransaction }) =>
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+        // eslint-disable-next-line no-restricted-syntax
         primaryTransaction.status in PENDING_STATUS_HASH,
     ),
 );
@@ -644,6 +658,8 @@ export const nonceSortedCompletedTransactionsSelectorAllChains = createSelector(
     transactions
       .filter(
         ({ primaryTransaction }) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+          // eslint-disable-next-line no-restricted-syntax
           !(primaryTransaction.status in PENDING_STATUS_HASH),
       )
       .reverse(),
@@ -660,6 +676,8 @@ export const nonceSortedPendingTransactionsSelector = createSelector(
   (transactions = []) =>
     transactions.filter(
       ({ primaryTransaction }) =>
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+        // eslint-disable-next-line no-restricted-syntax
         primaryTransaction.status in PENDING_STATUS_HASH,
     ),
 );
@@ -676,6 +694,8 @@ export const nonceSortedCompletedTransactionsSelector = createSelector(
     transactions
       .filter(
         ({ primaryTransaction }) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+          // eslint-disable-next-line no-restricted-syntax
           !(primaryTransaction.status in PENDING_STATUS_HASH),
       )
       .reverse(),

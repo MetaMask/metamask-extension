@@ -398,6 +398,8 @@ export const ImportTokensModal = ({ onClose }) => {
     const { address } = token;
     const selectedTokensCopy = { ...selectedTokens };
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+    // eslint-disable-next-line no-restricted-syntax
     if (address in selectedTokensCopy) {
       delete selectedTokensCopy[address];
     } else {

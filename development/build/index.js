@@ -476,6 +476,8 @@ function getIgnoredFiles(currentBuildType) {
         .flatMap(
           (feature) =>
             buildConfig.features[feature].assets
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+              // eslint-disable-next-line no-restricted-syntax
               ?.filter((asset) => 'exclusiveInclude' in asset)
               .map((asset) => asset.exclusiveInclude) ?? [],
         )

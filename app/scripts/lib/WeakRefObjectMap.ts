@@ -24,6 +24,8 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
   /**
    * Internal map to store keys and their corresponding weakly referenced object values.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly map: Map<string, WeakRefObject<RecordType>>;
 
   constructor() {

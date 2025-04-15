@@ -38,6 +38,8 @@ module.exports = function createStaticAssetTasks({
   const additionalAssets = activeFeatures.flatMap(
     (feature) =>
       buildConfig.features[feature].assets?.filter(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+        // eslint-disable-next-line no-restricted-syntax
         (asset) => !('exclusiveInclude' in asset),
       ) ?? [],
   );

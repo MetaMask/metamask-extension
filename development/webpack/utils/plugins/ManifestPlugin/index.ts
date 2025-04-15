@@ -122,6 +122,8 @@ export class ManifestPlugin<Z extends boolean> {
     compiler.hooks.compilation.tap(NAME, this.hookIntoPipelines.bind(this));
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private async zipAssets(
     compilation: Compilation,
     assets: Assets, // an object of asset names to assets
@@ -222,6 +224,8 @@ export class ManifestPlugin<Z extends boolean> {
    * @param assets
    * @param options
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private moveAssets(
     compilation: Compilation,
     assets: Assets,
@@ -248,6 +252,8 @@ export class ManifestPlugin<Z extends boolean> {
     assetDeletions.forEach((assetName) => compilation.deleteAsset(assetName));
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private prepareManifests(compilation: Compilation): void {
     const context = compilation.options.context as string;
     const manifestPath = join(
@@ -328,6 +334,8 @@ export class ManifestPlugin<Z extends boolean> {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private hookIntoPipelines(compilation: Compilation): void {
     // prepare manifests early so we can catch errors early instead of waiting
     // until the end of the compilation.

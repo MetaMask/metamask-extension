@@ -143,6 +143,8 @@ export function useTransactionDisplayData(transactionGroup) {
     ) || {};
 
   const displayedStatusKey = getStatusKey(primaryTransaction);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   const isPending = displayedStatusKey in PENDING_STATUS_HASH;
   const isSubmitted = displayedStatusKey === TransactionStatus.submitted;
   const mounted = useRef(true);

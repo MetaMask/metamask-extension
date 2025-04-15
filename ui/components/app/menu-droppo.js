@@ -77,6 +77,8 @@ export default class MenuDroppoComponent extends Component {
     const { containerClassName = '', style } = this.props;
     const speed = this.props.speed || '300ms';
     const { useCssTransition } = this.props;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+    // eslint-disable-next-line no-restricted-syntax
     const zIndex = 'zIndex' in this.props ? this.props.zIndex : 0;
 
     const baseStyle = {

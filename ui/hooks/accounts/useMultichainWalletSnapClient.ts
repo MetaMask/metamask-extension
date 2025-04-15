@@ -45,6 +45,8 @@ const WALLET_SNAP_MAP: Record<WalletClientType, { id: SnapId; name: string }> =
   };
 
 export class MultichainWalletSnapSender implements Sender {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly snapId: SnapId;
 
   constructor(snapId: SnapId) {

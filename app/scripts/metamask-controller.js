@@ -7979,6 +7979,8 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   recordFirstTimeInfo(initState) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+    // eslint-disable-next-line no-restricted-syntax
     if (!('firstTimeInfo' in initState)) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
       // eslint-disable-next-line n/no-process-env

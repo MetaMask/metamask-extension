@@ -74,43 +74,62 @@ export class MMIController {
 
   public transactionUpdateController: TransactionUpdateController;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly custodyController: CustodyController;
 
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-syntax
   private readonly getState: () => any;
 
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-syntax
   private readonly getPendingNonce: (address: string) => Promise<any>;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly accountTrackerController: AccountTrackerController;
 
   readonly #networkControllerState: NetworkState;
 
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-syntax
   private readonly permissionController: any;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly signatureController: SignatureController;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly messagingSystem: MMIControllerMessenger;
 
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-syntax
   private readonly platform: any;
 
   // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-syntax
   private readonly extension: any;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly updateTransactionHash: (
     txId: string,
     txHash: string,
   ) => void;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly setChannelId: (channelId: string) => void;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly setConnectionRequest: (
     payload: ConnectionRequest | null,
   ) => void;
@@ -122,6 +141,8 @@ export class MMIController {
     event: any,
   ) => void;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly txStateManager: {
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

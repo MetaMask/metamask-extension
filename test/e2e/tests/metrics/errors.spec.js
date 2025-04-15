@@ -163,6 +163,8 @@ async function matchesSnapshot({
 function getMissingProperties(complete, object) {
   const missing = {};
   for (const [key, value] of Object.entries(complete)) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+    // eslint-disable-next-line no-restricted-syntax
     if (key in object) {
       if (isObject(value) && isObject(object[key])) {
         const missingNestedProperties = getMissingProperties(

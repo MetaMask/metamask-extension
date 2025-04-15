@@ -206,6 +206,8 @@ async function writeJson(obj, file) {
  */
 async function getBuildModifications(buildType, platform) {
   const buildConfig = loadBuildTypesConfig();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   if (!(buildType in buildConfig.buildTypes)) {
     throw new Error(`Invalid build type: ${buildType}`);
   }

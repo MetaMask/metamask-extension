@@ -125,6 +125,8 @@ export default class SwapsController extends BaseController<
 
   #network: Network | undefined;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly _fetchTradesInfo: (
     fetchParams: FetchTradesInfoParams,
     fetchMetadata: { chainId: Hex },
@@ -944,6 +946,8 @@ export default class SwapsController extends BaseController<
   };
 
   // Private Methods
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private async _fetchSwapsNetworkConfig(network: Network) {
     const response = await fetchWithCache({
       url: getBaseApi('network', network.chainId),
@@ -972,6 +976,8 @@ export default class SwapsController extends BaseController<
     };
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private async _getAllQuotesWithGasEstimates(quotes: Record<string, Quote>) {
     const quoteGasData = await Promise.all(
       Object.values(quotes).map(async (quote) => {
@@ -1016,6 +1022,8 @@ export default class SwapsController extends BaseController<
     return newQuotes;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private async _getERC20Allowance(
     contractAddress: string,
     walletAddress: string,
@@ -1030,6 +1038,8 @@ export default class SwapsController extends BaseController<
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _getTokenRatesState(): {
     marketData: Record<
       string,
@@ -1046,6 +1056,8 @@ export default class SwapsController extends BaseController<
     return { marketData };
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _pollForNewQuotes() {
     const {
       swapsQuoteRefreshTime,
@@ -1068,6 +1080,8 @@ export default class SwapsController extends BaseController<
     }, quotesRefreshRateInMs);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _setSaveFetchedQuotes(status: boolean) {
     this.update((_state) => {
       _state.swapsState.saveFetchedQuotes = status;
@@ -1075,6 +1089,8 @@ export default class SwapsController extends BaseController<
   }
 
   // Sets the network config from the MetaSwap API.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private async _setSwapsNetworkConfig(network: Network) {
     let swapsNetworkConfig: {
       quotes: number;
@@ -1124,6 +1140,8 @@ export default class SwapsController extends BaseController<
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private async _timedoutGasReturn(
     tradeTxParams: Trade,
     aggregator = '',

@@ -15,6 +15,8 @@ import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/soc
 async function hasOffscreenDocument() {
   const { chrome, clients } = globalThis;
   // getContexts is only available in Chrome 116+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   if ('getContexts' in chrome.runtime) {
     const contexts = await chrome.runtime.getContexts({
       contextTypes: ['OFFSCREEN_DOCUMENT'],

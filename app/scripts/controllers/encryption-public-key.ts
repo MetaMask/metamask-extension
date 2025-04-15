@@ -112,20 +112,28 @@ export default class EncryptionPublicKeyController extends BaseController<
   EncryptionPublicKeyControllerState,
   EncryptionPublicKeyControllerMessenger
 > {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly _getEncryptionPublicKey: (
     address: string,
   ) => Promise<string>;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly _getAccountKeyringType: (account: string) => Promise<string>;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-syntax
   private readonly _getState: () => any;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private readonly _encryptionPublicKeyManager: EncryptionPublicKeyManager;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-restricted-syntax
   private readonly _metricsEvent: (payload: any, options?: any) => void;
 
   /**
@@ -327,6 +335,8 @@ export default class EncryptionPublicKeyController extends BaseController<
     this._encryptionPublicKeyManager.clearUnapprovedMessages();
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _cancelAbstractMessage(
     messageManager: EncryptionPublicKeyManager,
     messageId: string,
@@ -348,6 +358,8 @@ export default class EncryptionPublicKeyController extends BaseController<
     return this._getState();
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _subscribeToMessageState(
     controllerMessenger: EncryptionPublicKeyControllerMessenger,
     updateState: (
@@ -371,6 +383,8 @@ export default class EncryptionPublicKeyController extends BaseController<
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _migrateMessages(
     coreMessages: Record<string, CoreMessage>,
   ): Record<string, StateMessage> {
@@ -385,6 +399,8 @@ export default class EncryptionPublicKeyController extends BaseController<
     return stateMessages;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _migrateMessage(coreMessage: CoreMessage): StateMessage {
     const { messageParams, ...coreMessageData } = coreMessage;
 
@@ -399,6 +415,8 @@ export default class EncryptionPublicKeyController extends BaseController<
     return stateMessage;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _requestApproval(msgParams: AbstractMessageParamsMetamask) {
     const id = msgParams.metamaskId as string;
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31880
@@ -420,12 +438,16 @@ export default class EncryptionPublicKeyController extends BaseController<
       });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _acceptApproval(messageId: string) {
     // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31878
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   private _rejectApproval(messageId: string) {
     this.messagingSystem.call(
       'ApprovalController:rejectRequest',

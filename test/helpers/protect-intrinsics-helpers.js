@@ -78,6 +78,8 @@ function testIntrinsic(propertyName) {
   }
 
   // The writability of properties with accessors cannot be modified.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   if ('set' in descriptor || 'get' in descriptor) {
     assert.equal(
       descriptor.configurable,

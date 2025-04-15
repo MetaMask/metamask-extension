@@ -114,6 +114,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
 
         const isAddBaseFee = path === ESTIMATE_BASE_FEE_PATH && op === 'add';
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+        // eslint-disable-next-line no-restricted-syntax
         if ((path in eventPathsHash && op === REPLACE_OP) || isAddBaseFee) {
           switch (path) {
             case STATUS_PATH: {
@@ -128,6 +130,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
                       gasPrice: cachedGasPrice,
                     });
 
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+              // eslint-disable-next-line no-restricted-syntax
               if (value in statusHash) {
                 let eventKey = statusHash[value];
 

@@ -98,6 +98,8 @@ try {
      * @returns {boolean} Whether the propertyName descriptor has any accessors.
      */
     function hasAccessor(descriptor) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+      // eslint-disable-next-line no-restricted-syntax
       return 'set' in descriptor || 'get' in descriptor;
     }
   })();

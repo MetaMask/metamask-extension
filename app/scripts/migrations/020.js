@@ -33,6 +33,8 @@ export default {
 
 function transformState(state) {
   const newState = state;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+  // eslint-disable-next-line no-restricted-syntax
   if ('metamask' in newState && !('firstTimeInfo' in newState.metamask)) {
     newState.metamask.firstTimeInfo = {
       version: '3.12.0',

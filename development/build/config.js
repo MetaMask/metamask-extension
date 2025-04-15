@@ -55,7 +55,8 @@ function fromEnv(declarations) {
   const definitions = new Map(
     [...declarations]
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
-      // eslint-disable-next-line n/no-process-env
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+      // eslint-disable-next-line n/no-process-env, no-restricted-syntax
       .filter((declaration) => declaration in process.env)
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
       // eslint-disable-next-line n/no-process-env
