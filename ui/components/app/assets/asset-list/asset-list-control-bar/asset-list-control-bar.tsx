@@ -1,16 +1,22 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
+  getAllChainsToPoll,
   getCurrentNetwork,
+  getIsMainnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
   getTokenNetworkFilter,
+  getUseNftDetection,
 } from '../../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   Box,
   ButtonBase,
   ButtonBaseSize,
+  ButtonLink,
+  ButtonLinkSize,
   Icon,
   IconName,
   IconSize,
@@ -45,6 +51,8 @@ import {
 } from '../../../../../../shared/constants/app';
 import NetworkFilter from '../network-filter';
 import {
+  checkAndUpdateAllNftsOwnershipStatus,
+  detectNfts,
   detectTokens,
   setTokenNetworkFilter,
   showImportNftsModal,
@@ -53,6 +61,8 @@ import {
 import Tooltip from '../../../../ui/tooltip';
 import { useMultichainSelector } from '../../../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../../../selectors/multichain';
+import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
+import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 
 type AssetListControlBarProps = {
   showNftLinks?: boolean;
@@ -68,12 +78,18 @@ const AssetListControlBar = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
   const currentNetwork = useSelector(getCurrentNetwork);
+  const useNftDetection = useSelector(getUseNftDetection);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
+  const isMainnet = useSelector(getIsMainnet);
+  const allChainIds = useSelector(getAllChainsToPoll);
+
+  const { nftsLoading, collections } = useNftsCollections();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
@@ -187,6 +203,18 @@ const AssetListControlBar = ({
       category: MetaMetricsEventCategory.Tokens,
       event: MetaMetricsEventName.TokenListRefreshed,
     });
+  };
+
+  const onEnableAutoDetect = () => {
+    history.push(SECURITY_ROUTE);
+  };
+
+  const handleNftRefresh = () => {
+    if (isMainnet) {
+      console.log('detectNfts', allChainIds);
+      dispatch(detectNfts(allChainIds));
+    }
+    checkAndUpdateAllNftsOwnershipStatus();
   };
 
   return (
@@ -355,14 +383,42 @@ const AssetListControlBar = ({
 
           {t('importNFT')}
         </SelectableListItem>
-        {/* <SelectableListItem onClick={handleRefresh} testId="refreshList">
-          <Icon
-            name={IconName.Refresh}
-            size={IconSize.Sm}
-            marginInlineEnd={2}
-          />
-          {t('refreshList')}
-        </SelectableListItem> */}
+        {!isMainnet && Object.keys(collections).length < 1 ? null : (
+          <>
+            <Box
+              className="nfts-tab__link"
+              justifyContent={JustifyContent.flexEnd}
+            >
+              {isMainnet && !useNftDetection ? (
+                <SelectableListItem
+                  onClick={onEnableAutoDetect}
+                  data-testid="refresh-list-button"
+                >
+                  <Icon
+                    name={IconName.Setting}
+                    size={IconSize.Sm}
+                    marginInlineEnd={2}
+                  />
+
+                  {t('enableAutoDetect')}
+                </SelectableListItem>
+              ) : (
+                <SelectableListItem
+                  onClick={handleNftRefresh}
+                  data-testid="refresh-list-button"
+                >
+                  <Icon
+                    name={IconName.Refresh}
+                    size={IconSize.Sm}
+                    marginInlineEnd={2}
+                  />
+
+                  {t('refreshList')}
+                </SelectableListItem>
+              )}
+            </Box>
+          </>
+        )}
       </Popover>
     </Box>
   );
