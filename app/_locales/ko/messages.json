@@ -1121,21 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "트랜젝션 요청"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "요청을 확인하면 계정이 스마트 계정으로 업데이트됩니다."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "트랜잭션 취소"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "업데이트 및 트랜잭션 취소"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "계정을 업데이트하고 싶지 않다면 여기에서 취소할 수 있습니다.\n\n업데이트 없이 트랜잭션을 완료하려면 사이트에서 이 요청을 다시 수행해야 합니다. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "트랜잭션 취소"
-  },
   "confirmationAlertDetails": {
     "message": "자산을 보호하기 위해 요청을 거부하는 것이 좋습니다."
   },
@@ -2009,9 +1994,6 @@
   },
   "existingChainId": {
     "message": "입력한 정보는 기존 체인 ID와 연결되어 있습니다."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "가장 최근 요청을 보고 확인하려면, 먼저 기존 요청을 승인하거나 거부해야 합니다."
   },
   "expandView": {
     "message": "보기 확장"

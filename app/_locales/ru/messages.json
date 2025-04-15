@@ -1121,21 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Запрос транзакции"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Если вы подтвердите этот запрос, ваш счет будет обновлен до смарт-счета."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Отменить транзакцию"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Отменить обновление и транзакцию"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Если вы не хотите обновлять свой счет, вы можете аннулировать его здесь.\n\nЧтобы завершить эту транзакцию без обновления, необходимо будет снова сделать этот запрос на сайте. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Отменить транзакцию"
-  },
   "confirmationAlertDetails": {
     "message": "Чтобы защитить свои активы, рекомендуем отклонить запрос."
   },
@@ -2009,9 +1994,6 @@
   },
   "existingChainId": {
     "message": "Введенная вами информация связана с существующим ID блокчейна."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Чтобы просмотреть и подтвердить свой последний запрос, вам необходимо сначала утвердить или отклонить существующие запросы."
   },
   "expandView": {
     "message": "Открыть в новой вкладке"

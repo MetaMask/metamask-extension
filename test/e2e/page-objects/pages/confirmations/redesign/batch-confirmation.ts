@@ -12,11 +12,18 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
 
   private readonly batchTxList = '[data-testid="batch-txs=]';
 
-  private readonly confirmUpgradeAccountCheckbox: string =
-    '[data-testid="confirm-upgrade-acknowledge"] span input';
+  private readonly confirmUpgradeButton = {
+    tag: 'button',
+    text: 'Use smart account',
+  };
 
   private readonly interactingWith =
     '[data-testid="transaction-details-section"]';
+
+  private readonly rejectUpgradeButton = {
+    tag: 'button',
+    text: 'Don’t use smart account',
+  };
 
   private readonly txType = '[data-testid="tx-type"]';
 
@@ -24,7 +31,9 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     await this.driver.isElementPresent(this.batchTxList);
   }
 
-  async check_expectedInteractingWithIsDisplayed(account: string): Promise<void> {
+  async check_expectedInteractingWithIsDisplayed(
+    account: string,
+  ): Promise<void> {
     await this.driver.isElementPresent({
       css: this.interactingWith,
       text: account,
@@ -38,7 +47,13 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     });
   }
 
-  async tickUpgradeCheckbox(): Promise<void> {
-    await this.driver.clickElement(this.confirmUpgradeAccountCheckbox);
+  async clickUseSmartAccountButton(): Promise<void> {
+    await this.driver.clickElement(this.confirmUpgradeButton);
+  }
+
+  async clickDontUseSmartAccountButton(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.rejectUpgradeButton,
+    );
   }
 }
