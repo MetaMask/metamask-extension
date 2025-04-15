@@ -2950,16 +2950,22 @@ export default class MetamaskController extends EventEmitter {
         for (const [origin, chains] of changedChains.entries()) {
           const currentNetworkClientIdForOrigin =
             this.selectedNetworkController.getNetworkClientIdForDomain(origin);
-          const { chainId: currentChainIdForOrigin } =
+
+          const networkConfig =
             this.networkController.getNetworkConfigurationByNetworkClientId(
               currentNetworkClientIdForOrigin,
             );
-          // if(chains.length === 0) {
-          // TODO: This particular case should also occur at the same time
-          // that eth_accounts is revoked. When eth_accounts is revoked,
-          // the networkClientId for that origin should be reset to track
-          // the globally selected network.
-          // }
+
+          // Guard clause: skip this iteration or handle the case if networkConfig is undefined.
+          if (!networkConfig) {
+            log.warn(
+              `No network configuration found for clientId: ${currentNetworkClientIdForOrigin}`,
+            );
+            continue;
+          }
+
+          const { chainId: currentChainIdForOrigin } = networkConfig;
+
           if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
             const networkClientId =
               this.networkController.findNetworkClientIdByChainId(chains[0]);
@@ -3171,6 +3177,42 @@ export default class MetamaskController extends EventEmitter {
         ) {
           this.multichainRatesController.setFiatCurrency(currentCurrency);
         }
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      `MultichainTransactionsController:transactionConfirmed`,
+      (transaction) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.TransactionFinalized,
+          category: MetaMetricsEventCategory.Transactions,
+          properties: {
+            id: transaction.id,
+            timestamp: transaction.timestamp,
+            chain_id_caip: transaction.chain,
+            status: transaction.status,
+            type: transaction.type,
+            fees: transaction.fees,
+          },
+        });
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      `MultichainTransactionsController:transactionSubmitted`,
+      (transaction) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.TransactionSubmitted,
+          category: MetaMetricsEventCategory.Transactions,
+          properties: {
+            id: transaction.id,
+            timestamp: transaction.timestamp,
+            chain_id_caip: transaction.chain,
+            status: transaction.status,
+            type: transaction.type,
+            fees: transaction.fees,
+          },
+        });
       },
     );
   }
@@ -4386,8 +4428,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const { tokenList } = this.tokenListController.state;
-    const { tokens } = this.tokensController.state;
+    const currentChainId = this.#getGlobalChainId();
+
+    const { tokensChainsCache } = this.tokenListController.state;
+    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
+    const { allTokens } = this.tokensController.state;
+
+    const tokens = allTokens?.[currentChainId]?.[userAddress] || [];
 
     const staticTokenListDetails =
       STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
@@ -4507,7 +4554,10 @@ export default class MetamaskController extends EventEmitter {
   ) {
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[chainId]?.data || {};
-    const { tokens } = this.tokensController.state;
+
+    const { allTokens } = this.tokensController.state;
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
 
     let staticTokenListDetails = {};
     if (chainId === CHAIN_IDS.MAINNET) {
@@ -4931,7 +4981,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {Provider} provider - The provider instance to use when asking the network
    */
   async getBalance(address, provider) {
-    const cached = this.accountTrackerController.state.accounts[address];
+    const accounts =
+      this.accountTrackerController.state.accountsByChainId[
+        this.#getGlobalChainId()
+      ];
+    const cached = accounts?.[address];
 
     if (cached && cached.balance) {
       return cached.balance;
@@ -5449,8 +5503,13 @@ export default class MetamaskController extends EventEmitter {
 
     const internalAccountCount = internalAccounts.length;
 
+    const accountsForCurrentChain =
+      this.accountTrackerController.state.accountsByChainId[
+        this.#getGlobalChainId()
+      ];
+
     const accountTrackerCount = Object.keys(
-      this.accountTrackerController.state.accounts || {},
+      accountsForCurrentChain || {},
     ).length;
 
     captureException(
@@ -8341,6 +8400,10 @@ export default class MetamaskController extends EventEmitter {
   _trackTransactionFailure(transactionMeta) {
     const { txReceipt } = transactionMeta;
     const metamaskState = this.getState();
+    const { allTokens } = this.tokensController.state;
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const tokens =
+      allTokens?.[transactionMeta.chainId]?.[selectedAccount.address] || [];
 
     if (!txReceipt || txReceipt.status !== '0x0') {
       return;
@@ -8353,7 +8416,8 @@ export default class MetamaskController extends EventEmitter {
         properties: {
           action: 'Transactions',
           errorMessage: transactionMeta.simulationFails?.reason,
-          numberOfTokens: metamaskState.tokens.length,
+          numberOfTokens: tokens.length,
+          // TODO: remove this once we have migrated to the new account balances state
           numberOfAccounts: Object.keys(metamaskState.accounts).length,
         },
       },

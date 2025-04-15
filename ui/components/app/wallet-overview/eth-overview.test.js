@@ -91,6 +91,12 @@ describe('EthOverview', () => {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: mockEvmAccount1.address, balance: '0x1F4' },
         },
+        [CHAIN_IDS.SEPOLIA]: {
+          '0x1': {
+            address: mockEvmAccount1.address,
+            balance: '0x24da51d247e8b8',
+          },
+        },
       },
       tokenList: [],
       cachedBalances: {
@@ -226,7 +232,7 @@ describe('EthOverview', () => {
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
       expect(primaryBalance).toHaveTextContent('0.0104ETH');
-      expect(queryByText('*')).toBeInTheDocument();
+      expect(queryByText('*')).not.toBeInTheDocument();
     });
 
     it('should have the Bridge button enabled if chain id is part of supported chains', () => {
@@ -235,6 +241,11 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: '0xa86a' }),
+          accountsByChainId: {
+            [CHAIN_IDS.AVALANCHE]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
@@ -258,6 +269,11 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: '0xa86a' }),
+          accountsByChainId: {
+            [CHAIN_IDS.AVALANCHE]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+            },
+          },
           useExternalServices: true,
           bridgeFeatureFlags: {
             extensionConfig: {
@@ -329,6 +345,11 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
+          accountsByChainId: {
+            [CHAIN_IDS.GOERLI]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -350,6 +371,11 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+          accountsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -371,6 +397,11 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+          accountsByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(
