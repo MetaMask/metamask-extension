@@ -357,11 +357,7 @@ import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-b
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
-import {
-  addDappTransaction,
-  addTransaction,
-  validateSecurity,
-} from './lib/transaction/util';
+import { addDappTransaction, addTransaction } from './lib/transaction/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 ///: END:ONLY_INCLUDE_IF
@@ -1619,68 +1615,6 @@ export default class MetamaskController extends EventEmitter {
       initState.SwapsController,
     );
 
-    const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
-      name: BRIDGE_CONTROLLER_NAME,
-      allowedActions: [
-        'AccountsController:getSelectedMultichainAccount',
-        'SnapController:handleRequest',
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'NetworkController:findNetworkClientIdByChainId',
-        'TokenRatesController:getState',
-        'MultichainAssetsRatesController:getState',
-        'CurrencyRateController:getState',
-      ],
-      allowedEvents: [],
-    });
-    this.bridgeController = new BridgeController({
-      messenger: bridgeControllerMessenger,
-      clientId: BridgeClientId.EXTENSION,
-      // TODO: Remove once TransactionController exports this action type
-      getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
-      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
-        await fetchWithCache({
-          url,
-          fetchOptions: { method: 'GET', headers, signal },
-          ...requestOptions,
-        }),
-      config: {
-        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
-      },
-    });
-
-    const bridgeStatusControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: BRIDGE_STATUS_CONTROLLER_NAME,
-        allowedActions: [
-          'AccountsController:getSelectedMultichainAccount',
-          'NetworkController:getNetworkClientById',
-          'NetworkController:findNetworkClientIdByChainId',
-          'NetworkController:getState',
-          'TokensController:addToken',
-          'PreferencesController:getState',
-          'SnapController:handleRequest',
-          'TransactionController:getState',
-        ],
-        allowedEvents: [],
-      });
-    this.bridgeStatusController = new BridgeStatusController({
-      messenger: bridgeStatusControllerMessenger,
-      state: initState.BridgeStatusController,
-      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
-        await fetchWithCache({
-          url,
-          fetchOptions: { method: 'GET', headers, signal },
-          ...requestOptions,
-        }),
-      validateTransactionFn: validateSecurity,
-      addTransactionFn: this.txController.addTransaction,
-      config: {
-        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
-        smartTransactionsEnabledByDefault: DEFAULT_SMART_TRANSACTIONS_ENABLED,
-      },
-    });
-
     const smartTransactionsControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'SmartTransactionsController',
@@ -1808,6 +1742,73 @@ export default class MetamaskController extends EventEmitter {
       'transaction-updated',
       this._onUserOperationTransactionUpdated.bind(this),
     );
+
+    const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
+      name: BRIDGE_CONTROLLER_NAME,
+      allowedActions: [
+        'AccountsController:getSelectedMultichainAccount',
+        'SnapController:handleRequest',
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'NetworkController:findNetworkClientIdByChainId',
+        'TokenRatesController:getState',
+        'MultichainAssetsRatesController:getState',
+        'CurrencyRateController:getState',
+      ],
+      allowedEvents: [],
+    });
+    this.bridgeController = new BridgeController({
+      messenger: bridgeControllerMessenger,
+      clientId: BridgeClientId.EXTENSION,
+      // TODO: Remove once TransactionController exports this action type
+      getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
+      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
+        await fetchWithCache({
+          url,
+          fetchOptions: { method: 'GET', headers, signal },
+          ...requestOptions,
+        }),
+      config: {
+        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      },
+    });
+
+    const bridgeStatusControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: BRIDGE_STATUS_CONTROLLER_NAME,
+        allowedActions: [
+          'AccountsController:getSelectedMultichainAccount',
+          'NetworkController:getNetworkClientById',
+          'NetworkController:findNetworkClientIdByChainId',
+          'NetworkController:getState',
+          'TokensController:addDetectedTokens',
+          'BridgeController:getBridgeERC20Allowance',
+          'GasFeeController:getState',
+          'AccountsController:getAccountByAddress',
+          'PreferencesController:getState',
+          'SnapController:handleRequest',
+          'TransactionController:getState',
+        ],
+        allowedEvents: [],
+      });
+    this.bridgeStatusController = new BridgeStatusController({
+      messenger: bridgeStatusControllerMessenger,
+      state: initState.BridgeStatusController,
+      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
+        await fetchWithCache({
+          url,
+          fetchOptions: { method: 'GET', headers, signal },
+          ...requestOptions,
+        }),
+      addTransactionFn: this.txController.addTransaction,
+      estimateGasFeeFn: this.txController.estimateGasFee,
+      addUserOperationFromTransactionFn:
+        this.userOperationController.addUserOperationFromTransaction,
+      config: {
+        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+        smartTransactionsEnabledByDefault: DEFAULT_SMART_TRANSACTIONS_ENABLED,
+      },
+    });
 
     // ensure AccountTrackerController updates balances after network change
     networkControllerMessenger.subscribe(

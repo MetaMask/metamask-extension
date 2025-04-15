@@ -42,15 +42,18 @@ export const startPollingForBridgeTxStatus = (
  * Submit a solana bridge or swap transaction using the bridge status controller
  *
  * @param quote
+ * @param isStxSupportedInClient
  * @returns
  */
-export const submitBridgeTx = (quote: QuoteResponse & QuoteMetadata) => {
+export const submitBridgeTx = (
+  quote: QuoteResponse & QuoteMetadata,
+  isStxSupportedInClient: boolean,
+) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     return dispatch(
-      callBridgeStatusControllerMethod<[QuoteResponse & QuoteMetadata]>(
-        BridgeStatusAction.SUBMIT_TX,
-        [quote],
-      ),
+      callBridgeStatusControllerMethod<
+        [QuoteResponse & QuoteMetadata, boolean]
+      >(BridgeStatusAction.SUBMIT_TX, [quote, isStxSupportedInClient]),
     );
   };
 };
