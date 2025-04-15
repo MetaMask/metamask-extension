@@ -170,6 +170,7 @@ class SmartTransactionHook {
       getFeesResponse = await this.#smartTransactionsController.getFees(
         { ...this.#txParams, chainId: this.#chainId },
         undefined,
+        { networkClientId: this.#transactionMeta.networkClientId },
       );
     } catch (error) {
       log.error(
