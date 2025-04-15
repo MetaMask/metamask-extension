@@ -17,7 +17,9 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getSweepstakesCampaignActive,
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   SOLANA_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../hooks/useCarouselManagement';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';

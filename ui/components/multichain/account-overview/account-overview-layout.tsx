@@ -21,7 +21,12 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
-import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
+import {
+  useCarouselManagement,
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  SOLANA_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../hooks/useCarouselManagement';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -68,7 +73,7 @@ export const AccountOverviewLayout = ({
     ///: END:ONLY_INCLUDE_IF
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (id === 'solana') {
+    if (id === SOLANA_SLIDE.id) {
       if (hasSolanaAccount && selectedSolanaAccount) {
         dispatch(setSelectedAccount(selectedSolanaAccount.address));
       } else {
