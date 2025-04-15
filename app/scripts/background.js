@@ -536,9 +536,9 @@ async function initialize() {
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
 
-    // Check for pending updates after initialization is complete
-    // This handles the case where the user never opens the UI
+    // Set initial idle state after initialization is complete
     extensionUpdateManager.setIdleState(true);
+    // Check for updates when UI is closed (initialization also checks for updates separately)
     extensionUpdateManager.applyPendingUpdateIfNeeded();
 
     resolveInitialization();
@@ -890,7 +890,7 @@ export function setupController(
       controller.onClientClosed();
       // Set extension to idle when all UI instances are closed
       extensionUpdateManager.setIdleState(true);
-      // Only check for updates when explicitly closed, not during initialization.
+      // Check for updates when UI is closed
       extensionUpdateManager.applyPendingUpdateIfNeeded();
     } else {
       // Set extension to not idle when UI instances are open
