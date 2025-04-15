@@ -150,10 +150,7 @@ export default function NftsTab() {
   return (
     <>
       <Box marginTop={2}>
-        <AssetListControlBar
-          showTokensLinks={false}
-          showTokenFiatBalance={false}
-        />
+        <AssetListControlBar showNftLinks />
       </Box>
 
       <Box className="nfts-tab">

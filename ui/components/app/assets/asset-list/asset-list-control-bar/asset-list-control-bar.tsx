@@ -47,6 +47,7 @@ import NetworkFilter from '../network-filter';
 import {
   detectTokens,
   setTokenNetworkFilter,
+  showImportNftsModal,
   showImportTokensModal,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
@@ -54,11 +55,13 @@ import { useMultichainSelector } from '../../../../../hooks/useMultichainSelecto
 import { getMultichainNetwork } from '../../../../../selectors/multichain';
 
 type AssetListControlBarProps = {
+  showNftLinks?: boolean;
   showTokensLinks?: boolean;
   showTokenFiatBalance?: boolean;
 };
 
 const AssetListControlBar = ({
+  showNftLinks,
   showTokensLinks,
   showTokenFiatBalance,
 }: AssetListControlBarProps) => {
@@ -78,6 +81,7 @@ const AssetListControlBar = ({
     useState(false);
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
+  const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
 
   const account = useSelector(getSelectedInternalAccount);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
@@ -127,28 +131,39 @@ const AssetListControlBar = ({
   const toggleTokenSortPopover = () => {
     setIsNetworkFilterPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
     setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
   };
 
   const toggleNetworkFilterPopover = () => {
     setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
     setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
   };
 
   const toggleImportTokensPopover = () => {
     setIsTokenSortPopoverOpen(false);
     setIsNetworkFilterPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
     setIsImportTokensPopoverOpen(!isImportTokensPopoverOpen);
+  };
+
+  const toggleImportNftPopover = () => {
+    setIsTokenSortPopoverOpen(false);
+    setIsNetworkFilterPopoverOpen(false);
+    setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(!isImportNftPopoverOpen);
   };
 
   const closePopover = () => {
     setIsTokenSortPopoverOpen(false);
     setIsNetworkFilterPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
   };
 
-  const handleImport = () => {
+  const handleTokenImportModal = () => {
     dispatch(showImportTokensModal());
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -157,6 +172,11 @@ const AssetListControlBar = ({
         location: 'HOME',
       },
     });
+    closePopover();
+  };
+
+  const handleNftImportModal = () => {
+    dispatch(showImportNftsModal({}));
     closePopover();
   };
 
@@ -234,12 +254,16 @@ const AssetListControlBar = ({
           </Tooltip>
 
           <ImportControl
+            showNftLinks={showNftLinks}
             showTokensLinks={showTokensLinks}
-            onClick={toggleImportTokensPopover}
+            onClick={
+              showNftLinks ? toggleImportNftPopover : toggleImportTokensPopover
+            }
           />
         </Box>
       </Box>
 
+      {/* Network Filter Popover */}
       <Popover
         onClickOutside={closePopover}
         isOpen={isNetworkFilterPopoverOpen}
@@ -276,6 +300,7 @@ const AssetListControlBar = ({
         <SortControl handleClose={closePopover} />
       </Popover>
 
+      {/* Tokens Popover */}
       <Popover
         onClickOutside={closePopover}
         isOpen={isImportTokensPopoverOpen}
@@ -290,7 +315,10 @@ const AssetListControlBar = ({
           minWidth: isFullScreen ? '158px' : '',
         }}
       >
-        <SelectableListItem onClick={handleImport} testId="importTokens">
+        <SelectableListItem
+          onClick={handleTokenImportModal}
+          testId="importTokens"
+        >
           <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
           {t('importTokensCamelCase')}
         </SelectableListItem>
@@ -302,6 +330,39 @@ const AssetListControlBar = ({
           />
           {t('refreshList')}
         </SelectableListItem>
+      </Popover>
+
+      {/* NFT Popover */}
+      <Popover
+        onClickOutside={closePopover}
+        isOpen={isImportNftPopoverOpen}
+        position={PopoverPosition.BottomEnd}
+        referenceElement={popoverRef.current}
+        matchWidth={false}
+        style={{
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          minWidth: isFullScreen ? '158px' : '',
+        }}
+      >
+        <SelectableListItem
+          onClick={handleNftImportModal}
+          testId="importTokens"
+        >
+          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
+
+          {t('importNFT')}
+        </SelectableListItem>
+        {/* <SelectableListItem onClick={handleRefresh} testId="refreshList">
+          <Icon
+            name={IconName.Refresh}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
+          {t('refreshList')}
+        </SelectableListItem> */}
       </Popover>
     </Box>
   );

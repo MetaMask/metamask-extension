@@ -1,6 +1,6 @@
 import { isValidHexAddress } from '@metamask/controller-utils';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getErrorMessage } from '../../../../shared/modules/error';
@@ -19,15 +19,23 @@ import {
   JustifyContent,
   Severity,
   Size,
+  TextAlign,
+  TextVariant,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
 import {
   getIsMainnet,
   getSelectedInternalAccount,
   getOpenSeaEnabled,
+  getCurrentNetwork,
 } from '../../../selectors';
+import { getImageForChainId } from '../../../selectors/multichain';
 import {
   addNftVerifyOwnership,
   getTokenStandardAndDetails,
@@ -48,13 +56,19 @@ import {
   Label,
   Modal,
   ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  Text,
+  AvatarNetworkSize,
 } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
+import NetworkFilterDropdown from '../../app/import-token/network-filter-import-token/network-filter-dropdown';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
+import { NetworkListItem } from '../network-list-item';
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -76,6 +90,24 @@ export const ImportNftsModal = ({ onClose }) => {
   const [disabled, setDisabled] = useState(true);
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
+
+  const dropdown = useRef(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedNetworkForCustomImport, setSelectedNetworkForCustomImport] =
+    useState(null);
+
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentNetworkImageUrl = getImageForChainId(currentNetwork?.chainId);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+
+  const allOpts = useMemo(
+    () =>
+      Object.keys(allNetworks || {}).reduce((acc, chain) => {
+        acc[chain] = true;
+        return acc;
+      }, {}),
+    [allNetworks],
+  );
 
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
@@ -165,6 +197,10 @@ export const ImportNftsModal = ({ onClose }) => {
     setTokenId(val);
   };
 
+  const toggleNetworkList = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   return (
     <Modal
       isOpen
@@ -206,6 +242,71 @@ export const ImportNftsModal = ({ onClose }) => {
             marginTop={6}
             marginBottom={6}
           >
+            <NetworkFilterDropdown
+              title="title"
+              buttonDataTestId="buttonDataTestId"
+              isCurrentNetwork={false}
+              openListNetwork={toggleNetworkList}
+              currentNetworkImageUrl={currentNetworkImageUrl}
+              allOpts={allOpts}
+              isDropdownOpen={isDropdownOpen}
+              setIsDropdownOpen={setIsDropdownOpen}
+              dropdownRef={dropdown}
+            />
+
+            {isDropdownOpen && (
+              <Modal isOpen>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader onBack={toggleNetworkList} onClose={onClose}>
+                    <Text
+                      variant={TextVariant.headingSm}
+                      align={TextAlign.Center}
+                    >
+                      {t('networkMenuHeading')}
+                    </Text>
+                  </ModalHeader>
+                  <ModalBody>
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      width={BlockSize.Full}
+                    >
+                      {Object.values(allNetworks).map((network) => (
+                        <Box
+                          key={network.chainId}
+                          data-testid={`select-network-item-${network.chainId}`}
+                        >
+                          <NetworkListItem
+                            key={network.chainId}
+                            chainId={network.chainId}
+                            name={network.name}
+                            iconSrc={getImageForChainId(network.chainId)}
+                            iconSize={AvatarNetworkSize.Sm}
+                            focus={false}
+                            onClick={() => {
+                              setSelectedNetworkForCustomImport(
+                                network.chainId,
+                              );
+                              // setCustomAddress('');
+                              // setCustomSymbol('');
+                              // setCustomDecimals(0);
+                              // setShowSymbolAndDecimals(false);
+
+                              // setActionMode(ACTION_MODES.IMPORT_TOKEN);
+                            }}
+                            selected={
+                              network?.chainId ===
+                              selectedNetworkForCustomImport
+                            }
+                          />
+                        </Box>
+                      ))}
+                    </Box>
+                  </ModalBody>
+                </ModalContent>
+              </Modal>
+            )}
             <Box>
               <Box
                 display={Display.Flex}

@@ -41,6 +41,8 @@ export const NetworkFilterDropdown = ({
     setIsDropdownOpen(!isDropdownOpen);
   }, [isDropdownOpen, setIsDropdownOpen]);
 
+  console.log('isDropdownOpen', isDropdownOpen);
+
   return (
     <Box
       className="dropdown-editor__item-dropdown"

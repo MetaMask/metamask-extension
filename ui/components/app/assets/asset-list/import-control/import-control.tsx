@@ -12,32 +12,56 @@ import {
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 
 type AssetListControlBarProps = {
+  showNftLinks?: boolean;
   showTokensLinks?: boolean;
   onClick?: () => void;
 };
 
 const AssetListControlBar = ({
+  showNftLinks,
   showTokensLinks,
   onClick,
 }: AssetListControlBarProps) => {
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
+  const shouldShowNftLinks = showNftLinks ?? isEvm;
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
 
-  return (
-    <ButtonBase
-      className="asset-list-control-bar__button"
-      data-testid="import-token-button"
-      disabled={!shouldShowTokensLinks}
-      size={ButtonBaseSize.Sm}
-      startIconName={IconName.MoreVertical}
-      startIconProps={{ marginInlineEnd: 0 }}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      color={TextColor.textDefault}
-      onClick={onClick}
-    />
-  );
+  if (shouldShowNftLinks) {
+    return (
+      <ButtonBase
+        className="asset-list-control-bar__button"
+        data-testid="import-nft-button"
+        disabled={false}
+        size={ButtonBaseSize.Sm}
+        startIconName={IconName.MoreVertical}
+        startIconProps={{ marginInlineEnd: 0 }}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        color={TextColor.textDefault}
+        onClick={onClick}
+      />
+    );
+  }
+
+  if (showTokensLinks) {
+    return (
+      <ButtonBase
+        className="asset-list-control-bar__button"
+        data-testid="import-token-button"
+        disabled={!shouldShowTokensLinks}
+        size={ButtonBaseSize.Sm}
+        startIconName={IconName.MoreVertical}
+        startIconProps={{ marginInlineEnd: 0 }}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        color={TextColor.textDefault}
+        onClick={onClick}
+      />
+    );
+  }
+
+  // fallback
+  return null;
 };
 
 export default AssetListControlBar;
