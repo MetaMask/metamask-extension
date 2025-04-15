@@ -582,9 +582,13 @@ describe('AccountListMenu', () => {
       },
     });
     renderWithProvider(<AccountListMenu onClose={jest.fn()} />, mockStore);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const tag = listItems[0].querySelector('.mm-tag') as Element;
     expect(tag.textContent).toBe('mock snap name (Beta)');
   });
@@ -628,9 +632,13 @@ describe('AccountListMenu', () => {
         },
       },
     });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
+    // eslint-disable-next-line no-restricted-globals
     const tag = listItems[0].querySelector('.mm-tag') as Element;
     expect(tag.textContent).toBe('mock snap name (Beta)');
   });
