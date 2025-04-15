@@ -48,6 +48,7 @@ import {
 } from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
+import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -83,6 +84,7 @@ import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
+import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -538,6 +540,8 @@ async function initialize() {
         }
       : {};
 
+    const preinstalledSnaps = await loadPreinstalledSnaps();
+
     setupController(
       initState,
       initLangCode,
@@ -545,6 +549,7 @@ async function initialize() {
       isFirstMetaMaskControllerSetup,
       initData.meta,
       offscreenPromise,
+      preinstalledSnaps,
     );
 
     // `setupController` sets up the `controller` object, so we can use it now:
@@ -560,6 +565,20 @@ async function initialize() {
   } catch (error) {
     rejectInitialization(error);
   }
+}
+
+/**
+ * Loads the preinstalled snaps from urls and returns them as an array.
+ * It fails if any Snap fails to load in the expected time range.
+ */
+async function loadPreinstalledSnaps() {
+  const fetchWithTimeout = getFetchWithTimeout();
+  const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
+    const response = await fetchWithTimeout(url);
+    return await response.json();
+  });
+
+  return Promise.all(promises);
 }
 
 /**
@@ -815,6 +834,7 @@ function trackAppOpened(environment) {
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
+ * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
  */
 export function setupController(
   initState,
@@ -823,6 +843,7 @@ export function setupController(
   isFirstMetaMaskControllerSetup,
   stateMetadata,
   offscreenPromise,
+  preinstalledSnaps,
 ) {
   //
   // MetaMask Controller
@@ -851,6 +872,7 @@ export function setupController(
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
     offscreenPromise,
+    preinstalledSnaps,
   });
 
   setupEnsIpfsResolver({
@@ -1102,13 +1124,6 @@ export function setupController(
     updateBadge,
   );
 
-  if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
-    controller.controllerMessenger.subscribe(
-      METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
-      updateBadge,
-    );
-  }
-
   controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
     updateBadge,
@@ -1182,12 +1197,9 @@ export function setupController(
 
   function getPendingApprovalCount() {
     try {
-      let pendingApprovalCount =
+      const pendingApprovalCount =
         controller.appStateController.waitingForUnlock.length +
         controller.approvalController.getTotalApprovalCount();
-
-      pendingApprovalCount +=
-        controller.queuedRequestController.state.queuedRequestCount;
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
