@@ -40,7 +40,7 @@ jobs:
       - name: Run beta build
         env:
           INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN_DEV }}
+          SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
         run: |
           yarn build --build-type beta --platform='chrome' dist
 
