@@ -40,9 +40,7 @@ import {
   REMOTE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
-import {
-  InternalAccountWithBalance,
-} from '../../../../selectors/selectors.types';
+import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import {
   getSelectedInternalAccount,
   getMetaMaskAccountsOrdered,
@@ -53,23 +51,6 @@ import StepIndicator from '../step-indicator/step-indicator.component';
 
 const TOTAL_STEPS = 3;
 
-// example account
-const account: InternalAccount = {
-  address: '0x12C7e...q135f',
-  type: 'eip155:eoa',
-  id: '1',
-  options: {},
-  metadata: {
-    name: 'Hardware Lockbox',
-    importTime: 1717334400,
-    keyring: {
-      type: 'eip155',
-    },
-  },
-  scopes: [],
-  methods: [],
-};
-
 /**
  * A multi-step setup component for configuring daily allowances in remote mode
  * Allows users to:
@@ -77,15 +58,9 @@ const account: InternalAccount = {
  * - Configure daily token allowances
  * - Review and confirm changes (including EOA upgrade)
  *
- * @param props - Component props
- * @param [props.accounts] - List of available accounts, defaults to example account (which may not be needed)
  * @returns The rendered component
  */
-export default function RemoteModeSetupDailyAllowance({
-  accounts = [account],
-}: {
-  accounts?: InternalAccount[];
-}) {
+export default function RemoteModeSetupDailyAllowance() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -95,7 +70,8 @@ export default function RemoteModeSetupDailyAllowance({
   const [dailyLimit, setDailyLimit] = useState<string>('');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
-  const [selectedAccount, setSelectedAccount] = useState<InternalAccount | null>(null);
+  const [selectedAccount, setSelectedAccount] =
+    useState<InternalAccount | null>(null);
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -183,7 +159,7 @@ export default function RemoteModeSetupDailyAllowance({
                   onClick: (account: InternalAccount) => {
                     setSelectedAccount(account);
                     setIsModalOpen(false);
-                  }
+                  },
                 }}
               />
             )}

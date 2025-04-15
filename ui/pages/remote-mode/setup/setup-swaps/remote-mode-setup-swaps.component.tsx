@@ -44,32 +44,13 @@ import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeSwapAllowanceCard from '../swap-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
 
-import {
-  InternalAccountWithBalance,
-} from '../../../../selectors/selectors.types';
+import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import {
   getSelectedInternalAccount,
   getMetaMaskAccountsOrdered,
 } from '../../../../selectors';
 
 const TOTAL_STEPS = 3;
-
-// example account
-const account: InternalAccount = {
-  address: '0x12C7e...q135f',
-  type: 'eip155:eoa',
-  id: '1',
-  options: {},
-  metadata: {
-    name: 'Hardware Lockbox',
-    importTime: 1717334400,
-    keyring: {
-      type: 'eip155',
-    },
-  },
-  scopes: [],
-  methods: [],
-};
 
 /**
  * A multi-step setup component for configuring swaps in remote mode
@@ -78,15 +59,9 @@ const account: InternalAccount = {
  * - Configure swap allowances
  * - Review and confirm changes (including EOA upgrade)
  *
- * @param props - Component props
- * @param [props.accounts] - List of available accounts, defaults to example account (which may not be needed)
  * @returns The rendered component
  */
-export default function RemoteModeSetupSwaps({
-  accounts = [account],
-}: {
-  accounts?: InternalAccount[];
-}) {
+export default function RemoteModeSetupSwaps() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -100,7 +75,8 @@ export default function RemoteModeSetupSwaps({
   const [dailyLimit, setDailyLimit] = useState<string>('');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
-  const [selectedAccount, setSelectedAccount] = useState<InternalAccount | null>(null);
+  const [selectedAccount, setSelectedAccount] =
+    useState<InternalAccount | null>(null);
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -187,7 +163,7 @@ export default function RemoteModeSetupSwaps({
                   onClick: (account: InternalAccount) => {
                     setSelectedAccount(account);
                     setIsModalOpen(false);
-                  }
+                  },
                 }}
               />
             )}
@@ -216,15 +192,15 @@ export default function RemoteModeSetupSwaps({
                   borderRadius={BorderRadius.LG}
                   borderColor={BorderColor.borderDefault}
                 >
-                {selectedAccount && (
-                  <AccountPicker
-                    address={selectedAccount?.address}
-                    name={selectedAccount?.metadata.name}
-                    onClick={() => {
-                      setIsModalOpen(true);
-                    }}
-                  />
-                )}
+                  {selectedAccount && (
+                    <AccountPicker
+                      address={selectedAccount?.address}
+                      name={selectedAccount?.metadata.name}
+                      onClick={() => {
+                        setIsModalOpen(true);
+                      }}
+                    />
+                  )}
                 </Box>
                 <Box
                   display={Display.Flex}
