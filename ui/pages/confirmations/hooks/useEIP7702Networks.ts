@@ -24,14 +24,19 @@ export const useEIP7702Networks = (address: string) => {
     () =>
       Object.entries(multichainNetworks).reduce(
         ([nonTestnetsList, testnetsList], [id, network]) => {
-          const chainId = network.isEvm
-            ? convertCaipToHexChainId(id as CaipChainId)
-            : id;
-          // This is type casted to string since chainId could be
-          // Hex or CaipChainId.
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
-          (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
-          return [nonTestnetsList, testnetsList];
+          try {
+            const chainId = network.isEvm
+              ? convertCaipToHexChainId(id as CaipChainId)
+              : id;
+            // This is type casted to string since chainId could be
+            // Hex or CaipChainId.
+            const isTest = (TEST_CHAINS as string[]).includes(chainId);
+            (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
+          } catch (err: unknown) {
+            console.error(err);
+          } finally {
+            return [nonTestnetsList, testnetsList];
+          }
         },
         [
           {} as Record<string, MultichainNetworkConfiguration>,
@@ -63,16 +68,20 @@ export const useEIP7702Networks = (address: string) => {
 
       const networksSupporting7702: EIP7702NetworkConfiguration[] = [];
       Object.values(networkList).forEach((network) => {
-        const chainIdHex = convertCaipToHexChainId(network.chainId);
-        const atomicBatchResult = value.find(
-          ({ chainId }) => chainId === chainIdHex,
-        );
-        if (atomicBatchResult) {
-          networksSupporting7702.push({
-            ...atomicBatchResult,
-            ...network,
-            chainIdHex,
-          });
+        try {
+          const chainIdHex = convertCaipToHexChainId(network.chainId);
+          const atomicBatchResult = value.find(
+            ({ chainId }) => chainId === chainIdHex,
+          );
+          if (atomicBatchResult) {
+            networksSupporting7702.push({
+              ...atomicBatchResult,
+              ...network,
+              chainIdHex,
+            });
+          }
+        } catch (err: unknown) {
+          console.error(err);
         }
       });
 
