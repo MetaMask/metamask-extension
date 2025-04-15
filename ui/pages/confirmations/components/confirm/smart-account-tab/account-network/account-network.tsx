@@ -100,8 +100,8 @@ export const AccountNetwork = ({
           </Text>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
             {addressSupportSmartAccount
-              ? t('confirmAccountTypeSmartContract')
-              : t('confirmAccountTypeStandard')}
+              ? t('smartAccountLabel')
+              : t('standardAccountLabel')}
           </Text>
         </Box>
       </Box>
