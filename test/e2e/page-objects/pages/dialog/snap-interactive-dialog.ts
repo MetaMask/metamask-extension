@@ -44,7 +44,7 @@ class SnapInteractiveDialog {
   }
 
   async fillMessage(message: string) {
-    console.log(`Filling message in example field`);
+    console.log(`Filling message in example input`);
     await this.driver.fill(selectors.exampleInput, message);
   }
 
