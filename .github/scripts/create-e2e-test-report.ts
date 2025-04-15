@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import humanizeDuration from 'humanize-duration';
-import * as xml2js from 'xml2js';
 import path from 'path';
+import * as xml2js from 'xml2js';
 
 const XML = {
   parse: new xml2js.Parser().parseStringPromise,
@@ -86,6 +86,7 @@ async function main() {
     RUN_ID,
     PR_NUMBER,
   } = process.env;
+
   let summary = '';
   const core = process.env.GITHUB_ACTIONS
     ? await import('@actions/core')

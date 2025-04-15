@@ -36,7 +36,7 @@ jobs:
       - test-e2e-firefox
       - test-e2e-firefox-flask
     runs-on: ubuntu-latest
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     env:
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
@@ -51,6 +51,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Download test results
         uses: actions/download-artifact@v4
