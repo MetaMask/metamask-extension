@@ -155,10 +155,7 @@
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
-      "allTokens": {},
-      "detectedTokens": "object",
-      "ignoredTokens": "object",
-      "tokens": "object"
+      "allTokens": {}
     },
     "TransactionController": { "transactions": "object" },
     "config": "object",
