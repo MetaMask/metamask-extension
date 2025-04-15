@@ -3407,6 +3407,7 @@ export default class MetamaskController extends EventEmitter {
       currencyRateController,
       tokenBalancesController,
       tokenDetectionController,
+      multichainAssetsRatesController,
       ensController,
       tokenListController,
       gasFeeController,
@@ -4261,6 +4262,12 @@ export default class MetamaskController extends EventEmitter {
       detectTokens: tokenDetectionController.detectTokens.bind(
         tokenDetectionController,
       ),
+
+      // MultichainAssetsRatesController
+      fetchHistoricalPrices:
+        multichainAssetsRatesController.fetchHistoricalPrices.bind(
+          multichainAssetsRatesController,
+        ),
 
       // DetectCollectibleController
       detectNfts: nftDetectionController.detectNfts.bind(

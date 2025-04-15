@@ -12,7 +12,12 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
-import { type CaipChainId, type Hex, type Json } from '@metamask/utils';
+import {
+  CaipAssetType,
+  type CaipChainId,
+  type Hex,
+  type Json,
+} from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -3579,6 +3584,17 @@ export function setUseCurrencyRateCheck(
         dispatch(displayWarning(err));
       }
     });
+  };
+}
+
+// MultichainAssetsRatesController
+export function fetchHistoricalPrices(
+  address: CaipAssetType,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.fetchHistoricalPrices`);
+    await submitRequestToBackground('fetchHistoricalPrices', [address]);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 

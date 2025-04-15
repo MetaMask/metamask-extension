@@ -2,8 +2,8 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { EthMethod, SolMethod } from '@metamask/keyring-api';
 import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
 import { isEqual } from 'lodash';
-import React, { ReactNode, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import React, { ReactNode, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -67,6 +67,7 @@ import { getPricePrecision, localizeLargeNumber } from '../util';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
+import { fetchHistoricalPrices } from '../../../store/actions';
 
 /** Information about a native or token asset */
 export type Asset = (
@@ -109,6 +110,7 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const history = useHistory();
+  const dispatch = useDispatch();
   const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
   const conversionRate = useMultichainSelector(getMultichainConversionRate);
@@ -281,6 +283,13 @@ const AssetPage = ({
   if (!tokenWithFiatAmount) {
     throw new Error('Token with fiat amount not found');
   }
+
+  useEffect(() => {
+    // this is just for testing purposes
+    if (!isEvm) {
+      dispatch(fetchHistoricalPrices(address as CaipAssetType));
+    }
+  }, [address, currency, dispatch]);
 
   return (
     <Box
