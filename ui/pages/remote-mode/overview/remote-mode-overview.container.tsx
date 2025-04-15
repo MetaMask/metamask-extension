@@ -3,7 +3,16 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
-import { Button, Box, ButtonSize } from '../../../components/component-library';
+import { Button, ButtonIcon, ButtonSize, ButtonIconSize, IconName } from '../../../components/component-library';
+import {
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../../components/multichain/pages/page';
 
 import {
   DEFAULT_ROUTE,
@@ -39,21 +48,21 @@ export default function RemoteModeIntroducing() {
     switch (currentScreen) {
       case RemoteScreen.OVERVIEW:
         return (
-          <Box padding={6}>
+          <Content padding={6}>
             <RemoteModeOverview />
             <Button
               style={{ width: '100%' }}
               onClick={() => setCurrentScreen(RemoteScreen.PERMISSIONS)}
               size={ButtonSize.Lg}
             >
-              Continue
+              Get Remote Mode
             </Button>
-          </Box>
+          </Content>
         );
 
       case RemoteScreen.PERMISSIONS:
         return (
-          <Box padding={6}>
+          <Content padding={6}>
             <RemoteModePermissions
               setStartEnableRemoteSwap={() => {
                 history.push(REMOTE_ROUTE_SETUP_SWAPS);
@@ -62,14 +71,14 @@ export default function RemoteModeIntroducing() {
                 history.push(REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE);
               }}
             />
-          </Box>
+          </Content>
         );
 
       case RemoteScreen.SETUP_REMOTE_SWAPS:
         return (
-          <Box padding={2}>
+          <Content padding={2}>
             <RemoteModeSetup />
-          </Box>
+          </Content>
         );
 
       default:
@@ -77,9 +86,28 @@ export default function RemoteModeIntroducing() {
     }
   };
 
+  const onCancel = () => {
+    history.push(DEFAULT_ROUTE);
+  };
+
   return (
-    <div className="main-container" data-testid="remote-mode">
+    <Page className="main-container" data-testid="remote-mode">
+      <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Sm}
+            ariaLabel={'back'}
+            iconName={IconName.ArrowLeft}
+            onClick={onCancel}
+          />
+        }
+      >
+        Remote mode
+      </Header>
       {renderScreen()}
-    </div>
+    </Page>
   );
 }

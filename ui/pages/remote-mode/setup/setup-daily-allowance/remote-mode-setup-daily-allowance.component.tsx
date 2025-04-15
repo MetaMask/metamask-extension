@@ -4,8 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../../../components/multichain/pages/page';
+import {
   Box,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonVariant,
   ButtonSize,
   Text,
@@ -144,6 +152,10 @@ export default function RemoteModeSetupDailyAllowance() {
 
   const handleConfigureRemoteSwaps = () => {
     history.replace(REMOTE_ROUTE);
+  };
+
+  const onCancel = () => {
+    history.goBack();
   };
 
   const renderStepContent = () => {
@@ -471,12 +483,28 @@ export default function RemoteModeSetupDailyAllowance() {
   };
 
   return (
-    <div className="main-container" data-testid="remote-mode-setup-swaps">
-      <Box
+    <Page className="main-container" data-testid="remote-mode-setup-swaps">
+      <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Sm}
+            ariaLabel={'back'}
+            iconName={IconName.ArrowLeft}
+            onClick={onCancel}
+          />
+        }
+      >
+        Remote mode
+      </Header>
+      <Content
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         gap={2}
-        padding={2}
+        paddingLeft={4}
+        paddingRight={4}
         width={BlockSize.Full}
       >
         <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
@@ -493,28 +521,6 @@ export default function RemoteModeSetupDailyAllowance() {
 
         {renderStepContent()}
 
-        <Box
-          paddingTop={2}
-          display={Display.Flex}
-          gap={6}
-          justifyContent={JustifyContent.center}
-        >
-          <Button
-            onClick={handleBack}
-            variant={ButtonVariant.Secondary}
-            width={BlockSize.Half}
-            size={ButtonSize.Lg}
-          >
-            {currentStep === 1 ? 'Cancel' : 'Back'}
-          </Button>
-          <Button
-            onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
-            width={BlockSize.Half}
-            size={ButtonSize.Lg}
-          >
-            {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
-          </Button>
-        </Box>
         <RemoteModeHardwareWalletConfirm
           visible={isConfirmModalOpen}
           onConfirm={handleConfigureRemoteSwaps}
@@ -522,7 +528,25 @@ export default function RemoteModeSetupDailyAllowance() {
             setIsConfirmModalOpen(false);
           }}
         />
-      </Box>
-    </div>
+      </Content>
+
+      <Footer>
+        <Button
+          onClick={handleBack}
+          variant={ButtonVariant.Secondary}
+          width={BlockSize.Half}
+          size={ButtonSize.Lg}
+        >
+          {currentStep === 1 ? 'Cancel' : 'Back'}
+        </Button>
+        <Button
+          onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
+          width={BlockSize.Half}
+          size={ButtonSize.Lg}
+        >
+          {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
+        </Button>
+      </Footer>
+    </Page>
   );
 }
