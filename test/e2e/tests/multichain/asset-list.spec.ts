@@ -56,6 +56,7 @@ describe('Multichain Asset List', function (this: Suite) {
       },
     );
   });
+
   it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
@@ -82,6 +83,7 @@ describe('Multichain Asset List', function (this: Suite) {
       },
     );
   });
+
   it('switches networks when clicking on send for a token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 137),
@@ -111,6 +113,7 @@ describe('Multichain Asset List', function (this: Suite) {
       },
     );
   });
+
   it('switches networks when clicking on swap for a token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string, 137),
@@ -134,6 +137,7 @@ describe('Multichain Asset List', function (this: Suite) {
       },
     );
   });
+
   it('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),

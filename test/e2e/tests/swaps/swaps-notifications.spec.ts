@@ -105,6 +105,7 @@ describe('Swaps - notifications', function () {
       },
     );
   });
+
   it('tests a notification for not enough balance', async function () {
     const localNodeOptions = {
       mnemonic: 'test test test test test test test test test test test junk',
@@ -141,6 +142,7 @@ describe('Swaps - notifications', function () {
       },
     );
   });
+
   it('tests notifications for token import', async function () {
     await withFixtures(
       {
@@ -163,6 +165,7 @@ describe('Swaps - notifications', function () {
       },
     );
   });
+
   it('tests notifications for slippage', async function () {
     await withFixtures(
       {

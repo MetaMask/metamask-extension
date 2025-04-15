@@ -25,6 +25,7 @@ describe('Import flow', function () {
         userStorageMockttpController,
       };
     }
+
   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
     const {
       mockedAccountSyncResponse,

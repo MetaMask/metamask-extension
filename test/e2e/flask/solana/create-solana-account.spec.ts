@@ -26,6 +26,7 @@ describe('Account creation', function (this: Suite) {
       },
     );
   });
+
   it('Creates a Solana account from the menu', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
@@ -40,6 +41,7 @@ describe('Account creation', function (this: Suite) {
       },
     );
   });
+
   it('Removes Solana account after creating it', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },

@@ -8,6 +8,7 @@ describe('eth_newBlockFilter', function () {
   const ganacheOptions: { blockTime: number } = {
     blockTime: 0.1,
   };
+
   it('executes a new block filter call', async function () {
     await withFixtures(
       {

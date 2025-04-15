@@ -23,6 +23,7 @@ describe('Switching between account from different networks', function (this: Su
       },
     );
   });
+
   it('Create a Solana account when Solana network is not selected', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
@@ -45,6 +46,7 @@ describe('Switching between account from different networks', function (this: Su
       },
     );
   });
+
   it('Create a Solana account and switch to another network', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },

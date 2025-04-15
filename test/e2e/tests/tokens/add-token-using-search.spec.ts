@@ -29,6 +29,7 @@ describe('Add existing token using search', function () {
         }),
     ];
   }
+
   it('renders the balance for the chosen token', async function () {
     await withFixtures(
       {

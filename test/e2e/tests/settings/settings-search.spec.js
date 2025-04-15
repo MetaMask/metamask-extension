@@ -38,6 +38,7 @@ describe('Settings Search', function () {
       },
     );
   });
+
   it('should find element inside the Advanced tab', async function () {
     await withFixtures(
       {
@@ -63,6 +64,7 @@ describe('Settings Search', function () {
       },
     );
   });
+
   it('should find element inside the Contacts tab', async function () {
     await withFixtures(
       {
@@ -88,6 +90,7 @@ describe('Settings Search', function () {
       },
     );
   });
+
   it('should find element inside the "Security & privacy" tab', async function () {
     await withFixtures(
       {
@@ -113,6 +116,7 @@ describe('Settings Search', function () {
       },
     );
   });
+
   it('should find element inside the Experimental tab', async function () {
     await withFixtures(
       {
@@ -138,6 +142,7 @@ describe('Settings Search', function () {
       },
     );
   });
+
   it('should find element inside the About tab', async function () {
     await withFixtures(
       {
@@ -163,6 +168,7 @@ describe('Settings Search', function () {
       },
     );
   });
+
   it('should display "Element not found" for a non-existing element', async function () {
     await withFixtures(
       {

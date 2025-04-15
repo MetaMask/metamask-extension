@@ -33,6 +33,7 @@ describe('Import flow', function () {
         }),
     ];
   }
+
   it('allows importing multiple tokens from search', async function () {
     await withFixtures(
       {

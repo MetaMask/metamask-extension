@@ -36,6 +36,7 @@ describe('Notification window closing', function () {
       },
     );
   });
+
   it('does not close the window when running in a tab', async function () {
     await withFixtures(
       {

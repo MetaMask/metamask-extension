@@ -457,6 +457,7 @@ describe('Phishing Detection', function () {
       server.on('error', reject);
       await promise;
     });
+
     after('Shut down redirect server', async function () {
       if (server) {
         const { promise, resolve } = createDeferredPromise();
@@ -467,6 +468,7 @@ describe('Phishing Detection', function () {
         await promise;
       }
     });
+
     before('Set up fixtures', async function () {
       /**
        * @type {{ promise: Promise<Driver>, resolve: (driver: Driver) => void } | undefined
@@ -495,13 +497,16 @@ describe('Phishing Detection', function () {
       // we could remove this
       await unlockWallet(driver);
     });
+
     after('Shut down fixtures', async function () {
       deferredTestSuite.resolve(); // let the fixtures know tests are complete
       await fixturePromise; // wait for fixtures to shutdown
     });
+
     afterEach('Ensure listeners are torn down between tests', function () {
       server.removeAllListeners('request');
     });
+
     afterEach('Reset current window to about:blank', async function () {
       await driver.openNewURL(`about:blank`);
     });

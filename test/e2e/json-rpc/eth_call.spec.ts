@@ -11,6 +11,7 @@ import { Ganache } from '../seeder/ganache';
 
 describe('eth_call', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
+
   it('executes a new message call', async function () {
     await withFixtures(
       {

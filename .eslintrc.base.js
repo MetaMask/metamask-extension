@@ -14,11 +14,12 @@ module.exports = {
   rules: {
     // TODO: re-enable once the proposed feature at https://github.com/gajus/eslint-plugin-jsdoc/pull/964#issuecomment-1936470252 is available
     'jsdoc/check-line-alignment': 'off',
-
     'default-param-last': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
-
+    // Override the import/order rule from @metamask/eslint-config
+    // TODO: Enabled once this ticket is addressed: https://github.com/MetaMask/metamask-extension/issues/19845
+    'import/order': 'off',
     // This is the same as our default config, but for the noted exceptions
     'spaced-comment': [
       'error',

@@ -11,6 +11,7 @@ const { DAPP_URL } = require('../../constants');
 
 describe('Request Queue SwitchChain -> WatchAsset', function () {
   const smartContract = SMART_CONTRACTS.HST;
+
   it('should clear subsequent watchAsset after switching chain', async function () {
     const port = 8546;
     const chainId = 1338;

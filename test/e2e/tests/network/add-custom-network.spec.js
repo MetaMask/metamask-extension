@@ -835,6 +835,7 @@ describe('Custom network', function () {
         },
       );
     });
+
     it('should add collision network', async function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
