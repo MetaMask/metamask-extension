@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
-import { removeSlide } from '../../../store/actions';
+import { removeSlide, setSelectedAccount } from '../../../store/actions';
 import { Carousel } from '..';
 import {
   getAppIsLoading,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
+  hasCreatedSolanaAccount,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -25,6 +26,8 @@ import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
+import { CreateSolanaAccountModal } from '../create-solana-account-modal';
+import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -38,6 +41,10 @@ export const AccountOverviewLayout = ({
   const isLoading = useSelector(getAppIsLoading);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
+  const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
+  useState(false);
+  const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
+  const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
@@ -57,6 +64,16 @@ export const AccountOverviewLayout = ({
         defaultSwapsToken,
         location.pathname.includes('asset') ? '&token=native' : '',
       );
+    }
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    if (id === 'solana') {
+      if (hasSolanaAccount && selectedSolanaAccount) {
+        dispatch(setSelectedAccount(selectedSolanaAccount.address));
+      } else {
+        setShowCreateSolanaAccountModal(true);
+      }
     }
     ///: END:ONLY_INCLUDE_IF
 
@@ -108,6 +125,11 @@ export const AccountOverviewLayout = ({
         onRenderSlides={handleRenderSlides}
       />
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
+      {showCreateSolanaAccountModal && (
+        <CreateSolanaAccountModal
+          onClose={() => setShowCreateSolanaAccountModal(false)}
+        />
+      )}
     </>
   );
 };

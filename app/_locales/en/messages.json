@@ -5080,6 +5080,12 @@
   "slideSweepStakeTitle": {
     "message": "Enter the $5000 USDC Giveaway!"
   },
+  "slideSolanaDescription": {
+    "message": "Create a Solana account to get started"
+  },
+  "slideSolanaTitle": {
+    "message": "Solana is now supported"
+  },
   "smartAccountAccept": {
     "message": "Use smart account"
   },
