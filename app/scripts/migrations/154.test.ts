@@ -28,7 +28,7 @@ describe(`migration #${version}`, () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
-          NetworkOrderController: 'invalidData',
+          MultichainNetworkController: 'invalidData',
         },
       };
       const newStorage = await migrate(oldStorage);
@@ -39,8 +39,8 @@ describe(`migration #${version}`, () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
-          NetworkOrderController: {
-            orderedNetworkList: 'not an array',
+          MultichainNetworkController: {
+            multichainNetworkConfigurationsByChainId: 'not an object',
           },
         },
       };

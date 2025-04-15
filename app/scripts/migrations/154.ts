@@ -29,7 +29,6 @@ export async function migrate(
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-  // Migrate the user's drag + drop preference order for the network menu
 
   if (
     hasProperty(state, 'MultichainNetworkController') &&
