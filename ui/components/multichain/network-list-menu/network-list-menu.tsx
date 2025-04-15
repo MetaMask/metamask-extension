@@ -397,7 +397,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
       return (
         (isNetworkDiscoverButtonEnabled as Record<string, boolean>)?.[
-          hexToDecimal(hexChainId)
+          hexChainId
         ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
       );
     },
