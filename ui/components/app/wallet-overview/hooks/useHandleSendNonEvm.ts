@@ -85,7 +85,7 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
         );
       }
 
-      return nativeAssetType;
+      return nativeAssetType as CaipAssetType;
     })();
 
     const { chainId } = parseCaipAssetType(assetTypeToUse);

@@ -206,7 +206,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
           if (network.isEvm) {
             isTest = (TEST_CHAINS as string[]).includes(chainId);
           } else {
-            isTest = NON_EVM_TESTNET_IDS.includes(chainId);
+            isTest = NON_EVM_TESTNET_IDS.includes(chainId as CaipChainId);
           }
           (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
           return [nonTestnetsList, testnetsList];
