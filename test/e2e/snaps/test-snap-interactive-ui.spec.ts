@@ -1,4 +1,4 @@
-const { withFixtures, WINDOW_TITLES } = require('../helpers');
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import  SnapInteractiveDialog  from '../page-objects/pages/dialog/snap-interactive-dialog';
@@ -45,19 +45,19 @@ describe('Interactive UI Snap', function () {
         await interactiveUI.clickButton('Submit');
 
         // check for returned values and close the dialog
-        await interactiveUI.check_optionSelected();
-        await interactiveUI.clickButton('OK');
+        await interactiveUI.check_result();
+        await interactiveUI.clickButton('OK', true);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.check_messageResultSpan('interactiveUIResultSpan', 'null');
 
         //validate the disabled elements in the dialog
         await testSnaps.clickButton('createDialogDisabledButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await interactiveUI.checkElementDisabled('exampleInput');
-        await interactiveUI.checkElementDisabled('exampleDropdown');
-        await interactiveUI.checkElementDisabled('exampleCheckbox');
-        await interactiveUI.checkElementDisabled('selectorButton');
-        await interactiveUI.clickButton('Cancel');
+        await interactiveUI.checkElementIsDisabled('exampleInput');
+        await interactiveUI.checkElementIsDisabled('exampleDropdown');
+        await interactiveUI.checkElementIsDisabled('exampleCheckbox');
+        await interactiveUI.checkElementIsDisabled('exampleSelectorDropdown');
+        await interactiveUI.clickButton('Cancel',true);
       },
     );
   });

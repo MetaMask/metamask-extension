@@ -11,6 +11,7 @@ exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
@@ -53,6 +54,7 @@ exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        id="snap-ui-renderer-panel"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
