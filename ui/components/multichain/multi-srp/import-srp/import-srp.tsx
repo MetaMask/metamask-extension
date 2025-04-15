@@ -245,6 +245,15 @@ export const ImportSrp = ({
             }}
           />
         }
+        endAccessory={
+          <ButtonIcon
+            ariaLabel="close"
+            iconName={IconName.Close}
+            onClick={() => {
+              history.back();
+            }}
+          />
+        }
       >
         {'Import Secret Recovery Phrase'}
       </Header>
