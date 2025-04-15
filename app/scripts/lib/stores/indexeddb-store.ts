@@ -102,6 +102,19 @@ export class IndexedDBStore {
     await transactionPromise(tx);
   }
 
+  /**
+   * Resets the database by clearing all data in the 'store' object store.
+   */
+  async reset(): Promise<void> {
+    if (!this.#db) {
+      throw new Error('Database is not open');
+    }
+    const tx = this.#db.transaction('store', 'readwrite');
+    const store = tx.objectStore('store');
+    store.clear();
+    await transactionPromise(tx);
+  }
+
   close() {
     if (this.#db) {
       this.#db.close();
