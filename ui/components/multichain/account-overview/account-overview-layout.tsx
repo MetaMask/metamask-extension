@@ -34,14 +34,14 @@ import {
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../hooks/useCarouselManagement';
-import {
-  AccountOverviewTabsProps,
-  AccountOverviewTabs,
-} from './account-overview-tabs';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
+import {
+  AccountOverviewTabsProps,
+  AccountOverviewTabs,
+} from './account-overview-tabs';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;

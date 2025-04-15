@@ -62,7 +62,7 @@ export const useCarouselManagement = ({
     defaultSlides.push(MULTI_SRP_SLIDE);
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     defaultSlides.push(SOLANA_SLIDE);
-  ///: END:ONLY_INCLUDE_IF
+    ///: END:ONLY_INCLUDE_IF
 
     defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 
