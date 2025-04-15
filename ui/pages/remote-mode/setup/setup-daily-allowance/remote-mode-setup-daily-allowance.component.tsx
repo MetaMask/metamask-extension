@@ -58,6 +58,7 @@ import {
 import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeDailyAllowanceCard from '../daily-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
+import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 
 const TOTAL_STEPS = 3;
 
@@ -94,10 +95,7 @@ export default function RemoteModeSetupDailyAllowance() {
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
   useEffect(() => {
-    setIsHardwareAccount(
-      selectedHardwareAccount.metadata.keyring.type === 'Ledger Hardware' ||
-        selectedHardwareAccount.metadata.keyring.type === 'Lattice Hardware',
-    );
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
   }, [selectedHardwareAccount]);
 
   useEffect(() => {

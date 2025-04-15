@@ -56,6 +56,7 @@ import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeSwapAllowanceCard from '../swap-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
+import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import {
@@ -102,10 +103,7 @@ export default function RemoteModeSetupSwaps() {
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
   useEffect(() => {
-    setIsHardwareAccount(
-      selectedHardwareAccount.metadata.keyring.type === 'Ledger Hardware' ||
-        selectedHardwareAccount.metadata.keyring.type === 'Lattice Hardware',
-    );
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
   }, [selectedHardwareAccount]);
 
   useEffect(() => {

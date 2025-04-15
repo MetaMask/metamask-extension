@@ -35,6 +35,7 @@ import {
 import RemoteModeOverview from '../introducing/remote-mode-introducing.component';
 import RemoteModeSetup from '../setup/setup-swaps/remote-mode-setup-swaps.component';
 import RemoteModePermissions from './remote-mode-permissions.component';
+import { isRemoteModeSupported } from '../../../helpers/utils/remote-mode';
 
 enum RemoteScreen {
   OVERVIEW = 'OVERVIEW',
@@ -54,10 +55,7 @@ export default function RemoteModeIntroducing() {
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
   useEffect(() => {
-    setIsHardwareAccount(
-      selectedHardwareAccount.metadata.keyring.type === 'Ledger Hardware' ||
-        selectedHardwareAccount.metadata.keyring.type === 'Lattice Hardware',
-    );
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
   }, [selectedHardwareAccount]);
 
   useEffect(() => {
