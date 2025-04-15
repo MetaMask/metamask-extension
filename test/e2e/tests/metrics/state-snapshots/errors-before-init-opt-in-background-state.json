@@ -1,7 +1,10 @@
 {
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
-    "UserStorageController": { "isProfileSyncingEnabled": true },
+    "UserStorageController": {
+      "isProfileSyncingEnabled": true,
+      "isAccountSyncingEnabled": true
+    },
     "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
@@ -44,6 +47,19 @@
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
+    },
+    "BridgeController": {
+      "bridgeFeatureFlags": {
+        "mobileConfig": "object",
+        "extensionConfig": {
+          "support": "boolean",
+          "chains": {
+            "eip155:1": "object",
+            "eip155:10": "object",
+            "eip155:59144": "object"
+          }
+        }
+      }
     },
     "CurrencyController": {
       "currentCurrency": "usd",
@@ -104,17 +120,17 @@
       "openSeaEnabled": false,
       "preferences": {
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
+        "petnamesEnabled": "boolean",
+        "showMultiRpcModal": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
-        "tokenNetworkFilter": {},
-        "showMultiRpcModal": "boolean",
-        "shouldShowAggregatedBalancePopover": "boolean"
+        "shouldShowAggregatedBalancePopover": "boolean",
+        "tokenNetworkFilter": {}
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -136,19 +152,6 @@
         "liveness": true,
         "livenessByChainId": "object",
         "smartTransactions": "object"
-      }
-    },
-    "BridgeController": {
-      "bridgeFeatureFlags": {
-        "mobileConfig": "object",
-        "extensionConfig": {
-          "support": "boolean",
-          "chains": {
-            "eip155:1": "object",
-            "eip155:10": "object",
-            "eip155:59144": "object"
-          }
-        }
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

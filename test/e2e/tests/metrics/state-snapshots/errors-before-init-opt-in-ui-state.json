@@ -1,7 +1,10 @@
 {
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
-    "UserStorageController": { "isProfileSyncingEnabled": true },
+    "UserStorageController": {
+      "isProfileSyncingEnabled": true,
+      "isAccountSyncingEnabled": true
+    },
     "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
@@ -117,12 +120,12 @@
       "openSeaEnabled": false,
       "preferences": {
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
+        "petnamesEnabled": "boolean",
         "showMultiRpcModal": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",

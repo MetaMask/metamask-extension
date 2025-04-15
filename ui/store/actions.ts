@@ -43,6 +43,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
@@ -5608,48 +5609,26 @@ export function performSignOut(): ThunkAction<
 }
 
 /**
- * Enables profile syncing.
+ * Enables or disables a backup and sync feature.
  *
- * This function sends a request to the background script to enable profile syncing across devices.
- * Upon success, it dispatches an action with type `SET_PROFILE_SYNCING_ENABLED` to update the Redux state.
+ * This function sends a request to the background script to enable or disable a specific
+ * backup and sync feature.
  * If the operation encounters an error, it logs the error message and rethrows the error to be handled by the caller.
  *
+ * @param feature - The feature to enable or disable.
+ * @param enabled - A boolean indicating whether to enable or disable the feature.
  * @returns A thunk action that, when dispatched, attempts to enable profile syncing.
  */
-export function enableProfileSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function setIsBackupAndSyncFeatureEnabled(
+  feature: keyof typeof BACKUPANDSYNC_FEATURES,
+  enabled: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('enableProfileSyncing');
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-  };
-}
-
-/**
- * Disables profile syncing.
- *
- * This function sends a request to the background script to disable profile syncing across devices.
- * Upon success, it dispatches an action with type `SET_PROFILE_SYNCING_DISABLED` to update the Redux state.
- * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
- *
- * @returns A thunk action that, when dispatched, attempts to disable profile syncing.
- */
-export function disableProfileSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      await submitRequestToBackground('disableProfileSyncing');
+      await submitRequestToBackground('setIsBackupAndSyncFeatureEnabled', [
+        feature,
+        enabled,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
