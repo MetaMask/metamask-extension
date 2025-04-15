@@ -116,9 +116,6 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
       },
-      QueuedRequestController: {
-        queuedRequestCount: 0,
-      },
       SelectedNetworkController: {
         domains: {},
       },

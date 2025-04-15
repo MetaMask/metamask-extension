@@ -288,9 +288,6 @@ export const SENTRY_BACKGROUND_STATE = {
     rates: true,
     cryptocurrencies: true,
   },
-  QueuedRequestController: {
-    queuedRequestCount: true,
-  },
   SelectedNetworkController: { domains: false },
   SignatureController: {
     unapprovedPersonalMsgCount: true,
@@ -397,6 +394,7 @@ export const SENTRY_BACKGROUND_STATE = {
   UserStorageController: {
     isProfileSyncingEnabled: true,
     isProfileSyncingUpdateLoading: false,
+    isAccountSyncingEnabled: true,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
   },
