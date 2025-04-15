@@ -251,7 +251,6 @@ import {
   getIsSmartTransaction,
   getFeatureFlagsByChainId,
 } from '../../shared/modules/selectors';
-import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
@@ -6148,10 +6147,12 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType = SubjectType.Website;
     }
 
-    const caipStream = createCaipStream(connectionStream);
-
     // messages between subject and background
-    this.setupProviderConnectionCaip(caipStream, sender, inputSubjectType);
+    this.setupProviderConnectionCaip(
+      connectionStream,
+      sender,
+      inputSubjectType,
+    );
   }
 
   /**

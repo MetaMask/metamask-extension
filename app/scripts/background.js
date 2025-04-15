@@ -47,6 +47,7 @@ import {
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { createCaipStream } from '../../shared/modules/caip-stream';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -1042,7 +1043,8 @@ export function setupController(
       // this is triggered when a new tab is opened, or origin(url) is changed
       trackDappView(remotePort);
 
-      connectCaipMultichain(portStream, remotePort.sender);
+      const caipStream = createCaipStream(portStream);
+      connectCaipMultichain(caipStream, remotePort.sender);
     } else {
       connectEip1193(portStream, remotePort.sender);
     }
