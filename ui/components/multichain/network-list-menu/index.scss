@@ -1,3 +1,5 @@
+@use "design-system";
+
 .multichain-network-list-menu-content-wrapper {
   &__dialog {
     // Needed to ensure the drag and drop works. All other modals use a slide up animation with transform: translateY(0)
@@ -30,4 +32,34 @@
 
 .rpc-list-item button {
   text-align: start;
+}
+
+.manage-multichain-network-list {
+  $height-screen-sm-max: 100%;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+  width: 100%;
+  flex-flow: column nowrap;
+
+  @include design-system.screen-sm-max {
+    height: $height-screen-sm-max;
+  }
+
+  @include design-system.screen-sm-min {
+    width: $width-screen-sm-min;
+  }
+
+  @include design-system.screen-md-min {
+    width: $width-screen-md-min;
+  }
+
+  @include design-system.screen-lg-min {
+    width: $width-screen-lg-min;
+  }
+
+  &__content {
+    padding: 0;
+  }
 }

@@ -14,6 +14,7 @@ import {
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
+  MANAGE_NETWORKS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -269,6 +270,15 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           {t('expandView')}
         </MenuItem>
       )}
+      <MenuItem
+        iconName={IconName.Hierarchy}
+        onClick={() => {
+          history.push(MANAGE_NETWORKS_ROUTE);
+          closeMenu();
+        }}
+      >
+        {t('networks')}
+      </MenuItem>
       <MenuItem
         iconName={IconName.Snaps}
         onClick={() => {

@@ -12,6 +12,7 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
 import { EthScope } from '@metamask/keyring-api';
@@ -79,24 +80,21 @@ import {
   BackgroundColor,
   BorderRadius,
   Display,
-  FlexDirection,
   JustifyContent,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   Box,
   ButtonSecondary,
   ButtonSecondarySize,
-  Modal,
-  ModalOverlay,
   Text,
   BannerBase,
   IconName,
-  ModalContent,
-  ModalHeader,
   AvatarNetworkSize,
+  ButtonIcon,
+  ButtonIconSize,
 } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -117,12 +115,14 @@ import {
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
+import { Header, Page, Content } from '../pages/page';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
 import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
+import { NetworkListMenuModal } from './network-list-menu-modal';
 
 export enum ACTION_MODE {
   // Displays the search box and network list
@@ -139,8 +139,19 @@ export enum ACTION_MODE {
   ADD_NON_EVM_ACCOUNT,
 }
 
-export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
+const noop = () => undefined;
+
+type NetworkListMenuProps = {
+  onClose: () => void;
+  isFullPage?: boolean;
+};
+
+export const NetworkListMenu = ({
+  onClose,
+  isFullPage = false,
+}: NetworkListMenuProps) => {
   const t = useI18nContext();
+  const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
@@ -514,16 +525,14 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
-        selected={isCurrentNetwork && !focusSearch}
-        focus={isCurrentNetwork && !focusSearch}
+        selected={isFullPage ? false : isCurrentNetwork && !focusSearch}
+        focus={isFullPage ? false : isCurrentNetwork && !focusSearch}
         rpcEndpoint={
           hasMultiRpcOptions(network)
             ? getRpcDataByChainId(chainId, evmNetworks).defaultRpcEndpoint
             : undefined
         }
-        onClick={async () => {
-          await handleNetworkChange(chainId);
-        }}
+        onClick={isFullPage ? noop : () => handleNetworkChange(chainId)}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
@@ -634,6 +643,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               <PopularNetworkList
                 searchAddNetworkResults={searchedFeaturedNetworks}
                 data-testid="add-popular-network-view"
+                isFullPage={isFullPage}
               />
               {searchedTestNetworks.length > 0 ? (
                 <Box
@@ -791,37 +801,45 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     onBack = onClose;
   }
 
-  return (
-    <Modal isOpen onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent
-        padding={0}
-        className="multichain-network-list-menu-content-wrapper"
-        modalDialogProps={{
-          className: 'multichain-network-list-menu-content-wrapper__dialog',
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
-          paddingTop: 0,
-          paddingBottom: 0,
-        }}
-      >
-        <ModalHeader
-          paddingTop={4}
-          paddingRight={4}
-          paddingBottom={actionMode === ACTION_MODE.SELECT_RPC ? 0 : 4}
-          onClose={onClose}
-          onBack={onBack}
-        >
-          <Text
-            ellipsis
-            variant={TextVariant.headingSm}
-            textAlign={TextAlign.Center}
+  if (isFullPage) {
+    return (
+      <div className="manage-multichain-network-list">
+        <Page backgroundColor={BackgroundColor.backgroundDefault}>
+          <Header
+            backgroundColor={BackgroundColor.backgroundDefault}
+            textProps={{
+              variant: TextVariant.headingSm,
+              color: TextColor.textDefault,
+            }}
+            startAccessory={
+              <ButtonIcon
+                ariaLabel="Back"
+                iconName={IconName.Arrow2Left}
+                size={ButtonIconSize.Sm}
+                onClick={() => history.push(DEFAULT_ROUTE)}
+              />
+            }
           >
-            {title}
-          </Text>
-        </ModalHeader>
-        {render()}
-      </ModalContent>
-    </Modal>
+            {t('title')}
+          </Header>
+          <Content
+            className="manage-multichain-network-list__content"
+            backgroundColor={BackgroundColor.backgroundDefault}
+          >
+            {render()}
+          </Content>
+        </Page>
+      </div>
+    );
+  }
+
+  return (
+    <NetworkListMenuModal
+      onClose={onClose}
+      actionMode={actionMode}
+      onBack={onBack}
+      title={title}
+      children={render()}
+    />
   );
 };
