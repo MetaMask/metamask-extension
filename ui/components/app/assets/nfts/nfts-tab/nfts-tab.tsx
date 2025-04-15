@@ -264,18 +264,7 @@ export default function NftsTab() {
               gap={2}
               marginBottom={2}
             >
-              <ButtonLink
-                size={ButtonLinkSize.Md}
-                data-testid="import-nft-button"
-                startIconName={IconName.Add}
-                onClick={() => {
-                  dispatch(showImportNftsModal({}));
-                }}
-              >
-                {t('importNFT')}
-              </ButtonLink>
-
-              {!isMainnet && Object.keys(collections).length < 1 ? null : (
+              {/* {!isMainnet && Object.keys(collections).length < 1 ? null : (
                 <>
                   <Box
                     className="nfts-tab__link"
@@ -302,7 +291,7 @@ export default function NftsTab() {
                     )}
                   </Box>
                 </>
-              )}
+              )} */}
             </Box>
           </>
         )}
