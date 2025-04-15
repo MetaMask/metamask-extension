@@ -2140,6 +2140,7 @@ export async function getBalancesInSingleCall(
 export function addNft(
   address: string,
   tokenID: string,
+  networkClientId: NetworkClientId,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -2153,7 +2154,11 @@ export function addNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addNft', [address, tokenID]);
+      await submitRequestToBackground('addNft', [
+        address,
+        tokenID,
+        networkClientId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -2167,6 +2172,7 @@ export function addNft(
 export function addNftVerifyOwnership(
   address: string,
   tokenID: string,
+  networkClientId: NetworkClientId,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -2183,6 +2189,7 @@ export function addNftVerifyOwnership(
       await submitRequestToBackground('addNftVerifyOwnership', [
         address,
         tokenID,
+        networkClientId,
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
@@ -2207,6 +2214,7 @@ export function addNftVerifyOwnership(
 export function removeAndIgnoreNft(
   address: string,
   tokenID: string,
+  networkClientId: NetworkClientId,
   shouldShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -2220,7 +2228,11 @@ export function removeAndIgnoreNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreNft', [address, tokenID]);
+      await submitRequestToBackground('removeAndIgnoreNft', [
+        address,
+        tokenID,
+        networkClientId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -2235,6 +2247,7 @@ export function removeAndIgnoreNft(
 export function removeNft(
   address: string,
   tokenID: string,
+  networkClientId: NetworkClientId,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -2248,7 +2261,11 @@ export function removeNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeNft', [address, tokenID]);
+      await submitRequestToBackground('removeNft', [
+        address,
+        tokenID,
+        networkClientId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -2259,8 +2276,12 @@ export function removeNft(
   };
 }
 
-export async function checkAndUpdateAllNftsOwnershipStatus() {
-  await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus');
+export async function checkAndUpdateAllNftsOwnershipStatus(
+  networkClientId: NetworkClientId,
+) {
+  await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus', [
+    networkClientId,
+  ]);
 }
 
 export async function isNftOwner(
@@ -2275,10 +2296,14 @@ export async function isNftOwner(
   ]);
 }
 
-export async function checkAndUpdateSingleNftOwnershipStatus(nft: Nft) {
+export async function checkAndUpdateSingleNftOwnershipStatus(
+  nft: Nft,
+  networkClientId: NetworkClientId,
+) {
   await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
     nft,
     false,
+    networkClientId,
   ]);
 }
 

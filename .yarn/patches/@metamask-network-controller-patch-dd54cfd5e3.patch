@@ -1,0 +1,70 @@
+diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
+index c6044c6799a3e444b249c1a1607688cc94758397..027c72da7a2095ee1de095e0ce4e3bfe9f66f2ba 100644
+--- a/dist/NetworkController.cjs
++++ b/dist/NetworkController.cjs
+@@ -396,6 +396,7 @@ class NetworkController extends base_controller_1.BaseController {
+         // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+         `${this.name}:getNetworkClientById`, this.getNetworkClientById.bind(this));
++        this.messagingSystem.registerActionHandler(`${this.name}:getNetworkClientIdByChainId`, this.getNetworkClientIdByChainId.bind(this));
+         this.messagingSystem.registerActionHandler(
+         // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+@@ -801,6 +802,14 @@ class NetworkController extends base_controller_1.BaseController {
+     async resetConnection() {
+         await __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_refreshNetwork).call(this, this.state.selectedNetworkClientId);
+     }
++
++    getNetworkClientIdByChainId(chainId) {
++        const networkConfiguration = this.getNetworkConfigurationByChainId(chainId);
++        if (networkConfiguration) {
++            return networkConfiguration.rpcEndpoints[networkConfiguration.defaultRpcEndpointIndex]?.networkClientId;
++        }
++        return undefined;
++    }
+     /**
+      * Returns the network configuration that has been filed under the given chain
+      * ID.
+diff --git a/dist/NetworkController.d.cts b/dist/NetworkController.d.cts
+index e95666d712a9f87d4945b1054c76e992d3329b09..aa3a0f639b9c23a18e1c98902e6c86a7a09a32d9 100644
+--- a/dist/NetworkController.d.cts
++++ b/dist/NetworkController.d.cts
+@@ -385,6 +385,10 @@ export type NetworkControllerGetNetworkClientByIdAction = {
+     type: `NetworkController:getNetworkClientById`;
+     handler: NetworkController['getNetworkClientById'];
+ };
++export type NetworkControllerGetNetworkClientIdByChainIdAction = {
++    type: `NetworkController:getNetworkClientIdByChainId`;
++    handler: NetworkController['getNetworkClientIdByChainId'];
++};
+ export type NetworkControllerGetSelectedNetworkClientAction = {
+     type: `NetworkController:getSelectedNetworkClient`;
+     handler: NetworkController['getSelectedNetworkClient'];
+@@ -435,7 +439,7 @@ export type NetworkControllerUpdateNetworkAction = {
+     type: 'NetworkController:updateNetwork';
+     handler: NetworkController['updateNetwork'];
+ };
+-export type NetworkControllerActions = NetworkControllerGetStateAction | NetworkControllerGetEthQueryAction | NetworkControllerGetNetworkClientByIdAction | NetworkControllerGetSelectedNetworkClientAction | NetworkControllerGetSelectedChainIdAction | NetworkControllerGetEIP1559CompatibilityAction | NetworkControllerFindNetworkClientIdByChainIdAction | NetworkControllerSetActiveNetworkAction | NetworkControllerSetProviderTypeAction | NetworkControllerGetNetworkConfigurationByChainId | NetworkControllerGetNetworkConfigurationByNetworkClientId | NetworkControllerAddNetworkAction | NetworkControllerRemoveNetworkAction | NetworkControllerUpdateNetworkAction;
++export type NetworkControllerActions = NetworkControllerGetStateAction | NetworkControllerGetEthQueryAction | NetworkControllerGetNetworkClientByIdAction | NetworkControllerGetSelectedNetworkClientAction | NetworkControllerGetSelectedChainIdAction | NetworkControllerGetEIP1559CompatibilityAction | NetworkControllerFindNetworkClientIdByChainIdAction | NetworkControllerSetActiveNetworkAction | NetworkControllerSetProviderTypeAction | NetworkControllerGetNetworkConfigurationByChainId | NetworkControllerGetNetworkConfigurationByNetworkClientId | NetworkControllerAddNetworkAction | NetworkControllerRemoveNetworkAction | NetworkControllerUpdateNetworkAction | NetworkControllerGetNetworkClientIdByChainIdAction;
+ export type NetworkControllerMessenger = RestrictedMessenger<typeof controllerName, NetworkControllerActions, NetworkControllerEvents, never, never>;
+ /**
+  * Options for the NetworkController constructor.
+@@ -723,6 +727,7 @@ export declare class NetworkController extends BaseController<typeof controllerN
+      * @returns The network configuration if one exists, or undefined.
+      */
+     getNetworkConfigurationByChainId(chainId: Hex): NetworkConfiguration | undefined;
++    getNetworkClientIdByChainId(chainId: Hex): NetworkClientId | undefined;
+     /**
+      * Returns the network configuration that contains an RPC endpoint with the
+      * given network client ID.
+diff --git a/dist/index.d.cts b/dist/index.d.cts
+index a65fd29313023974b4c366cbdd1f37ff36aa4547..df1c3706cf7210bb0e2c525ac2ca0d5bb8d38d40 100644
+--- a/dist/index.d.cts
++++ b/dist/index.d.cts
+@@ -1,5 +1,5 @@
+ export type { AutoManagedNetworkClient } from "./create-auto-managed-network-client.cjs";
+-export type { Block, NetworkMetadata, NetworkConfiguration, BuiltInNetworkClientId, CustomNetworkClientId, NetworkClientId, NetworksMetadata, NetworkState, BlockTrackerProxy, ProviderProxy, AddNetworkFields, UpdateNetworkFields, NetworkControllerStateChangeEvent, NetworkControllerNetworkWillChangeEvent, NetworkControllerNetworkDidChangeEvent, NetworkControllerInfuraIsBlockedEvent, NetworkControllerInfuraIsUnblockedEvent, NetworkControllerNetworkAddedEvent, NetworkControllerNetworkRemovedEvent, NetworkControllerEvents, NetworkControllerGetStateAction, NetworkControllerGetEthQueryAction, NetworkControllerGetNetworkClientByIdAction, NetworkControllerGetSelectedNetworkClientAction, NetworkControllerGetSelectedChainIdAction, NetworkControllerGetEIP1559CompatibilityAction, NetworkControllerFindNetworkClientIdByChainIdAction, NetworkControllerSetProviderTypeAction, NetworkControllerSetActiveNetworkAction, NetworkControllerAddNetworkAction, NetworkControllerRemoveNetworkAction, NetworkControllerUpdateNetworkAction, NetworkControllerGetNetworkConfigurationByNetworkClientId, NetworkControllerActions, NetworkControllerMessenger, NetworkControllerOptions, NetworkControllerRpcEndpointUnavailableEvent, NetworkControllerRpcEndpointDegradedEvent, NetworkControllerRpcEndpointRequestRetriedEvent, } from "./NetworkController.cjs";
++export type { Block, NetworkMetadata, NetworkConfiguration, BuiltInNetworkClientId, CustomNetworkClientId, NetworkClientId, NetworksMetadata, NetworkState, BlockTrackerProxy, ProviderProxy, AddNetworkFields, UpdateNetworkFields, NetworkControllerStateChangeEvent, NetworkControllerNetworkWillChangeEvent, NetworkControllerNetworkDidChangeEvent, NetworkControllerInfuraIsBlockedEvent, NetworkControllerInfuraIsUnblockedEvent, NetworkControllerNetworkAddedEvent, NetworkControllerNetworkRemovedEvent, NetworkControllerEvents, NetworkControllerGetStateAction, NetworkControllerGetEthQueryAction, NetworkControllerGetNetworkClientByIdAction, NetworkControllerGetSelectedNetworkClientAction, NetworkControllerGetSelectedChainIdAction, NetworkControllerGetEIP1559CompatibilityAction, NetworkControllerFindNetworkClientIdByChainIdAction, NetworkControllerSetProviderTypeAction, NetworkControllerSetActiveNetworkAction, NetworkControllerAddNetworkAction, NetworkControllerRemoveNetworkAction, NetworkControllerUpdateNetworkAction, NetworkControllerGetNetworkConfigurationByNetworkClientId, NetworkControllerActions, NetworkControllerMessenger, NetworkControllerOptions, NetworkControllerRpcEndpointUnavailableEvent, NetworkControllerRpcEndpointDegradedEvent, NetworkControllerRpcEndpointRequestRetriedEvent, NetworkControllerGetNetworkClientIdByChainIdAction, } from "./NetworkController.cjs";
+ export { getDefaultNetworkControllerState, selectAvailableNetworkClientIds, knownKeysOf, NetworkController, RpcEndpointType, } from "./NetworkController.cjs";
+ export * from "./constants.cjs";
+ export type { BlockTracker, Provider } from "./types.cjs";

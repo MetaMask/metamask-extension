@@ -118,6 +118,7 @@ describe('ImportNftsModal', () => {
       expect(addNftVerifyOwnership).toHaveBeenCalledWith(
         '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9',
         '9007199254740992',
+        'goerli',
       );
 
       expect(updateNftDropDownState).toHaveBeenCalledWith({
