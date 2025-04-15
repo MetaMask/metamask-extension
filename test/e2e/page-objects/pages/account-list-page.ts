@@ -756,7 +756,6 @@ class AccountListPage {
     console.log(`Exporting SRP for account ${accountLabel}`);
     await this.openAccountDetailsModal(accountLabel);
     await this.driver.delay(500);
-    await this.driver.clickElement({text: 'Details', tag: 'button'});
     await this.driver.clickElement(this.exportSrpButton);
   }
 
