@@ -14,6 +14,8 @@ import {
   TextField,
   ButtonLink,
   TextFieldType,
+  ButtonIcon,
+  IconName,
 } from '../../../component-library';
 import {
   TextVariant,
@@ -22,12 +24,14 @@ import {
   FlexDirection,
   BorderRadius,
   BackgroundColor,
+  AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { setShowNewSrpAddedToast } from '../../../app/toast-master/utils';
 import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
 import { clearClipboard } from '../../../../helpers/utils/util';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
+import { Header, Page } from '../../pages/page';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -230,132 +234,154 @@ export const ImportSrp = ({
   );
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      height={BlockSize.Max}
-      data-testid="import-srp-container"
-    >
-      <Text variant={TextVariant.bodyMd} marginTop={2}>
-        {t('importSRPDescription')}
-      </Text>
-
-      <Box className="import-srp__multi-srp__srp-inner-container">
-        <Box
-          className="import-srp__multi-srp__srp"
-          width={BlockSize.Full}
-          marginTop={4}
-        >
-          {Array.from({ length: numberOfWords }).map((_, index) => {
-            const id = `import-srp__multi-srp__srp-word-${index}`;
-            return (
-              <Box
-                key={index}
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-              >
-                <Label
-                  className="import-srp__multi-srp__label"
-                  variant={TextVariant.bodyMdMedium}
-                  marginRight={4}
-                >
-                  {index + 1}.
-                </Label>
-                <Box
-                  className="import-srp__multi-srp__srp-word"
-                  marginBottom={4}
-                >
-                  <TextField
-                    id={id}
-                    data-testid={id}
-                    borderRadius={BorderRadius.LG}
-                    error={invalidSrpWords[index]}
-                    type={TextFieldType.Text}
-                    onChange={(e) => {
-                      e.preventDefault();
-                      onSrpWordChange(index, e.target.value);
-                    }}
-                    value={secretRecoveryPhrase[index]}
-                    autoComplete={false}
-                    onPaste={(event: React.ClipboardEvent) => {
-                      const newSrp = event.clipboardData.getData('text');
-
-                      if (newSrp.trim().match(/\s/u)) {
-                        event.preventDefault();
-                        onSrpPaste(newSrp);
-                      }
-                    }}
-                  />
-                </Box>
-              </Box>
-            );
-          })}
-        </Box>
-        {srpError ? (
-          <BannerAlert
-            severity={BannerAlertSeverity.Danger}
-            description={srpError}
-            actionButtonLabel={t('clear')}
-            actionButtonOnClick={() => {
-              onSrpChange(Array(defaultNumberOfWords).fill(''));
-              setSrpError('');
+    <Page className="import-srp__multi-srp">
+      <Header
+        startAccessory={
+          <ButtonIcon
+            ariaLabel="back"
+            iconName={IconName.ArrowLeft}
+            onClick={() => {
+              history.back();
             }}
-            data-testid="bannerAlert"
           />
-        ) : null}
-
-        {
-          <Box width={BlockSize.Full} marginTop={4}>
-            <ButtonLink
-              width={BlockSize.Full}
-              loading={loading}
-              onClick={async () => {
-                setNumberOfWords(numberOfWords === 12 ? 24 : 12);
-                setSrpError('');
-                setInvalidSrpWords(
-                  Array(numberOfWords === 12 ? 24 : 12).fill(false),
-                );
-              }}
-              data-testid="import-srp__multi-srp__switch-word-count-button"
-            >
-              {t('importNWordSRP', [numberOfWords === 12 ? '24' : '12'])}
-            </ButtonLink>
-          </Box>
-        }
-      </Box>
-      <Box
-        className="import-srp__multi-srp__import-button"
-        width={BlockSize.Full}
-        marginTop={4}
-        paddingBottom={6}
-        paddingTop={2}
-        backgroundColor={
-          theme === ThemeType.light
-            ? BackgroundColor.backgroundDefault
-            : BackgroundColor.backgroundDefault
         }
       >
-        <ButtonPrimary
-          width={BlockSize.Full}
-          disabled={!isValidSrp || hasEmptyWordsOrIncorrectLength}
-          loading={loading}
-          onClick={async () => {
-            try {
-              setLoading(true);
-              await importWallet();
-              onActionComplete(true);
-              dispatch(setShowNewSrpAddedToast(true));
-            } catch (e) {
-              setSrpError(
-                e instanceof Error ? e.message : 'An unknown error occurred',
+        {'Import Secret Recovery Phrase'}
+      </Header>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        height={BlockSize.Max}
+        data-testid="import-srp-container"
+        paddingLeft={4}
+        paddingRight={4}
+      >
+        <Text variant={TextVariant.bodyMd} marginTop={2}>
+          {t('importSRPDescription')}
+        </Text>
+
+        <Box className="import-srp__multi-srp__srp-inner-container">
+          <Box
+            width={BlockSize.Full}
+            marginTop={4}
+            className="import-srp__multi-srp__srp"
+          >
+            {Array.from({ length: numberOfWords }).map((_, index) => {
+              const id = `import-srp__multi-srp__srp-word-${index}`;
+              return (
+                <Box
+                  key={index}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  alignItems={AlignItems.center}
+                  width={BlockSize.Full}
+                  marginBottom={4}
+                >
+                  <Label
+                    className="import-srp__multi-srp__label"
+                    variant={TextVariant.bodyMdMedium}
+                    marginRight={4}
+                  >
+                    {index + 1}.
+                  </Label>
+                  <Box
+                    className="import-srp__multi-srp__srp-word"
+                    flexDirection={FlexDirection.Row}
+                    alignItems={AlignItems.center}
+                    width={BlockSize.Full}
+                  >
+                    <TextField
+                      id={id}
+                      data-testid={id}
+                      width={BlockSize.Full}
+                      borderRadius={BorderRadius.LG}
+                      error={invalidSrpWords[index]}
+                      type={TextFieldType.Text}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        onSrpWordChange(index, e.target.value);
+                      }}
+                      value={secretRecoveryPhrase[index]}
+                      autoComplete={false}
+                      onPaste={(event: React.ClipboardEvent) => {
+                        const newSrp = event.clipboardData.getData('text');
+
+                        if (newSrp.trim().match(/\s/u)) {
+                          event.preventDefault();
+                          onSrpPaste(newSrp);
+                        }
+                      }}
+                    />
+                  </Box>
+                </Box>
               );
-              setLoading(false);
-            }
-          }}
+            })}
+          </Box>
+          {srpError ? (
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              description={srpError}
+              actionButtonLabel={t('clear')}
+              actionButtonOnClick={() => {
+                onSrpChange(Array(defaultNumberOfWords).fill(''));
+                setSrpError('');
+              }}
+              data-testid="bannerAlert"
+            />
+          ) : null}
+
+          {
+            <Box width={BlockSize.Full} marginTop={4}>
+              <ButtonLink
+                width={BlockSize.Full}
+                loading={loading}
+                onClick={async () => {
+                  setNumberOfWords(numberOfWords === 12 ? 24 : 12);
+                  setSrpError('');
+                  setInvalidSrpWords(
+                    Array(numberOfWords === 12 ? 24 : 12).fill(false),
+                  );
+                }}
+                data-testid="import-srp__multi-srp__switch-word-count-button"
+              >
+                {t('importNWordSRP', [numberOfWords === 12 ? '24' : '12'])}
+              </ButtonLink>
+            </Box>
+          }
+        </Box>
+        <Box
+          className="import-srp__multi-srp__import-button"
+          marginTop={4}
+          paddingBottom={6}
+          paddingTop={2}
+          backgroundColor={
+            theme === ThemeType.light
+              ? BackgroundColor.backgroundDefault
+              : BackgroundColor.backgroundDefault
+          }
         >
-          {t('importWallet')}
-        </ButtonPrimary>
+          <ButtonPrimary
+            width={BlockSize.Full}
+            disabled={!isValidSrp || hasEmptyWordsOrIncorrectLength}
+            loading={loading}
+            onClick={async () => {
+              try {
+                setLoading(true);
+                await importWallet();
+                onActionComplete(true);
+                dispatch(setShowNewSrpAddedToast(true));
+              } catch (e) {
+                setSrpError(
+                  e instanceof Error ? e.message : 'An unknown error occurred',
+                );
+                setLoading(false);
+              }
+            }}
+          >
+            {t('importWallet')}
+          </ButtonPrimary>
+        </Box>
       </Box>
-    </Box>
+    </Page>
   );
 };

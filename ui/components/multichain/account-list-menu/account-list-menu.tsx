@@ -82,7 +82,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONNECT_HARDWARE_ROUTE,
+  IMPORT_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -561,17 +564,6 @@ export const AccountListMenu = ({
             <ImportAccount onActionComplete={onActionComplete} />
           </Box>
         ) : null}
-        {actionMode === ACTION_MODES.IMPORT_SRP && (
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={0}
-            style={{ overflowY: 'scroll' }}
-          >
-            <ImportSrp onActionComplete={onActionComplete} />
-          </Box>
-        )}
         {actionMode === ACTION_MODES.SELECT_SRP && (
           <SrpList
             onActionComplete={(keyringId: string) => {
@@ -711,7 +703,8 @@ export const AccountListMenu = ({
                       event:
                         MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
                     });
-                    setActionMode(ACTION_MODES.IMPORT_SRP);
+                    history.push(IMPORT_SRP_ROUTE);
+                    onClose();
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
                 >
