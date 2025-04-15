@@ -39,7 +39,7 @@ class SnapInteractiveDialog {
   }
 
   async clickButton(buttonName: string) {
-    console.log(`Clicking button ${buttonName}`);
+    console.log(`Clicking button with the name: "${buttonName}"`);
     await this.driver.clickElement({ text: buttonName, tag: 'span' });
   }
 
