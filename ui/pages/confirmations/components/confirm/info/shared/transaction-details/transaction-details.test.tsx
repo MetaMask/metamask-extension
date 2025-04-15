@@ -181,7 +181,7 @@ describe('<TransactionDetails />', () => {
     expect(getByText('Goerli')).toBeInTheDocument();
   });
 
-  it.only('return null for transaction of type revokeDelegation', () => {
+  it('return null for transaction of type revokeDelegation', () => {
     const state = getMockConfirmStateForTransaction(RevokeDelegation);
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(

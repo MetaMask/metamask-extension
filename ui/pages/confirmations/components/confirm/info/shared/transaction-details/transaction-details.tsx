@@ -65,7 +65,7 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const to = recipient ?? currentConfirmation?.txParams?.to;
-  const isBatch = currentConfirmation.type === TransactionType.batch;
+  const isBatch = currentConfirmation?.type === TransactionType.batch;
 
   if (!to || !isValidAddress(to)) {
     return null;
