@@ -15,7 +15,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getSweepstakesCampaignActive } from '../../../hooks/useCarouselManagement';
+import {
+  getSweepstakesCampaignActive,
+  SOLANA_SLIDE,
+} from '../../../hooks/useCarouselManagement';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';
 import {
@@ -43,6 +46,16 @@ export const Carousel = React.forwardRef(
     const visibleSlides = slides
       .filter((slide) => !slide.dismissed || slide.undismissable)
       .sort((a, b) => {
+        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+        // prioritize Solana slide
+        if (a.id === SOLANA_SLIDE.id) {
+          return -1;
+        }
+        if (b.id === SOLANA_SLIDE.id) {
+          return 1;
+        }
+        ///: END:ONLY_INCLUDE_IF
+
         const isSweepstakesActive = getSweepstakesCampaignActive(
           new Date(new Date().toISOString()),
         );

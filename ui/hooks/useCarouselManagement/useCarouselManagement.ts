@@ -16,9 +16,10 @@ import {
   SWEEPSTAKES_END,
   ZERO_BALANCE,
   MULTI_SRP_SLIDE,
+  SWEEPSTAKES_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   SOLANA_SLIDE,
-  ///: END:ONLY_INCLUDE_IF(multichain)
+  ///: END:ONLY_INCLUDE_IF
 } from './constants';
 
 type UseSlideManagementProps = {
@@ -43,7 +44,7 @@ export const useCarouselManagement = ({
   useEffect(() => {
     const defaultSlides: CarouselSlide[] = [];
     const existingSweepstakesSlide = slides.find(
-      (slide: CarouselSlide) => slide.id === SOLANA_SLIDE.id,
+      (slide: CarouselSlide) => slide.id === SWEEPSTAKES_SLIDE.id,
     );
     const isSweepstakesSlideDismissed =
       existingSweepstakesSlide?.dismissed ?? false;
@@ -59,6 +60,9 @@ export const useCarouselManagement = ({
     defaultSlides.push(CARD_SLIDE);
     defaultSlides.push(CASH_SLIDE);
     defaultSlides.push(MULTI_SRP_SLIDE);
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    defaultSlides.push(SOLANA_SLIDE);
+  ///: END:ONLY_INCLUDE_IF
 
     defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 
@@ -78,7 +82,7 @@ export const useCarouselManagement = ({
     // 3. Slide has not been dismissed by user
     if (!inTest && isSweepstakesActive && !isSweepstakesSlideDismissed) {
       const newSweepstakesSlide = {
-        ...SOLANA_SLIDE,
+        ...SWEEPSTAKES_SLIDE,
         dismissed: false,
       };
       defaultSlides.unshift(newSweepstakesSlide);
@@ -86,7 +90,7 @@ export const useCarouselManagement = ({
       // Add the sweepstakes slide with the dismissed state preserved
       // We need this to maintain the persisted dismissed state
       const dismissedSweepstakesSlide = {
-        ...SOLANA_SLIDE,
+        ...SWEEPSTAKES_SLIDE,
         dismissed: true,
       };
 
