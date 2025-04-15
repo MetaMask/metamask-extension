@@ -16,9 +16,9 @@ import { withUnreadNotifications } from './with-unread-notifications';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
 // eslint-disable-next-line n/no-process-env
 const FIXTURES_CONFIG = process.env.WITH_STATE
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
-  // eslint-disable-next-line n/no-process-env
-  ? JSON.parse(process.env.WITH_STATE)
+  ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
+    JSON.parse(process.env.WITH_STATE)
   : {};
 
 /**

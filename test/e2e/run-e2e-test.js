@@ -82,8 +82,8 @@ async function main() {
         `"The browser must be set, via the '--browser' flag or the SELENIUM_BROWSER environment variable`,
       );
       return;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
-    // eslint-disable-next-line n/no-process-env
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+      // eslint-disable-next-line n/no-process-env
     } else if (selectedBrowserForRun !== process.env.SELENIUM_BROWSER) {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
       // eslint-disable-next-line n/no-process-env

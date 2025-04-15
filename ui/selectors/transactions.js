@@ -439,8 +439,8 @@ const groupAndSortTransactionsByNonce = (transactions) => {
           transactionGroup,
         );
       }
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
-    // eslint-disable-next-line no-restricted-syntax
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31982
+      // eslint-disable-next-line no-restricted-syntax
     } else if (nonce in nonceToTransactionsMap) {
       const nonceProps = nonceToTransactionsMap[nonce];
       insertTransactionByTime(nonceProps.transactions, transaction);

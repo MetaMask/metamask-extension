@@ -326,8 +326,8 @@ async function main() {
   if (process.env.CIRCLECI) {
     ({ fullTestList: myTestList, changedOrNewTests = [] } =
       runningOnCircleCI(testPaths));
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
-  // eslint-disable-next-line n/no-process-env
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31895
+    // eslint-disable-next-line n/no-process-env
   } else if (process.env.GITHUB_ACTION) {
     ({ fullTestList: myTestList, changedOrNewTests = [] } =
       runningOnGitHubActions(testPaths));
