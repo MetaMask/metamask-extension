@@ -12,7 +12,6 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import * as URI from 'uri-js';
 import { EthScope } from '@metamask/keyring-api';
@@ -82,9 +81,7 @@ import {
   Display,
   JustifyContent,
   TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   Box,
   ButtonSecondary,
@@ -93,8 +90,6 @@ import {
   BannerBase,
   IconName,
   AvatarNetworkSize,
-  ButtonIcon,
-  ButtonIconSize,
 } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -115,7 +110,6 @@ import {
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
-import { Header, Page, Content } from '../pages/page';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
