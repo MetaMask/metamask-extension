@@ -47,10 +47,7 @@ const render = ({
   selectedTabOriginInDomainsState = true,
   isAddingNewNetwork = false,
   editedNetwork = undefined,
-  neNetworkDiscoverButton = {
-    59144: true,
-    1329: true,
-  },
+  neNetworkDiscoverButton = { '0x531': true, '0xe708': true },
 } = {}) => {
   const state = {
     appState: {
@@ -284,7 +281,7 @@ describe('NetworkListMenu', () => {
   it('enables the "Discover" for Linea Mainnet button when the Feature Flag `neNetworkDiscoverButton` is true for Linea and the network is supported', () => {
     const { queryByTestId } = render({
       neNetworkDiscoverButton: {
-        59144: true,
+        '0x531': true,
       },
     });
 
@@ -303,8 +300,8 @@ describe('NetworkListMenu', () => {
   it('disables the "Discover" button when the Feature Flag `neNetworkDiscoverButton` is false for Linea even if the network is supported', () => {
     const { queryByTestId } = render({
       neNetworkDiscoverButton: {
-        59144: false,
-        1329: true,
+        '0x531': false,
+        '0xe708': true,
       },
     });
 
