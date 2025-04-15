@@ -51,7 +51,7 @@ describe('AccountNetwork', () => {
     const { getByText } = renderComponent();
 
     expect(getByText('Sepolia')).toBeInTheDocument();
-    expect(getByText('Smart account')).toBeInTheDocument();
+    expect(getByText('Smart Account')).toBeInTheDocument();
     expect(getByText('Switch')).toBeInTheDocument();
   });
 
