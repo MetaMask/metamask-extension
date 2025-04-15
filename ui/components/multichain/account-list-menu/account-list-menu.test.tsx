@@ -31,6 +31,7 @@ const mockGetEnvironmentType = jest.fn();
 const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 const mockBitcoinClientCreateAccount = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
+const mockDetectNfts = jest.fn();
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -43,6 +44,7 @@ jest.mock('../../../store/actions', () => {
     ...jest.requireActual('../../../store/actions'),
     getNextAvailableAccountName: () => mockNextAccountName(),
     generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
+    detectNfts: () => mockDetectNfts,
   };
 });
 
@@ -157,6 +159,7 @@ describe('AccountListMenu', () => {
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
+
     expect(listItems).toHaveLength(6);
 
     const searchBox = document.querySelector('input[type=search]') as Element;
@@ -468,6 +471,128 @@ describe('AccountListMenu', () => {
       // Check if `openTab` was called
       expect(global.platform.openTab).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it('displays the correct label for unnamed snap accounts', () => {
+    const mockStore = configureStore({
+      activeTab: {
+        title: 'Eth Sign Tests',
+        origin: 'https://remix.ethereum.org',
+        protocol: 'https:',
+        url: 'https://remix.ethereum.org/',
+      },
+      unconnectedAccount: {
+        state: 'OPEN',
+      },
+      metamask: {
+        ...mockState.metamask,
+        permissionHistory: {
+          'https://test.dapp': {
+            eth_accounts: {
+              accounts: {
+                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
+              },
+            },
+          },
+        },
+        subjects: {
+          'https://test.dapp': {
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+                invoker: 'https://test.dapp',
+                parentCapability: 'endowment:caip25',
+              },
+            },
+          },
+        },
+        internalAccounts: {
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              ...mockState.metamask.internalAccounts.accounts[
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+              ],
+              metadata: {
+                name: 'Snap Account',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+                snap: {
+                  id: 'local:snap-id',
+                },
+              },
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
+      },
+    });
+    renderWithProvider(<AccountListMenu onClose={jest.fn()} />, mockStore);
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    const tag = listItems[0].querySelector('.mm-tag') as Element;
+    expect(tag.textContent).toBe('mock snap name (Beta)');
+  });
+
+  it('detects NFTs when an account is clicked', () => {
+    const { getAllByTestId } = render();
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    expect(listItems).toHaveLength(6);
+    const button = getAllByTestId('account-item');
+    button[0].click();
+    expect(mockDetectNfts).toHaveBeenCalled();
+  });
+
+  it('displays the correct label for named snap accounts', () => {
+    render({
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              ...mockState.metamask.internalAccounts.accounts[
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+              ],
+              metadata: {
+                name: 'Snap Account',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+                snap: {
+                  name: 'Test Snap Name',
+                  id: 'local:snap-id',
+                },
+              },
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
+      },
+    });
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    const tag = listItems[0].querySelector('.mm-tag') as Element;
+    expect(tag.textContent).toBe('mock snap name (Beta)');
   });
   ///: END:ONLY_INCLUDE_IF
 

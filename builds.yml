@@ -30,7 +30,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - EVM_MULTICHAIN_ENABLED: false
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
@@ -58,7 +57,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.2.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - EVM_MULTICHAIN_ENABLED: false
       - MULTICHAIN_API: true
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
@@ -92,7 +90,6 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
-      - EVM_MULTICHAIN_ENABLED: false
       - MULTICHAIN_API: true
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
@@ -116,7 +113,6 @@ buildTypes:
       - SUPPORT_LINK: https://support.metamask-institutional.io
       - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io
       - SENTRY_DSN: SENTRY_MMI_DSN
-      - EVM_MULTICHAIN_ENABLED: false
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
@@ -147,14 +143,30 @@ features:
       - ./{app,shared,ui}/**/institutional/**
   build-flask:
     assets:
+      - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
+        dest: snaps/account-watcher.json
+      - src: ./node_modules/@metamask/preinstalled-example-snap/dist/preinstalled-snap.json
+        dest: snaps/preinstalled-example-snap.json
       - src: ./app/build-types/flask/images/
         dest: images
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
     assets:
+      - src: ./node_modules/@metamask/message-signing-snap/dist/preinstalled-snap.json
+        dest: snaps/message-signing-snap.json
+      - src: ./node_modules/@metamask/ens-resolver-snap/dist/preinstalled-snap.json
+        dest: snaps/ens-resolver-snap.json
+      - src: ./node_modules/@metamask/institutional-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/institutional-wallet-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
+    assets:
+      - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/bitcoin-wallet-snap.json
   solana:
+    assets:
+      - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/solana-wallet-snap.json
   multi-srp:
     assets:
       # srp-list is a special case and is used in the srp recovery flow now.
