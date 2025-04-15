@@ -14,11 +14,11 @@ import {
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
-  MANAGE_NETWORKS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
   showConfirmTurnOnMetamaskNotifications,
+  toggleNetworkMenu,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -273,7 +273,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       <MenuItem
         iconName={IconName.Hierarchy}
         onClick={() => {
-          history.push(MANAGE_NETWORKS_ROUTE);
+          dispatch(toggleNetworkMenu());
           closeMenu();
         }}
       >

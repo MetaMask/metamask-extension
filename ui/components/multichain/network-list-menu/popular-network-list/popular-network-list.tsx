@@ -45,10 +45,8 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
-  isFullPage = false,
 }: {
   searchAddNetworkResults: AddNetworkFields[];
-  isFullPage?: boolean;
 }) => {
   const t = useI18nContext();
   const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
@@ -182,7 +180,7 @@ const PopularNetworkList = ({
                 variant={ButtonVariant.Link}
                 data-testid="test-add-button"
                 onClick={async () => {
-                  !isFullPage && dispatch(toggleNetworkMenu());
+                  dispatch(toggleNetworkMenu());
                   await dispatch(
                     requestUserApproval({
                       origin: ORIGIN_METAMASK,

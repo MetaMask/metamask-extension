@@ -143,15 +143,10 @@ const noop = () => undefined;
 
 type NetworkListMenuProps = {
   onClose: () => void;
-  isFullPage?: boolean;
 };
 
-export const NetworkListMenu = ({
-  onClose,
-  isFullPage = false,
-}: NetworkListMenuProps) => {
+export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
-  const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
@@ -525,14 +520,20 @@ export const NetworkListMenu = ({
         name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
-        selected={isFullPage ? false : isCurrentNetwork && !focusSearch}
-        focus={isFullPage ? false : isCurrentNetwork && !focusSearch}
+        selected={
+          process.env.REMOVE_GNS ? false : isCurrentNetwork && !focusSearch
+        }
+        focus={
+          process.env.REMOVE_GNS ? false : isCurrentNetwork && !focusSearch
+        }
         rpcEndpoint={
           hasMultiRpcOptions(network)
             ? getRpcDataByChainId(chainId, evmNetworks).defaultRpcEndpoint
             : undefined
         }
-        onClick={isFullPage ? noop : () => handleNetworkChange(chainId)}
+        onClick={
+          process.env.REMOVE_GNS ? noop : () => handleNetworkChange(chainId)
+        }
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
@@ -643,7 +644,6 @@ export const NetworkListMenu = ({
               <PopularNetworkList
                 searchAddNetworkResults={searchedFeaturedNetworks}
                 data-testid="add-popular-network-view"
-                isFullPage={isFullPage}
               />
               {searchedTestNetworks.length > 0 ? (
                 <Box
@@ -799,38 +799,6 @@ export const NetworkListMenu = ({
 
   if (isMultiRpcOnboarding) {
     onBack = onClose;
-  }
-
-  if (isFullPage) {
-    return (
-      <div className="manage-multichain-network-list">
-        <Page backgroundColor={BackgroundColor.backgroundDefault}>
-          <Header
-            backgroundColor={BackgroundColor.backgroundDefault}
-            textProps={{
-              variant: TextVariant.headingSm,
-              color: TextColor.textDefault,
-            }}
-            startAccessory={
-              <ButtonIcon
-                ariaLabel="Back"
-                iconName={IconName.Arrow2Left}
-                size={ButtonIconSize.Sm}
-                onClick={() => history.push(DEFAULT_ROUTE)}
-              />
-            }
-          >
-            {t('title')}
-          </Header>
-          <Content
-            className="manage-multichain-network-list__content"
-            backgroundColor={BackgroundColor.backgroundDefault}
-          >
-            {render()}
-          </Content>
-        </Page>
-      </div>
-    );
   }
 
   return (

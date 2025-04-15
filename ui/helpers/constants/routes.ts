@@ -148,9 +148,6 @@ PATH_NAME_MAP[`${NOTIFICATIONS_ROUTE}/:uuid`] = 'Notification Detail Page';
 export const NOTIFICATIONS_SETTINGS_ROUTE = '/notifications/settings';
 PATH_NAME_MAP[NOTIFICATIONS_SETTINGS_ROUTE] = 'Notifications Settings Page';
 
-export const MANAGE_NETWORKS_ROUTE = '/manage-networks';
-PATH_NAME_MAP[MANAGE_NETWORKS_ROUTE] = 'Manage Network Settings Page';
-
 export const CONNECTED_ROUTE = '/connected';
 PATH_NAME_MAP[CONNECTED_ROUTE] = 'Sites Connected To This Account Page';
 

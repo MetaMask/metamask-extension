@@ -48,7 +48,6 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
-  MANAGE_NETWORKS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -365,12 +364,6 @@ export default class Routes extends Component {
             component={ReviewPermissions}
             exact
           />
-          {process.env.REMOVE_GNS && (
-            <Authenticated
-              path={MANAGE_NETWORKS_ROUTE}
-              component={() => <NetworkListMenu isFullPage />}
-            />
-          )}
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
