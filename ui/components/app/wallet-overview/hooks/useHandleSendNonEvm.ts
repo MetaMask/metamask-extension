@@ -28,7 +28,7 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
   const selectedNetwork = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );
-  const { nativeCurrency: nativeAssetType } = selectedNetwork;
+  const { nativeCurrency } = selectedNetwork;
 
   const account = useSelector(getSelectedInternalAccount);
   const history = useHistory();
@@ -79,13 +79,13 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
         return caipAssetType;
       }
 
-      if (!nativeAssetType) {
+      if (!nativeCurrency) {
         throw new Error(
           'No CAIP asset type provided, and could not find a fallback native asset for the selected account',
         );
       }
 
-      return nativeAssetType as CaipAssetType;
+      return nativeCurrency as CaipAssetType;
     })();
 
     const { chainId } = parseCaipAssetType(assetTypeToUse);
