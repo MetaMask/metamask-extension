@@ -70,7 +70,7 @@ async function start(): Promise<void> {
       firefox: `${BUILD_LINK_BASE}/builds-mv2/metamask-firefox-${VERSION}.zip`,
     },
     'builds (beta)': {
-      chrome: `${HOST_URL}/builds-beta/metamask-beta-chrome-${VERSION}.zip`,
+      chrome: `${HOST_URL}/builds-beta/metamask-beta-chrome-${VERSION}-beta.0.zip`,
     },
     'builds (flask)': {
       chrome: `${BUILD_LINK_BASE}/builds-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
