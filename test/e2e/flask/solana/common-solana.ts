@@ -2714,11 +2714,9 @@ export async function withSolanaAccountSnap(
     mockSendTransaction,
     importAccount,
     simulateTransaction,
-    isNative,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockZeroBalance,
-    simulateFailedTransaction,
     sendFailedTransaction,
   }: {
     title?: string;
@@ -2727,11 +2725,9 @@ export async function withSolanaAccountSnap(
     mockSendTransaction?: boolean;
     importAccount?: boolean;
     simulateTransaction?: boolean;
-    isNative?: boolean;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
     mockZeroBalance?: boolean;
-    simulateFailedTransaction?: boolean;
     sendFailedTransaction?: boolean;
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
