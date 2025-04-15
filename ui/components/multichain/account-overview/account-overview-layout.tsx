@@ -10,7 +10,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   hasCreatedSolanaAccount,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -31,8 +33,10 @@ import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
+///: END:ONLY_INCLUDE_IF
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -46,10 +50,13 @@ export const AccountOverviewLayout = ({
   const isLoading = useSelector(getAppIsLoading);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
-  useState(false);
+    useState(false);
   const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
   const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
+  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
@@ -130,11 +137,15 @@ export const AccountOverviewLayout = ({
         onRenderSlides={handleRenderSlides}
       />
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
-      {showCreateSolanaAccountModal && (
-        <CreateSolanaAccountModal
-          onClose={() => setShowCreateSolanaAccountModal(false)}
-        />
-      )}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+        showCreateSolanaAccountModal && (
+          <CreateSolanaAccountModal
+            onClose={() => setShowCreateSolanaAccountModal(false)}
+          />
+        )
+        ///: END:ONLY_INCLUDE_IF
+      }
     </>
   );
 };
