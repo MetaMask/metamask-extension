@@ -99,14 +99,24 @@ describe('EncryptionPublicKeyController', () => {
 
     encryptionPublicKeyController = new EncryptionPublicKeyController({
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messenger: messengerMock as any,
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getEncryptionPublicKey: getEncryptionPublicKeyMock as any,
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getAccountKeyringType: getAccountKeyringTypeMock as any,
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getState: getStateMock as any,
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
       managerMessenger: managerMessengerMock,
     } as EncryptionPublicKeyControllerOptions);
@@ -129,6 +139,8 @@ describe('EncryptionPublicKeyController', () => {
         unapprovedEncryptionPublicKeyMsgs: {
           [messageIdMock]: messageMock,
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
         unapprovedEncryptionPublicKeyMsgCount: 1,
       }));
@@ -150,12 +162,16 @@ describe('EncryptionPublicKeyController', () => {
       };
       encryptionPublicKeyManagerMock.getUnapprovedMessages.mockReturnValueOnce(
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         messages as any,
       );
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       encryptionPublicKeyController.update(() => ({
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         unapprovedEncryptionPublicKeyMsgs: messages as any,
       }));
     });
