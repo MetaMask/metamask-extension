@@ -72,7 +72,7 @@ class SnapInteractiveDialog {
   }
 
   async selectCheckbox() {
-    console.log(`Select checkbox`);
+    console.log(`Selecting checkbox`);
     await this.driver.clickElement(selectors.exampleCheckbox);
   }
 
