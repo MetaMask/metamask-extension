@@ -172,9 +172,9 @@ async function main() {
         .build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage (wallet_invokeMethod)',
-      testSpecificMock: async (server: Mockttp) => {
+      testSpecificMock: async (mockedServer: Mockttp) => {
         // See: <https://github.com/MetaMask/api-specs/blob/1f763929bbe781d6f2abefee86fd11a829595fe5/openrpc.yaml#L461>
-        await server
+        await mockedServer
           .forGet('https://foo.io/token-image.svg')
           .thenCallback(() => {
             return {

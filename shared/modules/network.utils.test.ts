@@ -246,6 +246,7 @@ describe('network utils', () => {
         rpcEndpoints: [
           {
             url: 'https://mainnet.infura.io/v3/1234567890abcdef',
+            failoverUrls: [],
             networkClientId: '1',
             name: 'infura',
             type: RpcEndpointType.Custom,
@@ -261,6 +262,7 @@ describe('network utils', () => {
         rpcEndpoints: [
           {
             url: 'https://bsc-dataseed.binance.org',
+            failoverUrls: [],
             networkClientId: '56',
             name: 'binance',
             type: RpcEndpointType.Custom,
@@ -276,6 +278,7 @@ describe('network utils', () => {
         rpcEndpoints: [
           {
             url: 'https://rpc-mainnet.maticvigil.com',
+            failoverUrls: [],
             networkClientId: '137',
             name: 'maticvigil',
             type: RpcEndpointType.Custom,
@@ -291,6 +294,7 @@ describe('network utils', () => {
         rpcEndpoints: [
           {
             url: 'https://api.avax.network/ext/bc/C/rpc',
+            failoverUrls: [],
             networkClientId: '43114',
             name: 'avalanche',
             type: RpcEndpointType.Custom,
@@ -306,6 +310,7 @@ describe('network utils', () => {
         rpcEndpoints: [
           {
             url: 'https://mainnet.infura.io/v3/1234567890abcdef',
+            failoverUrls: [],
             networkClientId: '1',
             name: 'infura',
             type: RpcEndpointType.Custom,
@@ -313,6 +318,7 @@ describe('network utils', () => {
         ],
         defaultRpcEndpoint: {
           url: 'https://mainnet.infura.io/v3/1234567890abcdef',
+          failoverUrls: [],
           networkClientId: '1',
           name: 'infura',
           type: RpcEndpointType.Custom,

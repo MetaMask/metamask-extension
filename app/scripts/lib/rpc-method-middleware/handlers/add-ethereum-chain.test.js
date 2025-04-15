@@ -19,6 +19,7 @@ const createMockMainnetConfiguration = () => ({
     {
       networkClientId: 'mainnet',
       url: 'https://mainnet.infura.io/v3/',
+      failoverUrls: [],
       type: 'infura',
     },
   ],
@@ -35,6 +36,7 @@ const createMockOptimismConfiguration = () => ({
     {
       networkClientId: 'optimism-network-client-id',
       url: 'https://optimism.llamarpc.com',
+      failoverUrls: [],
       type: 'custom',
     },
   ],
@@ -51,6 +53,7 @@ const createMockNonInfuraConfiguration = () => ({
     {
       name: 'Custom Network',
       url: 'https://custom.network',
+      failoverUrls: [],
       type: 'custom',
     },
   ],
@@ -235,11 +238,13 @@ describe('addEthereumChainHandler', () => {
                 networkClientId: 'mainnet',
                 type: 'infura',
                 url: 'https://mainnet.infura.io/v3/',
+                failoverUrls: [],
               },
               {
                 name: 'Ethereum Mainnet',
                 type: 'custom',
                 url: 'https://eth.llamarpc.com',
+                failoverUrls: [],
               },
             ],
           },

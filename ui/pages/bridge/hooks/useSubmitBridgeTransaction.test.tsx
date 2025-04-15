@@ -405,6 +405,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
               networkClientId: 'mainnet',
               type: 'infura',
               url: 'https://mainnet.infura.io/v3/infuraProjectId',
+              failoverUrls: [],
             },
           ],
         },
@@ -422,6 +423,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
               networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
               type: 'custom',
               url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
+              failoverUrls: [],
             },
           ],
         }),
@@ -447,6 +449,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
           {
             type: 'custom',
             url: 'https://arbitrum-mainnet.infura.io/v3/undefined',
+            failoverUrls: [],
           },
         ],
       });
