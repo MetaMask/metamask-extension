@@ -1382,9 +1382,6 @@ async function initBackground() {
   try {
     await initialize();
 
-    // Set the extension to idle state after initialization is complete
-    extensionUpdateManager.setIdleState(true);
-
     if (process.env.IN_TEST) {
       // Send message to offscreen document
       if (browser.offscreen) {
