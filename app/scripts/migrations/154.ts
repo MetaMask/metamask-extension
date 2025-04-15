@@ -1,5 +1,5 @@
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
-import { type Hex, hasProperty, isObject } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
 type VersionedData = {
@@ -7,7 +7,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 145;
+export const version = 154;
 
 /**
  * This migration updates the values of the chain IDs in the NetworkOrderController
