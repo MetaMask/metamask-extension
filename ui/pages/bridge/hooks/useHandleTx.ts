@@ -103,5 +103,6 @@ export default function useHandleTx() {
   };
 
   return {
-    handleTx
+    handleTx,
+  };
 }
