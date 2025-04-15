@@ -34,9 +34,13 @@ function transformState(
   if (
     hasProperty(state, 'MultichainNetworkController') &&
     isObject(state.MultichainNetworkController) &&
-    isObject(state.MultichainNetworkController.multichainNetworkConfigurationsByChainId)
+    isObject(
+      state.MultichainNetworkController
+        .multichainNetworkConfigurationsByChainId,
+    )
   ) {
-    state.MultichainNetworkController.multichainNetworkConfigurationsByChainId = AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS;
+    state.MultichainNetworkController.multichainNetworkConfigurationsByChainId =
+      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS;
   }
 
   return state;
