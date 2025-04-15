@@ -33,8 +33,12 @@ import Tooltip from '../../ui/tooltip';
 
 export enum DropdownEditorStyle {
   /** When open, the dropdown overlays elements that follow  */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31985
+  // eslint-disable-next-line @typescript-eslint/prefer-enum-initializers
   PopoverStyle,
   /** When open, the dropdown pushes down elements that follow */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31985
+  // eslint-disable-next-line @typescript-eslint/prefer-enum-initializers
   BoxStyle,
 }
 

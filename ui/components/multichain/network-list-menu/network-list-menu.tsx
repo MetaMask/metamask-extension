@@ -148,26 +148,33 @@ import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export enum ACTION_MODE {
   // Displays the search box and network list
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31985
+  // eslint-disable-next-line @typescript-eslint/prefer-enum-initializers
   LIST,
   // Displays the form to add or edit a network
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31985
+  // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/prefer-enum-initializers
   ADD_EDIT,
   // Displays the page for adding an additional RPC URL
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31985
+  // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/prefer-enum-initializers
   ADD_RPC,
   // Displays the page for adding an additional explorer URL
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31985
+  // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/prefer-enum-initializers
   ADD_EXPLORER_URL,
   // Displays the page for selecting an RPC URL
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31985
+  // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/prefer-enum-initializers
   SELECT_RPC,
   // Add account for non EVM networks
   // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31985
+  // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/prefer-enum-initializers
   ADD_NON_EVM_ACCOUNT,
 }
 
