@@ -56,7 +56,7 @@ export const AccountDetailsDisplay = ({
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const checksummedAddress = toChecksumHexAddress(address);
+  const checksummedAddress = toChecksumHexAddress(address)?.toLowerCase();
   const [copied, handleCopy] = useCopyToClipboard();
   const handleClick = useCallback(async () => {
     handleCopy(checksummedAddress);
@@ -100,7 +100,7 @@ export const AccountDetailsDisplay = ({
       <Box display={Display.Flex} style={{ position: 'relative' }}>
         <Text
           variant={TextVariant.bodyMd}
-          className="qr-code__address-segments"
+          data-testid="account-address-shortened"
           marginBottom={4}
         >
           {shortenString(checksummedAddress, {

@@ -1,5 +1,5 @@
 import path from 'path';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT_SHOTENED } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -10,7 +10,7 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 
 describe('Import flow', function () {
-  it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
+  it.only('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -36,7 +36,7 @@ describe('Import flow', function () {
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
         await accountDetailsModal.check_addressInAccountDetailsModal(
-          DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+          DEFAULT_FIXTURE_ACCOUNT_SHOTENED.toLowerCase(),
         );
       },
     );
