@@ -63,6 +63,7 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS]: RATE_LIMIT_TYPES.TIMEOUT,
+  [MESSAGE_TYPE.WALLET_CREATE_SESSION]: RATE_LIMIT_TYPES.NON_RATE_LIMITED, // TODO: should this be timeout?
   [MESSAGE_TYPE.SEND_METADATA]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.ETH_CHAIN_ID]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.ETH_ACCOUNTS]: RATE_LIMIT_TYPES.BLOCKED,
@@ -157,6 +158,7 @@ const TRANSFORM_PARAMS_MAP = {
 
 const CUSTOM_PROPERTIES_MAP = {
   [MESSAGE_TYPE.WALLET_SEND_CALLS]: getWalletSendCallsProperties,
+  [MESSAGE_TYPE.WALLET_CREATE_SESSION]: getWalletCreateSessionProperties,
 };
 
 const rateLimitTimeoutsByMethod = {};
@@ -453,28 +455,6 @@ export default function createRPCMethodTrackingMiddleware({
         eventProperties,
       );
 
-      // MULTICHAIN API REQUEST
-      // const isMultichainRequest = isMultichainRequest(method);
-      // if (isMultichainRequest) {
-      //   if (event === MetaMetricsEventName.SignatureRequested) {
-      //     const fragmentPayload = {
-      //       properties: eventProperties,
-      //       sensitiveProperties: sensitiveEventProperties,
-      //     };
-      //     // TODO: modify event category to MultichainApiRequest
-      //     createSignatureFragment(metaMetricsController, req, fragmentPayload);
-      //   } else {
-      //     metaMetricsController.trackEvent({
-      //       event,
-      //       category: MetaMetricsEventCategory.MultichainApiRequest,
-      //       referrer: {
-      //         url: origin,
-      //       },
-      //       properties: eventProperties,
-      //     });
-      //   }
-      // }
-
       if (event === MetaMetricsEventName.SignatureRequested) {
         const fragmentPayload = {
           properties: eventProperties,
@@ -586,7 +566,7 @@ export default function createRPCMethodTrackingMiddleware({
       } else {
         metaMetricsController.trackEvent({
           event,
-          category: MetaMetricsEventCategory.InpageProvider,
+          category: eventCategory,
           referrer: {
             url: origin,
           },
@@ -609,4 +589,27 @@ function getWalletSendCallsProperties(req, _res, stage, eventProperties) {
   if (callCount) {
     eventProperties.batch_transaction_count = callCount;
   }
+}
+
+function getWalletCreateSessionProperties(req, _res, stage, eventProperties) {
+  // I would think we want this in the approved and rejected stages as well?
+  // if (stage !== STAGE.REQUESTED) {
+  //   return;
+
+  // TODO this should probably be a helper function in @metamask/chain-agnostic-permission
+  const { params } = req;
+  const requiredScopes = params?.requiredScopes || {};
+  const optionalScopes = params?.optionalScopes || {};
+
+  const scopeSet = new Set();
+
+  for (const key of Object.keys(requiredScopes)) {
+    scopeSet.add(key);
+  }
+
+  for (const key of Object.keys(optionalScopes)) {
+    scopeSet.add(key);
+  }
+
+  eventProperties.chain_id_list = Array.from(scopeSet);
 }
