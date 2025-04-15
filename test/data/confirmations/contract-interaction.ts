@@ -33,7 +33,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
   simulationData,
   gasFeeTokens,
   selectedGasFeeToken,
-  type,
 }: {
   address?: Hex;
   authorizationList?: AuthorizationList;
@@ -43,7 +42,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
   simulationData?: SimulationData;
-  type?: string;
 } = {}): Confirmation => {
   const confirmation: Confirmation = {
     actionId: String(400855682),
@@ -180,7 +178,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       value: '0x3782dace9d900000',
     },
     gasLimitNoBuffer: '0xab77',
-    type: type ?? TransactionType.contractInteraction,
+    type: TransactionType.contractInteraction,
     userEditedGasLimit: false,
     userFeeLevel: 'medium',
     verifiedOnBlockchain: false,

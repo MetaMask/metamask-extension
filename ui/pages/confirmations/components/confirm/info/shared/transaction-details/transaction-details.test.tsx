@@ -4,10 +4,6 @@ import thunk from 'redux-thunk';
 import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import {
-  NestedTransactionMetadata,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import {
   getMockConfirmState,
   getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
@@ -15,9 +11,13 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { RevokeDelegation } from '../../../../../../../../test/data/confirmations/batch-transaction';
+import {
+  RevokeDelegation,
+  upgradeAccountConfirmation,
+} from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
+import { Confirmation } from '../../../../../types/confirm';
 import { TransactionDetails } from './transaction-details';
 
 jest.mock(
@@ -234,31 +234,16 @@ describe('<TransactionDetails />', () => {
     });
 
     it('renders SmartContractWithLogo when transaction is a batch transaction', () => {
-      const ADDRESS_MOCK = '0x88aa6343307ec9a652ccddda3646e62b2f1a5125';
-      const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
-      const contractInteraction = genUnapprovedContractInteractionConfirmation({
-        address: ADDRESS_MOCK,
-        type: TransactionType.batch,
-        nestedTransactions: [
-          {
-            to: ADDRESS_MOCK,
-            data: '0x1',
-            type: TransactionType.contractInteraction,
-          },
-          {
-            to: ADDRESS_2_MOCK,
-            data: '0x2',
-            type: TransactionType.contractInteraction,
-          },
-        ] as NestedTransactionMetadata[],
-      });
-      const state = getMockConfirmStateForTransaction(contractInteraction, {
-        metamask: {
-          preferences: {
-            showConfirmationAdvancedDetails: true,
+      const state = getMockConfirmStateForTransaction(
+        upgradeAccountConfirmation as Confirmation,
+        {
+          metamask: {
+            preferences: {
+              showConfirmationAdvancedDetails: true,
+            },
           },
         },
-      });
+      );
       const mockStore = configureMockStore(middleware)(state);
       const { getByText } = renderWithConfirmContextProvider(
         <TransactionDetails />,
