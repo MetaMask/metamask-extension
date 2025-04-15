@@ -1,5 +1,7 @@
 import React from 'react';
 import { waitFor } from '@testing-library/react';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31992
+// eslint-disable-next-line import/no-named-as-default
 import userEvent from '@testing-library/user-event';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths

@@ -4,6 +4,8 @@ import React from 'react';
 import { waitFor, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { Snap } from '@metamask/snaps-utils';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31992
+// eslint-disable-next-line import/no-named-as-default
 import userEvent from '@testing-library/user-event';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';

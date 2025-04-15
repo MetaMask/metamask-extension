@@ -4,6 +4,8 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import * as reactRouterUtils from 'react-router-dom-v5-compat';
 import { zeroAddress } from 'ethereumjs-util';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31992
+// eslint-disable-next-line import/no-named-as-default
 import userEvent from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';

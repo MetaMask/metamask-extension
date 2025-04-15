@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31992
+// eslint-disable-next-line import/no-named-as-default
 import userEvent from '@testing-library/user-event';
 import { Router } from 'react-router-dom';
 import PropTypes from 'prop-types';

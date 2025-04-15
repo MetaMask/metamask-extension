@@ -1,4 +1,6 @@
 import sinon from 'sinon';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31992
+// eslint-disable-next-line import/no-named-as-default
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { EthAccountType } from '@metamask/keyring-api';

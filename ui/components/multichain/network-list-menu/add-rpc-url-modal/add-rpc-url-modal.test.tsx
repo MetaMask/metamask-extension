@@ -2,6 +2,8 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31992
+// eslint-disable-next-line import/no-named-as-default
 import userEvent from '@testing-library/user-event';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // TODO: Fix in follow-up ticket https://github.com/MetaMask/metamask-extension/issues/31860

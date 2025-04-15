@@ -2,6 +2,8 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { waitFor } from '@testing-library/react';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31992
+// eslint-disable-next-line import/no-named-as-default
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
