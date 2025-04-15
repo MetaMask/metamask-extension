@@ -2313,6 +2313,8 @@ export function addNftVerifyOwnership(
           message.includes('This NFT is not owned by the user') ||
           message.includes('Unable to verify ownership')
         ) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31981
+          // eslint-disable-next-line @typescript-eslint/no-throw-literal
           throw error;
         } else {
           logErrorWithMessage(error);

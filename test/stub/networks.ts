@@ -110,6 +110,8 @@ export const mockNetworkState = (
   if (
     new Set(networks.map((network) => network.chainId)).size !== networks.length
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31981
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw 'mockNetworkState doesnt currently support multiple rpc urls per chain id';
   }
 

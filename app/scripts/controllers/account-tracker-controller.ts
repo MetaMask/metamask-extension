@@ -797,6 +797,8 @@ export default class AccountTrackerController extends BaseController<
         hasProperty(error.data.request, 'method') &&
         error.data.request.method !== 'eth_getBalance'
       ) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31981
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw error;
       }
     }
