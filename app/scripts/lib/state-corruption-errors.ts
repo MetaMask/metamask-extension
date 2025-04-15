@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { escape as lodashEscape } from 'lodash';
 import {
@@ -22,6 +23,8 @@ export type ErrorLike = {
   stack?: string;
 };
 
+export const METHOD_RESTORE_DATABASE_FROM_BACKUP = 'restoreDatabaseFromBackup';
+
 export const METHOD_DISPLAY_STATE_CORRUPTION_ERROR =
   'displayStateCorruptionError';
 
@@ -32,6 +35,7 @@ export const KNOWN_STATE_CORRUPTION_ERRORS = new Set([
 
 export async function getStateCorruptionErrorHtml(
   vaultRecoveryLink: string,
+  hasBackup: boolean,
   currentLocale?: string,
   supportLink?: string,
 ) {
@@ -49,8 +53,22 @@ export async function getStateCorruptionErrorHtml(
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
 
   const header = `<p>
-      ${t('stateCorruptionDetectedErrorMessage')}
+  ${
+    hasBackup
+      ? t('stateCorruptionDetectedWithBackup')
+      : t('stateCorruptionDetectedNoBackup')
+  }
     </p>
+    <div id="critical-error-button" class="critical-error__link critical-error__link-restore"
+    data-confirm="${lodashEscape(
+      'Are you sure? This action is irreversible!',
+    )}">
+      ${lodashEscape(
+        hasBackup === true
+          ? t('restoreAccountsFromBackup')
+          : t('resetMetaMaskState'),
+      )}
+    </div>
     <p>
       <a
         href="${lodashEscape(vaultRecoveryLink)}"
@@ -84,14 +102,46 @@ export async function getStateCorruptionErrorHtml(
 
 export async function displayStateCorruptionError(
   container: HTMLElement,
+  port: browser.Runtime.Port,
   err: ErrorLike,
+  hasBackup: boolean,
   currentLocale?: string,
 ) {
+  log.error(err.stack);
+
+  function handleRestoreClick(this: HTMLElement) {
+    this.style.opacity = '0.5';
+    this.style.pointerEvents = 'none';
+    const confirmMessage = this.dataset.confirm;
+
+    if (confirmMessage) {
+      // TODO: not the best UI: we should talk about this
+      // eslint-disable-next-line no-alert
+      const confirmed = window.prompt(
+        `${confirmMessage}Type \`restore\` to restore.`,
+      );
+      if (confirmed !== 'restore') {
+        this.style.opacity = '1';
+        this.style.pointerEvents = 'auto';
+        return;
+      }
+    }
+    this.removeEventListener('click', handleRestoreClick);
+    port.postMessage({
+      data: {
+        method: METHOD_RESTORE_DATABASE_FROM_BACKUP,
+      },
+    });
+  }
+
   const html = await getStateCorruptionErrorHtml(
     VAULT_RECOVERY_LINK,
+    hasBackup,
     currentLocale,
     SUPPORT_LINK,
   );
   container.innerHTML = html;
-  log.error(err);
+
+  const button = container.querySelector('#critical-error-button');
+  button?.addEventListener('click', handleRestoreClick);
 }

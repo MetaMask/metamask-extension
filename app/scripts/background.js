@@ -50,6 +50,7 @@ import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import {
+  METHOD_RESTORE_DATABASE_FROM_BACKUP,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   KNOWN_STATE_CORRUPTION_ERRORS,
 } from './lib/state-corruption-errors';
@@ -89,6 +90,10 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+
+/**
+ * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
+ */
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -194,7 +199,7 @@ if (!isManifestV3) {
  * called once initialization has completed, and that `rejectInitialization` is
  * called if initialization fails in an unrecoverable way.
  */
-const {
+let {
   promise: isInitialized,
   resolve: resolveInitialization,
   reject: rejectInitialization,
@@ -383,6 +388,68 @@ function maybeDetectPhishing(theController) {
   );
 }
 
+/**
+ * Restores a given backup to the primary database and reinitializes the
+ * background script and UI.
+ *
+ * @param {chrome.runtime.Port} port - The port for the UI
+ * @param {Backup} backup - The backup to restore.
+ */
+async function restoreDatabaseFromBackup(port, backup) {
+  const deferred = deferredPromise();
+  // we are going to reinitialize the background script, so we need to
+  // reset the initialization promises. this is gross since it is
+  // possible the original references could have been passed to other
+  // functions, and we can't update those references from here.
+  // right now, that isn't the case though.
+  isInitialized = deferred.promise;
+  resolveInitialization = deferred.resolve;
+  rejectInitialization = deferred.reject;
+
+  try {
+    if (!backup) {
+      // if we don't have a backup we need to make sure we clear the state
+      // from the database, and then reinitialize the background script
+      // with the first time state.
+      await persistenceManager.reset();
+    }
+    await initBackground(backup);
+  } finally {
+    // always reload the UI because if `initBackground` worked, the UI
+    // will redirect to the login screen, and if it didn't work, it'll
+    // show them a new error message (which could be the same as the
+    // vault error that sent them here in the first place, but hopefully
+    // not!)
+    tryPostMessage(port, {
+      data: {
+        method: 'RELOAD',
+      },
+    });
+  }
+}
+
+/**
+ * Attempts to post a `message` to the given `port` via `port.postMessage`. If
+ * the postMessage call fails due to an exception it will ignore it by catching
+ * and then logging it.
+ *
+ * @param {chrome.runtime.Port} port - The port to post the message to.
+ * @param {any} message - The message to post.
+ */
+function tryPostMessage(port, message) {
+  try {
+    port.postMessage(message);
+    return true;
+  } catch (e) {
+    // an exception can occur here if the Window has since disconnected from
+    // the background, this might be expected, for example, if the UI is closed
+    // while we are still initializing the background (like during a call to
+    // `await isInitialized;`)
+    log.error('MetaMask - Failed to message to port', e, message);
+    return false;
+  }
+}
+
 // These are set after initialization
 /**
  * Connects a WindowPostMessage Port to the MetaMask controller.
@@ -435,32 +502,49 @@ browser.runtime.onConnect.addListener(async (...args) => {
   } catch (error) {
     sentry?.captureException(error);
 
-    // if have a STATE_CORRUPTION_ERROR tell the user about it and offer to
+    const port = args[0];
+
+    // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
     // restore from a backup, if we have one.
     if (KNOWN_STATE_CORRUPTION_ERRORS.has(error.message)) {
-      const _state = await localStore.get().catch((_) => null);
+      /**
+       * @type {Backup | null}
+       */
+      const backup =
+        // a STATE_CORRUPTION_ERROR may have a `backup` property already on it,
+        // if it does, we can use it without reading from the DB again.
+        error.backup ||
+        (await persistenceManager.getBackup().catch((_) => {
+          // ignore errors here since we're already in an error state, we we
+          // really only care about the error that got us here.
+          return null;
+        }));
 
-      const port = args[0];
-      try {
-        // send the `error` TO THE ui
-        port.postMessage({
-          data: {
-            method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-            params: {
-              error: {
-                message: error.message,
-                name: error.name,
-                stack: error.stack,
-              },
-              currentLocale: _state?.data?.PreferencesController?.currentLocale,
+      // send the `error` to the ui
+      const sent = tryPostMessage(port, {
+        data: {
+          method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+          params: {
+            error: {
+              message: error.message,
+              name: error.name,
+              stack: error.stack,
             },
+            currentLocale: backup?.PreferencesController?.currentLocale,
+            // it is not worth claiming we have a backup if the vault doesn't
+            // actually exist
+            hasBackup: Boolean(backup?.KeyringController?.vault),
           },
+        },
+      });
+      if (sent) {
+        port.onMessage.addListener(async function restoreVaultListener(
+          message,
+        ) {
+          if (message?.data?.method === METHOD_RESTORE_DATABASE_FROM_BACKUP) {
+            await restoreDatabaseFromBackup(port, backup);
+          }
         });
-      } catch (e) {
-        // an exception can occur here if the Window has since disconnected from
-        // the background, this is expected if the UI is closed while we are
-        // still initializing the background (during `await isInitialized;`)
-        log.error('MetaMask - Failed to send state corruption error', e);
       }
     }
   }
@@ -530,12 +614,13 @@ function saveTimestamp() {
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
+ * @param {Backup | null} backup
  * @returns {Promise} Setup complete.
  */
-async function initialize() {
+async function initialize(backup) {
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
-  const initData = await loadStateFromPersistence();
+  const initData = await loadStateFromPersistence(backup);
 
   const initState = initData.data;
   const initLangCode = await getFirstPreferredLangCode();
@@ -685,9 +770,10 @@ async function loadPhishingWarningPage() {
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  *
+ * @param {object | null} backup
  * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
  */
-export async function loadStateFromPersistence() {
+export async function loadStateFromPersistence(backup) {
   if (process.env.WITH_STATE) {
     const stateOverrides = await generateWalletState();
     firstTimeState = { ...firstTimeState, ...stateOverrides };
@@ -695,7 +781,8 @@ export async function loadStateFromPersistence() {
 
   // read from disk
   // first from preferred, async API:
-  let preMigrationVersionedData = await persistenceManager.get();
+  const validateVault = !backup;
+  let preMigrationVersionedData = await persistenceManager.get(validateVault);
 
   const migrator = new Migrator({
     migrations,
@@ -717,6 +804,18 @@ export async function loadStateFromPersistence() {
 
   if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
     preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
+  }
+
+  if (backup) {
+    if (!preMigrationVersionedData?.data) {
+      preMigrationVersionedData.data = {};
+    }
+    for (const key in backup) {
+      // if the backup has a key that is not in the current state, add it
+      if (!(key in preMigrationVersionedData.data)) {
+        preMigrationVersionedData.data[key] = backup[key];
+      }
+    }
   }
 
   // migrate data
@@ -1426,10 +1525,14 @@ function setupSentryGetStateGlobal(store) {
   };
 }
 
-async function initBackground() {
+/**
+ *
+ * @param {Backup | null} backup
+ */
+async function initBackground(backup) {
   onNavigateToTab();
   try {
-    await initialize();
+    await initialize(backup);
     if (process.env.IN_TEST) {
       // Send message to offscreen document
       if (browser.offscreen) {
@@ -1451,5 +1554,5 @@ async function initBackground() {
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
-  initBackground();
+  initBackground(null);
 }
