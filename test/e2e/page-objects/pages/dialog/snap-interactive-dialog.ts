@@ -67,7 +67,7 @@ class SnapInteractiveDialog {
   }
 
   async selectRadioOption(option: string) {
-    console.log(`Select radio option`);
+    console.log(`Selecting radio option: "${option}"`);
     await this.driver.clickElement({ text: option, tag: `label` });
   }
 
