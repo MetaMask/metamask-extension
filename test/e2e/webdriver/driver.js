@@ -1076,6 +1076,7 @@ class Driver {
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
     const start = Date.now();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31993
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const handles = await this.getAllWindowHandles();

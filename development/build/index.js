@@ -33,7 +33,20 @@ const {
 } = require('./utils');
 const { getConfig } = require('./config');
 
-/* eslint-disable no-constant-condition, node/global-require */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+/* eslint-disable node/global-require */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31993
+// eslint-disable-next-line no-constant-condition
 if (false) {
   // Packages required dynamically via browserify/eslint configuration in
   // dependencies. This is a workaround for LavaMoat's static analyzer used in

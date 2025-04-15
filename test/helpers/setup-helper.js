@@ -1,3 +1,24 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+/* eslint-disable node/global-require */
 /* eslint-disable-next-line */
 import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';

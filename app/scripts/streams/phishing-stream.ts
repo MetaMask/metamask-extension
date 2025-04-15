@@ -217,8 +217,9 @@ export function redirectToPhishingWarning(): void {
   const querystring = new URLSearchParams({ hostname, href });
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31888
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-  // eslint-disable-next-line no-restricted-globals, @typescript-eslint/restrict-template-expressions
+  // eslint-disable-next-line no-restricted-globals
   window.location.href = `${baseUrl}#${querystring}`;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31993
   // eslint-disable-next-line no-constant-condition
   while (1) {
     console.log(

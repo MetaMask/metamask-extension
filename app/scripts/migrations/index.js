@@ -1,3 +1,15 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+/* eslint-disable node/global-require */
 // Migrations must start at version 1 or later.
 // They are objects with a `version` number
 // and a `migrate` function.

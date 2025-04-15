@@ -1,3 +1,15 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31978
+/* eslint-disable node/global-require */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31980
 // eslint-disable-next-line n/no-sync
 const { readFileSync } = require('node:fs');

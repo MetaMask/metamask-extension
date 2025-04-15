@@ -223,6 +223,7 @@ async function findConfirmationBySecurityAlertId(
 ) {
   const isSignatureRequest = SIGNING_METHODS.includes(method);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31993
   // eslint-disable-next-line no-constant-condition
   while (true) {
     let confirmation;
