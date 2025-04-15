@@ -902,7 +902,6 @@ export const ImportTokensModal = ({ onClose }) => {
                           paddingRight={4}
                           size={Size.LG}
                           label={t('tokenContractAddress')}
-                          placeholder={t('enterTokenContractAddress')}
                           value={customAddress}
                           onChange={(e) => {
                             if (selectedNetworkForCustomImport) {
