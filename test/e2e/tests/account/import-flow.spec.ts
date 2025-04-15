@@ -10,7 +10,7 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 
 describe('Import flow', function () {
-  it.only('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
+  it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
