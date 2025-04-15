@@ -2,26 +2,25 @@ import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
-import { ModalOverlay, ModalContent, Modal } from '../../component-library';
-import { CreateSolanaAccountModal } from '../../multichain/create-solana-account-modal';
-
-import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  ModalComponent,
-  ModalHeaderProps,
   ModalBodyProps,
+  ModalComponent,
   ModalFooterProps,
+  ModalHeaderProps,
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
 import { updateViewedNotifications } from '../../../store/actions';
+import { Modal, ModalContent, ModalOverlay } from '../../component-library';
+import { CreateSolanaAccountModal } from '../../multichain/create-solana-account-modal';
 import { getTranslatedUINotifications } from './notifications';
 
 type WhatsNewModalProps = {
@@ -48,7 +47,7 @@ type NotificationType = {
 type RenderNotificationProps = {
   notification: NotificationType;
   onClose: () => void;
-  onNotificationViewed: (id: number) => void;
+  onNotificationViewed: (id: number) => Promise<void>;
   onCreateSolanaAccount: () => void;
 };
 
@@ -60,8 +59,8 @@ const renderNotification = ({
 }: RenderNotificationProps) => {
   const { id, title, image, modal } = notification;
 
-  const handleNotificationClose = () => {
-    onNotificationViewed(id);
+  const handleNotificationClose = async () => {
+    await onNotificationViewed(id);
     onClose();
   };
 
@@ -95,15 +94,14 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
 
   const notifications = useSelector(getSortedAnnouncementsToShow);
 
-  const handleNotificationViewed = (id: number) => {
-    updateViewedNotifications({ [id]: true });
+  const handleNotificationViewed = async (id: number) => {
+    await updateViewedNotifications({ [id]: true });
   };
 
-  const handleModalClose = () => {
-    notifications.forEach(({ id }) => {
-      handleNotificationViewed(id);
-    });
-
+  const handleModalClose = async () => {
+    await Promise.all(
+      notifications.map(({ id }) => handleNotificationViewed(id)),
+    );
     trackEvent({
       category: MetaMetricsEventCategory.Home,
       event: MetaMetricsEventName.WhatsNewViewed,
@@ -118,7 +116,7 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
   return (
     <>
       <Modal
-        onClose={() => null}
+        onClose={handleModalClose}
         data-testid="whats-new-modal"
         isOpen={notifications.length > 0 && !showCreateSolanaAccountModal}
         isClosedOnOutsideClick

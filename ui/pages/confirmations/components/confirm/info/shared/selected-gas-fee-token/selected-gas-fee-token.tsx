@@ -53,6 +53,7 @@ export function SelectedGasFeeToken() {
         <GasFeeTokenModal onClose={() => setIsModalOpen(false)} />
       )}
       <Box
+        data-testid="selected-gas-fee-token"
         onClick={handleClick}
         backgroundColor={BackgroundColor.backgroundAlternative}
         borderRadius={BorderRadius.pill}
