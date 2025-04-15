@@ -40,9 +40,7 @@ import {
   REMOTE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
-import {
-  InternalAccountWithBalance,
-} from '../../../../selectors/selectors.types';
+import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import {
   getSelectedInternalAccount,
   getMetaMaskAccountsOrdered,
@@ -72,7 +70,8 @@ export default function RemoteModeSetupDailyAllowance() {
   const [dailyLimit, setDailyLimit] = useState<string>('');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
-  const [selectedAccount, setSelectedAccount] = useState<InternalAccount | null>(null);
+  const [selectedAccount, setSelectedAccount] =
+    useState<InternalAccount | null>(null);
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -160,7 +159,7 @@ export default function RemoteModeSetupDailyAllowance() {
                   onClick: (account: InternalAccount) => {
                     setSelectedAccount(account);
                     setIsModalOpen(false);
-                  }
+                  },
                 }}
               />
             )}
