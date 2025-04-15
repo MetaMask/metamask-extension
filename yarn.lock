@@ -18138,7 +18138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^3.2.5":
+"dompurify@npm:3.2.5":
   version: 3.2.5
   resolution: "dompurify@npm:3.2.5"
   dependencies:
@@ -18147,6 +18147,18 @@ __metadata:
     "@types/trusted-types":
       optional: true
   checksum: 10/03974f18851fb4e447d26adc0ebf7a64b6c5b4a11caebebec3e04de8fcaa19cdb67bf3575a2335727123d0fc1c2febc1bc992a84f327a8ce65a0bfd11e3afc50
+  languageName: node
+  linkType: hard
+
+"dompurify@patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch":
+  version: 3.2.5
+  resolution: "dompurify@patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch::version=3.2.5&hash=ea78bd"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.7"
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 10/40dafddc09171ee92af898c6d7df81f3486f2ab15275592427fe105f7afa230b92973891ee41935fb5565cca6b50b67d86b85e4a3dd0486e1738736efaf3d77c
   languageName: node
   linkType: hard
 
@@ -27588,7 +27600,7 @@ __metadata:
     del: "npm:^6.1.1"
     depcheck: "npm:^1.4.3"
     detect-port: "npm:^1.5.1"
-    dompurify: "npm:^3.2.5"
+    dompurify: "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch"
     dotenv: "npm:^16.4.5"
     duplexify: "npm:^4.1.1"
     eslint: "patch:eslint@npm%3A8.57.0#~/.yarn/patches/eslint-npm-8.57.0-4286e12a3a.patch"
