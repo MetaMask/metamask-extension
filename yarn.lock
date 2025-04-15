@@ -5157,16 +5157,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-controller@npm:@metamask-previews/delegation-controller@0.1.0-preview-c67b57f2":
-  version: 0.1.0-preview-c67b57f2
-  resolution: "@metamask-previews/delegation-controller@npm:0.1.0-preview-c67b57f2"
+"@metamask/delegation-controller@npm:@metamask-previews/delegation-controller@0.1.0-preview-c555b24d":
+  version: 0.1.0-preview-c555b24d
+  resolution: "@metamask-previews/delegation-controller@npm:0.1.0-preview-c555b24d"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-controller": "npm:^21.0.2"
     "@metamask/utils": "npm:^11.2.0"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
-  checksum: 10/24b37aedacf0ccff38ef653bedab0abb6766541bf25a395faec7ce2c1672ad57dd1aec3ea3896f947ddaa00a4cd59586c377337bb5f3784a68e92f6226584b95
+  checksum: 10/e3decff29963c1270fd830f345937fc3a2f87d1135fa1387909542e50acbbbe606fc8eeea5a2bc03ca008d285cfc7561f0db83e2c6d0c4016c7ebb8624ce0305
   languageName: node
   linkType: hard
 
