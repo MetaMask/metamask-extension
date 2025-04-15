@@ -57,6 +57,8 @@ class LatticeKeyringOffscreen extends LatticeKeyring {
               reject(response.error);
             }
 
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31991
+            // eslint-disable-next-line promise/no-multiple-resolved
             resolve(response.result);
           },
         );
