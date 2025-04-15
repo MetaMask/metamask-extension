@@ -938,17 +938,20 @@ export function getTargetAccount(state, targetAddress) {
   return accounts[targetAddress];
 }
 
-export const getTokenExchangeRates = (state) => {
-  const chainId = getCurrentChainId(state);
-  const contractMarketData = state.metamask.marketData?.[chainId] ?? {};
-  return Object.entries(contractMarketData).reduce(
-    (acc, [address, marketData]) => {
-      acc[address] = marketData?.price ?? null;
-      return acc;
-    },
-    {},
-  );
-};
+export const getTokenExchangeRates = createSelector(
+  (state) => getCurrentChainId(state),
+  (state) => state.metamask.marketData,
+  (chainId, marketData) => {
+    const contractMarketData = marketData?.[chainId] ?? {};
+    return Object.entries(contractMarketData).reduce(
+      (acc, [address, tokenData]) => {
+        acc[address] = tokenData?.price ?? null;
+        return acc;
+      },
+      {},
+    );
+  },
+);
 
 export const getCrossChainTokenExchangeRates = (state) => {
   const contractMarketData = state.metamask.marketData ?? {};
