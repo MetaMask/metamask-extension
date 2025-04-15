@@ -43,13 +43,13 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getSelectedAccountMultichainTransactions,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors/multichain';
+///: END:ONLY_INCLUDE_IF
 import {
   getIsEvmMultichainNetworkSelected,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -509,6 +509,8 @@ export default function TransactionList({
   const multichainNetwork = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );
+  // We still need this data type which is not compatible with non EVM
+  // testnets because of how the previous multichain network selectors work
   // TODO: refactor getMultichainAccountUrl to not rely on legacy data types
   const accountConfigForBlockExplorerLink = useMultichainSelector(
     getMultichainNetwork,
