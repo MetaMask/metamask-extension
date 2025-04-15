@@ -692,48 +692,13 @@ exports[`NameDetails renders with recognized name 1`] = `
                 class="name name__recognized_unsaved"
               >
                 <div
-                  class=""
+                  class="identicon"
+                  style="height: 16px; width: 16px; border-radius: 8px;"
                 >
-                  <div
-                    class="identicon"
-                    style="height: 16px; width: 16px; border-radius: 8px;"
-                  >
-                    <div
-                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(3, 82, 94);"
-                    >
-                      <svg
-                        height="16"
-                        width="16"
-                        x="0"
-                        y="0"
-                      >
-                        <rect
-                          fill="#F5C000"
-                          height="16"
-                          transform="translate(1.6695934255664566 -1.8063309104606964) rotate(439.0 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#2369E1"
-                          height="16"
-                          transform="translate(2.5174423326839017 8.347530486970694) rotate(166.1 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                        <rect
-                          fill="#FB1864"
-                          height="16"
-                          transform="translate(-12.211473117536537 6.428761618147152) rotate(254.1 8 8)"
-                          width="16"
-                          x="0"
-                          y="0"
-                        />
-                      </svg>
-                    </div>
-                  </div>
+                  <img
+                    src="https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png"
+                    style="width: 100%;"
+                  />
                 </div>
                 <p
                   class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"

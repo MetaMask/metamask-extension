@@ -311,9 +311,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         allDetectedTokens: {},
         allIgnoredTokens: {},
         allTokens: {},
-        detectedTokens: [],
-        ignoredTokens: [],
-        tokens: [],
       },
       TransactionController: {
         transactions: {},
