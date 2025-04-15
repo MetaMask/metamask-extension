@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { rpcErrors, serializeError } from '@metamask/rpc-errors';
+import { JsonRpcError, serializeError } from '@metamask/rpc-errors';
 import {
   Box,
   Button,
@@ -26,6 +26,7 @@ import {
 } from '../../../../../../store/actions';
 import { useConfirmContext } from '../../../../context/confirm';
 import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
+import { EIP5792ErrorCode } from '../../../../../../../shared/constants/transaction';
 
 export function UpgradeCancelModal({
   isOpen,
@@ -43,7 +44,11 @@ export function UpgradeCancelModal({
   const chainId = currentConfirmation?.chainId as string;
 
   const handleRejectUpgrade = useCallback(async () => {
-    const error = rpcErrors.methodNotSupported('User rejected account upgrade');
+    const error = new JsonRpcError(
+      EIP5792ErrorCode.RejectedUpgrade,
+      'User rejected account upgrade',
+    );
+
     const serializedError = serializeError(error);
 
     await disableAccountUpgradeForChain(chainId);

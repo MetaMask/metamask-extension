@@ -5271,9 +5271,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:16.0.0"
+"@metamask/eth-json-rpc-middleware@npm:^17.0.0":
+  version: 17.0.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:17.0.0"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^11.0.4"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
@@ -5287,7 +5287,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/fc6e11dd8855262b3a3c42c2629e4ce7f020a640ab2e26b989c84b674bceb044d5613e91ac6e3d9a6511c9f4e4286552a5414f9f28b1c60877a825dfddb063a7
+  checksum: 10/dfba51cd38e448858d58f70967edc7414e1335cc78bd7503ba4179b56f22f1114e6715a8cec8fdef17efbba34ffde556ad775858e4de8f7b805d65f9653629d7
   languageName: node
   linkType: hard
 
@@ -6568,10 +6568,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:9.2.0":
-  version: 9.2.0
-  resolution: "@metamask/test-dapp@npm:9.2.0"
-  checksum: 10/616ba794bd67a075de5c4cfd3f3e03745e256fa0d56cbfc894474187b4643e050fa38a1dbf26fdb81826a68a7df98fbdeabce928fa827b01f203aeb09e403647
+"@metamask/test-dapp@npm:9.3.0":
+  version: 9.3.0
+  resolution: "@metamask/test-dapp@npm:9.3.0"
+  checksum: 10/55498fe890c6ba35892163d6a256fe739d13ccf125505ccab50817978cc8debea9401693ba92e0dd185ccb66dfa1427cd2032ee878be98f30e9b10f7c7703a4f
   languageName: node
   linkType: hard
 
@@ -6613,7 +6613,7 @@ __metadata:
 
 "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A52.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.3.0-56fc57fbe6.patch":
   version: 52.3.0
-  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A52.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.3.0-56fc57fbe6.patch::version=52.3.0&hash=731749"
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A52.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.3.0-56fc57fbe6.patch::version=52.3.0&hash=27286a"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6643,7 +6643,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/36a3a88b708817193493d7ddddf8a0036bd2071446b3a6a8a87b712fc96a57f109d8b111861f9ec785a546006a39b11cbdfdfefa6798f43d41862b31b7bbe252
+  checksum: 10/85c497e835107472ded14bf5a1d6b74c8e38f6d9deeacf57e61b2231bf811da3d489c05becfd5ca4e8b0fc99c1c3448b659251dd42e700765cd815d331cc0a86
   languageName: node
   linkType: hard
 
@@ -27312,7 +27312,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^16.0.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^11.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
@@ -27369,7 +27369,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^9.1.0"
     "@metamask/solana-wallet-snap": "npm:^1.15.1"
     "@metamask/test-bundler": "npm:^1.0.0"
-    "@metamask/test-dapp": "npm:9.2.0"
+    "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
     "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A52.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.3.0-56fc57fbe6.patch"
     "@metamask/user-operation-controller": "npm:^24.0.1"

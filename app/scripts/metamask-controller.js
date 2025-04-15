@@ -2104,6 +2104,9 @@ export default class MetamaskController extends EventEmitter {
             this.preferencesController.getDisabledAccountUpgradeChains.bind(
               this.preferencesController,
             ),
+          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+            this.txController,
+          ),
           validateSecurity: (securityAlertId, request, chainId) =>
             validateRequestWithPPOM({
               chainId,
@@ -2118,13 +2121,13 @@ export default class MetamaskController extends EventEmitter {
       ),
       getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
       getCapabilities: getCapabilities.bind(null, {
-        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
-          this.txController,
-        ),
         getDisabledAccountUpgradeChains:
           this.preferencesController.getDisabledAccountUpgradeChains.bind(
             this.preferencesController,
           ),
+        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+          this.txController,
+        ),
       }),
     });
 
