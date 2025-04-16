@@ -10,6 +10,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('BTC Experimental Settings', function (this: Suite) {
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('will show `Add a new Bitcoin account (Beta)` option when setting is enabled', async function () {
     await withFixtures(
       {

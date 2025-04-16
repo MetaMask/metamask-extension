@@ -288,9 +288,6 @@ export const SENTRY_BACKGROUND_STATE = {
     rates: true,
     cryptocurrencies: true,
   },
-  QueuedRequestController: {
-    queuedRequestCount: true,
-  },
   SelectedNetworkController: { domains: false },
   SignatureController: {
     unapprovedPersonalMsgCount: true,
@@ -362,7 +359,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   TokenListController: {
     preventPollingOnNetworkRestart: true,
-    tokenList: false,
     tokensChainsCache: {
       [AllProperties]: false,
     },
@@ -383,9 +379,6 @@ export const SENTRY_BACKGROUND_STATE = {
     allTokens: {
       [AllProperties]: false,
     },
-    detectedTokens: false,
-    ignoredTokens: false,
-    tokens: false,
   },
   TransactionController: {
     transactions: false,
@@ -401,6 +394,7 @@ export const SENTRY_BACKGROUND_STATE = {
   UserStorageController: {
     isProfileSyncingEnabled: true,
     isProfileSyncingUpdateLoading: false,
+    isAccountSyncingEnabled: true,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
   },
