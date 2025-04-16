@@ -4,7 +4,10 @@ import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
+import {
+  selectBridgeHistoryForAccount,
+  selectBridgeHistoryForApprovalTxId,
+} from '../../../ducks/bridge-status/selectors';
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,
  * including the source (from) and destination (to) token type (ETH, DAI, etc..)
@@ -16,14 +19,24 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
   const chainId = useSelector(getCurrentChainId);
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
 
-  const bridgeHistoryItem: BridgeHistoryItem | undefined =
+  // If the primary transaction is a bridge transaction, use the bridge history item for the primary transaction id
+  // Otherwise, assume that the primary transaction is an approval transaction and use the bridge history item that has the approvalTxId
+  const bridgeHistoryItemForPrimaryTxId: BridgeHistoryItem | undefined =
     bridgeHistory[primaryTransaction.id];
+  const bridgeHistoryItemWithApprovalTxId = useSelector((state) =>
+    selectBridgeHistoryForApprovalTxId(state, primaryTransaction.id),
+  );
+  const bridgeHistoryItem: BridgeHistoryItem | undefined =
+    bridgeHistoryItemForPrimaryTxId ?? bridgeHistoryItemWithApprovalTxId;
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(
-    primaryTransaction.sourceTokenAddress,
-    bridgeHistoryItem?.pricingData?.amountSent,
-    primaryTransaction.sourceTokenSymbol,
+    primaryTransaction.sourceTokenAddress ??
+      bridgeHistoryItem?.quote.srcAsset.address,
+    primaryTransaction.sourceTokenAmount ??
+      bridgeHistoryItem?.pricingData?.amountSent,
+    primaryTransaction.sourceTokenSymbol ??
+      bridgeHistoryItem?.quote.srcAsset.symbol,
     {},
     true,
     chainId,
@@ -32,7 +45,11 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
   return {
     category: TransactionGroupCategory.bridge,
     displayCurrencyAmount,
-    sourceTokenSymbol: primaryTransaction.sourceTokenSymbol,
-    sourceTokenAmountSent: bridgeHistoryItem?.pricingData?.amountSent,
+    sourceTokenSymbol:
+      primaryTransaction.sourceTokenSymbol ??
+      bridgeHistoryItem?.quote.srcAsset.symbol,
+    sourceTokenAmountSent:
+      primaryTransaction.sourceTokenAmount ??
+      bridgeHistoryItem?.pricingData?.amountSent,
   };
 }
