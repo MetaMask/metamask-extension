@@ -98,7 +98,7 @@ describe('useUpdateSwapsState', () => {
     );
 
     expect(mockDispatch).toHaveBeenCalledWith(
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setSwapsTokens(['token1', 'token2'] as any),
     );
@@ -138,7 +138,7 @@ describe('useUpdateSwapsState', () => {
     );
 
     expect(mockDispatch).toHaveBeenCalledWith(
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setSwapsTokens(['token1', 'token2'] as any),
     );

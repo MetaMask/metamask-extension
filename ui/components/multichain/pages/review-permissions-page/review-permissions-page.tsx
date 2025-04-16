@@ -94,6 +94,7 @@ export const ReviewPermissions = () => {
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,

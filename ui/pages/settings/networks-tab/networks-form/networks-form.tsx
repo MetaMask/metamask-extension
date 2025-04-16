@@ -386,6 +386,7 @@ export const NetworksForm = ({
               </>
             )
           }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
             setName(e.target?.value);
@@ -553,6 +554,7 @@ export const NetworksForm = ({
               </Text>
             ) : null
           }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
             setTicker(e.target?.value);
