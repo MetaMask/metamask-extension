@@ -17,7 +17,7 @@ async function main() {
   const github = new Octokit({ auth: env.GITHUB_TOKEN });
 
   const job = await retry(async () => {
-    const jobs = await github.paginate(
+    const jobs = github.paginate.iterator(
       github.rest.actions.listJobsForWorkflowRunAttempt,
       {
         owner: env.OWNER,
@@ -27,11 +27,11 @@ async function main() {
         per_page: 100,
       },
     );
-    const job = jobs.find((job) => job.name.endsWith(env.JOB_NAME));
-    if (!job) {
-      throw new Error(`Job with name '${env.JOB_NAME}' not found`);
+    for await (const response of jobs) {
+      const job = response.data.find((job) => job.name.endsWith(env.JOB_NAME));
+      if (job) return job;
     }
-    return job;
+    throw new Error(`Job with name '${env.JOB_NAME}' not found`);
   });
 
   console.log(`The job id for '${env.JOB_NAME}' is '${job.id}'`);
