@@ -141,7 +141,7 @@ describe('EthOverview', () => {
         },
       ],
       balances: {},
-      isEvmSelected: false,
+      isEvmSelected: true,
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
