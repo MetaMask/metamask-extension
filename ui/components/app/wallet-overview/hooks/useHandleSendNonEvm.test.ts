@@ -244,7 +244,7 @@ describe('useHandleSendNonEvm', () => {
               ...mockState.metamask.multichainNetworkConfigurationsByChainId,
               [SolScope.Mainnet]: {
                 chainId: SolScope.Mainnet,
-                name: 'Solana Mainnet',
+                name: 'Solana',
                 // Intentionally omit attribute to force error
                 // nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
                 isEvm: false,
