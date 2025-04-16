@@ -109,6 +109,8 @@ function transformState(state: Record<string, unknown>) {
         `typeof state.NetworkController.providerConfig.id is ${typeof state
           .NetworkController.providerConfig
           .id} and state.NetworkController.providerConfig.type is ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           state.NetworkController.providerConfig.type
         }`,
       ),

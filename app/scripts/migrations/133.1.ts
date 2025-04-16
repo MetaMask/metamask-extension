@@ -92,6 +92,8 @@ function transformState(state: Record<string, unknown>): void {
           hasProperty(token, 'address')
         ) {
           global.sentry?.captureMessage(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `Migration ${version}: Removed token with decimals === null in tokens. Address: ${token.address}`,
           );
           return false;
@@ -121,6 +123,8 @@ function transformState(state: Record<string, unknown>): void {
           hasProperty(token, 'address')
         ) {
           global.sentry?.captureMessage(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `Migration ${version}: Removed token with decimals === null in detectedTokens. Address: ${token.address}`,
           );
           return false;
@@ -164,6 +168,8 @@ function transformTokenCollection(
               hasProperty(token, 'address')
             ) {
               global.sentry?.captureMessage(
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 `Migration ${version}: Removed token with decimals === null in ${propertyName}. Address: ${token.address}`,
               );
               return false; // Exclude token

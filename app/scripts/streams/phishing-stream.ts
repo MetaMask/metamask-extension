@@ -146,6 +146,8 @@ const onDisconnectDestroyPhishingStreams = (): void => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.warn(`${err} Resetting the phishing streams.`);
     setTimeout(setupPhishingExtStreams, 1000);
   }
@@ -185,6 +187,8 @@ export function redirectToPhishingWarning(): void {
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
 
   const querystring = new URLSearchParams({ hostname, href });
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   window.location.href = `${baseUrl}#${querystring}`;
   // eslint-disable-next-line no-constant-condition
   while (1) {

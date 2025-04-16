@@ -145,6 +145,8 @@ function removeObsoleteNetworkControllerState(
         !validNetworkConfigurationIds.includes(providerConfig.id)
       ) {
         log.warn(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `Migration ${version}: Removing invalid provider id ${providerConfig.id}`,
         );
         delete providerConfig.id;
