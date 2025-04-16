@@ -560,7 +560,11 @@ describe('AppStateController', () => {
         );
         controller.setLastActiveTime();
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(extensionMock.alarms.clear).toHaveBeenCalled();
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(extensionMock.alarms.onAlarm.addListener).toHaveBeenCalled();
       });
     });

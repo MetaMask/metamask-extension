@@ -163,7 +163,11 @@ describe('AccountIdentitiesPetnamesBridge', () => {
       [],
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(nameController.setName).toHaveBeenCalledTimes(1);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(nameController.setName).toHaveBeenCalledWith(
       createAccountIdentityPetnameEntry(ADDRESS_MOCK, NAME_MOCK),
     );
@@ -197,7 +201,11 @@ describe('AccountIdentitiesPetnamesBridge', () => {
       [],
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(nameController.setName).toHaveBeenCalledTimes(1);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(nameController.setName).toHaveBeenCalledWith(
       createAccountIdentityPetnameEntry(ADDRESS_MOCK, UPDATED_NAME),
     );

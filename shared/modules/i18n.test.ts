@@ -59,7 +59,11 @@ describe('I18N Module', () => {
               ),
             ).toBeNull();
 
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(log.warn).toHaveBeenCalledTimes(1);
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(log.warn).toHaveBeenCalledWith(
               `Translator - Unable to find value of key "${keyMock}" for locale "${localeCodeMock}"`,
             );
@@ -82,7 +86,11 @@ describe('I18N Module', () => {
               ),
             ).toBeNull();
 
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(log.warn).toHaveBeenCalledTimes(1);
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(log.warn).toHaveBeenCalledWith(
               `Translator - Unable to find value of key "${keyMock}" for locale "${localeCodeMock}"`,
             );
@@ -101,7 +109,11 @@ describe('I18N Module', () => {
               ),
             ).toBeNull();
 
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(log.error).toHaveBeenCalledTimes(1);
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(log.error).toHaveBeenCalledWith(
               new Error(
                 `Unable to find value of key "${keyMock}" for locale "${FALLBACK_LOCALE}"`,
@@ -181,6 +193,8 @@ describe('I18N Module', () => {
               onErrorMock,
             );
 
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(log.error).toHaveBeenCalledTimes(1);
             expect(onErrorMock).toHaveBeenCalledTimes(1);
           });
@@ -198,7 +212,11 @@ describe('I18N Module', () => {
             ),
           ).toStrictEqual('test1 a1 test2  test3');
 
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(log.error).toHaveBeenCalledTimes(1);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(log.error).toHaveBeenCalledWith(
             new Error(
               `Insufficient number of substitutions for key "${keyMock}" with locale "${localeCodeMock}"`,
@@ -250,6 +268,8 @@ describe('I18N Module', () => {
             ),
           ).toStrictEqual('test1 a1 test2  test3');
 
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(log.error).toHaveBeenCalledTimes(1);
           expect(onErrorMock).toHaveBeenCalledTimes(1);
         });
@@ -302,7 +322,11 @@ describe('I18N Module', () => {
     it('logs if fetch fails', async () => {
       await fetchLocale(errorLocaleMock);
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(log.error).toHaveBeenCalledTimes(1);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(log.error).toHaveBeenCalledWith(
         `failed to fetch testLocaleError locale because of Error: ${errorMock}`,
       );

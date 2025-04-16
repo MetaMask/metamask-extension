@@ -156,7 +156,11 @@ describe('PPOM Utils', () => {
         },
       );
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(ppom.validateJsonRpc).toHaveBeenCalledWith(REQUEST_MOCK);
     });
 
@@ -252,7 +256,11 @@ describe('PPOM Utils', () => {
         request,
       });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
         ...request,
         params: [TRANSACTION_PARAMS_MOCK_2],
@@ -298,7 +306,11 @@ describe('PPOM Utils', () => {
           request,
         });
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
           ...request,
           params: firstTwoParams,
@@ -340,10 +352,14 @@ describe('PPOM Utils', () => {
       });
 
       expect(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         appStateController.addSignatureSecurityAlertResponse,
       ).toHaveBeenCalledTimes(1);
 
       expect(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         appStateController.addSignatureSecurityAlertResponse,
       ).toHaveBeenCalledWith(SECURITY_ALERT_RESPONSE_MOCK);
     });
@@ -374,10 +390,14 @@ describe('PPOM Utils', () => {
       });
 
       expect(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         transactionController.updateSecurityAlertResponse,
       ).toHaveBeenCalledTimes(1);
 
       expect(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         transactionController.updateSecurityAlertResponse,
       ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, SECURITY_ALERT_RESPONSE_MOCK);
     });
@@ -406,7 +426,11 @@ describe('PPOM Utils', () => {
         request,
       });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(ppomController.usePPOM).not.toHaveBeenCalled();
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(ppom.validateJsonRpc).not.toHaveBeenCalled();
 
       expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
@@ -432,6 +456,8 @@ describe('PPOM Utils', () => {
         request,
       });
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(ppomController.usePPOM).toHaveBeenCalledTimes(1);
 
       expect(validateWithSecurityAlertsAPIMock).toHaveBeenCalledTimes(1);
