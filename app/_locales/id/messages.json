@@ -1995,9 +1995,6 @@
   "existingChainId": {
     "message": "Informasi yang Anda masukkan terhubung dengan ID chain yang ada."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Untuk melihat dan mengonfirmasi permintaan terkini, Anda harus menyetujui atau menolak permintaan yang ada terlebih dahulu."
-  },
   "expandView": {
     "message": "Perluas tampilan"
   },

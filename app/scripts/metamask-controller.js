@@ -30,7 +30,7 @@ import {
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
+import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
@@ -123,11 +123,6 @@ import {
   LensNameProvider,
 } from '@metamask/name-controller';
 
-import {
-  QueuedRequestController,
-  createQueuedRequestMiddleware,
-} from '@metamask/queued-request-controller';
-
 import { UserOperationController } from '@metamask/user-operation-controller';
 import {
   BridgeController,
@@ -178,12 +173,6 @@ import {
   getPermittedAccountsForScopes,
   KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
-
-import {
-  methodsRequiringNetworkSwitch,
-  methodsThatCanSwitchNetworkWithoutApproval,
-  methodsThatShouldBeEnqueued,
-} from '../../shared/constants/methods-tags';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -435,7 +424,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
   APP_STATE_UNLOCK_CHANGE: 'AppStateController:unlockChange',
-  QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
   METAMASK_NOTIFICATIONS_LIST_UPDATED:
     'NotificationServicesController:notificationsListUpdated',
   METAMASK_NOTIFICATIONS_MARK_AS_READ:
@@ -555,15 +543,6 @@ export default class MetamaskController extends EventEmitter {
       currentAppVersion: version,
     });
 
-    // next, we will initialize the controllers
-    // controller initialization order matters
-    const clearPendingConfirmations = () => {
-      this.encryptionPublicKeyController.clearUnapproved();
-      this.decryptMessageController.clearUnapproved();
-      this.signatureController.clearUnapproved();
-      this.approvalController.clear(providerErrors.userRejectedRequest());
-    };
-
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'ApprovalController',
@@ -579,28 +558,6 @@ export default class MetamaskController extends EventEmitter {
         // Exclude Smart TX Status Page from rate limiting to allow sequential transactions
         SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
       ],
-    });
-
-    this.queuedRequestController = new QueuedRequestController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'QueuedRequestController',
-        allowedActions: [
-          'NetworkController:getState',
-          'NetworkController:setActiveNetwork',
-          'SelectedNetworkController:getNetworkClientIdForDomain',
-        ],
-        allowedEvents: ['SelectedNetworkController:stateChange'],
-      }),
-      shouldRequestSwitchNetwork: ({ method }) =>
-        methodsRequiringNetworkSwitch.includes(method),
-      canRequestSwitchNetworkWithoutApproval: ({ method }) =>
-        methodsThatCanSwitchNetworkWithoutApproval.includes(method),
-      clearPendingConfirmations,
-      showApprovalRequest: () => {
-        if (this.approvalController.getTotalApprovalCount() > 0) {
-          opts.showUserConfirmation();
-        }
-      },
     });
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -1793,12 +1750,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    // clear unapproved transactions and messages when the network will change
-    networkControllerMessenger.subscribe(
-      'NetworkController:networkWillChange',
-      clearPendingConfirmations.bind(this),
-    );
-
     // RemoteFeatureFlagController has subscription for preferences changes
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
@@ -2062,6 +2013,12 @@ export default class MetamaskController extends EventEmitter {
             this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
               this.preferencesController,
             ),
+          getDismissSmartAccountSuggestionEnabled: () =>
+            this.preferencesController.state.preferences
+              .dismissSmartAccountSuggestionEnabled,
+          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+            this.txController,
+          ),
           validateSecurity: (securityAlertId, request, chainId) =>
             validateRequestWithPPOM({
               chainId,
@@ -2071,14 +2028,22 @@ export default class MetamaskController extends EventEmitter {
               updateSecurityAlertResponse:
                 this.updateSecurityAlertResponse.bind(this),
             }),
-          getDismissSmartAccountSuggestionEnabled: () =>
-            this.preferencesController.state.preferences
-              .dismissSmartAccountSuggestionEnabled,
         },
         this.controllerMessenger,
       ),
       getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
-      getCapabilities,
+      getCapabilities: getCapabilities.bind(null, {
+        getDisabledUpgradeAccountsByChain:
+          this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
+            this.preferencesController,
+          ),
+        getDismissSmartAccountSuggestionEnabled: () =>
+          this.preferencesController.state.preferences
+            .dismissSmartAccountSuggestionEnabled,
+        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+          this.txController,
+        ),
+      }),
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -2205,7 +2170,6 @@ export default class MetamaskController extends EventEmitter {
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
         NotificationServicesController: this.notificationServicesController,
-        QueuedRequestController: this.queuedRequestController,
         NotificationServicesPushController:
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
@@ -2950,16 +2914,22 @@ export default class MetamaskController extends EventEmitter {
         for (const [origin, chains] of changedChains.entries()) {
           const currentNetworkClientIdForOrigin =
             this.selectedNetworkController.getNetworkClientIdForDomain(origin);
-          const { chainId: currentChainIdForOrigin } =
+
+          const networkConfig =
             this.networkController.getNetworkConfigurationByNetworkClientId(
               currentNetworkClientIdForOrigin,
             );
-          // if(chains.length === 0) {
-          // TODO: This particular case should also occur at the same time
-          // that eth_accounts is revoked. When eth_accounts is revoked,
-          // the networkClientId for that origin should be reset to track
-          // the globally selected network.
-          // }
+
+          // Guard clause: skip this iteration or handle the case if networkConfig is undefined.
+          if (!networkConfig) {
+            log.warn(
+              `No network configuration found for clientId: ${currentNetworkClientIdForOrigin}`,
+            );
+            continue;
+          }
+
+          const { chainId: currentChainIdForOrigin } = networkConfig;
+
           if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
             const networkClientId =
               this.networkController.findNetworkClientIdByChainId(chains[0]);
@@ -3171,6 +3141,42 @@ export default class MetamaskController extends EventEmitter {
         ) {
           this.multichainRatesController.setFiatCurrency(currentCurrency);
         }
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      `MultichainTransactionsController:transactionConfirmed`,
+      (transaction) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.TransactionFinalized,
+          category: MetaMetricsEventCategory.Transactions,
+          properties: {
+            id: transaction.id,
+            timestamp: transaction.timestamp,
+            chain_id_caip: transaction.chain,
+            status: transaction.status,
+            type: transaction.type,
+            fees: transaction.fees,
+          },
+        });
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      `MultichainTransactionsController:transactionSubmitted`,
+      (transaction) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.TransactionSubmitted,
+          category: MetaMetricsEventCategory.Transactions,
+          properties: {
+            id: transaction.id,
+            timestamp: transaction.timestamp,
+            chain_id_caip: transaction.chain,
+            status: transaction.status,
+            type: transaction.type,
+            fees: transaction.fees,
+          },
+        });
       },
     );
   }
@@ -4242,12 +4248,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // UserStorageController
-      enableProfileSyncing: userStorageController.enableProfileSyncing.bind(
-        userStorageController,
-      ),
-      disableProfileSyncing: userStorageController.disableProfileSyncing.bind(
-        userStorageController,
-      ),
+      setIsBackupAndSyncFeatureEnabled:
+        userStorageController.setIsBackupAndSyncFeatureEnabled.bind(
+          userStorageController,
+        ),
       syncInternalAccountsWithUserStorage:
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
@@ -4386,8 +4390,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const { tokenList } = this.tokenListController.state;
-    const { tokens } = this.tokensController.state;
+    const currentChainId = this.#getGlobalChainId();
+
+    const { tokensChainsCache } = this.tokenListController.state;
+    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
+    const { allTokens } = this.tokensController.state;
+
+    const tokens = allTokens?.[currentChainId]?.[userAddress] || [];
 
     const staticTokenListDetails =
       STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
@@ -4507,7 +4516,10 @@ export default class MetamaskController extends EventEmitter {
   ) {
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[chainId]?.data || {};
-    const { tokens } = this.tokensController.state;
+
+    const { allTokens } = this.tokensController.state;
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
 
     let staticTokenListDetails = {};
     if (chainId === CHAIN_IDS.MAINNET) {
@@ -4931,7 +4943,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {Provider} provider - The provider instance to use when asking the network
    */
   async getBalance(address, provider) {
-    const cached = this.accountTrackerController.state.accounts[address];
+    const accounts =
+      this.accountTrackerController.state.accountsByChainId[
+        this.#getGlobalChainId()
+      ];
+    const cached = accounts?.[address];
 
     if (cached && cached.balance) {
       return cached.balance;
@@ -5449,8 +5465,13 @@ export default class MetamaskController extends EventEmitter {
 
     const internalAccountCount = internalAccounts.length;
 
+    const accountsForCurrentChain =
+      this.accountTrackerController.state.accountsByChainId[
+        this.#getGlobalChainId()
+      ];
+
     const accountTrackerCount = Object.keys(
-      this.accountTrackerController.state.accounts || {},
+      accountsForCurrentChain || {},
     ).length;
 
     captureException(
@@ -6553,22 +6574,6 @@ export default class MetamaskController extends EventEmitter {
     // Append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
-    // Add a middleware that will switch chain on each request (as needed)
-    if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
-      const requestQueueMiddleware = createQueuedRequestMiddleware({
-        enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
-          this.queuedRequestController,
-        ),
-        shouldEnqueueRequest: (request) => {
-          return methodsThatShouldBeEnqueued.includes(request.method);
-        },
-        // This will be removed once we can actually remove useRequestQueue state
-        // i.e. unrevert https://github.com/MetaMask/core/pull/5065
-        useRequestQueue: () => true,
-      });
-      engine.push(requestQueueMiddleware);
-    }
-
     // If the origin is not in the selectedNetworkController's `domains` state
     // when the provider engine is created, the selectedNetworkController will
     // fetch the globally selected networkClient from the networkController and wrap
@@ -7104,20 +7109,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       }),
     );
-
-    // Add a middleware that will switch chain on each request (as needed)
-    const requestQueueMiddleware = createQueuedRequestMiddleware({
-      enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
-        this.queuedRequestController,
-      ),
-      // This will be removed once we can actually remove useRequestQueue state
-      // i.e. unrevert https://github.com/MetaMask/core/pull/5065
-      useRequestQueue: () => true,
-      shouldEnqueueRequest: (request) => {
-        return methodsRequiringNetworkSwitch.includes(request.method);
-      },
-    });
-    engine.push(requestQueueMiddleware);
 
     engine.push(
       createUnsupportedMethodMiddleware(
@@ -7770,7 +7761,7 @@ export default class MetamaskController extends EventEmitter {
       txParams: { from },
     } = transactionMeta;
     this.accountTrackerController.updateAccountByAddress({
-      from,
+      address: from,
       networkClientId,
     });
   }
@@ -8341,6 +8332,10 @@ export default class MetamaskController extends EventEmitter {
   _trackTransactionFailure(transactionMeta) {
     const { txReceipt } = transactionMeta;
     const metamaskState = this.getState();
+    const { allTokens } = this.tokensController.state;
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const tokens =
+      allTokens?.[transactionMeta.chainId]?.[selectedAccount.address] || [];
 
     if (!txReceipt || txReceipt.status !== '0x0') {
       return;
@@ -8353,7 +8348,8 @@ export default class MetamaskController extends EventEmitter {
         properties: {
           action: 'Transactions',
           errorMessage: transactionMeta.simulationFails?.reason,
-          numberOfTokens: metamaskState.tokens.length,
+          numberOfTokens: tokens.length,
+          // TODO: remove this once we have migrated to the new account balances state
           numberOfAccounts: Object.keys(metamaskState.accounts).length,
         },
       },

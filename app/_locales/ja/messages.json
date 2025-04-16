@@ -1995,9 +1995,6 @@
   "existingChainId": {
     "message": "入力された情報は、既存のチェーンIDと関連付けられています。"
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "一番最近の要求を表示して確定するには、はじめに既存の要求を承認または拒否する必要があります。"
-  },
   "expandView": {
     "message": "ビューを展開"
   },

@@ -4,7 +4,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
 import { withSolanaAccountSnap } from './common-solana';
 
-describe('Create Solana Account', function (this: Suite) {
+describe('Account creation', function (this: Suite) {
   it('Creates 2 Solana accounts', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },

@@ -1995,9 +1995,6 @@
   "existingChainId": {
     "message": "Die von Ihnen eingegebenen Informationen sind mit einer bestehenden Chain-ID verknüpft."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Um sich Ihre jüngste Anfrage anzeigen zu lassen und diese zu bestätigen, müssen Sie zunächst bestehende Anfragen genehmigen oder ablehnen."
-  },
   "expandView": {
     "message": "Ansicht erweitern"
   },
