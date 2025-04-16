@@ -1995,9 +1995,6 @@
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Để xem và xác nhận yêu cầu gần đây nhất của bạn, trước tiên bạn cần phải chấp thuận hoặc từ chối các yêu cầu hiện có."
-  },
   "expandView": {
     "message": "Chế độ xem mở rộng"
   },
