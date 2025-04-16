@@ -32,7 +32,7 @@ const AssetListControlBar = ({
     return (
       <ButtonBase
         className="asset-list-control-bar__button"
-        data-testid="import-nft-button"
+        data-testid="asset-list-control-bar-action-button"
         disabled={false}
         size={ButtonBaseSize.Sm}
         startIconName={IconName.MoreVertical}
@@ -48,7 +48,7 @@ const AssetListControlBar = ({
     return (
       <ButtonBase
         className="asset-list-control-bar__button"
-        data-testid="import-token-button"
+        data-testid="asset-list-control-bar-action-button"
         disabled={!shouldShowTokensLinks}
         size={ButtonBaseSize.Sm}
         startIconName={IconName.MoreVertical}

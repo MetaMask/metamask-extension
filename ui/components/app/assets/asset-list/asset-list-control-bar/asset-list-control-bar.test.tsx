@@ -42,12 +42,14 @@ describe('AssetListControlBar', () => {
 
     const { findByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <AssetListControlBar />
+        <AssetListControlBar showTokensLinks />
       </MetaMetricsContext.Provider>,
       store,
     );
 
-    const importButton = await findByTestId('import-token-button');
+    const importButton = await findByTestId(
+      'asset-list-control-bar-action-button',
+    );
     importButton.click();
 
     const refreshListItem = await findByTestId('refreshList__button');
