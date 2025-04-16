@@ -274,7 +274,6 @@
     "manageInstitutionalWallets": "boolean",
     "disabledUpgradeAccountsByChain": "object"
   },
-  "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
       "feature1": true,
@@ -345,15 +344,11 @@
   },
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
-    "tokenList": "object",
     "tokensChainsCache": { "0x539": "object" },
     "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
-    "tokens": "object",
-    "ignoredTokens": "object",
-    "detectedTokens": "object",
     "allTokens": {},
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
@@ -368,6 +363,7 @@
   "UserStorageController": {
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
+    "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
     "isAccountSyncingInProgress": "boolean"

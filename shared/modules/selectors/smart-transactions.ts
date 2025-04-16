@@ -132,6 +132,8 @@ export const getChainSupportsSmartTransactions = (
   state: NetworkState,
   chainId?: string,
 ): boolean => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = chainId || getCurrentChainId(state);
   return getAllowedSmartTransactionsChainIds().includes(effectiveChainId);
 };
@@ -140,6 +142,8 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   state: NetworkState,
   chainId?: string,
 ) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = chainId || getCurrentChainId(state);
   // Allow in non-production or if chain ID is on skip list.
   if (

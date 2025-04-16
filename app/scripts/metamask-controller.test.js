@@ -816,6 +816,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.accountTrackerController, 'state', 'get')
           .mockReturnValue({
             accounts,
+            accountsByChainId: {
+              '0x1': {
+                [TEST_ADDRESS]: { balance },
+              },
+            },
           });
 
         const gotten = await metamaskController.getBalance(TEST_ADDRESS);
@@ -836,6 +841,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.accountTrackerController, 'state', 'get')
           .mockReturnValue({
             accounts,
+            accountsByChainId: {
+              '0x1': {
+                [TEST_ADDRESS]: { balance },
+              },
+            },
           });
 
         const gotten = await metamaskController.getBalance(
@@ -2677,7 +2687,7 @@ describe('MetaMaskController', () => {
           tab: { id: 456 },
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
+          if (chunk && chunk.method) {
             cb(null, chunk);
             return;
           }
@@ -2696,13 +2706,10 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
-              data: {
-                method: 'wallet_invokeMethod',
-                params: {
-                  scope: 'eip155:1',
-                  request: message,
-                },
+              method: 'wallet_invokeMethod',
+              params: {
+                scope: 'eip155:1',
+                request: message,
               },
             },
             null,
@@ -2729,7 +2736,7 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
+          if (chunk && chunk.method) {
             cb(null, chunk);
             return;
           }
@@ -2748,13 +2755,10 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
-              data: {
-                method: 'wallet_invokeMethod',
-                params: {
-                  scope: 'eip155:1',
-                  request: message,
-                },
+              method: 'wallet_invokeMethod',
+              params: {
+                scope: 'eip155:1',
+                request: message,
               },
             },
             null,
@@ -2767,67 +2771,6 @@ describe('MetaMaskController', () => {
                   'origin',
                   'http://mycrypto.com',
                 );
-                resolve();
-              });
-            },
-          );
-        });
-        streamTest.end();
-      });
-
-      it('should only process `caip-x` CAIP formatted messages', async () => {
-        const messageSender = {
-          url: 'http://mycrypto.com',
-          tab: { id: 456 },
-        };
-        const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
-            cb(null, chunk);
-            return;
-          }
-          cb();
-        });
-
-        localMetamaskController.setupUntrustedCommunicationCaip({
-          connectionStream: streamTest,
-          sender: messageSender,
-        });
-
-        const message = {
-          jsonrpc: '2.0',
-          method: 'eth_chainId',
-        };
-        await new Promise((resolve) => {
-          streamTest.write(
-            {
-              name: 'metamask-provider',
-              data: message,
-            },
-            null,
-            () => {
-              setTimeout(() => {
-                expect(loggerMiddlewareMock.requests).toHaveLength(0);
-                resolve();
-              });
-            },
-          );
-        });
-        await new Promise((resolve) => {
-          streamTest.write(
-            {
-              type: 'caip-x',
-              data: {
-                method: 'wallet_invokeMethod',
-                params: {
-                  scope: 'eip155:1',
-                  request: message,
-                },
-              },
-            },
-            null,
-            () => {
-              setTimeout(() => {
-                expect(loggerMiddlewareMock.requests).toHaveLength(1);
                 resolve();
               });
             },
@@ -3269,8 +3212,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3302,7 +3249,7 @@ describe('MetaMaskController', () => {
 
         const tokenData = {
           decimals: 18,
-          symbol: 'FOO',
+          symbol: 'DAI',
         };
 
         await metamaskController.tokensController.addTokens([
@@ -3371,8 +3318,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3421,8 +3372,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3471,8 +3426,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3528,8 +3487,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3564,8 +3527,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+                },
+              },
             },
           };
         });

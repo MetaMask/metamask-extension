@@ -40,6 +40,8 @@ export const ButtonIcon: ButtonIconComponent = React.forwardRef(
     }: ButtonIconProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const tag = href ? 'a' : as || 'button';
     const isDisabled = disabled && tag === 'button';
     return (

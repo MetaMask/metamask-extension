@@ -15,6 +15,7 @@ import {
   type BridgeAppState as BridgeAppStateFromController,
   selectBridgeQuotes,
   selectIsQuoteExpired,
+  selectExchangeRateByChainIdAndAddress,
 } from '@metamask/bridge-controller';
 import { SolAccountType } from '@metamask/keyring-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
@@ -423,27 +424,22 @@ export const getFromAmountInCurrency = createSelector(
   getFromToken,
   getFromChain,
   _getValidatedSrcAmount,
-  getFromTokenConversionRate,
-  (
-    fromToken,
-    fromChain,
-    validatedSrcAmount,
-    {
-      valueInCurrency: fromTokenToCurrencyExchangeRate,
-      usd: fromTokenToUsdExchangeRate,
-    },
-  ) => {
+  (state) => state.metamask,
+  (fromToken, fromChain, validatedSrcAmount, metamaskState) => {
     if (fromToken?.symbol && fromChain?.chainId && validatedSrcAmount) {
-      if (fromTokenToCurrencyExchangeRate && fromTokenToUsdExchangeRate) {
-        return {
-          valueInCurrency: new BigNumber(validatedSrcAmount)
-            .mul(new BigNumber(fromTokenToCurrencyExchangeRate.toString() ?? 1))
-            .toString(),
-          usd: new BigNumber(validatedSrcAmount)
-            .mul(new BigNumber(fromTokenToUsdExchangeRate.toString() ?? 1))
-            .toString(),
-        };
-      }
+      const e = selectExchangeRateByChainIdAndAddress(
+        metamaskState,
+        fromChain.chainId,
+        fromToken.address,
+      );
+      return {
+        valueInCurrency: new BigNumber(validatedSrcAmount)
+          .mul(new BigNumber(e.exchangeRate ?? 0))
+          .toString(),
+        usd: new BigNumber(validatedSrcAmount)
+          .mul(new BigNumber(e.usdExchangeRate ?? 0))
+          .toString(),
+      };
     }
     return {
       valueInCurrency: '0',
