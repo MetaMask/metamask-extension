@@ -453,6 +453,7 @@
     "@metamask/test-bundler": "^1.0.0",
     "@metamask/test-dapp": "9.3.0",
     "@metamask/test-dapp-multichain": "^0.10.0",
+    "@metamask/test-dapp-solana": "file:../test-dapp-solana",
     "@octokit/core": "^3.6.0",
     "@open-rpc/meta-schema": "^1.14.6",
     "@open-rpc/mock-server": "^1.7.5",
