@@ -38,12 +38,7 @@ export const AccountNetwork = ({
     networkConfiguration;
   const [addressSupportSmartAccount, setAddressSupportSmartAccount] =
     useState(isSupported);
-  let networkIcon: string = '';
-  try {
-    networkIcon = getNetworkIcon(networkConfiguration);
-  } catch (err: unknown) {
-    console.log(err);
-  }
+  const networkIcon = getNetworkIcon(networkConfiguration);
   const prevHasPendingRequests = useRef<boolean>();
   const { hasPendingRequests } = useBatchAuthorizationRequests(
     address,
