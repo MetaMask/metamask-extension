@@ -236,19 +236,6 @@
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
     },
-    "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
-        "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "webpack>events": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
-      }
-    },
     "@metamask/signature-controller>@metamask/eth-sig-util>@ethereumjs/util": {
       "globals": {
         "console.warn": true
@@ -1036,12 +1023,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
@@ -1236,7 +1217,7 @@
     "@metamask/delegation-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/delegation-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/utils": true
       }
     },
@@ -1489,18 +1470,6 @@
         "@metamask/eth-sig-util>tweetnacl": true
       }
     },
-    "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util": {
-      "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
-        "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
-        "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
-        "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
-        "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
-      }
-    },
     "@metamask/signature-controller>@metamask/eth-sig-util": {
       "packages": {
         "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
@@ -1703,24 +1672,6 @@
         "@metamask/browser-passworder": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "@metamask/name-controller>async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
-    "@metamask/delegation-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/browser-passworder": true,
-        "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
-        "@metamask/delegation-controller>@metamask/keyring-controller>@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
