@@ -101,7 +101,11 @@ export type AllowedEvents = never;
  */
 export type OnboardingControllerMessenger = RestrictedMessenger<
   typeof controllerName,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   OnboardingControllerActions | AllowedActions,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   OnboardingControllerControllerEvents | AllowedEvents,
   AllowedActions['type'],
   AllowedEvents['type']

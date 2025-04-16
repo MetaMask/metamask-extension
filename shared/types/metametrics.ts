@@ -37,6 +37,8 @@ export type TransactionMetricsRequest = {
   ) => Promise<'hardware' | 'imported' | 'MetaMask'>;
   getDeviceModel: (
     address: string,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
   getHardwareTypeForMetric: (address: string) => Promise<HardwareKeyringType>;
   // According to the type GasFeeState returned from getEIP1559GasFeeEstimates

@@ -30,7 +30,8 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
     ref?: PolymorphicRef<C>,
   ) => {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
     const [uncontrolledValue, setUncontrolledValue] = useState<any | null>();
     const [isUncontrolledOpen, setIsUncontrolledOpen] =
       useState<boolean>(false);

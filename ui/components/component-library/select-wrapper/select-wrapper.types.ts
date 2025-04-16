@@ -9,7 +9,8 @@ export type SelectContextType = {
   onOpenChange: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   isUncontrolledOpen: boolean;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   setIsUncontrolledOpen: React.Dispatch<React.SetStateAction<any | null>>;
   toggleUncontrolledOpen: () => void;
   isDanger?: boolean;
@@ -17,7 +18,8 @@ export type SelectContextType = {
   isMultiSelect?: boolean;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   value: any | null;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -25,15 +27,18 @@ export type SelectContextType = {
   onValueChange?: any;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   uncontrolledValue: any | null;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   setUncontrolledValue: React.Dispatch<React.SetStateAction<any | null>>;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   defaultValue: any | null;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973

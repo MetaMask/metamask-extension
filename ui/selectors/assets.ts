@@ -248,17 +248,23 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
   (
     _state,
     _account?: InternalAccount,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     tokenAddress?: Hex | CaipAssetType | string,
   ) => tokenAddress,
   (
     _state,
     _account?: InternalAccount,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     _tokenAddress?: Hex | CaipAssetType | string,
     _chainId?: Hex | CaipChainId,
   ) => _chainId,
   (
     state,
     account?: InternalAccount,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     tokenAddress?: Hex | CaipAssetType | string,
     chainId?: Hex | CaipChainId,
   ) => {

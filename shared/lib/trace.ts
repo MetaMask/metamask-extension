@@ -134,6 +134,8 @@ export function trace(request: TraceRequest): TraceContext;
 export function trace<T>(
   request: TraceRequest,
   fn?: TraceCallback<T>,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 ): T | TraceContext {
   if (!fn) {
     return startTrace(request);

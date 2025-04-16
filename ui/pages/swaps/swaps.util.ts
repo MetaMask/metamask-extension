@@ -275,7 +275,8 @@ export async function fetchTokenPrice(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchSwapsGasPrices(chainId: any): Promise<
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   | any
   | {
       safeLow: string;

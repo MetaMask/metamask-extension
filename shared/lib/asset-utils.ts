@@ -21,6 +21,8 @@ const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
 export const toAssetId = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   address: Hex | CaipAssetType | string,
   chainId: CaipChainId,
 ): CaipAssetType | undefined => {
@@ -44,6 +46,8 @@ export const toAssetId = (
  * @returns The image url for the asset
  */
 export const getAssetImageUrl = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   assetId: CaipAssetType | string,
   chainId: CaipChainId | Hex,
 ) => {
@@ -78,6 +82,8 @@ type AssetMetadata = {
  * @returns The metadata for the token
  */
 export const fetchAssetMetadata = async (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   address: string | CaipAssetType | Hex,
   chainId: Hex | CaipChainId,
   abortSignal?: AbortSignal,

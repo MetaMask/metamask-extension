@@ -22,6 +22,8 @@ type TokenDetail = {
 function extractTokenDetailsByPrimaryType(
   message: Record<string, unknown>,
   primaryType: PrimaryType,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 ): TokenDetail[] | unknown {
   let tokenDetails;
 
@@ -62,6 +64,8 @@ const PermitSimulation: React.FC<object> = () => {
     token,
     amount,
   }: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     token: Hex | string;
     amount: number | string;
   }) => (
