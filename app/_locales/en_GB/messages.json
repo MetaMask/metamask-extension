@@ -2541,6 +2541,9 @@
   "included": {
     "message": "included"
   },
+  "includesXTransactions": {
+    "message": "Includes $1 transactions"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -6288,6 +6291,9 @@
   "transactionIdLabel": {
     "message": "Transaction ID",
     "description": "Label for the source transaction ID field."
+  },
+  "transactionIncludesTypes": {
+    "message": "This transaction includes: $1."
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
