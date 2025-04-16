@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
 import {
@@ -48,7 +48,6 @@ import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 
 export default function NftsTab() {
   const history = useHistory();
-  const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const { privacyMode } = useSelector(getPreferences);
