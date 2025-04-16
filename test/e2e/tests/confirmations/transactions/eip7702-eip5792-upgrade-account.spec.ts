@@ -33,11 +33,13 @@ describe('Upgrade Account', function (this: Suite) {
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }: { driver: Driver, localNodes: Anvil }) => {
+      async ({ driver, localNodes }: { driver: Driver; localNodes: Anvil }) => {
         await loginWithBalanceValidation(driver);
 
         // We check that we have an EOA account
-        let accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
+        let accountBytecode = await localNodes[0].getCode(
+          DEFAULT_FIXTURE_ACCOUNT,
+        );
         assert.strictEqual(accountBytecode, undefined);
 
         const testDapp = new TestDapp(driver);
@@ -80,10 +82,14 @@ describe('Upgrade Account', function (this: Suite) {
 
         // We check that we have an upgraded account
         accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
-        assert.strictEqual(accountBytecode, '0xef01008438ad1c834623cff278ab6829a248e37c2d7e3f');
+        assert.strictEqual(
+          accountBytecode,
+          '0xef01008438ad1c834623cff278ab6829a248e37c2d7e3f',
+        );
       },
     );
   });
+
   it('an EOA account is not upgraded when rejecting a batch and upgrade transaction, and cannot trigger new send calls', async function () {
     await withFixtures(
       {
@@ -104,11 +110,13 @@ describe('Upgrade Account', function (this: Suite) {
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }: { driver: Driver, localNodes: Anvil }) => {
+      async ({ driver, localNodes }: { driver: Driver; localNodes: Anvil }) => {
         await loginWithBalanceValidation(driver);
 
         // We check that we have an EOA account
-        let accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
+        let accountBytecode = await localNodes[0].getCode(
+          DEFAULT_FIXTURE_ACCOUNT,
+        );
         assert.strictEqual(accountBytecode, undefined);
 
         const testDapp = new TestDapp(driver);
@@ -130,11 +138,12 @@ describe('Upgrade Account', function (this: Suite) {
         await testDapp.clickSendCalls();
 
         await testDapp.checkEip5792SendCallsError(
-          'Error: EIP-5792 is not supported for this chain and account - Chain ID: 0x539, Account: 0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
+          'Error: EIP-7702 upgrade rejected for this chain and account - Chain ID: 0x539, Account: 0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
       },
     );
   });
+
   it('an EOA account is not upgraded when rejecting a batch transaction, but can trigger a new send call', async function () {
     await withFixtures(
       {
@@ -155,11 +164,13 @@ describe('Upgrade Account', function (this: Suite) {
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }: { driver: Driver, localNodes: Anvil }) => {
+      async ({ driver, localNodes }: { driver: Driver; localNodes: Anvil }) => {
         await loginWithBalanceValidation(driver);
 
         // We check that we have an EOA account
-        let accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
+        let accountBytecode = await localNodes[0].getCode(
+          DEFAULT_FIXTURE_ACCOUNT,
+        );
         assert.strictEqual(accountBytecode, undefined);
 
         const testDapp = new TestDapp(driver);

@@ -483,7 +483,8 @@ export function removeAccount(
 
 export function importNewAccount(
   strategy: string,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: any[],
   loadingMessage: ReactFragment,
@@ -850,7 +851,8 @@ export function updateCustomNonce(value: string) {
  */
 export function updatePreviousGasParams(
   txId: string,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   previousGasParams: Record<string, any>,
 ): ThunkAction<
@@ -1326,7 +1328,7 @@ export function removeSnap(
     dispatch(showLoadingIndication());
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const subjects = getPermissionSubjects(getState()) as {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       [k: string]: { permissions: Record<string, any> };
     };
@@ -1687,11 +1689,13 @@ export function updateMetamaskState(
       newState.addressBook?.[newProviderConfig?.chainId] ?? {};
     const oldAddressBook =
       currentState.addressBook?.[providerConfig?.chainId] ?? {};
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: newState });
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const oldAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: currentState });
@@ -2425,7 +2429,8 @@ export function setCurrentExtensionPopupId(
 
 export function abortTransactionSigning(
   transactionId: string,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -2447,7 +2452,7 @@ export function getLayer1GasFee({
   chainId?: Hex;
   networkClientId?: NetworkClientId;
   transactionParams: TransactionParams;
-}): // TODO: Replace `any` with type
+}): // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
   return async () =>
@@ -2765,7 +2770,7 @@ export function hideImportTokensModal(): Action {
   };
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ModalPayload = { name: string } & Record<string, any>;
 
@@ -2811,7 +2816,7 @@ export function showPermittedNetworkToast(): Action {
   };
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function setConfirmationExchangeRates(value: Record<string, any>) {
   return {
@@ -5465,7 +5470,8 @@ export function updateProposedNames(
     );
 
     return data;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
@@ -5475,7 +5481,8 @@ export function setName(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (async () => {
     await submitRequestToBackground<void>('setName', [request]);
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
@@ -5534,7 +5541,8 @@ export function updateInterfaceState(
   return (async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground<void>('updateInterfaceState', [id, state]);
     await forceUpdateMetamaskState(dispatch);
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
@@ -5551,7 +5559,8 @@ export function deleteInterface(
   return (async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground<void>('deleteInterface', [id]);
     await forceUpdateMetamaskState(dispatch);
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
