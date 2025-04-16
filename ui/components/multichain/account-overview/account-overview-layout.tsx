@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
-import { removeSlide } from '../../../store/actions';
+import { removeSlide, setAccountDetailsAddress } from '../../../store/actions';
 import { Carousel } from '..';
 import {
   getAppIsLoading,
+  getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
@@ -38,6 +39,7 @@ export const AccountOverviewLayout = ({
   const isLoading = useSelector(getAppIsLoading);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
+  const selectedAccount = useSelector(getSelectedAccount);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
@@ -59,6 +61,10 @@ export const AccountOverviewLayout = ({
       );
     }
     ///: END:ONLY_INCLUDE_IF
+
+    if (id === 'smartAccountUpgrade') {
+      dispatch(setAccountDetailsAddress(selectedAccount.address));
+    }
 
     trackEvent({
       event: MetaMetricsEventName.BannerSelect,

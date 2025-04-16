@@ -12,6 +12,7 @@ import {
   CARD_SLIDE,
   CASH_SLIDE,
   REMOTE_MODE_SLIDE,
+  SMART_ACCOUNT_UPGRADE_SLIDE,
   SWEEPSTAKES_SLIDE,
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
@@ -51,6 +52,7 @@ export const useCarouselManagement = ({
       undismissable: hasZeroBalance,
     };
 
+    defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     defaultSlides.push(BRIDGE_SLIDE);
     ///: END:ONLY_INCLUDE_IF
