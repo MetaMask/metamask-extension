@@ -31,7 +31,7 @@ class TestDappMultichain {
   }
 
   addCustomAccountAddressInput(i: number) {
-    return `#add-custom-address-button-${i}`;
+    return `#add-custom-caip\\ address-button-${i}`;
   }
 
   addCustomScopeButton(i: number) {
