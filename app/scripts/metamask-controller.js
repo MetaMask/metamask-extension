@@ -1927,12 +1927,8 @@ export default class MetamaskController extends EventEmitter {
           'BridgeController:getBridgeERC20Allowance',
           'GasFeeController:getState',
           'AccountsController:getAccountByAddress',
-          'PreferencesController:getState',
           'SnapController:handleRequest',
           'TransactionController:getState',
-          'TransactionController:addTransaction',
-          'TransactionController:estimateGasFee',
-          'UserOperationController:addUserOperationFromTransaction',
         ],
         allowedEvents: [],
       });
@@ -1951,7 +1947,6 @@ export default class MetamaskController extends EventEmitter {
         this.userOperationController.addUserOperationFromTransaction(...args),
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
-        smartTransactionsEnabledByDefault: DEFAULT_SMART_TRANSACTIONS_ENABLED,
       },
     });
 
