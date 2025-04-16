@@ -816,6 +816,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.accountTrackerController, 'state', 'get')
           .mockReturnValue({
             accounts,
+            accountsByChainId: {
+              '0x1': {
+                [TEST_ADDRESS]: { balance },
+              },
+            },
           });
 
         const gotten = await metamaskController.getBalance(TEST_ADDRESS);
@@ -836,6 +841,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.accountTrackerController, 'state', 'get')
           .mockReturnValue({
             accounts,
+            accountsByChainId: {
+              '0x1': {
+                [TEST_ADDRESS]: { balance },
+              },
+            },
           });
 
         const gotten = await metamaskController.getBalance(
@@ -3269,8 +3279,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3302,7 +3316,7 @@ describe('MetaMaskController', () => {
 
         const tokenData = {
           decimals: 18,
-          symbol: 'FOO',
+          symbol: 'DAI',
         };
 
         await metamaskController.tokensController.addTokens([
@@ -3371,8 +3385,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3421,8 +3439,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3471,8 +3493,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3528,8 +3554,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3564,8 +3594,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+                },
+              },
             },
           };
         });

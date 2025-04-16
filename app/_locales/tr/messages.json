@@ -1989,9 +1989,6 @@
   "existingChainId": {
     "message": "Girdiğiniz bilgiler mevcut bir zincir kimliği ile ilişkilidir."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "En son talebinizi görüntülemek ve onaylamak için önce mevcut taleplerinizi onaylamanız veya reddetmeniz gereklidir."
-  },
   "expandView": {
     "message": "Görünümü genişlet"
   },

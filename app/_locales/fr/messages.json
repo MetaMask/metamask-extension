@@ -1989,9 +1989,6 @@
   "existingChainId": {
     "message": "Les informations que vous avez saisies sont associées à un ID de chaîne existant."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Pour afficher et confirmer votre demande la plus récente, vous devez d’abord approuver ou rejeter les demandes existantes."
-  },
   "expandView": {
     "message": "Agrandir la vue"
   },
