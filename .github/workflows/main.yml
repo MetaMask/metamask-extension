@@ -259,6 +259,9 @@ jobs:
   build-beta:
     name: Build beta
     uses: ./.github/workflows/build-beta.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
     permissions:
       contents: read
       # id-token permission is required for uploading to s3
