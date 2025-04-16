@@ -319,7 +319,7 @@ export const SHAPE_DISPLAY_NAME = 'Shape';
 export const XRPLEVM_TESTNET_DISPLAY_NAME = 'XRPL EVM Testnet';
 export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
-export const SEI_DISPLAY_NAME = 'Sei Mainnet';
+export const SEI_DISPLAY_NAME = 'Sei Network';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
