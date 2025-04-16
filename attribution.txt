@@ -18014,7 +18014,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/eth-json-rpc-middleware
-16.0.0 <https://github.com/MetaMask/eth-json-rpc-middleware>
+17.0.0 <https://github.com/MetaMask/eth-json-rpc-middleware>
 ISC License
 
 Copyright (c) 2020 MetaMask
