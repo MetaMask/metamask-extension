@@ -48,7 +48,7 @@ describe(`migration #${version}`, () => {
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
 
-    it.only('updates the multichainNetworkConfigurationsByChainId to contain test networks', async () => {
+    it('updates the multichainNetworkConfigurationsByChainId to contain test networks', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
