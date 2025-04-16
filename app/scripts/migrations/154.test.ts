@@ -1,6 +1,19 @@
-import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { migrate, version } from './154';
+import { TESTNETS, migrate, version } from './154';
+
+const mockNetworks = {
+  'bip122:000000000019d6689c085ae165831e93': {
+    chainId: 'bip122:000000000019d6689c085ae165831e93',
+    name: 'Bitcoin',
+    nativeCurrency: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+    isEvm: false,
+  },
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+    chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    name: 'Solana',
+    nativeCurrency: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+    isEvm: false,
+  },
+};
 
 const oldVersion = 153;
 
@@ -53,30 +66,15 @@ describe(`migration #${version}`, () => {
         meta: { version: oldVersion },
         data: {
           MultichainNetworkController: {
-            multichainNetworkConfigurationsByChainId: {
-              [BtcScope.Mainnet]:
-                AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Mainnet],
-              [SolScope.Mainnet]:
-                AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Mainnet],
-            },
+            multichainNetworkConfigurationsByChainId: mockNetworks,
           },
         },
       };
       const expectedData = {
         MultichainNetworkController: {
           multichainNetworkConfigurationsByChainId: {
-            [BtcScope.Mainnet]:
-              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Mainnet],
-            [BtcScope.Testnet]:
-              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Testnet],
-            [BtcScope.Signet]:
-              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Signet],
-            [SolScope.Mainnet]:
-              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Mainnet],
-            [SolScope.Testnet]:
-              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Testnet],
-            [SolScope.Devnet]:
-              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Devnet],
+            ...mockNetworks,
+            ...TESTNETS,
           },
         },
       };
