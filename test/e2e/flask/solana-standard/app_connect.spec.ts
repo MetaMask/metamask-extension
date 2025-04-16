@@ -90,8 +90,8 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
   });
 
   describe('Switch account', function () {
-    describe('Given I have two accounts', function () {
-      it('Should be able to switch between them', async function () {
+    describe('Given I have connected to two accounts', function () {
+      it('Switching between them should reflect in the dapp', async function () {
         await withSolanaAccountSnap(
           {
             ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -121,6 +121,52 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
             // Check that we're connected to the first account
             const account2 = await header.getAccount();
             assert.strictEqual(account2, '4tE7...Uxer');
+          },
+        );
+      });
+    });
+
+    describe('Given I have connected to one of my two accounts', function () {
+      it.only('Switching between them should NOT reflect in the dapp', async function () {
+        await withSolanaAccountSnap(
+          {
+            ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+            title: this.test?.fullTitle(),
+            numberOfAccounts: 2,
+          },
+          async (driver) => {
+            const testDapp = new TestDappSolana(driver);
+            await testDapp.openTestDappPage();
+            await driver.delay(largeDelayMs);
+            await connectSolanaTestDapp(driver, testDapp, {
+              selectAllAccounts: false,
+            });
+
+            // Check that we're connected to the second account
+            const header = await testDapp.getHeader();
+            let account = await header.getAccount();
+            assert.strictEqual(account, 'ExTE...GNtt');
+
+            // Switch to the first account
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
+            await switchToAccount(driver, 'Solana 1');
+            await testDapp.switchTo();
+
+            // Check that we're connected to the first account
+            account = await header.getAccount();
+            assert.strictEqual(account, 'ExTE...GNtt');
+
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
+            await switchToAccount(driver, 'Solana 2');
+            await testDapp.switchTo();
+
+            // Check that we're connected to the first account
+            account = await header.getAccount();
+            assert.strictEqual(account, 'ExTE...GNtt');
           },
         );
       });
