@@ -1989,9 +1989,6 @@
   "existingChainId": {
     "message": "As informações que você inseriu estão associadas a um ID de cadeia existente."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Para visualizar e confirmar sua solicitação mais recente, primeiro é necessário aprovar ou recusar as solicitações existentes."
-  },
   "expandView": {
     "message": "Expandir exibição"
   },

@@ -2058,9 +2058,6 @@
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "To view and confirm your most recent request, you'll need to approve or reject existing requests first."
-  },
   "expandView": {
     "message": "Expand view"
   },

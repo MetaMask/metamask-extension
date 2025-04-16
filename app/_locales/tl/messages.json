@@ -1989,9 +1989,6 @@
   "existingChainId": {
     "message": "Ang impormasyon na iyong inilagay ay nauugnay sa isang umiiral na ID ng chain."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Para tingnan at kumpirmahin ang iyong pinakabagong hiling, kailangan mo munang aprubahan o tanggihan ang mga umiiral na hiling."
-  },
   "expandView": {
     "message": "I-expand ang view"
   },
