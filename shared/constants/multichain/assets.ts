@@ -30,4 +30,4 @@ export const MULTICHAIN_NETWORK_TO_ASSET_TYPES: Record<
   [MultichainNetworks.BITCOIN_TESTNET]: [
     MultichainNativeAssets.BITCOIN_TESTNET,
   ],
-};
+} as const;

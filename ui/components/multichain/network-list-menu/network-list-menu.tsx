@@ -505,8 +505,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const generateMultichainNetworkListItem = (
     network: MultichainNetworkConfiguration,
   ) => {
-    const { chainId, name } = network;
-    const isCurrentNetwork = chainId === currentChainId;
+    const isCurrentNetwork = network.chainId === currentChainId;
     const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
       getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
@@ -515,18 +514,19 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       <NetworkListItem
         key={network.chainId}
         chainId={network.chainId}
-        name={name}
+        name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
         selected={isCurrentNetwork && !focusSearch}
         focus={isCurrentNetwork && !focusSearch}
         rpcEndpoint={
           hasMultiRpcOptions(network)
-            ? getRpcDataByChainId(chainId, evmNetworks).defaultRpcEndpoint
+            ? getRpcDataByChainId(network.chainId, evmNetworks)
+                .defaultRpcEndpoint
             : undefined
         }
         onClick={async () => {
-          await handleNetworkChange(chainId);
+          await handleNetworkChange(network.chainId);
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}

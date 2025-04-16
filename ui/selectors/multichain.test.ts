@@ -1,9 +1,12 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BtcScope } from '@metamask/keyring-api';
-import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import {
+  type SupportedCaipChainId,
+  AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+} from '@metamask/multichain-network-controller';
 import {
   getCurrentCurrency,
   getNativeCurrency,
@@ -129,7 +132,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
 
 function getNonEvmState(
   account = MOCK_ACCOUNT_BIP122_P2WPKH,
-  selectedChainId: CaipChainId = BtcScope.Mainnet,
+  selectedChainId: SupportedCaipChainId = BtcScope.Mainnet,
 ): TestState {
   return {
     metamask: {
@@ -138,8 +141,6 @@ function getNonEvmState(
         selectedAccount: account.id,
         accounts: MOCK_ACCOUNTS,
       },
-      // Error: Type 'BtcScope' is not assignable to type 'SupportedCaipChainId'.ts(2322)
-      // @ts-expect-error - unsure why this error occurs since BtcScope.Mainnet is part of SupportedCaipChainId.
       selectedMultichainNetworkChainId: selectedChainId,
     },
   };
@@ -447,7 +448,7 @@ describe('Multichain Selectors', () => {
         asset: MultichainNativeAssets.BITCOIN_TESTNET,
         chainId: BtcScope.Testnet,
       },
-    ])(
+    ] as const)(
       'returns cached balance if account is non-EVM: $network',
       ({
         account,
@@ -456,7 +457,7 @@ describe('Multichain Selectors', () => {
       }: {
         account: InternalAccount;
         asset: MultichainNativeAssets;
-        chainId: CaipChainId;
+        chainId: SupportedCaipChainId;
       }) => {
         const state = getNonEvmState(account, chainId);
         const balance = state.metamask.balances[account.id][asset].amount;
