@@ -674,9 +674,8 @@ export default class MetamaskController extends EventEmitter {
         'MultichainNetworkController:networkDidChange',
       ],
       allowedActions: [
-        'KeyringController:getAccounts',
+        'KeyringController:getState',
         'KeyringController:getKeyringsByType',
-        'KeyringController:getKeyringForAccount',
       ],
     });
 
@@ -2016,6 +2015,12 @@ export default class MetamaskController extends EventEmitter {
             this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
               this.preferencesController,
             ),
+          getDismissSmartAccountSuggestionEnabled: () =>
+            this.preferencesController.state.preferences
+              .dismissSmartAccountSuggestionEnabled,
+          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+            this.txController,
+          ),
           validateSecurity: (securityAlertId, request, chainId) =>
             validateRequestWithPPOM({
               chainId,
@@ -2025,14 +2030,22 @@ export default class MetamaskController extends EventEmitter {
               updateSecurityAlertResponse:
                 this.updateSecurityAlertResponse.bind(this),
             }),
-          getDismissSmartAccountSuggestionEnabled: () =>
-            this.preferencesController.state.preferences
-              .dismissSmartAccountSuggestionEnabled,
         },
         this.controllerMessenger,
       ),
       getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
-      getCapabilities,
+      getCapabilities: getCapabilities.bind(null, {
+        getDisabledUpgradeAccountsByChain:
+          this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
+            this.preferencesController,
+          ),
+        getDismissSmartAccountSuggestionEnabled: () =>
+          this.preferencesController.state.preferences
+            .dismissSmartAccountSuggestionEnabled,
+        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+          this.txController,
+        ),
+      }),
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates

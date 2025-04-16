@@ -545,10 +545,19 @@ class Driver {
    * Finds a clickable element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - Timeout in milliseconds
+   * @param {object} guards
+   * @param {number} [guards.waitAtLeastGuard] - Minimum milliseconds to wait before passing
+   * @param {number} [guards.timeout]  - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
    */
-  async findClickableElement(rawLocator, timeout = this.timeout) {
+  async findClickableElement(
+    rawLocator,
+    { waitAtLeastGuard = 0, timeout = this.timeout } = {},
+  ) {
+    assert(timeout > waitAtLeastGuard);
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
     const element = await this.findElement(rawLocator, timeout);
     await Promise.all([
       this.driver.wait(until.elementIsVisible(element), timeout),
