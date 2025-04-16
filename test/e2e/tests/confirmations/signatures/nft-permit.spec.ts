@@ -118,6 +118,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
           decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
+          requestedThrough: 'ethereum_provider',
         });
       },
       mockSignatureRejectedWithDecoding,

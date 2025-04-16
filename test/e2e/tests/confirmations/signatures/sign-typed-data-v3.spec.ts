@@ -95,6 +95,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v3',
           location: 'confirmation',
+          requestedThrough: 'ethereum_provider',
         });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

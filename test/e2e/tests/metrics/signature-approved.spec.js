@@ -55,6 +55,7 @@ const expectedEventPropertiesBase = {
   security_alert_reason: 'validation_in_progress',
   security_alert_response: 'loading',
   ui_customizations: ['redesigned_confirmation'],
+  requested_through: 'ethereum_provider',
 };
 
 describe('Signature Approved Event', function () {

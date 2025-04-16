@@ -90,6 +90,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData',
           location: 'confirmation',
+          requestedThrough: 'ethereum_provider',
         });
 
         await driver.waitUntilXWindowHandles(2);

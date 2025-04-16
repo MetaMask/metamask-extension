@@ -91,6 +91,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           },
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
+          requestedThrough: 'ethereum_provider',
         });
       },
       mockSignatureRejected,
@@ -141,6 +142,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           },
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
+          requestedThrough: 'ethereum_provider',
         });
       },
       mockSignatureRejected,

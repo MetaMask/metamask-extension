@@ -102,6 +102,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Mail',
           location: 'confirmation',
+          requestedThrough: 'ethereum_provider',
         });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

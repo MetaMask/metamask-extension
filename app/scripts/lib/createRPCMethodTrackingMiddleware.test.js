@@ -1075,14 +1075,14 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
 
-      it.skip('should track wallet_invokeMethod events with multichain category and properties', async () => {
+      it('should track wallet_invokeMethod events with multichain category and properties', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
           origin: 'multichain.dapp',
           params: {
             request: {
-              method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+              method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
               params: [],
             },
             scope: 'eip155:1',
@@ -1099,9 +1099,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
         // Check the REQUESTED event
         expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
-          event: MetaMetricsEventName.PermissionsRequested,
+          event: MetaMetricsEventName.SignatureRequested,
           properties: {
-            method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+            signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             requested_through: 'multichain_api',
           },
           referrer: { url: 'multichain.dapp' },
@@ -1110,23 +1110,23 @@ describe('createRPCMethodTrackingMiddleware', () => {
         // Check the APPROVED event
         expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
-          event: MetaMetricsEventName.PermissionsApproved,
+          event: MetaMetricsEventName.SignatureApproved,
           properties: {
-            method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+            signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             requested_through: 'multichain_api',
           },
           referrer: { url: 'multichain.dapp' },
         });
       });
 
-      it.skip('should track wallet_invokeMethod rejections with multichain category', async () => {
+      it('should track wallet_invokeMethod rejections with multichain category', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
           origin: 'multichain.dapp',
           params: {
             request: {
-              method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+              method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
               params: [],
             },
             scope: 'eip155:1',
@@ -1144,14 +1144,13 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
         await executeMiddlewareStack();
 
-        // TODO: failing because of rate limiting
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
         // Check the REQUESTED event
         expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
-          event: MetaMetricsEventName.PermissionsRequested,
+          event: MetaMetricsEventName.SignatureRequested,
           properties: {
-            method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+            signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             requested_through: 'multichain_api',
           },
           referrer: { url: 'multichain.dapp' },
@@ -1160,9 +1159,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
         // Check the REJECTED event
         expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
-          event: MetaMetricsEventName.PermissionsRejected,
+          event: MetaMetricsEventName.SignatureRejected,
           properties: {
-            method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+            signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             requested_through: 'multichain_api',
           },
           referrer: { url: 'multichain.dapp' },

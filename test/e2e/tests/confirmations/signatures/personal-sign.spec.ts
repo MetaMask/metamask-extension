@@ -93,6 +93,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
           location: 'confirmation',
+          requestedThrough: 'ethereum_provider',
         });
       },
       mockSignatureRejected,

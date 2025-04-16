@@ -110,6 +110,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
             'sign_in_with_ethereum',
           ],
           location: 'confirmation',
+          requestedThrough: 'ethereum_provider',
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
         });
