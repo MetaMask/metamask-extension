@@ -301,7 +301,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     });
   });
 
-  const solanaAccountCreated = useMemo(() => {
+  const solanaAccountExistsInWallet = useMemo(() => {
     return allAccounts.some(({ caipAccountId }) => {
       const { chain } = parseCaipAccountId(caipAccountId);
       return chain.namespace === KnownCaipNamespace.Solana;
@@ -475,7 +475,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   </ButtonLink>
                 </Box>
               )}
-              {promptToCreateSolanaAccount && !solanaAccountCreated && (
+              {promptToCreateSolanaAccount && !solanaAccountExistsInWallet && (
                 <Box
                   display={Display.Flex}
                   flexDirection={FlexDirection.Column}
@@ -528,7 +528,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             data-testid="permissions-tab"
             disabled={
               promptToCreateSolanaAccount &&
-              !solanaAccountCreated &&
+              !solanaAccountExistsInWallet &&
               selectedAccounts.length === 0
             }
           >
