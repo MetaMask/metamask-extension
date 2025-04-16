@@ -39,7 +39,7 @@ class TestDappMultichain {
   }
 
   customAccountAddressInput(i: number) {
-    return `#custom-Address-input-${i}`;
+    return `#custom-CAIP\\ Address-input-${i}`;
   }
 
   customScopeInput(i: number) {
