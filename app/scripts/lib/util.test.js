@@ -26,6 +26,7 @@ import {
   isWebUrl,
   getMethodDataName,
   getBooleanFlag,
+  extractRpcDomain,
 } from './util';
 
 describe('app utils', () => {
@@ -449,6 +450,14 @@ describe('app utils', () => {
       expect(getBooleanFlag('false')).toBe(false);
       expect(getBooleanFlag(undefined)).toBe(false);
       expect(getBooleanFlag('foo')).toBe(false);
+    });
+  });
+
+  describe('extractRpcDomain', () => {
+    it('should return unknown for now', () => {
+      expect(
+        extractRpcDomain('https://mainnet.infura.io/v3/123'),
+      ).toStrictEqual('unknown');
     });
   });
 });
