@@ -319,6 +319,7 @@ export const SHAPE_DISPLAY_NAME = 'Shape';
 export const XRPLEVM_TESTNET_DISPLAY_NAME = 'XRPL EVM Testnet';
 export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
+export const SEI_DISPLAY_NAME = 'Sei Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -1229,6 +1230,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     defaultBlockExplorerUrlIndex: 0,
   },
   {
+    chainId: CHAIN_IDS.SEI,
+    name: SEI_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.SEI,
+    rpcEndpoints: [
+      {
+        url: `https://sei-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://seiscan.app/pacific-1'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
     chainId: CHAIN_IDS.BASE,
     name: BASE_DISPLAY_NAME,
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
@@ -1320,6 +1335,8 @@ export const allowedInfuraHosts = [
   'opbnb-mainnet.infura.io',
   // Scroll
   'scroll-mainnet.infura.io',
+  // Sei
+  'sei-mainnet.infura.io',
 ];
 
 /**
