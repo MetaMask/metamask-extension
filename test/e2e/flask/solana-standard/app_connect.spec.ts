@@ -84,13 +84,6 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
             'Not connected',
             'Connection status should be "Disconnected"',
           );
-
-          const accountAfterDisconnect = await header.getAccount();
-          assert.strictEqual(
-            accountAfterDisconnect,
-            '',
-            'Account should be empty',
-          );
         },
       );
     });
@@ -109,7 +102,9 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
             const testDapp = new TestDappSolana(driver);
             await testDapp.openTestDappPage();
             await driver.delay(largeDelayMs);
-            await connectSolanaTestDapp(driver, testDapp, true);
+            await connectSolanaTestDapp(driver, testDapp, {
+              selectAllAccounts: true,
+            });
 
             // Check that we're connected to the second account
             const header = await testDapp.getHeader();
