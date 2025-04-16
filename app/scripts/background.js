@@ -1065,8 +1065,10 @@ export function setupController(
       // this is triggered when a new tab is opened, or origin(url) is changed
       trackDappView(remotePort);
 
-      const caipStream = createCaipStream(portStream);
-      connectCaipMultichain(caipStream, remotePort.sender);
+      connectCaipMultichain(
+        createCaipStream(portStream),
+        remotePort.sender
+      );
     } else {
       connectEip1193(portStream, remotePort.sender);
     }

@@ -2687,7 +2687,7 @@ describe('MetaMaskController', () => {
           tab: { id: 456 },
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
+          if (chunk && chunk.method) {
             cb(null, chunk);
             return;
           }
@@ -2736,7 +2736,7 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
+          if (chunk && chunk.method) {
             cb(null, chunk);
             return;
           }
