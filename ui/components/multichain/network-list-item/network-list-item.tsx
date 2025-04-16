@@ -84,6 +84,8 @@ export const NetworkListItem = ({
     useState();
 
   // I can't find a type that satisfies this.
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setNetworkListItemMenuRef = (ref: any) => {
     setNetworkListItemMenuElement(ref);
