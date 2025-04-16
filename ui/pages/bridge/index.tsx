@@ -89,7 +89,7 @@ const CrossChainSwap = () => {
   return (
     <Page className="bridge__container">
       <Header
-        textProps={{ variant: TextVariant.headingSm }}
+        textProps={{ variant: TextVariant.headingSm, as: 'h1' }}
         startAccessory={
           <ButtonIcon
             iconName={IconName.ArrowLeft}

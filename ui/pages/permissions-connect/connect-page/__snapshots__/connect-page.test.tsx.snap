@@ -14,10 +14,10 @@ exports[`ConnectPage should render correctly 1`] = `
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
       >
         <div
-          class="mm-box"
+          class="mm-box connect-page__header__children-wrapper"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          <div
+            class="mm-box mm-text mm-text--body-md-bold mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center"
@@ -48,12 +48,12 @@ exports[`ConnectPage should render correctly 1`] = `
               </div>
             </div>
             <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+              class="mm-box mm-text mm-text--heading-lg mm-text--ellipsis mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
             >
               github.io
             </h2>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center"
+              class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--justify-content-center"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -67,7 +67,7 @@ exports[`ConnectPage should render correctly 1`] = `
                 Learn more
               </button>
             </div>
-          </p>
+          </div>
         </div>
       </div>
       <div
@@ -383,10 +383,10 @@ exports[`ConnectPage should render with defaults from the requested permissions 
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
       >
         <div
-          class="mm-box"
+          class="mm-box connect-page__header__children-wrapper"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+          <div
+            class="mm-box mm-text mm-text--body-md-bold mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center"
@@ -417,12 +417,12 @@ exports[`ConnectPage should render with defaults from the requested permissions 
               </div>
             </div>
             <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+              class="mm-box mm-text mm-text--heading-lg mm-text--ellipsis mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
             >
               github.io
             </h2>
             <div
-              class="mm-box mm-box--display-flex mm-box--justify-content-center"
+              class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--justify-content-center"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -436,7 +436,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                 Learn more
               </button>
             </div>
-          </p>
+          </div>
         </div>
       </div>
       <div

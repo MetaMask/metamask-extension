@@ -369,6 +369,7 @@ export const SendPage = () => {
       <Header
         textProps={{
           variant: TextVariant.headingSm,
+          as: 'h1',
         }}
         startAccessory={
           <ButtonIcon
