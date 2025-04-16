@@ -1,7 +1,7 @@
-import { createSelector } from 'reselect';
 import { Action } from 'redux'; // Import types for actions
 import * as actionConstants from '../../store/actionConstants';
 import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
+import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 
 /**
  * Type for the locale messages part of the state
@@ -79,7 +79,7 @@ export const getCurrentLocale = (state: AppState): string | undefined =>
  *
  * @returns The user's selected locale in BCP 47 format
  */
-export const getIntlLocale = createSelector(
+export const getIntlLocale = createDeepEqualSelector(
   getCurrentLocale,
   (locale): string =>
     Intl.getCanonicalLocales(

@@ -1,30 +1,33 @@
+import { NameType } from '@metamask/name-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import { TransactionStatus } from '@metamask/transaction-controller';
-import mockState from '../../../../test/data/mock-state.json';
-import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
-import {
-  getConversionRate,
-  getSelectedAccount,
-  getTokenExchangeRates,
-  getPreferences,
-  getShouldShowFiat,
-  getCurrentNetwork,
-} from '../../../selectors';
-import { renderWithProvider } from '../../../../test/jest';
-import { setBackgroundConnection } from '../../../store/background-connection';
-import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
-import { getTokens } from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/jest';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { abortTransactionSigning } from '../../../store/actions';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
+import { getTokens } from '../../../ducks/metamask/metamask';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import {
+  getConversionRate,
+  getCurrentNetwork,
+  getNames,
+  getPreferences,
+  getSelectedAccount,
+  getShouldShowFiat,
+  getTokenExchangeRates,
+} from '../../../selectors';
+import { getNftContractsByAddressByChain } from '../../../selectors/nft';
+import { abortTransactionSigning } from '../../../store/actions';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -116,6 +119,24 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     return opts.tokens ?? [];
   } else if (selector === selectBridgeHistoryForAccount) {
     return opts.bridgeHistory ?? {};
+  } else if (selector === getNames) {
+    return {
+      [NameType.ETHEREUM_ADDRESS]: {
+        '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+          '0x5': {
+            name: 'TestName2',
+          },
+        },
+      },
+    };
+  } else if (selector === getNftContractsByAddressByChain) {
+    return {
+      '0x5': {
+        '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+          name: 'iZUMi Bond USD',
+        },
+      },
+    };
   }
   return undefined;
 };

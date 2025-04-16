@@ -94,7 +94,7 @@ function createMockMessenger({
 
   return {
     call: callMock,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
@@ -167,7 +167,7 @@ describe('SnapsNameProvider', () => {
       for (const snapId of [SNAP_MOCK.id, SNAP_MOCK_2.id]) {
         expect(handleSnapRequest).toHaveBeenCalledWith({
           snapId,
-          origin: '',
+          origin: 'metamask',
           handler: HandlerType.OnNameLookup,
           request: {
             jsonrpc: '2.0',

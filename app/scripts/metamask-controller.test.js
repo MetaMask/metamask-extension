@@ -17,6 +17,7 @@ import {
   BtcAccountType,
   BtcMethod,
   EthAccountType,
+  SolScope,
 } from '@metamask/keyring-api';
 import { Messenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
@@ -34,8 +35,9 @@ import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
+import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
@@ -58,9 +60,7 @@ import {
 } from '../../shared/constants/permissions';
 import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
-import MetaMaskController, {
-  ONE_KEY_VIA_TREZOR_MINOR_VERSION,
-} from './metamask-controller';
+import MetaMaskController from './metamask-controller';
 import { PermissionNames } from './controllers/permissions';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
@@ -144,7 +144,8 @@ jest.mock('./controllers/permissions/specifications', () => ({
 
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
-const rpcMethodMiddlewareMock = {
+jest.mock('./lib/rpc-method-middleware', () => ({
+  ...jest.requireActual('./lib/rpc-method-middleware'),
   createEip1193MethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
@@ -157,8 +158,7 @@ const rpcMethodMiddlewareMock = {
   createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
-};
-jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
+}));
 
 const KNOWN_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
@@ -554,8 +554,7 @@ describe('MetaMaskController', () => {
           internalAccounts:
             metamaskController.accountsController.listAccounts(),
           dappRequest: undefined,
-          networkClientId:
-            metamaskController.networkController.state.selectedNetworkClientId,
+          networkClientId: undefined,
           selectedAccount:
             metamaskController.accountsController.getAccountByAddress(
               transactionParams.from,
@@ -817,6 +816,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.accountTrackerController, 'state', 'get')
           .mockReturnValue({
             accounts,
+            accountsByChainId: {
+              '0x1': {
+                [TEST_ADDRESS]: { balance },
+              },
+            },
           });
 
         const gotten = await metamaskController.getBalance(TEST_ADDRESS);
@@ -837,6 +841,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.accountTrackerController, 'state', 'get')
           .mockReturnValue({
             accounts,
+            accountsByChainId: {
+              '0x1': {
+                [TEST_ADDRESS]: { balance },
+              },
+            },
           });
 
         const gotten = await metamaskController.getBalance(
@@ -929,7 +938,7 @@ describe('MetaMaskController', () => {
               },
             });
           jest
-            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue(['not_empty']);
 
           expect(
@@ -959,12 +968,12 @@ describe('MetaMaskController', () => {
               },
             });
           jest
-            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue([]);
 
           metamaskController.getPermittedAccounts('test.com');
           expect(
-            metamaskController.sortAccountsByLastSelected,
+            metamaskController.sortEvmAccountsByLastSelected,
           ).toHaveBeenCalledWith(['0xdead', '0xbeef']);
         });
 
@@ -982,13 +991,70 @@ describe('MetaMaskController', () => {
               },
             });
           jest
-            .spyOn(metamaskController, 'sortAccountsByLastSelected')
+            .spyOn(metamaskController, 'sortEvmAccountsByLastSelected')
             .mockReturnValue(['0xbeef', '0xdead']);
 
           expect(
             metamaskController.getPermittedAccounts('test.com'),
           ).toStrictEqual(['0xbeef', '0xdead']);
         });
+      });
+    });
+
+    describe('#requestPermissionApproval', () => {
+      it('requests permissions for the origin from the ApprovalController', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue();
+
+        await metamaskController.requestPermissionApproval('test.com', {
+          eth_accounts: {},
+        });
+
+        expect(
+          metamaskController.approvalController.addAndShowApprovalRequest,
+        ).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: expect.stringMatching(/.{21}/u),
+            origin: 'test.com',
+            requestData: {
+              metadata: {
+                id: expect.stringMatching(/.{21}/u),
+                origin: 'test.com',
+              },
+              permissions: {
+                eth_accounts: {},
+              },
+            },
+            type: 'wallet_requestPermissions',
+          }),
+        );
+
+        const [params] =
+          metamaskController.approvalController.addAndShowApprovalRequest.mock
+            .calls[0];
+        expect(params.id).toStrictEqual(params.requestData.metadata.id);
+      });
+
+      it('returns the result from the ApprovalController', async () => {
+        jest
+          .spyOn(
+            metamaskController.approvalController,
+            'addAndShowApprovalRequest',
+          )
+          .mockResolvedValue('approvalResult');
+
+        const result = await metamaskController.requestPermissionApproval(
+          'test.com',
+          {
+            eth_accounts: {},
+          },
+        );
+
+        expect(result).toStrictEqual('approvalResult');
       });
     });
 
@@ -1013,6 +1079,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1051,6 +1118,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1092,6 +1160,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1141,6 +1210,7 @@ describe('MetaMaskController', () => {
                         accounts: ['eip155:100:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1179,6 +1249,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1217,6 +1288,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1263,6 +1335,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:foo'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1315,6 +1388,7 @@ describe('MetaMaskController', () => {
                         accounts: ['eip155:5:0xdeadbeef'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1363,6 +1437,7 @@ describe('MetaMaskController', () => {
                         accounts: ['wallet:eip155:0xdeadbeef'],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1374,7 +1449,7 @@ describe('MetaMaskController', () => {
     });
 
     describe('requestApprovalPermittedChainsPermission', () => {
-      it('requests approval with well formed origin', async () => {
+      it('requests approval', async () => {
         jest
           .spyOn(
             metamaskController.permissionController,
@@ -1403,6 +1478,7 @@ describe('MetaMaskController', () => {
                         accounts: [],
                       },
                     },
+                    sessionProperties: {},
                     isMultichainOrigin: false,
                   },
                 },
@@ -1452,6 +1528,7 @@ describe('MetaMaskController', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: { 'eip155:1': { accounts: [] } },
+                  sessionProperties: {},
                   isMultichainOrigin: false,
                 },
               },
@@ -1477,6 +1554,7 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledWith(
           { origin: 'test.com' },
           expectedCaip25Permission,
+          undefined,
         );
       });
 
@@ -1506,6 +1584,7 @@ describe('MetaMaskController', () => {
                 value: {
                   requiredScopes: {},
                   optionalScopes: { 'eip155:1': { accounts: [] } },
+                  sessionProperties: {},
                   isMultichainOrigin: false,
                 },
               },
@@ -1558,7 +1637,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#sortAccountsByLastSelected', () => {
+    describe('#sortEvmAccountsByLastSelected', () => {
       it('returns the keyring accounts in lastSelected order', () => {
         jest
           .spyOn(metamaskController.accountsController, 'listAccounts')
@@ -1626,7 +1705,7 @@ describe('MetaMaskController', () => {
           });
 
         expect(
-          metamaskController.sortAccountsByLastSelected([
+          metamaskController.sortEvmAccountsByLastSelected([
             '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
@@ -1681,7 +1760,7 @@ describe('MetaMaskController', () => {
           });
 
         expect(() =>
-          metamaskController.sortAccountsByLastSelected([
+          metamaskController.sortEvmAccountsByLastSelected([
             '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
@@ -1739,7 +1818,7 @@ describe('MetaMaskController', () => {
           });
 
         expect(() =>
-          metamaskController.sortAccountsByLastSelected([
+          metamaskController.sortEvmAccountsByLastSelected([
             '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
             '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
             '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
@@ -1760,19 +1839,19 @@ describe('MetaMaskController', () => {
     describe('NetworkConfiguration is removed', () => {
       it('should remove the permitted chain from all existing permissions', () => {
         jest
-          .spyOn(metamaskController, 'removeAllChainIdPermissions')
+          .spyOn(metamaskController, 'removeAllScopePermissions')
           .mockReturnValue();
 
         metamaskController.controllerMessenger.publish(
           'NetworkController:networkRemoved',
           {
-            chainId: '0xdeadbeef',
+            chainId: '0xa',
           },
         );
 
         expect(
-          metamaskController.removeAllChainIdPermissions,
-        ).toHaveBeenCalledWith('0xdeadbeef');
+          metamaskController.removeAllScopePermissions,
+        ).toHaveBeenCalledWith('eip155:10');
       });
     });
 
@@ -1856,7 +1935,7 @@ describe('MetaMaskController', () => {
       });
 
       describe('getHardwareTypeForMetric', () => {
-        it.each(['ledger', 'lattice', 'trezor', 'qr'])(
+        it.each(['ledger', 'lattice', 'trezor', 'oneKey', 'qr'])(
           'should return the correct type for %s',
           async (type) => {
             jest
@@ -1870,24 +1949,6 @@ describe('MetaMaskController', () => {
             expect(result).toBe(HardwareKeyringType[type]);
           },
         );
-
-        it('should handle special case for oneKey', async () => {
-          jest
-            .spyOn(metamaskController.keyringController, 'withKeyring')
-            .mockImplementation((_, fn) => {
-              const keyring = {
-                type: 'trezor',
-                bridge: { minorVersion: ONE_KEY_VIA_TREZOR_MINOR_VERSION },
-              };
-              return fn({ keyring });
-            });
-
-          const result = await metamaskController.getHardwareTypeForMetric(
-            '0x123',
-          );
-
-          expect(result).toBe('OneKey Hardware');
-        });
       });
 
       describe('forgetDevice', () => {
@@ -2342,8 +2403,6 @@ describe('MetaMaskController', () => {
     });
 
     describe('#setupUntrustedCommunicationEip1193', () => {
-      const mockTxParams = { from: TEST_ADDRESS };
-
       beforeEach(() => {
         initializeMockMiddlewareLog();
         metamaskController.preferencesController.setSecurityAlertsEnabled(
@@ -2427,6 +2486,7 @@ describe('MetaMaskController', () => {
           expect.anything(),
           'test.metamask-phishing.io',
         );
+        streamTest.end();
       });
 
       it('adds a tabId, origin and networkClient to requests', async () => {
@@ -2450,8 +2510,7 @@ describe('MetaMaskController', () => {
         const message = {
           id: 1999133338649204,
           jsonrpc: '2.0',
-          params: [{ ...mockTxParams }],
-          method: 'eth_sendTransaction',
+          method: 'eth_chainId',
         };
         await new Promise((resolve) => {
           streamTest.write(
@@ -2479,6 +2538,7 @@ describe('MetaMaskController', () => {
             },
           );
         });
+        streamTest.end();
       });
 
       it('should add only origin to request if tabId not provided', async () => {
@@ -2499,10 +2559,8 @@ describe('MetaMaskController', () => {
         });
 
         const message = {
-          id: 1999133338649204,
           jsonrpc: '2.0',
-          params: [{ ...mockTxParams }],
-          method: 'eth_sendTransaction',
+          method: 'eth_chainId',
         };
         await new Promise((resolve) => {
           streamTest.write(
@@ -2525,15 +2583,268 @@ describe('MetaMaskController', () => {
             },
           );
         });
+        streamTest.end();
       });
 
-      it.todo(
-        'should only process `metamask-provider` multiplex formatted messages',
-      );
+      it('should only process `metamask-provider` multiplex formatted messages', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+          tab: { id: 456 },
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunicationEip1193({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          jsonrpc: '2.0',
+          method: 'eth_chainId',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              type: 'caip-x',
+              data: {
+                method: 'wallet_invokeMethod',
+                params: {
+                  scope: 'eip155:1',
+                  request: message,
+                },
+              },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests).toHaveLength(0);
+                resolve();
+              });
+            },
+          );
+        });
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests).toHaveLength(1);
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
-      it.todo('should only process `caip-x` CAIP formatted messages');
+      let localMetamaskController;
+      beforeEach(() => {
+        process.env.MULTICHAIN_API = true;
+        localMetamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            PreferencesController: {
+              useExternalServices: false,
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+        initializeMockMiddlewareLog();
+        jest
+          .spyOn(localMetamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+      });
+
+      afterAll(() => {
+        process.env.MULTICHAIN_API = false;
+        tearDownMockMiddlewareLog();
+      });
+
+      it('adds a tabId and origin to requests', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+          tab: { id: 456 },
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        localMetamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          jsonrpc: '2.0',
+          method: 'eth_chainId',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              type: 'caip-x',
+              data: {
+                method: 'wallet_invokeMethod',
+                params: {
+                  scope: 'eip155:1',
+                  request: message,
+                },
+              },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'tabId',
+                  456,
+                );
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
+
+      it('should add only origin to request if tabId not provided', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        localMetamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          jsonrpc: '2.0',
+          method: 'eth_chainId',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              type: 'caip-x',
+              data: {
+                method: 'wallet_invokeMethod',
+                params: {
+                  scope: 'eip155:1',
+                  request: message,
+                },
+              },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
+                  'tabId',
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
+
+      it('should only process `caip-x` CAIP formatted messages', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+          tab: { id: 456 },
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        localMetamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          jsonrpc: '2.0',
+          method: 'eth_chainId',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests).toHaveLength(0);
+                resolve();
+              });
+            },
+          );
+        });
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              type: 'caip-x',
+              data: {
+                method: 'wallet_invokeMethod',
+                params: {
+                  scope: 'eip155:1',
+                  request: message,
+                },
+              },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests).toHaveLength(1);
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
     });
 
     describe('#setupTrustedCommunication', () => {
@@ -2968,8 +3279,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3001,7 +3316,7 @@ describe('MetaMaskController', () => {
 
         const tokenData = {
           decimals: 18,
-          symbol: 'FOO',
+          symbol: 'DAI',
         };
 
         await metamaskController.tokensController.addTokens([
@@ -3070,8 +3385,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3120,8 +3439,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3170,8 +3493,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3227,8 +3554,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3263,8 +3594,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+                },
+              },
             },
           };
         });
@@ -3289,15 +3624,13 @@ describe('MetaMaskController', () => {
     });
 
     describe('incoming transactions', () => {
-      it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
+      it('starts incoming transaction polling if useExternalServices is enabled for that chainId', async () => {
         expect(
           TransactionController.prototype.startIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
         await simulatePreferencesChange({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: true,
-          },
+          useExternalServices: true,
         });
 
         expect(
@@ -3305,15 +3638,13 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(1);
       });
 
-      it('stops incoming transaction polling if incomingTransactionsPreferences is disabled for that chainId', async () => {
+      it('stops incoming transaction polling if useExternalServices is disabled for that chainId', async () => {
         expect(
           TransactionController.prototype.stopIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
         await simulatePreferencesChange({
-          incomingTransactionsPreferences: {
-            [MAINNET_CHAIN_ID]: false,
-          },
+          useExternalServices: false,
         });
 
         expect(
@@ -3662,7 +3993,7 @@ describe('MetaMaskController', () => {
         const newlyAddedKeyringId =
           metamaskController.keyringController.state.keyringsMetadata[
             metamaskController.keyringController.state.keyringsMetadata.length -
-              1
+              2 // -1 for the snap keyring, -1 for the newly added keyring
           ].id;
 
         const newSRP = Buffer.from(
@@ -3672,7 +4003,10 @@ describe('MetaMaskController', () => {
         expect(
           currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
         ).toHaveLength(2);
-        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
+        expect(
+          currentKeyrings.filter((kr) => kr.type === 'Snap Keyring'),
+        ).toHaveLength(1);
+        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 2);
         expect(newSRP).toStrictEqual(TEST_SEED_ALT);
       });
 
@@ -3687,6 +4021,77 @@ describe('MetaMaskController', () => {
           'This Secret Recovery Phrase has already been imported.',
         );
       });
+
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      it('discovers and creates Solana accounts through KeyringInternalSnapClient when importing a mnemonic', async () => {
+        const password = 'what-what-what';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+
+        const mockDiscoverAccounts = jest
+          .fn()
+          .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/0'/0'" }])
+          .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/1'/0'" }])
+          .mockResolvedValueOnce([]); // Return empty array on third call to stop the discovery loop
+
+        jest
+          .spyOn(KeyringInternalSnapClient.prototype, 'discoverAccounts')
+          .mockImplementation(mockDiscoverAccounts);
+
+        const mockCreateAccount = jest.fn().mockResolvedValue(undefined);
+        const mockSnapKeyring = { createAccount: mockCreateAccount };
+        jest
+          .spyOn(metamaskController, 'getSnapKeyring')
+          .mockResolvedValue(mockSnapKeyring);
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
+
+        // Assert that discoverAccounts was called correctly
+        // Should be called 3 times (twice with discovered accounts, once with empty array)
+        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(3);
+
+        // All calls should include the solana scopes
+        expect(mockDiscoverAccounts.mock.calls[0][0]).toStrictEqual(
+          expect.arrayContaining([
+            SolScope.Mainnet,
+            SolScope.Testnet,
+            SolScope.Devnet,
+          ]),
+        );
+
+        // First call should be for index 0
+        expect(mockDiscoverAccounts.mock.calls[0][2]).toBe(0);
+        // Second call should be for index 1
+        expect(mockDiscoverAccounts.mock.calls[1][2]).toBe(1);
+        // Third call should be for index 2
+        expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(2);
+
+        // Assert that createAccount was called correctly for each discovered account
+        expect(mockCreateAccount).toHaveBeenCalledTimes(2);
+
+        // All calls should use the solana snap ID
+        expect(mockCreateAccount.mock.calls[0][0]).toStrictEqual(
+          expect.stringContaining('solana-wallet'),
+        );
+        // First call should use derivation path on index 0
+        expect(mockCreateAccount.mock.calls[0][1]).toStrictEqual({
+          derivationPath: "m/44'/501'/0'/0'",
+          entropySource: expect.any(String),
+        });
+        // All calls should use the same internal options
+        expect(mockCreateAccount.mock.calls[0][2]).toStrictEqual({
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        });
+
+        // Second call should use derivation path on index 1
+        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+          derivationPath: "m/44'/501'/1'/0'",
+          entropySource: expect.any(String),
+        });
+      });
+      ///: END:ONLY_INCLUDE_IF
     });
   });
 

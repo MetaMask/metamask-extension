@@ -1572,29 +1572,33 @@ describe('Send Slice', () => {
             },
             ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
             useTokenDetection: true,
-            tokenList: {
-              '0x514910771af9ca656af840dff83e8264ecf986ca': {
-                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
-                symbol: 'LINK',
-                decimals: 18,
-                name: 'Chainlink',
-                iconUrl:
-                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
-                aggregators: [
-                  'airswapLight',
-                  'bancor',
-                  'cmc',
-                  'coinGecko',
-                  'kleros',
-                  'oneInch',
-                  'paraswap',
-                  'pmm',
-                  'totle',
-                  'zapper',
-                  'zerion',
-                  'zeroEx',
-                ],
-                occurrences: 12,
+            tokensChainsCache: {
+              [CHAIN_IDS.GOERLI]: {
+                data: {
+                  '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                    address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                    symbol: 'LINK',
+                    decimals: 18,
+                    name: 'Chainlink',
+                    iconUrl:
+                      'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                    aggregators: [
+                      'airswapLight',
+                      'bancor',
+                      'cmc',
+                      'coinGecko',
+                      'kleros',
+                      'oneInch',
+                      'paraswap',
+                      'pmm',
+                      'totle',
+                      'zapper',
+                      'zerion',
+                      'zeroEx',
+                    ],
+                    occurrences: 12,
+                  },
+                },
               },
             },
           },
@@ -1738,6 +1742,9 @@ describe('Send Slice', () => {
               selectedAccount: 'mock-id',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.MAINNET]: {},
+            },
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           },
           send: getInitialSendStateWithExistingTxState({
@@ -1809,6 +1816,9 @@ describe('Send Slice', () => {
               selectedAccount: 'mock-id',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.MAINNET]: {},
+            },
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           },
           send: getInitialSendStateWithExistingTxState({
@@ -1950,6 +1960,9 @@ describe('Send Slice', () => {
               selectedAccount: 'mock-id',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.MAINNET]: {},
+            },
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           },
           send: getInitialSendStateWithExistingTxState({
@@ -2020,6 +2033,9 @@ describe('Send Slice', () => {
               selectedAccount: 'mock-id',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.MAINNET]: {},
+            },
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           },
           send: getInitialSendStateWithExistingTxState({
@@ -2316,28 +2332,33 @@ describe('Send Slice', () => {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           tokens: [],
           useTokenDetection: true,
-          tokenList: {
-            '0x514910771af9ca656af840dff83e8264ecf986ca': {
-              address: '0x514910771af9ca656af840dff83e8264ecf986ca',
-              symbol: 'LINK',
-              decimals: 18,
-              name: 'Chainlink',
-              iconUrl: 'https://s3.amazonaws.com/airswap-token-images/LINK.png',
-              aggregators: [
-                'airswapLight',
-                'bancor',
-                'cmc',
-                'coinGecko',
-                'kleros',
-                'oneInch',
-                'paraswap',
-                'pmm',
-                'totle',
-                'zapper',
-                'zerion',
-                'zeroEx',
-              ],
-              occurrences: 12,
+          tokensChainsCache: {
+            [CHAIN_IDS.MAINNET]: {
+              data: {
+                '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                  address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                  symbol: 'LINK',
+                  decimals: 18,
+                  name: 'Chainlink',
+                  iconUrl:
+                    'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                  aggregators: [
+                    'airswapLight',
+                    'bancor',
+                    'cmc',
+                    'coinGecko',
+                    'kleros',
+                    'oneInch',
+                    'paraswap',
+                    'pmm',
+                    'totle',
+                    'zapper',
+                    'zerion',
+                    'zeroEx',
+                  ],
+                  occurrences: 12,
+                },
+              },
             },
           },
           internalAccounts: {
@@ -2463,6 +2484,9 @@ describe('Send Slice', () => {
             addressBook: {},
             internalAccounts: {
               accounts: {},
+              accountsByChainId: {
+                [CHAIN_IDS.MAINNET]: {},
+              },
               selectedAccount: '',
             },
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -2566,6 +2590,9 @@ describe('Send Slice', () => {
             addressBook: {},
             internalAccounts: {
               accounts: {},
+              accountsByChainId: {
+                [CHAIN_IDS.MAINNET]: {},
+              },
               selectedAccount: '',
             },
             blockGasLimit: '',
@@ -2618,29 +2645,33 @@ describe('Send Slice', () => {
 
             tokens: [],
             useTokenDetection: true,
-            tokenList: {
-              '0x514910771af9ca656af840dff83e8264ecf986ca': {
-                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
-                symbol: 'LINK',
-                decimals: 18,
-                name: 'Chainlink',
-                iconUrl:
-                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
-                aggregators: [
-                  'airswapLight',
-                  'bancor',
-                  'cmc',
-                  'coinGecko',
-                  'kleros',
-                  'oneInch',
-                  'paraswap',
-                  'pmm',
-                  'totle',
-                  'zapper',
-                  'zerion',
-                  'zeroEx',
-                ],
-                occurrences: 12,
+            tokensChainsCache: {
+              [CHAIN_IDS.MAINNET]: {
+                data: {
+                  '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                    address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                    symbol: 'LINK',
+                    decimals: 18,
+                    name: 'Chainlink',
+                    iconUrl:
+                      'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                    aggregators: [
+                      'airswapLight',
+                      'bancor',
+                      'cmc',
+                      'coinGecko',
+                      'kleros',
+                      'oneInch',
+                      'paraswap',
+                      'pmm',
+                      'totle',
+                      'zapper',
+                      'zerion',
+                      'zeroEx',
+                    ],
+                    occurrences: 12,
+                  },
+                },
               },
             },
             internalAccounts: {
@@ -2662,6 +2693,9 @@ describe('Send Slice', () => {
               selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.MAINNET]: {},
+            },
           },
           send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
         };
@@ -2729,9 +2763,13 @@ describe('Send Slice', () => {
             payload: 'sendFlow - user added custom hexData 0x1',
           },
           { type: 'send/updateUserInputHexData', payload: hexData },
+          {
+            payload: null,
+            type: 'send/updateUserInputHexDataError',
+          },
         ];
 
-        expect(actionResult).toHaveLength(2);
+        expect(actionResult).toHaveLength(3);
         expect(actionResult).toStrictEqual(expectActionResult);
       });
     });
@@ -2887,6 +2925,9 @@ describe('Send Slice', () => {
               selectedAccount: 'mock-id',
             },
             accounts: {},
+            accountsByChainId: {
+              [CHAIN_IDS.GOERLI]: {},
+            },
           },
         };
         const store = mockStore(sendMaxModeState);
@@ -2926,6 +2967,7 @@ describe('Send Slice', () => {
             gasLimit: GAS_LIMITS.SIMPLE,
           },
         }),
+        metamask: {},
       };
 
       it('should show confirm tx page when no other conditions for signing have been met', async () => {
@@ -3230,7 +3272,11 @@ describe('Send Slice', () => {
             gasFeeEstimates: {},
             ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
 
-            tokens: [],
+            allTokens: {
+              [CHAIN_IDS.GOERLI]: {
+                mockAddress1: [],
+              },
+            },
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
             },
@@ -3263,7 +3309,11 @@ describe('Send Slice', () => {
                 [mockAddress1]: { balance: '0x0' },
               },
             },
-            tokenList: {},
+            tokensChainsCache: {
+              [CHAIN_IDS.GOERLI]: {
+                data: {},
+              },
+            },
             transactions: [
               {
                 id: 1,
@@ -3436,7 +3486,11 @@ describe('Send Slice', () => {
                 [mockAddress1]: { balance: '0x0' },
               },
             },
-            tokenList: {},
+            tokensChainsCache: {
+              [CHAIN_IDS.GOERLI]: {
+                data: {},
+              },
+            },
             transactions: [
               {
                 id: 1,
@@ -3629,10 +3683,14 @@ describe('Send Slice', () => {
               symbol: 'SYMB',
             },
           ],
-          tokenList: {
-            '0xTokenAddress': {
-              symbol: 'SYMB',
-              address: '0xTokenAddress',
+          tokensChainsCache: {
+            [CHAIN_IDS.GOERLI]: {
+              data: {
+                '0xTokenAddress': {
+                  symbol: 'SYMB',
+                  address: '0xTokenAddress',
+                },
+              },
             },
           },
           addressBook: {
@@ -3845,10 +3903,14 @@ describe('Send Slice', () => {
               symbol: 'SYMB',
             },
           ],
-          tokenList: {
-            '0xTokenAddress': {
-              symbol: 'SYMB',
-              address: '0xTokenAddress',
+          tokensChainsCache: {
+            [CHAIN_IDS.GOERLI]: {
+              data: {
+                '0xTokenAddress': {
+                  symbol: 'SYMB',
+                  address: '0xTokenAddress',
+                },
+              },
             },
           },
           addressBook: {

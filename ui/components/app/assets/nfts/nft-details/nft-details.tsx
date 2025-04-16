@@ -19,7 +19,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
@@ -78,13 +78,18 @@ import {
 } from '../../../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { addUrlProtocolPrefix } from '../../../../../../app/scripts/lib/util';
+import {
+  addUrlProtocolPrefix,
+  isWebUrl,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 import NftDetailInformationRow from './nft-detail-information-row';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 import NftDetailDescription from './nft-detail-description';
+import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
@@ -96,7 +101,7 @@ export function NftDetailsComponent({
   nftChainId: string;
 }) {
   const {
-    image,
+    image: _image,
     imageOriginal,
     name,
     description,
@@ -109,6 +114,7 @@ export function NftDetailsComponent({
     rarityRank,
     topBid,
     attributes,
+    tokenURI,
   } = nft;
 
   const t = useI18nContext();
@@ -131,11 +137,18 @@ export function NftDetailsComponent({
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
+  const { image: imageFromTokenURI, name: nameFromTokenURI } =
+    useFetchNftDetailsFromTokenURI(tokenURI);
+
   const nftImageAlt = getNftImageAlt(nft);
-  const nftSrcUrl = imageOriginal ?? image;
+  const image = getNftImage(_image);
+  const nftSrcUrl = imageOriginal ?? image ?? imageFromTokenURI;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+
   const isImageHosted =
-    image?.startsWith('https:') || image?.startsWith('http:');
+    (image && isWebUrl(image)) ||
+    (imageFromTokenURI && isWebUrl(imageFromTokenURI));
+
   const nftImageURL = useGetAssetImageUrl(
     imageOriginal ?? image ?? undefined,
     ipfsGateway,
@@ -292,8 +305,9 @@ export function NftDetailsComponent({
         type: AssetType.NFT,
         details: {
           ...nft,
-          tokenId: Number(nft.tokenId),
-          image: nft.image ?? undefined,
+          tokenId: nft.tokenId as unknown as number,
+          image: nft.image ?? imageFromTokenURI ?? undefined,
+          name: nft.name ?? nameFromTokenURI ?? undefined,
         },
       }),
     );
@@ -350,15 +364,7 @@ export function NftDetailsComponent({
 
     return formatCurrency(new Numeric(value, 10).toString(), currency);
   };
-
-  const renderShortTokenId = (text: string, chars: number) => {
-    if (text.length <= MAX_TOKEN_ID_LENGTH) {
-      return text;
-    }
-    return `${text.slice(0, chars)}...${text.slice(-chars)}`;
-  };
-
-  const nftItemSrc = isImageHosted ? image : nftImageURL;
+  const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   return (
     <Page>
@@ -410,7 +416,7 @@ export function NftDetailsComponent({
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <Text
                 variant={TextVariant.headingMd}
-                fontWeight={FontWeight.Bold}
+                fontWeight={FontWeight.Medium}
                 color={TextColor.textDefault}
                 fontStyle={FontStyle.Normal}
                 style={{ fontSize: '24px' }}

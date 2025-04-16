@@ -4,7 +4,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix, zeroAddress } from 'ethereumjs-util';
+import { addHexPrefix, zeroAddress, isHexString } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { providerErrors } from '@metamask/rpc-errors';
@@ -12,6 +12,7 @@ import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { toHex } from '@metamask/controller-utils';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   decimalToHex,
@@ -30,6 +31,7 @@ import {
   RECIPIENT_TYPES,
   SWAPS_NO_QUOTES,
   SWAPS_QUOTES_ERROR,
+  INVALID_HEX_DATA_ERROR,
 } from '../../pages/confirmations/send/send.constants';
 
 import {
@@ -1372,6 +1374,15 @@ const slice = createSlice({
         state.draftTransactions[state.currentTransactionUUID];
       draftTransaction.recipient.recipientWarningAcknowledged = true;
       slice.caseReducers.validateSendState(state);
+    },
+
+    updateUserInputHexDataError: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.hexData = {
+        ...draftTransaction.hexData,
+        error: action?.payload,
+      };
     },
 
     /**
@@ -2721,9 +2732,7 @@ export function updateSendAsset(
 
           if (isCurrentOwner) {
             asset.error = null;
-            asset.balance = details.balance
-              ? addHexPrefix(details.balance)
-              : '0x1';
+            asset.balance = details.balance ? toHex(details.balance) : '0x1';
           } else {
             throw new Error(
               'Send slice initialized as NFT send with an NFT not currently owned by the select account',
@@ -2767,6 +2776,13 @@ export function updateSendHexData(hexData) {
     );
 
     await dispatch(actions.updateUserInputHexData(hexData));
+
+    await dispatch(
+      actions.updateUserInputHexDataError(
+        hexData === '' || isHexString(hexData) ? null : INVALID_HEX_DATA_ERROR,
+      ),
+    );
+
     const state = getState();
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
@@ -2861,6 +2877,7 @@ export function resetSendState() {
 export function signTransaction(history) {
   return async (dispatch, getState) => {
     const state = getState();
+    const globalNetworkClientId = getSelectedNetworkClientId(state);
     const { stage, eip1559support, amountMode } = state[name];
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
@@ -3036,6 +3053,7 @@ export function signTransaction(history) {
           const { id } = await addTransactionAndWaitForPublish(
             { ...bestQuote.approvalNeeded, amount: '0x0' },
             {
+              networkClientId: globalNetworkClientId,
               requireApproval: false,
               // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
               type: TransactionType.swapApproval,
@@ -3054,6 +3072,7 @@ export function signTransaction(history) {
         const { id: swapAndSendTxId } = await addTransactionAndWaitForPublish(
           txParams,
           {
+            networkClientId: globalNetworkClientId,
             requireApproval: false,
             sendFlowHistory: draftTransaction.history,
             type: TransactionType.swapAndSend,
@@ -3071,6 +3090,7 @@ export function signTransaction(history) {
         // basic send
         const { id: basicSendTxId } = await dispatch(
           addTransactionAndRouteToConfirmationPage(txParams, {
+            networkClientId: globalNetworkClientId,
             sendFlowHistory: draftTransaction.history,
             type: transactionType,
           }),
@@ -3381,7 +3401,7 @@ export function getIsBalanceInsufficient(state) {
 }
 
 /**
- * Selector that returns the amoung send mode, either MAX or INPUT.
+ * Selector that returns the amount send mode, either MAX or INPUT.
  *
  * @type {Selector<boolean>}
  */
@@ -3463,7 +3483,7 @@ export function getRecipient(state) {
 }
 
 /**
- * Selector that returns the addres of the current draft transaction's
+ * Selector that returns the address of the current draft transaction's
  * recipient.
  *
  * @type {Selector<?string>}
@@ -3501,15 +3521,25 @@ export function getRecipientWarningAcknowledgement(state) {
 // Overall validity and stage selectors
 
 /**
- * Selector that returns the gasFee and amount errors, if they exist.
+ * Selector that returns the gasFee, amount and hexData errors, if they exist.
  *
- * @type {Selector<{ gasFee?: string, amount?: string}>}
+ * @type {Selector<{ gasFee?: string, amount?: string, hexData?: string}>}
  */
 export function getSendErrors(state) {
   return {
     gasFee: getCurrentDraftTransaction(state).gas?.error,
     amount: getCurrentDraftTransaction(state).amount?.error,
+    hexData: getCurrentDraftTransaction(state).hexData?.error,
   };
+}
+
+/**
+ * Selector that returns the hexData error, if it exists.
+ *
+ * @type {Selector<string | null>}
+ */
+export function getSendHexDataError(state) {
+  return getCurrentDraftTransaction(state).hexData?.error ?? null;
 }
 
 /**

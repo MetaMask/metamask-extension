@@ -25,6 +25,7 @@ import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { getIsRevokeDAIPermit } from '../utils';
 import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
+import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
@@ -86,6 +87,7 @@ const getTitle = (
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
+    case TransactionType.batch:
       return t('confirmTitleTransaction');
     case TransactionType.deployContract:
       return t('confirmTitleDeployContract');
@@ -94,17 +96,19 @@ const getTitle = (
         return t('confirmTitleSIWESignature');
       }
       return t('confirmTitleSignature');
+    case TransactionType.revokeDelegation:
+      return t('confirmTitleDelegationRevoke');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
-        if (tokenStandard === TokenStandard.ERC721) {
-          return t('setApprovalForAllRedesignedTitle');
-        }
-
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
           confirmation as SignatureRequestType,
         );
-        if (isRevokeDAIPermit) {
+        if (isRevokeDAIPermit || customSpendingCap === '0') {
           return t('confirmTitleRevokeApproveTransaction');
+        }
+
+        if (tokenStandard === TokenStandard.ERC721) {
+          return t('setApprovalForAllRedesignedTitle');
         }
 
         return t('confirmTitlePermitTokens');
@@ -146,6 +150,7 @@ const getDescription = (
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
+    case TransactionType.batch:
       return '';
     case TransactionType.deployContract:
       return t('confirmTitleDescDeployContract');
@@ -154,6 +159,8 @@ const getDescription = (
         return t('confirmTitleDescSIWESignature');
       }
       return t('confirmTitleDescSign');
+    case TransactionType.revokeDelegation:
+      return t('confirmTitleDescDelegationRevoke');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         if (tokenStandard === TokenStandard.ERC721) {
@@ -163,7 +170,7 @@ const getDescription = (
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
           confirmation as SignatureRequestType,
         );
-        if (isRevokeDAIPermit) {
+        if (isRevokeDAIPermit || customSpendingCap === '0') {
           return '';
         }
 
@@ -230,6 +237,7 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       primaryType,
+      t,
       tokenStandard,
     ],
   );
@@ -253,6 +261,7 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       primaryType,
+      t,
       tokenStandard,
     ],
   );
@@ -274,6 +283,7 @@ const ConfirmTitle: React.FC = memo(() => {
           {title}
         </Text>
       )}
+      <NestedTransactionTag />
       {description !== '' && (
         <Text
           paddingBottom={4}

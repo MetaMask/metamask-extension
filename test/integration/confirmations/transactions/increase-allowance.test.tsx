@@ -136,6 +136,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       chainId: '0xaa36a7',
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     global.ethereumProvider = provider as any;
   });
@@ -155,6 +156,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
       INCREASE_ALLOWANCE_ERC20_TEXT_SIG,
     );
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -165,6 +167,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
   });
 
   afterAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (global as any).ethereumProvider;
   });

@@ -1,4 +1,10 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
@@ -45,6 +51,7 @@ export const NetworkListItem = ({
   onClick,
   onDeleteClick,
   onEditClick,
+  onDiscoverClick,
   onRpcEndpointClick,
   startAccessory,
   endAccessory,
@@ -62,6 +69,7 @@ export const NetworkListItem = ({
   onRpcEndpointClick?: () => void;
   onDeleteClick?: () => void;
   onEditClick?: () => void;
+  onDiscoverClick?: () => void;
   focus?: boolean;
   startAccessory?: ReactNode;
   endAccessory?: ReactNode;
@@ -76,14 +84,16 @@ export const NetworkListItem = ({
     useState();
 
   // I can't find a type that satisfies this.
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setNetworkListItemMenuRef = (ref: any) => {
     setNetworkListItemMenuElement(ref);
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
-  const renderButton = () => {
-    return onDeleteClick || onEditClick ? (
+  const renderButton = useCallback(() => {
+    return onDeleteClick || onEditClick || onDiscoverClick ? (
       <ButtonIcon
         iconName={IconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
@@ -96,7 +106,15 @@ export const NetworkListItem = ({
         size={ButtonIconSize.Sm}
       />
     ) : null;
-  };
+  }, [
+    onDeleteClick,
+    onEditClick,
+    onDiscoverClick,
+    chainId,
+    t,
+    setNetworkListItemMenuRef,
+    setNetworkOptionsMenuOpen,
+  ]);
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
@@ -217,6 +235,7 @@ export const NetworkListItem = ({
               isOpen={networkOptionsMenuOpen}
               onDeleteClick={onDeleteClick}
               onEditClick={onEditClick}
+              onDiscoverClick={onDiscoverClick}
               onClose={() => setNetworkOptionsMenuOpen(false)}
             />
           )

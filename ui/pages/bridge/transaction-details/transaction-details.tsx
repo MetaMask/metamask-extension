@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
+import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -47,7 +48,7 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { selectedAddressTxListSelector } from '../../../selectors';
+import { selectedAddressTxListSelectorAllChain } from '../../../selectors';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -63,12 +64,13 @@ import {
   AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { MINUTE } from '../../../../shared/constants/time';
 import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
 
 const getBlockExplorerUrl = (
-  networkConfiguration: NetworkConfiguration | undefined,
+  networkConfiguration: EvmNetworkConfiguration | undefined,
   txHash: string | undefined,
 ) => {
   if (!networkConfiguration || !txHash) {
@@ -141,11 +143,13 @@ export const getIsDelayed = (
   status: StatusTypes,
   bridgeHistoryItem?: BridgeHistoryItem,
 ) => {
+  const tenMinutesInMs = 10 * MINUTE;
   return Boolean(
     status === StatusTypes.PENDING &&
       bridgeHistoryItem?.startTime &&
       Date.now() >
         bridgeHistoryItem.startTime +
+          tenMinutesInMs +
           bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
   );
 };
@@ -167,7 +171,7 @@ const CrossChainSwapTxDetails = () => {
   const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const selectedAddressTxList = useSelector(
-    selectedAddressTxListSelector,
+    selectedAddressTxListSelectorAllChain,
   ) as TransactionMeta[];
 
   const networkConfigurationsByChainId = useSelector(
@@ -192,21 +196,33 @@ const CrossChainSwapTxDetails = () => {
   });
 
   const srcTxHash = srcChainTxMeta?.hash;
-  const srcBlockExplorerUrl = getBlockExplorerUrl(srcNetwork, srcTxHash);
+  const srcBlockExplorerUrl = srcNetwork?.isEvm
+    ? getBlockExplorerUrl(srcNetwork, srcTxHash)
+    : undefined;
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
-  const destBlockExplorerUrl = getBlockExplorerUrl(destNetwork, destTxHash);
+  const destBlockExplorerUrl = destNetwork?.isEvm
+    ? getBlockExplorerUrl(destNetwork, destTxHash)
+    : undefined;
 
   const status = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status
     : StatusTypes.PENDING;
 
   const srcChainIconUrl = srcNetwork
-    ? getImageForChainId(srcNetwork.chainId)
+    ? getImageForChainId(
+        srcNetwork.isEvm
+          ? formatChainIdToHex(srcNetwork.chainId)
+          : srcNetwork.chainId,
+      )
     : undefined;
 
   const destChainIconUrl = destNetwork
-    ? getImageForChainId(destNetwork.chainId)
+    ? getImageForChainId(
+        destNetwork.isEvm
+          ? formatChainIdToHex(destNetwork.chainId)
+          : destNetwork.chainId,
+      )
     : undefined;
 
   const srcNetworkName =
@@ -330,8 +346,16 @@ const CrossChainSwapTxDetails = () => {
 
           {/* Links to block explorers */}
           <BridgeExplorerLinks
-            srcChainId={srcNetwork?.chainId}
-            destChainId={destNetwork?.chainId}
+            srcChainId={
+              srcNetwork?.isEvm
+                ? formatChainIdToHex(srcNetwork?.chainId)
+                : undefined
+            }
+            destChainId={
+              destNetwork?.isEvm
+                ? formatChainIdToHex(destNetwork?.chainId)
+                : undefined
+            }
             srcBlockExplorerUrl={srcBlockExplorerUrl}
             destBlockExplorerUrl={destBlockExplorerUrl}
           />

@@ -1,7 +1,11 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -23,6 +27,15 @@ import { HEX_ZERO } from '../constants';
 import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
 import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
+import {
+  AlignItems,
+  BackgroundColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  TextColor,
+} from '../../../../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../../../../../components/component-library';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -48,37 +61,46 @@ export const OriginRow = () => {
   );
 };
 
-export const RecipientRow = () => {
+export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { from } = currentConfirmation?.txParams ?? {};
+  const to = recipient ?? currentConfirmation?.txParams?.to;
+  const { nestedTransactions } = currentConfirmation ?? {};
+  const isBatch =
+    Boolean(nestedTransactions?.length) &&
+    to?.toLowerCase() === from.toLowerCase();
 
-  if (
-    !currentConfirmation?.txParams?.to ||
-    !isValidAddress(currentConfirmation?.txParams?.to ?? '')
-  ) {
+  if (!to || !isValidAddress(to)) {
     return null;
   }
 
   const { chainId } = currentConfirmation;
 
   return (
-    <ConfirmInfoRow
+    <ConfirmInfoAlertRow
+      ownerId={currentConfirmation.id}
+      alertKey={RowAlertKey.InteractingWith}
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      <ConfirmInfoRowAddress
-        address={currentConfirmation.txParams.to}
-        chainId={chainId}
-      />
-    </ConfirmInfoRow>
+      {isBatch ? (
+        <SmartContractWithLogo />
+      ) : (
+        <ConfirmInfoRowAddress address={to} chainId={chainId} />
+      )}
+    </ConfirmInfoAlertRow>
   );
 };
 
 export const MethodDataRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const methodData = useFourByte(currentConfirmation);
+  const { txParams } = currentConfirmation ?? {};
+  const to = txParams?.to as Hex | undefined;
+  const data = txParams?.data as Hex | undefined;
+  const methodData = useFourByte({ to, data });
 
   if (!methodData?.name) {
     return null;
@@ -125,6 +147,7 @@ const PaymasterRow = () => {
   const { id: userOperationId, chainId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const paymasterAddress = useSelector((state: any) =>
     selectPaymasterAddress(state, userOperationId as string),
@@ -157,6 +180,10 @@ export const TransactionDetails = () => {
     [currentConfirmation],
   );
 
+  if (currentConfirmation?.type === TransactionType.revokeDelegation) {
+    return null;
+  }
+
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
@@ -173,3 +200,24 @@ export const TransactionDetails = () => {
     </>
   );
 };
+
+function SmartContractWithLogo() {
+  const t = useI18nContext();
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      style={{
+        padding: '1px 8px 1px 4px',
+      }}
+    >
+      <img src="images/logo/metamask-fox.svg" width="16" height="16" />
+      <Text marginLeft={2} color={TextColor.inherit}>
+        {t('interactWithSmartContract')}
+      </Text>
+    </Box>
+  );
+}

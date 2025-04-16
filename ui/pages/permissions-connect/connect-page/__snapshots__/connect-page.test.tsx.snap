@@ -4,6 +4,7 @@ exports[`ConnectPage should render correctly 1`] = `
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container main-container connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
@@ -111,6 +112,7 @@ exports[`ConnectPage should render correctly 1`] = `
               >
                 <div
                   class="mm-box multichain-account-list-item mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+                  data-testid="account-item"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--sm:display-none"
@@ -371,6 +373,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
 <div>
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    data-testid="multichain-page"
   >
     <div
       class="mm-box multichain-page__inner-container main-container connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
@@ -478,6 +481,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
               >
                 <div
                   class="mm-box multichain-account-list-item mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+                  data-testid="account-item"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--sm:display-none"
@@ -489,7 +493,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                     >
                       <div>
                         <div
-                          aria-describedby="tippy-tooltip-34"
+                          aria-describedby="static-tooltip-id"
                           class=""
                           data-original-title="Not connected"
                           data-tooltipped=""
