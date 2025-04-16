@@ -1,3 +1,5 @@
+import { setTimeout } from 'node:timers/promises';
+
 // This helper function checks if version has the correct format: "x.y.z" where "x", "y" and "z" are numbers.
 export function isValidVersionFormat(str: string): boolean {
   const regex = /^\d+\.\d+\.\d+$/;
@@ -49,9 +51,6 @@ export const codeRepoToPlatform: { [key: string]: string } = {
   'metamask-mobile': 'mobile',
 };
 
-export const sleep = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
 export async function retry<T extends (...args: any[]) => any>(
   fn: T,
   { retries = 3, delay = 5000 } = { retries: 3, delay: 5000 },
@@ -64,7 +63,7 @@ export async function retry<T extends (...args: any[]) => any>(
       console.log(
         `Attempt ${attempt} failed: ${err.message}. Retrying in ${delay}ms...`,
       );
-      await sleep(delay);
+      await setTimeout(delay);
       delay *= 2;
     }
   }
