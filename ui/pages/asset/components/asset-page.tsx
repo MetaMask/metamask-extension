@@ -2,7 +2,7 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { EthMethod, SolMethod } from '@metamask/keyring-api';
 import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
 import { isEqual } from 'lodash';
-import React, { ReactNode, useEffect, useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
