@@ -1,7 +1,7 @@
 import { text } from 'stream/consumers';
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { dataTestIds } from '@metamask/test-dapp-solana'
+import { dataTestIds } from '@metamask/test-dapp-solana';
 import { By } from 'selenium-webdriver';
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
@@ -39,19 +39,21 @@ export class TestDappSolana {
   async getWalletModal() {
     await this.driver.waitForSelector('.wallet-adapter-modal-list');
 
-    const walletButtons = await this.driver.findElements('.wallet-adapter-modal-list .wallet-adapter-button ');
+    const walletButtons = await this.driver.findElements(
+      '.wallet-adapter-modal-list .wallet-adapter-button ',
+    );
 
     return {
       connectToMetaMaskWallet: async () => {
-        const metaMaskButton = walletButtons[0]; // Assuming MetaMask is allways the first button
+        const metaMaskButton = walletButtons[0]; // Assuming MetaMask is always the first button
 
         if (!metaMaskButton) {
           throw new Error('MetaMask button not found');
         }
 
-        await metaMaskButton.click()
+        await metaMaskButton.click();
       },
-    }
+    };
   }
 
   /**
@@ -63,15 +65,26 @@ export class TestDappSolana {
     await this.waitSelectorTestId(dataTestIds.testPage.header.id);
 
     return {
-      setEndpoint: async (endpoint: string) => await this.setInputValue(dataTestIds.testPage.header.endpoint, endpoint),
+      setEndpoint: async (endpoint: string) =>
+        await this.setInputValue(
+          dataTestIds.testPage.header.endpoint,
+          endpoint,
+        ),
       getConnectionStatus: async () => {
-        const element = await this.driver.findElement(this.getElementSelectorTestId(dataTestIds.testPage.header.connectionStatus));
+        const element = await this.driver.findElement(
+          this.getElementSelectorTestId(
+            dataTestIds.testPage.header.connectionStatus,
+          ),
+        );
         return element.getText();
       },
-      connect: async () => await this.clickElement(dataTestIds.testPage.header.connect),
-      disconnect: async () => await this.clickElement(dataTestIds.testPage.header.disconnect),
-      getAccount: async () => await this.getSolscanShortContent(dataTestIds.testPage.header.account)
-    }
+      connect: async () =>
+        await this.clickElement(dataTestIds.testPage.header.connect),
+      disconnect: async () =>
+        await this.clickElement(dataTestIds.testPage.header.disconnect),
+      getAccount: async () =>
+        await this.getSolscanShortContent(dataTestIds.testPage.header.account),
+    };
   }
 
   /**
@@ -83,9 +96,11 @@ export class TestDappSolana {
     await this.waitSelectorTestId(dataTestIds.testPage.faucet.id);
 
     return {
-      getSol: async () => await this.clickElement(dataTestIds.testPage.faucet.getSol),
-      convertSolToWsol: async () => await this.clickElement(dataTestIds.testPage.faucet.convertSolToWsol),
-    }
+      getSol: async () =>
+        await this.clickElement(dataTestIds.testPage.faucet.getSol),
+      convertSolToWsol: async () =>
+        await this.clickElement(dataTestIds.testPage.faucet.convertSolToWsol),
+    };
   }
 
   /**
@@ -97,10 +112,15 @@ export class TestDappSolana {
     await this.waitSelectorTestId(dataTestIds.testPage.signMessage.id);
 
     return {
-      setMessage: (message: string) => this.setInputValue(dataTestIds.testPage.signMessage.message, message),
-      signMessage: async () => await this.clickElement(dataTestIds.testPage.signMessage.signMessage),
-      getSignedMessage: async () => await this.getSignedMessages(dataTestIds.testPage.signMessage.signedMessage),
-    }
+      setMessage: (message: string) =>
+        this.setInputValue(dataTestIds.testPage.signMessage.message, message),
+      signMessage: async () =>
+        await this.clickElement(dataTestIds.testPage.signMessage.signMessage),
+      getSignedMessage: async () =>
+        await this.getSignedMessages(
+          dataTestIds.testPage.signMessage.signedMessage,
+        ),
+    };
   }
 
   /**
@@ -112,12 +132,21 @@ export class TestDappSolana {
     await this.waitSelectorTestId(dataTestIds.testPage.sendSol.id);
 
     return {
-      setAddress: (address: string) => this.setInputValue(dataTestIds.testPage.sendSol.address, address),
-      signTransaction: async () => await this.clickElement(dataTestIds.testPage.sendSol.signTransaction),
-      sendTransaction: async () => await this.clickElement(dataTestIds.testPage.sendSol.sendTransaction),
-      getSignedTransaction: async () => await this.getSignedMessages(dataTestIds.testPage.sendSol.signedTransaction),
-      getSolscanShortContent: async () => await this.getSolscanShortContent(dataTestIds.testPage.sendSol.transactionHash),
-    }
+      setAddress: (address: string) =>
+        this.setInputValue(dataTestIds.testPage.sendSol.address, address),
+      signTransaction: async () =>
+        await this.clickElement(dataTestIds.testPage.sendSol.signTransaction),
+      sendTransaction: async () =>
+        await this.clickElement(dataTestIds.testPage.sendSol.sendTransaction),
+      getSignedTransaction: async () =>
+        await this.getSignedMessages(
+          dataTestIds.testPage.sendSol.signedTransaction,
+        ),
+      getSolscanShortContent: async () =>
+        await this.getSolscanShortContent(
+          dataTestIds.testPage.sendSol.transactionHash,
+        ),
+    };
   }
 
   /**
@@ -129,12 +158,28 @@ export class TestDappSolana {
     await this.waitSelectorTestId(dataTestIds.testPage.sendSolVersioned.id);
 
     return {
-      setAddress: (address: string) => this.setInputValue(dataTestIds.testPage.sendSolVersioned.address, address),
-      signTransaction: async () => await this.clickElement(dataTestIds.testPage.sendSolVersioned.signTransaction),
-      sendTransaction: async () => await this.clickElement(dataTestIds.testPage.sendSolVersioned.sendTransaction),
-      getSignedTransaction: async () => await this.getSignedMessages(dataTestIds.testPage.sendSolVersioned.signedTransaction),
-      getSolscanShortContent: async () => await this.getSolscanShortContent(dataTestIds.testPage.sendSolVersioned.transactionHash),
-    }
+      setAddress: (address: string) =>
+        this.setInputValue(
+          dataTestIds.testPage.sendSolVersioned.address,
+          address,
+        ),
+      signTransaction: async () =>
+        await this.clickElement(
+          dataTestIds.testPage.sendSolVersioned.signTransaction,
+        ),
+      sendTransaction: async () =>
+        await this.clickElement(
+          dataTestIds.testPage.sendSolVersioned.sendTransaction,
+        ),
+      getSignedTransaction: async () =>
+        await this.getSignedMessages(
+          dataTestIds.testPage.sendSolVersioned.signedTransaction,
+        ),
+      getSolscanShortContent: async () =>
+        await this.getSolscanShortContent(
+          dataTestIds.testPage.sendSolVersioned.transactionHash,
+        ),
+    };
   }
 
   /**
@@ -146,12 +191,21 @@ export class TestDappSolana {
     await this.waitSelectorTestId(dataTestIds.testPage.sendMemo.id);
 
     return {
-      setMemo: (memo: string) => this.setInputValue(dataTestIds.testPage.sendMemo.memo, memo),
-      signTransaction: async () => await this.clickElement(dataTestIds.testPage.sendMemo.signTransaction),
-      sendTransaction: async () => await this.clickElement(dataTestIds.testPage.sendMemo.sendTransaction),
-      getSignedTransaction: async () => await this.getSignedMessages(dataTestIds.testPage.sendMemo.signedTransaction),
-      getSolscanShortContent: async () => await this.getSolscanShortContent(dataTestIds.testPage.sendMemo.transactionHash),
-    }
+      setMemo: (memo: string) =>
+        this.setInputValue(dataTestIds.testPage.sendMemo.memo, memo),
+      signTransaction: async () =>
+        await this.clickElement(dataTestIds.testPage.sendMemo.signTransaction),
+      sendTransaction: async () =>
+        await this.clickElement(dataTestIds.testPage.sendMemo.sendTransaction),
+      getSignedTransaction: async () =>
+        await this.getSignedMessages(
+          dataTestIds.testPage.sendMemo.signedTransaction,
+        ),
+      getSolscanShortContent: async () =>
+        await this.getSolscanShortContent(
+          dataTestIds.testPage.sendMemo.transactionHash,
+        ),
+    };
   }
 
   /**
@@ -163,14 +217,31 @@ export class TestDappSolana {
     await this.waitSelectorTestId(dataTestIds.testPage.sendWSol.id);
 
     return {
-      setNbAddresses: (nbAddresses: string) => this.setInputValue(dataTestIds.testPage.sendWSol.nbAddresses, nbAddresses),
-      checkMultipleTransaction: (checked: boolean) => this.checkOption(dataTestIds.testPage.sendWSol.multipleTransactions, checked),
-      setAmount: (amount: string) => this.setInputValue(dataTestIds.testPage.sendWSol.amount, amount),
-      signTransaction: async () => await this.clickElement(dataTestIds.testPage.sendWSol.signTransaction),
-      sendTransaction: async () => await this.clickElement(dataTestIds.testPage.sendWSol.sendTransaction),
-      getSignedTransactions: async () => await this.getSignedMessages(dataTestIds.testPage.sendWSol.signedTransactions),
-      getSolscanShortContents: async () => await this.getSolscanShortContents(dataTestIds.testPage.sendWSol.transactionHashs),
-    }
+      setNbAddresses: (nbAddresses: string) =>
+        this.setInputValue(
+          dataTestIds.testPage.sendWSol.nbAddresses,
+          nbAddresses,
+        ),
+      checkMultipleTransaction: (checked: boolean) =>
+        this.checkOption(
+          dataTestIds.testPage.sendWSol.multipleTransactions,
+          checked,
+        ),
+      setAmount: (amount: string) =>
+        this.setInputValue(dataTestIds.testPage.sendWSol.amount, amount),
+      signTransaction: async () =>
+        await this.clickElement(dataTestIds.testPage.sendWSol.signTransaction),
+      sendTransaction: async () =>
+        await this.clickElement(dataTestIds.testPage.sendWSol.sendTransaction),
+      getSignedTransactions: async () =>
+        await this.getSignedMessages(
+          dataTestIds.testPage.sendWSol.signedTransactions,
+        ),
+      getSolscanShortContents: async () =>
+        await this.getSolscanShortContents(
+          dataTestIds.testPage.sendWSol.transactionHashs,
+        ),
+    };
   }
 
   /**
@@ -179,12 +250,20 @@ export class TestDappSolana {
    * @returns The Partial Sign component helper methods.
    */
   async getPartialSignTest() {
-    await this.waitSelectorTestId(dataTestIds.testPage.partialSignTransaction.id);
+    await this.waitSelectorTestId(
+      dataTestIds.testPage.partialSignTransaction.id,
+    );
 
     return {
-      signTransaction: async () => await this.clickElement(dataTestIds.testPage.partialSignTransaction.signTransaction),
-      getSignedTransaction: async () => await this.getSignedMessages(dataTestIds.testPage.partialSignTransaction.signedTransaction),
-    }
+      signTransaction: async () =>
+        await this.clickElement(
+          dataTestIds.testPage.partialSignTransaction.signTransaction,
+        ),
+      getSignedTransaction: async () =>
+        await this.getSignedMessages(
+          dataTestIds.testPage.partialSignTransaction.signedTransaction,
+        ),
+    };
   }
 
   /**
@@ -233,8 +312,10 @@ export class TestDappSolana {
    * @param value - Whether to check or uncheck the checkbox.
    */
   private async checkOption(id: string, value: boolean) {
-    const element = await this.driver.findElement(this.getElementSelectorTestId(id));
-    const isChecked = await element.isSelected()
+    const element = await this.driver.findElement(
+      this.getElementSelectorTestId(id),
+    );
+    const isChecked = await element.isSelected();
 
     if (isChecked !== value) {
       await element.click();
@@ -248,7 +329,9 @@ export class TestDappSolana {
    * @returns An array of signed messages.
    */
   private async getSignedMessages(id: string) {
-    const element = await this.driver.findElement(this.getElementSelectorTestId(id));
+    const element = await this.driver.findElement(
+      this.getElementSelectorTestId(id),
+    );
     const value = await element.getAttribute('value');
 
     return value.split('\n').map((hash) => hash.trim());
@@ -272,7 +355,9 @@ export class TestDappSolana {
    * @returns An array of transaction hashes.
    */
   private async getSolscanShortContents(id: string) {
-    const element = await this.driver.findElement(this.getElementSelectorTestId(id));
+    const element = await this.driver.findElement(
+      this.getElementSelectorTestId(id),
+    );
     const contents = await element.findElements(By.css('.content'));
 
     return contents.map((content) => content.getText());
