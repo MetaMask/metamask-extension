@@ -2,9 +2,17 @@ import {
   DelegationController,
   DelegationControllerMessenger,
 } from '@metamask/delegation-controller';
-import { getDelegationHashOffchain } from '@metamask/delegation-toolkit';
+import {
+  getDelegationHashOffchain,
+  getDeleGatorEnvironment,
+} from '@metamask/delegation-toolkit';
+import { Hex, hexToNumber } from 'viem';
 import { DelegationControllerInitMessenger } from '../messengers/delegation-controller-messenger';
 import { ControllerInitFunction, ControllerInitResult } from '../types';
+
+const getDelegationEnvironment = (chainId: Hex) => {
+  return getDeleGatorEnvironment(hexToNumber(chainId));
+};
 
 export const DelegationControllerInit: ControllerInitFunction<
   DelegationController,
@@ -15,6 +23,7 @@ export const DelegationControllerInit: ControllerInitFunction<
     messenger: controllerMessenger,
     state: persistedState.DelegationController,
     hashDelegation: getDelegationHashOffchain,
+    getDelegationEnvironment,
   });
 
   const api = getApi(controller);
