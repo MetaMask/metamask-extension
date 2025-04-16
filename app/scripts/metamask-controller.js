@@ -4247,18 +4247,19 @@ export default class MetamaskController extends EventEmitter {
           userStorageController,
         ),
 
-      performGetStorageAllFeatureEntries:
+      // GIGEL - UserStorageController basics
+      userStorageGetAllItems:
         userStorageController.performGetStorageAllFeatureEntries.bind(
           userStorageController,
         ),
-      batchSetUserStorageData:
-        userStorageController.performBatchSetStorage.bind(
-          userStorageController,
-        ),
-      batchDeleteUserStorageData:
+      userStorageSetItems: userStorageController.performBatchSetStorage.bind(
+        userStorageController,
+      ),
+      userStorageDeleteItems:
         userStorageController.performBatchDeleteStorage.bind(
           userStorageController,
         ),
+      // GIGEL - end UserStorageController basics
 
       // NotificationServicesController
       checkAccountsPresence:

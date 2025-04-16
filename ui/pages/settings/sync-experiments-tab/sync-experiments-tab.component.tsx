@@ -1,13 +1,10 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { Box } from '../../../components/component-library';
-import { performGetStorageAllFeatureEntries } from '../../../store/actions';
+import { userStorageGetAllItems, userStorageSetItems } from '../../../store/actions';
 
 export const SyncExperimentsTab: React.FC = () => {
-  // get all items from accounts_v2 and render them in the component
   const [items, setItems] = React.useState<Record<string, string> | null>(null);
   const [loading, setLoading] = React.useState(false);
-  const dispatch = useDispatch();
 
   return (
     <Box className="settings-page__body">
@@ -36,20 +33,14 @@ export const SyncExperimentsTab: React.FC = () => {
   async function loadAllItems() {
     try {
       setLoading(true);
-      let result;
-      try {
-        result = await dispatch(
-          performGetStorageAllFeatureEntries('accounts_v2'),
-        );
-      } catch (e) {
-        console.error('Error fetching items:', e);
-        return;
-      } finally {
-        setLoading(false);
-      }
+
+      const pushResult = await userStorageSetItems('test-items-123', {a : "1", b: "2", c: "3"});
+      console.log(`GIGEL pushResult`, pushResult);
+      const result = await userStorageGetAllItems('test-items-123');
       setItems(result);
     } catch (e) {
-      console.error('BIG Error fetching items:', e);
+      console.error('GIGEL: BIG Error fetching items:', e);
+      setLoading(false);
     }
   }
 };

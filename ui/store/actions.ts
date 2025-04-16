@@ -6132,21 +6132,32 @@ export async function createSnapAccount(
 ///: END:ONLY_INCLUDE_IF
 
 // GIGEL SYNC EXPERIMENTS
-export async function performGetStorageAllFeatureEntries(namespace: string) {
+export async function userStorageGetAllItems(namespace: string) {
   const result = await submitRequestToBackground(
-    'performGetStorageAllFeatureEntries',
+    'userStorageGetAllItems',
     [namespace],
   );
   return result;
 }
 
-export async function batchSetItems(
+export async function userStorageSetItems(
   namespace: string,
   data: Record<string, string>,
 ) {
-  const result = await submitRequestToBackground('batchSetUserStorageData', [
+  const result = await submitRequestToBackground('userStorageSetItems', [
     namespace,
     Object.entries(data),
+  ]);
+  return result;
+}
+
+export async function userStorageDeleteItems(
+  namespace: string,
+  keys: string[],
+) {
+  const result = await submitRequestToBackground('userStorageDeleteItems', [
+    namespace,
+    keys,
   ]);
   return result;
 }
