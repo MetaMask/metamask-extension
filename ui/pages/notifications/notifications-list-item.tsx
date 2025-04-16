@@ -34,6 +34,8 @@ export function NotificationsListItem({
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
   const handleNotificationClick = useCallback(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationClicked,
@@ -47,6 +49,8 @@ export function NotificationsListItem({
       },
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     markNotificationAsRead([
       {
         id: notification.id,

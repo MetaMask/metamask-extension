@@ -124,11 +124,15 @@ export const NotificationDetailNetworkFee: FC<
         setNetworkFeesError(true);
       }
     };
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchNetworkFees();
   }, []);
 
   const handleClick = () => {
     if (!isOpen) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent({
         category: MetaMetricsEventCategory.NotificationInteraction,
         event: MetaMetricsEventName.NotificationDetailClicked,

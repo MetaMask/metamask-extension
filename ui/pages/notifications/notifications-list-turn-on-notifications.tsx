@@ -54,6 +54,8 @@ export const NotificationsListTurnOnNotifications = () => {
 
   const handleTurnOnNotifications = async () => {
     await enableNotifications();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.EnablingNotifications,

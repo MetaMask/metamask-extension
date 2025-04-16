@@ -133,6 +133,8 @@ export function useSimulationMetrics({
       return;
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     updateTransactionEventFragment(params, transactionId);
   }, [
     shouldSkipMetrics,
@@ -167,6 +169,8 @@ function useIncompleteAssetEvent(
       continue;
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
       category: MetaMetricsEventCategory.Transactions,

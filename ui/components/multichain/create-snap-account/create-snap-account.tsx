@@ -43,11 +43,15 @@ export const CreateSnapAccount = ({
 
   const onCreateAccount = useCallback(
     async (_accountNameSuggestion?: string) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       snapClient.createAccount({
         scope: chainId,
         entropySource: selectedKeyringId,
         accountNameSuggestion: _accountNameSuggestion,
       });
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       onActionComplete(true);
     },
     [snapClient, chainId, selectedKeyringId, onActionComplete],

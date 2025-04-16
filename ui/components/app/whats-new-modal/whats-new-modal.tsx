@@ -102,6 +102,8 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
     await Promise.all(
       notifications.map(({ id }) => handleNotificationViewed(id)),
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.Home,
       event: MetaMetricsEventName.WhatsNewViewed,
@@ -140,6 +142,8 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
         <CreateSolanaAccountModal
           onClose={() => {
             setShowCreateSolanaAccountModal(false);
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             handleModalClose();
           }}
         />

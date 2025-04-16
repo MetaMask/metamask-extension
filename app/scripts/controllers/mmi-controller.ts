@@ -166,10 +166,14 @@ export class MMIController {
 
     // Get configuration from MMIConfig controller
     if (!process.env.IN_TEST) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.mmiConfigurationController.storeConfiguration().then(() => {
         // This must happen after the configuration is fetched
         // Otherwise websockets will always be disabled in the first run
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         this.transactionUpdateController.subscribeToEvents();
       });
     }
@@ -286,6 +290,8 @@ export class MMIController {
 
         keyring.on(REFRESH_TOKEN_CHANGE_EVENT, () => {
           log.info(`Refresh token change event for ${type}`);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.persistKeyringsAfterRefreshTokenChange();
         });
 
@@ -301,6 +307,8 @@ export class MMIController {
         );
 
         keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.logAndStoreApiRequest(logData);
         });
 
@@ -319,6 +327,8 @@ export class MMIController {
         const txList = this.txStateManager.getTransactions(); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           updateCustodianTransactions({
             keyring,
             type,
@@ -361,6 +371,8 @@ export class MMIController {
       await this.mmiConfigurationController.store.getState();
 
     if (mmiConfigData?.mmiConfiguration?.features?.websocketApi) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.transactionUpdateController.getCustomerProofForAddresses(addresses);
     }
   }
@@ -411,6 +423,8 @@ export class MMIController {
 
     keyring.on(REFRESH_TOKEN_CHANGE_EVENT, () => {
       log.info(`Refresh token change event for ${keyring.type}`);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.persistKeyringsAfterRefreshTokenChange();
     });
 
@@ -424,6 +438,8 @@ export class MMIController {
     );
 
     keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.logAndStoreApiRequest(logData);
     });
 
@@ -535,6 +551,8 @@ export class MMIController {
       await this.mmiConfigurationController.store.getState();
 
     if (mmiConfigData?.mmiConfiguration?.features?.websocketApi) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.transactionUpdateController.getCustomerProofForAddresses(
         newAccounts,
       );
@@ -830,6 +848,8 @@ export class MMIController {
     signOperation: string,
   ) {
     if (signature.custodian_transactionId) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.transactionUpdateController.addTransactionToWatchList(
         signature.custodian_transactionId,
         signature.from,

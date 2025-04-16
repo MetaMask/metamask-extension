@@ -63,6 +63,8 @@ export const setBridgeFeatureFlags = () => {
 export const resetBridgeState = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(resetInputFields());
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
   };
 };

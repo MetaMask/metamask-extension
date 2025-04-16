@@ -162,6 +162,8 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       );
 
       if (Boolean(confirmationResult) && url.length > 0) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         browser.tabs.create({ url });
       } else {
         console.log('User refused snap account redirection to:', url);

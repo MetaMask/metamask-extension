@@ -40,6 +40,8 @@ export function build(onComplete: () => void = noop) {
     } as const satisfies WebpackDevServerType.Configuration;
 
     const server = new WebpackDevServer(serverOptions, compiler);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     server.start().then(() => console.log('🦊 Watching for changes…'));
   } else {
     console.error(`🦊 Running ${options.mode} build…`);

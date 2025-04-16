@@ -89,6 +89,8 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     }
 
     if (bestQuote) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent(
         {
           event: MetaMetricsEventName.sendSwapQuoteReceived,
@@ -125,6 +127,8 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
   // use to track when a quote is requested and received
   useEffect(() => {
     if (isSwapQuoteLoading) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent(
         {
           event: MetaMetricsEventName.sendSwapQuoteRequested,
@@ -136,6 +140,8 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
         { excludeMetaMetricsId: false },
       );
     } else if (bestQuote) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       trackEvent(
         {
           event: MetaMetricsEventName.sendSwapQuoteReceived,
@@ -238,6 +244,8 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
                       <a
                         onClick={() => {
                           /* istanbul ignore next */
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+                          // eslint-disable-next-line @typescript-eslint/no-floating-promises
                           trackEvent({
                             event: 'Clicked "Gas Fees: Learn More" Link',
                             category: MetaMetricsEventCategory.Swaps,

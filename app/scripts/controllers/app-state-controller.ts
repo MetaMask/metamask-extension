@@ -684,6 +684,8 @@ export class AppStateController extends BaseController<
     if (this.#timer) {
       clearTimeout(this.#timer);
     } else if (isManifestV3) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
     }
 
@@ -709,6 +711,8 @@ export class AppStateController extends BaseController<
         (alarmInfo: { name: string }) => {
           if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
             this.#onInactiveTimeout();
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             this.#extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
           }
         },
@@ -1082,6 +1086,8 @@ export class AppStateController extends BaseController<
       return;
     }
     try {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.messagingSystem.call(
         'ApprovalController:acceptRequest',
         this.#approvalRequestId,

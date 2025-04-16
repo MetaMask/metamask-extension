@@ -130,6 +130,8 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
             )
           }
           onClickBlockExplorer={() => {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             trackEvent({
               event: 'Clicked Block Explorer Link',
               category: MetaMetricsEventCategory.Navigation,
