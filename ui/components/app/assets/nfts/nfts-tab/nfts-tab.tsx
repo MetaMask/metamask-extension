@@ -19,7 +19,6 @@ import {
   getUseNftDetection,
   getNftIsStillFetchingIndication,
   getPreferences,
-  getAllChainsToPoll,
 } from '../../../../../selectors';
 import {
   Box,
@@ -40,15 +39,8 @@ import Spinner from '../../../../ui/spinner';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
-import {
-  checkAndUpdateAllNftsOwnershipStatus,
-  detectNfts,
-  showImportNftsModal,
-} from '../../../../../store/actions';
-import {
-  ASSET_ROUTE,
-  SECURITY_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { showImportNftsModal } from '../../../../../store/actions';
+import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
@@ -76,7 +68,6 @@ export default function NftsTab() {
   const showNftBanner = hasAnyNfts === false;
   const { chainId, nickname } = useSelector(getCurrentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
-  const allChainIds = useSelector(getAllChainsToPoll);
 
   useEffect(() => {
     if (nftsLoading || !showNftBanner) {
@@ -111,17 +102,6 @@ export default function NftsTab() {
     history.push(
       `${ASSET_ROUTE}/${toHex(nft.chainId)}/${nft.address}/${nft.tokenId}`,
     );
-  };
-
-  const onEnableAutoDetect = () => {
-    history.push(SECURITY_ROUTE);
-  };
-
-  const onRefresh = () => {
-    if (isMainnet) {
-      dispatch(detectNfts(allChainIds));
-    }
-    checkAndUpdateAllNftsOwnershipStatus();
   };
 
   const sortedNfts = sortAssets(currentlyOwnedNfts, {
