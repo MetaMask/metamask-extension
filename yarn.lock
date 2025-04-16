@@ -4798,9 +4798,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/assets-controllers@npm:56.0.0-preview-f919f9b0":
-  version: 56.0.0-preview-f919f9b0
-  resolution: "@metamask-previews/assets-controllers@npm:56.0.0-preview-f919f9b0"
+"@metamask-previews/assets-controllers@npm:56.0.0-preview-eeefabb3":
+  version: 56.0.0-preview-eeefabb3
+  resolution: "@metamask-previews/assets-controllers@npm:56.0.0-preview-eeefabb3"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -4840,7 +4840,7 @@ __metadata:
     "@metamask/snaps-controllers": ^11.2.1
     "@metamask/transaction-controller": ^54.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/37e00a931ca41c4b1e05373d01cdb579c4e8732b147608bb6c57d4b3c76794b76536ec5d8e7b5da537a445d1e8ae77021dbda443dc4c03bbdd1fa08bbf291630
+  checksum: 10/f3c414d02e1c3dd32a131007a0ac76078d445f434dd4c0de654ed0d8a629094287fe0a3e0aef148764f7da2b60d2343570a5d008c0f34530ede17185481b11e6
   languageName: node
   linkType: hard
 
@@ -4944,9 +4944,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@56.0.0-preview-f919f9b0#.yarn/patches/@metamask-assets-controllers-npm-56.0.0-c5bff98e9b.patch::locator=metamask-crx%40workspace%3A.":
-  version: 56.0.0-preview-f919f9b0
-  resolution: "@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@npm%3A56.0.0-preview-f919f9b0#.yarn/patches/@metamask-assets-controllers-npm-56.0.0-c5bff98e9b.patch::version=56.0.0-preview-f919f9b0&hash=af1126&locator=metamask-crx%40workspace%3A."
+"@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@56.0.0-preview-eeefabb3#.yarn/patches/@metamask-assets-controllers-npm-56.0.0-c5bff98e9b.patch::locator=metamask-crx%40workspace%3A.":
+  version: 56.0.0-preview-eeefabb3
+  resolution: "@metamask/assets-controllers@patch:@metamask-previews/assets-controllers@npm%3A56.0.0-preview-eeefabb3#.yarn/patches/@metamask-assets-controllers-npm-56.0.0-c5bff98e9b.patch::version=56.0.0-preview-eeefabb3&hash=af1126&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -4986,7 +4986,7 @@ __metadata:
     "@metamask/snaps-controllers": ^11.2.1
     "@metamask/transaction-controller": ^54.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/1bb82bf972f44ecb1c05ced7eff9c9d507971119c5a57a7a53fc78523b3275b688f3f938057344fd75c189a8ded63c551135fa663ac3389cf4d9a8b70547ebee
+  checksum: 10/4a5ca40eeb53f8f65eebd2e92f395c42fc932f97061bfc38c69cc5becf33fc44661bf5848d97a2df65fb8de0f0c18d478ce1c7c96927a2665a862e40f72d27ea
   languageName: node
   linkType: hard
 
@@ -27288,7 +27288,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "patch:@metamask-previews/assets-controllers@56.0.0-preview-f919f9b0#.yarn/patches/@metamask-assets-controllers-npm-56.0.0-c5bff98e9b.patch"
+    "@metamask/assets-controllers": "patch:@metamask-previews/assets-controllers@56.0.0-preview-eeefabb3#.yarn/patches/@metamask-assets-controllers-npm-56.0.0-c5bff98e9b.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"

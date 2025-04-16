@@ -71,7 +71,6 @@ export function getAssetsMetadata(state: AssetsState) {
  * @returns An object containing non-EVM assets per accounts.
  */
 export function getAssetsRates(state: AssetsRatesState) {
-  console.log('getAssetsRates', state.metamask.conversionRates);
   return state.metamask.conversionRates;
 }
 
@@ -82,7 +81,6 @@ export function getAssetsRates(state: AssetsRatesState) {
  * @returns An object containing non-EVM assets historical prices per asset types (CAIP-19).
  */
 export function getHistoricalPrices(state: AssetsRatesState) {
-  console.log('getHistoricalPrices', state.metamask.historicalPrices);
   return state.metamask.historicalPrices;
 }
 
