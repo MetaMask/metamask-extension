@@ -5,7 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
 ### Changed
 - Move network selector from home screen to Settings menu as a "Networks" section behind the `REMOVE_GNS` feature flag ([#31959](https://github.com/MetaMask/metamask-extension/pull/31959))
 
