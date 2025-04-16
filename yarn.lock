@@ -5594,19 +5594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^17.2.0, @metamask/keyring-api@npm:^17.2.1":
-  version: 17.2.1
-  resolution: "@metamask/keyring-api@npm:17.2.1"
-  dependencies:
-    "@metamask/keyring-utils": "npm:^2.3.1"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bech32: "npm:^2.0.0"
-  checksum: 10/666b8506724c0f759e755ddc888fc0ecb44ef98bcf2f9d15ce009d00b93c126415c0af9f5037157a63f7fc7524358601650589819e487f7acb3e4748467b0a7b
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-api@npm:^17.4.0":
+"@metamask/keyring-api@npm:^17.2.0, @metamask/keyring-api@npm:^17.2.1, @metamask/keyring-api@npm:^17.4.0":
   version: 17.5.0
   resolution: "@metamask/keyring-api@npm:17.5.0"
   dependencies:
@@ -5618,29 +5606,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^21.0.0":
-  version: 21.0.1
-  resolution: "@metamask/keyring-controller@npm:21.0.1"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/browser-passworder": "npm:^4.3.0"
-    "@metamask/eth-hd-keyring": "npm:^12.0.0"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/eth-simple-keyring": "npm:^10.0.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-internal-api": "npm:^6.0.0"
-    "@metamask/utils": "npm:^11.2.0"
-    async-mutex: "npm:^0.5.0"
-    ethereumjs-wallet: "npm:^1.0.1"
-    immer: "npm:^9.0.6"
-    ulid: "npm:^2.3.0"
-  checksum: 10/9406eb60ab111a9896a4e2db0ef009fcdd5dbe6daac1b06b77561af60e7463fcfc139727e0891203c0c135f744ac7bc5900b2e6f0bfe8dc5a218689be43bf266
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-controller@npm:^21.0.3":
+"@metamask/keyring-controller@npm:^21.0.0, @metamask/keyring-controller@npm:^21.0.3":
   version: 21.0.3
   resolution: "@metamask/keyring-controller@npm:21.0.3"
   dependencies:
@@ -5673,18 +5639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/keyring-internal-api@npm:6.0.0"
-  dependencies:
-    "@metamask/keyring-api": "npm:^17.2.1"
-    "@metamask/keyring-utils": "npm:^3.0.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-  checksum: 10/069945b3423e7b6bd0b8735d65e17c968e494bc3f8c06e585d6e27f09ced0027541440c9e90ffbcd59b1daf91d7848c09be010a8ceb547ed3c4f6465e810b7a8
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-internal-api@npm:^6.0.1":
+"@metamask/keyring-internal-api@npm:^6.0.0, @metamask/keyring-internal-api@npm:^6.0.1":
   version: 6.0.1
   resolution: "@metamask/keyring-internal-api@npm:6.0.1"
   dependencies:
