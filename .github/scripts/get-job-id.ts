@@ -1,21 +1,18 @@
 import { retry } from './shared/utils';
-import { z } from 'zod';
 import * as core from '@actions/core';
 
 async function main() {
   const { Octokit } = await import('octokit');
 
-  const env = z
-    .object({
-      OWNER: z.string().default('metamask'),
-      REPOSITORY: z.string().default('metamask-extension'),
-      RUN_ID: z.coerce.number(),
-      JOB_NAME: z.string(),
-      ATTEMPT_NUMBER: z.coerce.number(),
-      GITHUB_TOKEN: z.string(),
-      GITHUB_ACTIONS: z.coerce.boolean().default(false),
-    })
-    .parse(process.env);
+  const env = {
+    OWNER: process.env.OWNER || 'metamask',
+    REPOSITORY: process.env.REPOSITORY || 'metamask-extension',
+    RUN_ID: +process.env.RUN_ID!,
+    JOB_NAME: process.env.JOB_NAME!,
+    ATTEMPT_NUMBER: +process.env.ATTEMPT_NUMBER!,
+    GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
+    GITHUB_ACTIONS: process.env.GITHUB_ACTIONS === 'true',
+  };
 
   const github = new Octokit({ auth: env.GITHUB_TOKEN });
 
