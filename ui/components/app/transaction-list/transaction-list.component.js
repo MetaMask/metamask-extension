@@ -506,13 +506,13 @@ export default function TransactionList({
     setSelectedTransaction(transaction);
   }, []);
 
-  const multichainNetwork = useSelector(
+  const multichainNetworkConfig = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );
   // We still need this data type which is not compatible with non EVM
   // testnets because of how the previous multichain network selectors work
   // TODO: refactor getMultichainAccountUrl to not rely on legacy data types
-  const accountConfigForBlockExplorerLink = useMultichainSelector(
+  const multichainNetworkForSelectedAccount = useMultichainSelector(
     getMultichainNetwork,
     selectedAccount,
   );
@@ -522,7 +522,7 @@ export default function TransactionList({
   if (!isEvmAccountType(selectedAccount.type)) {
     const addressLink = getMultichainAccountUrl(
       selectedAccount.address,
-      accountConfigForBlockExplorerLink,
+      multichainNetworkForSelectedAccount,
     );
 
     const metricsLocation = 'Activity Tab';
@@ -539,7 +539,7 @@ export default function TransactionList({
               transaction={selectedTransaction}
               onClose={() => toggleShowDetails(null)}
               userAddress={selectedAccount.address}
-              networkConfig={multichainNetwork}
+              networkConfig={multichainNetworkConfig}
             />
           ))}
 
@@ -581,7 +581,7 @@ export default function TransactionList({
                         <MultichainTransactionListItem
                           key={`${transaction.id}`}
                           transaction={transaction}
-                          networkConfig={multichainNetwork}
+                          networkConfig={multichainNetworkConfig}
                           toggleShowDetails={toggleShowDetails}
                         />
                       );
