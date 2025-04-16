@@ -63,13 +63,11 @@ import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 
 type AssetListControlBarProps = {
-  showNftLinks?: boolean;
   showTokensLinks?: boolean;
   showTokenFiatBalance?: boolean;
 };
 
 const AssetListControlBar = ({
-  showNftLinks,
   showTokensLinks,
   showTokenFiatBalance,
 }: AssetListControlBarProps) => {
@@ -290,10 +288,11 @@ const AssetListControlBar = ({
           </Tooltip>
 
           <ImportControl
-            showNftLinks={showNftLinks}
             showTokensLinks={showTokensLinks}
             onClick={
-              showNftLinks ? toggleImportNftPopover : toggleImportTokensPopover
+              showTokensLinks
+                ? toggleImportTokensPopover
+                : toggleImportNftPopover
             }
           />
         </Box>

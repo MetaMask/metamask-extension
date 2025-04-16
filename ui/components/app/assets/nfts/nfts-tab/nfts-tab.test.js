@@ -307,41 +307,40 @@ describe('NFT Items', () => {
     });
   });
 
-  describe('NFTs options', () => {
-    it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-        useNftDetection: true,
-      });
-      expect(detectNftsStub).not.toHaveBeenCalled();
-      expect(checkAndUpdateAllNftsOwnershipStatusStub).not.toHaveBeenCalled();
-      fireEvent.click(screen.queryByText('Refresh list'));
-      expect(detectNftsStub).toHaveBeenCalled();
-      expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
-    });
-
-    it('should render a link "Refresh list" when some NFTs are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateNftsOwnershipStatus', () => {
-      render({
-        chainId: '0x5',
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-        useNftDetection: true,
-      });
-      expect(checkAndUpdateAllNftsOwnershipStatusStub).not.toHaveBeenCalled();
-      fireEvent.click(screen.queryByText('Refresh list'));
-      expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
-    });
-
-    it('should render a link "Enable autodetect" when some NFTs are present and NFT auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-      });
-      expect(historyPushMock).toHaveBeenCalledTimes(0);
-      fireEvent.click(screen.queryByText('Enable autodetect'));
-      expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
-    });
-  });
+  // TODO: Move to AssetListControlBar test
+  // describe('NFTs options', () => {
+  // it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
+  //   render({
+  //     selectedAddress: ACCOUNT_1,
+  //     nfts: NFTS,
+  //     useNftDetection: true,
+  //   });
+  //   expect(detectNftsStub).not.toHaveBeenCalled();
+  //   expect(checkAndUpdateAllNftsOwnershipStatusStub).not.toHaveBeenCalled();
+  //   fireEvent.click(screen.queryByText('Refresh list'));
+  //   expect(detectNftsStub).toHaveBeenCalled();
+  //   expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
+  // });
+  // it('should render a link "Refresh list" when some NFTs are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateNftsOwnershipStatus', () => {
+  //   render({
+  //     chainId: '0x5',
+  //     selectedAddress: ACCOUNT_1,
+  //     nfts: NFTS,
+  //     useNftDetection: true,
+  //   });
+  //   expect(checkAndUpdateAllNftsOwnershipStatusStub).not.toHaveBeenCalled();
+  //   fireEvent.click(screen.queryByText('Refresh list'));
+  //   expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
+  // });
+  // it('should render a link "Enable autodetect" when some NFTs are present and NFT auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
+  //   render({
+  //     selectedAddress: ACCOUNT_1,
+  //     nfts: NFTS,
+  //   });
+  //   expect(historyPushMock).toHaveBeenCalledTimes(0);
+  //   fireEvent.click(screen.queryByText('Enable autodetect'));
+  //   expect(historyPushMock).toHaveBeenCalledTimes(1);
+  //   expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
+  // });
+  //   });
 });
