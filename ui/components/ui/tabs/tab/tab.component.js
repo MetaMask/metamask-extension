@@ -27,6 +27,7 @@ const Tab = (props) => {
     // eslint-disable-next-line no-unused-vars
     children,
     textProps,
+    disabled,
     ...rest
   } = props;
 
@@ -57,6 +58,7 @@ const Tab = (props) => {
         color={TextColor.inherit}
         {...textProps}
         className={classnames(buttonClassName, textProps?.className)}
+        disabled={disabled}
       >
         {name}
       </Text>
@@ -78,6 +80,7 @@ Tab.propTypes = {
   children: PropTypes.node, // required, but we are not rendering it explicitly
   textProps: PropTypes.object, // props to spread to the Text component
   width: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 Tab.defaultProps = {
