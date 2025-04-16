@@ -19,20 +19,18 @@ import { mockIdentityServices } from '../identity/mocks';
 
 describe('Import flow', function () {
   const arrange = async () => {
-      const unencryptedAccounts = accountsToMockForAccountsSync;
-      const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
-      const userStorageMockttpController = new UserStorageMockttpController();
-      return {
-        unencryptedAccounts,
-        mockedAccountSyncResponse,
-        userStorageMockttpController,
-      };
-    }
-  it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
-    const {
+    const unencryptedAccounts = accountsToMockForAccountsSync;
+    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+    const userStorageMockttpController = new UserStorageMockttpController();
+    return {
+      unencryptedAccounts,
       mockedAccountSyncResponse,
       userStorageMockttpController,
-    } = await arrange();
+    };
+  };
+  it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
+    const { mockedAccountSyncResponse, userStorageMockttpController } =
+      await arrange();
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -135,7 +133,8 @@ describe('Import flow', function () {
   it('Import Account using private key of an already active account should result in an error', async function () {
     const testPrivateKey =
       '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9';
-    const { mockedAccountSyncResponse, userStorageMockttpController } = await arrange();
+    const { mockedAccountSyncResponse, userStorageMockttpController } =
+      await arrange();
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

@@ -37,7 +37,9 @@ describe('Upgrade Account', function (this: Suite) {
         await loginWithBalanceValidation(driver);
 
         // We check that we have an EOA account
-        let accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
+        let accountBytecode = await localNodes[0].getCode(
+          DEFAULT_FIXTURE_ACCOUNT,
+        );
         assert.strictEqual(accountBytecode, undefined);
 
         const testDapp = new TestDapp(driver);
@@ -79,9 +81,7 @@ describe('Upgrade Account', function (this: Suite) {
         await homePage.check_expectedBalanceIsDisplayed('24.9998', 'ETH');
 
         // We check that we have an upgraded account
-        accountBytecode = await localNodes[0].getCode(
-          DEFAULT_FIXTURE_ACCOUNT,
-        );
+        accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
         assert.strictEqual(
           accountBytecode,
           '0xef01008438ad1c834623cff278ab6829a248e37c2d7e3f',

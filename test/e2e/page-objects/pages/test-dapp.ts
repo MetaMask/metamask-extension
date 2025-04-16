@@ -86,7 +86,8 @@ class TestDapp {
 
   private readonly erc721TransferFromButton = '#transferFromButton';
 
-  private readonly ethSubscribeResponse = '[data-testid="eth-subscribe-response"]';
+  private readonly ethSubscribeResponse =
+    '[data-testid="eth-subscribe-response"]';
 
   private readonly getAccountsButton = '#getAccounts';
 
@@ -277,10 +278,9 @@ class TestDapp {
       await this.driver.waitForSelector(this.ethSubscribeResponse);
     } else {
       console.log('Verify eth_subscribe response is not displayed');
-      await this.driver.assertElementNotPresent(
-        this.ethSubscribeResponse,
-        { waitAtLeastGuard: guardTime },
-      );
+      await this.driver.assertElementNotPresent(this.ethSubscribeResponse, {
+        waitAtLeastGuard: guardTime,
+      });
     }
   }
 

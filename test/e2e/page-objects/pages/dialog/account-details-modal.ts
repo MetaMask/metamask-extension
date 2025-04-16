@@ -1,5 +1,5 @@
-import { tEn } from '../../../../lib/i18n-helpers';
 import { LavaDomeDebug } from '@lavamoat/lavadome-core';
+import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../../constants';
 
@@ -8,8 +8,7 @@ class AccountDetailsModal {
 
   private readonly accountAddressText = '.qr-code__address-segments';
 
-  private readonly accountAuthenticateInput =
-    '#account-details-authenticate';
+  private readonly accountAuthenticateInput = '#account-details-authenticate';
 
   private readonly accountPrivateKeyText =
     '[data-testid="account-details-key"]';
@@ -101,20 +100,30 @@ class AccountDetailsModal {
   /**
    * Reveal the private key of the account and verify it is correct in account details modal.
    *
-   * @param expectedPrivateKey - The expected private key to verify.
-   * @param password - The password to authenticate with. Defaults to the default wallet password.
-   * @param expectedPasswordError - Whether to expect a password error. Defaults to false.
+   * @param options - The options object.
+   * @param options.expectedPrivateKey - The expected private key to verify.
+   * @param options.password - The password to authenticate with. Defaults to the default wallet password.
+   * @param options.expectedPasswordError - Whether to expect a password error. Defaults to false.
    */
-  async revealPrivateKeyAndVerify({expectedPrivateKey, password = WALLET_PASSWORD, expectedPasswordError = false}): Promise<void> {
+  async revealPrivateKeyAndVerify({
+    expectedPrivateKey,
+    password = WALLET_PASSWORD,
+    expectedPasswordError = false,
+  }): Promise<void> {
     console.log(
       `Reveal private key and verify it is correct in account details modal`,
     );
     await this.driver.clickElement(this.showPrivateKeyButton);
     await this.driver.fill(this.accountAuthenticateInput, password);
-    await this.driver.press(this.accountAuthenticateInput, this.driver.Key.ENTER);
+    await this.driver.press(
+      this.accountAuthenticateInput,
+      this.driver.Key.ENTER,
+    );
     if (expectedPasswordError) {
       await this.driver.waitForSelector(this.errorMessageForIncorrectPassword);
-      await this.driver.assertElementNotPresent(this.holdToRevealPrivateKeyButton);
+      await this.driver.assertElementNotPresent(
+        this.holdToRevealPrivateKeyButton,
+      );
     } else {
       await this.driver.holdMouseDownOnElement(
         this.holdToRevealPrivateKeyButton,
@@ -122,8 +131,12 @@ class AccountDetailsModal {
       );
       // Verify the private key is expected
       await this.driver.wait(async () => {
-        const privateKey = await this.driver.findElement(this.accountPrivateKeyText);
-        const displayedPrivateKey = LavaDomeDebug.stripDistractionFromText(await privateKey.getText());
+        const privateKey = await this.driver.findElement(
+          this.accountPrivateKeyText,
+        );
+        const displayedPrivateKey = LavaDomeDebug.stripDistractionFromText(
+          await privateKey.getText(),
+        );
         return displayedPrivateKey === expectedPrivateKey;
       });
     }

@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Anvil } from '@viem/anvil';
 import { withFixtures } from '../../helpers';
 import { WALLET_PASSWORD } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
@@ -20,7 +21,13 @@ describe('Incremental Security', function (this: Suite) {
         title: this.test?.fullTitle(),
         dappPath: 'send-eth-with-private-key-test',
       },
-      async ({ driver, localNodes }: { driver: Driver; localNodes: any[] }) => {
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
         // Seed Account
         await localNodes[0].setAccountBalance(
           '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3',
