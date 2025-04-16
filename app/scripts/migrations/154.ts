@@ -38,13 +38,19 @@ function transformState(
         .multichainNetworkConfigurationsByChainId,
     )
   ) {
-    state.MultichainNetworkController.multichainNetworkConfigurationsByChainId = {
-      ...state.MultichainNetworkController.multichainNetworkConfigurationsByChainId,
-      [BtcScope.Testnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Testnet],
-      [BtcScope.Signet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Signet],
-      [SolScope.Testnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Testnet],
-      [SolScope.Devnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Devnet],
-    }
+    state.MultichainNetworkController.multichainNetworkConfigurationsByChainId =
+      {
+        ...state.MultichainNetworkController
+          .multichainNetworkConfigurationsByChainId,
+        [BtcScope.Testnet]:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Testnet],
+        [BtcScope.Signet]:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Signet],
+        [SolScope.Testnet]:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Testnet],
+        [SolScope.Devnet]:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Devnet],
+      };
   }
 
   return state;

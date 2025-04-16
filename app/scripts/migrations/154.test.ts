@@ -65,12 +65,18 @@ describe(`migration #${version}`, () => {
       const expectedData = {
         MultichainNetworkController: {
           multichainNetworkConfigurationsByChainId: {
-            [BtcScope.Mainnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Mainnet],
-            [BtcScope.Testnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Testnet],
-            [BtcScope.Signet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Signet],
-            [SolScope.Mainnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Mainnet],
-            [SolScope.Testnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Testnet],
-            [SolScope.Devnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Devnet],
+            [BtcScope.Mainnet]:
+              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Mainnet],
+            [BtcScope.Testnet]:
+              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Testnet],
+            [BtcScope.Signet]:
+              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Signet],
+            [SolScope.Mainnet]:
+              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Mainnet],
+            [SolScope.Testnet]:
+              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Testnet],
+            [SolScope.Devnet]:
+              AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Devnet],
           },
         },
       };
