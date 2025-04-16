@@ -3588,12 +3588,12 @@ export function setUseCurrencyRateCheck(
 }
 
 // MultichainAssetsRatesController
-export function fetchHistoricalPrices(
+export function fetchHistoricalPricesForAsset(
   address: CaipAssetType,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.fetchHistoricalPrices`);
-    await submitRequestToBackground('fetchHistoricalPrices', [address]);
+    log.debug(`background.fetchHistoricalPricesForAsset`);
+    await submitRequestToBackground('fetchHistoricalPricesForAsset', [address]);
     await forceUpdateMetamaskState(dispatch);
   };
 }

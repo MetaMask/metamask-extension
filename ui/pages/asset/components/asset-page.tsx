@@ -67,7 +67,8 @@ import { getPricePrecision, localizeLargeNumber } from '../util';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
-import { fetchHistoricalPrices } from '../../../store/actions';
+import { fetchHistoricalPricesForAsset } from '../../../store/actions';
+import { getHistoricalPrices } from '../../../selectors/assets';
 
 /** Information about a native or token asset */
 export type Asset = (
@@ -170,6 +171,8 @@ const AssetPage = ({
           return false;
       }
     });
+
+  const historicalPrices = useSelector(getHistoricalPrices);
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
@@ -287,7 +290,9 @@ const AssetPage = ({
   useEffect(() => {
     // this is just for testing purposes
     if (!isEvm) {
-      dispatch(fetchHistoricalPrices(address as CaipAssetType));
+      if (Object.keys(historicalPrices).length === 0) {
+        dispatch(fetchHistoricalPricesForAsset(address as CaipAssetType));
+      }
     }
   }, [address, currency, dispatch]);
 

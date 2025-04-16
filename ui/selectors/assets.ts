@@ -75,6 +75,17 @@ export function getAssetsRates(state: AssetsRatesState) {
   return state.metamask.conversionRates;
 }
 
+/**
+ * Gets non-EVM assets historical prices.
+ *
+ * @param state - Redux state object.
+ * @returns An object containing non-EVM assets historical prices per asset types (CAIP-19).
+ */
+export function getHistoricalPrices(state: AssetsRatesState) {
+  console.log('getHistoricalPrices', state.metamask.historicalPrices);
+  return state.metamask.historicalPrices;
+}
+
 export const getTokenBalancesEvm = createDeepEqualSelector(
   getTokensAcrossChainsByAccountAddressSelector,
   getNativeTokenCachedBalanceByChainIdSelector,
