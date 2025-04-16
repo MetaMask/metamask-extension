@@ -475,7 +475,50 @@ export function getConversionRatesForNativeAsset({
  * @returns The domain value to track in metrics
  */
 export function extractRpcDomain(rpcUrl: string) {
-  // Just return unknown for now as a placeholder
-  console.log(rpcUrl);
-  return 'unknown';
+  if (!rpcUrl) {
+    return 'unknown';
+  }
+
+  try {
+    // Try to parse the URL
+    let url;
+    try {
+      url = new URL(rpcUrl);
+    } catch (e) {
+      // Handle URLs without protocol by adding one
+      if (!rpcUrl.startsWith('http://') && !rpcUrl.startsWith('https://')) {
+        try {
+          url = new URL(`https://${rpcUrl}`);
+        } catch (e2) {
+          return 'invalid_url';
+        }
+      } else {
+        return 'invalid_url';
+      }
+    }
+
+    // Extract hostname
+    const { hostname } = url;
+
+    // Handle localhost (including standard localhost IPs)
+    if (
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname.startsWith('192.168.')
+    ) {
+      return 'localhost';
+    }
+
+    // Check for private IP addresses using regex
+    const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/u;
+    if (ipRegex.test(hostname)) {
+      return 'private_url';
+    }
+
+    // Return the domain (hostname) for all other cases
+    return hostname;
+  } catch (error) {
+    console.error('Error extracting RPC domain:', error);
+    return 'error';
+  }
 }

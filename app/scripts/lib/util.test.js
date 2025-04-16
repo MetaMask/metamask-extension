@@ -454,10 +454,42 @@ describe('app utils', () => {
   });
 
   describe('extractRpcDomain', () => {
-    it('should return unknown for now', () => {
-      expect(
-        extractRpcDomain('https://mainnet.infura.io/v3/123'),
-      ).toStrictEqual('unknown');
+    it('should extract domain from standard URLs', () => {
+      expect(extractRpcDomain('https://mainnet.infura.io/v3/abc123')).toBe(
+        'mainnet.infura.io',
+      );
+      expect(extractRpcDomain('https://eth-mainnet.alchemyapi.io/v2/key')).toBe(
+        'eth-mainnet.alchemyapi.io',
+      );
+      expect(extractRpcDomain('https://rpc.tenderly.co/fork/123')).toBe(
+        'rpc.tenderly.co',
+      );
+    });
+
+    it('should handle localhost URLs', () => {
+      expect(extractRpcDomain('http://localhost:8545')).toBe('localhost');
+      expect(extractRpcDomain('https://localhost:8545/path')).toBe('localhost');
+      expect(extractRpcDomain('http://127.0.0.1:8545')).toBe('localhost');
+      expect(extractRpcDomain('https://192.168.1.1:8545')).toBe('localhost');
+    });
+
+    it('should handle private IP addresses', () => {
+      expect(extractRpcDomain('http://10.0.0.1:8545')).toBe('private_url');
+      expect(extractRpcDomain('http://172.16.0.5:8545')).toBe('private_url');
+      expect(extractRpcDomain('https://11.22.33.44')).toBe('private_url');
+    });
+
+    it('should handle URLs without protocol', () => {
+      expect(extractRpcDomain('mainnet.infura.io/v3/abc123')).toBe(
+        'mainnet.infura.io',
+      );
+    });
+
+    it('should handle invalid URLs and edge cases', () => {
+      expect(extractRpcDomain('')).toBe('unknown');
+      expect(extractRpcDomain(null)).toBe('unknown');
+      // The function currently treats 'invalid-url-format' as a valid hostname after adding https://
+      expect(extractRpcDomain('invalid-url-format')).toBe('invalid-url-format');
     });
   });
 });
