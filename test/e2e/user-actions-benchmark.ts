@@ -119,9 +119,7 @@ async function bridgeUserActions(): Promise<any> {
     {
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
-      localNodeOptions: {
-        hardfork: 'london',
-      },
+      localNodeOptions: 'ganache',
       title: 'benchmark-userActions-bridgeUserActions',
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockFeatureFlag(mockServer, {
