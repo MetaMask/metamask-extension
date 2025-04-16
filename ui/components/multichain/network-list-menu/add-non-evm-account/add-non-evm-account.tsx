@@ -6,7 +6,7 @@ import { toggleNetworkMenu } from '../../../../store/actions';
 import {
   MULTICHAIN_NETWORK_TO_NICKNAME,
   MultichainNetworks,
-  NETWORK_TO_ACCOUNT_TYPE_MAP,
+  MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME,
 } from '../../../../../shared/constants/multichain/networks';
 import {
   Box,
@@ -145,7 +145,7 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
         <Text textAlign={TextAlign.Left} variant={TextVariant.bodyMd}>
           {t('addNonEvmAccountFromNetworkPicker', [
             MULTICHAIN_NETWORK_TO_NICKNAME[chainId],
-            NETWORK_TO_ACCOUNT_TYPE_MAP[chainId],
+            MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME[chainId],
           ])}
         </Text>
       </Box>

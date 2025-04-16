@@ -49,7 +49,10 @@ export enum MultichainNetworks {
 }
 
 // TODO: This data should be provided by the snap
-export const NETWORK_TO_ACCOUNT_TYPE_MAP: Record<CaipChainId, string> = {
+export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
+  CaipChainId,
+  string
+> = {
   [BtcScope.Mainnet]: 'Bitcoin',
   [BtcScope.Testnet]: 'Bitcoin testnet',
   [SolScope.Mainnet]: 'Solana',

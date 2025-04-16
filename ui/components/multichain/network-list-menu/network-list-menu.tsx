@@ -55,7 +55,7 @@ import {
   TEST_CHAINS,
   CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
-import { NETWORK_TO_ACCOUNT_TYPE_MAP } from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME } from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -769,7 +769,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     selectedNonEvmNetwork
   ) {
     title = t('addNonEvmAccount', [
-      NETWORK_TO_ACCOUNT_TYPE_MAP[selectedNonEvmNetwork],
+      MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME[selectedNonEvmNetwork],
     ]);
   } else {
     title = editedNetwork?.name ?? '';
