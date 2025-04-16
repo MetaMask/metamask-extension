@@ -1,12 +1,23 @@
-import { Messenger } from '@metamask/base-controller';
 import {
-  DeFiPositionsControllerAllowedActions,
-  DeFiPositionsControllerAllowedEvents,
-} from '@metamask/assets-controllers';
+  AccountsControllerAccountAddedEvent,
+  AccountsControllerListAccountsAction,
+} from '@metamask/accounts-controller';
+import { Messenger } from '@metamask/base-controller';
+import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
+import { KeyringControllerUnlockEvent } from '@metamask/keyring-controller';
+import { KeyringControllerLockEvent } from '@metamask/keyring-controller';
 
 export type DefiPositionsControllerMessenger = ReturnType<
   typeof getDeFiPositionsControllerMessenger
 >;
+
+type AllowedActions = AccountsControllerListAccountsAction;
+
+type AllowedEvents =
+  | KeyringControllerUnlockEvent
+  | KeyringControllerLockEvent
+  | TransactionControllerTransactionConfirmedEvent
+  | AccountsControllerAccountAddedEvent;
 
 /**
  * Get a restricted messenger for the Defi Positions controller. This is scoped to the
@@ -16,10 +27,7 @@ export type DefiPositionsControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getDeFiPositionsControllerMessenger(
-  messenger: Messenger<
-    DeFiPositionsControllerAllowedActions,
-    DeFiPositionsControllerAllowedEvents
-  >,
+  messenger: Messenger<AllowedActions, AllowedEvents>,
 ) {
   return messenger.getRestricted({
     name: 'DeFiPositionsController',
