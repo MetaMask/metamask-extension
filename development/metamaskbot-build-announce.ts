@@ -3,6 +3,17 @@ import { version as VERSION } from '../package.json';
 
 start().catch(console.error);
 
+const benchmarkPlatforms = ['chrome', 'firefox'];
+const buildTypes = ['browserify', 'webpack'];
+
+type BenchmarkResults = Record<
+  (typeof benchmarkPlatforms)[number],
+  Record<
+    (typeof buildTypes)[number],
+    Record<string, Record<string, Record<string, string>>>
+  >
+>;
+
 function getHumanReadableSize(bytes: number): string {
   if (!bytes) {
     return '0 Bytes';
@@ -48,6 +59,7 @@ async function start(): Promise<void> {
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
     HOST_URL,
+    GITHUB_RUN_ID,
   } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
@@ -55,6 +67,7 @@ async function start(): Promise<void> {
     return;
   }
 
+  const HOST_RUN_URL = `${HOST_URL}/${GITHUB_RUN_ID}`;
   const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
   const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
 
@@ -127,7 +140,7 @@ async function start(): Promise<void> {
   const bundleSizeDataUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
-  const storybookUrl = `${HOST_URL}/storybook-build/index.html`;
+  const storybookUrl = `${HOST_RUN_URL}/storybook-build/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
   const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
@@ -137,10 +150,10 @@ async function start(): Promise<void> {
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
 
-  const bundleSizeStatsUrl = `${HOST_URL}/bundle-size/bundle_size.json`;
+  const bundleSizeStatsUrl = `${HOST_RUN_URL}/bundle-size/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
 
-  const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
+  const userActionsStatsUrl = `${HOST_RUN_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">User Actions Stats</a>`;
 
   // link to artifacts
@@ -165,22 +178,11 @@ async function start(): Promise<void> {
   const exposedContent = `Builds ready [${SHORT_SHA1}]`;
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
 
-  const benchmarkPlatforms = ['chrome', 'firefox'];
-  const buildTypes = ['browserify', 'webpack'];
-
-  type BenchmarkResults = Record<
-    (typeof benchmarkPlatforms)[number],
-    Record<
-      (typeof buildTypes)[number],
-      Record<string, Record<string, Record<string, string>>>
-    >
-  >;
-
   const benchmarkResults: BenchmarkResults = {};
   for (const platform of benchmarkPlatforms) {
     benchmarkResults[platform] = {};
     for (const buildType of buildTypes) {
-      const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-pageload.json`;
+      const benchmarkUrl = `${HOST_RUN_URL}/benchmarks/benchmark-${platform}-${buildType}-pageload.json`;
       try {
         const benchmarkResponse = await fetch(benchmarkUrl);
         if (!benchmarkResponse.ok) {
@@ -296,6 +298,8 @@ async function start(): Promise<void> {
       const benchmarkTable = `<table>${benchmarkTableHeader}${benchmarkTableBody}</table>`;
       const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>\n\n`;
       commentBody += `${benchmarkBody}`;
+
+      commentBody += await runBenchmarkGate(benchmarkResults);
     } catch (error) {
       console.error(`Error constructing benchmark results: '${error}'`);
     }
@@ -373,17 +377,97 @@ async function start(): Promise<void> {
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
   const POST_COMMENT_URI = `https://api.github.com/repos/metamask/metamask-extension/issues/${PR_NUMBER}/comments`;
   console.log(`Announcement:\n${commentBody}`);
-  console.log(`Posting to: ${POST_COMMENT_URI}`);
 
-  const response = await fetch(POST_COMMENT_URI, {
-    method: 'POST',
-    body: JSON_PAYLOAD,
-    headers: {
-      'User-Agent': 'metamaskbot',
-      Authorization: `token ${PR_COMMENT_TOKEN}`,
-    },
-  });
-  if (!response.ok) {
-    throw new Error(`Post comment failed with status '${response.statusText}'`);
+  if (PR_COMMENT_TOKEN) {
+    console.log(`Posting to: ${POST_COMMENT_URI}`);
+
+    const response = await fetch(POST_COMMENT_URI, {
+      method: 'POST',
+      body: JSON_PAYLOAD,
+      headers: {
+        'User-Agent': 'metamaskbot',
+        Authorization: `token ${PR_COMMENT_TOKEN}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(
+        `Post comment failed with status '${response.statusText}'`,
+      );
+    }
   }
+}
+
+async function runBenchmarkGate(
+  benchmarkResults: BenchmarkResults,
+): Promise<string> {
+  const benchmarkGateUrl = `${process.env.HOST_URL}/benchmark-gate/benchmark-gate.json`;
+  const exceededSums = { mean: 0, p95: 0 };
+  let benchmarkGateBody = '';
+
+  console.log(`Fetching benchmark gate from ${benchmarkGateUrl}`);
+  try {
+    const benchmarkResponse = await fetch(benchmarkGateUrl);
+    if (!benchmarkResponse.ok) {
+      throw new Error(
+        `Failed to fetch benchmark gate data, status ${benchmarkResponse.statusText}`,
+      );
+    }
+
+    const { gates, pingThresholds } = await benchmarkResponse.json();
+
+    // Compare benchmarkResults with benchmark-gate.json
+    for (const platform of Object.keys(gates)) {
+      for (const buildType of Object.keys(gates[platform])) {
+        for (const page of Object.keys(gates[platform][buildType])) {
+          for (const measure of Object.keys(gates[platform][buildType][page])) {
+            for (const metric of Object.keys(
+              gates[platform][buildType][page][measure],
+            )) {
+              const benchmarkValue =
+                benchmarkResults[platform][buildType][page][measure][metric];
+
+              const gateValue =
+                gates[platform][buildType][page][measure][metric];
+
+              if (benchmarkValue > gateValue) {
+                const ceiledValue = Math.ceil(parseFloat(benchmarkValue));
+
+                if (measure === 'mean') {
+                  exceededSums.mean += ceiledValue - gateValue;
+                } else if (measure === 'p95') {
+                  exceededSums.p95 += ceiledValue - gateValue;
+                }
+
+                benchmarkGateBody += `Benchmark value ${ceiledValue} exceeds gate value ${gateValue} for ${platform} ${buildType} ${page} ${measure} ${metric}\n`;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (benchmarkGateBody) {
+      benchmarkGateBody += `**Sum of mean exceeds: ${
+        exceededSums.mean
+      }ms | Sum of p95 exceeds: ${
+        exceededSums.p95
+      }ms\nSum of all benchmark exceeds: ${
+        exceededSums.mean + exceededSums.p95
+      }ms**\n`;
+
+      if (
+        exceededSums.mean > pingThresholds.mean ||
+        exceededSums.p95 > pingThresholds.p95 ||
+        exceededSums.mean + exceededSums.p95 >
+          pingThresholds.mean + pingThresholds.p95
+      ) {
+        // Soft gate, just pings @HowardBraham
+        benchmarkGateBody = `cc: @HowardBraham\n${benchmarkGateBody}`;
+      }
+    }
+  } catch (error) {
+    console.error(`Error encountered fetching benchmark gate data: '${error}'`);
+  }
+
+  return benchmarkGateBody;
 }
