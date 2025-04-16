@@ -1121,18 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Demande de transaction"
   },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Annuler la transaction"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Annuler la mise à niveau et la transaction"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Si vous ne souhaitez pas mettre à niveau votre compte, vous pouvez l’annuler ici.\n\nPour finaliser cette transaction sans mise à niveau, vous devrez soumettre à nouveau cette demande sur le site. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Annuler la transaction"
-  },
   "confirmationAlertDetails": {
     "message": "Pour protéger vos actifs, nous vous suggérons de rejeter la demande."
   },
@@ -2006,9 +1994,6 @@
   },
   "existingChainId": {
     "message": "Les informations que vous avez saisies sont associées à un ID de chaîne existant."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Pour afficher et confirmer votre demande la plus récente, vous devez d’abord approuver ou rejeter les demandes existantes."
   },
   "expandView": {
     "message": "Agrandir la vue"

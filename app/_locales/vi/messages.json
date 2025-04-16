@@ -1121,18 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Yêu cầu giao dịch"
   },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Hủy giao dịch"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Hủy cập nhật & giao dịch"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Nếu bạn không muốn cập nhật tài khoản của mình, bạn có thể hủy tại đây.\n\nĐể hoàn tất giao dịch này mà không cập nhật, bạn sẽ cần thực hiện lại yêu cầu này trên trang web. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Hủy giao dịch"
-  },
   "confirmationAlertDetails": {
     "message": "Để bảo vệ tài sản của bạn, chúng tôi đề nghị bạn từ chối yêu cầu này."
   },
@@ -2006,9 +1994,6 @@
   },
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Để xem và xác nhận yêu cầu gần đây nhất của bạn, trước tiên bạn cần phải chấp thuận hoặc từ chối các yêu cầu hiện có."
   },
   "expandView": {
     "message": "Chế độ xem mở rộng"

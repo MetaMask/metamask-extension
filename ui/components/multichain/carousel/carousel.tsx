@@ -6,8 +6,9 @@ import {
   TextAlign,
   AlignItems,
   TextVariant,
+  BorderRadius,
+  TextColor,
   FontWeight,
-  BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
@@ -147,8 +148,8 @@ export const Carousel = React.forwardRef(
                 className="mm-carousel-slide"
                 textAlign={TextAlign.Left}
                 alignItems={AlignItems.center}
-                borderColor={BorderColor.borderMuted}
                 paddingLeft={0}
+                borderRadius={BorderRadius.XL}
                 paddingRight={0}
                 style={{
                   height: BANNER_STYLES.HEIGHT,
@@ -218,13 +219,13 @@ export const Carousel = React.forwardRef(
               titleProps={{
                 variant: TextVariant.bodySmMedium,
                 fontWeight: FontWeight.Medium,
-                marginLeft: 2,
+                marginLeft: 1,
               }}
-              borderColor={BorderColor.borderMuted}
               descriptionProps={{
                 variant: TextVariant.bodyXs,
                 fontWeight: FontWeight.Normal,
-                marginLeft: 2,
+                color: TextColor.textAlternative,
+                marginLeft: 1,
               }}
               onClose={
                 Boolean(handleClose) && !slide.undismissable
@@ -244,6 +245,7 @@ export const Carousel = React.forwardRef(
               padding={0}
               paddingLeft={3}
               paddingRight={3}
+              borderRadius={BorderRadius.XL}
             />
           ))}
         </ResponsiveCarousel>

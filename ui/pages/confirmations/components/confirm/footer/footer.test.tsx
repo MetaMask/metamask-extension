@@ -1,6 +1,4 @@
 import React from 'react';
-import { GasFeeToken } from '@metamask/transaction-controller';
-import { toHex } from '@metamask/controller-utils';
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
@@ -8,7 +6,6 @@ import {
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
-  getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
   getMockPersonalSignConfirmStateForRequest,
@@ -31,19 +28,6 @@ import * as confirmContext from '../../../context/confirm';
 import { SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import Footer from './footer';
-
-const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
-  amount: toHex(1000),
-  balance: toHex(2345),
-  decimals: 3,
-  gas: '0x3',
-  maxFeePerGas: '0x4',
-  maxPriorityFeePerGas: '0x5',
-  rateWei: toHex('1798170000000000000'),
-  recipient: '0x1234567890123456789012345678901234567890',
-  symbol: 'TEST',
-  tokenAddress: '0x1234567890123456789012345678901234567890',
-};
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -149,17 +133,17 @@ describe('ConfirmFooter', () => {
     const cancelButton = getAllByRole('button')[0];
     const rejectSpy = jest
       .spyOn(Actions, 'rejectPendingApproval')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     const updateCustomNonceSpy = jest
       .spyOn(Actions, 'updateCustomNonce')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     const setNextNonceSpy = jest
       .spyOn(Actions, 'setNextNonce')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     fireEvent.click(cancelButton);
@@ -173,17 +157,17 @@ describe('ConfirmFooter', () => {
     const submitButton = getAllByRole('button')[1];
     const resolveSpy = jest
       .spyOn(Actions, 'resolvePendingApproval')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     const updateCustomNonceSpy = jest
       .spyOn(Actions, 'updateCustomNonce')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     const setNextNonceSpy = jest
       .spyOn(Actions, 'setNextNonce')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     fireEvent.click(submitButton);
@@ -261,87 +245,6 @@ describe('ConfirmFooter', () => {
     );
     const submitButton = getAllByRole('button')[1];
     expect(submitButton).toBeDisabled();
-  });
-
-  describe('submit with transaction', () => {
-    it('updates and approves transaction', () => {
-      const { getAllByRole } = render(getMockContractInteractionConfirmState());
-      const submitButton = getAllByRole('button')[1];
-
-      const updateApproveSpy = jest
-        .spyOn(Actions, 'updateAndApproveTx')
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockImplementation(() => ({} as any));
-
-      fireEvent.click(submitButton);
-
-      expect(updateApproveSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('updates transaction with batch transactions if selected gas fee token', () => {
-      const { getAllByRole } = render(
-        getMockConfirmStateForTransaction(
-          genUnapprovedContractInteractionConfirmation({
-            selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
-            gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-          }),
-        ),
-      );
-      const submitButton = getAllByRole('button')[1];
-
-      const updateApproveSpy = jest
-        .spyOn(Actions, 'updateAndApproveTx')
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockImplementation(() => ({} as any));
-
-      fireEvent.click(submitButton);
-
-      expect(updateApproveSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          batchTransactions: [
-            expect.objectContaining({
-              to: GAS_FEE_TOKEN_MOCK.tokenAddress,
-            }),
-          ],
-        }),
-        true,
-        '',
-      );
-    });
-
-    it('updates transaction with gas properties matching selected gas fee token', () => {
-      const { getAllByRole } = render(
-        getMockConfirmStateForTransaction(
-          genUnapprovedContractInteractionConfirmation({
-            selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
-            gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-          }),
-        ),
-      );
-      const submitButton = getAllByRole('button')[1];
-
-      const updateApproveSpy = jest
-        .spyOn(Actions, 'updateAndApproveTx')
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockImplementation(() => ({} as any));
-
-      fireEvent.click(submitButton);
-
-      expect(updateApproveSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          txParams: expect.objectContaining({
-            gas: GAS_FEE_TOKEN_MOCK.gas,
-            maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
-            maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
-          }),
-        }),
-        true,
-        '',
-      );
-    });
   });
 
   describe('ConfirmButton', () => {
