@@ -28,6 +28,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
+  getSelectedNetworkClientId,
 } from '../../../../shared/modules/selectors/networks';
 import {
   getIsMainnet,
@@ -103,6 +104,7 @@ export const ImportNftsModal = ({ onClose }) => {
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
@@ -110,7 +112,9 @@ export const ImportNftsModal = ({ onClose }) => {
 
   const handleAddNft = async () => {
     try {
-      await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
+      await dispatch(
+        addNftVerifyOwnership(nftAddress, tokenId, networkClientId),
+      );
       const newNftDropdownState = {
         ...nftsDropdownState,
         [selectedAccount.address]: {

@@ -15,8 +15,6 @@ import {
   Box,
   ButtonBase,
   ButtonBaseSize,
-  ButtonLink,
-  ButtonLinkSize,
   Icon,
   IconName,
   IconSize,
@@ -89,7 +87,7 @@ const AssetListControlBar = ({
   const isMainnet = useSelector(getIsMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
 
-  const { nftsLoading, collections } = useNftsCollections();
+  const { collections } = useNftsCollections();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
@@ -98,6 +96,16 @@ const AssetListControlBar = ({
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
+
+  const shouldShowRefreshButtons = useMemo(
+    () => isMainnet || Object.keys(collections).length > 0,
+    [isMainnet, collections],
+  );
+
+  const shouldShowEnableAutoDetect = useMemo(
+    () => isMainnet && !useNftDetection,
+    [isMainnet, useNftDetection],
+  );
 
   const account = useSelector(getSelectedInternalAccount);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
@@ -383,13 +391,13 @@ const AssetListControlBar = ({
 
           {t('importNFT')}
         </SelectableListItem>
-        {!isMainnet && Object.keys(collections).length < 1 ? null : (
+        {shouldShowRefreshButtons && (
           <>
             <Box
               className="nfts-tab__link"
               justifyContent={JustifyContent.flexEnd}
             >
-              {isMainnet && !useNftDetection ? (
+              {shouldShowEnableAutoDetect ? (
                 <SelectableListItem
                   onClick={onEnableAutoDetect}
                   data-testid="refresh-list-button"

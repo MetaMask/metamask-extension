@@ -185,35 +185,6 @@ export default function NftsTab() {
               >
                 {t('importNFT')}
               </ButtonLink>
-
-              {!isMainnet && Object.keys(collections).length < 1 ? null : (
-                <>
-                  <Box
-                    className="nfts-tab__link"
-                    justifyContent={JustifyContent.flexEnd}
-                  >
-                    {isMainnet && !useNftDetection ? (
-                      <ButtonLink
-                        size={ButtonLinkSize.Md}
-                        startIconName={IconName.Setting}
-                        data-testid="refresh-list-button"
-                        onClick={onEnableAutoDetect}
-                      >
-                        {t('enableAutoDetect')}
-                      </ButtonLink>
-                    ) : (
-                      <ButtonLink
-                        size={ButtonLinkSize.Md}
-                        startIconName={IconName.Refresh}
-                        data-testid="refresh-list-button"
-                        onClick={onRefresh}
-                      >
-                        {t('refreshList')}
-                      </ButtonLink>
-                    )}
-                  </Box>
-                </>
-              )}
             </Box>
           </Box>
         ) : (
@@ -263,36 +234,7 @@ export default function NftsTab() {
               margin={4}
               gap={2}
               marginBottom={2}
-            >
-              {/* {!isMainnet && Object.keys(collections).length < 1 ? null : (
-                <>
-                  <Box
-                    className="nfts-tab__link"
-                    justifyContent={JustifyContent.flexEnd}
-                  >
-                    {isMainnet && !useNftDetection ? (
-                      <ButtonLink
-                        size={ButtonLinkSize.Md}
-                        startIconName={IconName.Setting}
-                        data-testid="refresh-list-button"
-                        onClick={onEnableAutoDetect}
-                      >
-                        {t('enableAutoDetect')}
-                      </ButtonLink>
-                    ) : (
-                      <ButtonLink
-                        size={ButtonLinkSize.Md}
-                        startIconName={IconName.Refresh}
-                        data-testid="refresh-list-button"
-                        onClick={onRefresh}
-                      >
-                        {t('refreshList')}
-                      </ButtonLink>
-                    )}
-                  </Box>
-                </>
-              )} */}
-            </Box>
+            ></Box>
           </>
         )}
       </Box>

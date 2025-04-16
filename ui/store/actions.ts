@@ -2168,6 +2168,7 @@ export function addNft(
 export function addNftVerifyOwnership(
   address: string,
   tokenID: string,
+  networkClientId: string,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -2184,6 +2185,7 @@ export function addNftVerifyOwnership(
       await submitRequestToBackground('addNftVerifyOwnership', [
         address,
         tokenID,
+        networkClientId,
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
