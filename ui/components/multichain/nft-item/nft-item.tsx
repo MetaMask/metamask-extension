@@ -156,6 +156,8 @@ export const NftItem = ({
             <>
               <span>{nft?.name}</span>
               <br />
+              {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
+              {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
               <span>{nft?.collection?.name || name}</span>
             </>
           }
@@ -173,6 +175,8 @@ export const NftItem = ({
             color={TextColor.textAlternative}
             ellipsis
           >
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
+            {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
             {nft?.collection?.name || name}
           </Text>
         </Tooltip>
