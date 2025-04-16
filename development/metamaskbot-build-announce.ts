@@ -296,10 +296,10 @@ async function start(): Promise<void> {
         .join('')}</tr></thead>`;
       const benchmarkTableBody = `<tbody>${tableRows.join('')}</tbody>`;
       const benchmarkTable = `<table>${benchmarkTableHeader}${benchmarkTableBody}</table>`;
-      const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>\n\n`;
-      commentBody += `${benchmarkBody}`;
+      const benchmarkWarnings = await runBenchmarkGate(benchmarkResults);
+      const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}${benchmarkWarnings}</details>\n\n`;
 
-      commentBody += await runBenchmarkGate(benchmarkResults);
+      commentBody += `${benchmarkBody}`;
     } catch (error) {
       console.error(`Error constructing benchmark results: '${error}'`);
     }
@@ -438,7 +438,7 @@ async function runBenchmarkGate(
                   exceededSums.p95 += ceiledValue - gateValue;
                 }
 
-                benchmarkGateBody += `Benchmark value ${ceiledValue} exceeds gate value ${gateValue} for ${platform} ${buildType} ${page} ${measure} ${metric}\n`;
+                benchmarkGateBody += `Benchmark value ${ceiledValue} exceeds gate value ${gateValue} for ${platform} ${buildType} ${page} ${measure} ${metric}<br>\n`;
               }
             }
           }
@@ -447,13 +447,13 @@ async function runBenchmarkGate(
     }
 
     if (benchmarkGateBody) {
-      benchmarkGateBody += `**Sum of mean exceeds: ${
+      benchmarkGateBody += `<b>Sum of mean exceeds: ${
         exceededSums.mean
       }ms | Sum of p95 exceeds: ${
         exceededSums.p95
-      }ms\nSum of all benchmark exceeds: ${
+      }ms<br>\nSum of all benchmark exceeds: ${
         exceededSums.mean + exceededSums.p95
-      }ms**\n`;
+      }ms</b><br>\n`;
 
       if (
         exceededSums.mean > pingThresholds.mean ||
@@ -462,7 +462,7 @@ async function runBenchmarkGate(
           pingThresholds.mean + pingThresholds.p95
       ) {
         // Soft gate, just pings @HowardBraham
-        benchmarkGateBody = `cc: @HowardBraham\n${benchmarkGateBody}`;
+        benchmarkGateBody = `cc: @HowardBraham<br>\n${benchmarkGateBody}`;
       }
     }
   } catch (error) {
