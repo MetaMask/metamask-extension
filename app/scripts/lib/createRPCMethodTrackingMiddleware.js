@@ -589,7 +589,7 @@ function getWalletSendCallsProperties(req, _res, stage, eventProperties) {
   }
 }
 
-function getWalletCreateSessionProperties(req, _res, stage, eventProperties) {
+function getWalletCreateSessionProperties(req, _res, _, eventProperties) {
   // I would think we want this in the approved and rejected stages as well?
   // if (stage !== STAGE.REQUESTED) {
   //   return;
