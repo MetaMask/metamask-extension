@@ -28,6 +28,7 @@ import {
   AlignItems,
   Display,
   JustifyContent,
+  TextVariant,
 } from '../../helpers/constants/design-system';
 import { deleteExpiredNotifications } from '../../store/actions';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
@@ -160,6 +161,7 @@ export default function Notifications() {
     <NotificationsPage>
       {/* Back and Settings Buttons */}
       <Header
+        textProps={{ variant: TextVariant.headingSm, as: 'h1' }}
         startAccessory={
           <ButtonIcon
             ariaLabel="Back"
