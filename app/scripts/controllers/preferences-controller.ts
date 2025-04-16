@@ -18,10 +18,7 @@ import {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
   type PreferencesState,
 } from '@metamask/preferences-controller';
-import {
-  CHAIN_IDS,
-  IPFS_DEFAULT_GATEWAY_URL,
-} from '../../../shared/constants/network';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 
@@ -29,17 +26,6 @@ type AccountIdentityEntry = {
   address: string;
   name: string;
   lastSelected?: number;
-};
-
-const mainNetworks = {
-  [CHAIN_IDS.MAINNET]: true,
-  [CHAIN_IDS.LINEA_MAINNET]: true,
-};
-
-const testNetworks = {
-  [CHAIN_IDS.GOERLI]: true,
-  [CHAIN_IDS.SEPOLIA]: true,
-  [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
 const controllerName = 'PreferencesController';
@@ -120,6 +106,7 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   shouldShowAggregatedBalancePopover: boolean;
+  dismissSmartAccountSuggestionEnabled: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -148,7 +135,6 @@ export type PreferencesControllerState = Omit<
   ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
-  incomingTransactionsPreferences: Record<number, boolean>;
   knownMethodData: Record<string, string>;
   currentLocale: string;
   forgottenPassword: boolean;
@@ -163,7 +149,8 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
-  accountUpgradeDisabledChains?: string[];
+  manageInstitutionalWallets: boolean;
+  disabledUpgradeAccountsByChain?: Record<Hex, Hex[]>;
 };
 
 /**
@@ -194,10 +181,6 @@ export const getDefaultPreferencesControllerState =
     ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
     featureFlags: {},
-    incomingTransactionsPreferences: {
-      ...mainNetworks,
-      ...testNetworks,
-    },
     knownMethodData: {},
     currentLocale: '',
     identities: {},
@@ -219,6 +202,7 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       shouldShowAggregatedBalancePopover: true, // by default user should see popover;
+      dismissSmartAccountSuggestionEnabled: false,
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
@@ -271,6 +255,8 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
+    manageInstitutionalWallets: false,
+    disabledUpgradeAccountsByChain: {},
   });
 
 /**
@@ -354,10 +340,6 @@ const controllerMetadata = {
     anonymous: true,
   },
   featureFlags: {
-    persist: true,
-    anonymous: true,
-  },
-  incomingTransactionsPreferences: {
     persist: true,
     anonymous: true,
   },
@@ -445,7 +427,8 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
-  accountUpgradeDisabledChains: { persist: true, anonymous: false },
+  manageInstitutionalWallets: { persist: true, anonymous: false },
+  disabledUpgradeAccountsByChain: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -461,27 +444,12 @@ export class PreferencesController extends BaseController<
    * @param options.state - The initial controller state
    */
   constructor({ messenger, state }: PreferencesControllerOptions) {
-    const { networkConfigurationsByChainId } = messenger.call(
-      'NetworkController:getState',
-    );
-
-    const addedNonMainNetwork: Record<Hex, boolean> = Object.values(
-      networkConfigurationsByChainId ?? {},
-    ).reduce((acc: Record<Hex, boolean>, element) => {
-      acc[element.chainId] = true;
-      return acc;
-    }, {});
     super({
       messenger,
       metadata: controllerMetadata,
       name: controllerName,
       state: {
         ...getDefaultPreferencesControllerState(),
-        incomingTransactionsPreferences: {
-          ...mainNetworks,
-          ...addedNonMainNetwork,
-          ...testNetworks,
-        },
         ...state,
       },
     });
@@ -979,16 +947,13 @@ export class PreferencesController extends BaseController<
   }
 
   /**
-   * A setter for the incomingTransactions in preference to be updated
+   * A setter for the user preference to manage institutional wallets
    *
-   * @param chainId - chainId of the network
-   * @param value - preference of certain network, true to be enabled
+   * @param manageInstitutionalWallets - User preference for managing institutional wallets.
    */
-  setIncomingTransactionsPreferences(chainId: Hex, value: boolean): void {
-    const previousValue = this.state.incomingTransactionsPreferences;
-    const updatedValue = { ...previousValue, [chainId]: value };
+  setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
     this.update((state) => {
-      state.incomingTransactionsPreferences = updatedValue;
+      state.manageInstitutionalWallets = manageInstitutionalWallets;
     });
   }
 
@@ -998,19 +963,22 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  getDisabledAccountUpgradeChains(): string[] {
-    return this.state.accountUpgradeDisabledChains ?? [];
+  getDisabledUpgradeAccountsByChain(): Record<Hex, Hex[]> {
+    return this.state.disabledUpgradeAccountsByChain ?? {};
   }
 
-  disableAccountUpgradeForChain(chainId: string): void {
+  disableAccountUpgrade(chainId: Hex, address: Hex): void {
     this.update((state) => {
-      const { accountUpgradeDisabledChains: existingDisabledChains } = state;
+      const { disabledUpgradeAccountsByChain = {} } = state;
+      const addressLowerCase = address.toLowerCase() as Hex;
 
-      if (!existingDisabledChains?.includes(chainId)) {
-        state.accountUpgradeDisabledChains = [
-          ...(existingDisabledChains ?? []),
-          chainId,
-        ];
+      if (
+        !disabledUpgradeAccountsByChain[chainId]?.includes(addressLowerCase)
+      ) {
+        if (!disabledUpgradeAccountsByChain[chainId]) {
+          disabledUpgradeAccountsByChain[chainId] = [];
+        }
+        disabledUpgradeAccountsByChain[chainId].push(addressLowerCase);
       }
     });
   }

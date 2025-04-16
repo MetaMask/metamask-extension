@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
 import { Json, JsonRpcFailure, JsonRpcResponse } from '@metamask/utils';
-import { InternalScopeString } from '@metamask/multichain';
+import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import { Driver } from '../webdriver/driver';
 
-// eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-shadow
 declare let window: any;
 
 type QueueItem = {

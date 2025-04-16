@@ -50,7 +50,9 @@ export const useTokenDisplayInfo = ({
 
   // Format for fiat balance with currency style
   const secondary =
-    shouldShowFiat && token.tokenFiatAmount
+    shouldShowFiat &&
+    token.tokenFiatAmount !== null &&
+    token.tokenFiatAmount !== undefined
       ? formatWithThreshold(
           Number(token.tokenFiatAmount),
           secondaryThreshold,
