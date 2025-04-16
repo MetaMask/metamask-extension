@@ -59,7 +59,6 @@ async function start(): Promise<void> {
     CIRCLE_BUILD_NUM,
     CIRCLE_WORKFLOW_JOB_ID,
     HOST_URL,
-    GITHUB_RUN_ID,
   } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
@@ -67,7 +66,6 @@ async function start(): Promise<void> {
     return;
   }
 
-  const HOST_RUN_URL = `${HOST_URL}/${GITHUB_RUN_ID}`;
   const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
   const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
 
@@ -140,7 +138,7 @@ async function start(): Promise<void> {
   const bundleSizeDataUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
-  const storybookUrl = `${HOST_RUN_URL}/storybook-build/index.html`;
+  const storybookUrl = `${HOST_URL}/storybook-build/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
   const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
@@ -150,10 +148,10 @@ async function start(): Promise<void> {
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
 
-  const bundleSizeStatsUrl = `${HOST_RUN_URL}/bundle-size/bundle_size.json`;
+  const bundleSizeStatsUrl = `${HOST_URL}/bundle-size/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
 
-  const userActionsStatsUrl = `${HOST_RUN_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
+  const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">User Actions Stats</a>`;
 
   // link to artifacts
@@ -182,7 +180,7 @@ async function start(): Promise<void> {
   for (const platform of benchmarkPlatforms) {
     benchmarkResults[platform] = {};
     for (const buildType of buildTypes) {
-      const benchmarkUrl = `${HOST_RUN_URL}/benchmarks/benchmark-${platform}-${buildType}-pageload.json`;
+      const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-pageload.json`;
       try {
         const benchmarkResponse = await fetch(benchmarkUrl);
         if (!benchmarkResponse.ok) {
@@ -400,7 +398,7 @@ async function start(): Promise<void> {
 async function runBenchmarkGate(
   benchmarkResults: BenchmarkResults,
 ): Promise<string> {
-  const benchmarkGateUrl = `${process.env.HOST_URL}/benchmark-gate/benchmark-gate.json`;
+  const benchmarkGateUrl = `${process.env.AWS_CLOUDFRONT_URL_WITH_REPO}/benchmark-gate/benchmark-gate.json`;
   const exceededSums = { mean: 0, p95: 0 };
   let benchmarkGateBody = '';
 
