@@ -10,7 +10,7 @@ const selectors = {
     },
   exampleSelectorDropdown: '.snap-ui-renderer__selector',
   selectorItem: '.snap-ui-renderer__selector-item',
-  rendererPanel: '#snap-ui-renderer-panel',
+  rendererPanel: '.snap-ui-renderer__panel',
   exampleCheckbox: '.mm-checkbox__input',
 } satisfies Record<string, string | Record<string, string>>
 
@@ -45,7 +45,7 @@ class SnapInteractiveDialog {
       await this.driver.clickElement({ text: buttonName, tag: 'span' });
     }
   }
-  
+
   async fillMessage(message: string) {
     console.log(`Filling message in example input`);
     await this.driver.fill(selectors.exampleInput, message);

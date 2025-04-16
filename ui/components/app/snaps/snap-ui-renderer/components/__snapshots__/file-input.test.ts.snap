@@ -11,7 +11,6 @@ exports[`SnapUIFileInput renders and emits events when used 1`] = `
     >
       <div
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
-        id="snap-ui-renderer-panel"
       >
         <form
           class="mm-box snap-ui-renderer__form mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
