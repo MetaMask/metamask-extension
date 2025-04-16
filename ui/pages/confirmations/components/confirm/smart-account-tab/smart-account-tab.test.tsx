@@ -34,9 +34,8 @@ describe('SmartAccountTab', () => {
     const { getByText } = renderComponent();
 
     expect(getByText('Switch to smart account')).toBeInTheDocument();
-    expect(
-      getByText('Same address. Smarter features. Learn more.'),
-    ).toBeInTheDocument();
+    expect(getByText('Same address. Smarter features.')).toBeInTheDocument();
+    expect(getByText('Learn more')).toBeInTheDocument();
   });
 
   it('renders list of networks', async () => {
