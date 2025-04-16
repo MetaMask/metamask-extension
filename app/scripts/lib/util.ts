@@ -467,3 +467,15 @@ export function getConversionRatesForNativeAsset({
 
   return conversionRateResult;
 }
+
+/**
+ * Extracts the domain from an RPC endpoint URL
+ *
+ * @param rpcUrl - The RPC endpoint URL
+ * @returns The domain value to track in metrics
+ */
+export function extractRpcDomain(rpcUrl: string) {
+  // Just return unknown for now as a placeholder
+  console.log(rpcUrl);
+  return 'unknown';
+}
