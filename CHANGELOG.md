@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.12.2]
+### Uncategorized
+- Version v12.12.1 ([#31125](https://github.com/MetaMask/metamask-extension/pull/31125))
+- chore: Disable CSP test ([#31122](https://github.com/MetaMask/metamask-extension/pull/31122))
+- chore: Support building backport prod build ([#31113](https://github.com/MetaMask/metamask-extension/pull/31113))
+- chore: Update changelog for v12.12.1 ([#31118](https://github.com/MetaMask/metamask-extension/pull/31118))
+- Update Attributions
+- chore: Fix CI failures affecting v12.12.x ([#31114](https://github.com/MetaMask/metamask-extension/pull/31114))
+- chore: Add missing mocked page object
+- fix: Temporarily disable "Test Snap update via snaps component" E2E test ([#30680](https://github.com/MetaMask/metamask-extension/pull/30680))
+- Skip snap UI link tests to get build passing
+- fix: add missing mock for portfolio site in e2e testing ([#31034](https://github.com/MetaMask/metamask-extension/pull/31034))
+- fix: cp-12.13.0 dependency version (#30375) ([#30375](https://github.com/MetaMask/metamask-extension/pull/30375))
+- chore: ignore babel audit failure temporarily ([#30946](https://github.com/MetaMask/metamask-extension/pull/30946))
+- chore: Temporarily ignore yarn audit failure for issue 1102472 ([#30910](https://github.com/MetaMask/metamask-extension/pull/30910))
+- chore: fix trezor audit ([#30850](https://github.com/MetaMask/metamask-extension/pull/30850))
+- chore: pin `github-tools` on specific commit
+- Version v12.12.1
+- Fix: Disable CSP override feature that is breaking sites
+
 ## [12.12.1]
 ### Fixed
 - Disable CSP override feature that is breaking certain sites ([#31107](https://github.com/MetaMask/metamask-extension/pull/31107))
@@ -5714,7 +5734,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.12.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.12.2...HEAD
+[12.12.2]: https://github.com/MetaMask/metamask-extension/compare/v12.12.1...v12.12.2
 [12.12.1]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...v12.12.1
 [12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
 [12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.4...v12.11.0
