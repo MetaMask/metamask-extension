@@ -38,25 +38,19 @@ type I18nFunction = (
  * @param t - The i18n context return value to get translations
  * @param stepStatus - The status of the step
  * @param step - The step to be rendered
- * @param networkConfigurationsByChainId - The network configurations by chain id
  */
 const getBridgeActionText = (
   t: I18nFunction,
   stepStatus: StatusTypes | null,
   step: Step,
-  networkConfigurationsByChainId: Record<`0x${string}`, NetworkConfiguration>,
 ) => {
   const hexDestChainId = step.destChainId
     ? (new Numeric(step.destChainId, 10).toPrefixedHexString() as Hex)
     : undefined;
-  const destNetworkConfiguration = hexDestChainId
-    ? networkConfigurationsByChainId[hexDestChainId]
-    : undefined;
 
-  const destChainName =
-    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-      destNetworkConfiguration?.chainId as AllowedBridgeChainIds
-    ];
+  const destChainName = hexDestChainId
+    ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[hexDestChainId as AllowedBridgeChainIds]
+    : '';
 
   const destSymbol = step.destAsset?.symbol;
 
@@ -151,7 +145,6 @@ export const getStepStatus = ({
 
 type BridgeStepProps = {
   step: Step;
-  networkConfigurationsByChainId: Record<`0x${string}`, NetworkConfiguration>;
   time?: string;
   stepStatus: StatusTypes | null;
 };
@@ -162,7 +155,6 @@ type BridgeStepProps = {
 // 3. Swap > Bridge > Swap: e.g. Optimism ETH to Avalanche USDC
 export default function BridgeStepDescription({
   step,
-  networkConfigurationsByChainId,
   time,
   stepStatus,
 }: BridgeStepProps) {
@@ -189,12 +181,7 @@ export default function BridgeStepDescription({
         }
       >
         {step.action === ActionTypes.BRIDGE &&
-          getBridgeActionText(
-            t,
-            stepStatus,
-            step,
-            networkConfigurationsByChainId,
-          )}
+          getBridgeActionText(t, stepStatus, step)}
         {step.action === ActionTypes.SWAP &&
           getSwapActionText(t, stepStatus, step)}
       </Text>

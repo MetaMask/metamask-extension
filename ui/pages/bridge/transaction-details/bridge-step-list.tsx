@@ -31,13 +31,11 @@ const getTime = (
 type BridgeStepsProps = {
   bridgeHistoryItem?: BridgeHistoryItem;
   srcChainTxMeta?: TransactionMeta;
-  networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
 };
 
 export default function BridgeStepList({
   bridgeHistoryItem,
   srcChainTxMeta,
-  networkConfigurationsByChainId,
 }: BridgeStepsProps) {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -92,7 +90,6 @@ export default function BridgeStepList({
           >
             <BridgeStepDescription
               step={step}
-              networkConfigurationsByChainId={networkConfigurationsByChainId}
               stepStatus={displayedStepStatus}
               time={time}
             />
