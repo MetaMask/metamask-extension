@@ -40,7 +40,7 @@ class HomePage {
   };
 
   private readonly erc20TokenDropdown = {
-    testId: 'import-token-button',
+    testId: 'asset-list-control-bar-action-button',
   };
 
   private readonly nftTab = {
@@ -115,7 +115,9 @@ class HomePage {
 
   async goToBackupSRPPage(): Promise<void> {
     console.log(`Go to backup secret recovery phrase on homepage`);
-    await this.driver.waitForSelector(this.backupSecretRecoveryPhraseNotification);
+    await this.driver.waitForSelector(
+      this.backupSecretRecoveryPhraseNotification,
+    );
     await this.driver.clickElement(this.backupSecretRecoveryPhraseButton);
   }
 
@@ -169,7 +171,9 @@ class HomePage {
 
   async check_backupReminderIsNotDisplayed(): Promise<void> {
     console.log('Check backup reminder is not displayed on homepage');
-    await this.driver.assertElementNotPresent(this.backupSecretRecoveryPhraseNotification);
+    await this.driver.assertElementNotPresent(
+      this.backupSecretRecoveryPhraseNotification,
+    );
   }
 
   async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {

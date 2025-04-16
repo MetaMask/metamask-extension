@@ -86,7 +86,8 @@ class AssetListPage {
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
 
-  private readonly tokenOptionsButton = '[data-testid="import-token-button"]';
+  private readonly tokenOptionsButton =
+    '[data-testid="asset-list-control-bar-action-button"]';
 
   private tokenImportSelectNetwork(chainId: string): string {
     return `[data-testid="select-network-item-${chainId}"]`;
