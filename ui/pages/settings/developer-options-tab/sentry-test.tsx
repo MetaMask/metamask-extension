@@ -210,6 +210,8 @@ function TestButton({
       <div className="settings-page__content-item-col">
         <Button
           variant={ButtonVariant.Primary}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={handleClick}
           size={ButtonSize.Lg}
           data-testid={testId}

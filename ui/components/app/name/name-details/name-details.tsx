@@ -198,6 +198,8 @@ function useProposedNames(value: string, type: NameType, variation: string) {
     reset();
     update();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     updateInterval.current = setInterval(update, UPDATE_DELAY);
     return reset;
   }, [value, type, variation, dispatch, initialSources, setInitialSources]);
@@ -393,6 +395,8 @@ export default function NameDetails({
               variant={ButtonVariant.Primary}
               startIconName={IconName.Save}
               width={BlockSize.Full}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={handleSaveClick}
               size={ButtonSize.Lg}
             >
