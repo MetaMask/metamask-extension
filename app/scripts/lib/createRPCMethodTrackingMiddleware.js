@@ -218,7 +218,7 @@ function finalizeSignatureFragment(
   );
 }
 
-function isMultichainRequest(method) {
+function isMultichainRequestMethod(method) {
   return [
     MESSAGE_TYPE.WALLET_CREATE_SESSION,
     MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -268,14 +268,14 @@ export default function createRPCMethodTrackingMiddleware({
   ) {
     const { origin, method, params } = req;
 
-    const _isMultichainRequest = isMultichainRequest(method);
+    const isMultichainRequest = isMultichainRequestMethod(method);
     // requestedThrough and eventCategory are currently redundant so we will want to
     // disentangle them in the future
-    const requestedThrough = _isMultichainRequest
+    const requestedThrough = isMultichainRequest
       ? 'multichain_api' // TODO: this should be a constant
       : 'ethereum_provider'; // TODO: this should be a constant
 
-    const eventCategory = _isMultichainRequest
+    const eventCategory = isMultichainRequest
       ? MetaMetricsEventCategory.MultichainApi
       : MetaMetricsEventCategory.InpageProvider;
 
