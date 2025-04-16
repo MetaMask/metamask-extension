@@ -74,8 +74,17 @@ export const reviewQuote = async (
     '[data-testid="exchange-rate-display-quote-rate"]',
   );
   const summaryText = await summary.getText();
-  assert.equal(summaryText.includes(options.swapFrom), true);
-  assert.equal(summaryText.includes(options.swapTo), true);
+
+  await driver.waitForSelector({
+    testId: 'prepare-swap-page-swap-from',
+    text: options.swapFrom,
+  });
+
+  await driver.waitForSelector({
+    testId: 'prepare-swap-page-swap-to',
+    text: options.swapTo,
+  });
+
   const quote = summaryText.split(`\n`);
 
   const elementSwapToAmount = await driver.findElement(
