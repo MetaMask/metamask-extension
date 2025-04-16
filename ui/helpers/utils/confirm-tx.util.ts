@@ -45,6 +45,8 @@ export function getTransactionFee({
     .toDenomination(EtherDenomination.ETH)
     .toBase(10);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (fromCurrency !== toCurrency && conversionRate) {
     fee = fee.applyConversionRate(conversionRate);
   }
@@ -83,6 +85,8 @@ export function convertTokenToFiat({
 
   let tokenInFiat = new Numeric(value, 10);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (fromCurrency !== toCurrency && totalExchangeRate) {
     tokenInFiat = tokenInFiat.applyConversionRate(totalExchangeRate);
   }

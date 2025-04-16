@@ -26,6 +26,8 @@ export default function init() {
       _sender,
       sendResponse,
     ) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       if (msg.target !== OffscreenCommunicationTarget.trezorOffscreen) {
         return;
       }

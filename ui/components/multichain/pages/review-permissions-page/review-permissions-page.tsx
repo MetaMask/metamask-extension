@@ -183,6 +183,8 @@ export const ReviewPermissions = () => {
         address,
         chain: { namespace },
       } = parseCaipAccountId(caipAccountId);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       if (namespace === KnownCaipNamespace.Eip155) {
         // this is very hacky, but it works for now
         return `eip155:0:${address}` as CaipAccountId;

@@ -30,12 +30,16 @@ export const getStateChangeType = (
       stateChangeList?.some(
         (change) =>
           change.changeType === DecodingDataChangeType.Listing &&
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
           change.assetType === TokenStandard.ERC721,
       )
     ) {
       return StateChangeType.NFTListingReceive;
     }
     if (
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       stateChange.assetType === TokenStandard.ERC721 &&
       stateChangeList?.some(
         (change) => change.changeType === DecodingDataChangeType.Bidding,
@@ -103,6 +107,8 @@ const StateChangeRow = ({
   const nftTransactionType = getStateChangeType(stateChangeList, stateChange);
   const tooltip = getStateChangeToolip(nftTransactionType, t);
   const canDisplayValueAsUnlimited =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     assetType === TokenStandard.ERC20 &&
     (changeType === DecodingDataChangeType.Approve ||
       changeType === DecodingDataChangeType.Revoke);
@@ -115,8 +121,14 @@ const StateChangeRow = ({
       }
       tooltip={tooltip}
     >
+      {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894 */}
+      {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison */}
       {(assetType === TokenStandard.ERC20 ||
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         assetType === TokenStandard.ERC721 ||
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         assetType === TokenStandard.ERC1155) && (
         <TokenValueDisplay
           tokenContract={contractAddress}

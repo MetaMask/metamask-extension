@@ -209,6 +209,8 @@ async function walletCreateSessionHandler(
             chain: { namespace },
             chainId: caipChainId,
           } = parseCaipAccountId(requestedAccountAddress);
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
           if (namespace === KnownCaipNamespace.Eip155) {
             return existingEvmAddresses.some((existingEvmAddress) => {
               return isEqualCaseInsensitive(address, existingEvmAddress);

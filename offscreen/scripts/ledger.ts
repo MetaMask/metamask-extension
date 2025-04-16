@@ -20,6 +20,8 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
   // This listener receives action responses from the live ledger iframe
   // Then forwards the response to the offscreen bridge
   window.addEventListener('message', ({ origin, data, source }) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (origin !== KnownOrigins.ledger || source !== iframe.contentWindow) {
       return;
     }
@@ -57,6 +59,8 @@ function setupMessageListeners(iframe: HTMLIFrameElement) {
       _sender,
       sendResponse,
     ) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
         return;
       }

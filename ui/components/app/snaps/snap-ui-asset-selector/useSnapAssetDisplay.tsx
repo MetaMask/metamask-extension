@@ -140,8 +140,12 @@ export const useSnapAssetSelectorData = ({
   const filteredAssets = formattedAssets.filter((asset) =>
     requestedChainIds.some(({ chainId, chain: { namespace, reference } }) => {
       // Handles the "eip155:0" case
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       if (namespace === KnownCaipNamespace.Eip155 && reference === '0') {
         const { namespace: assetNamepace } = parseCaipChainId(asset.chainId);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         return assetNamepace === namespace;
       }
 

@@ -188,6 +188,8 @@ export default function useSolanaBridgeTransactionMapping(
         // If a recent bridge history item isn't in the main list, create a BridgeOriginatedItem for it.
         if (!existsInOriginalTxList && srcTxHash) {
           const timestampSeconds =
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
             ((bridgeTx.status?.status === 'COMPLETE'
               ? bridgeTx.completionTime ?? bridgeTx.startTime
               : bridgeTx.startTime) ?? Date.now()) / 1000;

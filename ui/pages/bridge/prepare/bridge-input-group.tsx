@@ -126,6 +126,8 @@ export const BridgeInputGroup = ({
   const handleAddressClick = () => {
     if (token && selectedChainId) {
       const caipChainId = formatChainIdToCaip(selectedChainId);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       const isSolana = caipChainId === MultichainNetworks.SOLANA;
 
       let blockExplorerUrl = '';
