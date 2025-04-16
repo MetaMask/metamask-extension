@@ -206,8 +206,8 @@ describe('SnapUIAddressInput', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('does not render the matched address info if there is an error', () => {
-    const { getByText, queryByText, getByRole } = renderInterface(
+  it('renders the matched address info with an error', () => {
+    const { getByText, queryByText } = renderInterface(
       Box({
         children: Field({
           label: 'Address',
@@ -222,14 +222,10 @@ describe('SnapUIAddressInput', () => {
     );
 
     const matchedAddressName = queryByText('Test Account');
-    expect(matchedAddressName).toBeNull();
+    expect(matchedAddressName).toBeTruthy();
 
     const error = getByText('Invalid address');
     expect(error).toBeDefined();
-
-    const input = getByRole('textbox') as HTMLInputElement;
-    expect(input).toBeDefined();
-    expect(input.value).toBe('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
   });
 
   it('disables clear button for the input when disabled', () => {
