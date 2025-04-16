@@ -308,7 +308,35 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     });
   }, [allAccounts]);
 
-  const onConfirm = () => {
+  const handleOpenAccountsModal = useCallback(() => {
+    setShowEditAccountsModal(true);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.ViewPermissionedAccounts,
+      properties: {
+        location:
+          'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
+      },
+    });
+  }, [trackEvent]);
+
+  const handleOpenCreateSolanaAccountModal = useCallback(() => {
+    setShowCreateSolanaAccountModal(true);
+  }, []);
+
+  const handleCloseCreateSolanaAccountModal = useCallback(() => {
+    setShowCreateSolanaAccountModal(false);
+  }, []);
+
+  const handleCloseEditAccountsModal = useCallback(() => {
+    setShowEditAccountsModal(false);
+  }, []);
+
+  const handleCancelConnection = useCallback(() => {
+    rejectPermissionsRequest(permissionsRequestId);
+  }, [permissionsRequestId, rejectPermissionsRequest]);
+
+  const onConfirm = useCallback(() => {
     const _request = {
       ...request,
       permissions: {
@@ -321,21 +349,15 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       },
     };
     approveConnection(_request);
-  };
+  }, [
+    request,
+    requestedCaip25CaveatValue,
+    selectedCaipAccountAddresses,
+    selectedChainIds,
+    approveConnection,
+  ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
-
-  const handleOpenAccountsModal = () => {
-    setShowEditAccountsModal(true);
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.ViewPermissionedAccounts,
-      properties: {
-        location:
-          'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
-      },
-    });
-  };
 
   return (
     <Page
@@ -453,7 +475,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                       borderRadius={BorderRadius.XL}
                     >
                       <ButtonLink
-                        onClick={() => handleOpenAccountsModal()}
+                        onClick={handleOpenAccountsModal}
                         data-testid="edit"
                       >
                         {t('selectAccountToConnect')}
@@ -468,7 +490,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   justifyContent={JustifyContent.center}
                 >
                   <ButtonLink
-                    onClick={() => handleOpenAccountsModal()}
+                    onClick={handleOpenAccountsModal}
                     data-testid="edit"
                   >
                     {t('editAccounts')}
@@ -497,7 +519,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                     variant={ButtonVariant.Secondary}
                     width={BlockSize.Full}
                     size={ButtonSize.Lg}
-                    onClick={() => setShowCreateSolanaAccountModal(true)}
+                    onClick={handleOpenCreateSolanaAccountModal}
                     data-testid="create-solana-account"
                   >
                     {t('createSolanaAccount')}
@@ -506,16 +528,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               )}
               {showCreateSolanaAccountModal && (
                 <CreateSolanaAccountModal
-                  onClose={() => {
-                    setShowCreateSolanaAccountModal(false);
-                  }}
+                  onClose={handleCloseCreateSolanaAccountModal}
                 />
               )}
               {showEditAccountsModal && (
                 <EditAccountsModal
                   accounts={allAccounts}
                   defaultSelectedAccountAddresses={selectedCaipAccountAddresses}
-                  onClose={() => setShowEditAccountsModal(false)}
+                  onClose={handleCloseEditAccountsModal}
                   onSubmit={setSelectedCaipAccountAddresses}
                 />
               )}
@@ -560,7 +580,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               data-testid="cancel-btn"
-              onClick={() => rejectPermissionsRequest(permissionsRequestId)}
+              onClick={handleCancelConnection}
             >
               {t('cancel')}
             </Button>
