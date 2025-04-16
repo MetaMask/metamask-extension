@@ -49,6 +49,7 @@ import {
   signDelegation,
   storeDelegationEntry,
 } from '../../../../store/actions';
+import useUpgradeAccount from '../../hooks/useUpgradeAccount';
 
 const TOTAL_STEPS = 3;
 
@@ -104,6 +105,7 @@ export default function RemoteModeSetupSwaps({
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedAccount = useSelector(getSelectedAccount);
   const selectedNetwork = useSelector(getSelectedNetwork);
+  const { upgradeAccount } = useUpgradeAccount();
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
@@ -161,6 +163,12 @@ export default function RemoteModeSetupSwaps({
   const handleConfigureRemoteSwaps = async () => {
     const { chainId } = selectedNetwork.configuration;
 
+    await upgradeAccount({
+      account: selectedAccount.address,
+      chainId,
+      gasLimit: null,
+    });
+
     const delegation = createDelegation({
       caveats: [],
       from: selectedAccount.address,
@@ -171,7 +179,7 @@ export default function RemoteModeSetupSwaps({
 
     delegation.signature = signature;
 
-    storeDelegationEntry({
+    await storeDelegationEntry({
       delegation,
       tags: ['swap'],
       chainId,
