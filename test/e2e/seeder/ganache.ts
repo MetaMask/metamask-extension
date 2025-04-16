@@ -22,8 +22,7 @@ const defaultOptions = {
 export class Ganache {
   #server: Server | undefined;
 
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   async start(opts: any) {
     let customOptions = {
       ...defaultOptions,
@@ -115,8 +114,8 @@ export class Ganache {
     }
     try {
       await this.#server.close();
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+
     } catch (e: any) {
       // We can safely ignore the EBUSY error
       if (e.code !== 'EBUSY') {

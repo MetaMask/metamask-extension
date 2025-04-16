@@ -131,7 +131,7 @@ function getSignatureEventProperty(
 }
 
 function assertSignatureRequestedMetrics(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   events: any[],
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
@@ -267,7 +267,7 @@ export async function assertAccountDetailsMetrics(
 }
 
 function assertEventPropertiesMatch(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   events: any[],
   eventName: string,
   expectedProperties: object,

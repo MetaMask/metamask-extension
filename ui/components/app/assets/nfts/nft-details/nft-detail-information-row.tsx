@@ -45,6 +45,7 @@ const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
 
   const [referenceElement, setReferenceElement] = useState();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setBoxRef = (ref: any) => {
     setReferenceElement(ref);

@@ -65,46 +65,54 @@ export type MMIControllerMessenger = RestrictedMessenger<
 
 export type MMIControllerOptions = {
   mmiConfigurationController: MmiConfigurationController;
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   keyringController: any;
   appStateController: AppStateController;
   transactionUpdateController: TransactionUpdateController;
   custodyController: CustodyController;
   messenger: MMIControllerMessenger;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getState: () => any;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getPendingNonce: (address: string) => Promise<any>;
   accountTrackerController: AccountTrackerController;
   metaMetricsController: MetaMetricsController;
   networkController: NetworkController;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   permissionController: any;
   signatureController: SignatureController;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   platform: any;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extension: any;
   updateTransactionHash: (txId: string, txHash: string) => void;
   trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) => void;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];
   setTxStatusSigned: (txId: string) => void;
   setTxStatusSubmitted: (txId: string) => void;
   setTxStatusFailed: (txId: string) => void;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateTransaction: (txMeta: any) => void;
   setChannelId: (channelId: string) => void;

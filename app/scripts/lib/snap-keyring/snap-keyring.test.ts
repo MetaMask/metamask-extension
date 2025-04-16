@@ -105,6 +105,8 @@ const createControllerMessenger = ({
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     // This mock implementation does not have a nice discriminate union where types/parameters can be correctly inferred
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [actionType, ...params]: any[] = args;
 

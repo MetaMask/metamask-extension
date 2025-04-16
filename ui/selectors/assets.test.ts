@@ -378,6 +378,8 @@ describe('getMultichainNativeAssetType', () => {
       networkConfigurationsByChainId: {},
       completedOnboarding: true,
     },
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 

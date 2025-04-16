@@ -11,7 +11,7 @@ jest.mock('../selectors/multi-srp/multi-srp', () => ({
   getShouldShowSeedPhraseReminder: () => false,
 }));
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderProviderWithTheme: any = (
   settingTheme = ThemeType.light,

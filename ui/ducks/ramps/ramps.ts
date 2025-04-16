@@ -68,6 +68,8 @@ const rampsSlice = createSlice({
 const { reducer } = rampsSlice;
 
 // Can be typed to RootState if/when the interface is defined
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getBuyableChains = (state: any) =>
   state.ramps?.buyableChains ?? defaultBuyableChains;

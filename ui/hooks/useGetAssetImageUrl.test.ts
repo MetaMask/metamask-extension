@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import { getAssetImageURL } from '../helpers/utils/util';
@@ -26,6 +25,8 @@ describe('useGetAssetImageUrl', () => {
       );
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((result as unknown as Record<string, any>).result.current).toEqual(
       expectedRes,
     );
@@ -40,6 +41,8 @@ describe('useGetAssetImageUrl', () => {
         useGetAssetImageUrl(testImage, testIpfsGateway),
       );
     });
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((result as unknown as Record<string, any>).result.current).toEqual(
       '',
     );

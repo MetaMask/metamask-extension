@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import useFetchNftDetailsFromTokenURI from './useFetchNftDetailsFromTokenURI';
@@ -14,6 +13,8 @@ describe('useFetchNftDetailsFromTokenURI', () => {
       result = renderHook(() => useFetchNftDetailsFromTokenURI(undefined));
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((result as unknown as Record<string, any>).result.current).toEqual({
       image: '',
       name: '',
@@ -38,6 +39,8 @@ describe('useFetchNftDetailsFromTokenURI', () => {
       );
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((result as unknown as Record<string, any>).result.current).toEqual({
       image: '',
       name: '',
@@ -69,6 +72,8 @@ describe('useFetchNftDetailsFromTokenURI', () => {
       );
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((result as unknown as Record<string, any>).result.current).toEqual({
       image:
         'https://ipfs.io/ipfs/bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',

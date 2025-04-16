@@ -132,7 +132,7 @@ export const handleTransactionFailed = async (
     return;
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
   if (transactionEventPayload.error) {
@@ -164,7 +164,7 @@ export const handleTransactionConfirmed = async (
     return;
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
   const transactionMeta = { ...transactionEventPayload };
@@ -482,7 +482,8 @@ function createTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any;
 }) {
@@ -602,7 +603,8 @@ function updateTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any;
 }) {
@@ -660,7 +662,8 @@ async function createUpdateFinalizeTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extraParams?: Record<string, any>;
 }) {
@@ -699,7 +702,7 @@ async function createUpdateFinalizeTransactionEventFragment({
 }
 
 function hasFragment(
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getEventFragmentById: (arg0: string) => any,
   eventName: TransactionMetaMetricsEvent,
@@ -729,7 +732,7 @@ async function buildEventFragmentProperties({
   transactionMetricsRequest,
   extraParams = {},
 }: {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extraParams?: Record<string, any>;
   transactionEventPayload: TransactionEventPayload;
@@ -781,7 +784,7 @@ async function buildEventFragmentProperties({
     contractMethodName = methodData?.name;
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gasParams = {} as Record<string, any>;
 
@@ -963,7 +966,7 @@ async function buildEventFragmentProperties({
     );
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const blockaidProperties: any = getBlockaidMetricsProps(transactionMeta);
 
@@ -1033,7 +1036,8 @@ async function buildEventFragmentProperties({
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
     ...hdEntropyProperties,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
 
@@ -1065,7 +1069,8 @@ async function buildEventFragmentProperties({
     transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
 
@@ -1096,10 +1101,10 @@ async function buildEventFragmentProperties({
   return { properties, sensitiveProperties };
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getGasValuesInGWEI(gasParams: Record<string, any>) {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gasValuesInGwei = {} as Record<string, any>;
   for (const param in gasParams) {
