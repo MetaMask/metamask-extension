@@ -196,14 +196,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     () =>
       Object.entries(multichainNetworks).reduce(
         ([nonTestnetsList, testnetsList], [id, network]) => {
+          let chainId = id;
           let isTest = false;
-          const chainId = network.isEvm
-            ? convertCaipToHexChainId(id as CaipChainId)
-            : id;
+
           if (network.isEvm) {
-            isTest = (TEST_CHAINS as string[]).includes(chainId);
+            // We keep using raw chain ID for EVM.
+            chainId = convertCaipToHexChainId(network.chainId);
+            isTest = TEST_CHAINS.includes(chainId as Hex);
           } else {
-            isTest = NON_EVM_TESTNET_IDS.includes(chainId as CaipChainId);
+            isTest = NON_EVM_TESTNET_IDS.includes(network.chainId);
           }
           (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
           return [nonTestnetsList, testnetsList];

@@ -72,7 +72,7 @@ export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
-};
+} as const;
 
 // TODO: This data should be provided by the snap
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
@@ -128,7 +128,7 @@ export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
 /**
  * @deprecated MULTICHAIN_PROVIDER_CONFIGS is deprecated and will be removed in the future.
  * Use the data from @metamask/multichain-network-controller.
- * Useful selectors in selectors/multichain/networks.ts
+ * Useful selectors in selectors/multichain/networks.ts.
  */
 export const MULTICHAIN_PROVIDER_CONFIGS: Record<
   CaipChainId,
