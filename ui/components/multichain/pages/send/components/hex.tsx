@@ -35,6 +35,8 @@ export const SendHexData = () => {
           dispatch(updateSendHexData(newData ?? ''));
         }}
         placeholder={t('optional')}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         defaultValue={data || ''}
         data-testid="send-hex-textarea"
         error={hasError}

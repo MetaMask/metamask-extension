@@ -64,7 +64,11 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const [timeLeft, setTimeLeft] = useState<number | undefined>(undefined);
 
   const { formattedEthGasFee, formattedFiatGasFee } = useEthFeeData(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (bestQuote?.gasParams.maxGas || 0) +
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       Number(hexToDecimal(bestQuote?.approvalNeeded?.gas || '0x0')),
   );
 
