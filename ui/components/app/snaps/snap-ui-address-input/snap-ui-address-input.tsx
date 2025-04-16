@@ -18,6 +18,8 @@ import {
   FormTextField,
   FormTextFieldProps,
   FormTextFieldSize,
+  HelpText,
+  HelpTextSeverity,
   Icon,
   IconName,
   Label,
@@ -46,6 +48,7 @@ type MatchedAccountInfoProps = {
   displayAvatar?: boolean;
   handleClear: () => void;
   disabled?: boolean;
+  error?: string;
 };
 
 const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
@@ -56,6 +59,7 @@ const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
   displayName,
   handleClear,
   disabled,
+  error,
 }) => (
   <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
     {label && (
@@ -115,6 +119,11 @@ const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
         }}
       />
     </Box>
+    {error && (
+      <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
+        {error}
+      </HelpText>
+    )}
   </Box>
 );
 
@@ -124,6 +133,8 @@ export type SnapUIAddressInputProps = {
   label?: string;
   chainId: CaipChainId;
   displayAvatar?: boolean;
+  error?: string;
+  disabled?: boolean;
 };
 
 export const SnapUIAddressInput: FunctionComponent<
@@ -217,7 +228,7 @@ export const SnapUIAddressInput: FunctionComponent<
     }
   };
 
-  if (displayName && !error) {
+  if (displayName) {
     return (
       <MatchedAccountInfo
         chainId={chainId}
@@ -227,6 +238,7 @@ export const SnapUIAddressInput: FunctionComponent<
         displayName={displayName}
         handleClear={handleClear}
         disabled={disabled}
+        error={error}
       />
     );
   }
