@@ -99,11 +99,11 @@ describe('MetaMask onboarding', function () {
   };
 
   it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async function () {
-    const { mockedAccountSyncResponse, userStorageMockttpController } = await arrange();
+    const { mockedAccountSyncResponse, userStorageMockttpController } =
+      await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
           mockApis(
@@ -149,7 +149,8 @@ describe('MetaMask onboarding', function () {
   });
 
   it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async function () {
-    const { mockedAccountSyncResponse, userStorageMockttpController } = await arrange();
+    const { mockedAccountSyncResponse, userStorageMockttpController } =
+      await arrange();
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),

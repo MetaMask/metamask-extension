@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import  { DAPP_URL } from '../../constants'
+import { DAPP_URL } from '../../constants';
 
 class TestDappIndividualRequest {
   private readonly driver: Driver;

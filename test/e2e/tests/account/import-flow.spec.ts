@@ -11,7 +11,10 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
-import { accountsToMockForAccountsSync, getAccountsSyncMockResponse } from '../identity/account-syncing/mock-data';
+import {
+  accountsToMockForAccountsSync,
+  getAccountsSyncMockResponse,
+} from '../identity/account-syncing/mock-data';
 import { mockIdentityServices } from '../identity/mocks';
 
 describe('Import flow', function () {
@@ -72,10 +75,8 @@ describe('Import flow', function () {
   });
 
   it('Import Account using json file', async function () {
-    const {
-      mockedAccountSyncResponse,
-      userStorageMockttpController,
-    } = await arrange();
+    const { mockedAccountSyncResponse, userStorageMockttpController } =
+      await arrange();
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -83,16 +84,16 @@ describe('Import flow', function () {
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
           .build(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-              {
-                getResponse: mockedAccountSyncResponse,
-              },
-            );
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+            server,
+            {
+              getResponse: mockedAccountSyncResponse,
+            },
+          );
+          return mockIdentityServices(server, userStorageMockttpController);
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -134,25 +135,22 @@ describe('Import flow', function () {
   it('Import Account using private key of an already active account should result in an error', async function () {
     const testPrivateKey =
       '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9';
-    const {
-      mockedAccountSyncResponse,
-      userStorageMockttpController,
-    } = await arrange();
+    const { mockedAccountSyncResponse, userStorageMockttpController } = await arrange();
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .build(),
         testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-              {
-                getResponse: mockedAccountSyncResponse,
-              },
-            );
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
+          userStorageMockttpController.setupPath(
+            USER_STORAGE_FEATURE_NAMES.accounts,
+            server,
+            {
+              getResponse: mockedAccountSyncResponse,
+            },
+          );
+          return mockIdentityServices(server, userStorageMockttpController);
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

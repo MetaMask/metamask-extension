@@ -23,11 +23,10 @@ describe('Show account details', function () {
         await accountListPage.openAccountDetailsModal('Account 1');
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.revealPrivateKeyAndVerify(
-          {
-            expectedPrivateKey: '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
-          },
-        );
+        await accountDetailsModal.revealPrivateKeyAndVerify({
+          expectedPrivateKey:
+            '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
+        });
       },
     );
   });

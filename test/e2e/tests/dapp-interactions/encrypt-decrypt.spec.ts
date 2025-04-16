@@ -70,7 +70,9 @@ describe('Encrypt Decrypt', function (this: Suite) {
         // ------ Decrypt Message 1 on test dapp------
         await testDapp.clickDecryptButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const decryptMessageConfirmation = new DecryptMessageConfirmation(driver);
+        const decryptMessageConfirmation = new DecryptMessageConfirmation(
+          driver,
+        );
         await decryptMessageConfirmation.check_pageIsLoaded();
 
         // ------ Encrypt Message 2 ------
