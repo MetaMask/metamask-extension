@@ -26,6 +26,8 @@ export const useTransactionFocusEffect = () => {
 
   const setTransactionFocus = useCallback(
     async (transactionId: string, isFocused: boolean) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setTransactionActive(transactionId, isFocused));
     },
     [dispatch],

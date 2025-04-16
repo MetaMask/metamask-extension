@@ -43,6 +43,8 @@ export const SendPageRecipientInput = () => {
   const onValidAddressTyped = useCallback(
     async (address: string) => {
       dispatch(addHistoryEntry(`sendFlow - Valid address typed ${address}`));
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(updateRecipientUserInput(address));
       trackEvent(
         {

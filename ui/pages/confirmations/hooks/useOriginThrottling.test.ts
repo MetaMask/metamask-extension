@@ -49,6 +49,8 @@ describe('useOriginThrottling', () => {
     const { result } = renderHook(() => useOriginThrottling());
 
     await act(async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await result.current.resetOrigin();
     });
 

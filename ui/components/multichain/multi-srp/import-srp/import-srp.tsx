@@ -66,6 +66,8 @@ export const ImportSrp = ({
   async function importWallet() {
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(actions.importMnemonicToVault(joinedSrp));
       // Clear the secret recovery phrase after importing
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));

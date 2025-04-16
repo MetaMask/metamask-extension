@@ -2359,6 +2359,8 @@ export function automaticallySwitchNetwork(
     await dispatch(
       setActiveNetworkConfigurationId(networkClientIdForThisDomain),
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(
       setSwitchedNetworkDetails({
         networkClientId: networkClientIdForThisDomain,
@@ -2910,6 +2912,8 @@ export function qrCodeDetected(
   qrCodeData: QrCodeData,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch({
       type: actionConstants.QR_CODE_DETECTED,
       value: qrCodeData,
@@ -3322,6 +3326,8 @@ export function resetOnboarding(): ThunkAction<
 > {
   return async (dispatch) => {
     try {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setSeedPhraseBackedUp(false));
       dispatch(resetOnboardingAction());
     } catch (err) {

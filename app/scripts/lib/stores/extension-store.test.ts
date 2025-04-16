@@ -60,6 +60,8 @@ describe('ExtensionStore', () => {
       const setMock = jest.fn();
 
       const localStore = setup({ localMock: { set: setMock } });
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await expect(async function () {
         localStore.set(MOCK_STATE);
       }).not.toThrow();

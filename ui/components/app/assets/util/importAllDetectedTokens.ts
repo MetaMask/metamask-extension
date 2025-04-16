@@ -28,6 +28,8 @@ export const importAllDetectedTokens = async (
         const { networkClientId: networkInstanceId } =
           chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await addImportedTokens(tokens as Token[], networkInstanceId);
 
         tokens.forEach((importedToken) => {
@@ -39,6 +41,8 @@ export const importAllDetectedTokens = async (
 
     await Promise.all(importPromises);
   } else if (detectedTokens.length > 0) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await addImportedTokens(detectedTokens, networkClientId);
 
     detectedTokens.forEach((importedToken: Token) => {

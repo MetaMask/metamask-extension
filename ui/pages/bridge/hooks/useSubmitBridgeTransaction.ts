@@ -117,6 +117,8 @@ export default function useSubmitBridgeTransaction() {
         dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setDefaultHomeActiveTabName('activity'));
         history.push(DEFAULT_ROUTE);
       }
@@ -191,6 +193,8 @@ export default function useSubmitBridgeTransaction() {
         dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(setDefaultHomeActiveTabName('activity'));
         history.push(DEFAULT_ROUTE);
       }
@@ -240,6 +244,8 @@ export default function useSubmitBridgeTransaction() {
       }
     }
     // Route user to activity tab on Home page
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(setDefaultHomeActiveTabName('activity'));
     // Only redirect to activity tab if not on Solana
     // This avoids an unintended side effect where the user is redirected to the activity tab

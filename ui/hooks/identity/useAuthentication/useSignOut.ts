@@ -29,6 +29,8 @@ export function useSignOut(): {
   const signOut = useCallback(async () => {
     if (shouldSignOut) {
       try {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await dispatch(performSignOut());
       } catch (e) {
         // If an error occurs during the sign-out process, silently fail

@@ -49,6 +49,8 @@ export default function useAddToken() {
       if (!featuredRpc) {
         throw new Error('No featured RPC found');
       }
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       addedDestNetworkConfig = (await dispatch(
         addNetwork(featuredRpc),
       )) as unknown as NetworkConfiguration;
@@ -69,6 +71,8 @@ export default function useAddToken() {
       symbol,
       icon: image,
     } = quoteResponse.quote.destAsset;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await dispatch(
       addToken({
         address,

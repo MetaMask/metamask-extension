@@ -184,6 +184,8 @@ export class InstitutionalSnapController extends BaseController<
       type: TransactionEnvelopeType;
     },
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const response = await this.messagingSystem.call(
       'TransactionController:updateCustodialTransaction',
       {
@@ -201,6 +203,8 @@ export class InstitutionalSnapController extends BaseController<
   }
 
   async #shouldDeferPublication(transactionMeta: TransactionMeta) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const account = (await this.messagingSystem.call(
       'AccountsController:getAccountByAddress',
       transactionMeta.txParams.from as string,

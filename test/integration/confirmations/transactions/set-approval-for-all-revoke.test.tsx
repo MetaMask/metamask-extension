@@ -228,6 +228,8 @@ describe('ERC721 setApprovalForAll - Revoke Confirmation', () => {
       withinSimulationSection.getByText('0x07614...3ad68'),
     ).toBeInTheDocument();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const spendingCapValue = await screen.queryByTestId(
       'simulation-token-value',
     );
