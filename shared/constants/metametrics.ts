@@ -614,6 +614,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user signs in
    */
   ProfileId = 'profile_id',
+  /**
+   * Identified when the user adds or removes configured chains (evm or non-evm)
+   */
+  ChainIdList = 'chain_id_list',
 }
 
 /**
