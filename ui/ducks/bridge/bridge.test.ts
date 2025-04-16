@@ -30,6 +30,7 @@ import {
 const middleware = [thunk];
 
 describe('Ducks - Bridge', () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const store = configureMockStore<any>(middleware)(createBridgeMockStore());
 
@@ -191,6 +192,7 @@ describe('Ducks - Bridge', () => {
 
   describe('resetBridgeState', () => {
     it('dispatches action to the bridge controller', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
         createBridgeMockStore({
@@ -233,6 +235,7 @@ describe('Ducks - Bridge', () => {
 
   describe('setDestTokenExchangeRates', () => {
     it('fetches token prices and updates dest exchange rates in state, native dest token', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
         createBridgeMockStore(),
@@ -276,6 +279,7 @@ describe('Ducks - Bridge', () => {
     });
 
     it('fetches token prices and updates dest exchange rates in state, erc20 dest token', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
         createBridgeMockStore(),

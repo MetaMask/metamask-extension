@@ -201,6 +201,8 @@ const TokenButtons = ({
         }),
       );
       history.push(SEND_ROUTE);
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (!err.message.includes(INVALID_ASSET_TYPE)) {

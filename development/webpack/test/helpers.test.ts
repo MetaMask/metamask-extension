@@ -31,6 +31,7 @@ describe('./utils/helpers.ts', () => {
     const originalReaddirSync = fs.readdirSync;
     const otherHtmlEntries = ['one.html', 'two.html'];
     const appRoot = '<app-root>';
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mock.method(fs, 'readdirSync', function (path: string, options: any) {
       if (path === appRoot) {
@@ -117,6 +118,7 @@ describe('./utils/helpers.ts', () => {
     const originalReaddirSync = fs.readdirSync;
     const otherHtmlEntries = ['one.html', 'two.html'];
     const appRoot = '<app-root>';
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mock.method(fs, 'readdirSync', (path: string, options: any) => {
       if (path === appRoot) {
@@ -205,6 +207,8 @@ describe('./utils/helpers.ts', () => {
   it('should handle manifest.json files with empty sections', () => {
     const originalReaddirSync = fs.readdirSync;
     const appRoot = '<app-root>';
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mock.method(fs, 'readdirSync', (path: string, options: any) => {
       if (path === appRoot) {
