@@ -129,7 +129,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
 
 function getNonEvmState(
   account = MOCK_ACCOUNT_BIP122_P2WPKH,
-  selectedChainId = BtcScope.Mainnet,
+  selectedChainId: CaipChainId = BtcScope.Mainnet,
 ): TestState {
   return {
     metamask: {
