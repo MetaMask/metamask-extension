@@ -21,7 +21,7 @@ export const getTranslatedUINotifications = (
       image: {
         src: 'images/solana-logo-transparent.svg',
         width: 'auto',
-        height: '70px',
+        height: '60px',
       },
       date: UI_NOTIFICATIONS[NOTIFICATION_SOLANA_ON_METAMASK].date || '',
       modal: {
