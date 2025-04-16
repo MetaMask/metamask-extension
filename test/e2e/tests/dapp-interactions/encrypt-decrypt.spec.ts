@@ -4,7 +4,10 @@ import FixtureBuilder from '../../fixture-builder';
 import DecryptMessageConfirmation from '../../page-objects/pages/confirmations/redesign/decrypt-message-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { decryptMessageAndVerifyResult, getEncryptionKeyInDapp } from '../../page-objects/flows/encrypt-decrypt.flow';
+import {
+  decryptMessageAndVerifyResult,
+  getEncryptionKeyInDapp,
+} from '../../page-objects/flows/encrypt-decrypt.flow';
 
 describe('Encrypt Decrypt', function (this: Suite) {
   const encryptionKey = 'fxYXfCbun026g5zcCQh7Ia+O0urAEVZWLG8H4Jzu7Xs=';

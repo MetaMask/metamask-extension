@@ -27,7 +27,6 @@ import {
   DAPP_URL,
   ACCOUNT_1,
 } from './helpers';
-import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
