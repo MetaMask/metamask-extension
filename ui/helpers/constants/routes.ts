@@ -24,6 +24,8 @@ PATH_NAME_MAP[GENERAL_ROUTE] = 'General Settings Page';
 export const ADVANCED_ROUTE = '/settings/advanced';
 PATH_NAME_MAP[ADVANCED_ROUTE] = 'Advanced Settings Page';
 
+export const SYNC_EXPERIMENTS_ROUTE = '/settings/experimental/sync';
+
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 // DEVELOPER_OPTIONS_ROUTE not in PATH_NAME_MAP because we're not tracking analytics for this page
 

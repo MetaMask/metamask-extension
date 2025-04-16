@@ -23,6 +23,7 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   SNAP_SETTINGS_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
+  SYNC_EXPERIMENTS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -59,6 +60,7 @@ import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
+import { SyncExperimentsTab } from './sync-experiments-tab';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -351,6 +353,11 @@ class SettingsPage extends PureComponent {
         key: EXPERIMENTAL_ROUTE,
       },
       {
+        content: 'sYnc',
+        icon: <Icon name={IconName.ProgrammingArrows} />,
+        key: SYNC_EXPERIMENTS_ROUTE,
+      },
+      {
         content: t('about'),
         icon: <Icon name={IconName.Info} />,
         key: ABOUT_US_ROUTE,
@@ -443,6 +450,7 @@ class SettingsPage extends PureComponent {
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        <Route exact path={SYNC_EXPERIMENTS_ROUTE} component={SyncExperimentsTab} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
           <Route

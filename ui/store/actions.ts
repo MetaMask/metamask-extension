@@ -6131,6 +6131,27 @@ export async function createSnapAccount(
 }
 ///: END:ONLY_INCLUDE_IF
 
+// GIGEL SYNC EXPERIMENTS
+export async function performGetStorageAllFeatureEntries(namespace: string) {
+  const result = await submitRequestToBackground(
+    'performGetStorageAllFeatureEntries',
+    [namespace],
+  );
+  return result;
+}
+
+export async function batchSetItems(
+  namespace: string,
+  data: Record<string, string>,
+) {
+  const result = await submitRequestToBackground('batchSetUserStorageData', [
+    namespace,
+    Object.entries(data),
+  ]);
+  return result;
+}
+// end GIGEL sync experiments
+
 export async function disableAccountUpgrade(chainId: string, address: string) {
   return await submitRequestToBackground('disableAccountUpgrade', [
     chainId,
