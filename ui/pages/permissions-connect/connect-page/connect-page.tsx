@@ -61,6 +61,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
@@ -292,6 +293,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   });
 
   const onConfirm = () => {
+    trace({ name: TraceName.ConnectPage });
     const _request = {
       ...request,
       permissions: {
@@ -304,6 +306,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       },
     };
     approveConnection(_request);
+    endTrace({ name: TraceName.ConnectPage });
   };
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);

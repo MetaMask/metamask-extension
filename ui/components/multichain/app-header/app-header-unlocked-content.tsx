@@ -57,6 +57,7 @@ import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { TraceName, trace } from '../../../../shared/lib/trace';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
@@ -143,6 +144,7 @@ export const AppHeaderUnlockedContent = ({
               onClick={(e: React.MouseEvent<HTMLElement>) => {
                 e.stopPropagation();
                 e.preventDefault();
+                trace({ name: TraceName.NetworkList });
                 networkOpenCallback();
               }}
               display={[Display.Flex, Display.None]} // show on popover hide on desktop
@@ -165,6 +167,7 @@ export const AppHeaderUnlockedContent = ({
             onClick={(e: React.MouseEvent<HTMLElement>) => {
               e.stopPropagation();
               e.preventDefault();
+              trace({ name: TraceName.NetworkList });
               networkOpenCallback();
             }}
             display={[Display.None, Display.Flex]} // show on desktop hide on popover
