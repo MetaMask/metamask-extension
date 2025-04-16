@@ -33,7 +33,7 @@ export const useEIP7702Networks = (address: string) => {
             const isTest = (TEST_CHAINS as string[]).includes(chainId);
             (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
           } catch (err: unknown) {
-            console.log(err);
+            // console.log(err);
           }
           return [nonTestnetsList, testnetsList];
         },
@@ -80,7 +80,7 @@ export const useEIP7702Networks = (address: string) => {
             });
           }
         } catch (err: unknown) {
-          console.log(err);
+          // console.log(err);
         }
       });
 

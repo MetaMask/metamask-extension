@@ -58,7 +58,7 @@ export const AccountDetailsDisplay = ({
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const checksummedAddress = toChecksumHexAddress(address)?.toLowerCase();
   const [copied, handleCopy] = useCopyToClipboard();
-  const handleClick = useCallback(async () => {
+  const handleClick = useCallback(() => {
     handleCopy(checksummedAddress);
   }, [checksummedAddress, handleCopy]);
 
