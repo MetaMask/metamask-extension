@@ -115,7 +115,7 @@ export const AccountDetailsDisplay = ({
           style={{
             cursor: 'pointer',
             position: 'absolute',
-            right: -16,
+            right: -32,
             top: -2,
           }}
           onClick={handleClick}
