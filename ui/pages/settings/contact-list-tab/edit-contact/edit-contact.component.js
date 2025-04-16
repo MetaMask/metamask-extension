@@ -252,7 +252,14 @@ const EditContact = ({
         }}
         onCancel={() => history.push(`${viewRoute}/${address}`)}
         submitText={t('save')}
-        disabled={!contactName.trim() || nameError}
+        disabled={Boolean(
+          (contactName === name &&
+            newAddress === address &&
+            selectedChainId === contactChainId &&
+            newMemo === memo) ||
+            !contactName.trim() ||
+            nameError,
+        )}
       />
       {showModal && (
         <ContactNetworks
