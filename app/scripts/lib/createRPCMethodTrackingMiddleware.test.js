@@ -320,6 +320,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           security_alert_reason: BlockaidReason.maliciousDomain,
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
+          requested_through: 'ethereum_provider',
           ui_customizations: [
             MetaMetricsEventUiCustomization.RedesignedConfirmation,
           ],
@@ -976,6 +977,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         ['0x123'],
         {
           method: MESSAGE_TYPE.WALLET_GET_CAPABILITIES,
+          requested_through: 'ethereum_provider',
         },
       ],
     ])(
@@ -1004,5 +1006,156 @@ describe('createRPCMethodTrackingMiddleware', () => {
         );
       },
     );
+  });
+
+  describe('Multichain API requests', () => {
+    beforeEach(() => {
+      metaMetricsController.setParticipateInMetaMetrics(true);
+    });
+
+    it('should track wallet_createSession events with multichain category and properties', async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+        origin: 'multichain.dapp',
+        params: {
+          requiredScopes: {
+            'eip155:1': { eth_accounts: {} },
+            'eip155:137': { eth_accounts: {} },
+          },
+          optionalScopes: {
+            'eip155:56': { eth_accounts: {} },
+          },
+        },
+      };
+
+      const res = {};
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      // Check the REQUESTED event
+      expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        category: MetaMetricsEventCategory.MultichainApi,
+        event: MetaMetricsEventName.PermissionsRequested,
+        properties: {
+          method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+          requested_through: 'multichain_api',
+          chain_id_list: expect.arrayContaining([
+            'eip155:1',
+            'eip155:137',
+            'eip155:56',
+          ]),
+        },
+        referrer: { url: 'multichain.dapp' },
+      });
+
+      // Check the APPROVED event
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.MultichainApi,
+        event: MetaMetricsEventName.PermissionsApproved,
+        properties: {
+          method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+          requested_through: 'multichain_api',
+        },
+        referrer: { url: 'multichain.dapp' },
+      });
+    });
+
+    it('should track wallet_invokeMethod events with multichain category and properties', async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
+        origin: 'multichain.dapp',
+        params: {
+          request: {
+            method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+            params: [],
+          },
+          scope: 'eip155:1',
+        },
+      };
+
+      const res = {};
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      // Check the REQUESTED event
+      expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        category: MetaMetricsEventCategory.MultichainApi,
+        event: MetaMetricsEventName.PermissionsRequested,
+        properties: {
+          method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+          requested_through: 'multichain_api',
+        },
+        referrer: { url: 'multichain.dapp' },
+      });
+
+      // Check the APPROVED event
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.MultichainApi,
+        event: MetaMetricsEventName.PermissionsApproved,
+        properties: {
+          method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+          requested_through: 'multichain_api',
+        },
+        referrer: { url: 'multichain.dapp' },
+      });
+    });
+
+    it('should track wallet_invokeMethod rejections with multichain category', async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
+        origin: 'multichain.dapp',
+        params: {
+          request: {
+            method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+            params: [],
+          },
+          scope: 'eip155:1',
+        },
+      };
+
+      const res = {
+        error: {
+          code: errorCodes.provider.userRejectedRequest,
+        },
+      };
+
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      // TODO: failing because of rate limiting
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      // Check the REQUESTED event
+      expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        category: MetaMetricsEventCategory.MultichainApi,
+        event: MetaMetricsEventName.PermissionsRequested,
+        properties: {
+          method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+          requested_through: 'multichain_api',
+        },
+        referrer: { url: 'multichain.dapp' },
+      });
+
+      // Check the REJECTED event
+      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        category: MetaMetricsEventCategory.MultichainApi,
+        event: MetaMetricsEventName.PermissionsRejected,
+        properties: {
+          method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+          requested_through: 'multichain_api',
+        },
+        referrer: { url: 'multichain.dapp' },
+      });
+    });
   });
 });
