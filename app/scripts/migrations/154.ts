@@ -12,7 +12,7 @@ export const version = 154;
 
 /**
  * This migration adds test network configurations to the MultichainNetworkController.
- * Networks added: Bitcoin testnet, Bitcoin Signet, Solana testnet, and Solana devnet
+ * Networks added: Bitcoin testnet, Bitcoin Signet, Solana testnet, and Solana devnet.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to disk.
