@@ -79,16 +79,23 @@ import {
   BackgroundColor,
   BorderRadius,
   Display,
+  FlexDirection,
   JustifyContent,
+  TextAlign,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
   ButtonSecondary,
   ButtonSecondarySize,
+  Modal,
+  ModalOverlay,
   Text,
   BannerBase,
   IconName,
+  ModalContent,
+  ModalHeader,
   AvatarNetworkSize,
 } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -116,7 +123,6 @@ import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from './select-rpc-url-modal/select-rpc-url-modal';
 import AddBlockExplorerModal from './add-block-explorer-modal/add-block-explorer-modal';
 import AddNonEvmAccountModal from './add-non-evm-account/add-non-evm-account';
-import { NetworkListMenuModal } from './network-list-menu-modal';
 
 export enum ACTION_MODE {
   // Displays the search box and network list
@@ -796,12 +802,36 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   }
 
   return (
-    <NetworkListMenuModal
-      onClose={onClose}
-      actionMode={actionMode}
-      onBack={onBack}
-      title={title}
-      children={render()}
-    />
+    <Modal isOpen onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent
+        padding={0}
+        className="multichain-network-list-menu-content-wrapper"
+        modalDialogProps={{
+          className: 'multichain-network-list-menu-content-wrapper__dialog',
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+          paddingTop: 0,
+          paddingBottom: 0,
+        }}
+      >
+        <ModalHeader
+          paddingTop={4}
+          paddingRight={4}
+          paddingBottom={actionMode === ACTION_MODE.SELECT_RPC ? 0 : 4}
+          onClose={onClose}
+          onBack={onBack}
+        >
+          <Text
+            ellipsis
+            variant={TextVariant.headingSm}
+            textAlign={TextAlign.Center}
+          >
+            {title}
+          </Text>
+        </ModalHeader>
+        {render()}
+      </ModalContent>
+    </Modal>
   );
 };
