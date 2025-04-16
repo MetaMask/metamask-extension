@@ -27,10 +27,8 @@ function transformState(state: Record<string, unknown>) {
     !hasProperty(state, 'NetworkController') ||
     !isObject(state.NetworkController)
   ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `typeof state.NetworkController is ${typeof state.NetworkController}`,
-      ),
+    console.warn(
+      `Warning: typeof state.NetworkController is ${typeof state.NetworkController}. Skipping migration.`,
     );
     return state;
   }
@@ -38,12 +36,16 @@ function transformState(state: Record<string, unknown>) {
     const thePost077SupplementFor084HasNotModifiedState =
       state.NetworkController.networkId === undefined;
     if (thePost077SupplementFor084HasNotModifiedState) {
-      global.sentry?.captureException?.(
-        new Error(
-          `typeof state.NetworkController.network is ${typeof state
-            .NetworkController.network}`,
-        ),
+      console.warn(
+        `Warning: typeof state.NetworkController.network is ${typeof state
+          .NetworkController.network}. Adding default networkId and networkStatus.`
       );
+
+      const NetworkController = { ...state.NetworkController };
+      NetworkController.networkId = null;
+      NetworkController.networkStatus = 'unknown';
+
+      return { ...state, NetworkController };
     }
     return state;
   }

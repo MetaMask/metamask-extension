@@ -46,10 +46,7 @@ describe('migration #84', () => {
 
     await migrate(originalVersionedData);
 
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(`typeof state.NetworkController is undefined`),
-    );
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(0);
   });
 
   const nonObjects = [undefined, null, 'test', 1, ['test']];
@@ -66,7 +63,7 @@ describe('migration #84', () => {
       expect(newVersionedData.data).toStrictEqual(originalVersionedData.data);
     });
 
-    it(`captures an exception if the network controller state is ${invalidState}`, async () => {
+    it(`logs a warning instead of capturing an exception if the network controller state is ${invalidState}`, async () => {
       const originalVersionedData = buildOriginalVersionedData({
         data: {
           NetworkController: invalidState,
@@ -75,10 +72,7 @@ describe('migration #84', () => {
 
       await migrate(originalVersionedData);
 
-      expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-        new Error(`typeof state.NetworkController is ${typeof invalidState}`),
-      );
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(0);
     });
   }
 
@@ -105,12 +99,15 @@ describe('migration #84', () => {
       },
     });
 
-    await migrate(originalVersionedData);
+    const newVersionedData = await migrate(originalVersionedData);
 
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(`typeof state.NetworkController.network is undefined`),
-    );
+    expect(newVersionedData.data.NetworkController).toStrictEqual({
+      test: '123',
+      networkId: null,
+      networkStatus: 'unknown',
+    });
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(0);
   });
 
   it('does not capture an exception if the network controller state does not include "network" but does include "networkId"', async () => {
