@@ -24,7 +24,6 @@ import {
   Box,
   ButtonLink,
   ButtonLinkSize,
-  IconName,
   Text,
 } from '../../../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
@@ -39,7 +38,6 @@ import Spinner from '../../../../ui/spinner';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
-import { showImportNftsModal } from '../../../../../store/actions';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -146,26 +144,6 @@ export default function NftsTab() {
               handleNftClick={handleNftClick}
               privacyMode={privacyMode}
             />
-            <Box
-              className="nfts-tab__buttons"
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.flexStart}
-              margin={4}
-              gap={2}
-              marginBottom={2}
-            >
-              <ButtonLink
-                size={ButtonLinkSize.Md}
-                data-testid="import-nft-button"
-                startIconName={IconName.Add}
-                onClick={() => {
-                  dispatch(showImportNftsModal({}));
-                }}
-              >
-                {t('importNFT')}
-              </ButtonLink>
-            </Box>
           </Box>
         ) : (
           <>
@@ -206,15 +184,6 @@ export default function NftsTab() {
                 }
               </Box>
             </Box>
-            <Box
-              className="nfts-tab__buttons"
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.flexStart}
-              margin={4}
-              gap={2}
-              marginBottom={2}
-            ></Box>
           </>
         )}
       </Box>
