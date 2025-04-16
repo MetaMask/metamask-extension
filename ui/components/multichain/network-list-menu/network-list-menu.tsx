@@ -55,10 +55,7 @@ import {
   TEST_CHAINS,
   CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
-import {
-  MULTICHAIN_NETWORK_TO_NICKNAME,
-  NETWORK_TO_ACCOUNT_TYPE_MAP,
-} from '../../../../shared/constants/multichain/networks';
+import { NETWORK_TO_ACCOUNT_TYPE_MAP } from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -508,14 +505,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const generateMultichainNetworkListItem = (
     network: MultichainNetworkConfiguration,
   ) => {
-    const { chainId } = network;
+    const { chainId, name } = network;
     const isCurrentNetwork = chainId === currentChainId;
     const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
       getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
-    const name = network.isEvm
-      ? network.name
-      : MULTICHAIN_NETWORK_TO_NICKNAME[network.chainId];
 
     return (
       <NetworkListItem
