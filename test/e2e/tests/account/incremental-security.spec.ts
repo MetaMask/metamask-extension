@@ -1,8 +1,8 @@
+import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import { WALLET_PASSWORD } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import { Suite } from 'mocha';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';

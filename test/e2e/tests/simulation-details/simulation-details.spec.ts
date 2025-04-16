@@ -54,7 +54,9 @@ async function withFixturesForSimulationDetails(
     inputChainId?: string;
     mockRequests: (mockServer: MockttpServer) => Promise<void>;
   },
-  runTestWithFixtures: (args: Pick<Fixtures, 'driver' | 'mockServer'>) => Promise<void>,
+  runTestWithFixtures: (
+    args: Pick<Fixtures, 'driver' | 'mockServer'>,
+  ) => Promise<void>,
 ) {
   await withFixtures(
     {

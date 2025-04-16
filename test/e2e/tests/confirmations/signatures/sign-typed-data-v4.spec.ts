@@ -118,9 +118,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
     await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
-      async ({
-        driver,
-      }: TestSuiteArguments) => {
+      async ({ driver }: TestSuiteArguments) => {
         await unlockWallet(driver);
         const testDappIndividualRequest = new TestDappIndividualRequest(driver);
 
@@ -131,7 +129,9 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues({ driver, verifyingContract: false });
         await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDappSendIndividualRequest);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.TestDappSendIndividualRequest,
+        );
 
         await testDappIndividualRequest.checkExpectedResult(
           '0xdf05fb422b6623939c9ec6b622d21b97e3974cc8bf0d7534aa8e5972be4c1e954261493934ecd1088aa32f4b0686dc9a4a847bd51fb572aba1f69153035533781c',
@@ -141,12 +141,17 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   });
 });
 
-async function assertInfoValues({driver, verifyingContract = true} : {driver: Driver, verifyingContract?: boolean}) {
+async function assertInfoValues({
+  driver,
+  verifyingContract = true,
+} : {
+  driver: Driver; verifyingContract?: boolean;
+}) {
   const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   if (verifyingContract) {
     await signTypedData.verifyContractPetName();
-  };
+  }
   await signTypedData.verifyOrigin();
   await signTypedData.verifyPrimaryType();
   await signTypedData.verifyFromName();

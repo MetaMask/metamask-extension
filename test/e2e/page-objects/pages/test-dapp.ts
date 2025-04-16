@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import  { DAPP_URL } from '../../constants'
+import { DAPP_URL } from '../../constants';
 import { WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
@@ -242,25 +242,25 @@ class TestDapp {
    *
    * @param message - The decrypted message to verify.
    */
-    async check_decryptedMessage(message: string) {
-      console.log('Verify decrypted message on test dapp');
-      await this.driver.waitForSelector({
-        css: this.decryptedMessage,
-        text: message,
-      });
-    }
+  async check_decryptedMessage(message: string) {
+    console.log('Verify decrypted message on test dapp');
+    await this.driver.waitForSelector({
+      css: this.decryptedMessage,
+      text: message,
+    });
+  }
 
   /**
-    * Verify the EIP-5792 send calls error message on the test dapp.
-    *
-    * @param expectedMessage - The expected error message to verify.
-    */
-    async checkEip5792SendCallsError(expectedMessage: string) {
-      await this.driver.waitForSelector({
-        css: this.eip5792SendCallsError,
-        text: expectedMessage,
-      });
-    }
+   * Verify the EIP-5792 send calls error message on the test dapp.
+   *
+   * @param expectedMessage - The expected error message to verify.
+   */
+  async checkEip5792SendCallsError(expectedMessage: string) {
+    await this.driver.waitForSelector({
+      css: this.eip5792SendCallsError,
+      text: expectedMessage,
+    });
+  }
 
   /**
    * Verifies the eth_subscribe response.
@@ -359,17 +359,17 @@ class TestDapp {
    *
    * @param expectedResult - The expected account address.
    */
-    async check_getAccountsResult(expectedResult: string) {
-      console.log(
-        'Verify get connected accounts result contains:',
-        expectedResult,
-      );
-      await this.driver.clickElement(this.getAccountsButton);
-      await this.driver.waitForSelector({
-        css: this.getAccountsResult,
-        text: expectedResult,
-      });
-    }
+  async check_getAccountsResult(expectedResult: string) {
+    console.log(
+      'Verify get connected accounts result contains:',
+      expectedResult,
+    );
+    await this.driver.clickElement(this.getAccountsButton);
+    await this.driver.waitForSelector({
+      css: this.getAccountsResult,
+      text: expectedResult,
+    });
+  }
 
   /**
    * Verify the get encryption key result.
@@ -377,7 +377,10 @@ class TestDapp {
    * @param encryptionKey - The encryption key to display.
    */
   async check_getEncryptionKeyResult(encryptionKey: string) {
-    console.log('Verify get encryption key result on test dapp: ', encryptionKey);
+    console.log(
+      'Verify get encryption key result on test dapp: ',
+      encryptionKey,
+    );
     await this.driver.waitForSelector({
       css: this.getEncryptionKeyResult,
       text: encryptionKey,

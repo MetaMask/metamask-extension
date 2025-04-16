@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import {
@@ -12,7 +13,6 @@ import AdvancedSettings from '../../page-objects/pages/settings/advanced-setting
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
-import fs from 'fs';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
   const BRIDGE_GET_ALL_FEATURE_FLAGS_PATH =
