@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs';
+import { strict as assert } from 'assert';
 import path from 'path';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
@@ -17,6 +18,12 @@ import {
   withFixtures,
 } from './helpers';
 import { Driver } from './webdriver/driver';
+
+const bridgeThresholdTimings = {
+  loadPage: 300,
+  loadAssetPicker: 500,
+  searchToken: 500,
+};
 
 async function loadNewAccount(): Promise<number> {
   let loadingTimes: number = 0;
@@ -178,7 +185,8 @@ async function main(): Promise<void> {
   const results: Record<string, number> = {};
   results.loadNewAccount = await loadNewAccount();
   results.confirmTx = await confirmTx();
-  results.bridge = await bridgeUserActions();
+  const bridgeResults = await bridgeUserActions();
+  results.bridge = bridgeResults;
   const { out } = argv as { out?: string };
 
   if (out) {
@@ -196,6 +204,22 @@ async function main(): Promise<void> {
   } else {
     console.log(JSON.stringify(results, null, 2));
   }
+
+  //Gating Bridge test results
+  assert.ok(
+    bridgeResults.loadPage <= bridgeThresholdTimings.loadPage,
+    `Bridge load page timing exceeded threshold timing of ${bridgeThresholdTimings.loadPage} msec`,
+  );
+
+  assert.ok(
+    bridgeResults.loadAssetPicker <= bridgeThresholdTimings.loadAssetPicker,
+    `Bridge load asset picker timing exceeded threshold timing of ${bridgeThresholdTimings.loadAssetPicker} msec`,
+  );
+
+  assert.ok(
+    bridgeResults.searchToken <= bridgeThresholdTimings.searchToken,
+    `Bridge search token timing exceeded threshold timing of ${bridgeThresholdTimings.searchToken} msec`,
+  );
 }
 
 main().catch((error) => {
