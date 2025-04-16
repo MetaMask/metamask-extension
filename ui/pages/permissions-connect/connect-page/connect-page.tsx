@@ -526,6 +526,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             tabKey="permissions"
             width={BlockSize.Full}
             data-testid="permissions-tab"
+            disabled={
+              promptToCreateSolanaAccount &&
+              !solanaAccountCreated &&
+              selectedAccounts.length === 0
+            }
           >
             <Box marginTop={4}>
               <SiteCell
