@@ -1,8 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
   SimulationDetails,
@@ -53,10 +50,6 @@ export function BatchSimulationDetails() {
     },
     [id, nestedTransactionIndexToEdit],
   );
-
-  if (transactionMeta?.type === TransactionType.revokeDelegation) {
-    return null;
-  }
 
   const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
     ...change,

@@ -11,10 +11,7 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import {
-  RevokeDelegation,
-  upgradeAccountConfirmation,
-} from '../../../../../../../../test/data/confirmations/batch-transaction';
+import { upgradeAccountConfirmation } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
 import { Confirmation } from '../../../../../types/confirm';
@@ -179,16 +176,6 @@ describe('<TransactionDetails />', () => {
     );
     expect(getByText('Network')).toBeInTheDocument();
     expect(getByText('Goerli')).toBeInTheDocument();
-  });
-
-  it('return null for transaction of type revokeDelegation', () => {
-    const state = getMockConfirmStateForTransaction(RevokeDelegation);
-    const mockStore = configureMockStore([])(state);
-    const { container } = renderWithConfirmContextProvider(
-      <TransactionDetails />,
-      mockStore,
-    );
-    expect(container.firstChild).toBeNull();
   });
 
   describe('RecipientRow', () => {

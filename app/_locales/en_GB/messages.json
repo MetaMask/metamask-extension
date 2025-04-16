@@ -1078,8 +1078,11 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmAccountType": {
-    "message": "Type"
+  "confirmAccountCurrentType": {
+    "message": "Curent Type"
+  },
+  "confirmAccountNewType": {
+    "message": "New Type"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Smart account"
@@ -1143,6 +1146,9 @@
   },
   "confirmTitleDescDelegationRevoke": {
     "message": "You're switching back to a standard account (EOA)."
+  },
+  "confirmTitleDescDelegationUpgrade": {
+    "message": "You're switching to a smart account"
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"

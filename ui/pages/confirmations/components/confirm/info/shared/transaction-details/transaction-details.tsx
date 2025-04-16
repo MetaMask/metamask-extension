@@ -27,15 +27,7 @@ import { HEX_ZERO } from '../constants';
 import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
 import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  TextColor,
-} from '../../../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../../../../components/component-library';
+import { SmartContractWithLogo } from '../smart-contract-with-logo';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -176,10 +168,6 @@ export const TransactionDetails = () => {
     [currentConfirmation],
   );
 
-  if (currentConfirmation?.type === TransactionType.revokeDelegation) {
-    return null;
-  }
-
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
@@ -196,24 +184,3 @@ export const TransactionDetails = () => {
     </>
   );
 };
-
-function SmartContractWithLogo() {
-  const t = useI18nContext();
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      borderRadius={BorderRadius.pill}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      style={{
-        padding: '1px 8px 1px 4px',
-      }}
-    >
-      <img src="images/logo/metamask-fox.svg" width="16" height="16" />
-      <Text marginLeft={2} color={TextColor.inherit}>
-        {t('interactWithSmartContract')}
-      </Text>
-    </Box>
-  );
-}
