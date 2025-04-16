@@ -3,7 +3,7 @@ import { EthMethod, SolMethod } from '@metamask/keyring-api';
 import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
 import { isEqual } from 'lodash';
 import React, { ReactNode, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -109,7 +109,6 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const history = useHistory();
-  const dispatch = useDispatch();
   const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
   const conversionRate = useMultichainSelector(getMultichainConversionRate);
