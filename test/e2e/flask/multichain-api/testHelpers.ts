@@ -185,13 +185,12 @@ export const sendMultichainApiRequest = ({
         if (
           target !== '${METAMASK_INPAGE}' ||
           data?.name !== '${METAMASK_CAIP_MULTICHAIN_PROVIDER}' ||
-          data?.data.type !== 'caip-x' ||
-          data?.data.data.id !== ${id}
+          data?.data.id !== ${id}
         ) {
           return;
         }
 
-        resolve(data.data.data);
+        resolve(data.data);
       });
     })
     window.postMessage(
@@ -199,10 +198,7 @@ export const sendMultichainApiRequest = ({
         target: '${CONTENT_SCRIPT}',
         data: {
           name: '${METAMASK_CAIP_MULTICHAIN_PROVIDER}',
-          data: {
-            type: 'caip-x',
-            data,
-          },
+          data
         },
       },
       location.origin,
