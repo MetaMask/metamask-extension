@@ -37,13 +37,19 @@ class SnapInteractiveDialog {
     console.log('Snap Interactive UI dialog is loaded');
   }
 
-  async clickButton(buttonName: string, waitForWindowToClose: boolean = false) {
-    console.log(`Clicking button with the name: "${buttonName}"`);
-    if (waitForWindowToClose) {
-      await this.driver.clickElementAndWaitForWindowToClose({ text: buttonName, tag: 'span' });
-    } else {
-      await this.driver.clickElement({ text: buttonName, tag: 'span' });
-    }
+  async clickSubmitButton() {
+    console.log(`Clicking submit button`);
+    await this.driver.clickElement({ text: 'Submit', tag: 'span' });
+  }
+
+  async clickCancelButton() {
+    console.log(`Clicking cancel button`);
+    await this.driver.clickElementAndWaitForWindowToClose({ text: 'Cancel', tag: 'span' });
+  }
+
+  async clickOKButton() {
+    console.log(`Clicking OK button`);
+    await this.driver.clickElementAndWaitForWindowToClose({ text: 'OK', tag: 'span' });
   }
 
   async fillMessage(message: string) {

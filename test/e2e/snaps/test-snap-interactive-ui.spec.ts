@@ -41,11 +41,11 @@ describe('Interactive UI Snap', function () {
         await interactiveUI.selectRadioOption('Option 1');
         await interactiveUI.selectDropDownOption('dropDown','Option 2');
         await interactiveUI.selectCheckbox();
-        await interactiveUI.clickButton('Submit');
+        await interactiveUI.clickSubmitButton();
 
         // check for returned values and close the dialog
         await interactiveUI.check_result();
-        await interactiveUI.clickButton('OK', true);
+        await interactiveUI.clickOKButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.check_messageResultSpan('interactiveUIResultSpan', 'null');
 
@@ -56,7 +56,7 @@ describe('Interactive UI Snap', function () {
         await interactiveUI.checkElementIsDisabled('exampleDropdown');
         await interactiveUI.checkElementIsDisabled('exampleCheckbox');
         await interactiveUI.checkElementIsDisabled('exampleSelectorDropdown');
-        await interactiveUI.clickButton('Cancel',true);
+        await interactiveUI.clickCancelButton();
       },
     );
   });
