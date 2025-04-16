@@ -2611,7 +2611,7 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
+              type: 'caip-348',
               data: {
                 method: 'wallet_invokeMethod',
                 params: {
@@ -2706,7 +2706,7 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
+              type: 'caip-348',
               data: {
                 method: 'wallet_invokeMethod',
                 params: {
@@ -2758,7 +2758,7 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
+              type: 'caip-348',
               data: {
                 method: 'wallet_invokeMethod',
                 params: {
@@ -2785,7 +2785,7 @@ describe('MetaMaskController', () => {
         streamTest.end();
       });
 
-      it('should only process `caip-x` CAIP formatted messages', async () => {
+      it('should only process `caip-348` CAIP formatted messages', async () => {
         const messageSender = {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
@@ -2825,7 +2825,7 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
+              type: 'caip-348',
               data: {
                 method: 'wallet_invokeMethod',
                 params: {
