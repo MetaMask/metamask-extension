@@ -85,6 +85,14 @@ ignores:
   - '@testing-library/dom'
   - 'mini-css-extract-plugin'
   - 'webpack-cli'
+  # preinstalled snaps
+  - '@metamask/preinstalled-example-snap'
+  - '@metamask/ens-resolver-snap'
+  - '@metamask/message-signing-snap'
+  - '@metamask/account-watcher'
+  - '@metamask/bitcoin-wallet-snap'
+  - '@metamask/solana-wallet-snap'
+  - '@metamask/institutional-wallet-snap'
 
 # files depcheck should not parse
 ignorePatterns:

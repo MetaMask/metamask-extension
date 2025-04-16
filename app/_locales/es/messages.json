@@ -1121,18 +1121,6 @@
   "confirmTitleTransaction": {
     "message": "Solicitud de transacción"
   },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Cancelar transacción"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Cancelar actualización y transacción"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Si no desea actualizar su cuenta, puede cancelarla aquí.\n\nPara finalizar esta transacción sin una actualización, deberá realizar esta solicitud nuevamente en el sitio. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Cancelar transacción"
-  },
   "confirmationAlertDetails": {
     "message": "Para proteger sus activos, le sugerimos que rechace la solicitud."
   },
@@ -2006,9 +1994,6 @@
   },
   "existingChainId": {
     "message": "La información que ha ingresado está asociada con un ID de cadena existente."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Para ver y confirmar su solicitud más reciente, primero deberá aprobar o rechazar las solicitudes existentes."
   },
   "expandView": {
     "message": "Expandir vista"
