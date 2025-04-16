@@ -38,7 +38,12 @@ export const AccountNetwork = ({
     networkConfiguration;
   const [addressSupportSmartAccount, setAddressSupportSmartAccount] =
     useState(isSupported);
-  const networkIcon = getNetworkIcon(networkConfiguration);
+  let networkIcon: string = '';
+  try {
+    networkIcon = getNetworkIcon(networkConfiguration);
+  } catch (err: unknown) {
+    console.log(err);
+  }
   const prevHasPendingRequests = useRef<boolean>();
   const { hasPendingRequests } = useBatchAuthorizationRequests(
     address,
@@ -53,7 +58,7 @@ export const AccountNetwork = ({
     } else {
       prevHasPendingRequests.current = hasPendingRequests;
     }
-  }, [hasPendingRequests, prevHasPendingRequests]);
+  }, [addressSupportSmartAccount, hasPendingRequests, prevHasPendingRequests]);
 
   const onSwitch = useCallback(async () => {
     if (addressSupportSmartAccount) {
@@ -65,6 +70,7 @@ export const AccountNetwork = ({
     address,
     downgradeAccount,
     addressSupportSmartAccount,
+    upgradeAccount,
     upgradeContractAddress,
   ]);
 
