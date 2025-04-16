@@ -1995,9 +1995,6 @@
   "existingChainId": {
     "message": "您输入的信息与现有的链 ID 相关联。"
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "如需查看和确认您的最新请求，您需要首先批准或拒绝现有请求。"
-  },
   "expandView": {
     "message": "展开视图"
   },

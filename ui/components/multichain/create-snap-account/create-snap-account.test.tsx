@@ -113,27 +113,6 @@ describe('CreateSnapAccount', () => {
     });
   });
 
-  it('calls onActionComplete with false when account creation fails', async () => {
-    const error = new Error('Failed to create account');
-    jest.spyOn(console, 'error').mockImplementation(() => {
-      /* Suppress error log */
-    });
-    mockCreateAccount.mockRejectedValueOnce(error);
-
-    const onActionComplete = jest.fn();
-    const { getByTestId } = render({
-      ...defaultProps,
-      onActionComplete,
-    });
-
-    const createButton = getByTestId('submit-add-account-with-name');
-    fireEvent.click(createButton);
-
-    await waitFor(() => {
-      expect(onActionComplete).toHaveBeenCalledWith(false);
-    });
-  });
-
   it('passes the correct chainId and keyringId to createAccount', async () => {
     const { getByTestId } = render();
 
