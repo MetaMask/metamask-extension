@@ -173,6 +173,8 @@ export class MMIController {
 
     this.signatureController.hub.on(
       'personal_sign:signed',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'personal');
       },
@@ -180,6 +182,8 @@ export class MMIController {
 
     this.signatureController.hub.on(
       'eth_signTypedData:signed',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'v4');
       },
@@ -187,6 +191,8 @@ export class MMIController {
 
     this.transactionUpdateController.on(
       'handshake',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async ({ channelId }: { channelId: string }) => {
         this.setChannelId(channelId);
       },
@@ -194,6 +200,8 @@ export class MMIController {
 
     this.transactionUpdateController.on(
       'connection.request',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (payload: ConnectionRequest) => {
         this.setConnectionRequest(payload);
       },
@@ -243,6 +251,8 @@ export class MMIController {
       custodyController: this.custodyController,
       // @ts-expect-error not relevant
       trackTransactionEvent:
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.trackTransactionEventFromCustodianEvent.bind(this),
       captureException,
     });

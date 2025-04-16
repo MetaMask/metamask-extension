@@ -147,6 +147,8 @@ export default function TurnOnMetamaskNotifications() {
         </ModalBody>
         <ModalFooter
           paddingTop={4}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={() => handleTurnOnNotifications()}
           containerProps={{
             flexDirection: FlexDirection.Column,

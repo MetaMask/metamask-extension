@@ -521,6 +521,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             ? getRpcDataByChainId(chainId, evmNetworks).defaultRpcEndpoint
             : undefined
         }
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={async () => {
           await handleNetworkChange(chainId);
         }}
@@ -567,6 +569,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                       />
                     </Box>
                   }
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClose={() => hideNetworkBanner()}
                   description={t('dragAndDropBanner')}
                 />

@@ -389,6 +389,8 @@ export function NftDetailsComponent({
               }
               return global.platform.openTab({ url: openSeaLink });
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onRemove={onRemove}
           />
         </Box>
@@ -887,6 +889,8 @@ export function NftDetailsComponent({
       {isCurrentlyOwned === true ? (
         <Footer className="nft-details__content">
           <ButtonPrimary
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSend}
             disabled={sendDisabled}
             size={ButtonPrimarySize.Lg}
