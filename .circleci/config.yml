@@ -143,7 +143,7 @@ workflows:
             - prep-build-test
             - get-changed-files-with-git-diff
       - test-e2e-firefox:
-          <<: *mai_master_rc_only
+          <<: *main_master_rc_only
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
