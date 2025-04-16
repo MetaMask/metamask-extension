@@ -428,7 +428,6 @@ export function getSelectedAccountMultichainTransactions(
     return undefined;
   }
 
-  // TODO: Add filter logic here
   return state.metamask.nonEvmTransactions[selectedAccount.id];
 }
 
