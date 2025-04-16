@@ -193,7 +193,7 @@ describe('network utils', () => {
         },
         [BtcScope.Mainnet]: {
           chainId: BtcScope.Mainnet,
-          name: 'Bitcoin Mainnet',
+          name: 'Bitcoin',
           nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
           isEvm: false,
         },
