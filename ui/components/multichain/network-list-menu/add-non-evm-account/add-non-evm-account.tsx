@@ -50,11 +50,11 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
   },
   [MultichainNetworks.SOLANA_TESTNET]: {
     clientType: WalletClientType.Solana,
-    chainId: MultichainNetworks.SOLANA,
+    chainId: MultichainNetworks.SOLANA_TESTNET,
   },
   [MultichainNetworks.SOLANA_DEVNET]: {
     clientType: WalletClientType.Solana,
-    chainId: MultichainNetworks.SOLANA,
+    chainId: MultichainNetworks.SOLANA_DEVNET,
   },
 };
 
