@@ -47,8 +47,12 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (!isBasicFunctionalityEnabled && isNotificationsEnabled) {
       // Disable notifications
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       disableNotifications();
       // list notifications to reset the counter
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       listNotifications();
     }
   }, [
@@ -65,6 +69,8 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     if (isBasicFunctionalityEnabled && shouldFetchNotifications && isUnlocked) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       listNotifications();
     }
   }, [

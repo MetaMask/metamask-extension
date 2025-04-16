@@ -43,7 +43,11 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
         external_link_clicked: 'security_alert_support_link',
       },
     };
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     updateSignatureEventFragment(properties);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     updateTransactionEventFragment(properties, ownerId);
   };
   return (

@@ -59,6 +59,8 @@ export default function TurnOnMetamaskNotifications() {
 
   const handleTurnOnNotifications = async () => {
     setIsLoading(true);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.NotificationsActivationFlow,
       event: MetaMetricsEventName.NotificationsActivated,
@@ -74,6 +76,8 @@ export default function TurnOnMetamaskNotifications() {
     hideModal();
     setIsLoading((prevLoadingState) => {
       if (!prevLoadingState) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           category: MetaMetricsEventCategory.NotificationsActivationFlow,
           event: MetaMetricsEventName.NotificationsActivated,

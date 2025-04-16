@@ -7,6 +7,8 @@ import codeFenceLoader, {
   CodeFenceLoaderOptions,
 } from '../utils/loaders/codeFenceLoader';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 describe('codeFenceLoader', () => {
   type CallbackArgs = Parameters<
     LoaderContext<CodeFenceLoaderOptions>['callback']
@@ -47,6 +49,8 @@ console.log('I am Groot.');
   }
 
   [false, true].forEach((omitFeature) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it(`should ${omitFeature ? '' : 'not '}remove source when feature is ${
       omitFeature ? 'not ' : ''
     }active`, async () => {
@@ -60,6 +64,8 @@ console.log('I am Groot.');
     });
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should throw an error when options are invalid', () => {
     const data = generateData({ omitFeature: false });
     data.context.getOptions = () => {
@@ -72,6 +78,8 @@ console.log('I am Groot.');
     );
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   it('should return an error when code fences are invalid', async () => {
     const data = generateData({ omitFeature: false });
     data.source = '///: BEGIN:ONLY_INCLUDE_IF\nconsole.log("I am Groot.");\n'; // invalid because there is no end comment
@@ -86,7 +94,11 @@ console.log('I am Groot.');
     assert.strictEqual(content, undefined);
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   describe('getCodeFenceLoader', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('should return a loader with correct properties', () => {
       const features: FeatureLabels = { active: new Set(), all: new Set() };
       const result = getCodeFenceLoader(features);

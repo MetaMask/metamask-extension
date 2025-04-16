@@ -1569,6 +1569,8 @@ export function cancelTxs(
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         attemptCloseNotificationPopup();
       } else {
         dispatch(hideLoadingIndication());
@@ -1745,6 +1747,8 @@ export function updateMetamaskState(
       // event that we are not yet on the send flow with a draftTransaction in
       // progress.
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
 
@@ -2842,6 +2846,8 @@ export function closeCurrentNotificationWindow(): ThunkAction<
       !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
     ) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       attemptCloseNotificationPopup();
     }
   };
@@ -2918,6 +2924,8 @@ export function qrCodeDetected(
     // If on the send page, the send slice will listen for the QR_CODE_DETECTED
     // action and update its state. Address changes need to recompute gasLimit
     // so we fire this method so that the send page gasLimit can be recomputed
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     dispatch(computeEstimatedGasLimit());
   };
 }
@@ -3266,6 +3274,8 @@ export function setSmartTransactionsPreferenceEnabled(
   return async (dispatch, getState) => {
     const smartTransactionsOptInStatus =
       getSmartTransactionsOptInStatusInternal(getState());
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackMetaMetricsEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
@@ -4042,6 +4052,8 @@ export function approvePermissionsRequest(
       if (err) {
         dispatch(displayWarning(err));
       }
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       forceUpdateMetamaskState(dispatch);
     });
   };
@@ -5001,6 +5013,8 @@ export async function setWeb3ShimUsageAlertDismissed(origin: string) {
 
 // Smart Transactions Controller
 export function clearSmartTransactionFees() {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   submitRequestToBackground('clearSmartTransactionFees');
 }
 
@@ -5244,6 +5258,8 @@ export function setNetworkClientIdForDomain(
 
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     submitRequestToBackground('setSecurityAlertsEnabled', [val]);
   } catch (error) {
     logErrorWithMessage(error);
@@ -5313,6 +5329,8 @@ export async function getSnapAccountsById(snapId: string): Promise<string[]> {
 
 export function setUseExternalNameSources(val: boolean): void {
   try {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     submitRequestToBackground('setUseExternalNameSources', [val]);
   } catch (error) {
     logErrorWithMessage(error);
@@ -5321,6 +5339,8 @@ export function setUseExternalNameSources(val: boolean): void {
 
 export function setUseTransactionSimulations(val: boolean): void {
   try {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     submitRequestToBackground('setUseTransactionSimulations', [val]);
   } catch (error) {
     logErrorWithMessage(error);

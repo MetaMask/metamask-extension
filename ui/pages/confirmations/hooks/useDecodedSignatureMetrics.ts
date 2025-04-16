@@ -38,6 +38,8 @@ export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
     }
 
     if (decodingLoading) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       updateSignatureEventFragment({
         properties: {
           decoding_response: DecodingResponseType.InProgress,
@@ -47,6 +49,8 @@ export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
       return;
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     updateSignatureEventFragment({
       properties: {
         decoding_change_types: decodingChangeTypes,

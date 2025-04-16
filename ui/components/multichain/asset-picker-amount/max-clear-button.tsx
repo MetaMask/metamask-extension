@@ -23,6 +23,8 @@ export default function MaxClearButton({ asset }: { asset: Asset }) {
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const onClick = () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       event: 'Clicked "Amount Max"',
       category: MetaMetricsEventCategory.Transactions,

@@ -197,6 +197,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('does not submit a transaction that is not a smart transaction', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(
       {
         options: {
@@ -211,6 +213,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('falls back to regular transaction submit if the transaction type is "swapAndSend"', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request }) => {
       if (request.transactionMeta) {
         request.transactionMeta.type = TransactionType.swapAndSend;
@@ -221,6 +225,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('falls back to regular transaction submit if the transaction type is "swapApproval"', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request }) => {
       if (request.transactionMeta) {
         request.transactionMeta.type = TransactionType.swapApproval;
@@ -231,6 +237,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('falls back to regular transaction submit if it is a legacy transaction', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request }) => {
       // Modify transaction to be a legacy transaction (has gasPrice, no maxFeePerGas/maxPriorityFeePerGas)
       request.transactionMeta.txParams = {
@@ -247,6 +255,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('falls back to regular transaction submit if /getFees throws an error', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request, endFlowSpy }) => {
       jest
         .spyOn(request.smartTransactionsController, 'getFees')
@@ -262,6 +272,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('returns a txHash asap if the feature flag requires it', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request }) => {
       request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
       const result = await submitSmartTransactionHook(request);
@@ -270,6 +282,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('throws an error if there is no uuid', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request }) => {
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
@@ -283,6 +297,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('throws an error if there is no transaction hash', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request, messenger }) => {
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -300,6 +316,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('submits a smart transaction with an already signed transaction', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(
       async ({
         request,
@@ -379,6 +397,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('signs and submits a smart transaction', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(
       {
         options: {
@@ -476,6 +496,8 @@ describe('submitSmartTransactionHook', () => {
   });
 
   it('submits a smart transaction and does not update approval request if approval was already approved or rejected', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(
       async ({
         request,
@@ -582,6 +604,8 @@ describe('submitSmartTransactionHook', () => {
     const typedMessenger =
       mockMessenger as unknown as SubmitSmartTransactionRequest['controllerMessenger'];
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(
       {
         options: {
@@ -631,6 +655,8 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('does not submit a transaction that is not a smart transaction', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(
       {
         options: {
@@ -646,6 +672,8 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('throws an error if there is no uuid', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request }) => {
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
@@ -659,6 +687,8 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('throws an error if there is no transaction hash', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request, messenger }) => {
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -676,6 +706,8 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('submits batch transactions from transactions array', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(
       {
         options: {
@@ -749,6 +781,8 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('submits batch transaction and handles approval flow correctly', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(
       async ({
         request,
@@ -825,6 +859,8 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('returns empty results array when no txHashes are returned', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request, messenger }) => {
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
@@ -854,6 +890,8 @@ describe('submitBatchSmartTransactionHook', () => {
   });
 
   it('handles error during transaction submission', async () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     withRequest(async ({ request, endFlowSpy }) => {
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {

@@ -50,12 +50,16 @@ export const NotificationsListReadAllButton = ({
         );
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.MarkAllNotificationsRead,
     });
 
     // Mark all metamask notifications as read
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     markNotificationAsRead(notificationsRead);
   };
 

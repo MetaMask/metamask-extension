@@ -27,6 +27,8 @@ export const useSignatureEventFragment = () => {
         return;
       }
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       updateEventFragment(fragmentId, fragmentPayload);
     },
     [fragmentId],

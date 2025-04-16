@@ -54,6 +54,8 @@ export const openBlockExplorer = (
   ) => Promise<void>,
   closeMenu?: () => void,
 ) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   trackEvent({
     event: MetaMetricsEventName.ExternalLinkClicked,
     category: MetaMetricsEventCategory.Navigation,
@@ -113,6 +115,8 @@ export const ViewExplorerMenuItem = ({
               closeMenu,
             );
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         trackEvent({
           event: MetaMetricsEventName.BlockExplorerLinkClicked,
           category: MetaMetricsEventCategory.Accounts,

@@ -8,7 +8,11 @@ import { Manifest } from '../utils/helpers';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 describe('ManifestPlugin', () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   describe('Plugin', () => {
     const matrix = {
       zip: [true, false],
@@ -72,6 +76,8 @@ describe('ManifestPlugin', () => {
       const expectedAssets = getExpectedAssets(zip, browsers, files);
       const validateManifest = getValidateManifest(testCase, baseManifest);
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       it(`should produce a ${
         zip ? 'zip file' : 'folder'
       } for browsers [${browsers.join(
@@ -209,6 +215,8 @@ describe('ManifestPlugin', () => {
     }
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   describe('should transform the manifest object', () => {
     const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
     const argsMatrix = {
@@ -235,6 +243,8 @@ describe('ManifestPlugin', () => {
         const transform = transformManifest(args, false);
 
         if (args.test && hasTabsPermission) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           it("throws in test mode when manifest already contains 'tabs' permission", () => {
             assert(transform, 'transform should be truthy');
             const p = () => {
@@ -247,6 +257,8 @@ describe('ManifestPlugin', () => {
             );
           });
         } else if (!args.lockdown || args.test) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           it(`works for args.test of ${args.test} and args.lockdown of ${
             args.lockdown
           }. Manifest: ${JSON.stringify(manifest)}`, () => {
@@ -282,6 +294,8 @@ describe('ManifestPlugin', () => {
     }
   });
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   describe('manifest flags in development mode', () => {
     const emptyTestManifest = {} as chrome.runtime.Manifest;
     const notEmptyTestManifest = {
@@ -295,6 +309,8 @@ describe('ManifestPlugin', () => {
 
     afterEach(() => mock.restoreAll());
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('adds manifest flags in development mode with path provided and empty manifest', () => {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
         if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
@@ -318,6 +334,8 @@ describe('ManifestPlugin', () => {
       );
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('overwrites existing manifest properties with override values but keeps original properties', () => {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
         if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
@@ -347,6 +365,8 @@ describe('ManifestPlugin', () => {
       );
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('handles missing manifest flags file with path provided', () => {
       mock.method(fs, 'readFileSync', () => {
         const error = new Error('File not found') as NodeJS.ErrnoException;
@@ -370,6 +390,8 @@ describe('ManifestPlugin', () => {
       );
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     it('silently ignores non-ENOENT filesystem errors', () => {
       const transform = transformManifest(
         { lockdown: true, test: false },

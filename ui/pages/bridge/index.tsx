@@ -61,6 +61,8 @@ const CrossChainSwap = () => {
 
     return () => {
       window.removeEventListener('beforeunload', resetControllerAndInputStates);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31878
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       resetControllerAndInputStates();
     };
   }, []);
