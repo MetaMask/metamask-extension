@@ -6060,6 +6060,8 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   // Sentry uses the Performance interface for more accuracy, so we also must use it to align with
   // other timings.
   const timestamp =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     request.timestamp || performance.timeOrigin + performance.now();
 
   await submitRequestToBackground<void>('endTrace', [
