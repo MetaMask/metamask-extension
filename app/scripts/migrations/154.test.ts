@@ -64,8 +64,14 @@ describe(`migration #${version}`, () => {
       };
       const expectedData = {
         MultichainNetworkController: {
-          multichainNetworkConfigurationsByChainId:
-            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+          multichainNetworkConfigurationsByChainId: {
+            [BtcScope.Mainnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Mainnet],
+            [BtcScope.Testnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Testnet],
+            [BtcScope.Signet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[BtcScope.Signet],
+            [SolScope.Mainnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Mainnet],
+            [SolScope.Testnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Testnet],
+            [SolScope.Devnet]: AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[SolScope.Devnet],
+          },
         },
       };
       const newStorage = await migrate(oldStorage);
