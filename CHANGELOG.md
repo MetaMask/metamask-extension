@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.12.2]
+### Changed
+- Update privacy policy url for Firefox builds on metametrics screen ([#32062](https://github.com/MetaMask/metamask-extension/pull/32062))
+
 ## [12.12.1]
 ### Fixed
 - Disable CSP override feature that is breaking certain sites ([#31107](https://github.com/MetaMask/metamask-extension/pull/31107))
@@ -5714,7 +5718,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.12.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.12.2...HEAD
+[12.12.2]: https://github.com/MetaMask/metamask-extension/compare/v12.12.1...v12.12.2
 [12.12.1]: https://github.com/MetaMask/metamask-extension/compare/v12.12.0...v12.12.1
 [12.12.0]: https://github.com/MetaMask/metamask-extension/compare/v12.11.0...v12.12.0
 [12.11.0]: https://github.com/MetaMask/metamask-extension/compare/v12.10.4...v12.11.0
