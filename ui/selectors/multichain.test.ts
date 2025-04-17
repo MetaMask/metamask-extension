@@ -126,6 +126,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
       bitcoinSupportEnabled: true,
+      networksWithTransactionActivity: {},
     },
   };
 }
