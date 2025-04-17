@@ -832,6 +832,7 @@ export enum MetaMetricsEventName {
   TokenDetailsOpened = 'Token Details Opened',
   NftScreenOpened = 'NFT Screen Opened',
   NftDetailsOpened = 'NFT Details Opened',
+  DefiDetailsOpened = 'Defi Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
@@ -944,6 +945,7 @@ export enum MetaMetricsEventCategory {
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
+  DeFi = 'DeFi',
   Footer = 'Footer',
   Home = 'Home',
   InpageProvider = 'inpage_provider',

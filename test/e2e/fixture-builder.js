@@ -373,6 +373,16 @@ class FixtureBuilder {
     return this;
   }
 
+  withDeFiPositionsController(data) {
+    merge(
+      this.fixture.data.DeFiPositionsController
+        ? this.fixture.data.DeFiPositionsController
+        : (this.fixture.data.DeFiPositionsController = {}),
+      data,
+    );
+    return this;
+  }
+
   withNftControllerERC1155() {
     return this.withNftController({
       allNftContracts: {

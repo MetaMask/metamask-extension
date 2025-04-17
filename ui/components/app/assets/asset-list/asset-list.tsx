@@ -15,7 +15,7 @@ import TokenList from '../token-list';
 import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
 
-type AssetListProps = {
+export type AssetListProps = {
   onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
 };
