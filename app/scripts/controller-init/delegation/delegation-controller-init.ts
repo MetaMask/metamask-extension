@@ -56,5 +56,7 @@ function getApi(
     signDelegation: controller.signDelegation.bind(controller),
     retrieveDelegation: controller.retrieve.bind(controller),
     deleteDelegation: controller.delete.bind(controller),
+    listDelegations: controller.list.bind(controller),
+    chainDelegation: controller.chain.bind(controller),
   };
 }
