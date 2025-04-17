@@ -12,7 +12,7 @@ describe('Solana network', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.check_accountLabel('Solana 1');
-        await headerNavbar.check_currentSelectedNetwork('Solana Mainnet');
+        await headerNavbar.check_currentSelectedNetwork('Solana');
         await headerNavbar.check_ifNetworkPickerClickable(true);
         await headerNavbar.openAccountMenu();
         const accountMenu = new AccountListPage(driver);
@@ -35,7 +35,7 @@ describe('Solana network', function (this: Suite) {
         await switchToNetworkFlow(driver, 'Linea Mainnet');
 
         // Switch back to Solana Mainnet
-        await switchToNetworkFlow(driver, 'Solana Mainnet');
+        await switchToNetworkFlow(driver, 'Solana');
 
         // Linea, still as the selected network in the network-controller
         // but not in the UI, should be removed from the network-controller
