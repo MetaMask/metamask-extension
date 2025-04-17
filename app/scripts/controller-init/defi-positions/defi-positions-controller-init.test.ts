@@ -5,13 +5,20 @@ import {
 } from '@metamask/assets-controllers';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
-import { getDeFiPositionsControllerMessenger } from '../messengers/defi-positions/defi-positions-controller-messenger';
+import {
+  DeFiPositionsControllerInitMessenger,
+  getDeFiPositionsControllerInitMessenger,
+  getDeFiPositionsControllerMessenger,
+} from '../messengers/defi-positions/defi-positions-controller-messenger';
 import { DeFiPositionsControllerInit } from './defi-positions-controller-init';
 
 jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<DeFiPositionsControllerMessenger>
+  ControllerInitRequest<
+    DeFiPositionsControllerMessenger,
+    DeFiPositionsControllerInitMessenger
+  >
 > {
   const baseControllerMessenger = new Messenger();
 
@@ -20,7 +27,9 @@ function buildInitRequestMock(): jest.Mocked<
     controllerMessenger: getDeFiPositionsControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getDeFiPositionsControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 
