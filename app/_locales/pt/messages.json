@@ -252,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Para ativar a rede $1, é necessário criar uma conta $1.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Para ativar a rede $1, é necessário criar uma conta $2.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Adicionar URL da RPC"
