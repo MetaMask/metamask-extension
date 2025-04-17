@@ -63,11 +63,11 @@ describe('Permissions Approved Event', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           method: 'eth_requestAccounts',
-          requested_through: 'ethereum_provider',
           category: 'inpage_provider',
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          requested_through: 'ethereum_provider',
         });
         assert.deepStrictEqual(events[1].properties, {
           method: 'eth_requestAccounts',
@@ -75,6 +75,7 @@ describe('Permissions Approved Event', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          requested_through: 'ethereum_provider',
         });
       },
     );

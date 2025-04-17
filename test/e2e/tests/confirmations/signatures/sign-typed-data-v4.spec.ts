@@ -68,6 +68,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Mail',
           withAnonEvents: true,
+          requestedThrough: 'ethereum_provider',
         });
 
         await assertVerifiedResults(driver, publicAddress);
