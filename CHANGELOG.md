@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
 
+### Changed
+- adds 2 display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
+
 ## [12.15.2]
 ### Added
 - Add icon image for Lens network ([#31638](https://github.com/MetaMask/metamask-extension/pull/31638))
