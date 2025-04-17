@@ -217,7 +217,6 @@ const AssetListControlBar = ({
 
   const handleNftRefresh = () => {
     if (isMainnet) {
-      console.log('detectNfts', allChainIds);
       dispatch(detectNfts(allChainIds));
     }
     checkAndUpdateAllNftsOwnershipStatus();
