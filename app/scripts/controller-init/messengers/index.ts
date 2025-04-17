@@ -41,6 +41,7 @@ import {
   getNotificationServicesPushControllerMessenger,
 } from './notifications';
 import { getDeFiPositionsControllerMessenger } from './defi-positions';
+import { getDeFiPositionsControllerInitMessenger } from './defi-positions/defi-positions-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -53,7 +54,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   DeFiPositionsController: {
     getMessenger: getDeFiPositionsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getDeFiPositionsControllerInitMessenger,
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,

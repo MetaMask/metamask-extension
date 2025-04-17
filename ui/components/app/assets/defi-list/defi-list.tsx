@@ -173,8 +173,6 @@ function DefiList({ onClick }: DefiListProps) {
     return sortAssets(filteredAssets, tokenSortConfig);
   }, [allDefiPositions, networkFilter, selectedAccount, tokenSortConfig]);
 
-  console.log('sortedFilteredDefi', sortedFilteredDefi);
-
   const handleTokenClick = (token: DeFiProtocolPosition) => () => {
     onClick(token.chainId, token.protocolId);
 

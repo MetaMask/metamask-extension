@@ -16,15 +16,15 @@ export const DeFiPositionsControllerInit: ControllerInitFunction<
     messenger: controllerMessenger,
     isEnabled: () => {
       const preferencesController = getPreferencesController();
-      const useExternalServices =
-        preferencesController.state.useExternalServices;
+      const { useExternalServices } = preferencesController.state;
 
       const state = initMessenger.call('RemoteFeatureFlagController:getState');
 
-      const featureFlagForDeFi =
-        state.remoteFeatureFlags['assetsDefiPositionsEnabled'];
+      const featureFlagForDeFi = Boolean(
+        state?.remoteFeatureFlags?.assetsDefiPositionsEnabled,
+      );
 
-      return useExternalServices && !!featureFlagForDeFi;
+      return useExternalServices && featureFlagForDeFi;
     },
   });
 

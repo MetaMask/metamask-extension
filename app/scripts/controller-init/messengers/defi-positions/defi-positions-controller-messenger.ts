@@ -4,8 +4,11 @@ import {
 } from '@metamask/accounts-controller';
 import { Messenger } from '@metamask/base-controller';
 import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
-import { KeyringControllerUnlockEvent } from '@metamask/keyring-controller';
-import { KeyringControllerLockEvent } from '@metamask/keyring-controller';
+import {
+  KeyringControllerUnlockEvent,
+  KeyringControllerLockEvent,
+} from '@metamask/keyring-controller';
+
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
 export type DefiPositionsControllerMessenger = ReturnType<
