@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { getNextAvailableAccountName } from '../../../store/actions';
@@ -40,27 +40,15 @@ export const CreateSnapAccount = ({
   chainId,
 }: CreateSnapAccountProps) => {
   const snapClient = useMultichainWalletSnapClient(clientType);
-  const isCreatingAccount = useRef(false);
 
   const onCreateAccount = useCallback(
     async (_accountNameSuggestion?: string) => {
-      if (isCreatingAccount.current) {
-        return;
-      }
-
-      try {
-        isCreatingAccount.current = true;
-        await snapClient.createAccount({
-          scope: chainId,
-          entropySource: selectedKeyringId,
-          accountNameSuggestion: _accountNameSuggestion,
-        });
-        onActionComplete(true);
-      } catch (error) {
-        onActionComplete(false);
-      } finally {
-        isCreatingAccount.current = false;
-      }
+      snapClient.createAccount({
+        scope: chainId,
+        entropySource: selectedKeyringId,
+        accountNameSuggestion: _accountNameSuggestion,
+      });
+      onActionComplete(true);
     },
     [snapClient, chainId, selectedKeyringId, onActionComplete],
   );
@@ -81,12 +69,9 @@ export const CreateSnapAccount = ({
         return `Bitcoin Account ${accountNumber}`;
       }
       case WalletClientType.Solana: {
-        if (chainId === MultichainNetworks.SOLANA_TESTNET) {
-          return `Solana Testnet Account ${accountNumber}`;
-        }
-        if (chainId === MultichainNetworks.SOLANA_DEVNET) {
-          return `Solana Devnet Account ${accountNumber}`;
-        }
+        // Solana accounts should have in their scope the 3 networks
+        // mainnet, testnet, and devnet. Therefore, we can use this name
+        // for all 3 networks.
         return `Solana Account ${accountNumber}`;
       }
       default:
