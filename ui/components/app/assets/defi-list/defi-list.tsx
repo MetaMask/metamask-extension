@@ -5,7 +5,7 @@ import {
   DeFiPositionsControllerState,
   GroupedDeFiPositions,
 } from '@metamask/assets-controllers';
-import { Box } from '@material-ui/core';
+
 import TokenCell from '../token-cell';
 import {
   getPreferences,
@@ -21,6 +21,9 @@ import {
   FlexDirection,
   AlignItems,
   JustifyContent,
+  BlockSize,
+  TextVariant,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import PulseLoader from '../../../ui/pulse-loader';
 import { AvatarGroup } from '../../../multichain/avatar-group/avatar-group';
@@ -30,6 +33,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type DefiState = {
   metamask: DeFiPositionsControllerState;
@@ -37,6 +48,7 @@ export type DefiState = {
 export function getDefiPositions(
   state: DefiState,
 ): DeFiPositionsControllerState['allDeFiPositions'] {
+  console.log('getDefiPositions state', state);
   return state?.metamask?.allDeFiPositions;
 }
 
@@ -49,47 +61,93 @@ type DeFiProtocolPosition = TokenWithFiatAmount & {
   iconGroup: { avatarValue: string; symbol: string }[];
 };
 
+export function ErrorMessage({ title, text }: { title: string; text: string }) {
+  return (
+    <Box
+      height={BlockSize.Full}
+      width={BlockSize.Full}
+      display={Display.Flex}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      flexDirection={FlexDirection.Column}
+      gap={2}
+      data-testid="defi-tab-error-message"
+    >
+      <Icon name={IconName.Warning} size={IconSize.Xl} />
+      <Text variant={TextVariant.headingSm}>{title}</Text>
+      <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
+        {text}
+      </Text>
+    </Box>
+  );
+}
+
+const extractIconGroup = (
+  protocolPositions: GroupedDeFiPositions['protocols'][keyof GroupedDeFiPositions['protocols']],
+) => {
+  if (!protocolPositions?.positionTypes) {
+    return [];
+  }
+
+  return Object.values(protocolPositions.positionTypes).flatMap(
+    (displayTokens) =>
+      displayTokens?.positions?.flatMap(
+        (nestedToken) =>
+          nestedToken?.flatMap(
+            (token) =>
+              token?.tokens?.map((underlying) => ({
+                symbol: underlying?.symbol || '',
+                avatarValue: underlying?.iconUrl || '',
+              })) || [],
+          ) || [],
+      ) || [],
+  );
+};
+
 function DefiList({ onClick }: DefiListProps) {
+  const t = useI18nContext();
   const { networkFilter } = useNetworkFilter();
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const selectedAccount = useSelector(getSelectedAccount);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const defiPositions = useSelector(getDefiPositions);
-  const defiData = selectedAccount
-    ? defiPositions?.[selectedAccount.address]
-    : null;
+  console.log('selectedAccount oioi', selectedAccount);
 
-  const extractIconGroup = (
-    protocolPositions: GroupedDeFiPositions['protocols'][keyof GroupedDeFiPositions['protocols']],
-  ) => {
-    if (!protocolPositions?.positionTypes) {
-      return [];
-    }
+  const allDefiPositions = useSelector(getDefiPositions);
 
-    return Object.values(protocolPositions.positionTypes).flatMap(
-      (displayTokens) =>
-        displayTokens?.positions?.flatMap(
-          (nestedToken) =>
-            nestedToken?.flatMap(
-              (token) =>
-                token?.tokens?.map((underlying) => ({
-                  symbol: underlying?.symbol || '',
-                  avatarValue: underlying?.iconUrl || '',
-                })) || [],
-            ) || [],
-        ) || [],
-    );
-  };
+  console.log('allDefiPositions', allDefiPositions);
+
+  // const defiData = selectedAccount
+  //   ? defiPositions?.[selectedAccount.address]
+  //   : null;
 
   const sortedFilteredDefi = useMemo(() => {
-    if (!defiData) {
-      return [];
+    // error
+    if (!selectedAccount) {
+      return null;
+    }
+
+    // error
+    if (!allDefiPositions) {
+      return null;
+    }
+
+    const currentAddressDefiPositions =
+      allDefiPositions?.[selectedAccount.address];
+
+    // loading spinner
+    if (currentAddressDefiPositions === undefined) {
+      return undefined;
+    }
+
+    // error
+    if (currentAddressDefiPositions === null) {
+      return null;
     }
 
     const defiProtocolCells: DeFiProtocolPosition[] = Object.entries(
-      defiData,
+      currentAddressDefiPositions,
     ).flatMap(([chainId, chainData]) =>
       Object.entries(chainData.protocols).map(([protocolId, protocol]) => {
         const iconGroup = extractIconGroup(protocol);
@@ -122,7 +180,9 @@ function DefiList({ onClick }: DefiListProps) {
 
     // sort filtered tokens based on the tokenSortConfig in state
     return sortAssets(filteredAssets, tokenSortConfig);
-  }, [defiData, networkFilter, tokenSortConfig]);
+  }, [allDefiPositions, networkFilter, selectedAccount, tokenSortConfig]);
+
+  console.log('sortedFilteredDefi', sortedFilteredDefi);
 
   const handleTokenClick = (token: DeFiProtocolPosition) => () => {
     onClick(token.chainId, token.protocolId);
@@ -138,11 +198,7 @@ function DefiList({ onClick }: DefiListProps) {
     });
   };
 
-  console.log('DefiList', defiData);
-
-  console.log('sortedFilteredDefi', sortedFilteredDefi);
-
-  if (!defiData) {
+  if (sortedFilteredDefi === undefined) {
     return (
       <Box
         display={Display.Flex}
@@ -155,9 +211,18 @@ function DefiList({ onClick }: DefiListProps) {
     );
   }
 
+  if (sortedFilteredDefi === null) {
+    return (
+      <ErrorMessage
+        title={t('defiTabErrorTitle')}
+        text={t('defiTabErrorContent')}
+      />
+    );
+  }
+
   return (
     <>
-      {sortedFilteredDefi.length > 0 ? (
+      {sortedFilteredDefi && sortedFilteredDefi?.length > 0 ? (
         sortedFilteredDefi.map((token: DeFiProtocolPosition) => {
           return (
             <TokenCell
@@ -170,6 +235,7 @@ function DefiList({ onClick }: DefiListProps) {
                   avatarType={AvatarType.TOKEN}
                   limit={4}
                   members={token.iconGroup}
+                  data-testid="defi-list-avatar-group"
                 />
               )}
               fixCurrencyToUSD={true}
@@ -184,7 +250,7 @@ function DefiList({ onClick }: DefiListProps) {
             title: 'Start earning',
             symbol: 'Start earning',
             tokenFiatAmount: 0,
-            image: `images/fox.png`,
+            image: `images/logo/metamask-fox.svg`,
             primary: '0',
             secondary: 0,
             decimals: 10,
