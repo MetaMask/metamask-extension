@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
+- Detect extension updates and perform automatically restarting when wallet is idle ([#31826](https://github.com/MetaMask/metamask-extension/pull/31826))
 
 ## [12.15.2]
 ### Added
