@@ -4230,9 +4230,9 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // MultichainAssetsRatesController
-      fetchHistoricalPricesForAsset:
-        multichainAssetsRatesController.fetchHistoricalPricesForAsset.bind(
-          multichainAssetsRatesController,
+      fetchHistoricalPricesForAsset: (...args) =>
+        this.multichainAssetsRatesController.fetchHistoricalPricesForAsset(
+          ...args,
         ),
 
       // DetectCollectibleController
