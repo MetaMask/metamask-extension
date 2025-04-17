@@ -1484,8 +1484,8 @@ describe('MetaMetricsController', function () {
             'eip155:1',
             'eip155:5',
             'eip155:175',
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
             'bip122:000000000019d6689c085ae165831e93',
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           ],
           [MetaMetricsUserTrait.InstallDateExt]: '',
           [MetaMetricsUserTrait.LedgerConnectionType]:
