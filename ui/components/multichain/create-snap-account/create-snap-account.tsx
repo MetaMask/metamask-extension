@@ -69,12 +69,9 @@ export const CreateSnapAccount = ({
         return `Bitcoin Account ${accountNumber}`;
       }
       case WalletClientType.Solana: {
-        if (chainId === MultichainNetworks.SOLANA_TESTNET) {
-          return `Solana Testnet Account ${accountNumber}`;
-        }
-        if (chainId === MultichainNetworks.SOLANA_DEVNET) {
-          return `Solana Devnet Account ${accountNumber}`;
-        }
+        // Solana accounts should have in their scope the 3 networks
+        // mainnet, testnet, and devnet. Therefore, we can use this name
+        // for all 3 networks.
         return `Solana Account ${accountNumber}`;
       }
       default:

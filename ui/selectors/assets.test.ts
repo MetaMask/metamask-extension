@@ -1,5 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { SolScope } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import {
   AssetsRatesState,
   AssetsState,
@@ -376,8 +378,17 @@ describe('getMultichainNativeAssetType', () => {
         ],
       },
       networkConfigurationsByChainId: {},
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       completedOnboarding: true,
+      selectedMultichainNetworkChainId: SolScope.Mainnet,
+      isEvmSelected: false,
+      remoteFeatureFlags: {
+        addSolanaAccount: true,
+      },
     },
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 
