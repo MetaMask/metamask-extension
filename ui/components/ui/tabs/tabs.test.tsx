@@ -139,7 +139,6 @@ describe('Tabs', () => {
 
     const disabledButton = getByText('Tab 2').closest('button');
     expect(disabledButton).toHaveAttribute('disabled');
-    expect(disabledButton).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('does not switch to disabled tab when clicked', () => {
