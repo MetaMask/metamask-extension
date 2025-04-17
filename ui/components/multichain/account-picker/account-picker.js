@@ -65,7 +65,7 @@ export const AccountPicker = ({
         size: Size.SM,
       }}
       {...props}
-      gap={2}
+      gap={1}
     >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

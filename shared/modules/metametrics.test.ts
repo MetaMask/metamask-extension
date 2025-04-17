@@ -25,6 +25,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     finalizeEventFragment: jest.fn(),
     getEventFragmentById: jest.fn(),
     updateEventFragment: jest.fn(),
+    getAccountBalance: jest.fn(),
     getAccountType: jest.fn(),
     getDeviceModel: jest.fn(),
     getHardwareTypeForMetric: jest.fn(),
@@ -34,7 +35,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getTokenStandardAndDetails: jest.fn(),
     getTransaction: jest.fn(),
     provider: provider as Provider,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     snapAndHardwareMessenger: jest.fn() as any,
     trackEvent: jest.fn(),
@@ -101,7 +102,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
@@ -122,7 +123,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
@@ -145,7 +146,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );

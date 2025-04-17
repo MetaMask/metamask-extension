@@ -5,6 +5,67 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
+
+## [12.15.2]
+### Added
+- Add icon image for Lens network ([#31638](https://github.com/MetaMask/metamask-extension/pull/31638))
+
+### Fixed
+- Allow verifyingContract to be omitted from EIP-712 signatures ([#31613](https://github.com/MetaMask/metamask-extension/pull/31613))
+
+## [12.15.1]
+### Fixed
+- Re-fix state corruption resulting in inability to create/add accounts – previously fixed in 12.14.2 ([31274])(https://github.com/MetaMask/metamask-extension/pull/31274))
+
+## [12.15.0]
+### Added
+- When switching network, alert the user and get approval if there are pending requests from origin. ([#30674](https://github.com/MetaMask/metamask-extension/pull/30674))
+- Decode token approvals from nested transaction data and include them in the simulation details ([#30511](https://github.com/MetaMask/metamask-extension/pull/30511))
+- Display nested transaction data in batch transaction confirmations ([#30447](https://github.com/MetaMask/metamask-extension/pull/30447))
+- Update the transaction confirmation to handle account upgrades via EIP-7702 ([#30347](https://github.com/MetaMask/metamask-extension/pull/30347))
+- Implement editing spending cap in the simulation component ([#30745](https://github.com/MetaMask/metamask-extension/pull/30745))
+- Integrate alert system into template based confirmations ([#30577](https://github.com/MetaMask/metamask-extension/pull/30577))
+- Add info alert when new confirmation is from different origin or network ([#30550](https://github.com/MetaMask/metamask-extension/pull/30550))
+- Populate swap page with a default destination token ([#30929](https://github.com/MetaMask/metamask-extension/pull/30929))
+- Add a new token alert translation to support concentrated supply distribution cases ([#30877](https://github.com/MetaMask/metamask-extension/pull/30877))
+- Add token alerts with multichain integration ([#30557](https://github.com/MetaMask/metamask-extension/pull/30557))
+- [Beta] Display when Solana transactions in the activity log are bridges ([#30619](https://github.com/MetaMask/metamask-extension/pull/30619))
+- [Beta] Calculate solana quote fees ([#30574](https://github.com/MetaMask/metamask-extension/pull/30574))
+- Add Base to Smart Transaction supported chains ([#30678](https://github.com/MetaMask/metamask-extension/pull/30678))
+- [Flask] Add Multichain API to Flask ([#27782](https://github.com/MetaMask/metamask-extension/pull/27782))
+
+### Changed
+- Set swap input selection defaults ([#30600](https://github.com/MetaMask/metamask-extension/pull/30600))
+
+### Fixed
+- Fix `hideZeroBalance` setting for non-EVM asset list ([#30816](https://github.com/MetaMask/metamask-extension/pull/30816))
+- Show aggregated balance in account list item ([#30581](https://github.com/MetaMask/metamask-extension/pull/30581))
+- Update decimal precision for account list item and token list ([#30594](https://github.com/MetaMask/metamask-extension/pull/30594))
+- Code-fence multichain network selector ([#30722](https://github.com/MetaMask/metamask-extension/pull/30722))
+- First-time interaction alert is shown in dApp request as a warning ([#30800](https://github.com/MetaMask/metamask-extension/pull/30800))
+- Display alerts on add network request if there are pending confirmations ([#30634](https://github.com/MetaMask/metamask-extension/pull/30634))
+- Fix Snap account creation view appearing at the bottom of the screen in expanded mode ([#30721](https://github.com/MetaMask/metamask-extension/pull/30721))
+- Wait at least 10 mins before showing bridge transaction delay banner ([#30952](https://github.com/MetaMask/metamask-extension/pull/30952))
+- Fix `formatChainIdToHex` failure to parse EVM CAIP chainIds ([#30848](https://github.com/MetaMask/metamask-extension/pull/30848))
+- Add ellipsis to the text in the activity list ([#30845](https://github.com/MetaMask/metamask-extension/pull/30845))
+- [Beta] Fix Bridge and Send pages crashing when there's no Solana account ([#30793](https://github.com/MetaMask/metamask-extension/pull/30793))
+- Fix validation behavior when pasting a non-0x prefixed address in the Send page ([#30712](https://github.com/MetaMask/metamask-extension/pull/30712))
+- Use `networkClientId` for transaction submission if included in request options ([#30758](https://github.com/MetaMask/metamask-extension/pull/30758))
+- Fix bug in which quotes are not fetched when the destination token is a native asset ([#30749](https://github.com/MetaMask/metamask-extension/pull/30749))
+- [Beta] Fix bridging label showing for solana swap ([#30756](https://github.com/MetaMask/metamask-extension/pull/30756))
+- Fix swap transactions showing up as bridge ([#30656](https://github.com/MetaMask/metamask-extension/pull/30656))
+- [Beta] Fetch quotes without slippage for Solana swaps ([#30760](https://github.com/MetaMask/metamask-extension/pull/30760))
+- Fix swap transactions showing up as bridge ([#30656](https://github.com/MetaMask/metamask-extension/pull/30656))
+- Enable Bridge page to calculate the user's balance when the user does not have a non-EVM account (#30671) ([#30746](https://github.com/MetaMask/metamask-extension/pull/30746))
+- Fix the first step of the transaction details when arriving in linea for a bridge transaction ([#30644](https://github.com/MetaMask/metamask-extension/pull/30644))
+- Fix destination wallet address selection for multichain bridging ([#30618](https://github.com/MetaMask/metamask-extension/pull/30618))
+- Fix swap source token balance not being visible on multichain network ([#30622](https://github.com/MetaMask/metamask-extension/pull/30622))
+- Use `useMemo` with Receive Modal ([#30881](https://github.com/MetaMask/metamask-extension/pull/30881))
+- Provide required `useEffect` dependencies in `TokenCell` and `AggregatedPercentageOverview` components ([#30876](https://github.com/MetaMask/metamask-extension/pull/30876))
+- Prevent SrpViewSrpText from firing more than once ([#30658](https://github.com/MetaMask/metamask-extension/pull/30658))
+- Profile sync can now be searched in settings ([#30687](https://github.com/MetaMask/metamask-extension/pull/30687))
 
 ## [12.14.2]
 ### Fixed
@@ -5832,7 +5893,10 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.14.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...HEAD
+[12.15.2]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.15.2
+[12.15.1]: https://github.com/MetaMask/metamask-extension/compare/v12.15.0...v12.15.1
+[12.15.0]: https://github.com/MetaMask/metamask-extension/compare/v12.14.2...v12.15.0
 [12.14.2]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...v12.14.2
 [12.14.1]: https://github.com/MetaMask/metamask-extension/compare/v12.14.0...v12.14.1
 [12.14.0]: https://github.com/MetaMask/metamask-extension/compare/v12.13.1...v12.14.0

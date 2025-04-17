@@ -13,13 +13,15 @@ export interface SelectOptionStyleUtilityProps extends StyleUtilityProps {
   /*
    * Children of the SelectOption component
    */
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: any;
   /*
    * The value of the SelectOption component
    */
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value?: any;
 }

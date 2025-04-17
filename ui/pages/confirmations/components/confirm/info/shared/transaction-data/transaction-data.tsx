@@ -30,6 +30,7 @@ import {
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
+import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
 
 export const TransactionData = ({
   data,
@@ -115,6 +116,8 @@ export function Container({
         <ConfirmInfoRow
           label={t('advancedDetailsDataDesc')}
           copyEnabled={Boolean(transactionData)}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           copyText={transactionData || undefined}
         >
           <Box>{isLoading && <Preloader size={20} />}</Box>
@@ -212,8 +215,11 @@ function ParamValue({
   if (name === 'path' && source === DecodedTransactionDataSource.Uniswap) {
     return <UniswapPath pathPools={value} chainId={chainId} />;
   }
-
+  // if its a long string value truncate it
   let valueString = value.toString();
+  if (valueString.length > 15 && !valueString.startsWith('0x')) {
+    valueString = renderShortTokenId(valueString, 5);
+  }
 
   if (!Array.isArray(value) && valueString.startsWith('0x')) {
     valueString = hexStripZeros(valueString);

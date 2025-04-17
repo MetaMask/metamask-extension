@@ -36,6 +36,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/multichain/networks';
 import {
+  getHardwareWalletType,
   getIsBridgeEnabled,
   getMarketData,
   getUSDConversionRate,
@@ -67,6 +68,10 @@ import {
   getImageForChainId,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
+import {
+  HardwareKeyringNames,
+  HardwareKeyringType,
+} from '../../../shared/constants/hardware-wallets';
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
@@ -299,7 +304,7 @@ export const getFromTokenConversionRate = createSelector(
       if (isSolanaChainId(fromChain.chainId)) {
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          assetsRates[fromToken.address]?.rate,
+          assetsRates[fromToken.assetId]?.rate,
           nonEvmNativeConversionRate?.sol?.conversionRate,
         );
         return exchangeRatesFromNativeAndCurrencyRates(
@@ -451,16 +456,24 @@ const _getQuotesWithMetadata = createSelector(
         totalEstimatedNetworkFee = {
           amount: gasFee.amount.plus(relayerFee.amount),
           valueInCurrency:
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
             null,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
         };
         totalMaxNetworkFee = {
           amount: gasFee.amountMax.plus(relayerFee.amount),
           valueInCurrency:
             gasFee.valueInCurrencyMax?.plus(
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               relayerFee.valueInCurrency || '0',
             ) ?? null,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
         };
       }
@@ -740,3 +753,19 @@ export const getIsToOrFromSolana = createSelector(
     return toChainIsSolana !== fromChainIsSolana;
   },
 );
+
+export const getHardwareWalletName = (state: BridgeAppState) => {
+  const type = getHardwareWalletType(state);
+  switch (type) {
+    case HardwareKeyringType.ledger:
+      return HardwareKeyringNames.ledger;
+    case HardwareKeyringType.trezor:
+      return HardwareKeyringNames.trezor;
+    case HardwareKeyringType.lattice:
+      return HardwareKeyringNames.lattice;
+    case HardwareKeyringType.oneKey:
+      return HardwareKeyringNames.oneKey;
+    default:
+      return undefined;
+  }
+};
