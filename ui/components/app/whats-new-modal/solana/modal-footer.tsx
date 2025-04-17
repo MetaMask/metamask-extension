@@ -86,7 +86,9 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
           size={ButtonSize.Md}
           variant={ButtonVariant.Primary}
           data-testid={
-            hasSolanaAccount ? 'view-solana-account-button' : 'create-solana-account-button'
+            hasSolanaAccount
+              ? 'view-solana-account-button'
+              : 'create-solana-account-button'
           }
           onClick={
             hasSolanaAccount

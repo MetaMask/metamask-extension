@@ -235,12 +235,16 @@ describe('WhatsNewModal', () => {
           expect(
             screen.getByText(/More features coming soon/iu),
           ).toBeInTheDocument();
-          expect(screen.getByTestId('view-solana-account-button')).toBeInTheDocument();
+          expect(
+            screen.getByTestId('view-solana-account-button'),
+          ).toBeInTheDocument();
           expect(screen.getByTestId('not-now-button')).toBeInTheDocument();
         });
 
         it('closes the modal when clicking "View Solana account"', async () => {
-          const viewSolanaAccountButton = screen.getByTestId('view-solana-account-button');
+          const viewSolanaAccountButton = screen.getByTestId(
+            'view-solana-account-button',
+          );
           fireEvent.click(viewSolanaAccountButton);
 
           await waitFor(() => {
