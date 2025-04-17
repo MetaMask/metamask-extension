@@ -14,6 +14,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertRejectedSignature,
   assertSignatureRejectedMetrics,
@@ -22,7 +23,6 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
-
 describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
     await withTransactionEnvelopeTypeFixtures(
@@ -91,7 +91,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           },
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
-          requestedThrough: 'ethereum_provider',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejected,
@@ -142,7 +142,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           },
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
-          requestedThrough: 'ethereum_provider',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejected,

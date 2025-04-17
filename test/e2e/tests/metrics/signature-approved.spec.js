@@ -10,7 +10,9 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { MOCK_META_METRICS_ID } = require('../../constants');
-
+const {
+  MetaMetricsRequestedThrough,
+} = require('../../../../shared/constants/metametrics');
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
  * see when these tests are run. In this case we are looking for
@@ -55,7 +57,7 @@ const expectedEventPropertiesBase = {
   security_alert_reason: 'validation_in_progress',
   security_alert_response: 'loading',
   ui_customizations: ['redesigned_confirmation'],
-  requested_through: 'ethereum_provider',
+  requested_through: MetaMetricsRequestedThrough.EthereumProvider,
 };
 
 describe('Signature Approved Event', function () {

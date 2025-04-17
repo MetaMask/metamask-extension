@@ -27,6 +27,7 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   it('initiates and confirms', async function () {
@@ -68,7 +69,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Mail',
           withAnonEvents: true,
-          requestedThrough: 'ethereum_provider',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
         await assertVerifiedResults(driver, publicAddress);
@@ -103,7 +104,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Mail',
           location: 'confirmation',
-          requestedThrough: 'ethereum_provider',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

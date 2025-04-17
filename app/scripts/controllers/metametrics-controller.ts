@@ -1185,10 +1185,6 @@ export default class MetaMetricsController extends BaseController<
     ///: END:ONLY_INCLUDE_IF
     const { traits } = this.state;
 
-    const hexToDecimal = (hex: string) => {
-      return parseInt(hex, 16);
-    };
-
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
         Object.values(metamaskState.addressBook).map(size),
@@ -1210,7 +1206,7 @@ export default class MetaMetricsController extends BaseController<
       // caip-2 formatted
       [MetaMetricsUserTrait.ChainIdList]: [
         ...Object.keys(metamaskState.networkConfigurationsByChainId).map(
-          (hexChainId) => `eip155:${hexToDecimal(hexChainId)}`,
+          (hexChainId) => `eip155:${parseInt(hexChainId, 16)}`,
         ),
         ...Object.keys(metamaskState.multichainNetworkConfigurationsByChainId), // the state here is already caip-2 formatted
       ],

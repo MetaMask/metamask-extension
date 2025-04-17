@@ -272,8 +272,8 @@ export default function createRPCMethodTrackingMiddleware({
     // requestedThrough and eventCategory are currently redundant so we will want to
     // disentangle them in the future
     const requestedThrough = isMultichainRequest
-      ? 'multichain_api' // TODO: this should be a constant
-      : 'ethereum_provider'; // TODO: this should be a constant
+      ? MetaMetricsRequestedThrough.MultichainApi
+      : MetaMetricsRequestedThrough.EthereumProvider;
 
     const eventCategory = isMultichainRequest
       ? MetaMetricsEventCategory.MultichainApi

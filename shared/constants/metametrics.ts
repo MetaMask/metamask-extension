@@ -1025,6 +1025,11 @@ export enum MetaMetricsTransactionEventSource {
   User = 'user',
 }
 
+export enum MetaMetricsRequestedThrough {
+  EthereumProvider = 'ethereum_provider',
+  MultichainApi = 'multichain_api',
+}
+
 export enum MetaMetricsEventLocation {
   AlertFrictionModal = 'alert_friction_modal',
   Confirmation = 'confirmation',
