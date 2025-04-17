@@ -5029,9 +5029,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "@metamask/bridge-controller@npm:14.0.0"
+"@metamask/bridge-controller@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@metamask/bridge-controller@npm:15.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5050,11 +5050,11 @@ __metadata:
     reselect: "npm:^5.1.1"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
-    "@metamask/assets-controllers": ^56.0.0
+    "@metamask/assets-controllers": ^57.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^9.19.0
     "@metamask/transaction-controller": ^54.0.0
-  checksum: 10/7de63a1e280d98395db9c7f96d90c63e60e5999e82c9d7031bee65dd58196bb5c09a42f9dbd47580ff6d51cd77169ef89fbc6d26bf477f9c94bb8f5d36884af3
+  checksum: 10/74c544b57c9449efa769ee3842b75f2e661f4e63dd5d3229a0f4b12d9d16629bdb9cd3c2081839e6ce15e58d4ad0e7d33472b08b57873b81c733b4bed75fa031
   languageName: node
   linkType: hard
 
@@ -5821,21 +5821,6 @@ __metadata:
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
   checksum: 10/f4f18243c2133f7eb5827a80583f378727c460255f95f723d88b664705b8b0e8f12428b6bf16975cc2cbfec35c21797c84ab96a09317412c37135f4afd697f2f
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-network-controller@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/multichain-network-controller@npm:0.3.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/utils": "npm:^11.2.0"
-    "@solana/addresses": "npm:^2.0.0"
-  peerDependencies:
-    "@metamask/accounts-controller": ^27.0.0
-    "@metamask/network-controller": ^23.0.0
-  checksum: 10/eed3a230271bfe610027b6739d383151a573fe10db66f407ec8c673cceaab3c2b50a5fcc3fb2cc0dcfa4fbb9748d63f615799bd27bb5b4303260321ec9d07757
   languageName: node
   linkType: hard
 
@@ -27329,7 +27314,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
-    "@metamask/bridge-controller": "npm:^14.0.0"
+    "@metamask/bridge-controller": "npm:^15.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
