@@ -6,6 +6,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
+  MetaMetricsRequestedThrough,
 } from '../../../shared/constants/metametrics';
 import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils';
 
@@ -590,11 +591,6 @@ function getWalletSendCallsProperties(req, _res, stage, eventProperties) {
 }
 
 function getWalletCreateSessionProperties(req, _res, _, eventProperties) {
-  // I would think we want this in the approved and rejected stages as well?
-  // if (stage !== STAGE.REQUESTED) {
-  //   return;
-
-  // TODO this should probably be a helper function in @metamask/chain-agnostic-permission
   const { params } = req;
   const requiredScopes = params?.requiredScopes || {};
   const optionalScopes = params?.optionalScopes || {};
