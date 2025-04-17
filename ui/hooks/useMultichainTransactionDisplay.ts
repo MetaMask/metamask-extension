@@ -4,11 +4,12 @@ import {
   TransactionType,
 } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
-import { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
+import type { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
 import { useI18nContext } from './useI18nContext';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {
@@ -41,19 +42,21 @@ export function useMultichainTransactionDisplay(
   networkConfig: MultichainProviderConfig,
 ) {
   const locale = useSelector(getIntlLocale);
+  const { chainId } = networkConfig;
+  const decimalPlaces = MULTICHAIN_NETWORK_DECIMAL_PLACES[chainId];
   const t = useI18nContext();
 
   const from = aggregateAmount(
     transaction.from as Movement[],
     true,
     locale,
-    networkConfig.decimals,
+    decimalPlaces,
   );
   const to = aggregateAmount(
     transaction.to as Movement[],
     transaction.type === TransactionType.Send,
     locale,
-    networkConfig.decimals,
+    decimalPlaces,
   );
   const baseFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'base') as Movement[],
