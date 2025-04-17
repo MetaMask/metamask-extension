@@ -44,11 +44,7 @@ export class ExtensionUpdateManager {
    */
   public applyPendingUpdateIfNeeded(): void {
     if (this.updatePending && this.isIdle) {
-      try {
-        browser.runtime.reload();
-      } catch (error) {
-        console.error('Failed to reload extension:', error);
-      }
+      browser.runtime.reload();
     }
   }
 
