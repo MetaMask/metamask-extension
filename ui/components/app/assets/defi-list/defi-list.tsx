@@ -48,7 +48,6 @@ export type DefiState = {
 export function getDefiPositions(
   state: DefiState,
 ): DeFiPositionsControllerState['allDeFiPositions'] {
-  console.log('getDefiPositions state', state);
   return state?.metamask?.allDeFiPositions;
 }
 
@@ -112,15 +111,7 @@ function DefiList({ onClick }: DefiListProps) {
   const selectedAccount = useSelector(getSelectedAccount);
   const trackEvent = useContext(MetaMetricsContext);
 
-  console.log('selectedAccount oioi', selectedAccount);
-
   const allDefiPositions = useSelector(getDefiPositions);
-
-  console.log('allDefiPositions', allDefiPositions);
-
-  // const defiData = selectedAccount
-  //   ? defiPositions?.[selectedAccount.address]
-  //   : null;
 
   const sortedFilteredDefi = useMemo(() => {
     // error
