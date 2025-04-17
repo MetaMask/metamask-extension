@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Detalhes da conta"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Voltar para a conta normal"
-  },
   "accountIdenticon": {
     "message": "Identicon da conta"
   },
@@ -1311,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
-  },
-  "copyAddressShort": {
-    "message": "Copiar endereço"
   },
   "copyPrivateKey": {
     "message": "Copiar chave privada"
