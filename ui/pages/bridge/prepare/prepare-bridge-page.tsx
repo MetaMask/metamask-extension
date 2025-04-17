@@ -19,7 +19,6 @@ import {
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
-  selectExchangeRateByChainIdAndAddress,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -152,14 +151,6 @@ const PrepareBridgePage = () => {
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
-
-  const fromTokenExchangeRate = useSelector((state) =>
-    selectExchangeRateByChainIdAndAddress(
-      state.metamask,
-      fromChain?.chainId,
-      fromToken?.address,
-    ),
-  );
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
