@@ -52,11 +52,11 @@ function getApi(
   controller: DelegationController,
 ): ControllerInitResult<DelegationController>['api'] {
   return {
-    storeDelegation: controller.store.bind(controller),
     signDelegation: controller.signDelegation.bind(controller),
-    retrieveDelegation: controller.retrieve.bind(controller),
-    deleteDelegation: controller.delete.bind(controller),
-    listDelegations: controller.list.bind(controller),
-    chainDelegation: controller.chain.bind(controller),
+    storeDelegationEntry: controller.store.bind(controller),
+    listDelegationEntries: controller.list.bind(controller),
+    getDelegationEntry: controller.retrieve.bind(controller),
+    getDelegationEntryChain: controller.chain.bind(controller),
+    deleteDelegationEntry: controller.delete.bind(controller),
   };
 }
