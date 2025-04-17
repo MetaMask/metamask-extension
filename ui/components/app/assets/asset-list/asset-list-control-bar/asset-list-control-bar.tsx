@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import {
   getAllChainsToPoll,
   getCurrentNetwork,
+  getIsLineaMainnet,
   getIsMainnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
@@ -83,6 +84,7 @@ const AssetListControlBar = ({
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
   const isMainnet = useSelector(getIsMainnet);
+  const isLineaMainnet = useSelector(getIsLineaMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
 
   const { collections } = useNftsCollections();
@@ -101,7 +103,7 @@ const AssetListControlBar = ({
   );
 
   const shouldShowEnableAutoDetect = useMemo(
-    () => isMainnet && !useNftDetection,
+    () => (isMainnet || isLineaMainnet) && !useNftDetection,
     [isMainnet, useNftDetection],
   );
 
@@ -216,7 +218,7 @@ const AssetListControlBar = ({
   };
 
   const handleNftRefresh = () => {
-    if (isMainnet) {
+    if (isMainnet || isLineaMainnet) {
       dispatch(detectNfts(allChainIds));
     }
     checkAndUpdateAllNftsOwnershipStatus();
