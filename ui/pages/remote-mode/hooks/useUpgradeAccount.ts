@@ -4,13 +4,40 @@ import { useSelector } from 'react-redux';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { getNetworkConfigurationIdByChainId } from '../../../selectors';
 import { addTransaction, estimateGas } from '../../../store/actions';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionEnvelopeType,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { getEIP7702ContractAddresses } from '../../../selectors/remote-mode';
+
+/* export function getEIP7702ContractAddresses(
+  chainId: Hex,
+  publicKey: Hex,
+): Hex[] {
+  const featureFlags = getFeatureFlags(messenger);
+
+  const contracts =
+    featureFlags?.[FeatureFlag.EIP7702]?.contracts?.[
+      chainId.toLowerCase() as Hex
+    ] ?? [];
+
+  return contracts
+    .filter((contract) =>
+      isValidSignature(
+        [contract.address, padHexToEvenLength(chainId) as Hex],
+        contract.signature,
+        publicKey,
+      ),
+    )
+    .map((contract) => contract.address);
+} */
 
 export default function useUpgradeAccount() {
   const networkGasFeeEstimates = useSelector(getGasFeeEstimates);
   const networkConfigurationIds = useSelector(
     getNetworkConfigurationIdByChainId,
   );
+  const isRemoteModeEnabled = useSelector(getEIP7702ContractAddresses);
 
   const upgradeAccount = async ({
     account,
@@ -25,7 +52,7 @@ export default function useUpgradeAccount() {
         .EIP7702StatelessDeleGatorImpl;
 
     const txParams = {
-      type: '0x4',
+      type: TransactionEnvelopeType.setCode,
       from: account,
       to: account,
       value: '0x0',
@@ -39,7 +66,15 @@ export default function useUpgradeAccount() {
       data: '0x',
     };
 
-    const maxGasLimit = await estimateGas(txParams);
+    console.log('txParams', JSON.stringify(txParams));
+
+    const maxGasLimit = await estimateGas({
+      from: txParams.from,
+      to: txParams.to,
+      value: txParams.value,
+      data: txParams.data,
+      authorizationList: txParams.authorizationList,
+    });
 
     const finalTxParams = {
       ...txParams,
@@ -48,14 +83,19 @@ export default function useUpgradeAccount() {
       gas: maxGasLimit,
     };
 
+    console.log('finalTxParams', finalTxParams);
+
     const networkClientId =
       networkConfigurationIds[chainId as keyof typeof networkConfigurationIds];
+
+    console.log('networkClientId', networkClientId);
 
     const txMeta = await addTransaction(finalTxParams, {
       requireApproval: true,
       networkClientId,
-      type: TransactionType.simpleSend,
     });
+
+    console.log('txMeta', txMeta);
 
     return txMeta;
   };

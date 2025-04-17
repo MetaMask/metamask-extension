@@ -42,10 +42,7 @@ import {
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
-import {
-  getSelectedInternalAccount,
-  getMetaMaskAccountsOrdered,
-} from '../../../../selectors';
+
 import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeDailyAllowanceCard from '../daily-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
@@ -53,7 +50,11 @@ import {
   signDelegation,
   storeDelegationEntry,
 } from '../../../../store/actions';
-import { getSelectedNetwork, getSelectedAccount } from '../../../../selectors';
+import {
+  getSelectedNetwork,
+  getSelectedInternalAccount,
+  getMetaMaskAccountsOrdered,
+} from '../../../../selectors';
 
 const TOTAL_STEPS = 3;
 
@@ -87,7 +88,6 @@ export default function RemoteModeSetupDailyAllowance() {
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-  const selectedAccount = useSelector(getSelectedAccount);
   const selectedNetwork = useSelector(getSelectedNetwork);
 
   useEffect(() => {
@@ -151,12 +151,16 @@ export default function RemoteModeSetupDailyAllowance() {
   };
 
   const handleConfigureRemoteSwaps = async () => {
+    if (!selectedAccount) {
+      return;
+    }
+
     const { chainId } = selectedNetwork.configuration;
 
     const delegation = createDelegation({
       caveats: [],
-      from: selectedAccount.address,
-      to: selectedAccount.address,
+      from: selectedAccount.address as `0x${string}`,
+      to: selectedAccount.address as `0x${string}`,
     });
 
     const signature = await signDelegation({ delegation, chainId });

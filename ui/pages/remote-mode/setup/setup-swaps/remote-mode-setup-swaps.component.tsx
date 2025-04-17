@@ -93,7 +93,6 @@ export default function RemoteModeSetupSwaps() {
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-  const selectedAccount = useSelector(getSelectedAccount);
   const selectedNetwork = useSelector(getSelectedNetwork);
   const { upgradeAccount } = useUpgradeAccount();
 
@@ -157,29 +156,44 @@ export default function RemoteModeSetupSwaps() {
   };
 
   const handleConfigureRemoteSwaps = async () => {
+    if (!selectedAccount) {
+      return;
+    }
+
     const { chainId } = selectedNetwork.configuration;
+
+    console.log('toUpgrade');
 
     await upgradeAccount({
       account: selectedAccount.address,
       chainId,
-      gasLimit: null,
     });
+
+    console.log('upgraded');
 
     const delegation = createDelegation({
       caveats: [],
-      from: selectedAccount.address,
-      to: selectedAccount.address,
+      from: selectedAccount.address as `0x${string}`,
+      to: selectedAccount.address as `0x${string}`,
     });
+
+    console.log('delegation created');
 
     const signature = await signDelegation({ delegation, chainId });
 
+    console.log('signature', signature);
+
     delegation.signature = signature;
+
+    console.log('storing delegation');
 
     await storeDelegationEntry({
       delegation,
       tags: ['swap'],
       chainId,
     });
+
+    console.log('delegation stored');
 
     history.replace(REMOTE_ROUTE);
   };
