@@ -66,8 +66,6 @@ export const BridgeQuotesModal = ({
   const quoteListProperties = useQuoteProperties();
   const tradeProperties = useTradeProperties();
 
-  // TODO: this is where the bridge quotes are present.
-  // For solana specifically, the quotes do not 'add up' to the total amount of the transaction.
   return (
     <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
       <ModalOverlay />
