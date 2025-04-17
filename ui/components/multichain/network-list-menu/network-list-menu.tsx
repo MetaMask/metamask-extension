@@ -20,6 +20,7 @@ import {
   type UpdateNetworkFields,
 } from '@metamask/network-controller';
 import {
+  NON_EVM_TESTNET_IDS,
   toEvmCaipChainId,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
@@ -54,7 +55,7 @@ import {
   TEST_CHAINS,
   CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
-import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME } from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -201,12 +202,16 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     () =>
       Object.entries(multichainNetworks).reduce(
         ([nonTestnetsList, testnetsList], [id, network]) => {
-          const chainId = network.isEvm
-            ? convertCaipToHexChainId(id as CaipChainId)
-            : id;
-          // This is type casted to string since chainId could be
-          // Hex or CaipChainId.
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+          let chainId = id;
+          let isTest = false;
+
+          if (network.isEvm) {
+            // We keep using raw chain ID for EVM.
+            chainId = convertCaipToHexChainId(network.chainId);
+            isTest = TEST_CHAINS.includes(chainId as Hex);
+          } else {
+            isTest = NON_EVM_TESTNET_IDS.includes(network.chainId);
+          }
           (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
           return [nonTestnetsList, testnetsList];
         },
@@ -507,8 +512,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const generateMultichainNetworkListItem = (
     network: MultichainNetworkConfiguration,
   ) => {
-    const { chainId } = network;
-    const isCurrentNetwork = chainId === currentChainId;
+    const isCurrentNetwork = network.chainId === currentChainId;
     const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
       getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
@@ -528,12 +532,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         }
         rpcEndpoint={
           hasMultiRpcOptions(network)
-            ? getRpcDataByChainId(chainId, evmNetworks).defaultRpcEndpoint
+            ? getRpcDataByChainId(network.chainId, evmNetworks)
+                .defaultRpcEndpoint
             : undefined
         }
-        onClick={
-          process.env.REMOVE_GNS ? noop : () => handleNetworkChange(chainId)
-        }
+        onClick={async () => {
+          return process.env.REMOVE_GNS
+            ? noop()
+            : await handleNetworkChange(network.chainId);
+        }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
@@ -775,7 +782,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     selectedNonEvmNetwork
   ) {
     title = t('addNonEvmAccount', [
-      MULTICHAIN_NETWORK_TO_NICKNAME[selectedNonEvmNetwork],
+      MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME[selectedNonEvmNetwork],
     ]);
   } else {
     title = editedNetwork?.name ?? '';
