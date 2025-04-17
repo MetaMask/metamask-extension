@@ -383,7 +383,7 @@ const AssetListControlBar = ({
           minWidth: isFullScreen ? '158px' : '',
         }}
       >
-        <SelectableListItem onClick={handleNftImportModal} testId="importNfts">
+        <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
           <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
 
           {t('importNFT')}

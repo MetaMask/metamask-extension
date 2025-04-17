@@ -8,7 +8,7 @@ class NftListPage {
 
   private readonly importNftAddressInput = '#address';
 
-  private readonly importNftButton = '[data-testid="importNfts"]';
+  private readonly importNftButton = '[data-testid="import-nfts"]';
 
   private readonly actionBarButton =
     '[data-testid="asset-list-control-bar-action-button"]';
