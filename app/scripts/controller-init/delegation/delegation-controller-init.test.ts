@@ -59,10 +59,12 @@ describe('DelegationControllerInit', () => {
     const result = DelegationControllerInit(requestMock);
 
     expect(result.api).toEqual({
-      storeDelegation: expect.any(Function),
+      storeDelegationEntry: expect.any(Function),
       signDelegation: expect.any(Function),
-      retrieveDelegation: expect.any(Function),
-      deleteDelegation: expect.any(Function),
+      getDelegationEntry: expect.any(Function),
+      deleteDelegationEntry: expect.any(Function),
+      listDelegationEntries: expect.any(Function),
+      getDelegationEntryChain: expect.any(Function),
     });
   });
 });
