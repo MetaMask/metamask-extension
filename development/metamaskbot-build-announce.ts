@@ -398,7 +398,7 @@ async function start(): Promise<void> {
 async function runBenchmarkGate(
   benchmarkResults: BenchmarkResults,
 ): Promise<string> {
-  const benchmarkGateUrl = `${process.env.AWS_CLOUDFRONT_URL_WITH_REPO}/benchmark-gate/benchmark-gate.json`;
+  const benchmarkGateUrl = `${process.env.CLOUDFRONT_REPO_URL}/benchmark-gate/benchmark-gate.json`;
   const exceededSums = { mean: 0, p95: 0 };
   let benchmarkGateBody = '';
 
