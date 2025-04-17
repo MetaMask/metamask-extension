@@ -422,24 +422,31 @@ const _getValidatedSrcAmount = createSelector(
       : null,
 );
 
+const getFromExchangeRate = createSelector(
+  getFromToken,
+  getFromChain,
+  (state) => state.metamask,
+  (fromToken, fromChain, metamaskState) =>
+    selectExchangeRateByChainIdAndAddress(
+      metamaskState,
+      fromChain.chainId,
+      fromToken.address,
+    ),
+);
+
 export const getFromAmountInCurrency = createSelector(
   getFromToken,
   getFromChain,
   _getValidatedSrcAmount,
-  (state) => state.metamask,
-  (fromToken, fromChain, validatedSrcAmount, metamaskState) => {
+  getFromExchangeRate,
+  (fromToken, fromChain, validatedSrcAmount, fromExchangeRate) => {
     if (fromToken?.symbol && fromChain?.chainId && validatedSrcAmount) {
-      const e = selectExchangeRateByChainIdAndAddress(
-        metamaskState,
-        fromChain.chainId,
-        fromToken.address,
-      );
       return {
         valueInCurrency: new BigNumber(validatedSrcAmount)
-          .mul(new BigNumber(e.exchangeRate ?? 0))
+          .mul(new BigNumber(fromExchangeRate.exchangeRate ?? 0))
           .toString(),
         usd: new BigNumber(validatedSrcAmount)
-          .mul(new BigNumber(e.usdExchangeRate ?? 0))
+          .mul(new BigNumber(fromExchangeRate.usdExchangeRate ?? 0))
           .toString(),
       };
     }

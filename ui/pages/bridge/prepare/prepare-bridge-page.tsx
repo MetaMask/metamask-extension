@@ -153,14 +153,6 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
-  const fromTokenExchangeRate = useSelector((state) =>
-    selectExchangeRateByChainIdAndAddress(
-      state.metamask,
-      fromChain?.chainId,
-      fromToken?.address,
-    ),
-  );
-
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
