@@ -6,7 +6,8 @@ import { WALLET_PASSWORD } from '../../../constants';
 class AccountDetailsModal {
   private driver: Driver;
 
-  private readonly accountAddressText = '[data-testid="account-address-shortened"]';
+  private readonly accountAddressText =
+    '[data-testid="account-address-shortened"]';
 
   private readonly accountAuthenticateInput = '#account-details-authenticate';
 
@@ -67,7 +68,7 @@ class AccountDetailsModal {
   }
 
   async goToDetailsTab(): Promise<void> {
-    await this.driver.clickElement({text: 'Details', tag: 'button'});
+    await this.driver.clickElementSafe({ text: 'Details', tag: 'button' });
   }
 
   async closeAccountDetailsModal(): Promise<void> {

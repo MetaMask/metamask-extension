@@ -416,7 +416,7 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.accountMenuButton);
-    await this.driver.clickElement(this.accountDetailsTab);
+    await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
   /**

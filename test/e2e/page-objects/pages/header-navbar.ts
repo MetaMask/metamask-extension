@@ -73,7 +73,7 @@ class HeaderNavbar {
     console.log('Open account details modal');
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
-    await this.driver.clickElement(this.accountDetailsTab);
+    await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
   async openThreeDotMenu(): Promise<void> {

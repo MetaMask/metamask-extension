@@ -5,6 +5,8 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import configureStore from '../../../store/store';
+import * as EIP7702NetworkUtils from '../../../pages/confirmations/hooks/useEIP7702Networks';
+
 import { AccountDetailsDisplay } from './account-details-display';
 
 const mockCopy = jest.fn();
@@ -31,11 +33,28 @@ function renderComponent() {
 }
 
 describe('AccountDetailsDisplay', () => {
-  it('renders tabs type and details', async () => {
+  it('render tabs type and details if 7702 network are present', async () => {
+    jest.spyOn(EIP7702NetworkUtils, 'useEIP7702Networks').mockReturnValue({
+      pending: false,
+      networkSupporting7702Present: true,
+      network7702List: [],
+    });
     const { getByText } = renderComponent();
     expect(getByText('0x0dcd5d8865...e70be3e7bc')).toBeInTheDocument();
     expect(getByText('Type')).toBeInTheDocument();
     expect(getByText('Details')).toBeInTheDocument();
+  });
+
+  it('does not render tabs type and details if 7702 network are not present', async () => {
+    jest.spyOn(EIP7702NetworkUtils, 'useEIP7702Networks').mockReturnValue({
+      pending: false,
+      networkSupporting7702Present: false,
+      network7702List: [],
+    });
+    const { getByText, queryByText } = renderComponent();
+    expect(getByText('0x0dcd5d8865...e70be3e7bc')).toBeInTheDocument();
+    expect(queryByText('Type')).not.toBeInTheDocument();
+    expect(queryByText('Details')).not.toBeInTheDocument();
   });
 
   it('renders button to copy address', async () => {

@@ -2,26 +2,15 @@ import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
-import QrCodeView from '../../ui/qr-code-view';
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
-import {
-  getHardwareWalletType,
-  getInternalAccountByAddress,
-  getMetaMaskKeyrings,
-} from '../../../selectors';
-import {
-  isAbleToExportAccount,
-  isAbleToRevealSrp,
-  shortenString,
-} from '../../../helpers/utils/util';
+import { getHardwareWalletType } from '../../../selectors';
+import { shortenString } from '../../../helpers/utils/util';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
-  ButtonSecondary,
-  ButtonSecondarySize,
   IconName,
   Text,
 } from '../../component-library';
@@ -30,21 +19,22 @@ import {
   Display,
   FlexDirection,
   IconColor,
+  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { SmartAccountTab } from '../../../pages/confirmations/components/confirm/smart-account-tab/smart-account-tab';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
+import Preloader from '../../ui/icon/preloader';
 import { Tab, Tabs } from '../../ui/tabs';
+import { AccountDetailsSection } from './account-details-section';
 
 export const AccountDetailsDisplay = ({
   accounts,
@@ -54,26 +44,14 @@ export const AccountDetailsDisplay = ({
 }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const t = useI18nContext();
-  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const checksummedAddress = toChecksumHexAddress(address)?.toLowerCase();
   const [copied, handleCopy] = useCopyToClipboard();
   const handleClick = useCallback(() => {
     handleCopy(checksummedAddress);
   }, [checksummedAddress, handleCopy]);
-
-  const account = useSelector((state) =>
-    getInternalAccountByAddress(state, address),
-  );
-  const {
-    metadata: { keyring },
-  } = account;
-  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
-  const keyrings = useSelector(getMetaMaskKeyrings);
-  const exportSrpFeatureEnabled = isAbleToRevealSrp(account, keyrings);
-
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
+  const { networkSupporting7702Present, pending } = useEIP7702Networks(address);
 
   return (
     <Box
@@ -123,57 +101,40 @@ export const AccountDetailsDisplay = ({
           data-testid="address-copy-button-text"
         />
       </Box>
-      <Tabs
-        onTabClick={() => undefined}
-        style={{ width: '100%', marginTop: '8px' }}
-      >
-        <Tab name="Type" tabKey="Type" style={{ width: '50%' }}>
-          <SmartAccountTab address={address} />
-        </Tab>
-        <Tab name="Details" tabKey="Details" style={{ width: '50%' }}>
-          <QrCodeView Qr={{ data: address }} />
-          {exportPrivateKeyFeatureEnabled ? (
-            <ButtonSecondary
-              data-testid="account-details-display-export-private-key"
-              block
-              size={ButtonSecondarySize.Lg}
-              variant={TextVariant.bodyMd}
-              marginBottom={1}
-              onClick={() => {
-                trackEvent({
-                  category: MetaMetricsEventCategory.Accounts,
-                  event: MetaMetricsEventName.KeyExportSelected,
-                  properties: {
-                    key_type: MetaMetricsEventKeyType.Pkey,
-                    location: 'Account Details Modal',
-                    hd_entropy_index: hdEntropyIndex,
-                  },
-                });
-                onExportClick('PrivateKey');
-              }}
-            >
-              {t('showPrivateKey')}
-            </ButtonSecondary>
-          ) : null}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-            exportSrpFeatureEnabled ? (
-              <ButtonSecondary
-                data-testid="account-details-display-export-srp"
-                block
-                size={ButtonSecondarySize.Lg}
-                variant={TextVariant.bodyMd}
-                onClick={() => {
-                  onExportClick('SRP');
-                }}
-              >
-                {t('showSRP')}
-              </ButtonSecondary>
-            ) : null
-            ///: END:ONLY_INCLUDE_IF
-          }
-        </Tab>
-      </Tabs>
+      {pending && (
+        <Box
+          paddingTop={12}
+          paddingBottom={12}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          data-testid="network-loader"
+        >
+          <Preloader size={18} />
+        </Box>
+      )}
+      {!pending && networkSupporting7702Present && (
+        <Tabs
+          onTabClick={() => undefined}
+          style={{ width: '100%', marginTop: '8px' }}
+        >
+          <Tab name="Type" tabKey="Type" style={{ width: '50%' }}>
+            <SmartAccountTab address={address} />
+          </Tab>
+          <Tab name="Details" tabKey="Details" style={{ width: '50%' }}>
+            <AccountDetailsSection
+              address={address}
+              onExportClick={onExportClick}
+            />
+          </Tab>
+        </Tabs>
+      )}
+      {!pending && !networkSupporting7702Present && (
+        <AccountDetailsSection
+          address={address}
+          onExportClick={onExportClick}
+        />
+      )}
     </Box>
   );
 };
