@@ -6,6 +6,7 @@ import { Messenger } from '@metamask/base-controller';
 import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
 import { KeyringControllerUnlockEvent } from '@metamask/keyring-controller';
 import { KeyringControllerLockEvent } from '@metamask/keyring-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
 export type DefiPositionsControllerMessenger = ReturnType<
   typeof getDeFiPositionsControllerMessenger
@@ -38,5 +39,19 @@ export function getDeFiPositionsControllerMessenger(
       'TransactionController:transactionConfirmed',
       'AccountsController:accountAdded',
     ],
+  });
+}
+
+export type DeFiPositionsControllerInitMessenger = ReturnType<
+  typeof getDeFiPositionsControllerInitMessenger
+>;
+
+export function getDeFiPositionsControllerInitMessenger(
+  messenger: Messenger<RemoteFeatureFlagControllerGetStateAction, never>,
+) {
+  return messenger.getRestricted({
+    name: 'DeFiPositionsControllerInit',
+    allowedEvents: [],
+    allowedActions: ['RemoteFeatureFlagController:getState'],
   });
 }
