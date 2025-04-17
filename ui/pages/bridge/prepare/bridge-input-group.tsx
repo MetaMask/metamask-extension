@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
 import {
   formatChainIdToCaip,
   isNativeAddress,
@@ -72,7 +71,7 @@ export const BridgeInputGroup = ({
   onBlockExplorerClick,
   buttonProps,
 }: {
-  amountInFiat?: BigNumber;
+  amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
   buttonProps: { testId: string };
@@ -314,7 +313,7 @@ export const BridgeInputGroup = ({
                   skipCharacterInEnd: false,
                 }))}
           {!isAmountReadOnly && balanceAmount
-            ? formatTokenAmount(locale, balanceAmount, token?.symbol)
+            ? formatTokenAmount(locale, balanceAmount.toString(), token?.symbol)
             : undefined}
           {onMaxButtonClick &&
             token &&

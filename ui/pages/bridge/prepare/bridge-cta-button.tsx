@@ -15,7 +15,8 @@ import {
   getBridgeQuotes,
   getValidationErrors,
   getWasTxDeclined,
-  getQuoteRefreshRate,
+  getIsQuoteExpired,
+  BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -35,7 +36,6 @@ import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRe
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Row } from '../layout';
-import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
@@ -53,15 +53,11 @@ export const BridgeCTAButton = ({
 
   const fromAmount = useSelector(getFromAmount);
 
-  const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesLastFetchedMs } =
-    useSelector(getBridgeQuotes);
-  const refreshRate = useSelector(getQuoteRefreshRate);
-  const isQuoteExpired = isQuoteExpiredUtil(
-    isQuoteGoingToRefresh,
-    refreshRate,
-    quotesLastFetchedMs,
-  );
+  const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
+  const isQuoteExpired = useSelector((state) =>
+    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  );
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
