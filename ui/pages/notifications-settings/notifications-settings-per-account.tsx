@@ -68,6 +68,8 @@ export const NotificationsSettingsPerAccount = ({
     error: accountError,
   } = useUpdateAccountSetting(address, refetchAccountSettings);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const loading = isLoading || isUpdatingAccount;
   const error = accountError;
 

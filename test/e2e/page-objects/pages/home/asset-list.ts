@@ -224,7 +224,9 @@ class AssetListPage {
     await this.driver.clickElement(this.customTokenModalOption);
     await this.driver.waitForSelector(this.modalWarningBanner);
     await this.driver.clickElement(this.tokenChainDropdown);
-    await this.driver.clickElement(this.tokenImportSelectNetwork(chainId));
+    await this.driver.clickElementAndWaitToDisappear(
+      this.tokenImportSelectNetwork(chainId),
+    );
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.fill(this.tokenSymbolInput, symbol);
     await this.driver.clickElement(this.importTokensNextButton);

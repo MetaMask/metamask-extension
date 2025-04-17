@@ -7,9 +7,10 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMultichainIsMainnet,
   ///: END:ONLY_INCLUDE_IF
-  getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../selectors/multichain';
+import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsBitcoinBuyable } from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -29,7 +30,7 @@ type NonEvmOverviewProps = {
 };
 
 const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
-  const { chainId } = useSelector(getMultichainProviderConfig);
+  const { chainId } = useSelector(getSelectedMultichainNetworkConfiguration);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const account = useSelector(getSelectedInternalAccount);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

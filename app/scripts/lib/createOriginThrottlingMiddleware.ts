@@ -91,6 +91,8 @@ export default function createOriginThrottlingMiddleware({
         }
 
         // User rejected the request
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const throttledOriginState = getThrottledOriginState(origin) || {
           rejections: 0,
           lastRejection: 0,

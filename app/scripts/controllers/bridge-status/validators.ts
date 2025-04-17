@@ -87,6 +87,8 @@ const srcChainStatusValidators = [
     type: 'object|undefined',
     validator: (v: unknown): v is object | undefined =>
       v === undefined ||
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       (v && typeof v === 'object' && Object.keys(v).length === 0) ||
       assetValidator(v),
   },
@@ -124,6 +126,8 @@ const destChainStatusValidators = [
     type: 'object|undefined',
     validator: (v: unknown): v is Asset | undefined =>
       v === undefined ||
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       (v && typeof v === 'object' && Object.keys(v).length === 0) ||
       assetValidator(v),
   },

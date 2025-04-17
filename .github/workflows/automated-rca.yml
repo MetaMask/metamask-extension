@@ -1,0 +1,19 @@
+name: Automated RCA
+
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  automated-rca:
+    uses: MetaMask/github-tools/.github/workflows/post-gh-rca.yml@115cc6dce7aa32c85cbd77a19e9c04db85fb7920
+    with:
+      google-form-base-url: 'https://docs.google.com/forms/d/e/1FAIpQLSfnfEWH7JCFFtvjCHixgyqJdTU3LW3BmTwdF1dDezTNf7m4ig/viewform?usp=pp_url&entry.340898780='
+      repo-owner: ${{ github.repository_owner }}
+      repo-name: ${{ github.event.repository.name }}
+      issue-number: ${{ github.event.issue.number }}
+      issue-labels: '["Sev0-urgent", "Sev1-high"]'

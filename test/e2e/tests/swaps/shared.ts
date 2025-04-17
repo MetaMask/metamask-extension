@@ -74,8 +74,17 @@ export const reviewQuote = async (
     '[data-testid="exchange-rate-display-quote-rate"]',
   );
   const summaryText = await summary.getText();
-  assert.equal(summaryText.includes(options.swapFrom), true);
-  assert.equal(summaryText.includes(options.swapTo), true);
+
+  await driver.waitForSelector({
+    testId: 'prepare-swap-page-swap-from',
+    text: options.swapFrom,
+  });
+
+  await driver.waitForSelector({
+    testId: 'prepare-swap-page-swap-to',
+    text: options.swapTo,
+  });
+
   const quote = summaryText.split(`\n`);
 
   const elementSwapToAmount = await driver.findElement(
@@ -138,22 +147,20 @@ export const checkActivityTransaction = async (
   await driver.clickElement('[data-testid="account-overview__activity-tab"]');
   await driver.waitForSelector('.activity-list-item');
 
-  const transactionList = await driver.findElements(
-    '[data-testid="activity-list-item-action"]',
-  );
-  const transactionText = await transactionList[options.index].getText();
-  assert.equal(
-    transactionText,
-    `Swap ${options.swapFrom} to ${options.swapTo}`,
-    'Transaction not found',
-  );
+  await driver.waitForSelector({
+    tag: 'p',
+    text: `Swap ${options.swapFrom} to ${options.swapTo}`,
+  });
 
   await driver.findElement({
     css: '[data-testid="transaction-list-item-primary-currency"]',
     text: `-${options.amount} ${options.swapFrom}`,
   });
 
-  await transactionList[options.index].click();
+  await driver.clickElement({
+    tag: 'p',
+    text: `Swap ${options.swapFrom} to ${options.swapTo}`,
+  });
   await driver.delay(regularDelayMs);
 
   await driver.findElement({

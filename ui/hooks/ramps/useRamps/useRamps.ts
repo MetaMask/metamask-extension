@@ -44,6 +44,8 @@ const useRamps = (
           params.set('marketingEnabled', String(isMarketingEnabled));
         }
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const url = new URL(process.env.PORTFOLIO_URL || '');
         url.pathname = 'buy';
         url.search = params.toString();
@@ -57,6 +59,8 @@ const useRamps = (
 
   const openBuyCryptoInPdapp = useCallback(
     (_chainId?: ChainId | CaipChainId) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       const buyUrl = getBuyURI(_chainId || chainId);
       global.platform.openTab({
         url: buyUrl,

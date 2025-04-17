@@ -249,8 +249,12 @@ describe('Bridge quote utils', () => {
       const result = {
         amount: gasFee.amount.plus(relayerFee.amount),
         valueInCurrency:
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
           null,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
       };
       expect(result.amount?.toString()).toStrictEqual(amount);
@@ -353,8 +357,12 @@ describe('Bridge quote utils', () => {
       const result = {
         amount: gasFee.amount.plus(relayerFee.amount),
         valueInCurrency:
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
           null,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
       };
       expect(result.amount?.toString()).toStrictEqual(amount);

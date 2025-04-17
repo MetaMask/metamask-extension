@@ -171,7 +171,7 @@ describe('network utils', () => {
       const networks: Record<CaipChainId, MultichainNetworkConfiguration> = {
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
-          name: 'Solana Mainnet',
+          name: 'Solana',
           nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
           isEvm: false,
         },
@@ -193,7 +193,7 @@ describe('network utils', () => {
         },
         [BtcScope.Mainnet]: {
           chainId: BtcScope.Mainnet,
-          name: 'Bitcoin Mainnet',
+          name: 'Bitcoin',
           nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
           isEvm: false,
         },
@@ -207,13 +207,13 @@ describe('network utils', () => {
       expect(sortNetworks(networks, sortedChainIds)).toStrictEqual([
         {
           chainId: SolScope.Mainnet,
-          name: 'Solana Mainnet',
+          name: 'Solana',
           nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
           isEvm: false,
         },
         {
           chainId: BtcScope.Mainnet,
-          name: 'Bitcoin Mainnet',
+          name: 'Bitcoin',
           nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
           isEvm: false,
         },
