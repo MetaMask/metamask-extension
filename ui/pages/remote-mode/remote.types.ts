@@ -112,7 +112,11 @@ export type RemoteModeConfig = {
     | undefined;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum REMOTE_MODES {
   SWAP = 'swap',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   DAILY_ALLOWANCE = 'daily-allowance',
 }

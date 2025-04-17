@@ -30,6 +30,8 @@ import { RevokeWithdrawlConfirmModalType } from '../components/revoke-withdrawl-
 import { useRemoteMode } from '../hooks/useRemoteMode';
 import { REMOTE_MODES } from '../remote.types';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModePermissions({
   setStartEnableRemoteSwap,
   setStartEnableDailyAllowance,

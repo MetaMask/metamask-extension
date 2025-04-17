@@ -29,6 +29,8 @@ import { NestedTransactionTag } from '../../transactions/nested-transaction-tag'
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const { generalAlerts } = useAlerts(ownerId);
   const { updateSignatureEventFragment } = useSignatureEventFragment();
@@ -41,6 +43,8 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const onClickSupportLink = () => {
     const properties = {
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         external_link_clicked: 'security_alert_support_link',
       },
     };

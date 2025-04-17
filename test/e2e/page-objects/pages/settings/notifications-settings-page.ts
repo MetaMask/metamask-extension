@@ -45,6 +45,8 @@ class NotificationsSettingsPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -97,6 +99,8 @@ class NotificationsSettingsPage {
    * @param options.expectedState - The expected state of the toggle ('enabled' or 'disabled')
    * @throws {Error} If toggle state doesn't match expected state or if the toggle element cannot be found
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_notificationState({
     toggleType,
     address,

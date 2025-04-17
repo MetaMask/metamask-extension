@@ -76,6 +76,8 @@ describe('useDecodedSignatureMetrics', () => {
     expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(1);
     expect(mockUpdateSignatureEventFragment).toHaveBeenLastCalledWith({
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_response: 'decoding_in_progress',
       },
     });
@@ -102,9 +104,17 @@ describe('useDecodedSignatureMetrics', () => {
     expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(1);
     expect(mockUpdateSignatureEventFragment).toHaveBeenLastCalledWith({
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_change_types: [],
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_response: 'NO_CHANGE',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_description: null,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_latency: 0,
       },
     });
@@ -132,9 +142,17 @@ describe('useDecodedSignatureMetrics', () => {
     expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(1);
     expect(mockUpdateSignatureEventFragment).toHaveBeenLastCalledWith({
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_change_types: ['APPROVE'],
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_response: 'CHANGE',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_description: null,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_latency: 0,
       },
     });
@@ -168,9 +186,17 @@ describe('useDecodedSignatureMetrics', () => {
     expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(1);
     expect(mockUpdateSignatureEventFragment).toHaveBeenLastCalledWith({
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_change_types: [],
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_response: 'SOME_ERROR',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_description: 'some message',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         decoding_latency: 0,
       },
     });

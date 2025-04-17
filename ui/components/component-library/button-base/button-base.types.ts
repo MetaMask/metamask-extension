@@ -100,10 +100,14 @@ export interface ButtonBaseStyleUtilityProps
   textDirection?: TextDirection;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ButtonBaseProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ButtonBaseStyleUtilityProps>;
 
 export type ButtonBaseComponent = <
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType = 'button' | 'a',
 >(
   props: ButtonBaseProps<C>,

@@ -22,9 +22,13 @@ const mockBlocks = (mockServer: Mockttp) =>
       height: 887763,
       version: 1073676288,
       timestamp: 1741950277,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tx_count: 3566,
       size: 1651280,
       weight: 3993557,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       merkle_root:
         '5aacadbd045e88ea5ba2bb0d0aee30644023dc852938a2250fd77dad0189472e',
       previousblockhash:
@@ -39,9 +43,13 @@ const mockBlocks = (mockServer: Mockttp) =>
       height: 887762,
       version: 754696192,
       timestamp: 1741949338,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tx_count: 3105,
       size: 1480943,
       weight: 3993548,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       merkle_root:
         '2b725c0f22e3b059596a53e13fd29d3adee29a7c5a3ec30c5d9cb4b8a9e7261e',
       previousblockhash:
@@ -56,9 +64,13 @@ const mockBlocks = (mockServer: Mockttp) =>
       height: 887761,
       version: 804413440,
       timestamp: 1741948491,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tx_count: 4253,
       size: 1677299,
       weight: 3993575,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       merkle_root:
         'e83f599abbdcd2a09e96670006e8a93fbee5e5642947ab463b55d1637e1d661d',
       previousblockhash:
@@ -73,9 +85,13 @@ const mockBlocks = (mockServer: Mockttp) =>
       height: 887760,
       version: 831963136,
       timestamp: 1741946442,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tx_count: 2084,
       size: 1929984,
       weight: 3993432,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       merkle_root:
         'f3a5b19bb7884df6ad1ca4a474122f9e0587bc3b85032d8c38f29bab95c8e973',
       previousblockhash:
@@ -90,9 +106,13 @@ const mockBlocks = (mockServer: Mockttp) =>
       height: 887759,
       version: 706740224,
       timestamp: 1741946076,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tx_count: 1251,
       size: 1751958,
       weight: 3993528,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       merkle_root:
         '33bb0ddb000c63ec61ba9e0ddc54e32bf84b014b2954a552e57677f32caadd07',
       previousblockhash:
@@ -107,9 +127,13 @@ const mockBlocks = (mockServer: Mockttp) =>
       height: 887758,
       version: 872415232,
       timestamp: 1741945781,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tx_count: 613,
       size: 1994608,
       weight: 3993517,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       merkle_root:
         'd8972b9df4bb61c5be2f7d58e54332d69007cc53f86e29c5c9137631e0c97b6f',
       previousblockhash:
@@ -124,9 +148,13 @@ const mockBlocks = (mockServer: Mockttp) =>
       height: 887757,
       version: 610516992,
       timestamp: 1741945773,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tx_count: 2050,
       size: 1858224,
       weight: 3993585,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       merkle_root:
         'ba867961dd6221c444a4097c5482ef8a0510a7b70ff5c50f815d2c71565fbcdb',
       previousblockhash:
@@ -141,9 +169,13 @@ const mockBlocks = (mockServer: Mockttp) =>
       height: 887756,
       version: 537149440,
       timestamp: 1741945166,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tx_count: 1773,
       size: 1960675,
       weight: 3993697,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       merkle_root:
         '08780e40338229610196839f08fe97d63f43118732d1e2a27dc134c0a3b1008e',
       previousblockhash:
@@ -158,9 +190,13 @@ const mockBlocks = (mockServer: Mockttp) =>
       height: 887755,
       version: 536870912,
       timestamp: 1741944725,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tx_count: 3345,
       size: 1689981,
       weight: 3993564,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       merkle_root:
         '3cdaf81ee75473376ab8d98c7a21be1328e297ba6a0359d587f326636337b800',
       previousblockhash:
@@ -175,9 +211,13 @@ const mockBlocks = (mockServer: Mockttp) =>
       height: 887754,
       version: 537853952,
       timestamp: 1741943549,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       tx_count: 3124,
       size: 1650915,
       weight: 3993909,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       merkle_root:
         'de7ccff11839f98848893a5bd92f5361e6b6b91a22dc0b9b0e8dd28909ff5721',
       previousblockhash:
@@ -203,19 +243,29 @@ const mockFundingTx = (mockServer: Mockttp) =>
             vout: 1,
             prevout: {
               scriptpubkey: '001480198104d643031fb951787d24a79c04dc5086b2',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               scriptpubkey_asm:
                 'OP_0 OP_PUSHBYTES_20 80198104d643031fb951787d24a79c04dc5086b2',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               scriptpubkey_type: 'v0_p2wpkh',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               scriptpubkey_address:
                 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf',
               value: 100356748,
             },
             scriptsig: '',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             scriptsig_asm: '',
             witness: [
               '30440220459a41e0eef41b3b84225d00e62ca12a2f408ff65f5ce135ac688c6501d1705702202fba61d2b40d319b8a022ba67fedf55d64167f9dd26a6a1809549d6cf2fefeae01',
               '0233f916944c2d3c2024d6e4038274e8f5af0d072d08411b2fc28bea04b521387a',
             ],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_coinbase: false,
             sequence: 4294967293,
           },
@@ -224,17 +274,29 @@ const mockFundingTx = (mockServer: Mockttp) =>
           // This is the funding UTXO representing the amount of 1 BTC that we receive
           {
             scriptpubkey: '00145777b0d2f1b6c0c97e1a1f7db1848ee553d88540',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             scriptpubkey_asm:
               'OP_0 OP_PUSHBYTES_20 5777b0d2f1b6c0c97e1a1f7db1848ee553d88540',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             scriptpubkey_type: 'v0_p2wpkh',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             scriptpubkey_address: DEFAULT_BTC_ADDRESS,
             value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC,
           },
           {
             scriptpubkey: '001480198104d643031fb951787d24a79c04dc5086b2',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             scriptpubkey_asm:
               'OP_0 OP_PUSHBYTES_20 80198104d643031fb951787d24a79c04dc5086b2',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             scriptpubkey_type: 'v0_p2wpkh',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             scriptpubkey_address: 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf',
             value: 346748,
           },
@@ -244,8 +306,14 @@ const mockFundingTx = (mockServer: Mockttp) =>
         fee: 10000,
         status: {
           confirmed: true,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           block_height: FUNDING_BLOCK_HEIGHT,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           block_hash: FUNDING_BLOCK_HASH,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           block_time: 1730210935,
         },
       },

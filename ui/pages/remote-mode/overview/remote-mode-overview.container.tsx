@@ -42,10 +42,16 @@ import RemoteModePermissions from './remote-mode-permissions.component';
 enum RemoteScreen {
   OVERVIEW = 'OVERVIEW',
   PERMISSIONS = 'PERMISSIONS',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SETUP_REMOTE_SWAPS = 'SETUP_REMOTE_SWAPS',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SETUP_DAILY_ALLOWANCE = 'SETUP_DAILY_ALLOWANCE',
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeIntroducing() {
   const [currentScreen, setCurrentScreen] = useState<RemoteScreen>(
     RemoteScreen.OVERVIEW,

@@ -46,8 +46,12 @@ const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
 
 const MOCK_PROVIDER_RESULT_STUB = {
   // 1 gwei
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_gasPrice: '0x0de0b6b3a7640000',
   // by default, all accounts are external accounts (not contracts)
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_getCode: '0x',
 };
 
@@ -748,8 +752,12 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
           },
           networkId: 1,
@@ -832,9 +840,15 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_call:
               '0x000000000000000000000000000000000000000000000000000103c18816d4e8',
           },
@@ -919,9 +933,15 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_call:
               '0x000000000000000000000000000000000000000000000000000103c18816d4e8',
           },
@@ -1005,8 +1025,12 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
           },
           networkId: 100,

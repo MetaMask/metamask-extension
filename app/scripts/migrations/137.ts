@@ -6,9 +6,13 @@ export type VersionedData = {
     version: number;
   };
   data: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     OnboardingController?: {
       completedOnboarding?: boolean;
     };
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     UserStorageController?: {
       isAccountSyncingReadyToBeDispatched?: boolean;
     };

@@ -73,6 +73,8 @@ export async function checkAndDownloadBinaries(
 
 export async function installBinaries(
   downloadedBinaries: Dir,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BIN_DIR: string,
   cachePath: string,
 ): Promise<void> {

@@ -27,10 +27,14 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
 
   private readonly txType = '[data-testid="tx-type"]';
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_batchTxListIsPresent(): Promise<void> {
     await this.driver.isElementPresent(this.batchTxList);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_expectedInteractingWithIsDisplayed(
     account: string,
   ): Promise<void> {
@@ -40,6 +44,8 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_expectedTxTypeIsDisplayed(txType: string): Promise<void> {
     await this.driver.isElementPresent({
       css: this.txType,

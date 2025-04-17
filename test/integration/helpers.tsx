@@ -1,6 +1,8 @@
 import nock from 'nock';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const createMockImplementation = <T,>(requests: Record<string, T>) => {
   return (method: string): Promise<T | undefined> => {
     if (method in requests) {
@@ -16,14 +18,24 @@ export function mock4byte(hexSignature: string, textSignature?: string) {
   })
     .persist()
     .get('/api/v1/signatures/')
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     .query({ hex_signature: hexSignature })
     .reply(200, {
       results: [
         {
           id: 235447,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           created_at: '2021-09-14T02:07:09.805000Z',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           text_signature: textSignature ?? 'mintNFTs(uint256)',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hex_signature: hexSignature,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           bytes_signature: ';K\u0013 ',
         },
       ],

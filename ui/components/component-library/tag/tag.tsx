@@ -16,6 +16,8 @@ import { Icon, IconSize } from '../icon';
 import { TagComponent, TagProps } from './tag.types';
 
 export const Tag: TagComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       label,

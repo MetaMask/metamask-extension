@@ -207,7 +207,11 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             category: MetaMetricsEventCategory.Keys,
             event: MetaMetricsEventName.KeyExportCanceled,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               key_type: MetaMetricsEventKeyType.Pkey,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
             },
           });

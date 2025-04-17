@@ -30,9 +30,13 @@ export interface TagStyleUtilityProps extends StyleUtilityProps {
   startIconProps?: Omit<IconProps<'span'>, 'name'>;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TagProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, TagStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TagComponent = <C extends React.ElementType = 'div'>(
   props: TagProps<C>,
 ) => React.ReactElement | null;

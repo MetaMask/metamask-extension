@@ -12,6 +12,8 @@ export type ManifestV3 = chrome.runtime.ManifestV3;
 // See: https://github.com/MetaMask/metamask-extension/issues/22450
 // TODO: remove this variable when HMR is ready. The env var is for tests and
 // must also be removed everywhere.
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
 
 /**
