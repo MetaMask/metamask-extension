@@ -17,7 +17,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getSweepstakesCampaignActive,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../hooks/useCarouselManagement';
@@ -48,7 +48,7 @@ export const Carousel = React.forwardRef(
     const visibleSlides = slides
       .filter((slide) => !slide.dismissed || slide.undismissable)
       .sort((a, b) => {
-        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+        ///: BEGIN:ONLY_INCLUDE_IF(solana)
         // prioritize Solana slide
         if (a.id === SOLANA_SLIDE.id) {
           return -1;

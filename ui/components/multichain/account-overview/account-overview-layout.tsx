@@ -5,7 +5,7 @@ import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
 import {
   removeSlide,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   setSelectedAccount,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
@@ -15,7 +15,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   hasCreatedSolanaAccount,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
@@ -30,11 +30,11 @@ import {
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import {
   useCarouselManagement,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../hooks/useCarouselManagement';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
@@ -56,7 +56,7 @@ export const AccountOverviewLayout = ({
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
     useState(false);
   const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
@@ -84,7 +84,7 @@ export const AccountOverviewLayout = ({
     }
     ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
     if (id === SOLANA_SLIDE.id) {
       if (hasSolanaAccount && selectedSolanaAccount) {
         dispatch(setSelectedAccount(selectedSolanaAccount.address));
@@ -143,7 +143,7 @@ export const AccountOverviewLayout = ({
       />
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+        ///: BEGIN:ONLY_INCLUDE_IF(solana)
         showCreateSolanaAccountModal && (
           <CreateSolanaAccountModal
             onClose={() => setShowCreateSolanaAccountModal(false)}

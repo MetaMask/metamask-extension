@@ -7,7 +7,7 @@ export const REMOTE_MODE_SLIDE = {
   href: '/home.html#remote',
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 export const SOLANA_SLIDE = {
   id: 'solana',
   title: 'slideSolanaTitle',
