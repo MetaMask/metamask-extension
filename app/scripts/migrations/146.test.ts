@@ -1,6 +1,8 @@
 import { migrate, version } from './146';
+import { ChainId } from '@metamask/controller-utils';
 
 const oldVersion = 145;
+const megaEthChainId = ChainId['megaeth-testnet'];
 
 /**
  * Get the MegaETH testnet network configuration object as snapshot.
@@ -8,7 +10,7 @@ const oldVersion = 145;
  * @returns The MegaETH testnet network configuration object.
  */
 const getMegaEthTestnetConfiguration = () => ({
-  chainId: '0x18c6',
+  chainId: megaEthChainId,
   name: 'Mega Testnet',
   nativeCurrency: 'MegaETH',
   blockExplorerUrls: ['https://megaexplorer.xyz'],
@@ -145,7 +147,7 @@ describe(`migration #${version}`, () => {
           ...oldState.data.NetworkController,
           networkConfigurationsByChainId: {
             ...oldState.data.NetworkController.networkConfigurationsByChainId,
-            '0x18c6': getMegaEthTestnetConfiguration(),
+            [megaEthChainId]: getMegaEthTestnetConfiguration(),
           },
         },
       };
@@ -162,7 +164,7 @@ describe(`migration #${version}`, () => {
             selectedNetworkClientId: 'mainnet',
             networksMetadata: {},
             networkConfigurationsByChainId: {
-              '0x18c6': {
+              [megaEthChainId]: {
                 ...getMegaEthTestnetConfiguration(),
                 name: 'Some other name',
               },
@@ -176,7 +178,7 @@ describe(`migration #${version}`, () => {
           ...oldStorage.data.NetworkController,
           networkConfigurationsByChainId: {
             ...oldStorage.data.NetworkController.networkConfigurationsByChainId,
-            '0x18c6': getMegaEthTestnetConfiguration(),
+            [megaEthChainId]: getMegaEthTestnetConfiguration(),
           },
         },
       };
