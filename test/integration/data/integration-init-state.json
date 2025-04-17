@@ -658,16 +658,6 @@
       "isEvm": false
     }
   },
-  "networksWithTransactionActivity": {
-    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-      "namespace": "eip155",
-      "activeChain": ["0x5"]
-    },
-    "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
-      "namespace": "solana",
-      "activeChain": []
-    }
-  },
   "nameSources": {
     "ens": {
       "label": "Ethereum Name Service (ENS)"
@@ -770,6 +760,16 @@
         "1559": true
       },
       "status": "available"
+    }
+  },
+  "networksWithTransactionActivity": {
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "namespace": "eip155",
+      "activeChain": ["0x5"]
+    },
+    "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+      "namespace": "solana",
+      "activeChain": []
     }
   },
   "nftsDropdownState": {
