@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Mga detalye ng account"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Bumalik sa regular na account"
-  },
   "accountIdenticon": {
     "message": "Identicon ng Account"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Para i-enable ang $1 network, kailangan mong gumawa ng $1 account.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Para i-enable ang $1 network, kailangan mong gumawa ng $2 account.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Magdagdag ng RPC URL"
@@ -1312,9 +1309,6 @@
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
-  "copyAddressShort": {
-    "message": "Kopyahin ang address"
-  },
   "copyPrivateKey": {
     "message": "Kopyahin ang pribadong key"
   },
@@ -1994,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "Ang impormasyon na iyong inilagay ay nauugnay sa isang umiiral na ID ng chain."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Para tingnan at kumpirmahin ang iyong pinakabagong hiling, kailangan mo munang aprubahan o tanggihan ang mga umiiral na hiling."
   },
   "expandView": {
     "message": "I-expand ang view"

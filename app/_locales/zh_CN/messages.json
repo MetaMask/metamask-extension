@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "账户详情"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " 切换回常规账户"
-  },
   "accountIdenticon": {
     "message": "账户 Identicon"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "要启用 $1 网络，您需要创建 $1 账户。",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "要启用 $1 网络，您需要创建 $2 账户。",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "添加 RPC（远程过程调用）URL"
@@ -1312,9 +1309,6 @@
   "copyAddress": {
     "message": "复制地址到剪贴板"
   },
-  "copyAddressShort": {
-    "message": "复制地址"
-  },
   "copyPrivateKey": {
     "message": "复制私钥"
   },
@@ -1994,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "您输入的信息与现有的链 ID 相关联。"
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "如需查看和确认您的最新请求，您需要首先批准或拒绝现有请求。"
   },
   "expandView": {
     "message": "展开视图"

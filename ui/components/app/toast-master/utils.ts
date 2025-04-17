@@ -69,6 +69,8 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 // May move this to a different file after discussion with team
 export function submitRequestToBackgroundAndCatch(
   method: string,
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args?: any[],
 ) {

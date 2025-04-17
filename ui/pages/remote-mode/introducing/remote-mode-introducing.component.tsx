@@ -27,11 +27,15 @@ export default function RemoteModeIntroducing() {
         color={IconColor.infoDefault}
         size={AvatarIconSize.Xl}
       />
-      <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
-        Introducing Remote Mode
+      <Text
+        variant={TextVariant.headingSm}
+        fontWeight={FontWeight.Bold}
+        paddingBottom={2}
+      >
+        Cold storage. Fast access.
       </Text>
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
-        Safely access your hardware wallet funds without plugging it in.
+        Remote Mode lets you use your hardware wallet without plugging it in.
       </Text>
       <Box marginTop={4} marginBottom={6}>
         <Box
@@ -42,10 +46,13 @@ export default function RemoteModeIntroducing() {
           paddingBottom={2}
         >
           <Icon name={IconName.SwapHorizontal} color={IconColor.infoDefault} />
-          <Text>
-            Easier yet safe to trade with cold funds. Never miss a market
-            opportunity.
-          </Text>
+          <Text
+            fontWeight={FontWeight.Bold}
+            style={{ display: 'inline-block' }}
+          >
+            Stay secure.
+          </Text>{' '}
+          Your keys stay offline, and your funds stay in cold storage.
         </Box>
         <Box
           display={Display.Flex}
@@ -55,10 +62,13 @@ export default function RemoteModeIntroducing() {
           paddingBottom={2}
         >
           <Icon name={IconName.WalletCard} color={IconColor.infoDefault} />
-          <Text>
-            Use allowances for transactions, limiting exposure of cold funds &
-            keys.
-          </Text>
+          <Text
+            fontWeight={FontWeight.Bold}
+            style={{ display: 'inline-block' }}
+          >
+            Move faster.
+          </Text>{' '}
+          Allow limited actions like swaps or approvals ahead of time.
         </Box>
         <Box
           display={Display.Flex}
@@ -68,10 +78,13 @@ export default function RemoteModeIntroducing() {
           paddingBottom={2}
         >
           <Icon name={IconName.SecurityTick} color={IconColor.infoDefault} />
-          <Text>
-            Set your terms with spending caps & other smart contract enforced
-            rules.
-          </Text>
+          <Text
+            fontWeight={FontWeight.Bold}
+            style={{ display: 'inline-block' }}
+          >
+            Stay in control.
+          </Text>{' '}
+          Set your own rules, like spending caps and allowed actions.
         </Box>
         <Box
           display={Display.Flex}
@@ -81,9 +94,13 @@ export default function RemoteModeIntroducing() {
           paddingBottom={2}
         >
           <Icon name={IconName.Star} color={IconColor.infoDefault} />
-          <Text>
-            Get all the benefits of a smart account, and switch back anytime.
-          </Text>
+          <Text
+            fontWeight={FontWeight.Bold}
+            style={{ display: 'inline-block' }}
+          >
+            Get smart.
+          </Text>{' '}
+          All the benefits of a smart account, and your keys stay safe.
         </Box>
       </Box>
     </Box>
