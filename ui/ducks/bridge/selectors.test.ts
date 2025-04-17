@@ -6,7 +6,7 @@ import {
   SortOrder,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -25,6 +25,8 @@ import {
   getToChains,
   getToToken,
   getValidationErrors,
+  getFromTokenConversionRate,
+  getToTokenConversionRate,
 } from './selectors';
 
 describe('Bridge selectors', () => {
@@ -1403,6 +1405,231 @@ describe('Bridge selectors', () => {
 
       const result = getIsSwap(state as never);
       expect(result).toBe(true);
+    });
+  });
+
+  describe('getFromTokenConversionRate', () => {
+    it('should return default exchange rates when fromChain or fromToken is missing', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+          currencyRates: {},
+        },
+        bridgeSliceOverrides: {
+          fromTokenExchangeRate: 1.0,
+        },
+      });
+
+      const result = getFromTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: null,
+        usd: null,
+      });
+    });
+
+    it.only('should handle EVM tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {
+            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+          },
+          currencyRates: {
+            ETH: { conversionRate: 2000, usdConversionRate: 2000 },
+          },
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            decimals: 6,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              'eip155:1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
+      });
+
+      const result = getFromTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: new BigNumber(1.5),
+        usd: new BigNumber(2.0),
+      });
+    });
+
+    it('should handle native EVM tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {
+            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+          },
+          currencyRates: {
+            ETH: { conversionRate: 2000, usdConversionRate: 2000 },
+          },
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: zeroAddress(),
+            decimals: 18,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              'eip155:1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
+      });
+
+      const result = getFromTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: new BigNumber(1.5),
+        usd: new BigNumber(2.0),
+      });
+    });
+
+    it('should handle Solana tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+          currencyRates: {},
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+        bridgeSliceOverrides: {
+          fromTokenExchangeRate: 1.0,
+          fromToken: { address: '0x123', decimals: 18 },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+                isActiveSrc: true,
+                isActiveDest: false,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getFromTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: new BigNumber(1.5),
+        usd: new BigNumber(2.0),
+      });
+    });
+  });
+
+  describe('getToTokenConversionRate', () => {
+    it('should return default exchange rates when toChain or toToken is missing', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.0,
+          toTokenUsdExchangeRate: 2.0,
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: new BigNumber(1.5),
+        usd: new BigNumber(2.0),
+      });
+    });
+
+    it('should use bridge state rates when toChain is not imported', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.5,
+          toTokenUsdExchangeRate: 2.5,
+          toChainId: 'eip155:2',
+          toToken: { address: '0x123', decimals: 18 },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              'eip155:2': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: 1.5,
+        usd: 2.5,
+      });
+    });
+
+    it('should handle EVM tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {
+            '0x123': { price: 1.2 },
+          },
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.0,
+          toTokenUsdExchangeRate: 2.0,
+          toChainId: 'eip155:1',
+          toToken: { address: '0x123', decimals: 18 },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              'eip155:1': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        valueInCurrency: new BigNumber(1.5),
+        usd: new BigNumber(2.0),
+      });
+    });
+
+    it('should handle Solana tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.0,
+          toTokenUsdExchangeRate: 2.0,
+          toChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          toToken: { address: '0x123', decimals: 18 },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+
+      expect(result).toStrictEqual({
+        valueInCurrency: new BigNumber(1.5),
+        usd: new BigNumber(2.0),
+      });
     });
   });
 });
