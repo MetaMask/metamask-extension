@@ -1460,6 +1460,7 @@ describe('MetaMetricsController', function () {
           ///: END:ONLY_INCLUDE_IF
           sessionData: undefined,
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         expect(traits).toStrictEqual({
@@ -1561,6 +1562,7 @@ describe('MetaMetricsController', function () {
           ///: END:ONLY_INCLUDE_IF
           sessionData: undefined,
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1633,6 +1635,7 @@ describe('MetaMetricsController', function () {
             },
           },
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         expect(updatedTraits).toStrictEqual({
@@ -1714,6 +1717,7 @@ describe('MetaMetricsController', function () {
             },
           },
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1776,6 +1780,7 @@ describe('MetaMetricsController', function () {
             },
           },
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
         expect(updatedTraits).toStrictEqual(null);
       });
