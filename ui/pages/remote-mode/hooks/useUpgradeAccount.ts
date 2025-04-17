@@ -3,7 +3,7 @@ import { Hex, hexToNumber } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
 import { getNetworkConfigurationIdByChainId } from '../../../selectors';
-import { addTransaction } from '../../../store/actions';
+import { addTransaction, estimateGas } from '../../../store/actions';
 import { TransactionType } from '@metamask/transaction-controller';
 
 export default function useUpgradeAccount() {
@@ -15,11 +15,9 @@ export default function useUpgradeAccount() {
   const upgradeAccount = async ({
     account,
     chainId,
-    gasLimit,
   }: {
     account: string;
     chainId: Hex;
-    gasLimit: number | null;
   }) => {
     // TODO: Change this to get address from Launch Darkly
     const statelessDelegatorImplementation =
@@ -37,15 +35,11 @@ export default function useUpgradeAccount() {
           address: statelessDelegatorImplementation,
         },
       ],
-      chainId: hexToNumber(chainId),
+      chainId,
       data: '0x',
-      gasLimit: gasLimit ?? 0,
     };
 
-    console.log(networkGasFeeEstimates);
-
-    // TODO: Remove this once we have a way to get the gas limit
-    const maxGasLimit = '0xc3b0'; //getHexMaxGasLimit(txParams.gasLimit ?? 0);
+    const maxGasLimit = await estimateGas(txParams);
 
     const finalTxParams = {
       ...txParams,
@@ -53,8 +47,6 @@ export default function useUpgradeAccount() {
       gasLimit: maxGasLimit,
       gas: maxGasLimit,
     };
-
-    console.log('finalTxParams', finalTxParams);
 
     const networkClientId =
       networkConfigurationIds[chainId as keyof typeof networkConfigurationIds];
