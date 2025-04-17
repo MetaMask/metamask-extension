@@ -230,8 +230,7 @@ export const BridgeQuotesModal = ({
                           ]),
                       t('quotedReceiveAmount', [
                         formatCurrencyAmount(
-                          quote.adjustedReturn?.valueInCurrency ??
-                            toTokenAmount.valueInCurrency,
+                          toTokenAmount.valueInCurrency,
                           currency,
                           2,
                         ) ??
