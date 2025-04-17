@@ -78,6 +78,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
           ],
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
+          requestedThrough: 'ethereum_provider',
         });
       },
       mockSignatureApproved,

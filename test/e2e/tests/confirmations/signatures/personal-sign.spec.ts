@@ -63,6 +63,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
+          requestedThrough: 'ethereum_provider',
         });
       },
       mockSignatureApproved,

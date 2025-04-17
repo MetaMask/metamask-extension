@@ -65,6 +65,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v3',
+          requestedThrough: 'ethereum_provider',
         });
         await assertVerifiedResults(driver, publicAddress);
       },
