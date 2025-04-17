@@ -3373,7 +3373,6 @@ export default class MetamaskController extends EventEmitter {
       currencyRateController,
       tokenBalancesController,
       tokenDetectionController,
-      multichainAssetsRatesController,
       ensController,
       tokenListController,
       gasFeeController,
