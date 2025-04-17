@@ -5178,30 +5178,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-toolkit@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/delegation-toolkit@npm:0.9.0"
+"@metamask/delegation-toolkit@npm:^0.10.2":
+  version: 0.10.2
+  resolution: "@metamask/delegation-toolkit@npm:0.10.2"
   dependencies:
-    "@metamask/auto-changelog": "npm:^3.4.4"
-    "@metamask/delegation-utils": "npm:^0.9.0"
+    "@metamask/delegation-utils": "npm:^0.10.0"
     webauthn-p256: "npm:^0.0.5"
   peerDependencies:
     viem: ">=2.18.2 <3.0.0"
-  checksum: 10/d9a6f3e4873a4729928cf63a3436593e83d5b552e093711767678d406f040ba8e50a1f54fe94b26bca21557067015ff7c688eaeb34eb49d2f3a6897dff3f4cbf
+  checksum: 10/80d114d4edf2851ce4018a7dc942f61e2b4974e166d46a290ffdf95237f113cbf82eda648a7690e394c2c9b68f7189d6d07f5ebde3e18a96a09c98d93822b294
   languageName: node
   linkType: hard
 
-"@metamask/delegation-utils@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/delegation-utils@npm:0.9.0"
+"@metamask/delegation-utils@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@metamask/delegation-utils@npm:0.10.0"
   dependencies:
-    "@metamask/auto-changelog": "npm:^3.4.4"
     "@metamask/delegation-abis": "npm:^0.9.0"
     "@metamask/delegation-deployments": "npm:^0.9.0"
     buffer: "npm:^6.0.3"
   peerDependencies:
     viem: ">=2.18.2 <3.0.0"
-  checksum: 10/7e7d5abe112cfdec9653e0d018e2d2266b397fba34362036fcdb009fe94a81693df71a6b6f7d1e6e2c23e1493773444b25cd392e7f9ec1a83813f8cd73b876fa
+  checksum: 10/ed9df621981ea3104f09228ab79c4b424c607297469f7455e9bf9347215c603fe5e2f457a50030da8307dd08f6cc16df3d08c110f87cb989ed278b590e5def87
   languageName: node
   linkType: hard
 
@@ -27401,7 +27399,7 @@ __metadata:
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.7.0"
     "@metamask/delegation-controller": "npm:^0.1.0"
-    "@metamask/delegation-toolkit": "npm:^0.9.0"
+    "@metamask/delegation-toolkit": "npm:^0.10.2"
     "@metamask/design-tokens": "npm:^7.0.0"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
