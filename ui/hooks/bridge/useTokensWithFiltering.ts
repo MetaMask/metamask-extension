@@ -256,6 +256,8 @@ export const useTokensWithFiltering = (
         }
 
         // Yield topTokens from selected chain
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         for (const token_ of topTokens) {
           const matchedToken = tokenList?.[token_.address];
           const token = buildTokenData(matchedToken);
@@ -270,6 +272,8 @@ export const useTokensWithFiltering = (
         }
 
         // Yield other tokens from selected chain
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         for (const token_ of Object.values(tokenList)) {
           const token = buildTokenData(token_);
           if (

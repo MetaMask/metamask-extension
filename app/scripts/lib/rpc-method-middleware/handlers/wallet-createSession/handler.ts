@@ -306,8 +306,14 @@ async function walletCreateSessionHandler(
           url: origin,
         },
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_first_visit: isFirstVisit,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           number_of_accounts: Object.keys(hooks.metamaskState.accounts).length,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           number_of_accounts_connected: approvedEthAccounts.length,
         },
       });

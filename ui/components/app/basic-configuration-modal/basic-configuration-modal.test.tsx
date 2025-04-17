@@ -37,23 +37,31 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(),
 }));
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type StateOverrides<T extends boolean> = {
   metamask: {
     useExternalServices: T;
   };
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type ArrangeMocksParams<T extends boolean> = {
   isOnboarding?: boolean;
   stateOverrides?: StateOverrides<T>;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type ArrangeMocksReturn<T extends boolean> = {
   toggleBasicFunctionalityButton: HTMLElement;
   cancelButton: HTMLElement;
   agreementCheckbox: T extends true ? HTMLElement : null;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const arrangeMocks = <T extends boolean>({
   isOnboarding = false,
   stateOverrides,

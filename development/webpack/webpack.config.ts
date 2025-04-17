@@ -123,7 +123,11 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
   new ManifestPlugin({
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     web_accessible_resources: webAccessibleResources,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: MANIFEST_VERSION,
     description: commitHash
       ? `${args.env} build from git id: ${commitHash.substring(0, 8)}`
@@ -352,7 +356,11 @@ const config = {
   node: {
     // eventually we should avoid any code that uses node globals `__dirname`
     // and `__filename``. But for now, just warn about their use.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __dirname: 'warn-mock',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __filename: 'warn-mock',
     // Hopefully in the the future we won't need to polyfill node `global`, as
     // a browser version, `globalThis`, already exists and we should use it

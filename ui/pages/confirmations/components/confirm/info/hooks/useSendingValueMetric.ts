@@ -14,6 +14,8 @@ export const useSendingValueMetric = ({
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const transactionId = transactionMeta.id;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const properties = { sending_value: fiatValue };
   const sensitiveProperties = {};
   const params = { properties, sensitiveProperties };
