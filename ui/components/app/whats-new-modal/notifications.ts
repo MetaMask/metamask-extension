@@ -1,13 +1,13 @@
 import {
-  TranslationFunction,
-  TranslatedUINotifications,
-  UI_NOTIFICATIONS,
   NOTIFICATION_SOLANA_ON_METAMASK,
+  TranslatedUINotifications,
+  TranslationFunction,
+  UI_NOTIFICATIONS,
 } from '../../../../shared/notifications';
 import {
-  SolanaModalHeader,
   SolanaModalBody,
   SolanaModalFooter,
+  SolanaModalHeader,
 } from './solana';
 
 export const getTranslatedUINotifications = (
@@ -23,6 +23,8 @@ export const getTranslatedUINotifications = (
         width: 'auto',
         height: '70px',
       },
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       date: UI_NOTIFICATIONS[NOTIFICATION_SOLANA_ON_METAMASK].date || '',
       modal: {
         header: {
