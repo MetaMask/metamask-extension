@@ -20,11 +20,7 @@ import { calculateTokenFiatAmount } from '../components/app/assets/util/calculat
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { getSelectedInternalAccount } from './accounts';
-import {
-  getMultichainBalances,
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from './multichain';
+import { getMultichainBalances, getMultichainIsEvm } from './multichain';
 import {
   getCurrencyRates,
   getCurrentNetwork,
@@ -35,6 +31,7 @@ import {
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
+import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -134,6 +131,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               decimals,
               nativeBalances,
               selectedAccountTokenBalancesAcrossChains,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             }) || '0';
 
           const tokenFiatAmount = calculateTokenFiatAmount({
@@ -163,6 +162,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
             if (token.isNative) {
               title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
             } else {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               title = token.name || token.symbol;
             }
 
@@ -295,7 +296,7 @@ const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
-  getMultichainNetwork,
+  getSelectedMultichainNetworkConfiguration,
   getMultichainBalances,
   getAccountAssets,
   getAssetsRates,
@@ -336,11 +337,13 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
 export const getMultichainNativeAssetType = createDeepEqualSelector(
   getSelectedInternalAccount,
   getAccountAssets,
-  getMultichainNetwork,
+  getSelectedMultichainNetworkConfiguration,
   (
     selectedAccount: ReturnType<typeof getSelectedInternalAccount>,
     accountAssets: ReturnType<typeof getAccountAssets>,
-    currentNetwork: ReturnType<typeof getMultichainNetwork>,
+    currentNetwork: ReturnType<
+      typeof getSelectedMultichainNetworkConfiguration
+    >,
   ) => {
     const assetTypes = accountAssets?.[selectedAccount.id] || [];
     const nativeAssetType = assetTypes.find((assetType) => {
