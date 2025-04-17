@@ -1287,7 +1287,7 @@
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/polling-controller": true,
         "@metamask/bridge-controller>@metamask/snaps-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true
