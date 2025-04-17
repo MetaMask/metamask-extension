@@ -5,6 +5,7 @@ import {
   type QuoteResponse,
   SortOrder,
   formatChainIdToCaip,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
@@ -12,6 +13,7 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   getAllBridgeableNetworks,
   getBridgeQuotes,
@@ -493,7 +495,6 @@ describe('Bridge selectors', () => {
           fromToken: { address: zeroAddress(), symbol: 'TEST' },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
           toTokenExchangeRate: 0.99,
-          toNativeExchangeRate: 0.354073,
         },
         bridgeStateOverrides: {
           quoteRequest: { insufficientBal: false },
@@ -512,8 +513,8 @@ describe('Bridge selectors', () => {
               usdConversionRate: 1,
             },
             POL: {
-              conversionRate: 1,
-              usdConversionRate: 1,
+              conversionRate: 0.99,
+              usdConversionRate: 0.99,
             },
           },
           marketData: {},
@@ -603,7 +604,6 @@ describe('Bridge selectors', () => {
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
           fromTokenExchangeRate: 1,
-          toTokenExchangeRate: 0.99,
         },
         bridgeStateOverrides: {
           quoteRequest: { insufficientBal: false },
@@ -622,8 +622,8 @@ describe('Bridge selectors', () => {
               usdConversionRate: 20,
             },
             POL: {
-              conversionRate: 0.354073,
-              usdConversionRate: 1,
+              conversionRate: 0.9899999999999999,
+              usdConversionRate: 0.99 / 0.354073,
             },
           },
           marketData: {},
@@ -746,8 +746,8 @@ describe('Bridge selectors', () => {
               usdConversionRate: 20,
             },
             POL: {
-              conversionRate: 1,
-              usdConversionRate: 1,
+              conversionRate: 0.99,
+              usdConversionRate: 0.99,
             },
           },
           marketData: {},
@@ -1231,7 +1231,7 @@ describe('Bridge selectors', () => {
               conversionRate: 2524.25,
             },
             POL: {
-              conversionRate: 0.354073,
+              conversionRate: 0.61,
               usdConversionRate: 1,
             },
           },
@@ -1289,8 +1289,8 @@ describe('Bridge selectors', () => {
               usdConversionRate: 1,
             },
             POL: {
-              conversionRate: 1,
-              usdConversionRate: 1,
+              conversionRate: 0.95,
+              usdConversionRate: 0.95,
             },
           },
           marketData: {},
@@ -1427,14 +1427,16 @@ describe('Bridge selectors', () => {
       });
     });
 
-    it.only('should handle EVM tokens correctly', () => {
+    it('should handle EVM tokens correctly', () => {
       const state = createBridgeMockStore({
         metamaskStateOverrides: {
           marketData: {
-            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+            '0x1': {
+              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+            },
           },
           currencyRates: {
-            ETH: { conversionRate: 2000, usdConversionRate: 2000 },
+            ETH: { conversionRate: 1500, usdConversionRate: 2000 },
           },
           ...mockNetworkState({ chainId: '0x1' }),
         },
@@ -1455,8 +1457,8 @@ describe('Bridge selectors', () => {
 
       const result = getFromTokenConversionRate(state);
       expect(result).toStrictEqual({
-        valueInCurrency: new BigNumber(1.5),
-        usd: new BigNumber(2.0),
+        valueInCurrency: 1800,
+        usd: 2400,
       });
     });
 
@@ -1464,7 +1466,9 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         metamaskStateOverrides: {
           marketData: {
-            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+            '0x1': {
+              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+            },
           },
           currencyRates: {
             ETH: { conversionRate: 2000, usdConversionRate: 2000 },
@@ -1488,26 +1492,53 @@ describe('Bridge selectors', () => {
 
       const result = getFromTokenConversionRate(state);
       expect(result).toStrictEqual({
-        valueInCurrency: new BigNumber(1.5),
-        usd: new BigNumber(2.0),
+        valueInCurrency: 2000,
+        usd: 2000,
       });
     });
 
     it('should handle Solana tokens correctly', () => {
       const state = createBridgeMockStore({
         metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'account-1',
+            accounts: {
+              'account-1': {
+                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
+                type: 'solana:data-account',
+              },
+            },
+          },
           marketData: {},
           currencyRates: {},
           ...mockNetworkState({ chainId: '0x1' }),
+          conversionRates: {
+            [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
+              rate: 1.5,
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+              {
+                rate: 2.0,
+              },
+          },
+          rates: {
+            sol: {
+              conversionRate: 1.5,
+              usdConversionRate: 1.4,
+            },
+          },
         },
         bridgeSliceOverrides: {
           fromTokenExchangeRate: 1.0,
-          fromToken: { address: '0x123', decimals: 18 },
+          fromToken: {
+            address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            decimals: 6,
+          },
         },
         featureFlagOverrides: {
           extensionConfig: {
             chains: {
-              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+              [MultichainNetworks.SOLANA]: {
                 isActiveSrc: true,
                 isActiveDest: false,
               },
@@ -1518,8 +1549,60 @@ describe('Bridge selectors', () => {
 
       const result = getFromTokenConversionRate(state);
       expect(result).toStrictEqual({
-        valueInCurrency: new BigNumber(1.5),
-        usd: new BigNumber(2.0),
+        usd: 1.8666666666666665,
+        valueInCurrency: 2,
+      });
+    });
+
+    it('should handle Solana native tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'account-1',
+            accounts: {
+              'account-1': {
+                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
+                type: 'solana:data-account',
+              },
+            },
+          },
+          marketData: {},
+          currencyRates: {},
+          ...mockNetworkState({ chainId: '0x1' }),
+          conversionRates: {
+            [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
+              rate: 1.5,
+            },
+          },
+          rates: {
+            sol: {
+              usdConversionRate: 1.4,
+            },
+          },
+        },
+        bridgeSliceOverrides: {
+          fromTokenExchangeRate: 1.0,
+          fromToken: {
+            address: zeroAddress(),
+            decimals: 18,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: false,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getFromTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        usd: 1.4,
+        valueInCurrency: 1.5,
       });
     });
   });
@@ -1538,8 +1621,8 @@ describe('Bridge selectors', () => {
 
       const result = getToTokenConversionRate(state);
       expect(result).toStrictEqual({
-        valueInCurrency: new BigNumber(1.5),
-        usd: new BigNumber(2.0),
+        valueInCurrency: null,
+        usd: null,
       });
     });
 
@@ -1551,13 +1634,16 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: {
           toTokenExchangeRate: 1.5,
           toTokenUsdExchangeRate: 2.5,
-          toChainId: 'eip155:2',
+          toChainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM),
           toToken: { address: '0x123', decimals: 18 },
         },
         featureFlagOverrides: {
           extensionConfig: {
             chains: {
-              'eip155:2': { isActiveSrc: false, isActiveDest: true },
+              [formatChainIdToCaip(CHAIN_IDS.OPTIMISM)]: {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
             },
           },
         },
@@ -1574,20 +1660,31 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         metamaskStateOverrides: {
           marketData: {
-            '0x123': { price: 1.2 },
+            '0xa': {
+              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+            },
           },
-          ...mockNetworkState({ chainId: '0x1' }),
+          ...mockNetworkState({ chainId: '0xa' }),
+          currencyRates: {
+            ETH: { conversionRate: 2000, usdConversionRate: 1000 },
+          },
         },
         bridgeSliceOverrides: {
           toTokenExchangeRate: 1.0,
           toTokenUsdExchangeRate: 2.0,
-          toChainId: 'eip155:1',
-          toToken: { address: '0x123', decimals: 18 },
+          toChainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM),
+          toToken: {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            decimals: 18,
+          },
         },
         featureFlagOverrides: {
           extensionConfig: {
             chains: {
-              'eip155:1': { isActiveSrc: false, isActiveDest: true },
+              [formatChainIdToCaip(CHAIN_IDS.OPTIMISM)]: {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
             },
           },
         },
@@ -1595,22 +1692,89 @@ describe('Bridge selectors', () => {
 
       const result = getToTokenConversionRate(state);
       expect(result).toStrictEqual({
-        valueInCurrency: new BigNumber(1.5),
-        usd: new BigNumber(2.0),
+        usd: 1200,
+        valueInCurrency: 2400,
+      });
+    });
+
+    it('should handle native EVM tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {
+            '0xa': {
+              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+            },
+          },
+          ...mockNetworkState({ chainId: '0xa' }),
+          currencyRates: {
+            ETH: { conversionRate: 2000, usdConversionRate: 1000 },
+          },
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.0,
+          toTokenUsdExchangeRate: 2.0,
+          toChainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM),
+          toToken: {
+            address: zeroAddress(),
+            decimals: 6,
+          },
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [formatChainIdToCaip(CHAIN_IDS.OPTIMISM)]: {
+                isActiveSrc: false,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        usd: 1000,
+        valueInCurrency: 2000,
       });
     });
 
     it('should handle Solana tokens correctly', () => {
       const state = createBridgeMockStore({
         metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'account-1',
+            accounts: {
+              'account-1': {
+                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
+                type: 'solana:data-account',
+              },
+            },
+          },
           marketData: {},
+          currencyRates: {},
           ...mockNetworkState({ chainId: '0x1' }),
+          conversionRates: {
+            [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
+              rate: 1.5,
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+              {
+                rate: 2.0,
+              },
+          },
+          rates: {
+            sol: {
+              conversionRate: 1.5,
+              usdConversionRate: 1.4,
+            },
+          },
         },
         bridgeSliceOverrides: {
-          toTokenExchangeRate: 1.0,
-          toTokenUsdExchangeRate: 2.0,
           toChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          toToken: { address: '0x123', decimals: 18 },
+          toToken: {
+            address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            decimals: 6,
+          },
         },
         featureFlagOverrides: {
           extensionConfig: {
@@ -1627,8 +1791,53 @@ describe('Bridge selectors', () => {
       const result = getToTokenConversionRate(state);
 
       expect(result).toStrictEqual({
-        valueInCurrency: new BigNumber(1.5),
-        usd: new BigNumber(2.0),
+        usd: 1.8666666666666665,
+        valueInCurrency: 2,
+      });
+    });
+
+    it('should handle Solana native tokens correctly', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+          currencyRates: {},
+          ...mockNetworkState({ chainId: '0x1' }),
+          conversionRates: {
+            [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
+              rate: 1.5,
+            },
+          },
+          rates: {
+            sol: {
+              usdConversionRate: 1.4,
+            },
+          },
+        },
+        bridgeSliceOverrides: {
+          toTokenExchangeRate: 1.1,
+          toTokenUsdExchangeRate: 1.2,
+          toToken: {
+            address: zeroAddress(),
+            decimals: 18,
+          },
+          toChainId: MultichainNetworks.SOLANA,
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getToTokenConversionRate(state);
+      expect(result).toStrictEqual({
+        usd: 1.2,
+        valueInCurrency: 1.1,
       });
     });
   });

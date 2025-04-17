@@ -321,20 +321,30 @@ export const getFromTokenConversionRate = createSelector(
         formatChainIdToCaip(fromChain.chainId),
       );
       const nativeToCurrencyRate = isSolanaChainId(fromChain.chainId)
-        ? Number(conversionRates[nativeAssetId as CaipAssetType]?.rate ?? null)
-        : currencyRates[fromChain.nativeCurrency]?.conversionRate;
+        ? Number(
+            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+          )
+        : currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null;
       const nativeToUsdRate = isSolanaChainId(fromChain.chainId)
         ? Number(
-            rates[fromChain.nativeCurrency.toLowerCase()]?.usdConversionRate ??
-              null,
+            rates?.[fromChain.nativeCurrency.toLowerCase()]
+              ?.usdConversionRate ?? null,
           )
-        : currencyRates[fromChain.nativeCurrency]?.usdConversionRate;
+        : currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null;
 
+      if (isNativeAddress(fromToken.address)) {
+        return {
+          valueInCurrency: nativeToCurrencyRate,
+          usd: nativeToUsdRate,
+        };
+      }
       if (isSolanaChainId(fromChain.chainId) && nativeAssetId && tokenAssetId) {
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(conversionRates[tokenAssetId]?.rate ?? null),
-          Number(conversionRates[nativeAssetId as CaipAssetType]?.rate ?? null),
+          Number(conversionRates?.[tokenAssetId]?.rate ?? null),
+          Number(
+            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+          ),
         );
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
@@ -350,6 +360,7 @@ export const getFromTokenConversionRate = createSelector(
           marketData,
         ) ??
         tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
+
       return exchangeRatesFromNativeAndCurrencyRates(
         tokenToNativeAssetRate,
         nativeToCurrencyRate,
@@ -407,13 +418,15 @@ export const getToTokenConversionRate = createDeepEqualSelector(
       if (isSolanaChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(conversionRates[tokenAssetId]?.rate ?? null),
-          Number(conversionRates[nativeAssetId as CaipAssetType]?.rate ?? null),
+          Number(conversionRates?.[tokenAssetId]?.rate ?? null),
+          Number(
+            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+          ),
         );
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
-          rates[toChain.nativeCurrency.toLowerCase()]?.conversionRate ?? null,
-          rates[toChain.nativeCurrency.toLowerCase()]?.usdConversionRate ??
+          rates?.[toChain.nativeCurrency.toLowerCase()]?.conversionRate ?? null,
+          rates?.[toChain.nativeCurrency.toLowerCase()]?.usdConversionRate ??
             null,
         );
       }
@@ -425,6 +438,14 @@ export const getToTokenConversionRate = createDeepEqualSelector(
         chainId,
       );
       const nativeToUsdRate = getUSDConversionRateByChainId(chainId)(state);
+
+      if (isNativeAddress(toToken.address)) {
+        return {
+          valueInCurrency: nativeToCurrencyRate,
+          usd: nativeToUsdRate,
+        };
+      }
+
       const tokenToNativeAssetRate =
         exchangeRateFromMarketData(chainId, toToken.address, marketData) ??
         tokenPriceInNativeAsset(toTokenExchangeRate, nativeToCurrencyRate);
