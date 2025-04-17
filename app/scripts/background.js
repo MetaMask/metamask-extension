@@ -196,7 +196,11 @@ const {
   reject: rejectInitialization,
 } = deferredPromise();
 
-// Define this function at the top level, before it's used
+/**
+ * Determines if any MetaMask UI is currently open.
+ *
+ * @returns {boolean} True if any UI instance (popup, notification, or tab) is open.
+ */
 const isClientOpenStatus = () => {
   return (
     openPopupCount > 0 ||

@@ -1,11 +1,10 @@
+import browser from 'webextension-polyfill';
+
 /**
  * Manages extension update detection and application.
  * Provides a clean interface for detecting and applying extension updates
  * during idle periods to minimize user disruption.
  */
-
-import browser from 'webextension-polyfill';
-
 export class ExtensionUpdateManager {
   private updatePending = false;
 
