@@ -1,5 +1,7 @@
 import { LavaDomeDebug } from '@lavamoat/lavadome-core';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+// TODO: Fix default import
+// eslint-disable-next-line import/no-named-as-default
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
