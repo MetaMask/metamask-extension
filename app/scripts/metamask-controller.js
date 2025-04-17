@@ -14,15 +14,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import {
-  debounce,
-  throttle,
-  memoize,
-  wrap,
-  pick,
-  cloneDeep,
-  uniq,
-} from 'lodash';
+import { debounce, throttle, memoize, wrap, pick, uniq } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -92,6 +84,7 @@ import {
   ERC20,
   ERC721,
   BlockExplorerUrl,
+  ChainId,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -189,8 +182,6 @@ import {
   CHAIN_SPEC_URL,
   NETWORK_TYPES,
   NetworkStatus,
-  MAINNET_DISPLAY_NAME,
-  DEFAULT_CUSTOM_TESTNET_MAP,
   UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
@@ -240,7 +231,6 @@ import {
   getIsSmartTransaction,
   getFeatureFlagsByChainId,
 } from '../../shared/modules/selectors';
-import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
@@ -255,6 +245,7 @@ import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { addDiscoveredSolanaAccounts } from '../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -348,7 +339,11 @@ import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 ///: END:ONLY_INCLUDE_IF
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
-import { METAMASK_COOKIE_HANDLER } from './constants/stream';
+import {
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  METAMASK_COOKIE_HANDLER,
+  METAMASK_EIP_1193_PROVIDER,
+} from './constants/stream';
 
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
@@ -578,22 +573,10 @@ export default class MetamaskController extends EventEmitter {
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
 
-      // Note: Consider changing `getDefaultNetworkControllerState`
-      // on the controller side to include some of these tweaks.
-      networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
-      delete networks[CHAIN_IDS.GOERLI];
-      delete networks[CHAIN_IDS.LINEA_GOERLI];
-
-      // Due to the MegaETH Testnet not being included in getDefaultNetworkControllerState().
-      // and it is not using Infura as a provider, we need to add it manually.
-      networks[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(
-        DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
-      );
-
+      // TODO: It should be done on NetworkController level
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
         // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
-        // Note: The MegaETH Testnet is currently the only network that is not included.
         if (hasProperty(BlockExplorerUrl, id)) {
           network.blockExplorerUrls = [BlockExplorerUrl[id]];
         }
@@ -638,6 +621,7 @@ export default class MetamaskController extends EventEmitter {
         fetch: globalThis.fetch.bind(globalThis),
         btoa: globalThis.btoa.bind(globalThis),
       }),
+      additionalDefaultNetworks: [ChainId['megaeth-testnet']],
     });
     this.networkController.initializeProvider();
 
@@ -1261,6 +1245,9 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
+          ///: BEGIN:ONLY_INCLUDE_IF(solana)
+          await this._addSolanaAccount();
+          ///: END:ONLY_INCLUDE_IF
           await this._addAccountsWithBalance();
 
           this.postOnboardingInitialization();
@@ -4225,6 +4212,12 @@ export default class MetamaskController extends EventEmitter {
         tokenDetectionController,
       ),
 
+      // MultichainAssetsRatesController
+      fetchHistoricalPricesForAsset: (...args) =>
+        this.multichainAssetsRatesController.fetchHistoricalPricesForAsset(
+          ...args,
+        ),
+
       // DetectCollectibleController
       detectNfts: nftDetectionController.detectNfts.bind(
         nftDetectionController,
@@ -4723,6 +4716,9 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
+      ///: BEGIN:ONLY_INCLUDE_IF(solana)
+      await this._addSolanaAccount(id);
+      ///: END:ONLY_INCLUDE_IF
       await this._addAccountsWithBalance(id);
 
       return newAccountAddress;
@@ -4805,6 +4801,9 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (completedOnboarding) {
+        ///: BEGIN:ONLY_INCLUDE_IF(solana)
+        await this._addSolanaAccount();
+        ///: END:ONLY_INCLUDE_IF
         await this._addAccountsWithBalance();
 
         // This must be set as soon as possible to communicate to the
@@ -4906,6 +4905,40 @@ export default class MetamaskController extends EventEmitter {
       );
     }
   }
+
+  /**
+   * Adds Solana account to the keyring.
+   *
+   * @param {string} keyringId - The ID of the keyring to add the account to.
+   */
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  async _addSolanaAccount(keyringId) {
+    const snapId = SOLANA_WALLET_SNAP_ID;
+    let entropySource = keyringId;
+    if (!entropySource) {
+      // Get the entropy source from the first HD keyring
+      const id = await this.keyringController.withKeyring(
+        { type: KeyringTypes.hd },
+        async ({ metadata }) => {
+          return metadata.id;
+        },
+      );
+      entropySource = id;
+    }
+
+    const keyring = await this.getSnapKeyring();
+
+    return await keyring.createAccount(
+      snapId,
+      { entropySource },
+      {
+        displayConfirmation: false,
+        displayAccountNameSuggestion: false,
+        setSelectedAccount: false,
+      },
+    );
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
@@ -6146,10 +6179,11 @@ export default class MetamaskController extends EventEmitter {
 
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
+    mux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
 
     // messages between inpage and background
     this.setupProviderConnectionEip1193(
-      mux.createStream('metamask-provider'),
+      mux.createStream(METAMASK_EIP_1193_PROVIDER),
       sender,
       inputSubjectType,
     );
@@ -6183,10 +6217,12 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType = SubjectType.Website;
     }
 
-    const caipStream = createCaipStream(connectionStream);
-
     // messages between subject and background
-    this.setupProviderConnectionCaip(caipStream, sender, inputSubjectType);
+    this.setupProviderConnectionCaip(
+      connectionStream,
+      sender,
+      inputSubjectType,
+    );
   }
 
   /**

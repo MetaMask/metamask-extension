@@ -4,8 +4,18 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../../../components/multichain/pages/page';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonVariant,
   ButtonSize,
   Text,
@@ -40,28 +50,17 @@ import {
   REMOTE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
+import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
+import {
+  getSelectedInternalAccount,
+  getMetaMaskAccountsOrdered,
+} from '../../../../selectors';
 import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeDailyAllowanceCard from '../daily-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
+import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 
 const TOTAL_STEPS = 3;
-
-// example account
-const account: InternalAccount = {
-  address: '0x12C7e...q135f',
-  type: 'eip155:eoa',
-  id: '1',
-  options: {},
-  metadata: {
-    name: 'Hardware Lockbox',
-    importTime: 1717334400,
-    keyring: {
-      type: 'eip155',
-    },
-  },
-  scopes: [],
-  methods: [],
-};
 
 /**
  * A multi-step setup component for configuring daily allowances in remote mode
@@ -70,15 +69,9 @@ const account: InternalAccount = {
  * - Configure daily token allowances
  * - Review and confirm changes (including EOA upgrade)
  *
- * @param props - Component props
- * @param [props.accounts] - List of available accounts, defaults to example account (which may not be needed)
  * @returns The rendered component
  */
-export default function RemoteModeSetupDailyAllowance({
-  accounts = [account],
-}: {
-  accounts?: InternalAccount[];
-}) {
+export default function RemoteModeSetupDailyAllowance() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -88,10 +81,28 @@ export default function RemoteModeSetupDailyAllowance({
   const [dailyLimit, setDailyLimit] = useState<string>('');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
+  const [selectedAccount, setSelectedAccount] =
+    useState<InternalAccount | null>(null);
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
+
+  const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
+  const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
+    getMetaMaskAccountsOrdered,
+  );
 
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  useEffect(() => {
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+  }, [selectedHardwareAccount]);
+
+  useEffect(() => {
+    if (authorizedAccounts.length > 0) {
+      setSelectedAccount(authorizedAccounts[0]);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
@@ -151,6 +162,10 @@ export default function RemoteModeSetupDailyAllowance({
     history.replace(REMOTE_ROUTE);
   };
 
+  const onCancel = () => {
+    history.goBack();
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -158,10 +173,14 @@ export default function RemoteModeSetupDailyAllowance({
           <Box width={BlockSize.Full}>
             {isModalOpen && (
               <AccountListMenu
-                onClose={() => {
-                  setIsModalOpen(false);
-                }}
+                onClose={() => setIsModalOpen(false)}
                 showAccountCreation={false}
+                accountListItemProps={{
+                  onClick: (account: InternalAccount) => {
+                    setSelectedAccount(account);
+                    setIsModalOpen(false);
+                  },
+                }}
               />
             )}
             <Card
@@ -189,13 +208,15 @@ export default function RemoteModeSetupDailyAllowance({
                   borderRadius={BorderRadius.LG}
                   borderColor={BorderColor.borderDefault}
                 >
-                  <AccountPicker
-                    address="0x12C7e...q135f"
-                    name="Account #1"
-                    onClick={() => {
-                      setIsModalOpen(true);
-                    }}
-                  />
+                  {selectedAccount && (
+                    <AccountPicker
+                      address={selectedAccount.address}
+                      name={selectedAccount.metadata.name}
+                      onClick={() => {
+                        setIsModalOpen(true);
+                      }}
+                    />
+                  )}
                 </Box>
               </Box>
             </Card>
@@ -308,8 +329,8 @@ export default function RemoteModeSetupDailyAllowance({
               <Box>
                 <Text>Estimated changes</Text>
                 <Text>
-                  Authorize Account 1 to swap from your{' '}
-                  {accounts[0].metadata.name} balance.
+                  Authorize {selectedAccount?.metadata.name} to swap from your{' '}
+                  {selectedHardwareAccount.metadata.name} balance.
                 </Text>
               </Box>
             </Card>
@@ -363,7 +384,7 @@ export default function RemoteModeSetupDailyAllowance({
                     color={TextColor.textMuted}
                     variant={TextVariant.bodySm}
                   >
-                    Permission from {accounts[0].metadata.name}
+                    Permission from {selectedHardwareAccount.metadata.name}
                   </Text>
                 </Box>
                 <Text
@@ -395,7 +416,7 @@ export default function RemoteModeSetupDailyAllowance({
                     color={TextColor.textMuted}
                     variant={TextVariant.bodySm}
                   >
-                    Permission from {accounts[0].metadata.name}
+                    Permission from {selectedHardwareAccount.metadata.name}
                   </Text>
                 </Box>
                 <Text
@@ -470,16 +491,41 @@ export default function RemoteModeSetupDailyAllowance({
   };
 
   return (
-    <div className="main-container" data-testid="remote-mode-setup-swaps">
-      <Box
+    <Page className="main-container" data-testid="remote-mode-setup-swaps">
+      <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Sm}
+            ariaLabel={'back'}
+            iconName={IconName.ArrowLeft}
+            onClick={onCancel}
+          />
+        }
+      >
+        Remote mode
+      </Header>
+      <Content
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         gap={2}
-        padding={2}
+        paddingLeft={4}
+        paddingRight={4}
         width={BlockSize.Full}
       >
+        {!isHardwareAccount && (
+          <BannerAlert severity={BannerAlertSeverity.Warning} marginBottom={2}>
+            <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
+              Select a hardware wallet
+            </Text>
+            <Text variant={TextVariant.bodyMd}>
+              To continue, select your hardware wallet from the account menu.
+            </Text>
+          </BannerAlert>
+        )}
         <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
-
         <Text
           textAlign={TextAlign.Center}
           variant={TextVariant.headingMd}
@@ -492,28 +538,6 @@ export default function RemoteModeSetupDailyAllowance({
 
         {renderStepContent()}
 
-        <Box
-          paddingTop={2}
-          display={Display.Flex}
-          gap={6}
-          justifyContent={JustifyContent.center}
-        >
-          <Button
-            onClick={handleBack}
-            variant={ButtonVariant.Secondary}
-            width={BlockSize.Half}
-            size={ButtonSize.Lg}
-          >
-            {currentStep === 1 ? 'Cancel' : 'Back'}
-          </Button>
-          <Button
-            onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
-            width={BlockSize.Half}
-            size={ButtonSize.Lg}
-          >
-            {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
-          </Button>
-        </Box>
         <RemoteModeHardwareWalletConfirm
           visible={isConfirmModalOpen}
           onConfirm={handleConfigureRemoteSwaps}
@@ -521,7 +545,26 @@ export default function RemoteModeSetupDailyAllowance({
             setIsConfirmModalOpen(false);
           }}
         />
-      </Box>
-    </div>
+      </Content>
+
+      <Footer>
+        <Button
+          onClick={handleBack}
+          variant={ButtonVariant.Secondary}
+          width={BlockSize.Half}
+          size={ButtonSize.Lg}
+        >
+          {currentStep === 1 ? 'Cancel' : 'Back'}
+        </Button>
+        <Button
+          onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
+          width={BlockSize.Half}
+          size={ButtonSize.Lg}
+          disabled={!isHardwareAccount}
+        >
+          {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
+        </Button>
+      </Footer>
+    </Page>
   );
 }
