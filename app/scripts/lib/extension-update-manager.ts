@@ -30,22 +30,17 @@ export class ExtensionUpdateManager {
    */
   public setIdleState(idle: boolean): void {
     this.#isIdle = idle;
-
-    // If we're now idle and there's a pending update, apply it immediately
     if (idle && this.#updatePending) {
-      this.applyPendingUpdateIfNeeded();
+      this.applyPendingUpdate();
     }
   }
 
   /**
-   * Checks if there's a pending update and applies it if needed.
-   * This should be called during idle periods when it's safe to reload
-   * the extension without disrupting user activity.
+   * Applies a pending update by reloading the extension.
+   * Should only be called when conditions for update are confirmed.
    */
-  public applyPendingUpdateIfNeeded(): void {
-    if (this.#updatePending && this.#isIdle) {
-      browser.runtime.reload();
-    }
+  public applyPendingUpdate(): void {
+    browser.runtime.reload();
   }
 
   /**
@@ -63,7 +58,7 @@ export class ExtensionUpdateManager {
 
     // If we're already idle, apply the update immediately
     if (this.#isIdle) {
-      this.applyPendingUpdateIfNeeded();
+      this.applyPendingUpdate();
     }
   }
 }

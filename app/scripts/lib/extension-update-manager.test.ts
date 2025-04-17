@@ -18,7 +18,7 @@ describe('ExtensionUpdateManager', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     updateManager = new ExtensionUpdateManager();
-    applyUpdateSpy = jest.spyOn(updateManager, 'applyPendingUpdateIfNeeded');
+    applyUpdateSpy = jest.spyOn(updateManager, 'applyPendingUpdate');
   });
 
   describe('initialize', () => {
