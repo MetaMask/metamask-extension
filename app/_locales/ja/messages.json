@@ -255,8 +255,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "$1ネットワークを有効にするには、$1アカウントを作成する必要があります。",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "$1ネットワークを有効にするには、$2アカウントを作成する必要があります。",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "RPC URLを追加"
@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "このサイトがトークンの使用許可を求めています。"
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "このサイトがスタンダードアカウントへの切り替えを求めています。"
-  },
   "confirmTitleDescSIWESignature": {
     "message": "サイトがこのアカウントを所有することを証明するためにサインインを求めています。"
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "アクセス許可を取り消す"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "アカウントをリセット"
-  },
   "confirmTitleSIWESignature": {
     "message": "サインインリクエスト"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "トランザクションの要求"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "この要求を確定すると、アカウントがスマートアカウントに更新されます。"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "トランザクションをキャンセル"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "更新とトランザクションをキャンセル"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "アカウントを更新しない場合は、こちらからキャンセルできます。\n\n更新せずにこのトランザクションを完了させるには、サイトでこの要求をもう一度行う必要があります。$1。"
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "トランザクションのキャンセル"
   },
   "confirmationAlertDetails": {
     "message": "資産を守るため、リクエストを拒否することをお勧めします。"
@@ -2015,9 +1994,6 @@
   },
   "existingChainId": {
     "message": "入力された情報は、既存のチェーンIDと関連付けられています。"
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "一番最近の要求を表示して確定するには、はじめに既存の要求を承認または拒否する必要があります。"
   },
   "expandView": {
     "message": "ビューを展開"

@@ -1,6 +1,10 @@
 import * as path from 'path';
-import { By } from 'selenium-webdriver';
-import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
+import { Browser, By } from 'selenium-webdriver';
+import {
+  KnownRpcMethods,
+  KnownNotifications,
+} from '@metamask/chain-agnostic-permission';
+import { JsonRpcRequest } from '@metamask/utils';
 import {
   convertETHToHexGwei,
   multipleGanacheOptions,
@@ -10,6 +14,11 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
+import {
+  CONTENT_SCRIPT,
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  METAMASK_INPAGE,
+} from '../../../../app/scripts/constants/stream';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -152,19 +161,69 @@ export const passwordLockMetamaskExtension = async (
 export const escapeColon = (selector: string): string =>
   selector.replace(':', '\\:');
 
-/**
- * Wraps a describe call in a skip call if the SELENIUM_BROWSER environment variable is not the specified browser.
- *
- * @param browser - The browser environment of the current test, against which to conditionally run or skip the test.
- * @param description - The description of the test suite.
- * @param callback - The callback function to execute the test suite.
- */
-export const describeBrowserOnly = (
-  browser: string,
-  description: string,
-  callback: () => void,
-) => {
-  return process.env.SELENIUM_BROWSER === browser
-    ? describe(description, callback)
-    : describe.skip(description, callback);
+export const sendMultichainApiRequest = ({
+  driver,
+  extensionId,
+  request,
+}: {
+  driver: Driver;
+  extensionId: string;
+  request: Omit<JsonRpcRequest, 'id'>;
+}) => {
+  const id = Math.ceil(Math.random() * 1000);
+  const requestWithNewId = {
+    ...request,
+    id,
+  };
+  let script;
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    script = `
+    const data = ${JSON.stringify(requestWithNewId)};
+    const result = new Promise((resolve) => {
+      window.addEventListener('message', (messageEvent) => {
+        const { target, data } = messageEvent.data;
+        if (
+          target !== '${METAMASK_INPAGE}' ||
+          data?.name !== '${METAMASK_CAIP_MULTICHAIN_PROVIDER}' ||
+          data?.data.id !== ${id}
+        ) {
+          return;
+        }
+
+        resolve(data.data);
+      });
+    })
+    window.postMessage(
+      {
+        target: '${CONTENT_SCRIPT}',
+        data: {
+          name: '${METAMASK_CAIP_MULTICHAIN_PROVIDER}',
+          data
+        },
+      },
+      location.origin,
+    );
+
+    return result;`;
+  } else {
+    script = `
+    const port = chrome.runtime.connect('${extensionId}');
+    const data = ${JSON.stringify(requestWithNewId)};
+    const result = new Promise((resolve) => {
+      port.onMessage.addListener((msg) => {
+        if (msg.type !== 'caip-x') {
+          return;
+        }
+        if (msg.data?.id !== ${id}) {
+          return;
+        }
+
+        resolve(msg.data);
+      })
+    })
+    port.postMessage({ type: 'caip-x', data });
+    return result;`;
+  }
+
+  return driver.executeScript(script);
 };

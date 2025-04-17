@@ -255,8 +255,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "要启用 $1 网络，您需要创建 $1 账户。",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "要启用 $1 网络，您需要创建 $2 账户。",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "添加 RPC（远程过程调用）URL"
@@ -1097,9 +1097,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "此网站需要获得许可来使用您的代币。"
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "此网站请求切换回标准账户。"
-  },
   "confirmTitleDescSIWESignature": {
     "message": "某个网站要求您登录以证明您拥有该账户。"
   },
@@ -1112,9 +1109,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "撤销权限"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "重设账户"
-  },
   "confirmTitleSIWESignature": {
     "message": "登录请求"
   },
@@ -1126,21 +1120,6 @@
   },
   "confirmTitleTransaction": {
     "message": "交易请求"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "如果您确认此请求，您的账户将升级为智能账户。"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "取消交易"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "取消升级和交易"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "如果您不想升级您的账户，您可以在此取消。\n\n如要在不升级的情况下完成该交易，您将需要在网站上重新提出此请求。$1。"
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "取消交易"
   },
   "confirmationAlertDetails": {
     "message": "为了保护您的资产，我们建议您拒绝该请求。"
@@ -2015,9 +1994,6 @@
   },
   "existingChainId": {
     "message": "您输入的信息与现有的链 ID 相关联。"
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "如需查看和确认您的最新请求，您需要首先批准或拒绝现有请求。"
   },
   "expandView": {
     "message": "展开视图"

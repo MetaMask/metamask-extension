@@ -19,6 +19,7 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   type GenericQuoteRequest,
   getNativeAssetForChainId,
+  isNativeAddress,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -122,7 +123,6 @@ import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -218,7 +218,13 @@ const PrepareBridgePage = () => {
   const {
     filteredTokenListGenerator: toTokenListGenerator,
     isLoading: isToTokensLoading,
-  } = useTokensWithFiltering(toChain?.chainId ?? fromChain?.chainId, fromToken);
+  } = useTokensWithFiltering(
+    toChain?.chainId ?? fromChain?.chainId,
+    fromToken,
+    selectedDestinationAccount !== null && 'id' in selectedDestinationAccount
+      ? selectedDestinationAccount.id
+      : undefined,
+  );
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -278,6 +284,8 @@ const PrepareBridgePage = () => {
           setFromToken({
             ...srcAsset,
             chainId: srcChainId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             image: srcAsset.icon || srcAsset.iconUrl || '',
             address: srcAsset.address,
           }),
@@ -450,9 +458,8 @@ const PrepareBridgePage = () => {
   }, []);
 
   const occurrences = Number(toToken?.occurrences ?? 0);
-  const toTokenIsNotDefault =
-    toToken?.address &&
-    !isSwapsDefaultTokenAddress(toToken?.address, toChain?.chainId as string);
+  const toTokenIsNotNative =
+    toToken?.address && !isNativeAddress(toToken?.address);
 
   const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
@@ -531,6 +538,8 @@ const PrepareBridgePage = () => {
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             value: fromAmount || undefined,
           }}
           isTokenListLoading={isFromTokensLoading}
@@ -664,9 +673,13 @@ const PrepareBridgePage = () => {
                   }
             }
             customTokenListGenerator={
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               toChain || isSwap ? toTokenListGenerator : undefined
             }
             amountInFiat={
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               activeQuote?.toTokenAmount?.valueInCurrency || undefined
             }
             amountFieldProps={{
@@ -849,7 +862,7 @@ const PrepareBridgePage = () => {
           {isCannotVerifyTokenBannerOpen &&
             isEvm &&
             toToken &&
-            toTokenIsNotDefault &&
+            toTokenIsNotNative &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
