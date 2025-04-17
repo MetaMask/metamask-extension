@@ -7,13 +7,21 @@ import {
   getDeleGatorEnvironment,
 } from '@metamask/delegation-toolkit';
 import { Hex, hexToNumber } from 'viem';
-import { DelegationControllerInitMessenger } from '../messengers/delegation-controller-messenger';
+import { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messenger';
 import { ControllerInitFunction, ControllerInitResult } from '../types';
 
 const getDelegationEnvironment = (chainId: Hex) => {
   return getDeleGatorEnvironment(hexToNumber(chainId));
 };
 
+/**
+ * Initialize the Delegation controller.
+ *
+ * @param request - The request object.
+ * @param request.controllerMessenger - The messenger to use for the controller.
+ * @param request.persistedState - The persisted state of the extension.
+ * @returns The initialized controller.
+ */
 export const DelegationControllerInit: ControllerInitFunction<
   DelegationController,
   DelegationControllerMessenger,
@@ -34,6 +42,12 @@ export const DelegationControllerInit: ControllerInitFunction<
   };
 };
 
+/**
+ * Get the API for the Delegation controller.
+ *
+ * @param controller - The controller to get the API for.
+ * @returns The API for the Delegation controller.
+ */
 function getApi(
   controller: DelegationController,
 ): ControllerInitResult<DelegationController>['api'] {
