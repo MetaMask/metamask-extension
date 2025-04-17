@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Detail akun"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Beralih kembali ke akun reguler"
-  },
   "accountIdenticon": {
     "message": "Identikon akun"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Untuk mengaktifkan jaringan $1, Anda perlu membuat akun $1.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Untuk mengaktifkan jaringan $1, Anda perlu membuat akun $2.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Tambahkan URL RPC"
@@ -1121,21 +1118,6 @@
   "confirmTitleTransaction": {
     "message": "Permintaan transaksi"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Jika Anda mengonfirmasi permintaan ini, akun akan diperbarui menjadi akun cerdas."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Batalkan transaksi"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Batalkan pembaruan & transaksi"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Jika tidak ingin memperbarui akun, Anda dapat membatalkannya di sini.\n\nUntuk menyelesaikan transaksi ini tanpa pembaruan, Anda harus mengajukan permintaan ini lagi di situs. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Batalkan transaksi"
-  },
   "confirmationAlertDetails": {
     "message": "Untuk melindungi aset Anda, sebaiknya tolak permintaan tersebut."
   },
@@ -1326,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Salin alamat ke papan klip"
-  },
-  "copyAddressShort": {
-    "message": "Salin alamat"
   },
   "copyPrivateKey": {
     "message": "Salin kunci pribadi"
@@ -2009,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "Informasi yang Anda masukkan terhubung dengan ID chain yang ada."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Untuk melihat dan mengonfirmasi permintaan terkini, Anda harus menyetujui atau menolak permintaan yang ada terlebih dahulu."
   },
   "expandView": {
     "message": "Perluas tampilan"

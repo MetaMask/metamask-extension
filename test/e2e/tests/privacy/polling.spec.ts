@@ -315,9 +315,7 @@ describe('Account Tracker API polling', function () {
       },
     );
   });
-});
 
-describe('Token Detection', function () {
   async function mockAccountApiForPortfolioView(mockServer: Mockttp) {
     return [
       await mockServer
@@ -349,7 +347,7 @@ describe('Token Detection', function () {
         })),
     ];
   }
-  it('should make calls to account api as expected', async function () {
+  it('should make token detection calls to account api as expected', async function () {
     if (process.env.PORTFOLIO_VIEW) {
       await withFixtures(
         {

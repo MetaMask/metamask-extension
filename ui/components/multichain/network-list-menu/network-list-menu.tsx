@@ -19,13 +19,18 @@ import {
   RpcEndpointType,
   type UpdateNetworkFields,
 } from '@metamask/network-controller';
-import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import {
+  NON_EVM_TESTNET_IDS,
+  toEvmCaipChainId,
+  type MultichainNetworkConfiguration,
+} from '@metamask/multichain-network-controller';
 import {
   type CaipChainId,
   type Hex,
   parseCaipChainId,
   KnownCaipNamespace,
 } from '@metamask/utils';
+import { ChainId } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { NetworkListItem } from '../network-list-item';
@@ -50,7 +55,7 @@ import {
   TEST_CHAINS,
   CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
-import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME } from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -104,6 +109,7 @@ import {
   sortNetworks,
   getNetworkIcon,
   getRpcDataByChainId,
+  sortNetworksByPrioity,
 } from '../../../../shared/modules/network.utils';
 import {
   getCompletedOnboarding,
@@ -190,12 +196,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     () =>
       Object.entries(multichainNetworks).reduce(
         ([nonTestnetsList, testnetsList], [id, network]) => {
-          const chainId = network.isEvm
-            ? convertCaipToHexChainId(id as CaipChainId)
-            : id;
-          // This is type casted to string since chainId could be
-          // Hex or CaipChainId.
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+          let chainId = id;
+          let isTest = false;
+
+          if (network.isEvm) {
+            // We keep using raw chain ID for EVM.
+            chainId = convertCaipToHexChainId(network.chainId);
+            isTest = TEST_CHAINS.includes(chainId as Hex);
+          } else {
+            isTest = NON_EVM_TESTNET_IDS.includes(network.chainId);
+          }
           (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
           return [nonTestnetsList, testnetsList];
         },
@@ -294,6 +304,14 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     Object.values(testNetworks),
     searchQuery,
   );
+  // A sorted list of test networks that put Sepolia first then Linea Sepolia at the top
+  // and the rest of the test networks in alphabetical order.
+  const sortedTestNetworks = useMemo(() => {
+    return sortNetworksByPrioity(searchedTestNetworks, [
+      toEvmCaipChainId(ChainId.sepolia),
+      toEvmCaipChainId(ChainId['linea-sepolia']),
+    ]);
+  }, [searchedTestNetworks]);
 
   const handleEvmNetworkChange = (chainId: CaipChainId) => {
     const hexChainId = convertCaipToHexChainId(chainId);
@@ -488,8 +506,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const generateMultichainNetworkListItem = (
     network: MultichainNetworkConfiguration,
   ) => {
-    const { chainId } = network;
-    const isCurrentNetwork = chainId === currentChainId;
+    const isCurrentNetwork = network.chainId === currentChainId;
     const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
       getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
@@ -505,11 +522,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         focus={isCurrentNetwork && !focusSearch}
         rpcEndpoint={
           hasMultiRpcOptions(network)
-            ? getRpcDataByChainId(chainId, evmNetworks).defaultRpcEndpoint
+            ? getRpcDataByChainId(network.chainId, evmNetworks)
+                .defaultRpcEndpoint
             : undefined
         }
         onClick={async () => {
-          await handleNetworkChange(chainId);
+          await handleNetworkChange(network.chainId);
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
@@ -651,7 +669,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
               {showTestnets || currentlyOnTestnet ? (
                 <Box className="multichain-network-list-menu">
-                  {searchedTestNetworks.map((network) =>
+                  {sortedTestNetworks.map((network) =>
                     generateMultichainNetworkListItem(network),
                   )}
                 </Box>
@@ -752,7 +770,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     selectedNonEvmNetwork
   ) {
     title = t('addNonEvmAccount', [
-      MULTICHAIN_NETWORK_TO_NICKNAME[selectedNonEvmNetwork],
+      MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME[selectedNonEvmNetwork],
     ]);
   } else {
     title = editedNetwork?.name ?? '';

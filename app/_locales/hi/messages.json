@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "अकाउंट की जानकारी"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " नियमित अकाउंट पर वापस जाएं"
-  },
   "accountIdenticon": {
     "message": "अकाउंट आइडेंटिकॉन"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "$1 नेटवर्क को चालू करने के लिए, आपको $1 अकाउंट बनाना होगा।",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "$1 नेटवर्क को चालू करने के लिए, आपको $2 अकाउंट बनाना होगा।",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "RPC URL जोड़ें"
@@ -1121,21 +1118,6 @@
   "confirmTitleTransaction": {
     "message": "ट्रांसेक्शन अनुरोध"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आपका अकाउंट स्मार्ट अकाउंट में अपडेट हो जाएगा।"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "ट्रांसेक्शन कैंसिल करें"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "अपडेट एवं ट्रांसेक्शन कैंसिल करें"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "यदि आप अपना अकाउंट अपडेट नहीं करना चाहते हैं, तो आप इसे यहाँ कैंसिल कर सकते हैं।\n\nइस ट्रांसेक्शन को अपडेट किए बिना पूरा करने के लिए, आपको साइट पर फिर से यह अनुरोध करना होगा। $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "ट्रांसेक्शन कैंसिल करें"
-  },
   "confirmationAlertDetails": {
     "message": "आपकी एसेट्स की सुरक्षा के लिए, हम आपको अनुरोध को रिजेक्ट करने का सुझाव देते हैं।"
   },
@@ -1326,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर एड्रेस कॉपी करें"
-  },
-  "copyAddressShort": {
-    "message": "एड्रेस कॉपी करें"
   },
   "copyPrivateKey": {
     "message": "प्राइवेट की (key) को कॉपी करें"
@@ -2009,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "आपके द्वारा दर्ज की गई जानकारी मौजूदा चेन ID से जुड़ी है।"
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "अपने सबसे हालिया अनुरोध को देखने और कन्फर्म करने के लिए, आपको पहले मौजूदा अनुरोधों को एप्रूव या रिजेक्ट करना होगा।"
   },
   "expandView": {
     "message": "व्यू को बड़ा करें"
