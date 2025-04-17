@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Реквизиты счета"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Переключиться назад на обычный счет"
-  },
   "accountIdenticon": {
     "message": "Идентикон счета"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Чтобы активировать сеть $1, нужно создать счет $1.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Чтобы активировать сеть $1, нужно создать счет $2.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Добавить URL-адрес RPC"
@@ -1312,9 +1309,6 @@
   "copyAddress": {
     "message": "Скопировать адрес в буфер обмена"
   },
-  "copyAddressShort": {
-    "message": "Копировать адрес"
-  },
   "copyPrivateKey": {
     "message": "Копировать закрытый ключ"
   },
@@ -1994,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "Введенная вами информация связана с существующим ID блокчейна."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Чтобы просмотреть и подтвердить свой последний запрос, вам необходимо сначала утвердить или отклонить существующие запросы."
   },
   "expandView": {
     "message": "Открыть в новой вкладке"
