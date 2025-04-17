@@ -110,7 +110,7 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => optInStatus,
 );
-
+export const DEFAULT_SMART_TRANSACTIONS_ENABLED = true;
 /**
  * Returns the user's preference for the smart transactions feature.
  * Defaults to `true` if the user has not set a preference.
@@ -124,7 +124,6 @@ export const getSmartTransactionsPreferenceEnabled = createSelector(
   (optInStatus: boolean): boolean => {
     // In the absence of an explicit opt-in or opt-out,
     // the Smart Transactions toggle is enabled.
-    const DEFAULT_SMART_TRANSACTIONS_ENABLED = true;
     return optInStatus ?? DEFAULT_SMART_TRANSACTIONS_ENABLED;
   },
 );

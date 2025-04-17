@@ -78,6 +78,11 @@ export const updateQuoteRequestParams = (
   };
 };
 
+/**
+ * @param contractAddress
+ * @param chainId
+ * @deprecated Call this within the bridge-status-controller instead
+ */
 export const getBridgeERC20Allowance = async (
   contractAddress: string,
   chainId: Hex,

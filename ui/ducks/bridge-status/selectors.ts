@@ -31,6 +31,19 @@ export const selectBridgeHistoryForAccount = createSelector(
   },
 );
 
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * Returns a bridge history item for a given approval tx id
+ */
+export const selectBridgeHistoryForApprovalTxId = createSelector(
+  [selectBridgeHistoryForAccount, (_, approvalTxId: string) => approvalTxId],
+  (bridgeHistory, approvalTxId) => {
+    return Object.values(bridgeHistory).find(
+      (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
+    );
+  },
+);
+
 /**
  * Returns an array of sorted bridge history items for when the user's current chain is the destination chain for a bridge tx
  */
