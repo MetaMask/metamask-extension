@@ -15,6 +15,13 @@ type AllowedActions =
 
 type AllowedEvents = never;
 
+/**
+ * Get a restricted messenger for the Delegation controller. This is scoped to the
+ * actions and events that the Delegation controller is allowed to handle.
+ *
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
+ */
 export function getDelegationControllerMessenger(
   messenger: Messenger<AllowedActions, AllowedEvents>,
 ): DelegationControllerMessenger {

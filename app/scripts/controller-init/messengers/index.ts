@@ -40,7 +40,7 @@ import {
   getNotificationServicesControllerMessenger,
   getNotificationServicesPushControllerMessenger,
 } from './notifications';
-import { getDelegationControllerMessenger } from './delegation-controller-messenger';
+import { getDelegationControllerMessenger } from './delegation/delegation-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
