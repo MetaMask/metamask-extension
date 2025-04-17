@@ -49,6 +49,7 @@ export const createBridgeMockStore = ({
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
+      completedOnboarding: true,
       gasFeeEstimates: {
         estimatedBaseFee: '0.00010456',
         [BRIDGE_PREFERRED_GAS_ESTIMATE]: {
