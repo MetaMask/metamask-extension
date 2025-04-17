@@ -7,6 +7,13 @@ export const REMOTE_MODE_SLIDE = {
   href: '/home.html#remote',
 };
 
+export const SMART_ACCOUNT_UPGRADE_SLIDE = {
+  id: 'smartAccountUpgrade',
+  title: 'slideSmartAccountUpgradeTitle',
+  description: 'slideSmartAccountUpgradeDescription',
+  image: './images/smart-account-upgrade.png',
+};
+
 export const SWEEPSTAKES_SLIDE = {
   id: 'sweepStake',
   title: 'slideSweepStakeTitle',
