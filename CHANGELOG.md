@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
+- When `selectedNetworkClientId` is invalid at startup, set it back to mainnet default RPC ([#31517](https://github.com/MetaMask/metamask-extension/pull/31517))
 
 ## [12.15.2]
 ### Added
