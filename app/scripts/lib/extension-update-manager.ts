@@ -6,9 +6,9 @@ import browser from 'webextension-polyfill';
  * during idle periods to minimize user disruption.
  */
 export class ExtensionUpdateManager {
-  private updatePending = false;
+  #updatePending = false;
 
-  private isIdle = false;
+  #isIdle = false;
 
   /**
    * Initializes the update manager by setting up event listeners
@@ -16,10 +16,10 @@ export class ExtensionUpdateManager {
    */
   public initialize(): void {
     // Ensure we start in a non-idle state during initialization
-    this.isIdle = false;
+    this.#isIdle = false;
 
     browser.runtime.onUpdateAvailable.addListener(
-      this.handleUpdateAvailable.bind(this),
+      this.#handleUpdateAvailable.bind(this),
     );
   }
 
@@ -29,10 +29,10 @@ export class ExtensionUpdateManager {
    * @param idle - Whether the extension is currently idle
    */
   public setIdleState(idle: boolean): void {
-    this.isIdle = idle;
+    this.#isIdle = idle;
 
     // If we're now idle and there's a pending update, apply it immediately
-    if (idle && this.updatePending) {
+    if (idle && this.#updatePending) {
       this.applyPendingUpdateIfNeeded();
     }
   }
@@ -43,7 +43,7 @@ export class ExtensionUpdateManager {
    * the extension without disrupting user activity.
    */
   public applyPendingUpdateIfNeeded(): void {
-    if (this.updatePending && this.isIdle) {
+    if (this.#updatePending && this.#isIdle) {
       browser.runtime.reload();
     }
   }
@@ -55,14 +55,14 @@ export class ExtensionUpdateManager {
    *
    * @private
    */
-  private handleUpdateAvailable(): void {
+  #handleUpdateAvailable(): void {
     browser.runtime.onUpdateAvailable.removeListener(
-      this.handleUpdateAvailable.bind(this),
+      this.#handleUpdateAvailable.bind(this),
     );
-    this.updatePending = true;
+    this.#updatePending = true;
 
     // If we're already idle, apply the update immediately
-    if (this.isIdle) {
+    if (this.#isIdle) {
       this.applyPendingUpdateIfNeeded();
     }
   }

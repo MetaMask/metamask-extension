@@ -13,116 +13,63 @@ jest.mock('webextension-polyfill', () => ({
 
 describe('ExtensionUpdateManager', () => {
   let updateManager: ExtensionUpdateManager;
+  let applyUpdateSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
     updateManager = new ExtensionUpdateManager();
+    applyUpdateSpy = jest.spyOn(updateManager, 'applyPendingUpdateIfNeeded');
   });
 
   describe('initialize', () => {
     it('should set up event listeners for update detection', () => {
       updateManager.initialize();
-
       expect(browser.runtime.onUpdateAvailable.addListener).toHaveBeenCalled();
     });
   });
 
-  describe('setIdleState', () => {
-    it('should update idle state and apply pending updates when becoming idle', () => {
-      const applyUpdateSpy = jest.spyOn(
-        updateManager,
-        'applyPendingUpdateIfNeeded',
-      );
+  describe('update handling workflow', () => {
+    it('should mark update as pending when update is available', () => {
+      updateManager.initialize();
+      const updateAvailableHandler = browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
+      updateAvailableHandler();
+      expect(browser.runtime.onUpdateAvailable.removeListener).toHaveBeenCalled();
+    });
 
-      // Set a pending update via private property
-      Object.defineProperty(updateManager, 'updatePending', { value: true });
-
-      // Set to idle
+    it('should apply pending update immediately if already idle', () => {
+      updateManager.initialize();
       updateManager.setIdleState(true);
-
+      const updateAvailableHandler = browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
+      updateAvailableHandler();
       expect(applyUpdateSpy).toHaveBeenCalled();
-    });
-
-    it('should not apply updates when becoming idle with no pending updates', () => {
-      const applyUpdateSpy = jest.spyOn(
-        updateManager,
-        'applyPendingUpdateIfNeeded',
-      );
-
-      // Ensure no pending update
-      Object.defineProperty(updateManager, 'updatePending', { value: false });
-
-      updateManager.setIdleState(true);
-
-      expect(applyUpdateSpy).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('applyPendingUpdateIfNeeded', () => {
-    it('should reload the extension when update is pending and extension is idle', () => {
-      Object.defineProperty(updateManager, 'updatePending', { value: true });
-      Object.defineProperty(updateManager, 'isIdle', { value: true });
-
-      updateManager.applyPendingUpdateIfNeeded();
-
       expect(browser.runtime.reload).toHaveBeenCalled();
     });
 
-    it('should not reload the extension when not idle', () => {
-      Object.defineProperty(updateManager, 'updatePending', { value: true });
-      Object.defineProperty(updateManager, 'isIdle', { value: false });
-
-      updateManager.applyPendingUpdateIfNeeded();
-
+    it('should not apply update immediately if not idle', () => {
+      updateManager.initialize();
+      updateManager.setIdleState(false);
+      const updateAvailableHandler = browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
+      updateAvailableHandler();
+      expect(applyUpdateSpy).not.toHaveBeenCalled();
       expect(browser.runtime.reload).not.toHaveBeenCalled();
     });
 
-    it('should not reload the extension when no update is pending', () => {
-      Object.defineProperty(updateManager, 'updatePending', { value: false });
-      Object.defineProperty(updateManager, 'isIdle', { value: true });
-
-      updateManager.applyPendingUpdateIfNeeded();
-
-      expect(browser.runtime.reload).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('handleUpdateAvailable', () => {
-    it('should mark update as pending and remove the listener', () => {
-      // Use type assertion to access the private method
-      const handleUpdateAvailable = (
-        updateManager as unknown as { handleUpdateAvailable: () => void }
-      ).handleUpdateAvailable.bind(updateManager);
-
-      handleUpdateAvailable();
-
-      // Check if the listener was removed
-      expect(
-        browser.runtime.onUpdateAvailable.removeListener,
-      ).toHaveBeenCalled();
-
-      // Check if updatePending was set to true using type assertion
-      expect(
-        (updateManager as unknown as { updatePending: boolean }).updatePending,
-      ).toBe(true);
-    });
-
-    it('should apply update immediately if already idle', () => {
-      Object.defineProperty(updateManager, 'isIdle', { value: true });
-
-      const applyUpdateSpy = jest.spyOn(
-        updateManager,
-        'applyPendingUpdateIfNeeded',
-      );
-
-      // Access the private method using type assertion
-      const handleUpdateAvailable = (
-        updateManager as unknown as { handleUpdateAvailable: () => void }
-      ).handleUpdateAvailable.bind(updateManager);
-
-      handleUpdateAvailable();
-
+    it('should apply pending update when becoming idle', () => {
+      updateManager.initialize();
+      const updateAvailableHandler = browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
+      updateAvailableHandler();
+      applyUpdateSpy.mockClear();
+      (browser.runtime.reload as jest.Mock).mockClear();
+      updateManager.setIdleState(true);
       expect(applyUpdateSpy).toHaveBeenCalled();
+      expect(browser.runtime.reload).toHaveBeenCalled();
+    });
+
+    it('should not apply updates when becoming idle with no pending updates', () => {
+      updateManager.initialize();
+      updateManager.setIdleState(true);
+      expect(applyUpdateSpy).not.toHaveBeenCalled();
+      expect(browser.runtime.reload).not.toHaveBeenCalled();
     });
   });
 });
