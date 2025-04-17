@@ -78,36 +78,40 @@ type TestCase =
     };
 
 async function main() {
-  const {
-    OWNER = 'metamask',
-    REPOSITORY = 'metamask-extension',
-    BRANCH = 'main',
-    TEST_RESULTS_PATH = 'test/test-results/e2e',
-    RUN_ID,
-    PR_NUMBER,
-  } = process.env;
+  const env = {
+    OWNER: process.env.OWNER || 'metamask',
+    REPOSITORY: process.env.REPOSITORY || 'metamask-extension',
+    BRANCH: process.env.BRANCH || 'main',
+    TEST_SUMMARY_PATH:
+      process.env.TEST_SUMMARY_PATH || 'test/test-results/summary.md',
+    TEST_RESULTS_PATH: process.env.TEST_RESULTS_PATH || 'test/test-results/e2e',
+    TEST_RUNS_PATH:
+      process.env.TEST_RUNS_PATH || 'test/test-results/test-runs.json',
+    RUN_ID: process.env.RUN_ID ? +process.env.RUN_ID : 0,
+    PR_NUMBER: process.env.PR_NUMBER ? +process.env.PR_NUMBER : 0,
+    GITHUB_ACTIONS: process.env.GITHUB_ACTIONS === 'true',
+  };
 
   let summary = '';
-  const core = process.env.GITHUB_ACTIONS
+  const core = env.GITHUB_ACTIONS
     ? await import('@actions/core')
     : {
         summary: {
           addRaw: (text: string) => {
             summary += text;
           },
-          write: async () =>
-            await fs.writeFile('test/test-results/summary.md', summary),
+          write: async () => await fs.writeFile(env.TEST_SUMMARY_PATH, summary),
         },
         setFailed: (msg: string) => console.error(msg),
       };
 
   try {
     const testRuns: TestRun[] = [];
-    const filenames = await fs.readdir(TEST_RESULTS_PATH);
+    const filenames = await fs.readdir(env.TEST_RESULTS_PATH);
 
     for (const filename of filenames) {
       const file = await fs.readFile(
-        path.join(TEST_RESULTS_PATH, filename),
+        path.join(env.TEST_RESULTS_PATH, filename),
         'utf8',
       );
       const results = await XML.parse(file);
@@ -216,15 +220,15 @@ async function main() {
             if (!suite.failed) continue;
             console.error(suite.path);
             core.summary.addRaw(
-              `\n#### [${suite.path}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${suite.path})\n`,
+              `\n#### [${suite.path}](https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${env.BRANCH}/${suite.path})\n`,
             );
-            if (suite.job.name && suite.job.id && RUN_ID) {
+            if (suite.job.name && suite.job.id && env.RUN_ID) {
               core.summary.addRaw(
-                `\n##### Job: [${
-                  suite.job.name
-                }](https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}/job/${
+                `\n##### Job: [${suite.job.name}](https://github.com/${
+                  env.OWNER
+                }/${env.REPOSITORY}/actions/runs/${env.RUN_ID}/job/${
                   suite.job.id
-                }${PR_NUMBER ? `?pr=${PR_NUMBER}` : ''})\n`,
+                }${env.PR_NUMBER ? `?pr=${env.PR_NUMBER}` : ''})\n`,
               );
             }
             for (const test of suite.testCases) {
@@ -252,7 +256,7 @@ async function main() {
           .map((row) => {
             const data = {
               ...row,
-              'Test suite': `[${row['Test suite']}](https://github.com/${OWNER}/${REPOSITORY}/blob/${BRANCH}/${row['Test suite']})`,
+              'Test suite': `[${row['Test suite']}](https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${env.BRANCH}/${row['Test suite']})`,
             };
             return `| ${Object.values(data).join(' | ')} |`;
           })
@@ -272,6 +276,7 @@ async function main() {
     }
 
     await core.summary.write();
+    await fs.writeFile(env.TEST_RUNS_PATH, JSON.stringify(testRuns, null, 2));
   } catch (error) {
     core.setFailed(`Error creating the test report: ${error}`);
   }
