@@ -2270,6 +2270,9 @@
   "goerli": {
     "message": "Goerli test network"
   },
+  "gotIt": {
+    "message": "Got it"
+  },
   "grantExactAccess": {
     "message": "Grant exact access"
   },

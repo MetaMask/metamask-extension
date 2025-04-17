@@ -16,6 +16,7 @@ import {
   ButtonLinkSize,
   ButtonLink,
   ButtonSize,
+  ButtonVariant,
   Box,
 } from '../../../component-library';
 import {
@@ -23,7 +24,6 @@ import {
   FlexDirection,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { ButtonVariant } from '../../../component-library';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const SOLANA_FEATURE = 'solana';
