@@ -2,6 +2,7 @@ import React, { ReactElement, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
+import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
 import {
   Box,
@@ -72,7 +73,7 @@ export function SmartAccountUpdate() {
   const { chainId, txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
 
-  if (!currentConfirmation || acknowledged || origin === 'metamask') {
+  if (!currentConfirmation || acknowledged || origin === ORIGIN_METAMASK) {
     return null;
   }
 

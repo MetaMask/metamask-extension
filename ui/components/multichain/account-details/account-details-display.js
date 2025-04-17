@@ -125,7 +125,7 @@ export const AccountDetailsDisplay = ({
       </Box>
       <Tabs
         onTabClick={() => undefined}
-        style={{ width: '100%', marginTop: 8 }}
+        style={{ width: '100%', marginTop: '8px' }}
       >
         <Tab name="Type" tabKey="Type" style={{ width: '50%' }}>
           <SmartAccountTab address={address} />

@@ -86,7 +86,7 @@ describe('Splash', () => {
     expect(rejectPendingApproval).toHaveBeenCalledTimes(1);
   });
 
-  it('does not renders for confirmation not coming from DAPP', () => {
+  it('does not render for confirmation not coming from DAPP', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction({
         ...upgradeAccountConfirmation,
