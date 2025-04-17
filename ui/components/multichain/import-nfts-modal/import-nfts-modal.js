@@ -102,7 +102,6 @@ export const ImportNftsModal = ({ onClose }) => {
   const [selectedNetworkForCustomImport, setSelectedNetworkForCustomImport] =
     useState(null);
 
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const networkClientId = useSelector(getSelectedNetworkClientId);
 
@@ -215,7 +214,7 @@ export const ImportNftsModal = ({ onClose }) => {
               flexDirection={FlexDirection.Column}
               width={BlockSize.Full}
             >
-              {Object.values(allNetworks).map((network) => (
+              {Object.values(networkConfigurations).map((network) => (
                 <Box
                   key={network.chainId}
                   data-testid={`select-network-item-${network.chainId}`}
