@@ -1,0 +1,27 @@
+name: Upload Benchmark Gate
+
+on:
+  push:
+    branches:
+      - benchmark-gate-update
+
+permissions:
+  contents: read
+  # id-token permission is required for uploading to s3
+  id-token: write
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Upload benchmark-gate to S3
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/benchmark-gate/benchmark-gate.json
+          path: benchmark-gate.json

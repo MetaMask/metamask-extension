@@ -1,6 +1,16 @@
 import startCase from 'lodash/startCase';
 import { version as VERSION } from '../package.json';
 
+if (!process.env.CI) {
+  process.env.PR_NUMBER = '31868';
+  process.env.HEAD_COMMIT_HASH = '379b89eaa1b4f8031210c9ad540173eacb1124b4';
+  process.env.MERGE_BASE_COMMIT_HASH =
+    '94cf635f8d3c72812ab7bf8e2f70bc5c7964df11';
+  process.env.HOST_URL =
+    'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension';
+  process.env.GITHUB_RUN_ID = '14397786757';
+}
+
 start().catch(console.error);
 
 const benchmarkPlatforms = ['chrome', 'firefox'];

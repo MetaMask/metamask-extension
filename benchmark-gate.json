@@ -1,0 +1,128 @@
+{
+  "gates": {
+    "chrome": {
+      "browserify": {
+        "home": {
+          "mean": {
+            "uiStartup": 1234,
+            "load": 1070,
+            "domContentLoaded": 1061,
+            "domInteractive": 20,
+            "firstPaint": 800,
+            "backgroundConnect": 10,
+            "firstReactRender": 23,
+            "getState": 15,
+            "initialActions": 1,
+            "loadScripts": 830,
+            "setupStore": 11
+          },
+          "p95": {
+            "uiStartup": 1365,
+            "load": 1190,
+            "domContentLoaded": 1180,
+            "domInteractive": 35,
+            "firstPaint": 1180,
+            "backgroundConnect": 18,
+            "firstReactRender": 45,
+            "getState": 31,
+            "initialActions": 1.2,
+            "loadScripts": 940,
+            "setupStore": 17
+          }
+        }
+      },
+      "webpack": {
+        "home": {
+          "mean": {
+            "uiStartup": 2192,
+            "load": 1711,
+            "domContentLoaded": 1704,
+            "domInteractive": 21,
+            "firstPaint": 175,
+            "backgroundConnect": 40,
+            "firstReactRender": 235,
+            "getState": 29,
+            "initialActions": 7,
+            "loadScripts": 1699,
+            "setupStore": 32
+          },
+          "p95": {
+            "uiStartup": 2454,
+            "load": 2030,
+            "domContentLoaded": 2005,
+            "domInteractive": 57,
+            "firstPaint": 310,
+            "backgroundConnect": 90,
+            "firstReactRender": 370,
+            "getState": 195,
+            "initialActions": 7,
+            "loadScripts": 1970,
+            "setupStore": 65
+          }
+        }
+      }
+    },
+    "firefox": {
+      "browserify": {
+        "home": {
+          "mean": {
+            "uiStartup": 1405,
+            "load": 1245,
+            "domContentLoaded": 1239,
+            "domInteractive": 110,
+            "backgroundConnect": 25,
+            "firstReactRender": 25,
+            "getState": 11,
+            "initialActions": 1,
+            "loadScripts": 1230,
+            "setupStore": 9
+          },
+          "p95": {
+            "uiStartup": 1660,
+            "load": 1495,
+            "domContentLoaded": 1495,
+            "domInteractive": 195,
+            "backgroundConnect": 70,
+            "firstReactRender": 55,
+            "getState": 24,
+            "initialActions": 2,
+            "loadScripts": 1475,
+            "setupStore": 27
+          }
+        }
+      },
+      "webpack": {
+        "home": {
+          "mean": {
+            "uiStartup": 1615,
+            "load": 1380,
+            "domContentLoaded": 1380,
+            "domInteractive": 100,
+            "backgroundConnect": 26,
+            "firstReactRender": 38,
+            "getState": 15,
+            "initialActions": 1,
+            "loadScripts": 1360,
+            "setupStore": 13
+          },
+          "p95": {
+            "uiStartup": 1935,
+            "load": 1660,
+            "domContentLoaded": 1660,
+            "domInteractive": 156,
+            "backgroundConnect": 45,
+            "firstReactRender": 50,
+            "getState": 32,
+            "initialActions": 2,
+            "loadScripts": 1630,
+            "setupStore": 28
+          }
+        }
+      }
+    }
+  },
+  "pingThresholds": {
+    "mean": 15,
+    "p95": 30
+  }
+}
