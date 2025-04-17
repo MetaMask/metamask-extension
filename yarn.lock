@@ -5271,9 +5271,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:16.0.0"
+"@metamask/eth-json-rpc-middleware@npm:^17.0.0":
+  version: 17.0.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:17.0.0"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^11.0.4"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
@@ -5287,7 +5287,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/fc6e11dd8855262b3a3c42c2629e4ce7f020a640ab2e26b989c84b674bceb044d5613e91ac6e3d9a6511c9f4e4286552a5414f9f28b1c60877a825dfddb063a7
+  checksum: 10/dfba51cd38e448858d58f70967edc7414e1335cc78bd7503ba4179b56f22f1114e6715a8cec8fdef17efbba34ffde556ad775858e4de8f7b805d65f9653629d7
   languageName: node
   linkType: hard
 
@@ -5594,21 +5594,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^17.2.0, @metamask/keyring-api@npm:^17.2.1":
-  version: 17.2.1
-  resolution: "@metamask/keyring-api@npm:17.2.1"
+"@metamask/keyring-api@npm:^17.2.0, @metamask/keyring-api@npm:^17.2.1, @metamask/keyring-api@npm:^17.4.0":
+  version: 17.5.0
+  resolution: "@metamask/keyring-api@npm:17.5.0"
   dependencies:
-    "@metamask/keyring-utils": "npm:^2.3.1"
+    "@metamask/keyring-utils": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.1.0"
     bech32: "npm:^2.0.0"
-  checksum: 10/666b8506724c0f759e755ddc888fc0ecb44ef98bcf2f9d15ce009d00b93c126415c0af9f5037157a63f7fc7524358601650589819e487f7acb3e4748467b0a7b
+  checksum: 10/b6409b235c02f102f142ec9bf89486591262fdc717341a0a8425454755b625c5ab63f1c5fd745ec743e220772bed51f1315c43e219e88c3e4fbe9d19efce660c
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^21.0.0, @metamask/keyring-controller@npm:^21.0.1":
-  version: 21.0.1
-  resolution: "@metamask/keyring-controller@npm:21.0.1"
+"@metamask/keyring-controller@npm:^21.0.0, @metamask/keyring-controller@npm:^21.0.3":
+  version: 21.0.3
+  resolution: "@metamask/keyring-controller@npm:21.0.3"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5617,14 +5617,14 @@ __metadata:
     "@metamask/eth-hd-keyring": "npm:^12.0.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-simple-keyring": "npm:^10.0.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/keyring-internal-api": "npm:^6.0.0"
+    "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/keyring-internal-api": "npm:^6.0.1"
     "@metamask/utils": "npm:^11.2.0"
     async-mutex: "npm:^0.5.0"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
     ulid: "npm:^2.3.0"
-  checksum: 10/9406eb60ab111a9896a4e2db0ef009fcdd5dbe6daac1b06b77561af60e7463fcfc139727e0891203c0c135f744ac7bc5900b2e6f0bfe8dc5a218689be43bf266
+  checksum: 10/df3f5e659c3b73b71429b813877f3538f29bb73fae46516aba6cc1a1baf45e73d2acb8da41cf7b0eaf5ad431a034c7e40ed70cf1b360fd4562d1b0870245d6fd
   languageName: node
   linkType: hard
 
@@ -5639,14 +5639,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/keyring-internal-api@npm:6.0.0"
+"@metamask/keyring-internal-api@npm:^6.0.0, @metamask/keyring-internal-api@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@metamask/keyring-internal-api@npm:6.0.1"
   dependencies:
-    "@metamask/keyring-api": "npm:^17.2.1"
+    "@metamask/keyring-api": "npm:^17.4.0"
     "@metamask/keyring-utils": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
-  checksum: 10/069945b3423e7b6bd0b8735d65e17c968e494bc3f8c06e585d6e27f09ced0027541440c9e90ffbcd59b1daf91d7848c09be010a8ceb547ed3c4f6465e810b7a8
+  checksum: 10/a503cef8d20e9f45d96afb796f9e9c32147d2ae984b92e5a26657a5bef2718c4590c2c43671ed3ee6379ba34109379e80b9f16ba7622e1951068be298176ca58
   languageName: node
   linkType: hard
 
@@ -6568,10 +6568,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:9.2.0":
-  version: 9.2.0
-  resolution: "@metamask/test-dapp@npm:9.2.0"
-  checksum: 10/616ba794bd67a075de5c4cfd3f3e03745e256fa0d56cbfc894474187b4643e050fa38a1dbf26fdb81826a68a7df98fbdeabce928fa827b01f203aeb09e403647
+"@metamask/test-dapp@npm:9.3.0":
+  version: 9.3.0
+  resolution: "@metamask/test-dapp@npm:9.3.0"
+  checksum: 10/55498fe890c6ba35892163d6a256fe739d13ccf125505ccab50817978cc8debea9401693ba92e0dd185ccb66dfa1427cd2032ee878be98f30e9b10f7c7703a4f
   languageName: node
   linkType: hard
 
@@ -6613,7 +6613,7 @@ __metadata:
 
 "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A52.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.3.0-56fc57fbe6.patch":
   version: 52.3.0
-  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A52.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.3.0-56fc57fbe6.patch::version=52.3.0&hash=731749"
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A52.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.3.0-56fc57fbe6.patch::version=52.3.0&hash=27286a"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6643,7 +6643,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/36a3a88b708817193493d7ddddf8a0036bd2071446b3a6a8a87b712fc96a57f109d8b111861f9ec785a546006a39b11cbdfdfefa6798f43d41862b31b7bbe252
+  checksum: 10/85c497e835107472ded14bf5a1d6b74c8e38f6d9deeacf57e61b2231bf811da3d489c05becfd5ca4e8b0fc99c1c3448b659251dd42e700765cd815d331cc0a86
   languageName: node
   linkType: hard
 
@@ -27312,7 +27312,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^16.0.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-ledger-bridge-keyring": "npm:^11.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
@@ -27326,7 +27326,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
     "@metamask/keyring-api": "npm:^17.2.1"
-    "@metamask/keyring-controller": "npm:^21.0.1"
+    "@metamask/keyring-controller": "npm:^21.0.3"
     "@metamask/keyring-internal-api": "npm:^6.0.0"
     "@metamask/keyring-snap-client": "npm:^4.0.1"
     "@metamask/logging-controller": "npm:^6.0.4"
@@ -27369,7 +27369,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^9.1.0"
     "@metamask/solana-wallet-snap": "npm:^1.15.1"
     "@metamask/test-bundler": "npm:^1.0.0"
-    "@metamask/test-dapp": "npm:9.2.0"
+    "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
     "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A52.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-52.3.0-56fc57fbe6.patch"
     "@metamask/user-operation-controller": "npm:^24.0.1"

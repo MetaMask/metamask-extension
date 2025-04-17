@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import { Nft } from '@metamask/assets-controllers';
+import { toHex } from '@metamask/controller-utils';
 import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import { getCurrentNetwork, getIpfsGateway } from '../../../../../selectors';
+import { getIpfsGateway } from '../../../../../selectors';
 
 import {
   Box,
@@ -13,7 +15,7 @@ import {
 import { NftItem } from '../../../../multichain/nft-item';
 import { Content, Header, Page } from '../../../../multichain/pages/page';
 
-import { getNfts } from '../../../../../ducks/metamask/metamask';
+import { getAllNfts } from '../../../../../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import {
   Display,
@@ -23,24 +25,38 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getImageForChainId } from '../../../../../selectors/multichain';
 
 export default function NftFullImage() {
   const t = useI18nContext();
   const { asset, id } = useParams<{ asset: string; id: string }>();
-  const nfts = useSelector(getNfts);
+
+  const allNfts = useSelector(getAllNfts);
+  const nfts = Object.values(allNfts).flat() as Nft[];
   const nft = nfts.find(
     ({ address, tokenId }: { address: string; tokenId: string }) =>
       // @ts-expect-error TODO: Fix this type error by handling undefined parameters
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 
-  const { image, imageOriginal, name, tokenId } = nft;
+  const { image, imageOriginal, name, tokenId, chainId, description } =
+    nft as Nft;
 
   const ipfsGateway = useSelector(getIpfsGateway);
-  const currentChain = useSelector(getCurrentNetwork);
-  const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
+  const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
+  const nftChainNetwork = nftNetworkConfigs[toHex(chainId?.toString() ?? '')];
+  const nftChainImage = getImageForChainId(toHex(chainId?.toString() ?? ''));
+  const nftImageURL = useGetAssetImageUrl(
+    imageOriginal ?? (image || undefined),
+    ipfsGateway,
+  );
 
-  const nftImageAlt = getNftImageAlt(nft);
+  const nftImageAlt = getNftImageAlt({
+    name,
+    tokenId,
+    description,
+  });
   const nftSrcUrl = imageOriginal ?? image;
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted = image?.startsWith('https:');
@@ -79,12 +95,12 @@ export default function NftFullImage() {
           >
             <Box>
               <NftItem
-                src={isImageHosted ? image : nftImageURL}
+                src={isImageHosted ? image || undefined : nftImageURL}
                 alt={nftImageAlt}
-                name={name}
+                name={name ?? ''}
                 tokenId={tokenId}
-                networkName={currentChain.nickname ?? ''}
-                networkSrc={currentChain.rpcPrefs?.imageUrl}
+                networkName={nftChainNetwork?.name ?? ''}
+                networkSrc={nftChainImage}
                 isIpfsURL={isIpfsURL}
               />
             </Box>
