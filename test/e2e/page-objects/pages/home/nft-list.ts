@@ -8,9 +8,12 @@ class NftListPage {
 
   private readonly importNftAddressInput = '#address';
 
-  private readonly importNftButton = '[data-testid="import-nft-button"]';
+  private readonly importNftButton = '[data-testid="importNfts"]';
 
-  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'header' };
+  private readonly actionBarButton =
+    '[data-testid="asset-list-control-bar-action-button"]';
+
+  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'h4' };
 
   private readonly importNftTokenIdInput = '#token-id';
 
@@ -51,6 +54,7 @@ class NftListPage {
     id: string,
     expectedErrorMessage?: string,
   ) {
+    await this.driver.clickElement(this.actionBarButton);
     await this.driver.clickElement(this.importNftButton);
     await this.driver.waitForSelector(this.importNftModalTitle);
     await this.driver.fill(this.importNftAddressInput, nftContractAddress);
