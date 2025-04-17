@@ -2,12 +2,11 @@ import { DelegationController } from '@metamask/delegation-controller';
 import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
-
-import { DelegationControllerInit } from './delegation-controller-init';
 import {
   getDelegationControllerMessenger,
   DelegationControllerMessenger,
 } from '../messengers/delegation/delegation-controller-messenger';
+import { DelegationControllerInit } from './delegation-controller-init';
 
 jest.mock('@metamask/delegation-controller');
 
