@@ -51,6 +51,28 @@ export const ContactNetworks = ({
       ),
     [networkConfigurations],
   );
+  const renderNetworkListItems = (
+    networks: { name: string; chainId: string }[],
+  ) =>
+    networks.map(({ name, chainId }) => (
+      <NetworkListItem
+        key={chainId}
+        name={
+          NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+            chainId as unknown as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+          ] ?? name
+        }
+        selected={selectedChainId === chainId}
+        onClick={() => {
+          onSelect?.(chainId);
+          onClose();
+        }}
+        iconSrc={getImageForChainId(chainId)}
+        iconSize={AvatarNetworkSize.Sm}
+        focus={false}
+        variant={TextVariant.bodyMdMedium}
+      />
+    ));
 
   return (
     <Modal
@@ -72,47 +94,12 @@ export const ContactNetworks = ({
             flexDirection={FlexDirection.Column}
             width={BlockSize.Full}
           >
-            {nonTestNetworks.map(({ name, chainId }) => (
-              <NetworkListItem
-                key={chainId}
-                name={
-                  NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                    chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                  ] ?? name
-                }
-                selected={selectedChainId === chainId}
-                onClick={() => {
-                  onSelect?.(chainId);
-                  onClose();
-                }}
-                iconSrc={getImageForChainId(chainId)}
-                iconSize={AvatarNetworkSize.Sm}
-                focus={false}
-                variant={TextVariant.bodyMdMedium}
-              />
-            ))}
+            {renderNetworkListItems(nonTestNetworks)}
+
             <Box padding={4}>
               <Text variant={TextVariant.bodyMdMedium}>{t('testnets')}</Text>
+              {renderNetworkListItems(testNetworks)}
             </Box>
-            {testNetworks.map(({ name, chainId }) => (
-              <NetworkListItem
-                key={chainId}
-                name={
-                  NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                    chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                  ] ?? name
-                }
-                selected={selectedChainId === chainId}
-                onClick={() => {
-                  onSelect?.(chainId);
-                  onClose();
-                }}
-                iconSrc={getImageForChainId(chainId)}
-                iconSize={AvatarNetworkSize.Sm}
-                focus={false}
-                variant={TextVariant.bodyMdMedium}
-              />
-            ))}
           </Box>
         </Box>
       </ModalContent>

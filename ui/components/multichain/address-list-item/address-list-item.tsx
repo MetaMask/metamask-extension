@@ -82,7 +82,7 @@ export const AddressListItem = ({
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
               name={allNetworks?.[chainId as Hex]?.name}
-              src={getImageForChainId(chainId) || undefined}
+              src={getImageForChainId(chainId)}
               backgroundColor={BackgroundColor.backgroundDefault}
               borderWidth={2}
             />
