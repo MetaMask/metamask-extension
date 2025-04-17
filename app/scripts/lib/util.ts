@@ -185,7 +185,7 @@ export const isValidDate = (d: Date | number) => {
  */
 
 type DeferredPromise = {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   promise: Promise<any>;
   resolve?: () => void;
@@ -346,11 +346,23 @@ export function formatTxMetaForRpcResult(
     from,
     hash,
     nonce: `${nonce}`,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     input: data || '0x',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     value: value || '0x0',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     accessList: accessList || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     blockHash: txReceipt?.blockHash || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     blockNumber: txReceipt?.blockNumber || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     transactionIndex: txReceipt?.transactionIndex || null,
     type:
       maxFeePerGas && maxPriorityFeePerGas
