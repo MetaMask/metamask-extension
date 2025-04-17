@@ -1,5 +1,3 @@
-@use "design-system";
-
 .multichain-network-list-menu-content-wrapper {
   &__dialog {
     // Needed to ensure the drag and drop works. All other modals use a slide up animation with transform: translateY(0)
