@@ -4,7 +4,6 @@ import { MultichainNetworkService } from '@metamask/multichain-network-controlle
 /**
  * Initialize the Multichain Network service controller.
  *
- * @param fetch - The fetch function to use for the controller.
  * @returns The initialized controller.
  */
 export const MultichainNetworkServiceInit = (): MultichainNetworkService => {
