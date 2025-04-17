@@ -592,6 +592,7 @@
     "jest-preview": "^0.3.1",
     "jsdom": "^16.7.0",
     "json-schema-to-ts": "^3.0.1",
+    "jszip": "^3.10.1",
     "koa": "^2.7.0",
     "lavamoat": "^9.0.5",
     "lavamoat-browserify": "^18.1.2",
