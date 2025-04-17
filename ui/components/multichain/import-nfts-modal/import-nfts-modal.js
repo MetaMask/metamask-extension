@@ -376,8 +376,7 @@ export const ImportNftsModal = ({ onClose }) => {
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
           gap={4}
-          paddingTop={4}
-          paddingBottom={4}
+          padding={4}
         >
           <ButtonSecondary
             size={ButtonSecondarySize.Lg}
