@@ -18734,7 +18734,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/keyring-api
-17.2.1 <https://github.com/MetaMask/keyring-api>
+17.5.0 <https://github.com/MetaMask/keyring-api>
 Copyright ConsenSys Software Inc. 2022. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -18758,7 +18758,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/keyring-controller
-21.0.1 <https://github.com/MetaMask/core>
+21.0.3 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -18791,7 +18791,7 @@ authors: undefined
 ******************************
 
 @metamask/keyring-internal-api
-6.0.0 <https://github.com/MetaMask/accounts>
+6.0.1 <https://github.com/MetaMask/accounts>
 license: Custom: https://github.com/MetaMask/accounts
 authors: undefined
 
