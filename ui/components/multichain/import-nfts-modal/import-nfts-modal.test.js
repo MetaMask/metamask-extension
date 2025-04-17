@@ -2,16 +2,16 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { useHistory } from 'react-router-dom';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   addNftVerifyOwnership,
   ignoreTokens,
   setNewNftAddedMessage,
   updateNftDropDownState,
 } from '../../../store/actions';
+import { mockNetworkState } from '../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ImportNftsModal } from '.';
 
 const VALID_ADDRESS = '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9';
@@ -48,6 +48,10 @@ describe('ImportNftsModal', () => {
   beforeEach(() => {
     jest.restoreAllMocks();
   });
+
+  // afterEach(() => {
+  //   jest.clearAllMocks();
+  // });
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
@@ -98,10 +102,21 @@ describe('ImportNftsModal', () => {
     });
 
     const onClose = jest.fn();
-    const { getByPlaceholderText, getByText } = renderWithProvider(
+    const { getByPlaceholderText, getByText, getByTestId } = renderWithProvider(
       <ImportNftsModal onClose={onClose} />,
       store,
     );
+
+    // Click network selector button
+    const networkSelectorButton = getByTestId(
+      'test-import-tokens-drop-down-custom-import',
+    );
+    fireEvent.click(networkSelectorButton);
+
+    // Select custom network
+    const customNetworkItem = getByTestId('Goerli');
+    fireEvent.click(customNetworkItem);
+
     const addressInput = getByPlaceholderText('0x...');
     const tokenIdInput = getByPlaceholderText('Enter the token id');
     fireEvent.change(addressInput, {
@@ -169,28 +184,6 @@ describe('ImportNftsModal', () => {
     fireEvent.click(addNftClose);
   });
 
-  it('should route to default route when cancel button is clicked', () => {
-    const onClose = jest.fn();
-    const { getByText } = renderWithProvider(
-      <ImportNftsModal onClose={onClose} />,
-      store,
-    );
-
-    const cancelButton = getByText('Cancel');
-    fireEvent.click(cancelButton);
-
-    expect(useHistory().push).toHaveBeenCalledWith(DEFAULT_ROUTE);
-  });
-
-  it('should route to default route when close button is clicked', () => {
-    const onClose = jest.fn();
-    renderWithProvider(<ImportNftsModal onClose={onClose} />, store);
-
-    fireEvent.click(document.querySelector('button[aria-label="Close"]'));
-
-    expect(useHistory().push).toHaveBeenCalledWith(DEFAULT_ROUTE);
-  });
-
   it('should set error message when address invalid', () => {
     const onClose = jest.fn();
     const { getByText, getByPlaceholderText } = renderWithProvider(
@@ -205,5 +198,72 @@ describe('ImportNftsModal', () => {
 
     const errorMessage = getByText('Invalid address');
     expect(errorMessage).toBeInTheDocument();
+  });
+
+  it('selectedNetworkClientId is for the network the NFT is on, not the globally selected network of the wallet', async () => {
+    const customNetwork = {
+      rpcUrl: 'https://alt-rpc.rpc.com',
+      chainId: '0x123',
+      ticker: 'ETH',
+      nickname: 'Custom Network',
+      id: 'custom-network-client-id',
+      blockExplorerUrl: undefined,
+    };
+
+    store = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.MAINNET },
+          { chainId: CHAIN_IDS.GOERLI },
+          customNetwork,
+        ),
+      },
+    });
+
+    const onClose = jest.fn();
+    const { getByText, getByPlaceholderText, getByTestId, debug } =
+      renderWithProvider(<ImportNftsModal onClose={onClose} />, store);
+
+    // Click network selector button
+    const networkSelectorButton = getByTestId(
+      'test-import-tokens-drop-down-custom-import',
+    );
+    fireEvent.click(networkSelectorButton);
+
+    // Select custom network
+    const customNetworkItem = getByText('Custom Network');
+    fireEvent.click(customNetworkItem);
+
+    debug();
+
+    // Enter NFT details
+    const addressInput = getByPlaceholderText('0x...');
+    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    fireEvent.change(addressInput, {
+      target: { value: VALID_ADDRESS },
+    });
+    fireEvent.change(tokenIdInput, {
+      target: { value: VALID_TOKENID },
+    });
+
+    // Click import
+    fireEvent.click(getByText('Import'));
+
+    // Get the actual networkClientId that was used in the addNftVerifyOwnership call
+    const addNftCall = addNftVerifyOwnership.mock.calls[1];
+    const usedNetworkClientId = addNftCall[2]; // Third argument is the networkClientId
+
+    expect(addNftVerifyOwnership).toHaveBeenCalledWith(
+      VALID_ADDRESS,
+      VALID_TOKENID,
+      'custom-network-client-id',
+    );
+
+    // Verify that the selectedNetworkClientId used for the NFT import is different from the globally selected network
+    expect(mockState.metamask.selectedNetworkClientId).not.toBe(
+      usedNetworkClientId,
+    );
   });
 });

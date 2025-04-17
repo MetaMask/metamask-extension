@@ -68,7 +68,6 @@ import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
 import { NetworkListItem } from '../network-list-item';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
-import { Logger } from 'concurrently';
 
 const ACTION_MODES = {
   // Displays the import nft modal
