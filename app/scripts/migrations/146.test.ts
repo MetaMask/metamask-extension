@@ -1,5 +1,6 @@
-import { migrate, version } from './146';
 import { ChainId } from '@metamask/controller-utils';
+
+import { migrate, version } from './146';
 
 const oldVersion = 145;
 const megaEthChainId = ChainId['megaeth-testnet'];
