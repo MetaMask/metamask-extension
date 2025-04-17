@@ -136,6 +136,7 @@ describe('ERC721 Approve Confirmation', () => {
       chainId: '0xaa36a7',
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     global.ethereumProvider = provider as any;
   });
@@ -151,6 +152,7 @@ describe('ERC721 Approve Confirmation', () => {
     const APPROVE_NFT_TEXT_SIG = 'approve(address,uint256)';
     mock4byte(APPROVE_NFT_HEX_SIG, APPROVE_NFT_TEXT_SIG);
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -161,6 +163,7 @@ describe('ERC721 Approve Confirmation', () => {
   });
 
   afterAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (global as any).ethereumProvider;
   });
