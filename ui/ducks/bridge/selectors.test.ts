@@ -1504,7 +1504,7 @@ describe('Bridge selectors', () => {
             selectedAccount: 'account-1',
             accounts: {
               'account-1': {
-                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
+                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
               },
             },
@@ -1561,7 +1561,7 @@ describe('Bridge selectors', () => {
             selectedAccount: 'account-1',
             accounts: {
               'account-1': {
-                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
+                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
               },
             },
@@ -1745,7 +1745,7 @@ describe('Bridge selectors', () => {
             selectedAccount: 'account-1',
             accounts: {
               'account-1': {
-                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
+                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
               },
             },

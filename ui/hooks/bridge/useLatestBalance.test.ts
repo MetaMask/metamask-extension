@@ -115,7 +115,7 @@ describe('useLatestBalance', () => {
             'test-account-id': {
               id: 'test-account-id',
               type: 'solana',
-              address: 'account-address',
+              address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
             },
           },
         },
