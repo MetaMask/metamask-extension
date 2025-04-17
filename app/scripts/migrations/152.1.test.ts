@@ -1,4 +1,4 @@
-import { TESTNETS, migrate, version } from './154';
+import { TESTNETS, migrate, version } from './152.1';
 
 const mockNetworks = {
   'bip122:000000000019d6689c085ae165831e93': {
@@ -15,7 +15,7 @@ const mockNetworks = {
   },
 };
 
-const oldVersion = 153;
+const oldVersion = 152;
 
 describe(`migration #${version}`, () => {
   it('updates the version metadata', async () => {
