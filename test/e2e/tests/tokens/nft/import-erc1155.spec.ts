@@ -36,7 +36,7 @@ describe('Import ERC1155 NFT', function () {
     );
   });
 
-  it.only('should not be able to import an ERC1155 NFT that does not belong to user', async function () {
+  it('should not be able to import an ERC1155 NFT that does not belong to user', async function () {
     await withFixtures(
       {
         dapp: true,
