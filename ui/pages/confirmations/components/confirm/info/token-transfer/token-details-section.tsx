@@ -2,6 +2,8 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';

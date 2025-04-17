@@ -1,4 +1,6 @@
 import { Hex } from '@metamask/utils';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { PrimaryType } from '../../../../../../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../../../../../../shared/modules/transaction.utils';
@@ -11,7 +13,11 @@ import {
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../../context/confirm';
 import { SignatureRequestType } from '../../../../../../types/confirm';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PermitSimulationValueDisplay from '../value-display/value-display';
 
 type TokenDetail = {

@@ -44,6 +44,8 @@ const REQUEST_MOCK = {
 };
 
 const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: 'success',
   reason: 'success',
   source: SecurityAlertSource.Local,
@@ -197,6 +199,8 @@ describe('PPOM Utils', () => {
         validateRequestWithPPOMOptionsBase.request.method,
         SECURITY_ALERT_ID_MOCK,
         {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',
@@ -219,6 +223,8 @@ describe('PPOM Utils', () => {
         validateRequestWithPPOMOptionsBase.request.method,
         SECURITY_ALERT_ID_MOCK,
         {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: BlockaidResultType.Errored,
           reason: BlockaidReason.errored,
           description: 'Test Error: Test error message',

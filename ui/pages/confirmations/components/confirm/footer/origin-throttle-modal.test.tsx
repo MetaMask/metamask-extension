@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureStore from 'redux-mock-store';
 import { screen, fireEvent } from '@testing-library/react';
@@ -7,6 +9,8 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import OriginThrottleModal from './origin-throttle-modal';
 
 const mockHideModal = jest.fn();

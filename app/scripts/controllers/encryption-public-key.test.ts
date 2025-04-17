@@ -6,6 +6,8 @@ import {
 } from '@metamask/message-manager';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import EncryptionPublicKeyController, {
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerOptions,
@@ -55,6 +57,8 @@ const createManagerMessengerMock = () =>
     subscribe: jest.fn(),
   } as unknown as jest.Mocked<EncryptionPublicKeyManagerMessenger>);
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const createEncryptionPublicKeyManagerMock = <T>() =>
   ({
     getUnapprovedMessages: jest.fn(),

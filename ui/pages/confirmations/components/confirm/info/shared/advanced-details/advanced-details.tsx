@@ -1,4 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsSmartTransaction } from '../../../../../../../../shared/modules/selectors';

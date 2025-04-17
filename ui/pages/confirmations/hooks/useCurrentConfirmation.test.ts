@@ -1,4 +1,5 @@
-// eslint-disable-next-line import/no-named-as-default
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line import/no-named-as-default, @typescript-eslint/naming-convention
 import Router from 'react-router-dom';
 
 import { AbstractMessage } from '@metamask/message-manager';
@@ -41,6 +42,8 @@ const TRANSACTION_MOCK = {
   type: TransactionType.contractInteraction,
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function arrayToIdMap<T>(array: T[]): Record<string, T> {
   return array.reduce(
     (acc, item) => ({

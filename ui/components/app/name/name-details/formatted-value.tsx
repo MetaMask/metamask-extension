@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { memo } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { NameType } from '@metamask/name-controller';

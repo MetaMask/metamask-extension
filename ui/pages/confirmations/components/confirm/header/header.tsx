@@ -2,6 +2,8 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import {
@@ -10,6 +12,8 @@ import {
   Box,
   Text,
 } from '../../../../../components/component-library';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Identicon from '../../../../../components/ui/identicon';
 import {
   AlignItems,
@@ -24,6 +28,8 @@ import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInf
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { Confirmation } from '../../../types/confirm';
 import { DAppInitiatedHeader } from './dapp-initiated-header';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import HeaderInfo from './header-info';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 

@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
@@ -9,9 +11,13 @@ import {
   Step,
 } from '../../../../shared/types/bridge-status';
 import { formatDate } from '../../../helpers/utils/util';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BridgeStepDescription, {
   getStepStatus,
 } from './bridge-step-description';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import StepProgressBarItem from './step-progress-bar-item';
 
 const getTime = (
@@ -35,6 +41,8 @@ type BridgeStepsProps = {
   networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function BridgeStepList({
   bridgeHistoryItem,
   srcChainTxMeta,

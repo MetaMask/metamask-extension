@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import type { ButtonIconProps } from '../button-icon/button-icon.types';
 import type { HeaderBaseStyleUtilityProps } from '../header-base';
@@ -6,6 +8,8 @@ import type { HeaderBaseStyleUtilityProps } from '../header-base';
  * Makes all props optional so that if a prop object is used not ALL required props need to be passed
  * TODO: Move to appropriate place in app as this will be highly reusable
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type MakePropsOptional<T> = {
   [K in keyof T]?: T[K];
 };

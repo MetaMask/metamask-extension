@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import thunk from 'redux-thunk';
 import { waitFor, fireEvent } from '@testing-library/react';
@@ -7,6 +9,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NewAccountModal from './new-account-modal.container';
 
 const mockOnCreateNewAccount = jest.fn();

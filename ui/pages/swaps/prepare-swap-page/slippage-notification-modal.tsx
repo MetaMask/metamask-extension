@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext, useState } from 'react';
 
 import { I18nContext } from '../../../contexts/i18n';
@@ -19,6 +21,8 @@ import {
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,
 } from '../../../../shared/constants/swaps';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 
 type Props = {
@@ -29,6 +33,8 @@ type Props = {
   currentSlippage: number;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SlippageNotificationModal({
   isOpen,
   slippageErrorKey,

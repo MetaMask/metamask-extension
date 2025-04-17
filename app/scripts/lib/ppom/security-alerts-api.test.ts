@@ -21,6 +21,8 @@ const REQUEST_MOCK = {
 };
 
 const RESPONSE_MOCK = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: BlockaidResultType.Errored,
   reason: BlockaidReason.maliciousDomain,
   description: 'Test Description',

@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -13,6 +15,8 @@ import {
 } from '../../hooks/useIsUpgradeTransaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionAccountDetails() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();

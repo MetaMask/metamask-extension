@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
@@ -12,6 +14,8 @@ import {
   getLatestMetricsEventTimestamp,
 } from '../../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import DeleteMetaMetricsDataButton from './delete-metametrics-data-button';
 
 jest.mock('react-redux', () => ({

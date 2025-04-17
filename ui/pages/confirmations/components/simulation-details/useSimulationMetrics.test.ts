@@ -160,6 +160,8 @@ describe('useSimulationMetrics', () => {
       expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         expect.objectContaining({
           properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             simulation_latency: LOADING_TIME_MOCK,
           }),
         }),
@@ -206,6 +208,8 @@ describe('useSimulationMetrics', () => {
           },
           expect.objectContaining({
             properties: expect.objectContaining({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               simulation_response: simulationResponse,
             }),
           }),
@@ -523,10 +527,20 @@ describe('useSimulationMetrics', () => {
         category: MetaMetricsEventCategory.Transactions,
         event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_address: ADDRESS_MOCK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_petname: PetnameType.Unknown,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_symbol: undefined,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_type: AssetType.ERC20,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           fiat_conversion_available: FiatType.Available,
           location: 'confirmation',
         },
@@ -550,10 +564,20 @@ describe('useSimulationMetrics', () => {
         category: MetaMetricsEventCategory.Transactions,
         event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_address: ADDRESS_MOCK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_petname: PetnameType.Saved,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_symbol: SYMBOL_MOCK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_type: AssetType.ERC20,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           fiat_conversion_available: FiatType.NotAvailable,
           location: 'confirmation',
         },

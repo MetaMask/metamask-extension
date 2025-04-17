@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -7,6 +9,8 @@ import {
 } from '../../../../../../../test/data/confirmations/helper';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SetApprovalForAllInfo from './set-approval-for-all-info';
 
 jest.mock('../../../../../../store/actions', () => ({

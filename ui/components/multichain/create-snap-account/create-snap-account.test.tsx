@@ -1,4 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
@@ -19,6 +21,8 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => {
     useMultichainWalletSnapClient: jest.fn().mockReturnValue({
       createAccount: mockCreateAccount,
     }),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __mockCreateAccount: mockCreateAccount,
   };
 });

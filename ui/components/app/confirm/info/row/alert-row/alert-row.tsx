@@ -1,8 +1,12 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useState } from 'react';
 import {
   Severity,
   TextColor,
 } from '../../../../../../helpers/constants/design-system';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
 import useAlerts from '../../../../../../hooks/useAlerts';
 import {

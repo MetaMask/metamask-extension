@@ -1,8 +1,12 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { createMockNotificationEthSent } from '@metamask/notification-services-controller/notification-services/mocks';
 import { processNotification } from '@metamask/notification-services-controller/notification-services';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as UseNotificationModule from '../../hooks/metamask-notifications/useNotifications';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import configureStore from '../../store/store';

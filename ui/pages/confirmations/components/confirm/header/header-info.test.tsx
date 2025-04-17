@@ -1,4 +1,6 @@
 import { fireEvent, waitFor } from '@testing-library/react';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 
@@ -14,6 +16,8 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import configureStore from '../../../../../store/store';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import HeaderInfo from './header-info';
 
 const mockStore = getMockTypedSignConfirmState();
@@ -28,7 +32,11 @@ const cases = [
       properties: {
         action: 'Confirm Screen',
         location: MetaMetricsEventLocation.SignatureConfirmation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         signature_type: 'eth_signTypedData_v4',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: 0,
       },
     },
@@ -42,7 +50,11 @@ const cases = [
       properties: {
         action: 'Confirm Screen',
         location: MetaMetricsEventLocation.Transaction,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         transaction_type: TransactionType.contractInteraction,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: 0,
       },
     },

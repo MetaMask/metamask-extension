@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
@@ -24,6 +26,8 @@ import {
 import { I18nContext } from '../../../../contexts/i18n';
 import { MetaMaskReduxState } from '../../../../store/store';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function TransactionAlreadyConfirmed() {
   const {
     hideModal,

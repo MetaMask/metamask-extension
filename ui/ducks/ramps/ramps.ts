@@ -2,6 +2,8 @@ import { createSelector } from 'reselect';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getUseExternalServices } from '../../selectors';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { getMultichainIsBitcoin } from '../../selectors/multichain';

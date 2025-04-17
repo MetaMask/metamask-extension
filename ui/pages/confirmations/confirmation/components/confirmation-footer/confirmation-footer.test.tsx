@@ -1,7 +1,13 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as AlertContext from '../../alerts/TemplateAlertContext';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ConfirmationFooter from './confirmation-footer';
 
 jest.mock('../../alerts/TemplateAlertContext', () => ({

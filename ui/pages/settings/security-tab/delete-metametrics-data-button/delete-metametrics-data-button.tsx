@@ -1,6 +1,10 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../../shared/lib/ui-utils';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ClearMetametricsData from '../../../../components/app/clear-metametrics-data';
 import {
   Box,
@@ -28,14 +32,20 @@ import {
   getLatestMetricsEventTimestamp,
 } from '../../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import DataDeletionErrorModal from '../../../../components/app/data-deletion-error-modal';
 import { formatDate } from '../../../../helpers/utils/util';
 import { DeleteRegulationStatus } from '../../../../../shared/constants/metametrics';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type DeleteMetaMetricsDataButtonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C>;
 
 type DeleteMetaMetricsDataButtonComponent = <
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType = 'div',
 >(
   props: DeleteMetaMetricsDataButtonProps<C>,
@@ -43,6 +53,8 @@ type DeleteMetaMetricsDataButtonComponent = <
 
 const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
   React.forwardRef(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     <C extends React.ElementType = 'div'>(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       { ...props }: DeleteMetaMetricsDataButtonProps<C>,

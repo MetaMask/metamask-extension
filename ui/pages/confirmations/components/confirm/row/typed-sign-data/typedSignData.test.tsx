@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import {
   rawMessageV4,
@@ -41,6 +43,8 @@ describe('ConfirmInfoRowTypedSignData', () => {
 
     mockRawMessageV4.message.do_not_display = 'one';
     mockRawMessageV4.message.do_not_display_2 = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       do_not_display: 'two',
     };
 

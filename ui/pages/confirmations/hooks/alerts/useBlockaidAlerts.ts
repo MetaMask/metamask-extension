@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BlockaidPackage from '@blockaid/ppom_release/package.json';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -13,6 +15,8 @@ import {
   SECURITY_PROVIDER_UTM_SOURCE,
 } from '../../../../../shared/constants/security-provider';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SIGNATURE_TRANSACTION_TYPES } from '../../utils';

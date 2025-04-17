@@ -45,6 +45,8 @@ type Caip25Permission = ValidPermission<
 >;
 
 const PermissionNames = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_accounts: 'eth_accounts',
   permittedChains: 'endowment:permitted-chains',
 } as const;

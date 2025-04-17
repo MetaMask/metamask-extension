@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { ReactChildren, ReactElement } from 'react';
 
 import { ConfirmContextProvider } from '../../../ui/pages/confirmations/context/confirm';

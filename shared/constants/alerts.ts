@@ -1,7 +1,15 @@
 export enum AlertTypes {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   unconnectedAccount = 'unconnectedAccount',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   web3ShimUsage = 'web3ShimUsage',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   invalidCustomNetwork = 'invalidCustomNetwork',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   smartTransactionsMigration = 'smartTransactionsMigration',
 }
 
@@ -15,6 +23,10 @@ export const TOGGLEABLE_ALERT_TYPES = [
 ];
 
 export enum Web3ShimUsageAlertStates {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   recorded = 1,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   dismissed = 2,
 }

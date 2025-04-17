@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useMemo } from 'react';
 import {
   DecodingDataChangeType,
@@ -12,8 +14,14 @@ import { Text } from '../../../../../../../../components/component-library';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../../context/confirm';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import TokenValueDisplay from '../value-display/value-display';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NativeValueDisplay from '../native-value-display/native-value-display';
 
 export enum StateChangeType {

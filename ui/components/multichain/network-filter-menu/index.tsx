@@ -1,4 +1,6 @@
 import { IconName } from '@metamask/snaps-sdk/jsx';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useRef } from 'react';
 import {
   BackgroundColor,
@@ -12,6 +14,8 @@ import {
 import { Popover, PopoverPosition } from '../../component-library/popover';
 import { Box } from '../../component-library';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NetworkFilter from '../../app/assets/asset-list/network-filter';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 

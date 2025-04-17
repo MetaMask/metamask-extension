@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import {
   TransactionMeta,
@@ -16,6 +18,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Segment from './segment';
 
 const getTxIndex = (srcTxStatus: StatusTypes) => {
@@ -60,6 +64,8 @@ const getDestTxStatus = ({
  * @param options.bridgeTxHistoryItem - The bridge history item for the transaction
  * @param options.transactionGroup - The transaction group for the transaction
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function BridgeActivityItemTxSegments({
   bridgeTxHistoryItem,
   transactionGroup,

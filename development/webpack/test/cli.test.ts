@@ -17,6 +17,8 @@ describe('./utils/cli.ts', () => {
     zip: false,
     minify: false,
     browser: ['chrome'],
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: 2,
     type: 'main',
     lavamoat: false,

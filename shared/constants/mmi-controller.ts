@@ -21,8 +21,11 @@ import { RestrictedMessenger } from '@metamask/base-controller';
 // eslint-disable-next-line import/no-restricted-paths
 import { AppStateController } from '../../app/scripts/controllers/app-state-controller';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line import/no-restricted-paths, @typescript-eslint/naming-convention
 import AccountTrackerController from '../../app/scripts/controllers/account-tracker-controller';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import MetaMetricsController, {
   MetaMetricsControllerGetStateAction,
   // TODO: Remove restricted import
@@ -141,6 +144,8 @@ export type Label = {
 };
 
 export type Signature = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   custodian_transactionId?: string;
   from: string;
 };

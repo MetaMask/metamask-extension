@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import classnames from 'classnames';
 import { Box } from '../../../components/component-library';
@@ -8,6 +10,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { StatusTypes } from '../../../../shared/types/bridge-status';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Segment({ type }: { type: StatusTypes | null }) {
   return (
     <Box

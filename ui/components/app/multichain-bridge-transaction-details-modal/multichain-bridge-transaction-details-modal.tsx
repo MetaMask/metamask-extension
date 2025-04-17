@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
@@ -68,6 +70,8 @@ type MultichainBridgeTransactionDetailsModalProps = {
   onClose: () => void;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function MultichainBridgeTransactionDetailsModal({
   transaction,
   onClose,
@@ -555,8 +559,12 @@ function MultichainBridgeTransactionDetailsModal({
                 event: MetaMetricsEventName.ExternalLinkClicked,
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   link_type: MetaMetricsEventLinkType.AccountTracker,
                   location: 'Transaction Details',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   url_domain: getURLHostName(getTransactionUrl(id, chain)),
                 },
               });

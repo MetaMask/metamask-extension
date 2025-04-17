@@ -1,8 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback, useState } from 'react';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useConfirmContext } from '../../../../../context/confirm';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import EditGasPopover from '../../../../edit-gas-popover';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
 import { GasFeesDetails } from '../gas-fees-details/gas-fees-details';

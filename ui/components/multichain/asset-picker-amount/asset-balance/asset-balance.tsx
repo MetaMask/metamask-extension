@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { Box, Text } from '../../../component-library';
 import {
@@ -14,6 +16,8 @@ type AssetBalanceProps = {
   asset: Asset;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetBalance({ asset, error }: AssetBalanceProps) {
   const t = useI18nContext();
 

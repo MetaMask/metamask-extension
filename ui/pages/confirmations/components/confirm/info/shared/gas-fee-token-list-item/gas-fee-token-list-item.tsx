@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { GasFeeToken } from '@metamask/transaction-controller';
 import classnames from 'classnames';
@@ -38,6 +40,8 @@ export type GasFeeTokenListItemProps = {
   onClick?: (token: GasFeeToken) => void;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenListItem({
   tokenAddress,
   isSelected,
@@ -78,6 +82,8 @@ export function GasFeeTokenListItem({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ListItem({
   image,
   leftPrimary,
@@ -164,6 +170,8 @@ function ListItem({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function InsufficientBalanceIndicator() {
   const t = useI18nContext();
 
@@ -189,6 +197,8 @@ function InsufficientBalanceIndicator() {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function SelectedIndicator() {
   return (
     <Box

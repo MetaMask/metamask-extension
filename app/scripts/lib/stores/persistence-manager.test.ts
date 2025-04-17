@@ -3,6 +3,8 @@ import { captureException } from '@sentry/browser';
 import log from 'loglevel';
 
 import { PersistenceManager } from './persistence-manager';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
 

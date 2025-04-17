@@ -1,6 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck types are very broken
 import browser from 'webextension-polyfill';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NotificationManager from './notification-manager';
 
 function generateMockWindow(overrides?: object) {

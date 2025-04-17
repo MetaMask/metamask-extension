@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -26,7 +28,11 @@ import {
 import { t } from '../../../../../app/scripts/translate';
 import { DestinationAccount } from '../types';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import DestinationAccountListItem from './destination-account-list-item';
 import { ExternalAccountListItem } from './external-account-list-item';
 

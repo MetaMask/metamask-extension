@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import {
@@ -19,6 +21,8 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Box from '.';
 
 describe('Box', () => {

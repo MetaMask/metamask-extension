@@ -1,9 +1,13 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import mockState from '../../../test/data/mock-state.json';
 import { shortenAddress } from '../../helpers/utils/util';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import RemoveSnapAccount from './remove-snap-account';
 
 const defaultProps = {

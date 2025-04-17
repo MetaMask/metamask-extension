@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -16,10 +18,14 @@ import {
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import CurrencyInput from '../../../app/currency-input';
 import { getIsFiatPrimary } from '../utils';
 import { NFTInput } from '../nft-input/nft-input';
 import useTokenExchangeRate from '../../../app/currency-input/hooks/useTokenExchangeRate';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SwapIcon from './swap-icon';
 
 type BaseProps = {
@@ -70,6 +76,8 @@ type SwappableCurrencyInputProps =
   | NativeTokenProps
   | UnsupportedTokenProps;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SwappableCurrencyInput({
   assetType,
   asset,

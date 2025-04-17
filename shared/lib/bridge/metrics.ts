@@ -18,8 +18,14 @@ export const getConvertedUsdAmounts = ({
     activeQuote?.sentAmount?.usd ?? fromAmountInputValueInUsd;
 
   return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     usd_amount_source: fromAmountInUsd.toNumber(),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     usd_quoted_gas: activeQuote?.gasFee.usd?.toNumber() ?? 0,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     usd_quoted_return: activeQuote?.toTokenAmount?.usd?.toNumber() ?? 0,
   };
 };

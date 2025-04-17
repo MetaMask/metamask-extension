@@ -1,6 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as TokenActions from '../utils/token';
 import { useGetTokenStandardAndDetails } from './useGetTokenStandardAndDetails';
 

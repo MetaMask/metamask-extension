@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { DefaultRootState } from 'react-redux';
 import { getMockTokenTransferConfirmState } from '../../../../../../test/data/confirmations/helper';

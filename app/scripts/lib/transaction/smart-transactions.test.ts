@@ -4,6 +4,8 @@ import {
   TransactionController,
 } from '@metamask/transaction-controller';
 import { Messenger } from '@metamask/base-controller';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SmartTransactionsController, {
   SmartTransactionsControllerMessenger,
 } from '@metamask/smart-transactions-controller';

@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -86,6 +88,8 @@ const renderNotification = ({
   );
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);

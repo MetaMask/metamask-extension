@@ -17,6 +17,8 @@ import type {
 } from '../../../../shared/constants/metametrics';
 import { fetchTradesInfo as defaultFetchTradesInfo } from '../../../../shared/lib/swaps-utils';
 import { controllerName } from './swaps.constants';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SwapsController from '.';
 
 export type SwapsControllerState = {

@@ -1,4 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { NOTIFICATION_SOLANA_ON_METAMASK } from '../../../../shared/notifications';
@@ -7,6 +9,8 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import { useMultichainWalletSnapClient } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import configureStore from '../../../store/store';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import WhatsNewModal from './whats-new-modal';
 
 jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({

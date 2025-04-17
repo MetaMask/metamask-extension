@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 import type {
@@ -18,9 +20,13 @@ export interface ModalBodyStyleUtilityProps extends StyleUtilityProps {
   children?: React.ReactNode;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalBodyProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ModalBodyStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalBodyComponent = <C extends React.ElementType = 'span'>(
   props: ModalBodyProps<C>,
 ) => React.ReactElement | null;

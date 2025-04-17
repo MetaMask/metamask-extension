@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';

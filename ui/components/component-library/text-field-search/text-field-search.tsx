@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -12,6 +14,8 @@ import {
 } from './text-field-search.types';
 
 export const TextFieldSearch: TextFieldSearchComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'input'>(
     {
       className = '',

@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -37,19 +39,25 @@ function useNotificationAccounts() {
   const accountAddresses = useSelector(getValidNotificationAccounts);
   const internalAccounts = useSelector(getInternalAccounts);
   const accounts = useMemo(() => {
-    return accountAddresses
-      .map((addr) => {
-        const account = internalAccounts.find(
-          (a) => a.address.toLowerCase() === addr.toLowerCase(),
-        );
-        return account;
-      })
-      .filter(<T,>(val: T | undefined): val is T => Boolean(val));
+    return (
+      accountAddresses
+        .map((addr) => {
+          const account = internalAccounts.find(
+            (a) => a.address.toLowerCase() === addr.toLowerCase(),
+          );
+          return account;
+        })
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        .filter(<T,>(val: T | undefined): val is T => Boolean(val))
+    );
   }, [accountAddresses, internalAccounts]);
 
   return accounts;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NotificationsSettings() {
   const history = useHistory();
   const location = useLocation();

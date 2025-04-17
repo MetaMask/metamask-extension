@@ -1,4 +1,6 @@
 import { BigNumber } from 'bignumber.js';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BN from 'bn.js';
 import { isHexString, isNullOrUndefined } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';

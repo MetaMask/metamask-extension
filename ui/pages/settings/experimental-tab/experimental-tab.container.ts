@@ -27,6 +27,8 @@ import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
 } from '../../../store/store';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ExperimentalTab from './experimental-tab.component';
 
 const mapStateToProps = (state: MetaMaskReduxState) => {

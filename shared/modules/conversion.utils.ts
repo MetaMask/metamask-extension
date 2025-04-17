@@ -1,5 +1,7 @@
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BN from 'bn.js';
 import { addHexPrefix } from 'ethereumjs-util';
 import { EtherDenomination } from '../constants/common';

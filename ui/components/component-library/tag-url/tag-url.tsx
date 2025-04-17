@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import classnames from 'classnames';
 import {
@@ -17,6 +19,8 @@ import { Icon, IconName, IconSize } from '../icon';
 import { TagUrlComponent, TagUrlProps } from './tag-url.types';
 
 export const TagUrl: TagUrlComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       label,

@@ -1,5 +1,7 @@
 // eslint-disable-next-line spaced-comment
 /// <reference types="@welldone-software/why-did-you-render" />
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 
 if (process.env.ENABLE_WHY_DID_YOU_RENDER) {

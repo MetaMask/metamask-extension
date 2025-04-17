@@ -72,6 +72,8 @@ function addAssetToZip(
  * this.options.transform function to modify the manifest before collecting the
  * entry points.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export class ManifestPlugin<Z extends boolean> {
   /**
    * File types that can be compressed well using DEFLATE compression, used when

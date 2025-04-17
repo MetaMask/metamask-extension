@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { ReactElement } from 'react';
 import { AlertActionHandlerProvider } from '../../../../../components/app/alert-system/contexts/alertActionHandler';
 import useConfirmationAlertActions from '../../../hooks/useConfirmationAlertActions';

@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useCallback } from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';

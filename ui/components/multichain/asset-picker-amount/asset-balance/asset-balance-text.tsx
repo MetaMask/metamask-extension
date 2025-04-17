@@ -1,6 +1,10 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Text } from '../../../component-library';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { Asset } from '../../../../ducks/send';
@@ -11,6 +15,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import CurrencyDisplay from '../../../ui/currency-display';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
@@ -26,6 +32,8 @@ export type AssetBalanceTextProps = {
   error?: string;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetBalanceText({
   asset,
   balanceColor,

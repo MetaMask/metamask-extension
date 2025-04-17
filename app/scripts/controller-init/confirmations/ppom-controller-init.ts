@@ -3,6 +3,8 @@ import {
   PPOMControllerMessenger,
 } from '@metamask/ppom-validator';
 import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import * as PPOMModule from '../../lib/ppom/ppom';
 import { ControllerInitFunction } from '../types';
 import { PPOMControllerInitMessenger } from '../messengers/ppom-controller-messenger';

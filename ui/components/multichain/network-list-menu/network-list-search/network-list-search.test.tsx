@@ -1,6 +1,10 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NetworkListSearch from './network-list-search';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({

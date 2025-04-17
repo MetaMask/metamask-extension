@@ -1,8 +1,14 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Fuse from 'fuse.js';
 import { Box, Text } from '../../../../component-library';
 import { I18nContext } from '../../../../../contexts/i18n';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ContactList from '../../../../app/contact-list';
 import {
   getAddressBook,

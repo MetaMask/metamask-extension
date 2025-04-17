@@ -12,6 +12,8 @@ import { v4 as random } from 'uuid';
 import log from 'loglevel';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { cloneDeep } from 'lodash';
 import {

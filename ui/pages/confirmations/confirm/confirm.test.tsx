@@ -1,4 +1,6 @@
 import { act } from '@testing-library/react';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -19,6 +21,8 @@ import * as actions from '../../../store/actions';
 import { useAssetDetails } from '../hooks/useAssetDetails';
 import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import Confirm from './confirm';
 
 jest.mock('react-router-dom', () => ({

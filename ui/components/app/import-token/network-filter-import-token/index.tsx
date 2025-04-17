@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TextVariant } from '../../../../helpers/constants/design-system';
@@ -7,6 +9,8 @@ import {
   PopoverPosition,
   Label,
 } from '../../../component-library';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import NetworkFilter from '../../assets/asset-list/network-filter';
 import {
   getCurrentNetwork,

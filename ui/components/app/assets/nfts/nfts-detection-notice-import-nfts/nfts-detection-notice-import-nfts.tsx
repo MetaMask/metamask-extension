@@ -1,4 +1,8 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { BannerAlert } from '../../../../component-library';
@@ -9,6 +13,8 @@ type NftsDetectionNoticeImportNFTsProps = {
   onActionButtonClick: () => void;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftsDetectionNoticeImportNFTs({
   onActionButtonClick,
 }: NftsDetectionNoticeImportNFTsProps) {

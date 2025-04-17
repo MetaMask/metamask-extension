@@ -1,5 +1,7 @@
 import log from 'loglevel';
 import nock from 'nock';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ReadOnlyNetworkStore from './read-only-network-store';
 
 const FIXTURE_SERVER_HOST = 'localhost';

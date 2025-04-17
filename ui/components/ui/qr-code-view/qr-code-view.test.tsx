@@ -1,7 +1,11 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import QRCodeView from './qr-code-view';
 
 const mockEthAddress = '0x467060a50CB7bBd2209017323b794130184195a0';
@@ -11,7 +15,9 @@ const render = (
   {
     Qr,
     warning,
-  }: { Qr: { message: string; data: string }; warning: null | string } = {
+  }: // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  { Qr: { message: string; data: string }; warning: null | string } = {
     Qr: { data: mockEthAddress, message: '' },
     warning: '',
   },

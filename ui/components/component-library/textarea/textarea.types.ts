@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import type {
   PolymorphicComponentPropWithRef,
@@ -98,9 +100,13 @@ export interface TextareaStyleUtilityProps extends StyleUtilityProps {
   value?: string | number;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TextareaProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, TextareaStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TextareaComponent = <C extends React.ElementType = 'textarea'>(
   props: TextareaProps<C>,
 ) => React.ReactElement | null;

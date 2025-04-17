@@ -1,4 +1,6 @@
 import { NetworkConfiguration } from '@metamask/network-controller';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { useContext } from 'react';
 import type { Hex } from '@metamask/utils';
 import {
@@ -60,6 +62,8 @@ type ExplorerLinksProps = {
   destBlockExplorerUrl?: string;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function BridgeExplorerLinks({
   srcChainId,
   destChainId,

@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React from 'react';
 import type { BannerBaseStyleUtilityProps } from '../banner-base/banner-base.types';
 import type { PolymorphicComponentPropWithRef } from '../box';
@@ -24,9 +26,13 @@ export interface BannerAlertStyleUtilityProps
   severity?: BannerAlertSeverity;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerAlertProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, BannerAlertStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerAlertComponent = <C extends React.ElementType = 'div'>(
   props: BannerAlertProps<C>,
 ) => React.ReactElement | null;

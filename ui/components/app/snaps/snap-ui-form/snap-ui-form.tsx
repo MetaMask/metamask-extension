@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import React, { FormEvent, FunctionComponent } from 'react';
 import { UserInputEventType } from '@metamask/snaps-sdk';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';

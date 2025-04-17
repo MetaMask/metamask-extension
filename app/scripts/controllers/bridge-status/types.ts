@@ -16,6 +16,8 @@ import {
   BridgeStatusControllerState,
 } from '../../../../shared/types/bridge-status';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './constants';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import BridgeStatusController from './bridge-status-controller';
 
 // Actions
