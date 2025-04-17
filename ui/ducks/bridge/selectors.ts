@@ -379,12 +379,10 @@ export const getIsQuoteExpired = (
 export const getBridgeQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
-    ({ bridge: { sortOrder, selectedQuote } }: BridgeAppState) => ({
-      sortOrder,
-      selectedQuote,
-    }),
+    ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
+    ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (controllerStates, { sortOrder, selectedQuote }) =>
+  (controllerStates, sortOrder, selectedQuote) =>
     selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,

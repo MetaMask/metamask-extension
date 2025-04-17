@@ -10,6 +10,7 @@ import {
   BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { Numeric, NumericValue } from '../../../shared/modules/Numeric';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -19,7 +20,6 @@ import {
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../useMultichainTransactionDisplay';
-import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 
 /**
  * Defines the structure for additional bridge-related information added to transactions.

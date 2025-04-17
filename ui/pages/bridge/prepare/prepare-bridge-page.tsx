@@ -475,7 +475,17 @@ const PrepareBridgePage = () => {
 
   return (
     <>
-      <Column className="prepare-bridge-page" gap={8}>
+      <Column
+        className="prepare-bridge-page"
+        gap={6}
+        //       style={{
+
+        // .multichain-page-content::-webkit-scrollbar {
+        //   display: none;
+        // }
+
+        //     }}
+      >
         <BridgeInputGroup
           header={isSwap ? t('swapSwapFrom') : t('bridgeFrom')}
           token={fromToken}

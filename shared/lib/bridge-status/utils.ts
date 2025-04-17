@@ -1,14 +1,10 @@
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { StatusRequest, StatusTypes } from '@metamask/bridge-status-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import {
-  QuoteMetadataSerialized,
-  StatusRequest,
-  StatusTypes,
-} from '../../types/bridge-status';
 
 export const serializeQuoteMetadata = (
   quoteResponse: QuoteResponse & QuoteMetadata,
-): QuoteResponse & QuoteMetadataSerialized => {
+): QuoteResponse & QuoteMetadata => {
   return {
     ...quoteResponse,
     sentAmount: {
@@ -144,7 +140,7 @@ export const getInitialHistoryItem = ({
   account,
   statusRequest,
 }: {
-  quoteResponse: QuoteResponse & QuoteMetadataSerialized;
+  quoteResponse: QuoteResponse & QuoteMetadata;
   bridgeTxMetaId: string;
   startTime: number | undefined;
   slippagePercentage: number;

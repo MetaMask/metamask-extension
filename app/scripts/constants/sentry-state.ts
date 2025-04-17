@@ -136,9 +136,7 @@ export const SENTRY_BACKGROUND_STATE = {
     quotesRefreshCount: true,
   },
   BridgeStatusController: {
-    bridgeStatusState: {
-      txHistory: false,
-    },
+    txHistory: false,
   },
   CronjobController: {
     jobs: false,

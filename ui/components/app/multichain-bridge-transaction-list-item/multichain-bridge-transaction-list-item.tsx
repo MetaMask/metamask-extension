@@ -7,7 +7,7 @@ import {
   isBridgeComplete,
   isBridgeFailed,
 } from '../../../../shared/lib/bridge-status/utils';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '@metamask/bridge-status-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
