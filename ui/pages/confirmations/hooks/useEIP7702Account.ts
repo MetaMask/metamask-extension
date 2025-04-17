@@ -54,6 +54,32 @@ export function useEIP7702Account({
     [dispatch, globalNetworkClientId],
   );
 
+  const upgradeAccount = useCallback(
+    async (address: Hex, upgradeContractAddress: Hex) => {
+      const transactionMeta = (await dispatch(
+        addTransactionAndRouteToConfirmationPage(
+          {
+            authorizationList: [
+              {
+                address: upgradeContractAddress,
+              },
+            ],
+            from: address,
+            to: address,
+            type: TransactionEnvelopeType.setCode,
+          },
+          {
+            networkClientId: globalNetworkClientId,
+            type: TransactionType.batch,
+          },
+        ),
+      )) as unknown as TransactionMeta;
+
+      setTransactionId(transactionMeta?.id);
+    },
+    [dispatch, globalNetworkClientId],
+  );
+
   const isUpgraded = useCallback(
     async (address: Hex) => {
       const code = await getCode(address, globalNetworkClientId);
@@ -69,5 +95,5 @@ export function useEIP7702Account({
     }
   }, [isRedirectPending, navigateToId, transactionId, onRedirect]);
 
-  return { isUpgraded, downgradeAccount };
+  return { isUpgraded, downgradeAccount, upgradeAccount };
 }
