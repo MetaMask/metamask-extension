@@ -5,11 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Changed
-- Updates the Solana modal by adding a learn more link, UI tweaks, and auto selects a solana account when it exists. ([#32087](https://github.com/MetaMask/metamask-extension/pull/32087))
-
 ### Added
 - Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
+
+### Changed
+- Updates the Solana modal by adding a learn more link, UI tweaks, and auto selects a solana account when it exists. ([#32087](https://github.com/MetaMask/metamask-extension/pull/32087))
 
 ## [12.15.2]
 ### Added
