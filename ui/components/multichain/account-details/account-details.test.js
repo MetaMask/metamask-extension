@@ -19,6 +19,10 @@ import { AccountDetails } from '.';
 
 jest.mock('../../../store/actions.ts');
 
+jest.mock('../../../pages/confirmations/hooks/useEIP7702Networks', () => ({
+  useEIP7702Networks: () => ({ pending: false }),
+}));
+
 describe('AccountDetails', () => {
   const account = Object.values(
     mockState.metamask.internalAccounts.accounts,
@@ -64,9 +68,7 @@ describe('AccountDetails', () => {
   });
 
   it('shows export private key contents and password field when clicked', () => {
-    const { queryByText, queryByPlaceholderText, getByTestId, getByRole } =
-      render();
-    fireEvent.click(getByRole('button', { name: 'Details' }));
+    const { queryByText, queryByPlaceholderText, getByTestId } = render();
 
     const exportPrivateKeyButton = getByTestId(
       'account-details-display-export-private-key',
@@ -84,9 +86,7 @@ describe('AccountDetails', () => {
   it('attempts to validate password when submitted', async () => {
     const password = 'password';
 
-    const { queryByPlaceholderText, queryByText, getByTestId, getByRole } =
-      render();
-    fireEvent.click(getByRole('button', { name: 'Details' }));
+    const { queryByPlaceholderText, queryByText, getByTestId } = render();
 
     const exportPrivateKeyButton = getByTestId(
       'account-details-display-export-private-key',
@@ -142,8 +142,7 @@ describe('AccountDetails', () => {
   });
 
   it("shows the `Show Secret Recovery Phrase` button when the account's type is a HD Keyring", () => {
-    const { getByTestId, getByRole } = render();
-    fireEvent.click(getByRole('button', { name: 'Details' }));
+    const { getByTestId } = render();
 
     const showSRPButton = getByTestId('account-details-display-export-srp');
 
@@ -151,8 +150,7 @@ describe('AccountDetails', () => {
   });
 
   it('shows srp flow when the `Show Secret Recovery Phrase` button is clicked', async () => {
-    const { getByTestId, getByRole } = render();
-    fireEvent.click(getByRole('button', { name: 'Details' }));
+    const { getByTestId } = render();
 
     const showSRPButton = getByTestId('account-details-display-export-srp');
     fireEvent.click(showSRPButton);
