@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changes in account modal to switch to smart account type ([#31899](https://github.com/MetaMask/metamask-extension/pull/31899))
 - Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
 - [Beta] Create Solana account automatically on wallet creation or SRP import [#32038](https://github.com/MetaMask/metamask-extension/pull/32038)
+- Adds the Solana banner/slide to the existing home carousel ([#32000](https://github.com/MetaMask/metamask-extension/pull/32000))
 
 ## [12.15.2]
 ### Added
