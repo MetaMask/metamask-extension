@@ -50,9 +50,8 @@ export const AccountNetwork = ({
       if (prevHasPendingRequests.current !== hasPendingRequests) {
         setAddressSupportSmartAccount(!addressSupportSmartAccount);
       }
-    } else {
-      prevHasPendingRequests.current = hasPendingRequests;
     }
+    prevHasPendingRequests.current = hasPendingRequests;
   }, [addressSupportSmartAccount, hasPendingRequests, prevHasPendingRequests]);
 
   const onSwitch = useCallback(async () => {
