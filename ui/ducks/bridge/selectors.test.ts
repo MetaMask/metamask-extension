@@ -6,7 +6,7 @@ import {
   SortOrder,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';

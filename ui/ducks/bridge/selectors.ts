@@ -29,6 +29,16 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import type {
+  CurrencyRateState,
+  MultichainAssetsControllerState,
+  MultichainAssetsRatesControllerState,
+  MultichainBalancesControllerState,
+  RatesControllerState,
+  TokenRatesControllerState,
+} from '@metamask/assets-controllers';
+import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import {
   MultichainNetworks,
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
@@ -82,14 +92,16 @@ import type { BridgeState } from './bridge';
 export type BridgeAppState = {
   metamask: BridgeControllerState &
     NetworkState &
-    AccountsControllerState & {
+    AccountsControllerState &
+    MultichainAssetsRatesControllerState &
+    TokenRatesControllerState &
+    RatesControllerState &
+    MultichainBalancesControllerState &
+    MultichainTransactionsControllerState &
+    MultichainAssetsControllerState &
+    MultichainNetworkControllerState &
+    CurrencyRateState & {
       useExternalServices: boolean;
-      currencyRates: {
-        [currency: string]: {
-          conversionRate: number;
-          usdConversionRate?: number;
-        };
-      };
     };
   bridge: BridgeState;
 };
