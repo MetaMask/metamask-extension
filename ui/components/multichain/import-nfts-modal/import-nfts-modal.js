@@ -1,6 +1,6 @@
 import { isValidHexAddress } from '@metamask/controller-utils';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getErrorMessage } from '../../../../shared/modules/error';
@@ -68,6 +68,7 @@ import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
 import { NetworkListItem } from '../network-list-item';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
+import { Logger } from 'concurrently';
 
 const ACTION_MODES = {
   // Displays the import nft modal
@@ -101,9 +102,10 @@ export const ImportNftsModal = ({ onClose }) => {
 
   const [selectedNetworkForCustomImport, setSelectedNetworkForCustomImport] =
     useState(null);
+  const [selectedNetworkClientId, setSelectedNetworkClientIdForCustomImport] =
+    useState(null);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
@@ -112,7 +114,8 @@ export const ImportNftsModal = ({ onClose }) => {
   const handleAddNft = async () => {
     try {
       await dispatch(
-        addNftVerifyOwnership(nftAddress, tokenId, networkClientId),
+        // selectedNetworkClientId is for the network the NFT is on, not the globally selected network of the wallet
+        addNftVerifyOwnership(nftAddress, tokenId, selectedNetworkClientId),
       );
       const newNftDropdownState = {
         ...nftsDropdownState,
@@ -195,6 +198,10 @@ export const ImportNftsModal = ({ onClose }) => {
     setTokenId(val);
   };
 
+  const handleNetworkSelect = useCallback(() => {
+    setActionMode(ACTION_MODES.NETWORK_SELECTOR);
+  }, []);
+
   if (actionMode === ACTION_MODES.NETWORK_SELECTOR) {
     return (
       <Modal isOpen>
@@ -227,7 +234,13 @@ export const ImportNftsModal = ({ onClose }) => {
                     iconSize={AvatarNetworkSize.Sm}
                     focus={false}
                     onClick={() => {
+                      const nftNetworkClientId =
+                        network.rpcEndpoints[network.defaultRpcEndpointIndex]
+                          .networkClientId;
                       setSelectedNetworkForCustomImport(network.chainId);
+                      setSelectedNetworkClientIdForCustomImport(
+                        nftNetworkClientId,
+                      );
                       setNftAddress('');
                       setTokenId('');
 
@@ -295,9 +308,7 @@ export const ImportNftsModal = ({ onClose }) => {
               }
               buttonDataTestId="test-import-tokens-drop-down-custom-import"
               chainId={selectedNetworkForCustomImport}
-              onSelectNetwork={() =>
-                setActionMode(ACTION_MODES.NETWORK_SELECTOR)
-              }
+              onSelectNetwork={handleNetworkSelect}
             />
             <Box marginRight={4} marginLeft={4}>
               <Box
