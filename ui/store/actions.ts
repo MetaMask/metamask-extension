@@ -54,7 +54,7 @@ import {
 } from '@metamask/delegation-controller';
 import {
   getDeleGatorEnvironment,
-  UnsignedDelegation,
+  type UnsignedDelegation,
 } from '@metamask/delegation-toolkit';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
