@@ -49,8 +49,8 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import {
-  DelegationEntry,
-  DelegationFilter,
+  type DelegationEntry,
+  type DelegationFilter,
 } from '@metamask/delegation-controller';
 import {
   getDeleGatorEnvironment,
