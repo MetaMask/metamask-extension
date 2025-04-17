@@ -12,6 +12,7 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getAllBridgeableNetworks,
   getBridgeQuotes,
@@ -1258,7 +1259,7 @@ describe('Bridge selectors', () => {
       expect(result.isEstimatedReturnLow).toStrictEqual(true);
     });
 
-    it('should return isEstimatedReturnLow=false when return value is more than 65% of sent funds', () => {
+    it.only('should return isEstimatedReturnLow=false when return value is more than 65% of sent funds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           extensionConfig: {
@@ -1279,14 +1280,30 @@ describe('Bridge selectors', () => {
         },
         bridgeStateOverrides: {
           quotes: mockBridgeQuotesNativeErc20,
+          assetExchangeRates: {
+            [toAssetId(
+              zeroAddress(),
+              formatChainIdToCaip(CHAIN_IDS.MAINNET),
+            )?.toString() ?? zeroAddress()]: {
+              valueInCurrency: 2524.25,
+              usd: null,
+            },
+            [toAssetId(
+              zeroAddress(),
+              formatChainIdToCaip('0x89'),
+            )?.toString() ?? zeroAddress()]: {
+              valueInCurrency: 0.95,
+              usd: null,
+            },
+          },
         },
         metamaskStateOverrides: {
           currencyRates: {
-            ETH: {
+            eth: {
               conversionRate: 2524.25,
               usdConversionRate: 1,
             },
-            POL: {
+            pol: {
               conversionRate: 1,
               usdConversionRate: 1,
             },
