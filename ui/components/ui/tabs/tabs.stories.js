@@ -1,18 +1,10 @@
 import React from 'react';
-import Tabs from './tabs.component';
 import Tab from './tab/tab.component';
+import Tabs from './tabs.component';
 
 export default {
   title: 'Components/UI/Tabs',
   component: Tabs,
-  parameters: {
-    docs: {
-      description: {
-        component:
-          'Tabs component with support for disabled state. Disabled tabs cannot be clicked and have a muted appearance.',
-      },
-    },
-  },
 };
 
 export const Default = {
