@@ -1,10 +1,10 @@
 import 'fake-indexeddb/auto';
-import { DB } from './indexeddb-store'; // Adjust the import path to your file
+import { IndexedDBStore } from './indexeddb-store'; // Adjust the import path to your file
 
 describe('IndexedDBStore', () => {
   const dbName = 'test-db';
   const dbVersion = 1;
-  let db: DB;
+  let db: IndexedDBStore;
 
   // Ensure a clean state before each test by deleting the database
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('IndexedDBStore', () => {
     });
   });
   beforeEach(() => {
-    db = new DB();
+    db = new IndexedDBStore();
   });
   afterEach(() => {
     db?.close();
@@ -37,7 +37,7 @@ describe('IndexedDBStore', () => {
     it('handles opening errors', async () => {
       await db.open(dbName, dbVersion + 1);
       db.close();
-      db = new DB();
+      db = new IndexedDBStore();
       // trigger a "VersionError" by trying to open the database with a
       // an _earlier_ different version number
       await expect(db.open(dbName, dbVersion)).rejects.toThrow(Error);
@@ -47,7 +47,7 @@ describe('IndexedDBStore', () => {
       await db.open(dbName, dbVersion);
       await db.set({ key: 'value' });
       db.close();
-      db = new DB();
+      db = new IndexedDBStore();
       await db.open(dbName, dbVersion + 1);
       const [value] = (await db.get(['key'])) as string[];
       expect(value).toBe('value');

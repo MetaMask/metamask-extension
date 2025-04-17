@@ -3,13 +3,39 @@ import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
+import { OnboardingControllerState } from '../../controllers/onboarding';
+import { PreferencesControllerState } from '../../controllers/preferences-controller';
+import { AppStateControllerState } from '../../controllers/app-state-controller';
+import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,
   BaseStore,
   MetaData,
 } from './base-store';
-import { DB } from './indexeddb-store';
+
+export type Backup = {
+  KeyringController?: KeyringControllerState;
+  OnboardingController?: OnboardingControllerState;
+  PreferencesController?: PreferencesControllerState;
+  AppStateController?: AppStateControllerState;
+};
+
+function makeBackup(state?: MetaMaskStateType): Backup {
+  return {
+    KeyringController: state?.KeyringController,
+    OnboardingController: state?.OnboardingController,
+    PreferencesController: state?.PreferencesController,
+    AppStateController: state?.AppStateController,
+  } as Backup;
+}
+
+function hasVault(state?: MetaMaskStateType): state is MetaMaskStateType {
+  const keyringController = state?.KeyringController as
+    | KeyringControllerState
+    | undefined;
+  return Boolean(keyringController?.vault);
+}
 
 const STATE_LOCK = 'state-lock';
 
@@ -71,18 +97,20 @@ export class PersistenceManager {
 
   #localStore: BaseStore;
 
-  #db: DB;
+  #backupDb: IndexedDBStore;
+
+  #backup?: string;
 
   #open: boolean = false;
 
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
-    this.#db = new DB();
+    this.#backupDb = new IndexedDBStore();
   }
 
   async open() {
     if (!this.#open) {
-      await this.#db.open('metamask-vault', 1);
+      await this.#backupDb.open('metamask-backup', 1);
       this.#open = true;
     }
   }
@@ -123,17 +151,16 @@ export class PersistenceManager {
             meta,
           });
 
-          // back up the vault in IndexedDB
-          const keyringController =
-            state.KeyringController as KeyringControllerState;
-          const vault = keyringController?.vault;
-          if (vault) {
-            await this.#db.set({ vault });
-          } else {
-            // if we don't have a vault, remove the backup from IndexedDB
-            // TODO: should we create a backup for the backup when a vault is
-            // removed?
-            await this.#db.remove(['vault']);
+          const backup = makeBackup(state);
+          // if we have a vault we can back it up
+          if (backup.KeyringController?.vault) {
+            const stringifiedBackup = JSON.stringify(backup);
+            // and the backup has changed
+            if (this.#backup !== stringifiedBackup) {
+              // save it to the backup DB
+              await this.#backupDb.set(backup);
+              this.#backup = stringifiedBackup;
+            }
           }
 
           if (this.#dataPersistenceFailing) {
@@ -169,20 +196,19 @@ export class PersistenceManager {
       async () => {
         const result = await this.#localStore.get();
 
-        const keyringController = result?.data?.KeyringController as
-          | KeyringControllerState
-          | undefined;
-        const hasVault = keyringController?.vault;
-
-        if (!hasVault) {
-          // check if we have a backup vault in IndexedDB
-          // if we do, we need to throw an error so that the user can be
-          // prompted to restore it
-          // if we don't, carry on as if everything is fine (it might be)
-          const [backupVault] = (await this.#db.get(['vault'])) as [
-            string | undefined,
-          ];
-          if (backupVault) {
+        // if we don't have a vault
+        if (!hasVault(result?.data)) {
+          // check if we have a backup in IndexedDB. we need to throw an error
+          // so that the user can be told about it. if we don't, carry on as if
+          // everything is fine (it might be, or maybe we lost BOTH the primary
+          // and backup vaults -- yikes!)
+          const backup = await this.getBackup();
+          // this check verifies if we have any keys saved in our backup.
+          // we use this as a sigil to determine if we've ever saved a vault
+          // before.
+          if (Object.values(backup).some((value) => value !== undefined)) {
+            // we've got some data (we haven't checked for a vault, as the
+            // background+UI are responsible for determining what happens now)
             throw new Error(MISSING_VAULT_ERROR);
           }
         }
@@ -197,6 +223,26 @@ export class PersistenceManager {
         return result;
       },
     );
+  }
+
+  async getBackup(): Promise<Backup> {
+    const [
+      KeyringController,
+      OnboardingController,
+      PreferencesController,
+      AppStateController,
+    ] = await this.#backupDb.get([
+      'KeyringController',
+      'OnboardingController',
+      'PreferencesController',
+      'AppStateController',
+    ]);
+    return {
+      KeyringController,
+      OnboardingController,
+      PreferencesController,
+      AppStateController,
+    } as Backup;
   }
 
   get mostRecentRetrievedState() {

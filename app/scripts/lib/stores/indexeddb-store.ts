@@ -10,7 +10,7 @@ function transactionPromise(tx: IDBTransaction): Promise<void> {
   });
 }
 
-export class DB {
+export class IndexedDBStore {
   #db: IDBDatabase | null = null;
 
   /**
@@ -66,7 +66,7 @@ export class DB {
    * @param keys - An array of keys to retrieve.
    * @returns An array of values in the same order as the input keys.
    */
-  async get(keys: string[]): Promise<unknown> {
+  async get(keys: string[]): Promise<unknown[]> {
     if (!this.#db) {
       throw new Error('Database is not open');
     }

@@ -1,4 +1,3 @@
-import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { escape as lodashEscape } from 'lodash';
 import {
@@ -10,7 +9,6 @@ import {
   getLocaleContext,
   setupLocale,
 } from '../../../shared/lib/error-utils';
-import { MetaMaskState } from '../background';
 import {
   MISSING_VAULT_ERROR,
   CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
@@ -18,23 +16,29 @@ import {
 import { switchDirectionForPreferredLocale } from '../../../shared/lib/switch-direction';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 
-// the @metamask/object-multiplex channel name
-export const CHANNEL_RESTORE_VAULT_FROM_BACKUP = 'RESTORE_VAULT_FROM_BACKUP';
+export type ErrorLike = {
+  message: string;
+  name: string;
+  stack?: string;
+};
 
-export const STATE_CORRUPTION_ERRORS = new Set([
+export const METHOD_DISPLAY_STATE_CORRUPTION_ERROR =
+  'displayStateCorruptionError';
+
+export const KNOWN_STATE_CORRUPTION_ERRORS = new Set([
   MISSING_VAULT_ERROR,
   CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
 ]);
 
 export async function getStateCorruptionErrorHtml(
   vaultRecoveryLink: string,
-  metamaskState: MetaMaskState,
+  currentLocale?: string,
   supportLink?: string,
 ) {
-  let response, preferredLocale;
-  if (metamaskState?.currentLocale) {
-    preferredLocale = metamaskState.currentLocale;
-    response = await setupLocale(metamaskState.currentLocale);
+  let response, preferredLocale: string;
+  if (currentLocale) {
+    preferredLocale = currentLocale;
+    response = await setupLocale(currentLocale);
   } else {
     preferredLocale = await getFirstPreferredLangCode();
     response = await setupLocale(preferredLocale);
@@ -80,27 +84,14 @@ export async function getStateCorruptionErrorHtml(
 
 export async function displayStateCorruptionError(
   container: HTMLElement,
-  port: browser.Runtime.Port,
-  err: Error,
-  metamaskState: MetaMaskState,
+  err: ErrorLike,
+  currentLocale?: string,
 ) {
   const html = await getStateCorruptionErrorHtml(
     VAULT_RECOVERY_LINK,
-    metamaskState,
+    currentLocale,
     SUPPORT_LINK,
   );
   container.innerHTML = html;
-
-  const button = document.getElementById('critical-error-button');
-
-  button?.addEventListener('click', (_) => {
-    port.postMessage({
-      target: 'Background',
-      data: {
-        name: CHANNEL_RESTORE_VAULT_FROM_BACKUP,
-      },
-    });
-  });
-  log.error(err.stack);
-  throw err;
+  log.error(err);
 }

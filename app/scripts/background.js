@@ -48,6 +48,10 @@ import {
 } from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
+import {
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  KNOWN_STATE_CORRUPTION_ERRORS,
+} from './lib/state-corruption-errors';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -364,14 +368,6 @@ function maybeDetectPhishing(theController) {
   );
 }
 
-function stringifyError(error) {
-  return JSON.stringify({
-    message: error.message,
-    name: error.name,
-    stack: error.stack,
-  });
-}
-
 // These are set after initialization
 let connectRemote;
 let connectExternalExtension;
@@ -385,16 +381,36 @@ browser.runtime.onConnect.addListener(async (...args) => {
     // `connectRemote` is set in `setupController`, which is called as part of initialization
     connectRemote(...args);
   } catch (error) {
-    const port = args[0];
-
-    const _state = await localStore.get();
     sentry?.captureException(error);
 
-    port.postMessage({
-      target: 'ui',
-      error: stringifyError(error),
-      metamaskState: JSON.stringify(_state),
-    });
+    // if have a STATE_CORRUPTION_ERROR tell the user about it and offer to
+    // restore from a backup, if we have one.
+    if (KNOWN_STATE_CORRUPTION_ERRORS.has(error.message)) {
+      const _state = await localStore.get().catch((_) => null);
+
+      const port = args[0];
+      try {
+        // send the `error` TO THE ui
+        port.postMessage({
+          data: {
+            method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+            params: {
+              error: {
+                message: error.message,
+                name: error.name,
+                stack: error.stack,
+              },
+              currentLocale: _state?.data?.PreferencesController?.currentLocale,
+            },
+          },
+        });
+      } catch (e) {
+        // an exception can occur here if the Window has since disconnected from
+        // the background, this is expected if the UI is closed while we are
+        // still initializing the background (during `await isInitialized;`)
+        log.error('MetaMask - Failed to send state corruption error', e);
+      }
+    }
   }
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
@@ -1372,7 +1388,6 @@ async function initBackground() {
   onNavigateToTab();
   try {
     await initialize();
-
     if (process.env.IN_TEST) {
       // Send message to offscreen document
       if (browser.offscreen) {
