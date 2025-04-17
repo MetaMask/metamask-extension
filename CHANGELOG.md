@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Changes in account modal to switch to smart account type ([#31899](https://github.com/MetaMask/metamask-extension/pull/31899))
+- Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
+- [Beta] Create Solana account automatically on wallet creation or SRP import [#32038](https://github.com/MetaMask/metamask-extension/pull/32038)
+- Support for Solana on Firefox ([#32104](https://github.com/MetaMask/metamask-extension/pull/32104))
+
+## [12.15.2]
+### Added
+- Add icon image for Lens network ([#31638](https://github.com/MetaMask/metamask-extension/pull/31638))
+
+### Fixed
+- Allow verifyingContract to be omitted from EIP-712 signatures ([#31613](https://github.com/MetaMask/metamask-extension/pull/31613))
 
 ## [12.15.1]
 ### Fixed
@@ -5884,7 +5896,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...HEAD
+[12.15.2]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.15.2
 [12.15.1]: https://github.com/MetaMask/metamask-extension/compare/v12.15.0...v12.15.1
 [12.15.0]: https://github.com/MetaMask/metamask-extension/compare/v12.14.2...v12.15.0
 [12.14.2]: https://github.com/MetaMask/metamask-extension/compare/v12.14.1...v12.14.2

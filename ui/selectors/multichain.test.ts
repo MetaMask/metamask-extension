@@ -2,6 +2,11 @@ import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { BtcScope } from '@metamask/keyring-api';
+import {
+  type SupportedCaipChainId,
+  AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+} from '@metamask/multichain-network-controller';
 import {
   getCurrentCurrency,
   getNativeCurrency,
@@ -55,6 +60,7 @@ type TestState = MultichainState &
       currencyRates: Record<string, { conversionRate: string }>;
       completedOnboarding: boolean;
       selectedNetworkClientId?: string;
+      bitcoinSupportEnabled: boolean;
     };
   };
 
@@ -113,13 +119,22 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         },
       },
       conversionRates: {},
+      historicalPrices: {},
       assetsMetadata: {},
       accountsAssets: {},
+      isEvmSelected: false,
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: BtcScope.Mainnet,
+      bitcoinSupportEnabled: true,
     },
   };
 }
 
-function getNonEvmState(account = MOCK_ACCOUNT_BIP122_P2WPKH): TestState {
+function getNonEvmState(
+  account = MOCK_ACCOUNT_BIP122_P2WPKH,
+  selectedChainId: SupportedCaipChainId = BtcScope.Mainnet,
+): TestState {
   return {
     metamask: {
       ...getEvmState().metamask,
@@ -127,6 +142,7 @@ function getNonEvmState(account = MOCK_ACCOUNT_BIP122_P2WPKH): TestState {
         selectedAccount: account.id,
         accounts: MOCK_ACCOUNTS,
       },
+      selectedMultichainNetworkChainId: selectedChainId,
     },
   };
 }
@@ -425,22 +441,26 @@ describe('Multichain Selectors', () => {
         network: 'mainnet',
         account: MOCK_ACCOUNT_BIP122_P2WPKH,
         asset: MultichainNativeAssets.BITCOIN,
+        chainId: BtcScope.Mainnet,
       },
       {
         network: 'testnet',
         account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
         asset: MultichainNativeAssets.BITCOIN_TESTNET,
+        chainId: BtcScope.Testnet,
       },
-    ])(
+    ] as const)(
       'returns cached balance if account is non-EVM: $network',
       ({
         account,
         asset,
+        chainId,
       }: {
         account: InternalAccount;
         asset: MultichainNativeAssets;
+        chainId: SupportedCaipChainId;
       }) => {
-        const state = getNonEvmState(account);
+        const state = getNonEvmState(account, chainId);
         const balance = state.metamask.balances[account.id][asset].amount;
 
         state.metamask.internalAccounts.selectedAccount = account.id;
