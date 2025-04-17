@@ -8,7 +8,6 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { createSwapsMockStore } from '../../jest/mock-store';
 import { mockNetworkState } from '../../stub/networks';
 import { mockTokenData } from './mock-token-data';
-import { type BridgeState } from '../../../ui/ducks/bridge/bridge';
 import { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 
 export const createBridgeMockStore = ({
@@ -23,10 +22,16 @@ export const createBridgeMockStore = ({
   // bridgeStateOverrides?: Partial<BridgeControllerState>;
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
+  // TODO replace these with correct types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   featureFlagOverrides?: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bridgeSliceOverrides?: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bridgeStateOverrides?: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bridgeStatusStateOverrides?: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskStateOverrides?: Record<string, any>;
 } = {}) => {
   const swapsStore = createSwapsMockStore();
