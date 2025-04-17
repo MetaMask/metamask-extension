@@ -6,8 +6,6 @@ import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
@@ -66,17 +64,6 @@ export default class UnlockPage extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const { isUnlocked, history } = this.props;
-
-    if (
-      !prevProps.isUnlocked &&
-      isUnlocked &&
-      getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
-    ) {
-      history.push(DEFAULT_ROUTE);
-    }
-  }
 
   handleSubmit = async (event) => {
     event.preventDefault();
