@@ -61,7 +61,7 @@ async function main() {
     )
   ).flat();
 
-  const downloads: TestRun[] = await Promise.all(
+  const testRuns: TestRun[] = await Promise.all(
     artifacts.map(async (artifact) => {
       const response = await github.rest.actions.downloadArtifact({
         owner: env.OWNER,
