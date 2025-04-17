@@ -76,15 +76,15 @@ import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
-
 /* eslint-enable import/first */
-
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+
+import extensionUpdateManager from './lib/extension-update-manager';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -149,6 +149,9 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
 
+// Initialize the extension update manager
+extensionUpdateManager.initialize();
+
 if (!isManifestV3) {
   /**
    * `onInstalled` event handler.
@@ -192,6 +195,15 @@ const {
   resolve: resolveInitialization,
   reject: rejectInitialization,
 } = deferredPromise();
+
+// Define this function at the top level, before it's used
+const isClientOpenStatus = () => {
+  return (
+    openPopupCount > 0 ||
+    Boolean(Object.keys(openMetamaskTabsIDs).length) ||
+    notificationIsOpen
+  );
+};
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -561,6 +573,11 @@ async function initialize() {
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
 
+    // Set initial idle state after initialization is complete
+    extensionUpdateManager.setIdleState(true);
+    // Check for updates when UI is closed (initialization also checks for updates separately)
+    extensionUpdateManager.applyPendingUpdateIfNeeded();
+
     resolveInitialization();
   } catch (error) {
     rejectInitialization(error);
@@ -816,6 +833,9 @@ function trackAppOpened(environment) {
   const isAlreadyOpen =
     isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
 
+  // Set extension idle state based on UI open status
+  extensionUpdateManager.setIdleState(!isAlreadyOpen);
+
   // Only emit event if no UI is open and environment is valid
   if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
     emitAppOpenedMetricEvent();
@@ -901,20 +921,17 @@ export function setupController(
 
   setupSentryGetStateGlobal(controller);
 
-  const isClientOpenStatus = () => {
-    return (
-      openPopupCount > 0 ||
-      Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen
-    );
-  };
-
   const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
       controller.onClientClosed();
-      // otherwise we want to only remove the polling tokens for the environment type that has closed
+      // Set extension to idle when all UI instances are closed
+      extensionUpdateManager.setIdleState(true);
+      // Check for updates when UI is closed
+      extensionUpdateManager.applyPendingUpdateIfNeeded();
     } else {
+      // Set extension to not idle when UI instances are open
+      extensionUpdateManager.setIdleState(false);
       // in the case of fullscreen environment a user might have multiple tabs open so we don't want to disconnect all of
       // its corresponding polling tokens unless all tabs are closed.
       if (
@@ -1316,6 +1333,8 @@ async function triggerUi() {
     !currentlyActiveMetamaskTab
   ) {
     uiIsTriggering = true;
+    // Set extension to not idle when UI is being triggered
+    extensionUpdateManager.setIdleState(false);
     try {
       const currentPopupId = controller.appStateController.getCurrentPopupId();
       await notificationManager.showPopup(
@@ -1325,6 +1344,10 @@ async function triggerUi() {
       );
     } finally {
       uiIsTriggering = false;
+      // Check if UI is still open after triggering
+      const isClientOpen = isClientOpenStatus();
+      // Only set to idle if no UI is open
+      extensionUpdateManager.setIdleState(!isClientOpen);
     }
   }
 }
@@ -1392,6 +1415,7 @@ async function initBackground() {
   onNavigateToTab();
   try {
     await initialize();
+
     if (process.env.IN_TEST) {
       // Send message to offscreen document
       if (browser.offscreen) {
