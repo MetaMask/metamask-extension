@@ -2687,7 +2687,7 @@ describe('MetaMaskController', () => {
           tab: { id: 456 },
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
+          if (chunk && chunk.method) {
             cb(null, chunk);
             return;
           }
@@ -2706,13 +2706,10 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
-              data: {
-                method: 'wallet_invokeMethod',
-                params: {
-                  scope: 'eip155:1',
-                  request: message,
-                },
+              method: 'wallet_invokeMethod',
+              params: {
+                scope: 'eip155:1',
+                request: message,
               },
             },
             null,
@@ -2739,7 +2736,7 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
+          if (chunk && chunk.method) {
             cb(null, chunk);
             return;
           }
@@ -2758,13 +2755,10 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
-              data: {
-                method: 'wallet_invokeMethod',
-                params: {
-                  scope: 'eip155:1',
-                  request: message,
-                },
+              method: 'wallet_invokeMethod',
+              params: {
+                scope: 'eip155:1',
+                request: message,
               },
             },
             null,
@@ -2777,67 +2771,6 @@ describe('MetaMaskController', () => {
                   'origin',
                   'http://mycrypto.com',
                 );
-                resolve();
-              });
-            },
-          );
-        });
-        streamTest.end();
-      });
-
-      it('should only process `caip-x` CAIP formatted messages', async () => {
-        const messageSender = {
-          url: 'http://mycrypto.com',
-          tab: { id: 456 },
-        };
-        const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
-            cb(null, chunk);
-            return;
-          }
-          cb();
-        });
-
-        localMetamaskController.setupUntrustedCommunicationCaip({
-          connectionStream: streamTest,
-          sender: messageSender,
-        });
-
-        const message = {
-          jsonrpc: '2.0',
-          method: 'eth_chainId',
-        };
-        await new Promise((resolve) => {
-          streamTest.write(
-            {
-              name: 'metamask-provider',
-              data: message,
-            },
-            null,
-            () => {
-              setTimeout(() => {
-                expect(loggerMiddlewareMock.requests).toHaveLength(0);
-                resolve();
-              });
-            },
-          );
-        });
-        await new Promise((resolve) => {
-          streamTest.write(
-            {
-              type: 'caip-x',
-              data: {
-                method: 'wallet_invokeMethod',
-                params: {
-                  scope: 'eip155:1',
-                  request: message,
-                },
-              },
-            },
-            null,
-            () => {
-              setTimeout(() => {
-                expect(loggerMiddlewareMock.requests).toHaveLength(1);
                 resolve();
               });
             },
