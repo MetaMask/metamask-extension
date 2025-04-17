@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Account details"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Switch back to regular account"
-  },
   "accountIdenticon": {
     "message": "Account identicon"
   },
@@ -1373,9 +1370,6 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
-  },
-  "copyAddressShort": {
-    "message": "Copy address"
   },
   "copyPrivateKey": {
     "message": "Copy private key"
@@ -5107,6 +5101,9 @@
   "smartAccountFeaturesDescription": {
     "message": "Keep the same account address, and you can switch back anytime."
   },
+  "smartAccountLabel": {
+    "message": "Smart Account"
+  },
   "smartAccountPayToken": {
     "message": "Pay with any token, any time"
   },
@@ -5121,6 +5118,12 @@
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
+  },
+  "smartAccountUpgradeBannerDescription": {
+    "message": "Same address. Smarter features."
+  },
+  "smartAccountUpgradeBannerTitle": {
+    "message": "Switch to smart account"
   },
   "smartContracts": {
     "message": "Smart contracts"
@@ -5554,6 +5557,9 @@
   },
   "staked": {
     "message": "Staked"
+  },
+  "standardAccountLabel": {
+    "message": "Standard Account"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
