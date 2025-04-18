@@ -1175,6 +1175,14 @@ export default class MetamaskController extends EventEmitter {
       subjectCacheLimit: 100,
     });
 
+    const withSnapKeyring = async (operation) => {
+      const keyrings = this.keyringController.getKeyringsByType(
+        KeyringTypes.snap,
+      );
+
+      return operation({ keyring: keyrings[0] });
+    };
+
     const multichainRouterMessenger = this.controllerMessenger.getRestricted({
       name: 'MultichainRouter',
       allowedActions: [
@@ -1189,12 +1197,7 @@ export default class MetamaskController extends EventEmitter {
     this.multichainRouter = new MultichainRouter({
       messenger: multichainRouterMessenger,
       // Binding the call to provide the selector only giving the controller the option to pass the operation
-      withSnapKeyring: this.keyringController.withKeyring.bind(
-        this.keyringController,
-        {
-          type: 'Snap Keyring',
-        },
-      ),
+      withSnapKeyring,
     });
 
     // account tracker watches balances, nonces, and any code at their address
