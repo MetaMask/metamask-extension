@@ -18066,7 +18066,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/eth-json-rpc-middleware
-16.0.0 <https://github.com/MetaMask/eth-json-rpc-middleware>
+17.0.0 <https://github.com/MetaMask/eth-json-rpc-middleware>
 ISC License
 
 Copyright (c) 2020 MetaMask
@@ -18817,7 +18817,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/keyring-controller
-21.0.1 <https://github.com/MetaMask/core>
+21.0.3 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -18997,7 +18997,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/multichain-api-client
-0.1.1 <https://github.com/MetaMask/multichain-api-client>
+0.2.0 <https://github.com/MetaMask/multichain-api-client>
 ISC License
 
 Copyright (c) 2021 MetaMask
@@ -20330,7 +20330,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/solana-wallet-snap
-1.21.0 <https://github.com/MetaMask/snap-solana-wallet>
+1.22.0 <https://github.com/MetaMask/snap-solana-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
