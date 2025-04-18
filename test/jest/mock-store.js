@@ -718,5 +718,3 @@ export const createSwapsMockStore = () => {
     },
   };
 };
-
-

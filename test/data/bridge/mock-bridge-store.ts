@@ -5,10 +5,10 @@ import {
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_STATE } from '../../../app/scripts/controllers/bridge-status/constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
 import { mockNetworkState } from '../../stub/networks';
 import { mockTokenData } from './mock-token-data';
-import { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 
 export const createBridgeMockStore = ({
   featureFlagOverrides = {},
