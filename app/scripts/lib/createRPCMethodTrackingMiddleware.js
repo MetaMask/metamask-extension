@@ -64,7 +64,7 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS]: RATE_LIMIT_TYPES.TIMEOUT,
-  [MESSAGE_TYPE.WALLET_CREATE_SESSION]: RATE_LIMIT_TYPES.TIMEOUT,
+  [MESSAGE_TYPE.WALLET_CREATE_SESSION]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.SEND_METADATA]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.ETH_CHAIN_ID]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.ETH_ACCOUNTS]: RATE_LIMIT_TYPES.BLOCKED,
@@ -281,9 +281,17 @@ export default function createRPCMethodTrackingMiddleware({
       : MetaMetricsEventCategory.InpageProvider;
 
     let invokedMethod = method;
+    let multichainApiRequestScope;
     // if the request is through the multichain api, the method is nested in the params
     if (method === MESSAGE_TYPE.WALLET_INVOKE_METHOD) {
       invokedMethod = params?.request?.method;
+      multichainApiRequestScope = params?.scope;
+    }
+
+    if (invokedMethod === MESSAGE_TYPE.WALLET_CREATE_SESSION) {
+      console.log('multichainApiRequestScope', multichainApiRequestScope);
+      console.log('req', req);
+      console.log('res', res);
     }
 
     const rateLimitType = RATE_LIMIT_MAP[invokedMethod];
@@ -323,6 +331,11 @@ export default function createRPCMethodTrackingMiddleware({
     const eventProperties = {
       requested_through: requestedThrough,
     };
+
+    if (multichainApiRequestScope) {
+      eventProperties.multichain_api_request_scope = multichainApiRequestScope;
+    }
+
     let sensitiveEventProperties;
 
     // Boolean variable that reduces code duplication and increases legibility
@@ -590,20 +603,26 @@ function getWalletSendCallsProperties(req, _res, stage, eventProperties) {
   }
 }
 
-function getWalletCreateSessionProperties(req, _res, _, eventProperties) {
-  const { params } = req;
-  const requiredScopes = params?.requiredScopes || {};
-  const optionalScopes = params?.optionalScopes || {};
+function getWalletCreateSessionProperties(req, res, stage, eventProperties) {
+  if (stage === STAGE.REQUESTED) {
+    const { params } = req;
+    const requiredScopes = params?.requiredScopes || {};
+    const optionalScopes = params?.optionalScopes || {};
 
-  const scopeSet = new Set();
+    const scopeSet = new Set();
 
-  for (const key of Object.keys(requiredScopes)) {
-    scopeSet.add(key);
+    for (const key of Object.keys(requiredScopes)) {
+      scopeSet.add(key);
+    }
+
+    for (const key of Object.keys(optionalScopes)) {
+      scopeSet.add(key);
+    }
+
+    eventProperties.chain_id_list = Array.from(scopeSet);
+  } else if (stage === STAGE.APPROVED) {
+    const { result } = res;
+    const scopes = Object.keys(result?.sessionScopes || {});
+    eventProperties.chain_id_list = scopes;
   }
-
-  for (const key of Object.keys(optionalScopes)) {
-    scopeSet.add(key);
-  }
-
-  eventProperties.chain_id_list = Array.from(scopeSet);
 }
