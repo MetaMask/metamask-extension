@@ -121,6 +121,7 @@ describe('NFT Details', () => {
     await expect(removeAndIgnoreNft).toHaveBeenCalledWith(
       nfts[5].address,
       nfts[5].tokenId,
+      'testNetworkConfigurationId',
     );
     expect(setRemoveNftMessage).toHaveBeenCalledWith('success');
     expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
@@ -145,6 +146,7 @@ describe('NFT Details', () => {
     await expect(removeAndIgnoreNft).toHaveBeenCalledWith(
       nfts[5].address,
       nfts[5].tokenId,
+      'testNetworkConfigurationId',
     );
     expect(setRemoveNftMessage).toHaveBeenCalledWith('error');
     expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
