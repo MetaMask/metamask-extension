@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
+- Shows the account toast for Solana accounts([#32107](https://github.com/MetaMask/metamask-extension/pull/32107))
 
 ## [12.15.2]
 ### Added
