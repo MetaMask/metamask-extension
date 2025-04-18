@@ -1107,12 +1107,7 @@ async function buildEventFragmentProperties({
     );
   }
   const domain = extractRpcDomain(rpcUrl);
-
-  // Only add domain for "Transaction Submitted" and "Transaction Finalized" events
-  // These correspond to status values "submitted" and "confirmed"
-  if (status === 'submitted' || status === 'confirmed') {
-    properties.rpc_domain = domain;
-  }
+  properties.rpc_domain = domain;
 
   return { properties, sensitiveProperties };
 }
