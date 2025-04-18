@@ -61,21 +61,43 @@ async function main() {
     )
   ).flat();
 
-  const testRuns: TestRun[] = await Promise.all(
-    artifacts.map(async (artifact) => {
-      const response = await github.rest.actions.downloadArtifact({
-        owner: env.OWNER,
-        repo: env.REPOSITORY,
-        artifact_id: artifact.id,
-        archive_format: 'zip',
-      });
-      const zip = await JSZip.loadAsync(response.data as ArrayBuffer);
-      const file = zip.files['test-runs.json'];
-      if (!file) throw new Error(`'test-runs.json' file in zip not found!`);
-      const content = await file.async('string');
-      return JSON.parse(content);
-    }),
+  const testRuns: TestRun[] = (
+    await Promise.all(
+      artifacts.map(async (artifact) => {
+        const response = await github.rest.actions.downloadArtifact({
+          owner: env.OWNER,
+          repo: env.REPOSITORY,
+          artifact_id: artifact.id,
+          archive_format: 'zip',
+        });
+        const zip = await JSZip.loadAsync(response.data as ArrayBuffer);
+        const file = zip.files['test-runs.json'];
+        if (!file) throw new Error(`'test-runs.json' file in zip not found!`);
+        const content = await file.async('string');
+        return JSON.parse(content);
+      }),
+    )
+  ).flat();
+
+  const failedTests = testRuns.flatMap((testRun) =>
+    testRun.testSuites.flatMap((testSuite) =>
+      testSuite.testCases.filter((testCase) => testCase.status === 'failed'),
+    ),
   );
+
+  const summarizedFailedTests = Object.values(
+    failedTests.reduce<Record<string, { name: string; count: number }>>(
+      (summary, test) => {
+        if (summary[test.name]) {
+          summary[test.name].count += 1;
+        } else {
+          summary[test.name] = { name: test.name, count: 1 };
+        }
+        return summary;
+      },
+      {},
+    ),
+  ).sort((a, b) => b.count - a.count);
 }
 
 main();
