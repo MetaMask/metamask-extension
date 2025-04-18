@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
-import { removeSlide } from '../../../store/actions';
+import { removeSlide, showModal } from '../../../store/actions';
 import { Carousel } from '..';
 import {
   getAppIsLoading,
@@ -20,7 +20,11 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
-import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
+import {
+  BACKUPANDSYNC_SLIDE,
+  useCarouselManagement,
+} from '../../../hooks/useCarouselManagement';
+import { TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../app/modals/identity';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -59,6 +63,10 @@ export const AccountOverviewLayout = ({
       );
     }
     ///: END:ONLY_INCLUDE_IF
+
+    if (id === BACKUPANDSYNC_SLIDE.id) {
+      dispatch(showModal({ name: TURN_ON_BACKUP_AND_SYNC_MODAL_NAME }));
+    }
 
     trackEvent({
       event: MetaMetricsEventName.BannerSelect,
