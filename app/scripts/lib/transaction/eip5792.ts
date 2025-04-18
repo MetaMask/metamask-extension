@@ -48,7 +48,6 @@ export async function processSendCalls(
       request: ValidateSecurityRequest,
       chainId: Hex,
     ) => Promise<void>;
-    getDismissSmartAccountSuggestionEnabled: () => boolean;
   },
   messenger: EIP5792Messenger,
   params: SendCalls,
@@ -59,7 +58,6 @@ export async function processSendCalls(
     getDisabledAccountUpgradeChains,
     isAtomicBatchSupported,
     validateSecurity: validateSecurityHook,
-    getDismissSmartAccountSuggestionEnabled,
   } = hooks;
 
   const { calls, from: paramFrom } = params;
@@ -76,8 +74,6 @@ export async function processSendCalls(
     (messenger.call('AccountsController:getSelectedAccount').address as Hex);
 
   const disabledChains = getDisabledAccountUpgradeChains();
-  const dismissSmartAccountSuggestionEnabled =
-    getDismissSmartAccountSuggestionEnabled();
 
   const batchSupport = await isAtomicBatchSupported({
     address: from,

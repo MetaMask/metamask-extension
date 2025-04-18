@@ -104,8 +104,6 @@ describe('EIP-5792', () => {
     Parameters<typeof processSendCalls>[0]['validateSecurity']
   > = jest.fn();
 
-  let getDismissSmartAccountSuggestionEnabledMock: jest.MockedFn<() => boolean>;
-
   let messenger: EIP5792Messenger;
 
   const sendCallsHooks = {
@@ -416,6 +414,7 @@ describe('EIP-5792', () => {
       );
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       TransactionStatus.approved,
       TransactionStatus.signed,
