@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Move network selector from home screen to Settings menu as a "Networks" section behind the `REMOVE_GNS` feature flag ([#31959](https://github.com/MetaMask/metamask-extension/pull/31959))
 
+### Added
+- Changes in account modal to switch to smart account type ([#31899](https://github.com/MetaMask/metamask-extension/pull/31899))
+- Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
+- [Beta] Create Solana account automatically on wallet creation or SRP import [#32038](https://github.com/MetaMask/metamask-extension/pull/32038)
+- Support for Solana on Firefox ([#32104](https://github.com/MetaMask/metamask-extension/pull/32104))
+
+
 ## [12.15.2]
 ### Added
 - Add icon image for Lens network ([#31638](https://github.com/MetaMask/metamask-extension/pull/31638))
