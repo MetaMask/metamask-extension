@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import type { TestRun } from './create-e2e-test-report';
+import { IncomingWebhook } from '@slack/webhook';
 
 async function main() {
   const { Octokit } = await import('octokit');
@@ -9,11 +10,13 @@ async function main() {
     REPOSITORY: process.env.REPOSITORY || 'metamask-extension',
     WORKFLOW_ID: process.env.WORKFLOW_ID || 'main.yml',
     BRANCH: process.env.BRANCH || 'main',
+    SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL || '',
     GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
     GITHUB_ACTIONS: process.env.GITHUB_ACTIONS === 'true',
   };
 
   const github = new Octokit({ auth: env.GITHUB_TOKEN });
+  const webhook = new IncomingWebhook(env.SLACK_WEBHOOK_URL);
 
   const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const today = new Date();
@@ -94,6 +97,8 @@ async function main() {
       {},
     ),
   ).sort((a, b) => b.count - a.count);
+
+  await webhook.send({ text: JSON.stringify(summarizedFailedTests) });
 }
 
 main();
