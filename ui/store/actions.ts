@@ -140,6 +140,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { ApprovalRequest } from '@metamask/approval-controller';
 
 type CustomGasSettings = {
   gas?: string;
@@ -4134,6 +4135,17 @@ export function updateHiddenAccountsList(
 
 // Pending Approvals
 
+export function fetchLatestPendingApprovals(): ThunkAction<
+  Promise<ApprovalRequest<Record<string, Json>>[]>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground('fetchLatestPendingApprovals');
+  };
+}
+
 /**
  * Resolves a pending approval and closes the current notification window if no
  * further approvals are pending after the background state updates.
@@ -6165,5 +6177,13 @@ export function setTransactionActive(
       transactionId,
       isFocused,
     ]);
+  };
+}
+
+export function setCurrentSnapInApprovalFlow(
+  snapId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setCurrentSnapInApprovalFlow', [snapId]);
   };
 }

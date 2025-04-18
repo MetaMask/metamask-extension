@@ -2201,6 +2201,10 @@ export const getSnapInsights = createDeepEqualSelector(
   (insights, id) => insights?.[id],
 );
 
+export function getCurrentSnapInApprovalFlow(state) {
+  return state.metamask.currentSnapInApprovalFlow;
+}
+
 /**
  * Get an object of announcement IDs and if they are allowed or not.
  *

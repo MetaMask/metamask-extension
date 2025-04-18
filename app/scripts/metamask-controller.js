@@ -3732,6 +3732,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
           appStateController,
         ),
+      setCurrentSnapInApprovalFlow:
+        appStateController.setCurrentSnapInApprovalFlow.bind(
+          appStateController,
+        ),
       setOutdatedBrowserWarningLastShown:
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
@@ -4140,6 +4144,7 @@ export default class MetamaskController extends EventEmitter {
       trackInsightSnapView: this.trackInsightSnapView.bind(this),
 
       // ApprovalController
+      fetchLatestPendingApprovals: this.fetchLatestPendingApprovals.bind(this),
       rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
       rejectPendingApproval: this.rejectPendingApproval,
       requestUserApproval:
@@ -7991,6 +7996,10 @@ export default class MetamaskController extends EventEmitter {
         throw exp;
       }
     }
+  };
+
+  fetchLatestPendingApprovals = () => {
+    return this.approvalController.state.pendingApprovals;
   };
 
   resolvePendingApproval = async (id, value, options) => {

@@ -73,6 +73,10 @@ import {
 import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
+import {
+  ReorderType,
+  reorderApprovals,
+} from '../../helpers/utils/approvals.util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -177,12 +181,17 @@ export default class Home extends PureComponent {
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
+    setCurrentSnapInApprovalFlow: PropTypes.func,
+    currentSnapInApprovalFlow: PropTypes.string,
+    fetchLatestPendingApprovals: PropTypes.func,
   };
 
   state = {
     canShowBlockageNotification: true,
     notificationClosing: false,
     redirecting: false,
+    fetchingFreshApprovals: false,
+    isNavigating: false,
   };
 
   constructor(props) {
@@ -227,17 +236,56 @@ export default class Home extends PureComponent {
       location,
       pendingApprovals,
       hasApprovalFlows,
+      setCurrentSnapInApprovalFlow,
+      currentSnapInApprovalFlow,
+      fetchLatestPendingApprovals,
     } = this.props;
+
+    // If we're already navigating, don't trigger another navigation
+    if (this.state.isNavigating) {
+      console.log(
+        'Navigation already in progress, skipping duplicate navigation',
+      );
+      return;
+    }
+
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
+      this.setState({ isNavigating: true });
       history.push(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
+      this.setState({ isNavigating: true });
       history.push(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && haveBridgeQuotes) {
+      this.setState({ isNavigating: true });
       history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
+      console.log('Current pending approvals in home component:', pendingApprovals);
+      if (currentSnapInApprovalFlow && pendingApprovals.length > 1) {
+        this.setState({ fetchingFreshApprovals: true });
+        setCurrentSnapInApprovalFlow(null);
+        fetchLatestPendingApprovals().then((latestPendingApprovals) => {
+          const reorderedApprovals = reorderApprovals(
+            ReorderType.SnapInstallFlow,
+            pendingApprovals,
+            Object.values(latestPendingApprovals),
+            {
+              currentSnapInApprovalFlow,
+            },
+          );
+
+          navigateToConfirmation(
+            reorderedApprovals?.[0]?.id,
+            reorderedApprovals,
+            hasApprovalFlows,
+            history,
+          );
+        });
+        return;
+      }
+
       navigateToConfirmation(
         pendingApprovals?.[0]?.id,
         pendingApprovals,
@@ -285,7 +333,10 @@ export default class Home extends PureComponent {
 
     if (notificationClosing && !prevState.notificationClosing) {
       attemptCloseNotificationPopup();
-    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
+    } else if (
+      (isNotification || hasAllowedPopupRedirectApprovals) &&
+      !this.state.fetchingFreshApprovals
+    ) {
       this.checkStatusAndNavigate();
     }
   }

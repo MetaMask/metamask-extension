@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -35,6 +35,8 @@ import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
 import PermissionConnectHeader from '../../../../components/app/permission-connect-header';
+import { Nav } from '../../../confirmations/components/confirm/nav';
+import { setCurrentSnapInApprovalFlow } from '../../../../store/actions';
 
 export default function SnapInstall({
   request,
@@ -49,7 +51,7 @@ export default function SnapInstall({
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
   const [showAllPermissions, setShowAllPermissions] = useState(false);
-
+  const dispatch = useDispatch();
   const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
 
@@ -58,10 +60,10 @@ export default function SnapInstall({
     [request, rejectSnapInstall],
   );
 
-  const onSubmit = useCallback(
-    () => approveSnapInstall(request.metadata.id),
-    [request, approveSnapInstall],
-  );
+  const onSubmit = useCallback(() => {
+    dispatch(setCurrentSnapInApprovalFlow(request.metadata.origin));
+    approveSnapInstall(request.metadata.id);
+  }, [request, approveSnapInstall, dispatch]);
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, targetSubjectMetadata.origin),
@@ -115,6 +117,7 @@ export default function SnapInstall({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
+      <Nav confirmationId={request.metadata?.id} />
       {(isLoading || hasError) && !isOriginSnap ? (
         <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
       ) : (

@@ -28,6 +28,7 @@ import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import { getSnapMetadata } from '../../../../selectors';
+import { Nav } from '../../../confirmations/components/confirm/nav';
 
 export default function SnapResult({
   request,
@@ -141,6 +142,7 @@ export default function SnapResult({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
+      <Nav confirmationId={request.metadata?.id} />
       <SnapAuthorshipHeader
         snapId={targetSubjectMetadata.origin}
         onCancel={onSubmit}

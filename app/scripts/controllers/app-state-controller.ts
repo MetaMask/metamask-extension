@@ -86,6 +86,7 @@ export type AppStateControllerState = {
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
+  currentSnapInApprovalFlow: string | null;
 };
 
 const controllerName = 'AppStateController';
@@ -199,6 +200,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   switchedNetworkNeverShowMessage: false,
   slides: [],
   throttledOrigins: {},
+  currentSnapInApprovalFlow: null,
   ...getInitialStateOverrides(),
 });
 
@@ -367,6 +369,10 @@ const controllerMetadata = {
   },
   throttledOrigins: {
     persist: false,
+    anonymous: true,
+  },
+  currentSnapInApprovalFlow: {
+    persist: true,
     anonymous: true,
   },
 };
@@ -1103,6 +1109,12 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
+    });
+  }
+
+  setCurrentSnapInApprovalFlow(snapId: string): void {
+    this.update((state) => {
+      state.currentSnapInApprovalFlow = snapId;
     });
   }
 }

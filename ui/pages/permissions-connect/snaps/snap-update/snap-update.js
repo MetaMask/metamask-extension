@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -33,6 +33,8 @@ import {
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
+import { Nav } from '../../../confirmations/components/confirm/nav';
+import { setCurrentSnapInApprovalFlow } from '../../../../store/actions';
 
 export default function SnapUpdate({
   request,
@@ -50,16 +52,16 @@ export default function SnapUpdate({
   const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
   const snapsMetadata = useSelector(getSnapsMetadata);
-
+  const dispatch = useDispatch();
   const onCancel = useCallback(
     () => rejectSnapUpdate(request.metadata.id),
     [request, rejectSnapUpdate],
   );
 
-  const onSubmit = useCallback(
-    () => approveSnapUpdate(request.metadata.id),
-    [request, approveSnapUpdate],
-  );
+  const onSubmit = useCallback(() => {
+    dispatch(setCurrentSnapInApprovalFlow(request.metadata.origin));
+    approveSnapUpdate(request.metadata.id);
+  }, [request, approveSnapUpdate, dispatch]);
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, targetSubjectMetadata.origin),
@@ -109,6 +111,7 @@ export default function SnapUpdate({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
+      <Nav confirmationId={request.metadata?.id} />
       <SnapAuthorshipHeader
         snapId={targetSubjectMetadata.origin}
         onCancel={onCancel}
