@@ -6,15 +6,13 @@ import { WALLET_PASSWORD } from '../../../constants';
 class AccountDetailsModal {
   private driver: Driver;
 
-  private readonly accountAddressText = '.qr-code__address-segments';
+  private readonly accountAddressText =
+    '[data-testid="account-address-shortened"]';
 
-  private readonly accountAuthenticateInput =
-    '#account-details-authenticate';
+  private readonly accountAuthenticateInput = '#account-details-authenticate';
 
   private readonly accountPrivateKeyText =
     '[data-testid="account-details-key"]';
-
-  private readonly accountQrCodeAddress = '.qr-code__address-segments';
 
   private readonly accountQrCodeImage = '.qr-code__wrapper';
 
@@ -26,6 +24,8 @@ class AccountDetailsModal {
 
   private readonly editableLabelButton =
     '[data-testid="editable-label-button"]';
+
+  private readonly detailsTabButton = '[data-testid="editable-label-button"]';
 
   private readonly editableLabelInput = '[data-testid="editable-input"] input';
 
@@ -67,6 +67,10 @@ class AccountDetailsModal {
     console.log('Account details modal is loaded');
   }
 
+  async goToDetailsTab(): Promise<void> {
+    await this.driver.clickElementSafe({ text: 'Details', tag: 'button' });
+  }
+
   async closeAccountDetailsModal(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
       this.closeAccountModalButton,
@@ -105,16 +109,25 @@ class AccountDetailsModal {
    * @param password - The password to authenticate with. Defaults to the default wallet password.
    * @param expectedPasswordError - Whether to expect a password error. Defaults to false.
    */
-  async revealPrivateKeyAndVerify({expectedPrivateKey, password = WALLET_PASSWORD, expectedPasswordError = false}): Promise<void> {
+  async revealPrivateKeyAndVerify({
+    expectedPrivateKey,
+    password = WALLET_PASSWORD,
+    expectedPasswordError = false,
+  }): Promise<void> {
     console.log(
       `Reveal private key and verify it is correct in account details modal`,
     );
     await this.driver.clickElement(this.showPrivateKeyButton);
     await this.driver.fill(this.accountAuthenticateInput, password);
-    await this.driver.press(this.accountAuthenticateInput, this.driver.Key.ENTER);
+    await this.driver.press(
+      this.accountAuthenticateInput,
+      this.driver.Key.ENTER,
+    );
     if (expectedPasswordError) {
       await this.driver.waitForSelector(this.errorMessageForIncorrectPassword);
-      await this.driver.assertElementNotPresent(this.holdToRevealPrivateKeyButton);
+      await this.driver.assertElementNotPresent(
+        this.holdToRevealPrivateKeyButton,
+      );
     } else {
       await this.driver.holdMouseDownOnElement(
         this.holdToRevealPrivateKeyButton,
@@ -122,8 +135,12 @@ class AccountDetailsModal {
       );
       // Verify the private key is expected
       await this.driver.wait(async () => {
-        const privateKey = await this.driver.findElement(this.accountPrivateKeyText);
-        const displayedPrivateKey = LavaDomeDebug.stripDistractionFromText(await privateKey.getText());
+        const privateKey = await this.driver.findElement(
+          this.accountPrivateKeyText,
+        );
+        const displayedPrivateKey = LavaDomeDebug.stripDistractionFromText(
+          await privateKey.getText(),
+        );
         return displayedPrivateKey === expectedPrivateKey;
       });
     }
@@ -142,7 +159,7 @@ class AccountDetailsModal {
     );
     await this.driver.waitForSelector(this.accountQrCodeImage);
     await this.driver.waitForSelector({
-      css: this.accountQrCodeAddress,
+      css: this.accountAddressText,
       text: expectedAddress,
     });
   }
