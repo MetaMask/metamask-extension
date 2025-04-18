@@ -31,6 +31,8 @@ const MOCK_LEDGER_ACCOUNT = '0x1234567890abcdef1234567890abcdef12345678';
 
 const updateLedgerHardwareAccounts = (keyrings: KeyringObject[]) => {
   const ledgerHardwareIndex = keyrings.findIndex(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     (keyring) => keyring.type === KeyringType.ledger,
   );
 

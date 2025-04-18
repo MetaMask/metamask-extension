@@ -26,6 +26,8 @@ export const toAssetId = (
 ): CaipAssetType | undefined => {
   if (isCaipAssetType(address)) {
     return address;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   } else if (chainId === MultichainNetwork.Solana) {
     return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
   }

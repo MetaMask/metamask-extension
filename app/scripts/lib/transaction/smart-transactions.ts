@@ -391,6 +391,8 @@ class SmartTransactionHook {
       async (smartTransaction: SmartTransaction) => {
         if (smartTransaction.uuid === uuid) {
           const { status } = smartTransaction;
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
           if (!status || status === SmartTransactionStatuses.PENDING) {
             return;
           }
@@ -411,6 +413,8 @@ class SmartTransactionHook {
         async (smartTransaction: SmartTransaction) => {
           if (smartTransaction.uuid === uuid) {
             const { status, statusMetadata } = smartTransaction;
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
             if (!status || status === SmartTransactionStatuses.PENDING) {
               return;
             }

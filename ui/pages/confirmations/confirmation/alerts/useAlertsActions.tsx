@@ -41,6 +41,8 @@ export const useAlertsActions = (
   const processAction = useCallback(
     (actionKey: string) => {
       switch (actionKey) {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         case AlertActionKey.ShowPendingConfirmation:
           navigateToPendingConfirmation();
           break;

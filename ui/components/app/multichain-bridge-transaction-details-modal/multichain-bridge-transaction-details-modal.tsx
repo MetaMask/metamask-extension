@@ -109,9 +109,13 @@ function MultichainBridgeTransactionDetailsModal({
   let displayStatus = t('bridgeStatusInProgress');
   let statusColor = TextColor.primaryDefault;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (finalDisplayStatusKey === TransactionStatus.confirmed) {
     displayStatus = t('bridgeStatusComplete');
     statusColor = TextColor.successDefault;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   } else if (finalDisplayStatusKey === TransactionStatus.failed) {
     displayStatus = t('bridgeStatusFailed');
     statusColor = TextColor.errorDefault;
@@ -128,6 +132,8 @@ function MultichainBridgeTransactionDetailsModal({
 
     try {
       const caipChainId = formatChainIdToCaip(chainId);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       const isSolana = caipChainId === MultichainNetworks.SOLANA;
 
       let blockExplorerUrl = '';
@@ -475,6 +481,8 @@ function MultichainBridgeTransactionDetailsModal({
               </Box>
 
               {/* Destination Amount - Show only when truly complete */}
+              {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894 */}
+              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison */}
               {finalDisplayStatusKey === TransactionStatus.confirmed &&
                 bridgeInfo?.destAsset &&
                 bridgeInfo?.destTokenAmount && (

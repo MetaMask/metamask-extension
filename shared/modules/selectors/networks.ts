@@ -203,6 +203,8 @@ export function isNetworkLoading(state: NetworkState) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
     selectedNetworkClientId &&
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     state.metamask.networksMetadata[selectedNetworkClientId].status !==
       NetworkStatus.Available
   );
@@ -212,6 +214,8 @@ export function getInfuraBlocked(
   state: SelectedNetworkClientIdState & NetworksMetadataState,
 ) {
   return (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
       .status === NetworkStatus.Blocked
   );

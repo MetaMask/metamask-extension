@@ -206,6 +206,8 @@ export default class EncryptionPublicKeyController extends BaseController<
     const keyringType = await this._getAccountKeyringType(address);
 
     switch (keyringType) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       case KeyringType.ledger: {
         return new Promise((_, reject) => {
           reject(
@@ -214,6 +216,8 @@ export default class EncryptionPublicKeyController extends BaseController<
         });
       }
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       case KeyringType.trezor: {
         return new Promise((_, reject) => {
           reject(
@@ -222,6 +226,8 @@ export default class EncryptionPublicKeyController extends BaseController<
         });
       }
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       case KeyringType.lattice: {
         return new Promise((_, reject) => {
           reject(
@@ -230,6 +236,8 @@ export default class EncryptionPublicKeyController extends BaseController<
         });
       }
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       case KeyringType.qr: {
         return Promise.reject(
           new Error('QR hardware does not support eth_getEncryptionPublicKey.'),

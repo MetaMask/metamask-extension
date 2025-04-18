@@ -37,6 +37,8 @@ export const useDisplayName = (
     chain: { namespace, reference },
   } = params;
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   const isEip155 = namespace === KnownCaipNamespace.Eip155;
 
   const parsedAddress = isEip155 ? toChecksumHexAddress(address) : address;

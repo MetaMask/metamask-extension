@@ -107,6 +107,8 @@ export function isBridgeFailed(
       (transaction.bridgeInfo.status === StatusTypes.FAILED ||
         transaction.bridgeInfo.status === 'FAILED'),
   );
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   const baseFailed = baseStatusKey === TransactionStatus.failed;
 
   return bridgeFailed || baseFailed;
@@ -126,6 +128,8 @@ export function getBridgeStatusKey(
 
   if (
     isBridgeComplete(transaction) &&
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     baseStatusKey === TransactionStatus.confirmed
   ) {
     return TransactionStatus.confirmed;

@@ -55,6 +55,8 @@ export default function init() {
         (event) => {
           // Ensure origin
           if (
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
             event.origin !== KnownOrigins.lattice &&
             event.source === browserTab
           ) {
