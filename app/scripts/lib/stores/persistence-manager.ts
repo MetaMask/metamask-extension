@@ -1,3 +1,9 @@
+/**
+ * navigator.locks is a polyfill for the Locks API, which can be removed from
+ * this file after we drop support for older Firefox versions.
+ * navigator.locks is supported in Firefox 102+.
+ */
+import 'navigator.locks';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
