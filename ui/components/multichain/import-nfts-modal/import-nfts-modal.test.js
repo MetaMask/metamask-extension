@@ -10,7 +10,6 @@ import {
   ignoreTokens,
   setNewNftAddedMessage,
   updateNftDropDownState,
-  getTokenStandardAndDetails,
 } from '../../../store/actions';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
