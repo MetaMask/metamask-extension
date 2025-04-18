@@ -7,7 +7,6 @@ import browser from 'webextension-polyfill';
  */
 export class ExtensionUpdateManager {
   #updatePending = false;
-
   #isIdle = false;
 
   /**
@@ -31,7 +30,7 @@ export class ExtensionUpdateManager {
   public setIdleState(idle: boolean): void {
     this.#isIdle = idle;
     if (idle && this.#updatePending) {
-      this.applyPendingUpdate();
+      this.#applyPendingUpdate();
     }
   }
 
@@ -39,7 +38,7 @@ export class ExtensionUpdateManager {
    * Applies a pending update by reloading the extension.
    * Should only be called when conditions for update are confirmed.
    */
-  public applyPendingUpdate(): void {
+  #applyPendingUpdate(): void {
     browser.runtime.reload();
   }
 
@@ -58,7 +57,7 @@ export class ExtensionUpdateManager {
 
     // If we're already idle, apply the update immediately
     if (this.#isIdle) {
-      this.applyPendingUpdate();
+      this.#applyPendingUpdate();
     }
   }
 }

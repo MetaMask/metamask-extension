@@ -579,8 +579,6 @@ async function initialize() {
 
     // Set initial idle state after initialization is complete
     extensionUpdateManager.setIdleState(true);
-    // Check for updates when UI is closed (initialization also checks for updates separately)
-    extensionUpdateManager.applyPendingUpdateIfNeeded();
 
     resolveInitialization();
   } catch (error) {
@@ -931,8 +929,6 @@ export function setupController(
       controller.onClientClosed();
       // Set extension to idle when all UI instances are closed
       extensionUpdateManager.setIdleState(true);
-      // Check for updates when UI is closed
-      extensionUpdateManager.applyPendingUpdateIfNeeded();
     } else {
       // Set extension to not idle when UI instances are open
       extensionUpdateManager.setIdleState(false);
@@ -1312,10 +1308,6 @@ export function setupController(
     controller.snapController.updateBlockedSnaps();
   }
 }
-
-//
-// Etc...
-//
 
 /**
  * Opens the browser popup for user confirmation
