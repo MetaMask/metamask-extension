@@ -15,7 +15,9 @@ const renderComponent = () => {
   return renderWithProvider(
     <SmartAccountUpdateInformation
       selectedHardwareAccount={{
-        ...mockState.metamask.internalAccounts.accounts['07c2cfec-36c9-46c4-8115-3836d3ac9047'],
+        ...mockState.metamask.internalAccounts.accounts[
+          '07c2cfec-36c9-46c4-8115-3836d3ac9047'
+        ],
         type: 'eip155:eoa',
         scopes: ['eip155:1'],
       }}
