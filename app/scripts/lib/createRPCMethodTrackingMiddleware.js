@@ -288,12 +288,6 @@ export default function createRPCMethodTrackingMiddleware({
       multichainApiRequestScope = params?.scope;
     }
 
-    if (invokedMethod === MESSAGE_TYPE.WALLET_CREATE_SESSION) {
-      console.log('multichainApiRequestScope', multichainApiRequestScope);
-      console.log('req', req);
-      console.log('res', res);
-    }
-
     const rateLimitType = RATE_LIMIT_MAP[invokedMethod];
 
     let isRateLimited;
