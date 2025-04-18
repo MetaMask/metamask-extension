@@ -1,13 +1,28 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
-import { SolScope } from '@metamask/keyring-api';
+import { CaipChainId } from '@metamask/utils';
+import { DiscoveredAccount, KeyringAccount } from '@metamask/keyring-api';
+import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 import {
-  KeyringInternalSnapClient,
-  KeyringInternalSnapClientMessenger,
-} from '@metamask/keyring-internal-snap-client';
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
+  SnapKeyring,
+  SnapKeyringInternalOptions,
+} from '@metamask/eth-snap-keyring';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { Messenger } from '@metamask/base-controller';
+import { SnapId } from '@metamask/snaps-sdk';
+import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
+import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/accounts-controller';
+import { MultichainNetworks } from '../../constants/multichain/networks';
+import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+
+/**
+ * Supported non-EVM Snaps.
+ */
+type SUPPORTED_WALLET_SNAP_ID =
+  | typeof SOLANA_WALLET_SNAP_ID
+  | typeof BITCOIN_WALLET_SNAP_ID;
 
 /**
  * Get the next available account name based on the suggestion and the list of
@@ -35,46 +50,189 @@ export function getUniqueAccountName(
   return candidateName;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(solana)
-export async function addDiscoveredSolanaAccounts(
-  controllerMessenger: KeyringInternalSnapClientMessenger,
-  entropySource: string,
-  snapKeyring: SnapKeyring,
+export type SnapAccountNameOptions = {
+  chainId?: CaipChainId;
+};
+
+/**
+ * Get the next available Snap account name for a supported non-EVM Snap.
+ *
+ * @param getNextAvailableAccountName - Callback to get the next available account name.
+ * @param snapId - Snap ID.
+ * @param options - Options for this account name.
+ * @param options.chainId - Chain ID for this account if available.
+ * @returns
+ */
+export async function getNextAvailableSnapAccountName(
+  getNextAvailableAccountName: () => Promise<string>,
+  snapId: SUPPORTED_WALLET_SNAP_ID,
+  { chainId }: SnapAccountNameOptions = {},
 ) {
-  const snapId = SOLANA_WALLET_SNAP_ID;
-  const scopes = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
-  const client = new KeyringInternalSnapClient({
-    messenger: controllerMessenger,
-    snapId,
-  });
+  const defaultSnapAccountName = await getNextAvailableAccountName();
 
-  for (let index = 0; ; index++) {
-    const discovered = await client.discoverAccounts(
-      scopes,
-      entropySource,
-      index,
-    );
+  // FIXME: This is a temporary workaround to suggest a different account name for a first party snap.
+  const accountNumber = defaultSnapAccountName.trim().split(' ').pop();
 
-    // We stop discovering accounts if none got discovered for that index.
-    if (discovered.length === 0) {
-      break;
+  switch (snapId) {
+    case BITCOIN_WALLET_SNAP_ID: {
+      if (chainId === MultichainNetworks.BITCOIN_TESTNET) {
+        return `Bitcoin Testnet Account ${accountNumber}`;
+      }
+      return `Bitcoin Account ${accountNumber}`;
     }
+    case SOLANA_WALLET_SNAP_ID: {
+      // Solana accounts should have in their scope the 3 networks
+      // mainnet, testnet, and devnet. Therefore, we can use this name
+      // for all 3 networks.
+      return `Solana Account ${accountNumber}`;
+    }
+    default:
+      return defaultSnapAccountName;
+  }
+}
 
-    await Promise.allSettled(
-      discovered.map(async (discoveredAccount) => {
-        const options = {
-          derivationPath: discoveredAccount.derivationPath,
-          entropySource,
-        };
+///: BEGIN:ONLY_INCLUDE_IF(solana,bitcoin)
+export type WalletSnapOptions = {
+  scope?: CaipChainId;
+  derivationPath?: DiscoveredAccount['derivationPath'];
+  entropySource?: string;
+  accountNameSuggestion?: string;
+};
 
-        // TODO: Use `withKeyring` instead of using the keyring directly.
-        await snapKeyring.createAccount(snapId, options, {
-          displayConfirmation: false,
-          displayAccountNameSuggestion: false,
-          setSelectedAccount: false,
-        });
+export type WalletSnapClient = {
+  getSnapId(): SnapId;
+
+  createAccount(
+    options: WalletSnapOptions,
+    internalOptions?: SnapKeyringInternalOptions,
+  ): Promise<KeyringAccount>;
+
+  getNextAvailableAccountName(
+    options?: SnapAccountNameOptions,
+  ): Promise<string>;
+};
+
+export type MultichainWalletSnapClientMessenger = Messenger<
+  | SnapControllerHandleRequest
+  | AccountsControllerGetNextAvailableAccountNameAction,
+  never
+>;
+
+export class MultichainWalletSnapClient implements WalletSnapClient {
+  #snapId: SUPPORTED_WALLET_SNAP_ID;
+
+  #snapKeyring: SnapKeyring;
+
+  #scopes: CaipChainId[];
+
+  #client: KeyringInternalSnapClient;
+
+  #messenger: MultichainWalletSnapClientMessenger;
+
+  constructor(
+    snapId: SUPPORTED_WALLET_SNAP_ID,
+    scopes: CaipChainId[],
+    snapKeyring: SnapKeyring,
+    messenger: MultichainWalletSnapClientMessenger,
+  ) {
+    this.#snapId = snapId;
+    this.#snapKeyring = snapKeyring;
+
+    this.#scopes = scopes;
+
+    this.#messenger = messenger;
+
+    this.#client = new KeyringInternalSnapClient({
+      snapId,
+      // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
+      messenger: messenger.getRestricted({
+        name: 'KeyringInternalSnapClient',
+        allowedActions: ['SnapController:handleRequest'],
+        allowedEvents: [],
       }),
+    });
+  }
+
+  getSnapId(): SnapId {
+    return this.#snapId;
+  }
+
+  async createAccount(
+    options: WalletSnapOptions,
+    internalOptions?: SnapKeyringInternalOptions,
+  ): Promise<KeyringAccount> {
+    // TODO: Use `withKeyring` instead of using the keyring directly.
+    return await this.#snapKeyring.createAccount(
+      this.#snapId,
+      options,
+      internalOptions,
     );
+  }
+
+  async getNextAvailableAccountName(
+    options: SnapAccountNameOptions = {},
+  ): Promise<string> {
+    return getNextAvailableSnapAccountName(
+      async () => {
+        return this.#messenger.call(
+          'AccountsController:getNextAvailableAccountName',
+          KeyringTypes.snap,
+        );
+      },
+      this.#snapId,
+      options,
+    );
+  }
+
+  async #discoverAccountsOn(
+    entropySource: string,
+    groupIndex: number,
+  ): Promise<DiscoveredAccount[]> {
+    return await this.#client.discoverAccounts(
+      this.#scopes,
+      entropySource,
+      groupIndex,
+    );
+  }
+
+  async discoverAccounts(entropySource: string) {
+    for (let index = 0; ; index++) {
+      const discovered = await this.#discoverAccountsOn(entropySource, index);
+
+      // We stop discovering accounts if none got discovered for that index.
+      if (discovered.length === 0) {
+        break;
+      }
+
+      // NOTE: We are doing this sequentially mainly to avoid race-conditions with the
+      // account naming logic.
+      for (const discoveredAccount of discovered) {
+        try {
+          const accountNameSuggestion =
+            await this.getNextAvailableAccountName();
+
+          const options: WalletSnapOptions = {
+            derivationPath: discoveredAccount.derivationPath,
+            entropySource,
+            // FIXME: We forward the suggestion here, so this got renamed later by
+            // the Snap keyring. We should be able to rename without passing this
+            // through the Snap (maybe use a new "internal option" for this).
+            accountNameSuggestion,
+          };
+
+          await this.createAccount(options, {
+            displayConfirmation: false,
+            displayAccountNameSuggestion: false,
+            setSelectedAccount: false,
+          });
+        } catch (error) {
+          console.warn(
+            `Unable to create discovered account: ${discoveredAccount.derivationPath}:`,
+            error,
+          );
+        }
+      }
+    }
   }
 }
 ///: END:ONLY_INCLUDE_IF
