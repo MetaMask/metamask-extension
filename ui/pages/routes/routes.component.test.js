@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { BtcAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 import { SEND_STAGES } from '../../ducks/send';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
@@ -202,6 +202,12 @@ describe('toast display', () => {
     id: '4174eb0c-0a73-4213-b807-a2e5a5c4ebfd',
     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
   });
+  const mockSolanaAccount = createMockInternalAccount({
+    name: 'Solana Account 1',
+    address: '2byhg1jregmqQx2VfLGLn7hb5mStJw2iVVU8sfM5xTYj',
+    id: 'xx-solana-account',
+    type: SolAccountType.DataAccount,
+  });
   const mockOrigin = 'https://metamask.github.io';
 
   const getToastDisplayTestState = (date) => ({
@@ -274,6 +280,7 @@ describe('toast display', () => {
           [mockAccount.id]: mockAccount,
           [mockNonEvmAccount.id]: mockNonEvmAccount,
           [mockAccount2.id]: mockAccount2,
+          [mockSolanaAccount.id]: mockSolanaAccount,
         },
         selectedAccount: selectedAccountId ?? mockAccount.id,
       },
@@ -352,6 +359,15 @@ describe('toast display', () => {
     const { getByTestId } = await render(
       [DEFAULT_ROUTE],
       getToastConnectAccountDisplayTestState(mockAccount2.id),
+    );
+    const toastContainer = getByTestId('connect-account-toast');
+    expect(toastContainer).toBeInTheDocument();
+  });
+
+  it('does render toastContainer if the unconnected selected account is Solana', async () => {
+    const { getByTestId } = await render(
+      [DEFAULT_ROUTE],
+      getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
     );
     const toastContainer = getByTestId('connect-account-toast');
     expect(toastContainer).toBeInTheDocument();
