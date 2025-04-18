@@ -166,7 +166,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
                   }
                   setAttemptingExport(attemptExportMode);
                 }}
-                onClose={onClose}
               />
             )}
             {attemptingExport === AttemptExportState.PrivateKey && (

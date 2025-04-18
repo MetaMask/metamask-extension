@@ -22,6 +22,7 @@ import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 const messageIdMock = '12345';

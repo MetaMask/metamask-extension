@@ -82,7 +82,7 @@ export class BridgePage {
   };
 }
 
-async function mockFeatureFlag(
+export async function mockFeatureFlag(
   mockServer: Mockttp,
   featureFlagOverrides: Partial<FeatureFlagResponse>,
 ) {

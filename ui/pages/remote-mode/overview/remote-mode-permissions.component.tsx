@@ -3,7 +3,6 @@ import React from 'react';
 import { Box, Text } from '../../../components/component-library';
 import Card from '../../../components/ui/card';
 import {
-  FontWeight,
   TextVariant,
   Display,
   JustifyContent,
@@ -32,9 +31,6 @@ export default function RemoteModePermissions({
 
   return (
     <Box>
-      <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
-        Permissions
-      </Text>
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
         Safely access your hardware wallet funds without plugging it in. Revoke
         permissions anytime.
@@ -48,13 +44,13 @@ export default function RemoteModePermissions({
             paddingTop={2}
             paddingBottom={2}
           >
-            <Text>Swap</Text>
+            <Text>Remote Swaps</Text>
             <Text
               color={TextColor.infoDefault}
               style={{ cursor: 'pointer' }}
               onClick={handleEnableRemoteSwap}
             >
-              Enable
+              Turn on
             </Text>
           </Box>
           <Text color={TextColor.textAlternativeSoft}>
@@ -72,12 +68,13 @@ export default function RemoteModePermissions({
             paddingTop={2}
             paddingBottom={2}
           >
-            <Text>Daily allowances</Text>
+            <Text>Withdrawal limit</Text>
             <Text
               color={TextColor.infoDefault}
+              style={{ cursor: 'pointer' }}
               onClick={handleEnableDailyAllowance}
             >
-              Enable
+              Turn on
             </Text>
           </Box>
           <Text color={TextColor.textAlternativeSoft}>

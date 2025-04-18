@@ -31,6 +31,7 @@ jest.mock('./useConfirmationNavigation', () => ({
 }));
 
 const ADDRESS_MOCK = '0x1234';
+const UPGRADE_CONTRACT_ADDRESS_MOCK = '0x5678';
 const CODE_MOCK = '0xabcd';
 const TRANSACTION_ID_MOCK = '1234-5678';
 
@@ -148,6 +149,78 @@ describe('useEIP7702Account', () => {
 
       await act(async () => {
         await downgradeAccount(ADDRESS_MOCK);
+      });
+
+      expect(onRedirect).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('upgradeAccount', () => {
+    it('adds transaction', async () => {
+      const { upgradeAccount } = runHook();
+
+      await upgradeAccount(ADDRESS_MOCK, UPGRADE_CONTRACT_ADDRESS_MOCK);
+
+      expect(addTransactionAndRouteToConfirmationPageMock).toHaveBeenCalledWith(
+        {
+          authorizationList: [
+            {
+              address: UPGRADE_CONTRACT_ADDRESS_MOCK,
+            },
+          ],
+          from: ADDRESS_MOCK,
+          to: ADDRESS_MOCK,
+          type: TransactionEnvelopeType.setCode,
+        },
+        {
+          networkClientId: undefined,
+          type: TransactionType.batch,
+        },
+      );
+    });
+
+    it('navigates to confirmation', async () => {
+      const navigateToIdMock = jest.fn();
+
+      useConfirmationNavigationMock.mockReturnValue({
+        confirmations: [{ id: TRANSACTION_ID_MOCK }],
+        navigateToId: navigateToIdMock,
+      } as unknown as ReturnType<typeof useConfirmationNavigationMock>);
+
+      useDispatchMock.mockReturnValue(
+        jest.fn().mockResolvedValue({
+          id: TRANSACTION_ID_MOCK,
+        }),
+      );
+
+      const { upgradeAccount } = runHook();
+
+      await act(async () => {
+        await upgradeAccount(ADDRESS_MOCK, UPGRADE_CONTRACT_ADDRESS_MOCK);
+      });
+
+      expect(navigateToIdMock).toHaveBeenCalledTimes(1);
+      expect(navigateToIdMock).toHaveBeenCalledWith(TRANSACTION_ID_MOCK);
+    });
+
+    it('calls onRedirect', async () => {
+      const onRedirect = jest.fn();
+
+      useConfirmationNavigationMock.mockReturnValue({
+        confirmations: [{ id: TRANSACTION_ID_MOCK }],
+        navigateToId: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmationNavigationMock>);
+
+      useDispatchMock.mockReturnValue(
+        jest.fn().mockResolvedValue({
+          id: TRANSACTION_ID_MOCK,
+        }),
+      );
+
+      const { upgradeAccount } = runHook({ onRedirect });
+
+      await act(async () => {
+        await upgradeAccount(ADDRESS_MOCK, UPGRADE_CONTRACT_ADDRESS_MOCK);
       });
 
       expect(onRedirect).toHaveBeenCalledTimes(1);

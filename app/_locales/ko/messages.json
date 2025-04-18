@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "계정 세부 정보"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " 일반 계정으로 전환"
-  },
   "accountIdenticon": {
     "message": "계정 식별 아이콘"
   },
@@ -1311,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "주소를 클립보드에 복사"
-  },
-  "copyAddressShort": {
-    "message": "주소 복사"
   },
   "copyPrivateKey": {
     "message": "개인 키 복사"

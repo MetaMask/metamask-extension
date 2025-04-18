@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Mga detalye ng account"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Bumalik sa regular na account"
-  },
   "accountIdenticon": {
     "message": "Identicon ng Account"
   },
@@ -1311,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
-  },
-  "copyAddressShort": {
-    "message": "Kopyahin ang address"
   },
   "copyPrivateKey": {
     "message": "Kopyahin ang pribadong key"

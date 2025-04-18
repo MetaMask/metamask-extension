@@ -19,6 +19,10 @@ import { AccountDetails } from '.';
 
 jest.mock('../../../store/actions.ts');
 
+jest.mock('../../../pages/confirmations/hooks/useEIP7702Networks', () => ({
+  useEIP7702Networks: () => ({ pending: false }),
+}));
+
 describe('AccountDetails', () => {
   const account = Object.values(
     mockState.metamask.internalAccounts.accounts,
@@ -65,6 +69,7 @@ describe('AccountDetails', () => {
 
   it('shows export private key contents and password field when clicked', () => {
     const { queryByText, queryByPlaceholderText, getByTestId } = render();
+
     const exportPrivateKeyButton = getByTestId(
       'account-details-display-export-private-key',
     );
@@ -82,6 +87,7 @@ describe('AccountDetails', () => {
     const password = 'password';
 
     const { queryByPlaceholderText, queryByText, getByTestId } = render();
+
     const exportPrivateKeyButton = getByTestId(
       'account-details-display-export-private-key',
     );

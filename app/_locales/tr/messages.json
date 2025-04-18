@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Hesap bilgileri"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Normal hesaba geri dön"
-  },
   "accountIdenticon": {
     "message": "Hesap Identicon"
   },
@@ -1311,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Adresi panoya kopyala"
-  },
-  "copyAddressShort": {
-    "message": "Adresi kopyala"
   },
   "copyPrivateKey": {
     "message": "Özel anahtarı kopyala"

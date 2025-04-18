@@ -2,8 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { getSelectedInternalAccount } from '../../../selectors';
 import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
-import { Button, Box, ButtonSize } from '../../../components/component-library';
+import { isRemoteModeSupported } from '../../../helpers/utils/remote-mode';
+
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+  Button,
+  ButtonIcon,
+  ButtonSize,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../../components/component-library';
+import {
+  TextVariant,
+  FontWeight,
+} from '../../../helpers/constants/design-system';
+import {
+  Content,
+  Header,
+  Page,
+} from '../../../components/multichain/pages/page';
 
 import {
   DEFAULT_ROUTE,
@@ -26,8 +48,15 @@ export default function RemoteModeIntroducing() {
   const [currentScreen, setCurrentScreen] = useState<RemoteScreen>(
     RemoteScreen.OVERVIEW,
   );
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
+
+  const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const history = useHistory();
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  useEffect(() => {
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+  }, [selectedHardwareAccount]);
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
@@ -39,21 +68,22 @@ export default function RemoteModeIntroducing() {
     switch (currentScreen) {
       case RemoteScreen.OVERVIEW:
         return (
-          <Box padding={6}>
+          <Content padding={6}>
             <RemoteModeOverview />
             <Button
               style={{ width: '100%' }}
               onClick={() => setCurrentScreen(RemoteScreen.PERMISSIONS)}
               size={ButtonSize.Lg}
+              disabled={!isHardwareAccount}
             >
-              Continue
+              Get Remote Mode
             </Button>
-          </Box>
+          </Content>
         );
 
       case RemoteScreen.PERMISSIONS:
         return (
-          <Box padding={6}>
+          <Content padding={6}>
             <RemoteModePermissions
               setStartEnableRemoteSwap={() => {
                 history.push(REMOTE_ROUTE_SETUP_SWAPS);
@@ -62,14 +92,14 @@ export default function RemoteModeIntroducing() {
                 history.push(REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE);
               }}
             />
-          </Box>
+          </Content>
         );
 
       case RemoteScreen.SETUP_REMOTE_SWAPS:
         return (
-          <Box padding={2}>
+          <Content padding={2}>
             <RemoteModeSetup />
-          </Box>
+          </Content>
         );
 
       default:
@@ -77,9 +107,40 @@ export default function RemoteModeIntroducing() {
     }
   };
 
+  const onCancel = () => {
+    history.push(DEFAULT_ROUTE);
+  };
+
   return (
-    <div className="main-container" data-testid="remote-mode">
+    <Page className="main-container" data-testid="remote-mode">
+      <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Sm}
+            ariaLabel={'back'}
+            iconName={IconName.ArrowLeft}
+            onClick={onCancel}
+          />
+        }
+      >
+        Remote mode
+      </Header>
+      {!isHardwareAccount && (
+        <Box padding={4}>
+          <BannerAlert severity={BannerAlertSeverity.Warning} marginBottom={2}>
+            <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
+              Select a hardware wallet
+            </Text>
+            <Text variant={TextVariant.bodyMd}>
+              To continue, select your hardware wallet from the account menu.
+            </Text>
+          </BannerAlert>
+        </Box>
+      )}
       {renderScreen()}
-    </div>
+    </Page>
   );
 }

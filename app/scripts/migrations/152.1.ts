@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 154;
+export const version = 152.1;
 
 // Since this is a migration, we don't want to rely on data
 // from outside packages that could change. Therefore, we'll

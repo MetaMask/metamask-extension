@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Detail akun"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Beralih kembali ke akun reguler"
-  },
   "accountIdenticon": {
     "message": "Identikon akun"
   },
@@ -1311,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Salin alamat ke papan klip"
-  },
-  "copyAddressShort": {
-    "message": "Salin alamat"
   },
   "copyPrivateKey": {
     "message": "Salin kunci pribadi"

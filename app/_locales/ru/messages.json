@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Реквизиты счета"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Переключиться назад на обычный счет"
-  },
   "accountIdenticon": {
     "message": "Идентикон счета"
   },
@@ -1311,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Скопировать адрес в буфер обмена"
-  },
-  "copyAddressShort": {
-    "message": "Копировать адрес"
   },
   "copyPrivateKey": {
     "message": "Копировать закрытый ключ"
