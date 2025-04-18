@@ -4,11 +4,13 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   addNftVerifyOwnership,
   ignoreTokens,
   setNewNftAddedMessage,
   updateNftDropDownState,
+  getTokenStandardAndDetails,
 } from '../../../store/actions';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -19,13 +21,14 @@ const INVALID_ADDRESS = 'aoinsafasdfa';
 const VALID_TOKENID = '1201';
 const INVALID_TOKENID = 'abcde';
 
+// Create a spy for the history push function
+const mockPush = jest.fn();
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(
-    jest.fn().mockReturnValue({
-      push: jest.fn(),
-    }),
-  ),
+  useHistory: () => ({
+    push: mockPush,
+  }),
 }));
 
 jest.mock('../../../store/actions.ts', () => ({
@@ -47,6 +50,8 @@ describe('ImportNftsModal', () => {
 
   beforeEach(() => {
     jest.restoreAllMocks();
+    // Reset the push spy before each test
+    mockPush.mockClear();
   });
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
@@ -261,5 +266,31 @@ describe('ImportNftsModal', () => {
     expect(mockState.metamask.selectedNetworkClientId).not.toBe(
       usedNetworkClientId,
     );
+  });
+
+  it('should route to default route when cancel button is clicked', () => {
+    const onClose = jest.fn();
+    const { getByText } = renderWithProvider(
+      <ImportNftsModal onClose={onClose} />,
+      store,
+    );
+
+    const cancelButton = getByText('Cancel');
+    fireEvent.click(cancelButton);
+
+    // Verify both onClose and history.push are called
+    expect(onClose).toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('should route to default route when close button is clicked', () => {
+    const onClose = jest.fn();
+    renderWithProvider(<ImportNftsModal onClose={onClose} />, store);
+
+    fireEvent.click(document.querySelector('button[aria-label="Close"]'));
+
+    // Verify both onClose and history.push are called
+    expect(onClose).toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 });
