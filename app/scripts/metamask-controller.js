@@ -1176,7 +1176,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // @TODO(snaps): This fixes an issue where `withKeyring` would lock the `KeyringController` mutex.
-    // That meant that if a snap requested a keyring operation (like requesting entroy) while the `KeyringController` was locked,
+    // That meant that if a snap requested a keyring operation (like requesting entropy) while the `KeyringController` was locked,
     // it would cause a deadlock.
     // This is a temporary fix until we can refactor how we handle requests to the Snaps Keyring.
     const withSnapKeyring = async (operation) => {
