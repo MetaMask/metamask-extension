@@ -1176,11 +1176,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     const withSnapKeyring = async (operation) => {
-      const keyrings = this.keyringController.getKeyringsByType(
-        KeyringTypes.snap,
-      );
+      const keyring = this.getSnapKeyring();
 
-      return operation({ keyring: keyrings[0] });
+      return operation({ keyring });
     };
 
     const multichainRouterMessenger = this.controllerMessenger.getRestricted({
