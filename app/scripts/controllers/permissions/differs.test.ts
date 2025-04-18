@@ -1,7 +1,4 @@
-import {
-  diffMap,
-  getChangedAuthorizations,
-} from './differs';
+import { diffMap, getChangedAuthorizations } from './differs';
 
 describe('PermissionController selectors', () => {
   describe('diffMap', () => {

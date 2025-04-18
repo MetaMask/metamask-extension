@@ -1,8 +1,4 @@
-import {
-  Caip25CaveatValue,
-  InternalScopesObject,
-  InternalScopeString,
-} from '@metamask/chain-agnostic-permission';
+import { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 
 /**
  * Returns a map containing key/value pairs for those that have been
