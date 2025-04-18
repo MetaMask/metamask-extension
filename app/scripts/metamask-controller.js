@@ -5412,6 +5412,10 @@ export default class MetamaskController extends EventEmitter {
         }
 
         const [newAddress] = await keyring.addAccounts(1);
+        if (oldAccounts.includes(newAddress)) {
+          await keyring.removeAccount(newAddress);
+          throw new Error(`Cannot add duplicate ${newAddress} account`);
+        }
         return newAddress;
       },
     );
