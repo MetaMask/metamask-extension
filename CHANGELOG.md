@@ -68,6 +68,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix Profile Sync feature not appearing in settings search results. ([#30687](https://github.com/MetaMask/metamask-extension/pull/30687))
 - Fix balance display potentially showing incorrect values when only non-EVM accounts are present. ([#30671](https://github.com/MetaMask/metamask-extension/pull/30671))
 
+### Fixed
+- Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
+
 ## [12.15.2]
 ### Added
 - Add icon image for Lens network ([#31638](https://github.com/MetaMask/metamask-extension/pull/31638))
