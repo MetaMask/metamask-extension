@@ -5777,10 +5777,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-client@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/multichain-api-client@npm:0.2.0"
-  checksum: 10/39509819e8304e5adee96d242c4fe73f39fe92f07102faf373c902fded2617bd023ea7423e84dcea47980c752d5233742d05ca45ff040db664ea883db128cc7c
+"@metamask/multichain-api-client@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/multichain-api-client@npm:0.3.0"
+  checksum: 10/3a82a36dbdad88f16464e7655d77a5562d636a387b93d69438421c1fd25f4767eb28ed4c423647b6b06fb0c85cf7dcbe7e4bca474cddd022c78652d631de23fe
   languageName: node
   linkType: hard
 
@@ -6175,6 +6175,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/providers@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "@metamask/providers@npm:22.0.0"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
+    "@metamask/object-multiplex": "npm:^2.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/safe-event-emitter": "npm:^3.1.1"
+    "@metamask/utils": "npm:^11.0.1"
+    detect-browser: "npm:^5.2.0"
+    extension-port-stream: "npm:^4.1.0"
+    fast-deep-equal: "npm:^3.1.3"
+    is-stream: "npm:^2.0.0"
+    readable-stream: "npm:^3.6.2"
+  peerDependencies:
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/b9bd381e5669e07ecee0a98f8748993fed4e02bc855e2ad342db9b9bb8b2d453a01c0e4c9f1e2c7b80929c5ce15d7aafa88c0a6a78651737efdb16f707a84017
+  languageName: node
+  linkType: hard
+
 "@metamask/rate-limit-controller@npm:^6.0.3":
   version: 6.0.3
   resolution: "@metamask/rate-limit-controller@npm:6.0.3"
@@ -6519,10 +6540,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp-multichain@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/test-dapp-multichain@npm:0.9.0"
-  checksum: 10/6d317402bc59165559fad9b1e681ea1437858158f102cced86b7c52da115c7a991e7012906f6bad06f7f55ffa36a30ffe4651b29375d769989eba5611540f530
+"@metamask/test-dapp-multichain@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@metamask/test-dapp-multichain@npm:0.10.0"
+  checksum: 10/9840f9dbbfe289de159dc9d950aea923a4154980e5e31fd68a67bc21437f23c35d85ce8a4fc36e7f51234353a5d2ec83af04e56ad95ded93f624ee63050e55bb
   languageName: node
   linkType: hard
 
@@ -15696,9 +15717,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001599, caniuse-lite@npm:^1.0.30001669":
-  version: 1.0.30001669
-  resolution: "caniuse-lite@npm:1.0.30001669"
-  checksum: 10/cd0b481bb997703cb7651e55666b4aa4e7b4ecf9784796e2393179a15e55c71a6abc6ff865c922bbd3bbfa4a4bf0530d8da13989b97ff8c7850c8a5bd4e00491
+  version: 1.0.30001707
+  resolution: "caniuse-lite@npm:1.0.30001707"
+  checksum: 10/5c5f9aad651f4d957cc59c8b4ac22bb7ac3a1c86c26ee7d5c59b00062bdc1c421980513179da1f5e20cade2da8d7f3c41d482ce7d4a8d9f411e4a827fe092d29
   languageName: node
   linkType: hard
 
@@ -27630,7 +27651,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:^1.1.1"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-api-client": "npm:^0.2.0"
+    "@metamask/multichain-api-client": "npm:^0.3.0"
     "@metamask/multichain-api-middleware": "npm:^0.1.1"
     "@metamask/multichain-network-controller": "npm:^0.4.0"
     "@metamask/multichain-transactions-controller": "npm:^0.9.0"
@@ -27649,7 +27670,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
     "@metamask/profile-sync-controller": "npm:^12.0.0"
-    "@metamask/providers": "npm:^21.0.0"
+    "@metamask/providers": "npm:^22.0.0"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
@@ -27667,7 +27688,7 @@ __metadata:
     "@metamask/solana-wallet-standard": "npm:^0.1.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
-    "@metamask/test-dapp-multichain": "npm:^0.9.0"
+    "@metamask/test-dapp-multichain": "npm:^0.10.0"
     "@metamask/transaction-controller": "npm:^54.1.0"
     "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
