@@ -3,6 +3,7 @@ import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from 'viem';
+import { NetworkController } from '@metamask/network-controller';
 import type {
   MetaMetricsEventFragment,
   MetaMetricsPageObject,
@@ -66,6 +67,8 @@ export type TransactionMetricsRequest = {
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
   getHDEntropyIndex: () => number;
+  networkController?: NetworkController;
+  getNetworkRpcUrl?: (chainId: string) => string;
 };
 
 export type TransactionEventPayload = {

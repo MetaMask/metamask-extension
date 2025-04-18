@@ -7745,6 +7745,50 @@ export default class MetamaskController extends EventEmitter {
           .showConfirmationAdvancedDetails;
       },
       getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
+      networkController: this.networkController, // Reference to the network controller
+      getNetworkRpcUrl: (chainId) => {
+        try {
+          // Find the network client ID for this chain
+          const networkClientId =
+            this.networkController.findNetworkClientIdByChainId(chainId);
+
+          if (networkClientId) {
+            // Get the network configuration
+            const networkConfig =
+              this.networkController.getNetworkConfigurationByNetworkClientId(
+                networkClientId,
+              );
+
+            if (networkConfig) {
+              // Try direct rpcUrl property first
+              if (networkConfig.rpcUrl) {
+                return networkConfig.rpcUrl;
+              }
+
+              // Try rpcEndpoints array
+              if (
+                networkConfig.rpcEndpoints &&
+                networkConfig.rpcEndpoints.length > 0
+              ) {
+                // Use the default endpoint if specified
+                const defaultEndpointIndex =
+                  networkConfig.defaultRpcEndpointIndex || 0;
+                if (networkConfig.rpcEndpoints[defaultEndpointIndex]) {
+                  return networkConfig.rpcEndpoints[defaultEndpointIndex].url;
+                }
+
+                // Fallback to first endpoint
+                if (networkConfig.rpcEndpoints[0].url) {
+                  return networkConfig.rpcEndpoints[0].url;
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error getting RPC URL:', error);
+        }
+        return 'unknown';
+      },
     };
     return {
       ...controllerActions,
