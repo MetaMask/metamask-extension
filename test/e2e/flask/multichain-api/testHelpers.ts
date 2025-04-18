@@ -211,7 +211,7 @@ export const sendMultichainApiRequest = ({
     const data = ${JSON.stringify(requestWithNewId)};
     const result = new Promise((resolve) => {
       port.onMessage.addListener((msg) => {
-        if (msg.type !== 'caip-x') {
+        if (msg.type !== 'caip-348') {
           return;
         }
         if (msg.data?.id !== ${id}) {
@@ -221,7 +221,7 @@ export const sendMultichainApiRequest = ({
         resolve(msg.data);
       })
     })
-    port.postMessage({ type: 'caip-x', data });
+    port.postMessage({ type: 'caip-348', data });
     return result;`;
   }
 

@@ -5,7 +5,7 @@ import {
 } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';

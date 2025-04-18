@@ -1,5 +1,5 @@
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import { SECOND } from '../../../shared/constants/time';
 import { useCountdownTimer } from './useCountdownTimer';
