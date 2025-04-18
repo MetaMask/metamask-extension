@@ -1,13 +1,10 @@
 import React, { useCallback } from 'react';
 import { CaipChainId } from '@metamask/utils';
-import { KeyringTypes } from '@metamask/keyring-controller';
-import { getNextAvailableAccountName } from '../../../store/actions';
 import { CreateAccount } from '../create-account';
 import {
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 type CreateSnapAccountProps = {
   /**
@@ -39,44 +36,24 @@ export const CreateSnapAccount = ({
   clientType,
   chainId,
 }: CreateSnapAccountProps) => {
-  const snapClient = useMultichainWalletSnapClient(clientType);
+  const client = useMultichainWalletSnapClient(clientType);
 
   const onCreateAccount = useCallback(
-    async (_accountNameSuggestion?: string) => {
-      snapClient.createAccount({
+    async (accountNameSuggestion?: string) => {
+      client.createAccount({
         scope: chainId,
         entropySource: selectedKeyringId,
-        accountNameSuggestion: _accountNameSuggestion,
+        accountNameSuggestion,
       });
       onActionComplete(true);
     },
-    [snapClient, chainId, selectedKeyringId, onActionComplete],
+    [client, chainId, selectedKeyringId, onActionComplete],
   );
 
   const getNextAccountName = async () => {
-    const defaultSnapAccountName = await getNextAvailableAccountName(
-      KeyringTypes.snap,
-    );
-
-    // FIXME: This is a temporary workaround to suggest a different account name for a first party snap.
-    const accountNumber = defaultSnapAccountName.trim().split(' ').pop();
-
-    switch (clientType) {
-      case WalletClientType.Bitcoin: {
-        if (chainId === MultichainNetworks.BITCOIN_TESTNET) {
-          return `Bitcoin Testnet Account ${accountNumber}`;
-        }
-        return `Bitcoin Account ${accountNumber}`;
-      }
-      case WalletClientType.Solana: {
-        // Solana accounts should have in their scope the 3 networks
-        // mainnet, testnet, and devnet. Therefore, we can use this name
-        // for all 3 networks.
-        return `Solana Account ${accountNumber}`;
-      }
-      default:
-        return defaultSnapAccountName;
-    }
+    return await client.getNextAvailableAccountName({
+      chainId,
+    });
   };
 
   return (
