@@ -28,7 +28,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
-  getSelectedNetworkClientId,
 } from '../../../../shared/modules/selectors/networks';
 import {
   getIsMainnet,
