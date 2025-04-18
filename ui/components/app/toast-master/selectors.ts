@@ -6,10 +6,11 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../../../helpers/constants/survey';
-import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
+import { getAllPermittedAccountsForCurrentTab, isSolanaAccount } from '../../../selectors';
 import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { MetaMaskReduxState } from '../../../store/store';
 import { getIsPrivacyToastRecent } from './utils';
+import { isEvmAccountType } from '@metamask/keyring-api';
 
 // TODO: get this into one of the larger definitions of state type
 type State = Omit<MetaMaskReduxState, 'appState'> & {
@@ -88,10 +89,17 @@ export function selectShowConnectAccountToast(
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
   const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
 
+  // We only support connection with EVM or Solana accounts
+  // This check prevents Bitcoin snap accounts from showing the toast
+  const isEvmAccount = isEvmAccountType(account?.type);
+  const isSolanaAccountSelected = isSolanaAccount(account);
+  const isConnectableAccount = isEvmAccount || isSolanaAccountSelected;
+
   const showConnectAccountToast =
     allowShowAccountSetting &&
     account &&
     state.activeTab?.origin &&
+    isConnectableAccount &&
     !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
 
   return showConnectAccountToast;
