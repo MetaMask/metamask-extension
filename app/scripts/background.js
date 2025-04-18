@@ -529,7 +529,9 @@ browser.runtime.onConnect.addListener(async (...args) => {
         },
       });
       if (sent) {
-        port.onMessage.addListener(async function restoreVaultListener(message) {
+        port.onMessage.addListener(async function restoreVaultListener(
+          message,
+        ) {
           if (message?.data?.method === METHOD_RESTORE_DATABASE_FROM_BACKUP) {
             await restoreDatabaseFromBackup(port, backup);
           }

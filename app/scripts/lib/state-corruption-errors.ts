@@ -116,8 +116,9 @@ export async function displayStateCorruptionError(
 
     if (confirmMessage) {
       // TODO: not the best UI: we should talk about this
+      // eslint-disable-next-line no-alert
       const confirmed = window.prompt(
-        confirmMessage + 'Type `restore` to restore.',
+        `${confirmMessage}Type \`restore\` to restore.`,
       );
       if (confirmed !== 'restore') {
         this.style.opacity = '1';
