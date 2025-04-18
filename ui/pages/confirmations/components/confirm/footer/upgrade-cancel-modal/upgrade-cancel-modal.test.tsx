@@ -1,6 +1,5 @@
 import React from 'react';
 import { act } from '@testing-library/react';
-import { rpcErrors } from '@metamask/rpc-errors';
 import configureStore from '../../../../../../store/store';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
@@ -12,6 +11,7 @@ import {
   disableAccountUpgradeForChain,
   rejectPendingApproval,
 } from '../../../../../../store/actions';
+import { EIP5792ErrorCode } from '../../../../../../../shared/constants/transaction';
 import { UpgradeCancelModal } from './upgrade-cancel-modal';
 
 jest.mock('../../../../../../store/actions', () => ({
@@ -97,7 +97,7 @@ describe('UpgradeCancelModal', () => {
     expect(rejectPendingApprovalMock).toHaveBeenCalledTimes(1);
     expect(rejectPendingApprovalMock).toHaveBeenCalledWith(
       expect.any(String),
-      expect.objectContaining({ code: rpcErrors.methodNotSupported().code }),
+      expect.objectContaining({ code: EIP5792ErrorCode.RejectedUpgrade }),
     );
   });
 
