@@ -221,6 +221,8 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   async #getAccountNameFromSuggestion(
     accountNameSuggestion: string,
   ): Promise<{ success: boolean; accountName?: string }> {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const accounts = await this.#messenger.call(
       'AccountsController:listMultichainAccounts',
     );

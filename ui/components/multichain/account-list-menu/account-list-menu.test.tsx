@@ -761,11 +761,15 @@ describe('AccountListMenu', () => {
       const button = getByTestId(
         'multichain-account-menu-popover-action-button',
       );
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await button.click();
 
       const addAccountButton = getByTestId(
         'multichain-account-menu-popover-add-account',
       );
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await addAccountButton.click();
 
       expect(getByTestId('select-srp-container')).toBeInTheDocument();

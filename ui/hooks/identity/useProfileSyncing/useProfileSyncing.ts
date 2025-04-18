@@ -26,6 +26,8 @@ export function useEnableProfileSyncing(): {
 
     try {
       // set profile syncing to true
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(
         setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true),
       );
@@ -60,6 +62,8 @@ export function useDisableProfileSyncing(): {
 
     try {
       // disable profile syncing
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(
         setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false),
       );

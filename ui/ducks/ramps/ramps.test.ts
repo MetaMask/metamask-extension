@@ -109,6 +109,8 @@ describe('rampsSlice', () => {
 
     it('should call RampAPI.getNetworks when the Basic Functionality Toggle is on and isFetched is false', async () => {
       // @ts-expect-error this is a valid action
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await store.dispatch(fetchBuyableChains());
       expect(RampAPI.getNetworks).toHaveBeenCalledTimes(1);
     });
@@ -118,6 +120,8 @@ describe('rampsSlice', () => {
       getUseExternalServicesMock.mockReturnValue(false);
 
       // @ts-expect-error this is a valid action
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await store.dispatch(fetchBuyableChains());
 
       expect(RampAPI.getNetworks).not.toHaveBeenCalled();
@@ -130,6 +134,8 @@ describe('rampsSlice', () => {
       });
 
       // @ts-expect-error this is a valid action
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await store.dispatch(fetchBuyableChains());
       expect(RampAPI.getNetworks).not.toHaveBeenCalled();
     });
@@ -146,6 +152,8 @@ describe('rampsSlice', () => {
       ];
       jest.spyOn(RampAPI, 'getNetworks').mockResolvedValue(mockBuyableChains);
       // @ts-expect-error this is a valid action
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await store.dispatch(fetchBuyableChains());
       const { ramps: rampsState } = store.getState();
       expect(rampsState.buyableChains).toEqual(mockBuyableChains);
@@ -156,6 +164,8 @@ describe('rampsSlice', () => {
       // @ts-expect-error forcing undefined to test the behavior
       jest.spyOn(RampAPI, 'getNetworks').mockResolvedValue(undefined);
       // @ts-expect-error this is a valid action
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await store.dispatch(fetchBuyableChains());
       const { ramps: rampsState } = store.getState();
       expect(rampsState.buyableChains).toEqual(defaultBuyableChains);
@@ -165,6 +175,8 @@ describe('rampsSlice', () => {
     it('should set state to defaultBuyableChains when returned networks are empty', async () => {
       jest.spyOn(RampAPI, 'getNetworks').mockResolvedValue([]);
       // @ts-expect-error this is a valid action
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await store.dispatch(fetchBuyableChains());
       const { ramps: rampsState } = store.getState();
       expect(rampsState.buyableChains).toEqual(defaultBuyableChains);
@@ -176,6 +188,8 @@ describe('rampsSlice', () => {
         .spyOn(RampAPI, 'getNetworks')
         .mockRejectedValue(new Error('API error'));
       // @ts-expect-error this is a valid action
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31881
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await store.dispatch(fetchBuyableChains());
       const { ramps: rampsState } = store.getState();
       expect(rampsState.buyableChains).toEqual(defaultBuyableChains);
