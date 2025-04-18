@@ -60,7 +60,6 @@ class NftListPage {
     id: string,
     expectedErrorMessage?: string,
   ) {
-    // await this.driver.delay(100000);
     await this.driver.clickElement(this.actionBarButton);
     await this.driver.clickElement(this.importNftButton);
     await this.driver.waitForSelector(this.importNftModalTitle);

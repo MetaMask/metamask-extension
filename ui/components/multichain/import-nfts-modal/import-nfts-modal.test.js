@@ -49,10 +49,6 @@ describe('ImportNftsModal', () => {
     jest.restoreAllMocks();
   });
 
-  // afterEach(() => {
-  //   jest.clearAllMocks();
-  // });
-
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
