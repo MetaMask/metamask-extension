@@ -21,7 +21,6 @@ import {
 } from '@metamask/network-controller';
 import {
   NON_EVM_TESTNET_IDS,
-  toEvmCaipChainId,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import {
