@@ -162,7 +162,7 @@ function useProposedNames(value: string, type: NameType, variation: string) {
   const dispatch = useDispatch();
   const { proposedNames } = useName(value, type, variation);
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateInterval = useRef<any>();
 
@@ -183,7 +183,8 @@ function useProposedNames(value: string, type: NameType, variation: string) {
           onlyUpdateAfterDelay: true,
           variation,
         }),
-        // TODO: Replace `any` with type
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       )) as any as UpdateProposedNamesResult;
 
