@@ -45,16 +45,12 @@ async function main() {
         const chromeTestReport = artifacts.find(
           (artifact) => artifact.name === 'test-e2e-chrome-report',
         );
-
-        if (!chromeTestReport)
-          throw new Error(`'test-e2e-chrome-report' artifact not found!`);
+        if (!chromeTestReport) return [];
 
         const firefoxTestReport = artifacts.find(
           (artifact) => artifact.name === 'test-e2e-firefox-report',
         );
-
-        if (!firefoxTestReport)
-          throw new Error(`'test-e2e-firefox-report' artifact not found!`);
+        if (!firefoxTestReport) return [];
 
         return [chromeTestReport, firefoxTestReport];
       }),
