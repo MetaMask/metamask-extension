@@ -1180,7 +1180,7 @@ export default class MetamaskController extends EventEmitter {
     // it would cause a deadlock.
     // This is a temporary fix until we can refactor how we handle requests to the Snaps Keyring.
     const withSnapKeyring = async (operation) => {
-      const keyring = this.getSnapKeyring();
+      const keyring = await this.getSnapKeyring();
 
       return operation({ keyring });
     };
