@@ -1,4 +1,3 @@
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
@@ -7,7 +6,8 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../../../helpers/constants/survey';
-import { getPermittedEVMAccountsForCurrentTab } from '../../../selectors';
+import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
+import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { MetaMaskReduxState } from '../../../store/store';
 import { getIsPrivacyToastRecent } from './utils';
 
@@ -86,17 +86,15 @@ export function selectShowConnectAccountToast(
   account: InternalAccount,
 ): boolean {
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
-  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
-  const isEvmAccount = isEvmAccountType(account?.type);
+  const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
 
-  return (
+  const showConnectAccountToast =
     allowShowAccountSetting &&
     account &&
     state.activeTab?.origin &&
-    isEvmAccount &&
-    connectedAccounts.length > 0 &&
-    !connectedAccounts.some((address) => address === account.address)
-  );
+    !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
+
+  return showConnectAccountToast;
 }
 
 /**
