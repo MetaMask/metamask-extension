@@ -1041,14 +1041,19 @@ describe('createRPCMethodTrackingMiddleware', () => {
           },
         };
 
-        const res = {};
+        const res = {
+          result: {
+            sessionScopes: {
+              'eip155:1': {},
+              'eip155:137': {},
+            },
+          },
+        };
         const { next, executeMiddlewareStack } = getNext();
         const handler = createHandler();
         await handler(req, res, next);
-        await executeMiddlewareStack();
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
 
-        expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        // Check the REQUESTED event
         expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.PermissionsRequested,
@@ -1063,14 +1068,16 @@ describe('createRPCMethodTrackingMiddleware', () => {
           },
           referrer: { url: 'multichain.dapp' },
         });
+        await executeMiddlewareStack();
+        expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-        // Check the APPROVED event
         expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.PermissionsApproved,
           properties: {
             method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
             requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            chain_id_list: expect.arrayContaining(['eip155:1', 'eip155:137']),
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1097,7 +1104,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        // Check the REQUESTED event
         expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureRequested,
@@ -1108,7 +1114,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
           referrer: { url: 'multichain.dapp' },
         });
 
-        // Check the APPROVED event
         expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureApproved,
@@ -1146,7 +1151,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        // Check the REQUESTED event
         expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureRequested,
@@ -1157,7 +1161,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
           referrer: { url: 'multichain.dapp' },
         });
 
-        // Check the REJECTED event
         expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureRejected,
