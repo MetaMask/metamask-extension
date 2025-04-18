@@ -819,6 +819,9 @@ describe('Transaction metrics', () => {
         ],
         is_smart_transaction: undefined,
         transaction_advanced_view: undefined,
+        // Add the new properties that our implementation adds
+        hd_entropy_index: undefined,
+        rpc_domain: "unknown"
       };
       const sensitiveProperties = {
         ...expectedSensitiveProperties,
@@ -828,6 +831,10 @@ describe('Transaction metrics', () => {
         completion_time: expect.any(String),
         gas_used: '0.000000291',
         status: METRICS_STATUS_FAILED,
+        // Add the new sensitive properties
+        account_eip7702_upgraded: undefined,
+        block_number: undefined,
+        transaction_contract_method_4byte: undefined,
       };
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
