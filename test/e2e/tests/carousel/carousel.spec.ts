@@ -23,7 +23,7 @@ describe('Carousel component e2e tests', function () {
         const slides = await driver.findElements('.mm-carousel-slide');
         assert.ok(slides.length > 0, 'Carousel should have slides');
 
-        const slideIds = ['bridge', 'card', 'fund', 'cash', 'multiSrp'];
+        const slideIds = ['bridge', 'card', 'fund', 'cash', 'multiSrp', 'backupAndSync'];
 
         const firstSlideSelector = `[data-testid="slide-${slideIds[0]}"]`;
         await driver.waitForSelector(firstSlideSelector);
