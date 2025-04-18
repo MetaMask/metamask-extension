@@ -8,7 +8,7 @@ type VersionedData = {
 export const version = 155;
 
 /**
- * This migration deletes the QueuedRequestController from the state.
+ * This migration deletes the QueuedRequestController from state.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to dist.
