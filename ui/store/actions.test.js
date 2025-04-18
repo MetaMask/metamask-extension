@@ -3064,4 +3064,50 @@ describe('Actions', () => {
       );
     });
   });
+
+  describe('getTokenStandardAndDetailsByChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getTokenStandardAndDetailsByChain in background', async () => {
+      const getTokenStandardAndDetailsByChain =
+        background.getTokenStandardAndDetailsByChain.callsFake(
+          (_, _2, _3, _4, cb) => cb(null, {}),
+        );
+
+      setBackgroundConnection(background);
+
+      await actions.getTokenStandardAndDetailsByChain();
+      expect(getTokenStandardAndDetailsByChain.callCount).toStrictEqual(1);
+    });
+
+    it('throw error when getTokenStandardAndDetailsByChain in background with error', async () => {
+      background.getTokenStandardAndDetailsByChain.callsFake(
+        (_, _2, _3, _4, cb) => cb(new Error('error')),
+      );
+
+      setBackgroundConnection(background);
+
+      await expect(actions.getTokenStandardAndDetailsByChain()).rejects.toThrow(
+        'error',
+      );
+    });
+  });
+
+  describe('setManageInstitutionalWallets', () => {
+    it('calls setManageInstitutionalWallets in the background', async () => {
+      const store = mockStore();
+      const setManageInstitutionalWalletsStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      background.getApi.returns({
+        setManageInstitutionalWallets: setManageInstitutionalWalletsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.setManageInstitutionalWallets(true));
+      expect(setManageInstitutionalWalletsStub.calledOnceWith(true)).toBe(true);
+    });
+  });
 });

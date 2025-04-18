@@ -671,7 +671,7 @@ class Driver {
    * @param {string} testTitle - The title of the test
    */
   #getArtifactDir(testTitle) {
-    return `./test-artifacts/${this.browser}/${lodash.escape(testTitle)}`;
+    return `./test-artifacts/${this.browser}/${sanitizeTestTitle(testTitle)}`;
   }
 
   /**
@@ -1553,6 +1553,20 @@ function collectMetrics() {
     ...results,
     ...window.stateHooks.getCustomTraces(),
   };
+}
+
+/**
+ * @param {string} testTitle - The title of the test
+ */
+function sanitizeTestTitle(testTitle) {
+  return testTitle
+    .toLowerCase()
+    .replace(/[<>:"/\\|?*\r\n]/gu, '') // Remove invalid characters
+    .trim()
+    .replace(/\s+/gu, '-') // Replace whitespace with dashes
+    .replace(/[^a-z0-9-]+/gu, '-') // Replace non-alphanumerics (excluding dash) with dash
+    .replace(/--+/gu, '-') // Collapse multiple dashes
+    .replace(/^-+|-+$/gu, ''); // Trim leading/trailing dashes
 }
 
 module.exports = { Driver, PAGES };

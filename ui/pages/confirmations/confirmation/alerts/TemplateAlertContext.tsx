@@ -38,18 +38,18 @@ export const TemplateAlertContextProvider: React.FC<{
       (confirmation) => confirmation.id === confirmationId,
     ) ?? pendingConfirmations[0];
 
-  const [isAlertsModalVisible, setAlertsModalVisible] = useState(false);
+  const [isAlertsModalVisible, setIsAlertsModalVisible] = useState(false);
   const alertOwnerId = pendingConfirmation?.id;
   useTemplateConfirmationAlerts(pendingConfirmation);
   const { hasAlerts } = useAlerts(alertOwnerId);
 
   const showAlertsModal = useCallback(() => {
-    setAlertsModalVisible(true);
-  }, [setAlertsModalVisible]);
+    setIsAlertsModalVisible(true);
+  }, [setIsAlertsModalVisible]);
 
   const hideAlertModal = useCallback(() => {
-    setAlertsModalVisible(false);
-  }, [setAlertsModalVisible]);
+    setIsAlertsModalVisible(false);
+  }, [setIsAlertsModalVisible]);
 
   const onFinalSubmit = useCallback(() => {
     hideAlertModal();

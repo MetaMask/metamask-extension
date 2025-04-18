@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { CaipChainId } from '@metamask/utils';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { toggleNetworkMenu } from '../../../../store/actions';
-import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_NETWORK_TO_NICKNAME,
+  MultichainNetworks,
+} from '../../../../../shared/constants/multichain/networks';
 import {
   Box,
   Text,
@@ -12,7 +14,6 @@ import {
   ButtonPrimarySize,
 } from '../../../component-library';
 import {
-  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
@@ -21,11 +22,104 @@ import {
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getMetaMaskHdKeyrings } from '../../../../selectors';
+import { CreateSnapAccount } from '../../create-snap-account';
+import { SrpList } from '../../multi-srp/srp-list';
+import { WalletClientType } from '../../../../hooks/accounts/useMultichainWalletSnapClient';
+
+const SNAP_CLIENT_CONFIG_MAP: Record<
+  string,
+  { clientType: WalletClientType | null; chainId: CaipChainId | null }
+> = {
+  [MultichainNetworks.BITCOIN]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN,
+  },
+  [MultichainNetworks.BITCOIN_TESTNET]: {
+    clientType: WalletClientType.Bitcoin,
+    chainId: MultichainNetworks.BITCOIN_TESTNET,
+  },
+  [MultichainNetworks.SOLANA]: {
+    clientType: WalletClientType.Solana,
+    chainId: MultichainNetworks.SOLANA,
+  },
+};
 
 const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { createAccount } = useAccountCreationOnNetworkChange();
+  const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
+  const [showSrpSelection, setShowSrpSelection] = React.useState(false);
+  const [showCreateAccount, setShowCreateAccount] = React.useState(false);
+  const [selectedKeyringId, setSelectedKeyringId] = React.useState(
+    primaryKeyring.metadata.id,
+  );
+
+  const handleActionComplete = useCallback(
+    async (confirmed: boolean) => {
+      if (confirmed) {
+        dispatch(toggleNetworkMenu());
+      } else {
+        setShowCreateAccount(false);
+      }
+    },
+    [dispatch],
+  );
+
+  const handleSelectSrp = useCallback(() => {
+    setShowSrpSelection(true);
+    setShowCreateAccount(false);
+  }, []);
+
+  const handleSrpActionComplete = useCallback((keyringId: string) => {
+    setSelectedKeyringId(keyringId);
+    setShowCreateAccount(true);
+  }, []);
+
+  const handleAddAccount = useCallback(() => {
+    setShowCreateAccount(true);
+  }, []);
+
+  const { clientType, chainId: mappedChainId } = SNAP_CLIENT_CONFIG_MAP[
+    chainId
+  ] || {
+    clientType: null,
+    chainId: null,
+  };
+
+  if (showCreateAccount && clientType && mappedChainId) {
+    return (
+      <Box
+        className="add-non-evm-account-modal"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.spaceBetween}
+      >
+        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+          <CreateSnapAccount
+            onActionComplete={handleActionComplete}
+            selectedKeyringId={selectedKeyringId}
+            onSelectSrp={handleSelectSrp}
+            clientType={clientType}
+            chainId={mappedChainId}
+          />
+        </Box>
+      </Box>
+    );
+  }
+
+  if (showSrpSelection) {
+    return (
+      <Box
+        className="add-non-evm-account-modal"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.spaceBetween}
+      >
+        <SrpList onActionComplete={handleSrpActionComplete} />
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -33,7 +127,6 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Screen}
     >
       <Box paddingLeft={4} paddingRight={4}>
         <Text textAlign={TextAlign.Left} variant={TextVariant.bodyMd}>
@@ -44,21 +137,13 @@ const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {
       </Box>
       <Box
         className="add-non-evm-account-modal__footer"
-        backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
         width={BlockSize.Full}
       >
         <ButtonPrimary
           width={BlockSize.Full}
           size={ButtonPrimarySize.Lg}
-          onClick={async () => {
-            // This modal is being part of the `NetworkListMenu`. So
-            // we need to explicitly close it before triggering
-            // the account creation.
-            // See: `NetworkMenuList.ACTION_MODE.ADD_NON_EVM_ACCOUNT`.
-            dispatch(toggleNetworkMenu());
-            await createAccount(chainId);
-          }}
+          onClick={handleAddAccount}
         >
           {t('addAccount')}
         </ButtonPrimary>

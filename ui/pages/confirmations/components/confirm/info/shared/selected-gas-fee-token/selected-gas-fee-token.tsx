@@ -22,14 +22,14 @@ import {
   useSelectedGasFeeToken,
 } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
-import { getIsSmartTransaction } from '../../../../../../../../shared/modules/selectors';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId, gasFeeTokens } = currentConfirmation;
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
-  const hasGasFeeTokens = isSmartTransaction && Boolean(gasFeeTokens?.length);
+  const isGaslessSupported = useIsGaslessSupported();
+  const hasGasFeeTokens = isGaslessSupported && Boolean(gasFeeTokens?.length);
 
   const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
     chainId

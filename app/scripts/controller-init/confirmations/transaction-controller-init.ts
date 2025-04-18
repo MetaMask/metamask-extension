@@ -23,14 +23,7 @@ import {
 } from '../../lib/transaction/smart-transactions';
 import { getTransactionById } from '../../lib/transaction/util';
 import { trace } from '../../../../shared/lib/trace';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  afterTransactionSign as afterTransactionSignMMI,
-  beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
-  beforeTransactionPublish as beforeTransactionPublishMMI,
-  getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
-} from '../../lib/transaction/mmi-hooks';
-///: END:ONLY_INCLUDE_IF
+
 import {
   handlePostTransactionBalanceUpdate,
   handleTransactionAdded,
@@ -49,6 +42,7 @@ import {
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -62,6 +56,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     getGlobalChainId,
     getPermittedAccounts,
     getTransactionMetricsRequest,
+    updateAccountBalanceForTransactionNetwork,
     persistedState,
   } = request;
 
@@ -72,9 +67,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     onboardingController,
     preferencesController,
     smartTransactionsController,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    transactionUpdateController,
-    ///: END:ONLY_INCLUDE_IF
   } = getControllers(request);
 
   const controller: TransactionController = new TransactionController({
@@ -106,13 +98,12 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       includeTokenTransfers: false,
       isEnabled: () =>
-        preferencesController().state.incomingTransactionsPreferences?.[
-          // @ts-expect-error PreferencesController incorrectly expects number index
-          getGlobalChainId()
-        ] && onboardingController().state.completedOnboarding,
+        preferencesController().state.useExternalServices &&
+        onboardingController().state.completedOnboarding,
       queryEntireHistory: false,
       updateTransactions: false,
     },
+    isAutomaticGasFeeUpdateEnabled: () => true,
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
     isSimulationEnabled: () =>
@@ -132,31 +123,32 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      afterSign: (txMeta, signedEthTx) =>
-        afterTransactionSignMMI(
-          txMeta,
-          signedEthTx,
-          transactionUpdateController().addTransactionToWatchList.bind(
-            transactionUpdateController(),
-          ),
-        ),
-      beforeCheckPendingTransaction:
-        beforeCheckPendingTransactionMMI.bind(this),
-      beforePublish: beforeTransactionPublishMMI.bind(this),
-      getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
-      ///: END:ONLY_INCLUDE_IF
-      // @ts-expect-error Controller type does not support undefined return value
-      publish: (transactionMeta, rawTx: Hex) =>
-        publishSmartTransactionHook(
-          controller,
-          smartTransactionsController(),
-          // Init messenger cannot yet be further restricted so is a superset of what is needed
-          initMessenger as SmartTransactionHookMessenger,
-          getFlatState(),
+      beforePublish: (transactionMeta: TransactionMeta) => {
+        const response = initMessenger.call(
+          'InstitutionalSnapController:publishHook',
           transactionMeta,
-          rawTx,
-        ),
+        );
+        return response;
+      },
+
+      beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
+        const response = initMessenger.call(
+          'InstitutionalSnapController:beforeCheckPendingTransactionHook',
+          transactionMeta,
+        );
+
+        return response;
+      },
+      // @ts-expect-error Controller type does not support undefined return value
+      publish: (transactionMeta, signedTx) =>
+        publishHook({
+          flatState: getFlatState(),
+          initMessenger,
+          signedTx,
+          smartTransactionsController: smartTransactionsController(),
+          transactionController: controller,
+          transactionMeta,
+        }),
       publishBatch: async (_request: PublishBatchHookRequest) =>
         await publishBatchSmartTransactionHook({
           transactionController: controller,
@@ -175,6 +167,7 @@ export const TransactionControllerInit: ControllerInitFunction<
   addTransactionControllerListeners(
     initMessenger,
     getTransactionMetricsRequest,
+    updateAccountBalanceForTransactionNetwork,
   );
 
   const api = getApi(controller);
@@ -190,6 +183,7 @@ function getApi(
       controller.abortTransactionSigning.bind(controller),
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
+    isAtomicBatchSupported: controller.isAtomicBatchSupported.bind(controller),
     updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
     updateBatchTransactions:
       controller.updateBatchTransactions.bind(controller),
@@ -221,6 +215,8 @@ function getControllers(
       request.getController('SmartTransactionsController'),
     transactionUpdateController: () =>
       request.getController('TransactionUpdateController'),
+    institutionalSnapController: () =>
+      request.getController('InstitutionalSnapController'),
   };
 }
 
@@ -244,7 +240,45 @@ function getSmartTransactionCommonParams(flatState: ControllerFlatState) {
   };
 }
 
-function publishSmartTransactionHook(
+async function publishHook({
+  flatState,
+  initMessenger,
+  signedTx,
+  smartTransactionsController,
+  transactionController,
+  transactionMeta,
+}: {
+  flatState: ControllerFlatState;
+  initMessenger: TransactionControllerInitMessenger;
+  signedTx: string;
+  smartTransactionsController: SmartTransactionsController;
+  transactionController: TransactionController;
+  transactionMeta: TransactionMeta;
+}) {
+  const result = await publishSmartTransactionHook(
+    transactionController,
+    smartTransactionsController,
+    initMessenger,
+    flatState,
+    transactionMeta,
+    signedTx as Hex,
+  );
+
+  if (result?.transactionHash) {
+    return result;
+  }
+
+  const hook = new Delegation7702PublishHook({
+    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
+      transactionController,
+    ),
+    messenger: initMessenger,
+  }).getHook();
+
+  return await hook(transactionMeta, signedTx);
+}
+
+async function publishSmartTransactionHook(
   transactionController: TransactionController,
   smartTransactionsController: SmartTransactionsController,
   hookControllerMessenger: SmartTransactionHookMessenger,
@@ -260,7 +294,7 @@ function publishSmartTransactionHook(
     return { transactionHash: undefined };
   }
 
-  return submitSmartTransactionHook({
+  return await submitSmartTransactionHook({
     transactionMeta,
     signedTransactionInHex,
     transactionController,
@@ -336,8 +370,21 @@ function getExternalPendingTransactions(
 function addTransactionControllerListeners(
   initMessenger: TransactionControllerInitMessenger,
   getTransactionMetricsRequest: () => TransactionMetricsRequest,
+  updateAccountBalanceForTransactionNetwork: (
+    transactionMeta: TransactionMeta,
+  ) => void,
 ) {
   const transactionMetricsRequest = getTransactionMetricsRequest();
+
+  initMessenger.subscribe(
+    'TransactionController:unapprovedTransactionAdded',
+    updateAccountBalanceForTransactionNetwork,
+  );
+
+  initMessenger.subscribe(
+    'TransactionController:transactionConfirmed',
+    updateAccountBalanceForTransactionNetwork,
+  );
 
   initMessenger.subscribe(
     'TransactionController:postTransactionBalanceUpdated',

@@ -60,7 +60,6 @@ import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
-  isEvmNetwork: boolean;
   currentNetwork: MultichainNetworkConfiguration;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
@@ -70,7 +69,6 @@ type AppHeaderUnlockedContentProps = {
 
 export const AppHeaderUnlockedContent = ({
   popupStatus,
-  isEvmNetwork,
   currentNetwork,
   networkOpenCallback,
   disableNetworkPicker,
@@ -201,8 +199,8 @@ export const AppHeaderUnlockedContent = ({
             }}
             disabled={disableAccountPicker}
             labelProps={{ fontWeight: FontWeight.Bold }}
-            paddingLeft={2}
-            paddingRight={2}
+            paddingLeft={0}
+            paddingRight={0}
           />
           <Tooltip
             position="left"
@@ -250,13 +248,7 @@ export const AppHeaderUnlockedContent = ({
           {showConnectedStatus && (
             <Box ref={menuRef}>
               <ConnectedStatusIndicator
-                onClick={() => {
-                  if (!isEvmNetwork) {
-                    return;
-                  }
-                  handleConnectionsRoute();
-                }}
-                disabled={!isEvmNetwork}
+                onClick={() => handleConnectionsRoute()}
               />
             </Box>
           )}{' '}

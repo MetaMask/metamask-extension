@@ -167,40 +167,5 @@ describe('Accounts', () => {
       mockAccount.metadata.keyring.type = 'unknown';
       expect(getAccountLabel('unknown', mockAccount)).toBeNull();
     });
-
-    describe('Snap Account Label', () => {
-      const mockSnapName = 'Test Snap Name';
-      const mockSnapAccountWithName = {
-        ...mockAccount,
-        metadata: {
-          ...mockAccount.metadata,
-          type: KeyringType.snap,
-          snap: { name: mockSnapName },
-        },
-      };
-      const mockSnapAccountWithoutName = {
-        ...mockAccount,
-        metadata: {
-          ...mockAccount.metadata,
-          type: KeyringType.snap,
-        },
-      };
-
-      it('should return snap name with beta tag if snap name is provided', () => {
-        expect(
-          getAccountLabel(
-            KeyringType.snap,
-            mockSnapAccountWithName,
-            mockSnapName,
-          ),
-        ).toBe('Test Snap Name (Beta)');
-      });
-
-      it('should return generic snap label with beta tag if snap name is not provided', () => {
-        expect(
-          getAccountLabel(KeyringType.snap, mockSnapAccountWithoutName),
-        ).toBe('Snaps (Beta)');
-      });
-    });
   });
 });

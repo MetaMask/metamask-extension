@@ -204,7 +204,6 @@ describe('AccountIdentitiesPetnamesBridge', () => {
   });
 
   describe('shouldSyncPetname', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       {
         origin: NameOrigin.ACCOUNT_IDENTITY,

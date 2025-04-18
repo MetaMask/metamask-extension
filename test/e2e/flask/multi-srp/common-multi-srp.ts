@@ -29,6 +29,7 @@ export async function withMultiSrp(
       const accountListPage = new AccountListPage(driver);
       await accountListPage.check_pageIsLoaded();
       await accountListPage.startImportSecretPhrase(srpToUse);
+      await homePage.check_newSrpAddedToastIsDisplayed();
       await test(driver);
     },
   );

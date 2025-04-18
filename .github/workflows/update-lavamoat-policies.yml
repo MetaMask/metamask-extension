@@ -62,6 +62,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -83,6 +84,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
       - name: Update LavaMoat build policy
         run: yarn lavamoat:build:auto
       - name: Cache build policy
@@ -114,6 +116,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
       - name: Restore build policy
         uses: actions/cache/restore@v4
         with:

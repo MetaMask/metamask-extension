@@ -718,12 +718,6 @@ const state = {
       },
       tokenNetworkFilter: {},
     },
-    incomingTransactionsPreferences: {
-      [CHAIN_IDS.MAINNET]: true,
-      [CHAIN_IDS.GOERLI]: false,
-      [CHAIN_IDS.OPTIMISM_TESTNET]: false,
-      [CHAIN_IDS.AVALANCHE_TESTNET]: true,
-    },
     firstTimeFlowType: FirstTimeFlowType.create,
     completedOnboarding: true,
     knownMethodData: {

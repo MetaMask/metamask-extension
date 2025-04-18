@@ -13,6 +13,7 @@ import {
   type SelectedNetworkClientIdState,
   getProviderConfig,
   getNetworkConfigurationsByChainId,
+  MultichainNetworkConfigurationsByChainIdState,
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
@@ -36,19 +37,6 @@ export type SelectedNetworkChainIdState = {
 
 export type IsEvmSelectedState = {
   metamask: Pick<InternalMultichainNetworkState, 'isEvmSelected'>;
-};
-
-export type MultichainNetworkConfigurationsByChainIdState = {
-  metamask: {
-    multichainNetworkConfigurationsByChainId: Record<
-      string,
-      InternalMultichainNetworkConfiguration
-    >;
-    networkConfigurationsByChainId: Record<
-      string,
-      InternalNetworkConfiguration
-    >;
-  };
 };
 
 /**

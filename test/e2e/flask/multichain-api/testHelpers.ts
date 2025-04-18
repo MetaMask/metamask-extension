@@ -1,6 +1,9 @@
 import * as path from 'path';
 import { By } from 'selenium-webdriver';
-import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
+import {
+  KnownRpcMethods,
+  KnownNotifications,
+} from '@metamask/chain-agnostic-permission';
 import {
   convertETHToHexGwei,
   multipleGanacheOptions,
@@ -9,7 +12,7 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -33,7 +36,7 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
       type: 'ganache',
       options: {
         secretKey: PRIVATE_KEY,
-        balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+        balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
         accounts: multipleGanacheOptions.accounts,
       },
     },

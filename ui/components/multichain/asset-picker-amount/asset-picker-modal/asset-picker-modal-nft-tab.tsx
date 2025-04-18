@@ -38,6 +38,7 @@ import {
   getSendAnalyticProperties,
   updateSendAsset,
 } from '../../../../ducks/send';
+import { getNftImage } from '../../../../helpers/utils/nfts';
 import { NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
@@ -103,10 +104,16 @@ export function AssetPickerModalNftTab({
       },
       { excludeMetaMetricsId: false },
     );
+
+    const nftWithSimplifiedImage = {
+      ...nft,
+      image: getNftImage(nft.image),
+    };
+
     await dispatch(
       updateSendAsset({
         type: AssetType.NFT,
-        details: nft,
+        details: nftWithSimplifiedImage,
         skipComputeEstimatedGasLimit: false,
       }),
     );

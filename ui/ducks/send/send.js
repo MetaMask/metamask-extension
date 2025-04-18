@@ -12,6 +12,7 @@ import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { toHex } from '@metamask/controller-utils';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   decimalToHex,
@@ -2731,9 +2732,7 @@ export function updateSendAsset(
 
           if (isCurrentOwner) {
             asset.error = null;
-            asset.balance = details.balance
-              ? addHexPrefix(details.balance)
-              : '0x1';
+            asset.balance = details.balance ? toHex(details.balance) : '0x1';
           } else {
             throw new Error(
               'Send slice initialized as NFT send with an NFT not currently owned by the select account',

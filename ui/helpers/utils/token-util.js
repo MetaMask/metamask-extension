@@ -150,8 +150,8 @@ export function tokenInfoGetter() {
   const tokens = {};
 
   return async (address, tokenList) => {
-    if (tokens[address]) {
-      return tokens[address];
+    if (tokens[address.toLowerCase()]) {
+      return tokens[address.toLowerCase()];
     }
 
     tokens[address] = await getSymbolAndDecimalsAndName(address, tokenList);

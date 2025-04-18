@@ -130,7 +130,6 @@ describe('Name', () => {
   });
 
   describe('metrics', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['saved', ADDRESS_SAVED_NAME_MOCK, true],
       ['not saved', ADDRESS_NO_SAVED_NAME_MOCK, false],

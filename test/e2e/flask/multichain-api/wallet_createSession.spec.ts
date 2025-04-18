@@ -21,7 +21,7 @@ import {
 } from './testHelpers';
 
 describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
-  describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the user’s enabled networks', function () {
+  describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the users enabled networks', function () {
     it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
       await withFixtures(
         {
@@ -44,8 +44,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             ...scopesToIgnore,
           ]);
 
-          await driver.clickElement({ text: 'Connect', tag: 'button' });
-
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Connect',
+            tag: 'button',
+          });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
           const getSessionResult = await testDapp.getSession();
 
           for (const scope of scopesToIgnore) {
@@ -59,13 +64,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
     });
   });
 
-  describe('Call `wallet_createSession` with EVM scopes that match the user’s enabled networks, and eip155 scoped accounts', function () {
+  describe("Call `wallet_createSession` with EVM scopes that match the user's enabled networks, and eip155 scoped accounts", function () {
     it('should ignore requested accounts that do not match accounts in the wallet and and pre-select matching requested accounts in the permission confirmation screen', async function () {
       await withFixtures(
         {
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
             .withTrezorAccount()
             .build(),
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -90,7 +95,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             [SECOND_ACCOUNT_IN_WALLET, ACCOUNT_NOT_IN_WALLET],
           );
 
-          await driver.clickElement({ text: 'Connect', tag: 'button' });
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Connect',
+            tag: 'button',
+          });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
 
           const getSessionResult = await testDapp.getSession();
           /**
@@ -148,7 +159,11 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
         );
 
         for (const item of networkListItems) {
-          const network = await item.getText();
+          const networkNameDiv = await item.findElement(
+            By.css('div[data-testid]'),
+          );
+          const network = await networkNameDiv.getAttribute('data-testid');
+
           const checkbox = await item.findElement(
             By.css('input[type="checkbox"]'),
           );
@@ -173,13 +188,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
   });
 
   describe('Call `wallet_createSession`', function () {
-    describe('With requested EVM scope that match the user’s enabled networks, edit selection in wallet UI', function () {
+    describe("With requested EVM scope that match the user's enabled networks, edit selection in wallet UI", function () {
       it('should change result according to changed network & accounts', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -202,7 +217,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             await permissionsTab.click();
             await updateNetworkCheckboxes(driver, ['Localhost 8545']);
 
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.MultichainTestDApp,
+            );
 
             const getSessionResult = await testDapp.getSession();
 
@@ -267,7 +288,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .withPreferencesControllerAdditionalAccountIdentities()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -282,7 +303,10 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
 
             await addAccountInWalletAndAuthorize(driver);
 
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
@@ -355,7 +379,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
         {
           title: this.test?.fullTitle(),
           fixtures: new FixtureBuilder()
-            .withNetworkControllerTripleGanache()
+            .withNetworkControllerTripleNode()
             .withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts(
               {
                 scopes: OLD_SCOPES,
@@ -392,7 +416,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
               await driver.clickElement(`input[name="${scope}"]`),
           );
           await testDapp.initCreateSessionScopes(NEW_SCOPES, [TREZOR_ACCOUNT]);
-          await driver.clickElement({ text: 'Connect', tag: 'button' });
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Connect',
+            tag: 'button',
+          });
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
           await driver.delay(largeDelayMs);
 
           const newgetSessionResult = await testDapp.getSession();

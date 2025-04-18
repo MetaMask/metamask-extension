@@ -8,7 +8,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { Box } from '../../../../component-library';
 import Spinner from '../../../../ui/spinner';
-import { getNftImageAlt } from '../../../../../helpers/utils/nfts';
+import { getNftImageAlt, getNftImage } from '../../../../../helpers/utils/nfts';
 import { NftItem } from '../../../../multichain/nft-item';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import {
@@ -18,6 +18,10 @@ import {
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
@@ -27,7 +31,9 @@ const NFTGridItem = (props: {
 }) => {
   const { nft, onClick, privacyMode } = props;
 
-  const { image, imageOriginal } = nft;
+  const { image: _image, imageOriginal, tokenURI } = nft;
+  const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
+  const image = getNftImage(_image);
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const nftImageURL = useGetAssetImageUrl(
@@ -37,8 +43,9 @@ const NFTGridItem = (props: {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const isImageHosted =
-    image?.startsWith('https:') || image?.startsWith('http:');
-  const nftItemSrc = isImageHosted ? image : nftImageURL;
+    (image && isWebUrl(image)) ||
+    (imageFromTokenURI && isWebUrl(imageFromTokenURI));
+  const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   const nftImageAlt = getNftImageAlt(nft);
 

@@ -26,6 +26,11 @@ class NftListPage {
     tag: 'h6',
   };
 
+  private readonly successRemoveNftMessage = {
+    text: 'NFT was successfully removed!',
+    tag: 'h6',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -93,6 +98,13 @@ class NftListPage {
       'Check that success imported NFT message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.successImportNftMessage);
+  }
+
+  async check_successRemoveNftMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Check that success removed NFT message is displayed on homepage',
+    );
+    await this.driver.waitForSelector(this.successRemoveNftMessage);
   }
 }
 

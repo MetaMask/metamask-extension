@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
+import * as UseGetAssetImageUrlModule from '../../../../../hooks/useGetAssetImageUrl';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { getAllNfts } from '../../../../../ducks/metamask/metamask';
@@ -74,5 +75,28 @@ describe('NFT full image', () => {
     await waitFor(() => {
       expect(container).toMatchSnapshot();
     });
+  });
+
+  it('should show the first image if an NFT has an array of images', async () => {
+    const images = [
+      'ipfs://bafybeidgklvljyifilhtrxzh77brgnhcy6s2wxoxqc2l73zr2nxlwuxfcy',
+      'ipfs://bafybeic26kitpujb3q5h5w7yovmvgmtxl3y4ldsb2pfgual5jq62emsmxq',
+    ];
+    const mockImageUrl =
+      'https://bafybeidgklvljyifilhtrxzh77brgnhcy6s2wxoxqc2l73zr2nxlwuxfcy.ipfs.dweb.link';
+    const mockUseGetAssetImageUrl = jest
+      .spyOn(UseGetAssetImageUrlModule, 'default')
+      .mockReturnValue(mockImageUrl);
+
+    nfts[0].image = images;
+
+    const { findByTestId } = renderWithProvider(<NftFullImage />, mockStore);
+
+    const imageElem = await findByTestId('nft-image');
+    expect(imageElem).toHaveAttribute('src', mockImageUrl);
+    expect(mockUseGetAssetImageUrl).toHaveBeenCalledWith(
+      images[0],
+      expect.any(String),
+    );
   });
 });

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { checkExistingAddresses } from '../../../../helpers/utils/util';
+import {
+  checkExistingAllTokens,
+  checkExistingAddresses,
+} from '../../../../helpers/utils/util';
 import {
   Box,
   Text,
@@ -21,6 +24,7 @@ import {
   FlexWrap,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import TokenListPlaceholder from './token-list-placeholder';
 
 export default class TokenList extends Component {
@@ -30,11 +34,14 @@ export default class TokenList extends Component {
 
   static propTypes = {
     tokens: PropTypes.array,
+    allTokens: PropTypes.object,
     results: PropTypes.array,
     selectedTokens: PropTypes.object,
     onToggleToken: PropTypes.func,
     currentNetwork: PropTypes.object,
     testNetworkBackgroundColor: PropTypes.object,
+    isTokenNetworkFilterEqualCurrentNetwork: PropTypes.bool,
+    accountAddress: PropTypes.string,
   };
 
   render() {
@@ -44,8 +51,11 @@ export default class TokenList extends Component {
 
       onToggleToken,
       tokens = [],
+      allTokens = {},
+      accountAddress,
       currentNetwork,
       testNetworkBackgroundColor,
+      isTokenNetworkFilterEqualCurrentNetwork,
     } = this.props;
 
     return (
@@ -67,11 +77,20 @@ export default class TokenList extends Component {
             {Array(12)
               .fill(undefined)
               .map((_, i) => {
-                const { symbol, name, address } = results[i] || {};
-                const tokenAlreadyAdded = checkExistingAddresses(
-                  address,
-                  tokens,
-                );
+                const { symbol, name, address, chainId } = results[i] || {};
+                let tokenAlreadyAdded = false;
+                if (isTokenNetworkFilterEqualCurrentNetwork) {
+                  tokenAlreadyAdded = checkExistingAddresses(address, tokens);
+                  results[i].chainId = currentNetwork?.chainId;
+                } else {
+                  tokenAlreadyAdded = checkExistingAllTokens(
+                    address,
+                    chainId,
+                    accountAddress,
+                    allTokens,
+                  );
+                }
+
                 const onClick = () =>
                   !tokenAlreadyAdded && onToggleToken(results[i]);
                 return (
@@ -115,7 +134,15 @@ export default class TokenList extends Component {
                               <AvatarNetwork
                                 size={AvatarNetworkSize.Xs}
                                 name={currentNetwork?.nickname}
-                                src={currentNetwork?.rpcPrefs?.imageUrl}
+                                src={
+                                  isTokenNetworkFilterEqualCurrentNetwork
+                                    ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                        currentNetwork?.chainId
+                                      ]
+                                    : CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                        results[i]?.chainId
+                                      ]
+                                }
                                 backgroundColor={testNetworkBackgroundColor}
                                 className="token-list__token_component__network-badge"
                               />

@@ -3,7 +3,7 @@ import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import SendTokenPage from '../pages/send/send-token-page';
-import TestDapp from '../pages/test-dapp';
+import TestDappIndividualRequest from '../pages/test-dapp-individual-request';
 
 export const createInternalTransaction = async (driver: Driver) => {
   // Firefox has incorrect balance if send flow started too quickly.
@@ -44,9 +44,9 @@ export const createDappTransaction = async (
   driver: Driver,
   override?: Partial<TransactionParams>,
 ) => {
-  const testDapp = new TestDapp(driver);
+  const testDappIndividualRequest = new TestDappIndividualRequest(driver);
 
-  await testDapp.request('eth_sendTransaction', [
+  await testDappIndividualRequest.request('eth_sendTransaction', [
     {
       data: '0x',
       from: DEFAULT_FIXTURE_ACCOUNT,

@@ -18,7 +18,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         dappOptions: { numberOfDapps: 2 },
@@ -110,7 +110,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTwoTestDapps()
           .build(),
         dappOptions: { numberOfDapps: 2 },

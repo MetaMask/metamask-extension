@@ -115,15 +115,13 @@ describe('Transaction Controller Init', () => {
   });
 
   describe('determines incoming transactions is enabled', () => {
-    it('when enabled in preferences and onboarding complete', () => {
+    it('when useExternalServices is enabled in preferences and onboarding complete', () => {
       const incomingTransactionsIsEnabled = testConstructorOption(
         'incomingTransactions',
         {
           state: {
             completedOnboarding: true,
-            incomingTransactionsPreferences: {
-              [CHAIN_ID_MOCK]: true,
-            },
+            useExternalServices: true,
           },
         },
       )?.isEnabled;
@@ -137,9 +135,7 @@ describe('Transaction Controller Init', () => {
         {
           state: {
             completedOnboarding: false,
-            incomingTransactionsPreferences: {
-              [CHAIN_ID_MOCK]: true,
-            },
+            useExternalServices: true,
           },
         },
       )?.isEnabled;
@@ -153,9 +149,7 @@ describe('Transaction Controller Init', () => {
         {
           state: {
             completedOnboarding: true,
-            incomingTransactionsPreferences: {
-              [CHAIN_ID_MOCK]: false,
-            },
+            useExternalServices: false,
           },
         },
       )?.isEnabled;

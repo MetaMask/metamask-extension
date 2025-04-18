@@ -73,13 +73,7 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
-export function getAccountLabel(
-  type,
-  account,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  snapName,
-  ///: END:ONLY_INCLUDE_IF
-) {
+export function getAccountLabel(type, account) {
   if (!account) {
     return null;
   }
@@ -98,13 +92,6 @@ export function getAccountLabel(
       return HardwareKeyringNames.ledger;
     case KeyringType.lattice:
       return HardwareKeyringNames.lattice;
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    case KeyringType.snap:
-      if (snapName) {
-        return `${snapName} (${t('beta')})`;
-      }
-      return `${t('snaps')} (${t('beta')})`;
-    ///: END:ONLY_INCLUDE_IF
     default:
       return null;
   }

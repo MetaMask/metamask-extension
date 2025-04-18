@@ -32,7 +32,7 @@ import {
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
-  closeNotificationPopup,
+  attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
@@ -190,7 +190,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setDataCollectionForMarketing: (val) =>
       dispatch(setDataCollectionForMarketing(val)),
-    closeNotificationPopup: () => closeNotificationPopup(),
+    attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
     onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),

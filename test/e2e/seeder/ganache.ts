@@ -1,6 +1,6 @@
 import { Server, server } from 'ganache';
 import { BigNumber } from 'bignumber.js';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../constants';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../constants';
 
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
@@ -38,7 +38,7 @@ export class Ganache {
           {
             secretKey: PRIVATE_KEY,
             balance: convertETHToHexGwei(
-              Number(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+              Number(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
             ),
           },
         ],

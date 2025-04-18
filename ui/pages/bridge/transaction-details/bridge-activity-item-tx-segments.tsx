@@ -15,6 +15,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import Segment from './segment';
 
 const getTxIndex = (srcTxStatus: StatusTypes) => {
@@ -66,6 +67,7 @@ export default function BridgeActivityItemTxSegments({
   bridgeTxHistoryItem?: BridgeHistoryItem;
   transactionGroup: TransactionGroup;
 }) {
+  const t = useI18nContext();
   const { initialTransaction } = transactionGroup;
   const srcTxStatus = getSrcTxStatus(initialTransaction);
   const destTxStatus = getDestTxStatus({ bridgeTxHistoryItem, srcTxStatus });
@@ -73,7 +75,9 @@ export default function BridgeActivityItemTxSegments({
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
-      <Text color={TextColor.textAlternative}>Transaction {txIndex} of 2</Text>
+      <Text color={TextColor.textAlternative}>
+        {t('bridgeTransactionProgress', [txIndex])}
+      </Text>
       <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
         <Segment type={srcTxStatus} />
         <Segment type={destTxStatus} />

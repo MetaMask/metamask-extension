@@ -47,10 +47,9 @@ describe('useDecodedTransactionData', () => {
     jest.resetAllMocks();
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([undefined, null, '', '0x', '0X'])(
     'returns undefined if transaction data is %s',
-    async (data: string) => {
+    async (data: string | null | undefined) => {
       const result = await runHook(
         getMockConfirmStateForTransaction({
           id: '123',

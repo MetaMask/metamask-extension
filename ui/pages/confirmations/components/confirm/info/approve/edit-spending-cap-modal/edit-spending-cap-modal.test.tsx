@@ -79,7 +79,6 @@ describe('EditSpendingCapModal', () => {
   });
 
   describe('countDecimalDigits()', () => {
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { numberString: '0', expectedDecimals: 0 },
       { numberString: '100', expectedDecimals: 0 },

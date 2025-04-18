@@ -4,7 +4,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,

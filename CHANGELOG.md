@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.17.0]
+
 ## [12.16.1]
 ### Added
 - Add support for version 2.0.0 of EIP-5792 ([#31913](https://github.com/MetaMask/metamask-extension/pull/31913))
@@ -16,7 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix confusing error shown when trying to unlock the wallet with the wrong password ([#31933](https://github.com/MetaMask/metamask-extension/pull/31933))
 - Fix displaying full-size images of nft ([#31967](https://github.com/MetaMask/metamask-extension/pull/31967))
-
 
 ## [12.16.0]
 ### Added
@@ -77,6 +78,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevent repeated HID connection prompts when paginating through Ledger accounts during the connection process. ([#30384](https://github.com/MetaMask/metamask-extension/pull/30384))
 - Fix Profile Sync feature not appearing in settings search results. ([#30687](https://github.com/MetaMask/metamask-extension/pull/30687))
 - Fix balance display potentially showing incorrect values when only non-EVM accounts are present. ([#30671](https://github.com/MetaMask/metamask-extension/pull/30671))
+- Changes in account modal to switch to smart account type ([#31899](https://github.com/MetaMask/metamask-extension/pull/31899))
+- Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
+- [Beta] Create Solana account automatically on wallet creation or SRP import [#32038](https://github.com/MetaMask/metamask-extension/pull/32038)
+- Support for Solana on Firefox ([#32104](https://github.com/MetaMask/metamask-extension/pull/32104))
 
 ## [12.15.2]
 ### Added
@@ -5963,7 +5968,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...HEAD
+[12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...v12.17.0
 [12.16.1]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...v12.16.1
 [12.16.0]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...v12.16.0
 [12.15.2]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.15.2

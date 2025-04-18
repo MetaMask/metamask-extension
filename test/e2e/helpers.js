@@ -19,8 +19,8 @@ const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   ERC_4337_ACCOUNT,
-  DEFAULT_GANACHE_ETH_BALANCE_DEC,
 } = require('./constants');
 const {
   getServerMochaToBackground,
@@ -441,6 +441,7 @@ const WINDOW_TITLES = Object.freeze({
   ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
   TestDApp: 'E2E Test Dapp',
+  TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
   MultichainTestDApp: 'Multichain Test Dapp',
   TestSnaps: 'Test Snaps',
   ERC4337Snap: 'Account Abstraction Snap',
@@ -551,11 +552,11 @@ const multipleGanacheOptions = {
   accounts: [
     {
       secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+      balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
     },
     {
       secretKey: PRIVATE_KEY_TWO,
-      balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+      balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
     },
   ],
 };
@@ -571,6 +572,7 @@ const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
+  console.log('Opening action menu and starting send flow');
   await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
