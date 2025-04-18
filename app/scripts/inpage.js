@@ -49,7 +49,7 @@ import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
 ///: END:ONLY_INCLUDE_IF
 
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
+import { METAMASK_PROVIDER } from './constants/stream';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -72,7 +72,7 @@ if (shouldInjectProvider()) {
 
   const mux = new ObjectMultiplex();
   pipeline(metamaskStream, mux, metamaskStream, (error) => {
-    let warningMsg = `Lost connection to "${METAMASK_EIP_1193_PROVIDER}".`;
+    let warningMsg = `Lost connection to "${METAMASK_PROVIDER}".`;
     if (error?.stack) {
       warningMsg += `\n${error.stack}`;
     }
@@ -80,7 +80,7 @@ if (shouldInjectProvider()) {
   });
 
   initializeProvider({
-    connectionStream: mux.createStream(METAMASK_EIP_1193_PROVIDER),
+    connectionStream: mux.createStream(METAMASK_PROVIDER),
     logger: log,
     shouldShimWeb3: true,
     providerInfo: {
