@@ -37,8 +37,8 @@ export function useBackupAndSync(): {
         log.error(errorMessage);
         setError(errorMessage);
       } finally {
-      dispatch(hideLoadingIndication());
-    }
+        dispatch(hideLoadingIndication());
+      }
     },
     [dispatch],
   );

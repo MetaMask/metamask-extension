@@ -1,3 +1,1 @@
-export {
-  useBackupAndSync,
-} from './useBackupAndSync';
+export { useBackupAndSync } from './useBackupAndSync';
