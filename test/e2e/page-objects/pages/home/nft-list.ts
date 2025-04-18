@@ -6,6 +6,12 @@ class NftListPage {
   private readonly confirmImportNftButton =
     '[data-testid="import-nfts-modal-import-button"]';
 
+  private readonly importNftNetworkDropdown =
+    '[data-testid="test-import-tokens-drop-down-custom-import"]';
+
+  private readonly importNftNetworkName =
+    '[data-testid="select-network-item-0x539"]';
+
   private readonly importNftAddressInput = '#address';
 
   private readonly importNftButton = '[data-testid="import-nfts"]';
@@ -54,9 +60,12 @@ class NftListPage {
     id: string,
     expectedErrorMessage?: string,
   ) {
+    // await this.driver.delay(100000);
     await this.driver.clickElement(this.actionBarButton);
     await this.driver.clickElement(this.importNftButton);
     await this.driver.waitForSelector(this.importNftModalTitle);
+    await this.driver.clickElement(this.importNftNetworkDropdown);
+    await this.driver.clickElement(this.importNftNetworkName);
     await this.driver.fill(this.importNftAddressInput, nftContractAddress);
     await this.driver.fill(this.importNftTokenIdInput, id);
     if (expectedErrorMessage) {
