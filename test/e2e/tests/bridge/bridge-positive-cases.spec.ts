@@ -31,8 +31,8 @@ describe('Bridge functionality', function (this: Suite) {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed();
-        // disable smart transactions
 
+        // disable smart transactions
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.openSettingsPage();
