@@ -81,6 +81,8 @@ export const WalletInitiatedHeader = () => {
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
         size={ButtonIconSize.Md}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={handleBackButtonClick}
         data-testid="wallet-initiated-header-back-button"
         color={IconColor.iconDefault}

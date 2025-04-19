@@ -57,6 +57,8 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
         data-testid={
           hasSolanaAccount ? 'got-it-button' : 'create-solana-account-button'
         }
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={hasSolanaAccount ? handleGotIt : handleCreateSolanaAccount}
       >
         {hasSolanaAccount ? t('gotIt') : t('createSolanaAccount')}
@@ -66,6 +68,8 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
         size={ButtonSize.Md}
         variant={ButtonVariant.Link}
         data-testid="not-now-button"
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={onCancel}
       >
         {t('notNow')}
