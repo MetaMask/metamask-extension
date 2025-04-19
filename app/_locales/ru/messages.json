@@ -703,6 +703,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "Если вы продолжите, все активы, которые вы разместили на Blur, могут оказаться под угрозой."
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "Вы взаимодействуете с вредоносным сайтом. Если вы продолжите, вы потеряете свои активы."
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "Если вы продолжите, все активы, которые вы разместили на OpenSea, могут оказаться под угрозой."
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "Если вы подтвердите этот запрос, вы можете потерять свои активы. Мы рекомендуем вам отменить запрос."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "Вы отправляете свои активы мошеннику. Если вы продолжите, вы потеряете эти активы."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "Если вы подтвердите этот запрос, вы позволите мошеннику снять и потратить ваши активы. Вы не получите их обратно."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "Если вы одобрите этот запрос, третья сторона, известная мошенничеством, может похитить все ваши активы."
   },
@@ -759,6 +777,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "Вам нужно будет разрешить доступ к $1 $2 для создания моста, а затем утвердить создание моста к $2. Для этого потребуется два отдельных подтверждения."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Ссылка обозревателя блоков скопирована!"
+  },
   "bridgeCalculatingAmount": {
     "message": "Расчет..."
   },
@@ -814,6 +835,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Выберите токен и сумму"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Создан счет Solana"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 получено в $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +866,12 @@
   },
   "bridgeToChain": {
     "message": "Мост к $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "Если вы добавили этот токен вручную. Убедитесь, что вы осознаете риски для своих средств, прежде чем использовать мост."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "Мы не можем проверить этот токен."
   },
   "bridgeTxDetailsBridging": {
     "message": "Создание моста"
@@ -2444,6 +2474,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "Импортировать кошелек или счет"
+  },
+  "importWalletSuccess": {
+    "message": "Секретная фраза для восстановления $1 импортирована",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Импортировать $1",
@@ -4309,6 +4343,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Защитите свои средства"
+  },
+  "redeposit": {
+    "message": "Повторить депозит"
   },
   "refreshList": {
     "message": "Обновить список"

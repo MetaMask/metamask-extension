@@ -703,6 +703,24 @@
   "blockaid": {
     "message": "BlockAid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "Si vous continuez, vous risquez de perdre tous les actifs que vous avez listés sur Blur."
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "Vous interagissez avec un site malveillant. Si vous continuez, vous risquez de perdre tous vos actifs."
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "Si vous continuez, vous risquez de perdre tous les actifs que vous avez listés sur OpenSea."
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "Si vous confirmez cette demande, vous risquez de perdre tous vos actifs. Nous vous recommandons d’annuler cette demande."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "Vous allez transférer vos actifs à un escroc. Si vous continuez, vous perdrez ces actifs."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "Si vous confirmez cette demande, un escroc pourra retirer et dépenser vos actifs. Ces derniers ne pourront pas être restitués."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
   },
@@ -759,6 +777,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "Vous devrez autoriser l’accès à $1 $2 pour l’établissement d’une passerelle, puis approuver l’établissement d’une passerelle vers $2, ce qui nécessitera deux confirmations distinctes."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Le lien de l’explorateur de blocs a été copié !"
+  },
   "bridgeCalculatingAmount": {
     "message": "Calcul en cours…"
   },
@@ -814,6 +835,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Sélectionnez le jeton et le montant"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Compte Solana créé"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 reçu sur $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +866,12 @@
   },
   "bridgeToChain": {
     "message": "Passerelle vers $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "Si vous avez ajouté ce jeton manuellement, assurez-vous de bien comprendre les risques que cela peut représenter pour vos fonds avant d’établir une passerelle."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "Nous ne pouvons pas vérifier ce jeton."
   },
   "bridgeTxDetailsBridging": {
     "message": "Établissement d’une passerelle"
@@ -2444,6 +2474,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "Importer un portefeuille ou un compte"
+  },
+  "importWalletSuccess": {
+    "message": "La phrase secrète de récupération $1 a été importée",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Importer $1",
@@ -4309,6 +4343,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protégez vos fonds"
+  },
+  "redeposit": {
+    "message": "Déposer à nouveau"
   },
   "refreshList": {
     "message": "Rafraîchir la liste"

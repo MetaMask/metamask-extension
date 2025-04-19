@@ -703,6 +703,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "Devam ederseniz Blur'de yer alan tüm varlıklarınız riske girebilir."
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "Kötü niyetli bir siteyle etkileşimde bulunuyorsunuz. Devam ederseniz varlıklarınızı kaybedeceksiniz."
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "Devam ederseniz OpenSea'de yer alan tüm varlıklarınız riske girebilir."
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "Bu talebi onaylarsanız varlıklarınızı kaybedebilirsiniz. Bu talebi iptal etmenizi öneririz."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "Varlıklarınızı bir dolandırıcıya gönderiyorsunuz. Devam ederseniz bu varlıkları kaybedeceksiniz."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "Bu talebi onaylarsanız bir dolandırıcının varlıklarınızı çekmesine ve harcamasına izin verirsiniz. Varlıklarınızı geri alamazsınız."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "Bu talebi onaylarsanız dolandırıcılıkla ünlü üçüncü bir taraf tüm varlıklarınızı çalabilir."
   },
@@ -759,6 +777,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "Köprü amacıyla $1 $2 için erişim izni vermeniz ve ardından $2 alanına köprüyü onaylamanız gerekecek. Bu işlem için iki onay gerekecek."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Blok gezgini bağlantısı kopyalandı!"
+  },
   "bridgeCalculatingAmount": {
     "message": "Hesaplanıyor..."
   },
@@ -814,6 +835,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Token ve miktar seçin"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Solana hesabı oluşturuldu"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$2 üzerinde $1 alındı",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +866,12 @@
   },
   "bridgeToChain": {
     "message": "Şuraya köprü: $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "Bu token'ı manuel olarak eklediyseniz köprü yapmadan önce paranıza gelebilecek risklerin farkında olduğunuzdan emin olun."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "Bu token'ı doğrulayamıyoruz."
   },
   "bridgeTxDetailsBridging": {
     "message": "Köprü"
@@ -1845,7 +1875,7 @@
     "message": "Genel şifreleme anahtarı iste"
   },
   "endpointReturnedDifferentChainId": {
-    "message": "Bitiş noktası farklı bir zincir kimliğine ulaştı: $1",
+    "message": "Girdiğiniz RPC URL farklı bir zincir kimliğine döndü ($1).",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
   "enhancedTokenDetectionAlertMessage": {
@@ -2444,6 +2474,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "Bir cüzdanı veya hesabı içe aktar"
+  },
+  "importWalletSuccess": {
+    "message": "Gizli Kurtarma İfadesi $1 içe aktarıldı",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "$1 tokeni içe aktar",
@@ -4310,6 +4344,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "Paranızı koruyun"
   },
+  "redeposit": {
+    "message": "Tekrar yatırın"
+  },
   "refreshList": {
     "message": "Listeyi yenile"
   },
@@ -4617,10 +4654,10 @@
     "message": "Cüzdanımı koru (önerilir)"
   },
   "seedPhraseIntroSidebarBulletOne": {
-    "message": "Birden fazla gizli yerde not ederek saklayın."
+    "message": "Birden fazla gizli yerde not ederek saklayın"
   },
   "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Bir kasada saklayın."
+    "message": "Bir kasada saklayın"
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "Gizli Kurtarma İfadesi, cüzdanınız ve paralarınız için \"ana anahtar\" niteliği taşıyan bir 12 kelimelik ifadedir"

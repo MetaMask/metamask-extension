@@ -703,6 +703,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "Wenn Sie so weitermachen, könnten alle von Ihnen auf Blur aufgeführten Assets gefährdet sein."
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "Sie interagieren mit einer schädlichen Website. Wenn Sie fortfahren, werden Sie Ihre Assets verlieren."
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "Wenn Sie fortfahren, könnten von Ihnen auf OpenSea aufgeführten Assets gefährdet sein."
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "Wenn Sie diese Anfrage bestätigen, könnten Sie Ihre Assets verlieren. Wir empfehlen Ihnen, diese Anfrage abzubrechen."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "Sie senden Ihre Assets an einen Betrüger. Wenn Sie fortfahren, werden Sie diese Assets verlieren."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "Wenn Sie diese Anfrage bestätigen, erlauben Sie einem Betrüger, sich Ihre Assets abzahlen zu lassen und auszugeben. Sie erhalten diese nicht zurück."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "Wenn Sie diese Anfrage genehmigen, könnte eine dritte Partei, die für Betrügereien bekannt ist, Ihre gesamten Assets an sich reißen."
   },
@@ -759,6 +777,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "Sie müssen für das Bridging den Zugriff auf $1 $2 gewähren und dann das Bridging auf $2 genehmigen. Dies bedarf zweier separater Bestätigungen."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Block-Explorer-Link kopiert!"
+  },
   "bridgeCalculatingAmount": {
     "message": "Berechnen ..."
   },
@@ -814,6 +835,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Token und Betrag auswählen"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Solana-Konto erstellt"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 am $2 empfangen",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +866,12 @@
   },
   "bridgeToChain": {
     "message": "Bridge nach $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "Wenn Sie dieses Token manuell hinzugefügt haben, stellen Sie sicher, dass Sie sich der Risiken für Ihre Gelder bewusst sind, bevor Sie bridgen."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "Wir können diesen Token nicht verifizieren."
   },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
@@ -2444,6 +2474,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "Wallet oder Konto importieren"
+  },
+  "importWalletSuccess": {
+    "message": "Geheime Wiederherstellungsphrase $1 importiert",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "$1 importieren",
@@ -4309,6 +4343,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Schützen Sie Ihre Gelder."
+  },
+  "redeposit": {
+    "message": "Erneut einzahlen"
   },
   "refreshList": {
     "message": "Liste aktualisieren"

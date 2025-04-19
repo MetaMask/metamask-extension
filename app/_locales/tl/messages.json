@@ -703,6 +703,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "Kung magpapatuloy ka, maaaring malagay sa panganib ang lahat ng asset na ini-list mo sa Blur."
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "Nakikipag-ugnayan ka sa isang site na may masamang hangarin. Kapag magpapatuloy ka, mawawala sa iyo ang mga asset mo."
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "Kung magpapatuloy ka, maaaring malagay sa panganib ang lahat ng asset na ini-list mo sa OpenSea."
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "Kapag kinumpirma mo ang kahilingang ito, maaaring mawala sa iyo ang mga asset mo. Inirerekomenda namin na kanselahin mo ang kahilingang ito."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "Ipapadala mo ang iyong mga asset sa scammer. Kapag nagpatuloy ka, mawawala sa iyo ang mga asset na iyon."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "Kapag kinumpirma mo ang kahilingang ito, pinapayagan mo ang scammer na i-withdraw at gastusin ang mga asset mo. Hindi mo na mababawi ang mga iyon."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, posibleng kunin ng third party na kilala sa mga panloloko ang lahat ng asset mo."
   },
@@ -759,6 +777,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "Kakailanganin mong pahintulutan ang access sa $1 $2 para sa pag-bridge, at pagkatapos, aprubahan ang pag-bridge sa $2. Mangangailangan ito ng dalawang magkahiwalay na kumpirmasyon."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Nakopya ang link ng block explorer!"
+  },
   "bridgeCalculatingAmount": {
     "message": "Nagkakalkula..."
   },
@@ -814,6 +835,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Piliin ang token at halaga"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Nakagawa ng Solana account"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "Nakatanggap ng $1 sa $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +866,12 @@
   },
   "bridgeToChain": {
     "message": "I-bridge papunta sa $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "Kapag idinagdag mo ang token na ito nang mano-mano, tiyaking alam mo ang mga panganib nito sa mga pondo mo bago ka mag-bridge."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "Hindi namin maberipika ang token na ito."
   },
   "bridgeTxDetailsBridging": {
     "message": "Ibini-bridge"
@@ -2444,6 +2474,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "Mag-import ng wallet o account"
+  },
+  "importWalletSuccess": {
+    "message": "Na-import ang Lihim na Parirala sa Pagbawi $1",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Mag-import ng $1",
@@ -4309,6 +4343,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protektahan ang iyong pondo"
+  },
+  "redeposit": {
+    "message": "Muling magdeposito"
   },
   "refreshList": {
     "message": "I-refresh ang listahan"
