@@ -81,7 +81,7 @@ describe('AddContact component', () => {
     expect(saveButton).toBeDisabled();
   });
 
-  it('should enable submit button when input is valid', () => {
+  it('should enable submit button when input is valid', async () => {
     const testStore = {
       DNS: domainInitialState,
       metamask: state.metamask,
@@ -101,8 +101,9 @@ describe('AddContact component', () => {
       target: { value: '0x1234Bf0BBa69C63E2657cF94693cC4A907085678' },
     });
 
-    const saveButton = getByText('Save');
-    expect(saveButton).not.toBeDisabled();
+    await waitFor(() => {
+      expect(getByText('Save')).not.toBeDisabled();
+    });
   });
 
   it('should disable submit button when input is not a valid address', () => {
