@@ -73,7 +73,7 @@ describe('IndexedDBStore', () => {
       expect(retrieved).toEqual(['value1', 42, { nested: true }]);
     });
 
-    it('throws  when database is not open', async () => {
+    it('throws when database is not open', async () => {
       await expect(db.set({ key: 'value' })).rejects.toThrow(
         'Database is not open',
       );
