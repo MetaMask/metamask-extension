@@ -703,6 +703,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "Εάν συνεχίσετε, όλα τα περιουσιακά στοιχεία που έχετε καταχωρίσει στο Blur ενδέχεται να τεθούν σε κίνδυνο."
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "Αλληλεπιδράτε με έναν κακόβουλο ιστότοπο. Εάν συνεχίσετε, θα χάσετε τα περιουσιακά σας στοιχεία."
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "Εάν συνεχίσετε, όλα τα περιουσιακά στοιχεία που έχετε καταχωρίσει στο OpenSea ενδέχεται να τεθούν σε κίνδυνο."
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "Εάν επιβεβαιώσετε αυτό το αίτημα, ενδέχεται να χάσετε τα περιουσιακά σας στοιχεία. Σας συνιστούμε να ακυρώσετε αυτό το αίτημα."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "Στέλνετε τα περιουσιακά σας στοιχεία σε έναν απατεώνα. Εάν συνεχίσετε, θα χάσετε αυτά τα περιουσιακά στοιχεία."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "Εάν επιβεβαιώσετε αυτό το αίτημα, επιτρέπετε σε έναν απατεώνα να κάνει ανάληψη και να ξοδέψει τα περιουσιακά σας στοιχεία. Δεν θα τα πάρετε πίσω."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "Εάν εγκρίνετε αυτό το αίτημα, ένα τρίτο μέρος που είναι γνωστό για απάτες μπορεί να πάρει όλα τα περιουσιακά σας στοιχεία."
   },
@@ -759,6 +777,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "Θα πρέπει να επιτρέψετε την πρόσβαση των $1 $2 για διασύνδεση και, στη συνέχεια, να εγκρίνετε την διασύνδεση στο $2. Θα χρειαστούν δύο ξεχωριστές επιβεβαιώσεις."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Ο σύνδεσμος από το Block explorer αντιγράφηκε!"
+  },
   "bridgeCalculatingAmount": {
     "message": "Υπολογισμός..."
   },
@@ -814,6 +835,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Επιλέξτε token και ποσό"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Δημιουργήθηκε λογαριασμός στη Solana"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 ελήφθη στο $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +866,12 @@
   },
   "bridgeToChain": {
     "message": "Διασύνδεση στο $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "Εάν προσθέσατε αυτό το token μη αυτόματα, βεβαιωθείτε ότι γνωρίζετε τους κινδύνους για τα κεφάλαιά σας πριν από τη διασύνδεση."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "Δεν μπορούμε να επαληθεύσουμε αυτό το token."
   },
   "bridgeTxDetailsBridging": {
     "message": "Διασύνδεση"
@@ -2444,6 +2474,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "Εισαγωγή πορτοφολιού ή λογαριασμού"
+  },
+  "importWalletSuccess": {
+    "message": "Έγινε εισαγωγή της Μυστικής Φράσης Ανάκτησης στο $1",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Εισαγωγή $1",
@@ -4309,6 +4343,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Προστατέψτε τα κεφάλαιά σας"
+  },
+  "redeposit": {
+    "message": "Επανακατάθεση"
   },
   "refreshList": {
     "message": "Ανανέωση λίστας"

@@ -703,6 +703,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "続行すると、Blurに出品しているすべての資産がリスクにさらされる可能性があります。"
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "悪意のあるサイトとやり取りしています。続行すると、資産を失うことになります。"
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "続行すると、OpenSeaに出品しているすべての資産がリスクにさらされる可能性があります。"
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "この要求を確定すると、資産が失われる可能性があります。この要求はキャンセルすることをお勧めします。"
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "資産を詐欺師に送ろうとしています。続行すると、これらの資産が失われます。"
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "この要求を確定すると、詐欺師に資産の引き出しと使用を許可することになります。失った資産を取り戻すことはできません。"
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われる可能性があります。"
   },
@@ -759,6 +777,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "ブリッジ用に$1 $2へのアクセスを許可し、$2へのブリッジを承認する必要があります。これには2回の別々の承認が必要です。"
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "ブロックエクスプローラーのリンクをコピーしました！"
+  },
   "bridgeCalculatingAmount": {
     "message": "計算中..."
   },
@@ -814,6 +835,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "トークンと金額を選択"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Solanaアカウントが作成されました"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$2で$1を受け取りました",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +866,12 @@
   },
   "bridgeToChain": {
     "message": "$1にブリッジ"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "このトークンを手動で追加した場合は、ブリッジを行う前に、資金へのリスクを認識していることを確認してください。"
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "このトークンは検証できません。"
   },
   "bridgeTxDetailsBridging": {
     "message": "ブリッジ"
@@ -2444,6 +2474,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "ウォレットまたはアカウントのインポート"
+  },
+  "importWalletSuccess": {
+    "message": "シークレットリカバリーフレーズ$1がインポートされました",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "$1をインポート",
@@ -4309,6 +4343,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "資産を守りましょう"
+  },
+  "redeposit": {
+    "message": "再デポジット"
   },
   "refreshList": {
     "message": "リストを更新"

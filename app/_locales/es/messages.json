@@ -703,6 +703,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "Si continúa, todos los activos que ha registrado en Blur podrían estar en peligro."
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "Está interactuando con un sitio malicioso. Si continúa, perderá sus activos."
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "Si continúa, todos los activos que ha incluido en OpenSea podrían estar en peligro."
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "Si confirma esta solicitud, podría perder sus activos. Le recomendamos que cancele esta solicitud."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "Está enviando sus activos a un estafador. Si continúa, perderá esos activos."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "Si confirma esta solicitud, permitirá que un estafador retire y gaste sus activos. No los podrá recuperar."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si aprueba esta solicitud, un tercero conocido por realizar estafas podría tomar todos sus activos."
   },
@@ -759,6 +777,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "Deberá permitir el acceso a $1 $2 para puentear y luego aprobar el puente a $2. Esto requerirá dos confirmaciones por separado."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "¡Se copió el enlace del explorador de bloques!"
+  },
   "bridgeCalculatingAmount": {
     "message": "Calculando..."
   },
@@ -814,6 +835,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Seleccione token y monto"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Se creó la cuenta de Solana"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 recibido en $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +866,12 @@
   },
   "bridgeToChain": {
     "message": "Puentear hacia $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "Si agregó este token manualmente, asegúrese de que conoce los riesgos para sus fondos antes de puentear."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "No podemos verificar este token."
   },
   "bridgeTxDetailsBridging": {
     "message": "Puentear"
@@ -2444,6 +2474,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "Importar un monedero o una cuenta"
+  },
+  "importWalletSuccess": {
+    "message": "Se importó la frase secreta de recuperación $1",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Importar $1",
@@ -4309,6 +4343,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Proteja sus fondos."
+  },
+  "redeposit": {
+    "message": "Volver a depositar"
   },
   "refreshList": {
     "message": "Actualizar lista"

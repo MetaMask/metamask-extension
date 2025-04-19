@@ -703,6 +703,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "अगर आप ऐसा करना जारी रखते हैं, तो Blur पर आपके द्वारा सूचीबद्ध सभी एसेट्स खतरे में पड़ सकती हैं।"
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "आप एक बुरी नीयत वाली साइट के साथ इंटरैक्ट कर रहे हैं। अगर आप ऐसा करना जारी रखेंगे, तो आप अपनी एसेट्स खो देंगे।"
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "अगर आप ऐसा करना जारी रखते हैं, तो OpenSea पर आपके द्वारा सूचीबद्ध सभी एसेट्स खतरे में पड़ सकती हैं।"
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आप अपनी एसेट्स खो सकते हैं। हम सुझाव देते हैं कि आप इस अनुरोध को कैंसिल कर दें।"
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "आप अपनी एसेट्स किसी स्कैमर को भेज रहे हैं। अगर आप ऐसा करना जारी रखेंगे, तो आप उन एसेट्स को खो देंगे।"
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो आप एक स्कैमर को अपनी एसेट्स निकालने और खर्च करने की अनुमति दे रहे हैं। आपको वे वापस नहीं मिलेंगे।"
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "यदि आप इस रिक्वेस्ट को स्वीकार करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है।"
   },
@@ -759,6 +777,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "आपको ब्रिजिंग के लिए $1 $2 तक पहुंच की अनुमति देनी होगी, और फिर $2 तक ब्रिजिंग को एप्रूव करनी होगी। इसके लिए दो अलग-अलग कन्फर्मेशन की आवश्यकता होगी।"
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "ब्लॉक एक्सप्लोरर लिंक कॉपी किया गया!"
+  },
   "bridgeCalculatingAmount": {
     "message": "कैलकुलेट किया जा रहा है..."
   },
@@ -814,6 +835,9 @@
   "bridgeSelectTokenAndAmount": {
     "message": "टोकन और रकम का चयन करें"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Solana अकाउंट बनाया गया"
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$2 पर $1 प्राप्त हुआ",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +866,12 @@
   },
   "bridgeToChain": {
     "message": "$1 पर ब्रिज करें"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "यदि आपने यह टोकन मैन्युअल रूप से जोड़ा है, तो सुनिश्चित करें कि आप ब्रिजिंग से पहले अपने फंड के जोखिमों से अवगत हैं।"
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "हम इस टोकन को वेरीफ़ाई नहीं कर सकते।"
   },
   "bridgeTxDetailsBridging": {
     "message": "ब्रिज किया जा रहा है"
@@ -2444,6 +2474,10 @@
   },
   "importWalletOrAccountHeader": {
     "message": "वॉलेट या अकाउंट इंपोर्ट करें"
+  },
+  "importWalletSuccess": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ $1 इंपोर्ट किया गया",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "$1 इम्पोर्ट करें",
@@ -4309,6 +4343,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "अपने धन को सुरक्षित रखें"
+  },
+  "redeposit": {
+    "message": "फिर से डिपॉज़िट करें"
   },
   "refreshList": {
     "message": "लिस्ट रिफ्रेश करें"
