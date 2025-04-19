@@ -6,6 +6,11 @@ on:
 
 jobs:
   check_changelog:
+    # Asking engineers to update CHANGELOG.md increases the potential for
+    # conflicts across all pull requests.
+    # Disable this workflow until we can refine the new changelog process.
+    if: false
+
     uses: MetaMask/github-tools/.github/workflows/changelog-check.yml@91e349d177db2c569e03c7aa69d2acb404b62f75
     with:
       base-branch: ${{ github.event.pull_request.base.ref }}
