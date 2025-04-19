@@ -3824,6 +3824,12 @@
         "@babel/runtime": true
       }
     },
+    "dompurify": {
+      "globals": {
+        "console.warn": true,
+        "define": true
+      }
+    },
     "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": {
       "packages": {
         "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,

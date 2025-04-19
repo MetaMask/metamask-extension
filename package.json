@@ -358,6 +358,7 @@
     "currency-formatter": "^1.4.2",
     "debounce-stream": "^2.0.0",
     "deep-freeze-strict": "1.1.1",
+    "dompurify": "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch",
     "eth-chainlist": "~0.0.498",
     "eth-ens-namehash": "^2.0.8",
     "eth-lattice-keyring": "patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch",
