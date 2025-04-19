@@ -67,6 +67,8 @@ export async function showAccountCreationDialog(
     return confirmationResult;
   } catch (e) {
     throw new Error(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `Error occurred while showing account creation dialog.\n${e}`,
     );
   }
@@ -99,6 +101,8 @@ export async function showAccountNameSuggestionDialog(
     )) as { success: boolean; name?: string };
     return confirmationResult;
   } catch (e) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`Error occurred while showing name account dialog.\n${e}`);
   }
 }
