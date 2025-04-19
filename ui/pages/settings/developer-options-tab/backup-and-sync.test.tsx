@@ -4,13 +4,13 @@ import '@testing-library/jest-dom/extend-expect';
 import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useAccountSyncing';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
 import {
-  ProfileSyncDevSettings,
+  BackupAndSyncDevSettings,
   useDeleteAccountSyncDataProps,
-} from './profile-sync';
+} from './backup-and-sync';
 
 jest.mock('../../../hooks/identity/useAccountSyncing');
 
-describe('ProfileSyncDevSettings', () => {
+describe('BackupAndSyncDevSettings', () => {
   const mockDispatchDeleteAccountSyncingData = jest.fn();
 
   beforeEach(() => {
@@ -23,13 +23,13 @@ describe('ProfileSyncDevSettings', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the ProfileSyncDevSettings component', () => {
-    const { getByText } = render(<ProfileSyncDevSettings />);
-    expect(getByText('Profile Sync')).toBeInTheDocument();
+  it('renders the BackupAndSyncDevSettings component', () => {
+    const { getByText } = render(<BackupAndSyncDevSettings />);
+    expect(getByText('Backup and sync')).toBeInTheDocument();
   });
 
   it('calls onDelete and shows success icon when reset button is clicked', async () => {
-    const { getByRole } = render(<ProfileSyncDevSettings />);
+    const { getByRole } = render(<BackupAndSyncDevSettings />);
     const resetButton = getByRole('button', { name: 'Reset' });
 
     fireEvent.click(resetButton);
@@ -45,7 +45,7 @@ describe('ProfileSyncDevSettings', () => {
   });
 
   it('displays the correct title and description', () => {
-    const { getByText } = render(<ProfileSyncDevSettings />);
+    const { getByText } = render(<BackupAndSyncDevSettings />);
 
     const { title, description } = renderHookWithProviderTyped(
       () => useDeleteAccountSyncDataProps(),

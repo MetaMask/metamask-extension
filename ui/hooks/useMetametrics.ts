@@ -51,7 +51,6 @@ export function useEnableMetametrics(): {
 
 /**
  * Provides a hook to disable MetaMetrics tracking.
- * This hook handles user sign-out if profile syncing is not enabled and sets participation in MetaMetrics to false.
  *
  * @returns An object containing the `disableMetametrics` function, a `loading` boolean indicating the operation status, and an `error` string for error messages.
  */

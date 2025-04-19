@@ -4154,18 +4154,6 @@
   "productAnnouncements": {
     "message": "제품 공지"
   },
-  "profileSync": {
-    "message": "프로필 동기화"
-  },
-  "profileSyncConfirmation": {
-    "message": "프로필 동기화를 끄면 알림을 받을 수 없게 됩니다."
-  },
-  "profileSyncDescription": {
-    "message": "MetaMask가 기기 간에 일부 설정을 동기화하는 데 사용할 프로필을 생성합니다. 알림을 받으려면 프로필이 필요합니다. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "개인 정보 보호 방법 알아보기"
-  },
   "proposedApprovalLimit": {
     "message": "제안된 승인 한도"
   },
