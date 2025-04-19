@@ -922,9 +922,9 @@ async function setupMocking(
       };
     });
 
-     // Dynamic Banner Content
+  // Dynamic Banner Content
   await server
-    .forGet(/^https:\/\/cdn\.contentful\.com\/.*$/u)
+    .forGet(/^https:\/\/(cdn|preview)\.contentful\.com\/.*$/u)
     .withQuery({
       content_type: 'promotionalBanner',
     })
@@ -932,12 +932,12 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
-          data: {
-            items: [],
-          },
+          items: [],
+          includes: { Asset: [] },
         },
       };
     });
+
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested

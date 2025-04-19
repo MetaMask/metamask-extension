@@ -109,6 +109,7 @@ export const useCarouselManagement = ({
 
         defaultSlides.push(dismissedSweepstakesSlide);
       }
+
       // Handle Contentful Data
       try {
         const contentfulSlides = await fetchCarouselSlidesFromContentful();

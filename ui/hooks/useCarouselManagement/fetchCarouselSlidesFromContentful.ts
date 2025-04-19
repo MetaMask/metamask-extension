@@ -24,29 +24,28 @@ type ContentfulBanner = ContentfulSysField & {
 };
 
 type ContentfulBannerResponse = {
-  data: {
-    items: ContentfulBanner[];
-    includes?: {
-      Asset?: (ContentfulSysField & {
-        fields?: { file?: { url?: string } };
-      })[];
-    };
+  items: ContentfulBanner[];
+  includes?: {
+    Asset?: (ContentfulSysField & {
+      fields?: { file?: { url?: string } };
+    })[];
   };
 };
+
 export async function fetchCarouselSlidesFromContentful() {
   const url = new URL(CONTENTFUL_API);
   url.searchParams.set('access_token', ACCESS_TOKEN);
   url.searchParams.set('content_type', CONTENT_TYPE);
   const res: ContentfulBannerResponse = await fetch(url).then((r) => r.json());
 
-  const assets = res.data.includes?.Asset || [];
+  const assets = res.includes?.Asset || [];
   const resolveImage = (imageRef: ContentfulSysField) => {
-    const asset = assets.find((a: any) => a.sys.id === imageRef?.sys?.id);
+    const asset = assets.find((a) => a.sys.id === imageRef?.sys?.id);
     const rawUrl = asset?.fields?.file?.url || '';
     return rawUrl.startsWith('//') ? `https:${rawUrl}` : rawUrl;
   };
 
-  const slides: CarouselSlide[] = res.data.items.map((entry) => ({
+  const slides: CarouselSlide[] = res.items.map((entry) => ({
     id: `contentful-${entry.sys.id}`,
     title: entry.fields.headline,
     description: entry.fields.teaser,
