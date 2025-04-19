@@ -13,10 +13,11 @@ import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
-  CaipAssetType,
+  type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
+  hexToNumber,
 } from '@metamask/utils';
 import {
   AssetsContractController,
@@ -48,6 +49,14 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import {
+  type DelegationEntry,
+  type DelegationFilter,
+} from '@metamask/delegation-controller';
+import {
+  getDeleGatorEnvironment,
+  type UnsignedDelegation,
+} from '@metamask/delegation-toolkit';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
@@ -6188,3 +6197,46 @@ export function setTransactionActive(
     ]);
   };
 }
+
+export const signDelegation = async ({
+  delegation,
+  chainId,
+}: {
+  delegation: UnsignedDelegation;
+  chainId: Hex;
+}): Promise<Hex> => {
+  const verifyingContract = getDeleGatorEnvironment(
+    hexToNumber(chainId),
+  ).DelegationManager;
+  return await submitRequestToBackground('signDelegation', [
+    { delegation, verifyingContract, chainId },
+  ]);
+};
+
+export const storeDelegationEntry = async (
+  entry: DelegationEntry,
+): Promise<void> => {
+  return await submitRequestToBackground('storeDelegationEntry', [{ entry }]);
+};
+
+export const listDelegationEntries = async (
+  filter: DelegationFilter,
+): Promise<DelegationEntry[]> => {
+  return await submitRequestToBackground('listDelegationEntries', [filter]);
+};
+
+export const getDelegationEntry = async (
+  hash: Hex,
+): Promise<DelegationEntry> => {
+  return await submitRequestToBackground('getDelegationEntry', [hash]);
+};
+
+export const getDelegationEntryChain = async (
+  hash: Hex,
+): Promise<DelegationEntry[]> => {
+  return await submitRequestToBackground('getDelegationEntryChain', [hash]);
+};
+
+export const deleteDelegationEntry = async (hash: Hex) => {
+  return await submitRequestToBackground('deleteDelegationEntry', [hash]);
+};
