@@ -87,6 +87,7 @@ export const ConnectedSiteMenu = ({
         backgroundColor={BackgroundColor.backgroundDefault}
         ref={referenceElement}
         onClick={process.env.REMOVE_GNS ? () => setShowPopover(true) : onClick}
+        borderRadius={BorderRadius.LG}
       >
         {process.env.REMOVE_GNS ? (
           iconElement
