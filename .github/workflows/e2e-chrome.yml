@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  test-e2e-chrome:
+  test-e2e-chrome-browserify:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
       fail-fast: false
@@ -12,7 +12,7 @@ jobs:
         index:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     with:
-      test-suite-name: test-e2e-chrome
+      test-suite-name: test-e2e-chrome-browserify
       build-artifact: prep-build-test-browserify-chrome
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome
@@ -72,7 +72,7 @@ jobs:
 
   test-e2e-chrome-report:
     needs:
-      - test-e2e-chrome
+      - test-e2e-chrome-browserify
       - test-e2e-chrome-webpack
       - test-e2e-chrome-multiple-providers
       - test-e2e-chrome-rpc
