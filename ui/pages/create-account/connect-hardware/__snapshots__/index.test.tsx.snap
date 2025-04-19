@@ -9,6 +9,9 @@ exports[`ConnectHardwareForm matchs snapshot 1`] = `
       class="mm-box hw-connect__header mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
     >
       <div
+        class="mm-box"
+      />
+      <div
         class="mm-box hw-connect__header__title-wrapper mm-box--margin-top-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
       >
         <h3
