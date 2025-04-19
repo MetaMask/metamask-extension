@@ -72,7 +72,7 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
-      # - bitcoin
+      - bitcoin
       - solana
       - multi-srp
       - solana-swaps
