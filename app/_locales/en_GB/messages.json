@@ -4303,18 +4303,6 @@
   "productAnnouncements": {
     "message": "Product announcements"
   },
-  "profileSync": {
-    "message": "Profile Sync"
-  },
-  "profileSyncConfirmation": {
-    "message": "If you turn off profile sync, you won’t be able to receive notifications."
-  },
-  "profileSyncDescription": {
-    "message": "Creates a profile that MetaMask uses to sync some settings among your devices. This is required to get notifications. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Learn how we protect your privacy"
-  },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
   },

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -13,6 +13,7 @@ import {
   AlignItems,
   Display,
   JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
@@ -23,26 +24,79 @@ export const backupAndSyncFeaturesTogglesTestIds = {
   accountSyncingToggleButton: 'account-syncing-toggle-button',
 };
 
+export const backupAndSyncFeaturesTogglesSections = [
+  {
+    id: 'accountSyncing',
+    titleI18NKey: 'backupAndSyncFeatureAccounts',
+    iconName: IconName.UserCircle,
+    backupAndSyncfeatureKey: BACKUPANDSYNC_FEATURES.accountSyncing,
+    featureReduxSelector: selectIsAccountSyncingEnabled,
+    toggleButtonTestId:
+      backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleButton,
+  },
+];
+
+const FeatureToggle = ({
+  section,
+  isBackupAndSyncUpdateLoading,
+  isBackupAndSyncEnabled,
+}: {
+  section: (typeof backupAndSyncFeaturesTogglesSections)[number];
+  isBackupAndSyncUpdateLoading: boolean;
+  isBackupAndSyncEnabled: boolean;
+}) => {
+  const t = useI18nContext();
+  const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
+
+  const isFeatureEnabled = useSelector(section.featureReduxSelector);
+
+  const handleToggleFeature = async () => {
+    await setIsBackupAndSyncFeatureEnabled(
+      section.backupAndSyncfeatureKey,
+      !isFeatureEnabled,
+    );
+  };
+
+  return (
+    <Box
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.flexStart}
+      marginBottom={4}
+      id={`backup-and-sync-features-toggles-${section.id}`}
+    >
+      <Box display={Display.Flex} gap={4}>
+        <Icon name={section.iconName} />
+        <Text variant={TextVariant.bodyMdMedium}>
+          {t(section.titleI18NKey)}
+        </Text>
+      </Box>
+      {isBackupAndSyncUpdateLoading ? (
+        <Box paddingLeft={5} paddingRight={5}>
+          <Preloader size={36} />
+        </Box>
+      ) : (
+        <div className="privacy-settings__setting__toggle">
+          <ToggleButton
+            value={isFeatureEnabled}
+            disabled={!isBackupAndSyncEnabled}
+            dataTestId={section.toggleButtonTestId}
+            onToggle={handleToggleFeature}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      )}
+    </Box>
+  );
+};
+
 export const BackupAndSyncFeaturesToggles = () => {
   const t = useI18nContext();
 
-  const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
-
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-  const isAccountSyncingEnabled = useSelector(selectIsAccountSyncingEnabled);
-
   const isBackupAndSyncUpdateLoading = useSelector(
     selectIsBackupAndSyncUpdateLoading,
-  );
-
-  const handleUpdateAccountSyncingState = useCallback(
-    (enabled: boolean) => {
-      setIsBackupAndSyncFeatureEnabled(
-        BACKUPANDSYNC_FEATURES.accountSyncing,
-        enabled,
-      );
-    },
-    [setIsBackupAndSyncFeatureEnabled],
   );
 
   return (
@@ -52,40 +106,25 @@ export const BackupAndSyncFeaturesToggles = () => {
       className="privacy-settings__setting__wrapper"
       data-testid={backupAndSyncFeaturesTogglesTestIds.container}
     >
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.flexStart}
+      <Text variant={TextVariant.bodyMdMedium}>
+        {t('backupAndSyncManageWhatYouSync')}
+      </Text>
+      <Text
+        variant={TextVariant.bodySm}
+        color={TextColor.textAlternative}
+        as="div"
         marginBottom={4}
-        id="backup-and-sync-features-toggles-account-syncing"
       >
-        <Box display={Display.Flex} gap={4}>
-          <Icon name={IconName.UserCircle} />
-          <Text variant={TextVariant.bodyMdMedium}>
-            {t('backupAndSyncFeatureAccounts')}
-          </Text>
-        </Box>
-        {isBackupAndSyncUpdateLoading ? (
-          <Box paddingLeft={5} paddingRight={5}>
-            <Preloader size={36} />
-          </Box>
-        ) : (
-          <div className="privacy-settings__setting__toggle">
-            <ToggleButton
-              value={isAccountSyncingEnabled}
-              disabled={!isBackupAndSyncEnabled}
-              dataTestId={
-                backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleButton
-              }
-              onToggle={() =>
-                handleUpdateAccountSyncingState(!isAccountSyncingEnabled)
-              }
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        )}
-      </Box>
+        {t('backupAndSyncManageWhatYouSyncDescription')}
+      </Text>
+
+      {backupAndSyncFeaturesTogglesSections.map((section) =>
+        FeatureToggle({
+          section,
+          isBackupAndSyncUpdateLoading,
+          isBackupAndSyncEnabled,
+        }),
+      )}
     </Box>
   );
 };
