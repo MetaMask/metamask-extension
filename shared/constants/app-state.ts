@@ -27,4 +27,6 @@ export type CarouselSlide = {
   dismissed?: boolean;
   href?: string;
   undismissable?: boolean;
+  startDate?: string;
+  endDate?: string;
 };
