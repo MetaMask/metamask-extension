@@ -10,12 +10,15 @@ import NativeTransferInfo from './native-transfer/native-transfer';
 import NFTTokenTransferInfo from './nft-token-transfer/nft-token-transfer';
 import PersonalSignInfo from './personal-sign/personal-sign';
 import SetApprovalForAllInfo from './set-approval-for-all-info/set-approval-for-all-info';
+import SmartAccountSwitchInfo from './smart-account-switch-info/smart-account-switch-info';
 import TokenTransferInfo from './token-transfer/token-transfer';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
+import { useIsUpgradeTransaction } from './hooks/useIsUpgradeTransaction';
 
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
+  const isUpgrade = useIsUpgradeTransaction();
 
   // TODO: Create TransactionInfo and SignatureInfo components.
   useSmartTransactionFeatureFlags();
@@ -23,11 +26,16 @@ const Info = () => {
 
   const ConfirmationInfoComponentMap = useMemo(
     () => ({
-      [TransactionType.batch]: () => BaseTransactionInfo,
+      [TransactionType.batch]: () => {
+        if (isUpgrade) {
+          return SmartAccountSwitchInfo;
+        }
+        return BaseTransactionInfo;
+      },
       [TransactionType.contractInteraction]: () => BaseTransactionInfo,
       [TransactionType.deployContract]: () => BaseTransactionInfo,
       [TransactionType.personalSign]: () => PersonalSignInfo,
-      [TransactionType.revokeDelegation]: () => BaseTransactionInfo,
+      [TransactionType.revokeDelegation]: () => SmartAccountSwitchInfo,
       [TransactionType.simpleSend]: () => NativeTransferInfo,
       [TransactionType.signTypedData]: () => {
         const { version } =

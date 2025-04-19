@@ -5,48 +5,49 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import { useConfirmContext } from '../../../../../context/confirm';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import {
-  useIsDowngradeTransaction,
-  useIsUpgradeTransaction,
-} from '../../hooks/useIsUpgradeTransaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../../../context/confirm';
+import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
+import { SmartContractWithLogo } from '../../shared/smart-contract-with-logo';
 
 export function TransactionAccountDetails() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isUpgrade = useIsUpgradeTransaction();
-  const isDowngrade = useIsDowngradeTransaction();
   const { chainId, txParams } = currentConfirmation;
   const { from } = txParams;
-
-  if (!isUpgrade && !isDowngrade) {
-    return null;
-  }
 
   return (
     <ConfirmInfoSection>
       <ConfirmInfoRow label={t('account')}>
         <ConfirmInfoRowAddress chainId={chainId} address={from} />
       </ConfirmInfoRow>
+      <ConfirmInfoRow label={t('confirmAccountCurrentType')}>
+        <ConfirmInfoRowText
+          text={
+            isUpgrade
+              ? t('confirmAccountTypeStandard')
+              : t('confirmAccountTypeSmartContract')
+          }
+        />
+      </ConfirmInfoRow>
+      <ConfirmInfoRow label={t('confirmAccountNewType')}>
+        <ConfirmInfoRowText
+          text={
+            isUpgrade
+              ? t('confirmAccountTypeSmartContract')
+              : t('confirmAccountTypeStandard')
+          }
+        />
+      </ConfirmInfoRow>
       {isUpgrade && (
-        <ConfirmInfoRow label={t('confirmAccountType')}>
-          <ConfirmInfoRowText
-            text={t('confirmAccountTypeSmartContract')}
-            data-testid="tx-type"
-          />
+        <ConfirmInfoRow
+          label={t('interactingWith')}
+          tooltip={t('interactingWithTransactionDescription')}
+        >
+          <SmartContractWithLogo />
         </ConfirmInfoRow>
-      )}
-      {isDowngrade && (
-        <>
-          <ConfirmInfoRow label="Current Type">
-            <ConfirmInfoRowText text={t('confirmAccountTypeSmartContract')} />
-          </ConfirmInfoRow>
-          <ConfirmInfoRow label="New Type">
-            <ConfirmInfoRowText text={t('confirmAccountTypeStandard')} />
-          </ConfirmInfoRow>
-        </>
       )}
     </ConfirmInfoSection>
   );

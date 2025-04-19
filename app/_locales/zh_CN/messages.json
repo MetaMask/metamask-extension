@@ -1025,9 +1025,6 @@
   "confirm": {
     "message": "确认"
   },
-  "confirmAccountType": {
-    "message": "类型"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "智能账户"
   },

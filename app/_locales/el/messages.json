@@ -1025,9 +1025,6 @@
   "confirm": {
     "message": "Επιβεβαίωση"
   },
-  "confirmAccountType": {
-    "message": "Τύπος"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "Έξυπνος λογαριασμός"
   },

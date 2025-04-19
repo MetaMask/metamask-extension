@@ -1025,9 +1025,6 @@
   "confirm": {
     "message": "컨펌"
   },
-  "confirmAccountType": {
-    "message": "유형"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "스마트 계정"
   },

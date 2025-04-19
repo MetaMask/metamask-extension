@@ -1025,9 +1025,6 @@
   "confirm": {
     "message": "Xác nhận"
   },
-  "confirmAccountType": {
-    "message": "Loại"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "Tài khoản thông minh"
   },
