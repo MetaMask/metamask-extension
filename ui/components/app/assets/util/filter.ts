@@ -25,10 +25,14 @@ const filterCallbacks: FilterCallbacksT = {
     value >= opts.min && value <= opts.max,
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function getNestedValue<T>(obj: T, keyPath: string): FilterType {
   return get(obj, keyPath);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function filterAssets<T>(assets: T[], criteria: FilterCriteria[]): T[] {
   if (criteria.length === 0) {
     return assets;

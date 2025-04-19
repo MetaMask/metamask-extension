@@ -63,6 +63,8 @@ type TemporaryBackgroundState = NftControllerState &
     unapprovedTypedMessages: MessagesIndexedById;
     networksMetadata: {
       [NetworkClientId: string]: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         EIPS: { [eip: string]: boolean };
         status: NetworkStatus;
       };
@@ -93,6 +95,8 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
   metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
   appState: RootReducerReturnType['appState'];
   send: RootReducerReturnType['send'];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   DNS: RootReducerReturnType['DNS'];
   history: RootReducerReturnType['history'];
   confirmAlerts: RootReducerReturnType['confirmAlerts'];

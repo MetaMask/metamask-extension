@@ -89,6 +89,8 @@ describe('SortControl', () => {
       category: 'Settings',
       event: 'Token Sort Preference',
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_sort_preference: 'title',
       },
     });
@@ -113,6 +115,8 @@ describe('SortControl', () => {
       category: 'Settings',
       event: 'Token Sort Preference',
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_sort_preference: 'tokenFiatAmount',
       },
     });

@@ -1,6 +1,8 @@
 import React from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
 import { Hex } from '@metamask/utils';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
@@ -94,6 +96,8 @@ export const TransactionData = ({
   );
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function Container({
   children,
   isLoading,
@@ -128,6 +132,8 @@ export function Container({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function RawDataRow({ transactionData }: { transactionData: string }) {
   const t = useI18nContext();
   return (
@@ -140,6 +146,8 @@ function RawDataRow({ transactionData }: { transactionData: string }) {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function FunctionContainer({
   method,
   source,
@@ -197,6 +205,8 @@ function FunctionContainer({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ParamValue({
   param,
   source,
@@ -228,6 +238,8 @@ function ParamValue({
   return <ConfirmInfoRowText text={valueString} />;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ParamRow({
   param,
   index,
@@ -266,6 +278,8 @@ function ParamRow({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function UniswapPath({
   pathPools,
   chainId,

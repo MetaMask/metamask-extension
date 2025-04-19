@@ -139,10 +139,14 @@ export default function useSubmitBridgeTransaction() {
 
       // Get tx statuses
       const allowanceResetTransaction = isAllowanceResetError(e)
-        ? { allowance_reset_transaction: StatusTypes.FAILED }
+        ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          { allowance_reset_transaction: StatusTypes.FAILED }
         : undefined;
       const approvalTransaction = isApprovalTxError(e)
-        ? { approval_transaction: StatusTypes.FAILED }
+        ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          { approval_transaction: StatusTypes.FAILED }
         : undefined;
 
       trackCrossChainSwapsEvent({
@@ -153,6 +157,8 @@ export default function useSubmitBridgeTransaction() {
           ...allowanceResetTransaction,
           ...approvalTransaction,
 
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           error_message: (e as Error).message,
         },
       });

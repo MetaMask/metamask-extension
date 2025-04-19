@@ -141,6 +141,8 @@ export type Label = {
 };
 
 export type Signature = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   custodian_transactionId?: string;
   from: string;
 };

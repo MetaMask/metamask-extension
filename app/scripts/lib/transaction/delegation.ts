@@ -29,6 +29,8 @@ export type Execution = {
 };
 
 export enum ExecutionMode {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BATCH_DEFAULT_MODE = '0x0100000000000000000000000000000000000000000000000000000000000000',
 }
 

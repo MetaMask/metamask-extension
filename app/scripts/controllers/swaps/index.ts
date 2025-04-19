@@ -933,6 +933,8 @@ export default class SwapsController extends BaseController<
    *
    * @param newState - The new state to set
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public __test__updateState = (newState: Partial<SwapsControllerState>) => {
     this.update((oldState) => {
       return { swapsState: { ...oldState.swapsState, ...newState.swapsState } };
@@ -1129,6 +1131,8 @@ export default class SwapsController extends BaseController<
           event: MetaMetricsEventName.QuoteError,
           category: MetaMetricsEventCategory.Swaps,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             error_type: MetaMetricsEventErrorType.GasTimeout,
             aggregator,
           },

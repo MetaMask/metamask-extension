@@ -12,10 +12,14 @@ const { SourceMapSource, RawSource } = sources;
 
 type Assets = { [k: string]: unknown };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type Combination<T> = {
   [P in keyof T]: T[P] extends readonly (infer U)[] ? U : never;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function generateCases<T extends object>(obj: T): Combination<T>[] {
   return Object.entries(obj).reduce(
     (acc, [key, value]) => {
