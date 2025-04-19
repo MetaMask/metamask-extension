@@ -281,6 +281,7 @@ export const AccountListMenu = ({
   );
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
+
   const filteredUpdatedAccountList = useMemo(
     () =>
       updatedAccountsList.filter((account) =>
