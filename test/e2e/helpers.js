@@ -93,7 +93,7 @@ function normalizeLocalNodeOptions(localNodeOptions) {
  * @property {ContractAddressRegistry | undefined} contractRegistry - The contract registry.
  * @property {string | object | Array} localNodeOptions - The local node(s) and options chosen ('ganache', 'anvil'...).
  * @property {mockttp.MockedEndpoint[]} mockedEndpoint - The mocked endpoint.
- * @property {Bundler} bundlerServer - The bundler server.
+ * @property {Bundler} bundlerServer - The bundler server. TEST, THIS PR WONT GET MERGED!
  * @property {mockttp.Mockttp} mockServer - The mock server.
  * @property {object} manifestFlags - Flags to add to the manifest in order to change things at runtime.
  * @property {string} extensionId - The extension ID (useful for connecting via `externally_connectable`).
