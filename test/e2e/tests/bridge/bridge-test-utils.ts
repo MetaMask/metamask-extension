@@ -236,6 +236,18 @@ async function mockDAItoUSDT(mockServer: Mockttp) {
     });
 }
 
+async function mockGetQuoteInvalid(mockServer: Mockttp, response: any) {
+  return await mockServer.forGet(/getQuote/u).thenCallback(() => {
+    return response;
+  });
+}
+
+async function mockGetTxStatuInvalid(mockServer: Mockttp, response: any) {
+  return await mockServer.forGet(/getTxStatus/u).thenCallback(async (req) => {
+    return response;
+  });
+}
+
 export const getBridgeFixtures = (
   title?: string,
   featureFlags: Partial<FeatureFlagResponse> = {},
@@ -288,6 +300,79 @@ export const getBridgeFixtures = (
         options: {
           chainId: 1,
           loadState: './test/e2e/seeder/network-states/with50Dai.json',
+        },
+      },
+    ],
+    title,
+  };
+};
+
+export const getQuoteNegativeCasesFixtures = (
+  response: any,
+  title?: string,
+) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withTokensControllerERC20({ chainId: 1 });
+
+  return {
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, {
+        'extension-config': {
+          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+          support: true,
+        },
+      }),
+      await mockTopAssets(mockServer),
+      await mockGetQuoteInvalid(mockServer, response),
+    ],
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+        },
+      },
+    ],
+    title,
+  };
+};
+
+export const getTxStatusNegativeCasesFixtures = (
+  response: any,
+  title?: string,
+) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withTokensControllerERC20({ chainId: 1 });
+
+  return {
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, {
+        'extension-config': {
+          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+          support: true,
+        },
+      }),
+      await mockTopAssets(mockServer),
+      await mockETHtoETH(mockServer),
+      await mockGetTxStatuInvalid(mockServer, response),
+    ],
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
         },
       },
     ],
