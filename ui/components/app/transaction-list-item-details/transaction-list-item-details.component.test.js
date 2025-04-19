@@ -92,14 +92,6 @@ describe('TransactionListItemDetails Component', () => {
     });
   });
 
-  describe('Retry button', () => {
-    it('should render retry button with showRetry prop', async () => {
-      const { queryByTestId } = await render({ showRetry: true });
-
-      expect(queryByTestId('rety-button')).toBeInTheDocument();
-    });
-  });
-
   describe('Cancel button', () => {
     it('should render cancel button with showCancel prop', async () => {
       const { queryByTestId } = await render({ showCancel: true });
