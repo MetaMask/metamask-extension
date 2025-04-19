@@ -5,6 +5,8 @@
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
+  // prevent overflow-x
+  max-width: 100%;
   position: fixed;
   bottom: 0;
   z-index: 1050;
