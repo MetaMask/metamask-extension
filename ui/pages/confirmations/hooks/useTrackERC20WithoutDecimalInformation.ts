@@ -21,6 +21,8 @@ import { parseTokenDetailDecimals, TokenDetailsERC20 } from '../utils/token';
  */
 const useTrackERC20WithoutDecimalInformation = (
   chainId: Hex,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   tokenAddress: Hex | string | undefined,
   tokenDetails?: TokenDetailsERC20,
   metricLocation = MetaMetricsEventLocation.SignatureConfirmation,
