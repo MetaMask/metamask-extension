@@ -938,7 +938,6 @@ async function setupMocking(
       };
     });
 
-
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
    * during the current test suite.
