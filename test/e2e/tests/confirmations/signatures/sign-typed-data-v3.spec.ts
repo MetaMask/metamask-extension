@@ -25,6 +25,7 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
   it('initiates and confirms', async function () {
@@ -65,6 +66,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v3',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
         await assertVerifiedResults(driver, publicAddress);
       },
@@ -95,6 +97,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v3',
           location: 'confirmation',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
