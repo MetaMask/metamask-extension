@@ -1,6 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
-import { HeaderBase, Text } from '../../../../../component-library';
+import {
+  HeaderBase,
+  HeaderBaseProps,
+  Text,
+} from '../../../../../component-library';
 import {
   BlockSize,
   Display,
@@ -9,11 +13,9 @@ import {
   JustifyContent,
 } from '../../../../../../helpers/constants/design-system';
 
-import type { StyleUtilityProps } from '../../../../../component-library/box';
-
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-interface HeaderProps extends StyleUtilityProps {
+interface HeaderProps extends HeaderBaseProps<'div'> {
   /**
    * Elements that go in the page footer
    */
@@ -60,7 +62,7 @@ export const Header = ({
         textAlign={TextAlign.Center}
         paddingInlineStart={8}
         paddingInlineEnd={8}
-        ellipsis
+        as="div"
         {...textProps}
       >
         {children}

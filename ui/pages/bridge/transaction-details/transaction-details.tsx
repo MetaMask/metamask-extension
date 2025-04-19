@@ -289,6 +289,7 @@ const CrossChainSwapTxDetails = () => {
             onClick={() => history.goBack()}
           />
         }
+        textProps={{ variant: TextVariant.headingSm, as: 'h1' }}
       >
         {t('bridge')} details
       </Header>

@@ -39,6 +39,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  FlexWrap,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -365,7 +366,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       className="main-container connect-page"
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      <Header paddingBottom={0}>
+      <Header
+        paddingBottom={0}
+        childrenWrapperProps={{
+          className: 'connect-page__header__children-wrapper',
+        }}
+      >
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
@@ -408,10 +414,19 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             </AvatarBase>
           )}
         </Box>
-        <Text variant={TextVariant.headingLg} marginTop={2} marginBottom={2}>
+        <Text
+          variant={TextVariant.headingLg}
+          marginTop={2}
+          marginBottom={2}
+          ellipsis
+        >
           {title}
         </Text>
-        <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          flexWrap={FlexWrap.Wrap}
+        >
           <Text>{t('connectionDescription')}</Text>
           <ButtonLink
             paddingLeft={1}
