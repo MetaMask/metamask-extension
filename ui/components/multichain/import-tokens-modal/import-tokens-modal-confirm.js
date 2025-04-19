@@ -71,6 +71,7 @@ export const ImportTokensModalConfirm = ({ networkFilter }) => {
                           ]
                         }
                         backgroundColor={testNetworkBackgroundColor}
+                        borderWidth={2}
                       />
                     }
                     marginRight={4}
