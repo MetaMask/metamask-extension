@@ -192,6 +192,8 @@ async function waitForAllPromises(): Promise<void> {
   // Wait for next tick to flush all pending promises. It's requires since
   // we are testing some asynchronous execution flows that are started by
   // synchronous calls.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   await new Promise(process.nextTick);
 }
 
