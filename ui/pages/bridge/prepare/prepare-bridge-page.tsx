@@ -18,10 +18,10 @@ import {
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   type GenericQuoteRequest,
+  type BridgeToken,
   getNativeAssetForChainId,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import type { BridgeToken } from '@metamask/bridge-controller';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -50,6 +50,7 @@ import {
   getIsToOrFromSolana,
   getQuoteRefreshRate,
   getHardwareWalletName,
+  getIsQuoteExpired,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -81,10 +82,7 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import {
-  formatTokenAmount,
-  isQuoteExpired as isQuoteExpiredUtil,
-} from '../utils/quote';
+import { formatTokenAmount } from '../utils/quote';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -124,6 +122,7 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import { PriceImpactAlert } from '../alerts/PriceImpactAlert';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -161,18 +160,14 @@ const PrepareBridgePage = () => {
     isLoading,
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
-    quotesLastFetchedMs,
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   // If latest quote is expired and user has sufficient balance
   // set activeQuote to undefined to hide stale quotes but keep inputs filled
-  const isQuoteExpired = isQuoteExpiredUtil(
-    isQuoteGoingToRefresh,
-    refreshRate,
-    quotesLastFetchedMs,
-  );
+  const isQuoteExpired = useSelector(getIsQuoteExpired);
+
   const activeQuote =
     isQuoteExpired && !quoteRequest.insufficientBal ? undefined : activeQuote_;
 
@@ -230,6 +225,9 @@ const PrepareBridgePage = () => {
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const millisecondsUntilNextRefresh = useCountdownTimer();
+
+  const [priceImpactAcknowledged, setPriceImpactAcknowledged] = useState(false);
+  useEffect(() => setPriceImpactAcknowledged(false), [activeQuote?.quote]);
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
@@ -729,7 +727,12 @@ const PrepareBridgePage = () => {
               </>
             ) : null}
           </Column>
-
+          {!wasTxDeclined && activeQuote && (
+            <PriceImpactAlert
+              acknowledged={priceImpactAcknowledged}
+              setAcknowledged={setPriceImpactAcknowledged}
+            />
+          )}
           <Row padding={6} paddingTop={activeQuote ? 0 : 6}>
             <Column
               gap={3}
@@ -781,6 +784,7 @@ const PrepareBridgePage = () => {
                     isToOrFromSolana &&
                     !selectedDestinationAccount
                   }
+                  priceImpactAcknowledged={priceImpactAcknowledged}
                 />
                 {activeQuote?.approval && fromAmount && fromToken ? (
                   <Row justifyContent={JustifyContent.center} gap={1}>
