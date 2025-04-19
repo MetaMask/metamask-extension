@@ -264,6 +264,22 @@ export default class Home extends PureComponent {
     } else if (pendingApprovals.length || hasApprovalFlows) {
       console.log('Current pending approvals in home component:', pendingApprovals);
       if (currentSnapInApprovalFlow && pendingApprovals.length > 1) {
+        const installSnapResultApproval = pendingApprovals.find(approval => approval.type === 'wallet_installSnapResult');
+        if (installSnapResultApproval) {
+          const filteredApprovals = pendingApprovals.filter(approval => approval.id !== installSnapResultApproval.id);
+          const reorderedApprovals = [
+            installSnapResultApproval,
+            ...filteredApprovals,
+          ];
+          setCurrentSnapInApprovalFlow(null);
+          navigateToConfirmation(
+            installSnapResultApproval.id,
+            reorderedApprovals,
+            hasApprovalFlows,
+            history,
+          );
+          return;
+        }
         this.setState({ fetchingFreshApprovals: true });
         setCurrentSnapInApprovalFlow(null);
         fetchLatestPendingApprovals().then((latestPendingApprovals) => {
@@ -296,6 +312,7 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
+    console.log('Check status and navigate called from componentDidMount');
     this.checkStatusAndNavigate();
 
     this.props.fetchBuyableChains();
@@ -337,6 +354,7 @@ export default class Home extends PureComponent {
       (isNotification || hasAllowedPopupRedirectApprovals) &&
       !this.state.fetchingFreshApprovals
     ) {
+      console.log('Check status and navigate called from componentDidUpdate');
       this.checkStatusAndNavigate();
     }
   }

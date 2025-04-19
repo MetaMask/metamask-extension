@@ -200,7 +200,14 @@ export function navigateToConfirmation(
       },
       origin: nextConfirmation.origin,
     });
-    history.replace(`${CONNECT_ROUTE}/${confirmationId}`);
+    history.replace(
+      `${CONNECT_ROUTE}/${confirmationId}${
+        (nextConfirmation.requestData?.permissions as Record<string, unknown>)
+          ?.wallet_snap
+          ? '/snaps-connect'
+          : ''
+      }`,
+    );
     return;
   }
 

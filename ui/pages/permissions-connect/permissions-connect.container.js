@@ -130,6 +130,12 @@ const mapStateToProps = (state, ownProps) => {
   } else if (pathname === snapsConnectPath) {
     page = 1;
   } else {
+    console.log('🔍 Permissions connect path:', pathname);
+    console.log('🔍 Permissions connect snapsConnectPath:', snapsConnectPath);
+    console.log(
+      '🔍 Permissions connect permissionsRequestId:',
+      permissionsRequestId,
+    );
     throw new Error('Incorrect path for permissions-connect component');
   }
 
