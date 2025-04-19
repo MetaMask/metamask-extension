@@ -4154,18 +4154,6 @@
   "productAnnouncements": {
     "message": "Ürün duyuruları"
   },
-  "profileSync": {
-    "message": "Profil Senkronizasyonu"
-  },
-  "profileSyncConfirmation": {
-    "message": "Profil senkronizasyonunu açarsanız bildirimleri alamayacaksınız."
-  },
-  "profileSyncDescription": {
-    "message": "MetaMask'in cihazlarınız arasıonda bazı ayarları senkronize etmek için kullandığı bir profil oluşturur. Bildirim almak için bu gereklidir. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Gizliliğinizi nasıl koruduğumuzu öğrenin"
-  },
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"
   },
