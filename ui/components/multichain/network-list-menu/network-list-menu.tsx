@@ -140,7 +140,13 @@ export enum ACTION_MODE {
   ADD_NON_EVM_ACCOUNT,
 }
 
-export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
+const noop = () => undefined;
+
+type NetworkListMenuProps = {
+  onClose: () => void;
+};
+
+export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -518,8 +524,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
-        selected={isCurrentNetwork && !focusSearch}
-        focus={isCurrentNetwork && !focusSearch}
+        selected={
+          process.env.REMOVE_GNS ? false : isCurrentNetwork && !focusSearch
+        }
+        focus={
+          process.env.REMOVE_GNS ? false : isCurrentNetwork && !focusSearch
+        }
         rpcEndpoint={
           hasMultiRpcOptions(network)
             ? getRpcDataByChainId(network.chainId, evmNetworks)
@@ -527,7 +537,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             : undefined
         }
         onClick={async () => {
-          await handleNetworkChange(network.chainId);
+          return process.env.REMOVE_GNS
+            ? noop()
+            : await handleNetworkChange(network.chainId);
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
