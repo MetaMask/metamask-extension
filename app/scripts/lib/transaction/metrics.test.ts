@@ -109,6 +109,7 @@ const mockTransactionMetricsRequest = {
   getMethodData: jest.fn(),
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
   getHDEntropyIndex: jest.fn(),
+  getRemoteFeatureFlags: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -1461,6 +1462,37 @@ describe('Transaction metrics', () => {
       expect(properties).toStrictEqual(
         expect.objectContaining({
           gas_insufficient_native_asset: false,
+        }),
+      );
+    });
+  });
+
+  describe('Transaction hash in metrics', () => {
+    it('adds transaction_hash to properties when feature flag is enabled', async () => {
+      // Create a transaction with a hash
+      const transactionMetaWithHash: TransactionMeta = {
+        ...mockTransactionMeta,
+        hash: '0xabcdef1234567890',
+      };
+
+      // Mock the getRemoteFeatureFlags function
+      mockTransactionMetricsRequest.getRemoteFeatureFlags = jest
+        .fn()
+        .mockReturnValue({
+          transactionsTxHashInAnalytics: true,
+        });
+
+      await handleTransactionAdded(mockTransactionMetricsRequest, {
+        transactionMeta: transactionMetaWithHash,
+        actionId: mockActionId,
+      });
+
+      // Verify transaction_hash was added to properties
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            transaction_hash: '0xabcdef1234567890',
+          }),
         }),
       );
     });

@@ -3215,9 +3215,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "Baca selengkapnya"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "Kami telah memperbarui kebijakan privasi"
-  },
   "newRpcUrl": {
     "message": "URL RPC Baru"
   },
@@ -3589,26 +3586,6 @@
   "onboardingMetametricsAgree": {
     "message": "Saya setuju"
   },
-  "onboardingMetametricsDescription": {
-    "message": "Kami ingin mengumpulkan data penggunaan dasar dan diagnostik untuk meningkatkan MetaMask. Pahami bahwa kami tidak pernah menjual data yang Anda berikan di sini."
-  },
-  "onboardingMetametricsDescription2": {
-    "message": "Saat kami mengumpulkan metrik, maka akan selalu..."
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Kami akan memberitahukan keputusan untuk menggunakan data ini dengan tujuan lain. Anda dapat meninjau $1 kami untuk informasi selengkapnya. Ingat, Anda dapat membuka pengaturan dan memilih keluar setiap saat.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Kebijakan Privasi"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 klik dan tampilan pada aplikasi disimpan, tetapi tidak untuk detail lainnya (seperti alamat publik).",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Pribadi:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 kami menggunakan alamat IP sementara waktu untuk mendeteksi lokasi umum (seperti negara atau wilayah Anda), tetapi alamat tersebut tidak pernah disimpan.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
@@ -3616,15 +3593,8 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Umum:"
   },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 memutuskan jika Anda ingin membagikan atau menghapus data penggunaan melalui pengaturan setiap saat.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsional:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Pelajari cara kami melindungi privasi Anda saat mengumpulkan data penggunaan untuk profil Anda."
   },
   "onboardingMetametricsTitle": {
     "message": "Bantu kami meningkatkan MetaMask"

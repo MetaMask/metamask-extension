@@ -120,22 +120,13 @@ export default function OnboardingMetametrics() {
       >
         {t('onboardingMetametricsTitle')}
       </Text>
-      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
-        {t('onboardingMetametricsDescription')}
-      </Text>
-      <Box paddingTop={2} paddingBottom={2}>
-        <Text
-          color={TextColor.primaryDefault}
-          as="a"
-          href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('onboardingMetametricsPrivacyDescription')}
-        </Text>
-      </Box>
-      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
-        {t('onboardingMetametricsDescription2')}
+
+      <Text
+        marginTop={3}
+        className="onboarding-metametrics__desc"
+        textAlign={TextAlign.Left}
+      >
+        {t('onboardingMetametricsDescriptionNew')}
       </Text>
       <ul>
         <li>
@@ -146,15 +137,22 @@ export default function OnboardingMetametrics() {
               size={IconSize.Sm}
               color={IconColor.successDefault}
             />
-            {t('onboardingMetametricsNeverCollect', [
+            {t('onboardingMetametricsNeverSellDataWithLink', [
               <Text
                 variant={TextVariant.inherit}
-                key="never"
+                key="never-sell"
                 fontWeight={FontWeight.Bold}
-                marginTop={0}
               >
-                {t('onboardingMetametricsNeverCollectEmphasis')}
+                {t('onboardingMetametricsNeverSellDataEmphasis')}
               </Text>,
+              <a
+                href="https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/"
+                target="_blank"
+                rel="noopener noreferrer"
+                key="settings-link"
+              >
+                {t('settingsLowercase')}
+              </a>,
             ])}
           </Box>
         </li>
@@ -177,25 +175,6 @@ export default function OnboardingMetametrics() {
             ])}
           </Box>
         </li>
-        <li>
-          <Box>
-            <Icon
-              marginInlineEnd={2}
-              name={IconName.Check}
-              size={IconSize.Sm}
-              color={IconColor.successDefault}
-            />
-            {t('onboardingMetametricsNeverSellData', [
-              <Text
-                variant={TextVariant.inherit}
-                key="never-sell"
-                fontWeight={FontWeight.Bold}
-              >
-                {t('onboardingMetametricsNeverSellDataEmphasis')}
-              </Text>,
-            ])}
-          </Box>{' '}
-        </li>
       </ul>
       <Checkbox
         id="metametrics-opt-in"
@@ -213,7 +192,7 @@ export default function OnboardingMetametrics() {
         variant={TextVariant.bodySm}
         className="onboarding-metametrics__terms"
       >
-        {t('onboardingMetametricsInfuraTerms', [
+        {t('onboardingMetametricsTerms', [
           <a
             href={
               getPlatform() === PLATFORM_FIREFOX
@@ -224,7 +203,7 @@ export default function OnboardingMetametrics() {
             rel="noopener noreferrer"
             key="privacy-link"
           >
-            {t('onboardingMetametricsInfuraTermsPolicy')}
+            {t('onboardingMetametricsNotice')}
           </a>,
         ])}
       </Text>

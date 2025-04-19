@@ -3215,9 +3215,6 @@
   "newPrivacyPolicyActionButton": {
     "message": "Saiba mais"
   },
-  "newPrivacyPolicyTitle": {
-    "message": "Atualizamos nossa política de privacidade"
-  },
   "newRpcUrl": {
     "message": "URL da nova RPC"
   },
@@ -3589,26 +3586,6 @@
   "onboardingMetametricsAgree": {
     "message": "Concordo"
   },
-  "onboardingMetametricsDescription": {
-    "message": "Gostaríamos de coletar dados básicos de uso para melhorar a MetaMask. Saiba que nunca vendemos os dados que você fornece aqui."
-  },
-  "onboardingMetametricsDescription2": {
-    "message": "Quando coletamos as métricas, elas sempre são..."
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Informaremos a você se decidirmos usar esses dados para outras finalidades. Você pode analisar nossa $1 para obter mais informações. Lembre-se: você pode acessar as configurações e revogar a permissão a qualquer momento.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Política de Privacidade"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 cliques e visualizações no app são armazenados, mas outros detalhes (como seu endereço público) não são.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Privadas:"
-  },
   "onboardingMetametricsNeverCollectIP": {
     "message": "$1 usamos temporariamente o seu endereço IP para detectar uma localização geral (como seu país ou região), mas ele nunca é armazenado.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
@@ -3616,15 +3593,8 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "Gerais:"
   },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 você decide se quer compartilhar ou excluir seus dados de uso nas configurações, a qualquer momento.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionais:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Saiba como protegemos sua privacidade durante a coleta de dados de utilização relacionados ao seu perfil."
   },
   "onboardingMetametricsTitle": {
     "message": "Ajude-nos a melhorar a MetaMask"
