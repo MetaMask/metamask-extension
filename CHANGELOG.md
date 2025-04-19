@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
 - Fix exchange rate lookups on Solana Swap page to prevent crashing when values are undefined ([#32114](https://github.com/MetaMask/metamask-extension/pull/32114))
 
+### Changed
+- Updates the Solana modal by adding a learn more link, UI tweaks, and auto selects a solana account when it exists. ([#32087](https://github.com/MetaMask/metamask-extension/pull/32087))
+
 ## [12.15.2]
 ### Added
 - Add icon image for Lens network ([#31638](https://github.com/MetaMask/metamask-extension/pull/31638))

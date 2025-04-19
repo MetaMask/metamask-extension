@@ -217,6 +217,9 @@ describe('WhatsNewModal', () => {
                 },
               },
             },
+            activeTab: {
+              origin: 'metamask',
+            },
           });
           renderWithProvider(<WhatsNewModal onClose={mockOnClose} />, store);
         });
@@ -232,13 +235,17 @@ describe('WhatsNewModal', () => {
           expect(
             screen.getByText(/More features coming soon/iu),
           ).toBeInTheDocument();
-          expect(screen.getByTestId('got-it-button')).toBeInTheDocument();
+          expect(
+            screen.getByTestId('view-solana-account-button'),
+          ).toBeInTheDocument();
           expect(screen.getByTestId('not-now-button')).toBeInTheDocument();
         });
 
-        it('closes the modal when clicking "Got it"', async () => {
-          const gotItButton = screen.getByTestId('got-it-button');
-          fireEvent.click(gotItButton);
+        it('closes the modal when clicking "View Solana account"', async () => {
+          const viewSolanaAccountButton = screen.getByTestId(
+            'view-solana-account-button',
+          );
+          fireEvent.click(viewSolanaAccountButton);
 
           await waitFor(() => {
             expect(mockOnClose).toHaveBeenCalled();
