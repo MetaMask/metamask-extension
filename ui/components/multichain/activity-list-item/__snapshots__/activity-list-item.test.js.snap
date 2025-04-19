@@ -48,7 +48,7 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
       >
         <span
           class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
-          style="mask-image: url('./images/icons/custody.svg');"
+          style="mask-image: url('./images/icons/accessibility.svg');"
         />
       </div>
       <div
