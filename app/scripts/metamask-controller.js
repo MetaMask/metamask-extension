@@ -14,7 +14,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick, uniq } from 'lodash';
+import { debounce, throttle, memoize, wrap, pick } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -163,7 +163,6 @@ import {
   getSessionScopes,
   setPermittedEthChainIds,
   setEthAccounts,
-  getPermittedAccountsForScopes,
   KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
 
@@ -317,11 +316,8 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
   PermissionNames,
-  getRemovedAuthorizations,
   getChangedAuthorizations,
   getAuthorizedScopesByOrigin,
-  getPermittedAccountsForScopesByOrigin,
-  getOriginsWithSessionProperty,
 } from './controllers/permissions';
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
@@ -408,6 +404,11 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
+import { handlePermissionControllerStateChangeEthSubscription } from './listeners/eth-subscription';
+import {
+  handleAccountsControllerSelectedAccountChangeSolanaAccountChanged,
+  handlePermissionControllerStateChangeSolanaAccountChanged,
+} from './listeners/solana-accountChanged';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2683,217 +2684,8 @@ export default class MetamaskController extends EventEmitter {
       getPermittedAccountsByOrigin,
     );
 
-    // This handles CAIP-25 authorization changes every time relevant permission state
-    // changes, for any reason.
-    if (process.env.MULTICHAIN_API) {
-      // wallet_sessionChanged and eth_subscription setup/teardown
-      this.controllerMessenger.subscribe(
-        `${this.permissionController.name}:stateChange`,
-        async (currentValue, previousValue) => {
-          const changedAuthorizations = getChangedAuthorizations(
-            currentValue,
-            previousValue,
-          );
-
-          const removedAuthorizations = getRemovedAuthorizations(
-            currentValue,
-            previousValue,
-          );
-
-          // remove any existing notification subscriptions for removed authorizations
-          for (const [
-            origin,
-            authorization,
-          ] of removedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization, {
-              getNonEvmSupportedMethods:
-                this.getNonEvmSupportedMethods.bind(this),
-            });
-            // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-            // then remove middleware and unsubscribe
-            Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-              if (
-                scopeObject.notifications.includes('eth_subscription') &&
-                scopeObject.methods.includes('eth_subscribe')
-              ) {
-                this.removeMultichainApiEthSubscriptionMiddleware({
-                  scope,
-                  origin,
-                });
-              }
-            });
-          }
-
-          // add new notification subscriptions for added/changed authorizations
-          for (const [
-            origin,
-            authorization,
-          ] of changedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization, {
-              getNonEvmSupportedMethods:
-                this.getNonEvmSupportedMethods.bind(this),
-            });
-
-            // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-            // then get the subscriptionManager going for that scope
-            Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-              if (
-                scopeObject.notifications.includes('eth_subscription') &&
-                scopeObject.methods.includes('eth_subscribe')
-              ) {
-                // for each tabId
-                Object.values(this.connections[origin]).forEach(({ tabId }) => {
-                  this.addMultichainApiEthSubscriptionMiddleware({
-                    scope,
-                    origin,
-                    tabId,
-                  });
-                });
-              } else {
-                this.removeMultichainApiEthSubscriptionMiddleware({
-                  scope,
-                  origin,
-                });
-              }
-            });
-            this._notifyAuthorizationChange(origin, authorization);
-          }
-        },
-        getAuthorizedScopesByOrigin,
-      );
-
-      // wallet_notify for solana accountChanged when permission changes
-      this.controllerMessenger.subscribe(
-        `${this.permissionController.name}:stateChange`,
-        async (currentValue, previousValue) => {
-          const origins = uniq([
-            ...previousValue.keys(),
-            ...currentValue.keys(),
-          ]);
-          origins.forEach((origin) => {
-            const previousCaveatValue = previousValue.get(origin);
-            const currentCaveatValue = currentValue.get(origin);
-
-            const previousSolanaAccountChangedNotificationsEnabled = Boolean(
-              previousCaveatValue?.sessionProperties?.[
-                KnownSessionProperties.SolanaAccountChangedNotifications
-              ],
-            );
-            const currentSolanaAccountChangedNotificationsEnabled = Boolean(
-              currentCaveatValue?.sessionProperties?.[
-                KnownSessionProperties.SolanaAccountChangedNotifications
-              ],
-            );
-
-            if (
-              !previousSolanaAccountChangedNotificationsEnabled &&
-              !currentSolanaAccountChangedNotificationsEnabled
-            ) {
-              return;
-            }
-
-            const previousSolanaCaipAccountIds = previousCaveatValue
-              ? getPermittedAccountsForScopes(previousCaveatValue, [
-                  MultichainNetworks.SOLANA,
-                  MultichainNetworks.SOLANA_DEVNET,
-                  MultichainNetworks.SOLANA_TESTNET,
-                ])
-              : [];
-            const previousNonUniqueSolanaHexAccountAddresses =
-              previousSolanaCaipAccountIds.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
-            const previousSolanaHexAccountAddresses = uniq(
-              previousNonUniqueSolanaHexAccountAddresses,
-            );
-            const [previousSelectedSolanaAccountAddress] =
-              this.sortMultichainAccountsByLastSelected(
-                previousSolanaHexAccountAddresses,
-              );
-
-            const currentSolanaCaipAccountIds = currentCaveatValue
-              ? getPermittedAccountsForScopes(currentCaveatValue, [
-                  MultichainNetworks.SOLANA,
-                  MultichainNetworks.SOLANA_DEVNET,
-                  MultichainNetworks.SOLANA_TESTNET,
-                ])
-              : [];
-            const currentNonUniqueSolanaHexAccountAddresses =
-              currentSolanaCaipAccountIds.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
-            const currentSolanaHexAccountAddresses = uniq(
-              currentNonUniqueSolanaHexAccountAddresses,
-            );
-            const [currentSelectedSolanaAccountAddress] =
-              this.sortMultichainAccountsByLastSelected(
-                currentSolanaHexAccountAddresses,
-              );
-
-            if (
-              previousSelectedSolanaAccountAddress !==
-              currentSelectedSolanaAccountAddress
-            ) {
-              this._notifySolanaAccountChange(
-                origin,
-                currentSelectedSolanaAccountAddress
-                  ? [currentSelectedSolanaAccountAddress]
-                  : [],
-              );
-            }
-          });
-        },
-        getAuthorizedScopesByOrigin,
-      );
-
-      // wallet_notify for solana accountChanged when selected account changes
-      this.controllerMessenger.subscribe(
-        `${this.accountsController.name}:selectedAccountChange`,
-        async (account) => {
-          if (
-            account.type === SolAccountType.DataAccount &&
-            account.address !== lastSelectedSolanaAccountAddress
-          ) {
-            lastSelectedSolanaAccountAddress = account.address;
-
-            const originsWithSolanaAccountChangedNotifications =
-              getOriginsWithSessionProperty(
-                this.permissionController.state,
-                KnownSessionProperties.SolanaAccountChangedNotifications,
-              );
-
-            // returns a map of origins to permitted solana accounts
-            const solanaAccounts = getPermittedAccountsForScopesByOrigin(
-              this.permissionController.state,
-              [
-                MultichainNetworks.SOLANA,
-                MultichainNetworks.SOLANA_DEVNET,
-                MultichainNetworks.SOLANA_TESTNET,
-              ],
-            );
-
-            if (solanaAccounts.size > 0) {
-              for (const [origin, accounts] of solanaAccounts.entries()) {
-                const parsedSolanaAddresses = accounts.map((caipAccountId) => {
-                  const { address } = parseCaipAccountId(caipAccountId);
-                  return address;
-                });
-
-                if (
-                  parsedSolanaAddresses.includes(account.address) &&
-                  originsWithSolanaAccountChangedNotifications[origin]
-                ) {
-                  this._notifySolanaAccountChange(origin, [account.address]);
-                }
-              }
-            }
-          }
-        },
-      );
-    }
-
+    // This handles updating the EVM selected chain for a dapp when
+    // relevant permission state changes.
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
@@ -2937,6 +2729,90 @@ export default class MetamaskController extends EventEmitter {
       },
       getPermittedChainsByOrigin,
     );
+
+    // This handles CAIP-25 authorization changes every time relevant permission state
+    // changes, for any reason.
+    if (process.env.MULTICHAIN_API) {
+      // wallet_sessionChanged
+      this.controllerMessenger.subscribe(
+        `${this.permissionController.name}:stateChange`,
+        async (currentValue, previousValue) => {
+          const changedAuthorizations = getChangedAuthorizations(
+            currentValue,
+            previousValue,
+          );
+          for (const [
+            origin,
+            authorization,
+          ] of changedAuthorizations.entries()) {
+            this._notifyAuthorizationChange(origin, authorization);
+          }
+        },
+        getAuthorizedScopesByOrigin,
+      );
+
+      // eth_subscription setup/teardown
+      this.controllerMessenger.subscribe(
+        `${this.permissionController.name}:stateChange`,
+        (currentValue, previousValue) => {
+          handlePermissionControllerStateChangeEthSubscription(
+            currentValue,
+            previousValue,
+            {
+              getNonEvmSupportedMethods:
+                this.getNonEvmSupportedMethods.bind(this),
+              removeMultichainApiEthSubscriptionMiddleware:
+                this.removeMultichainApiEthSubscriptionMiddleware.bind(this),
+              addMultichainApiEthSubscriptionMiddleware:
+                this.addMultichainApiEthSubscriptionMiddleware.bind(this),
+            },
+          );
+        },
+        getAuthorizedScopesByOrigin,
+      );
+
+      // wallet_notify for solana accountChanged when permission changes
+      this.controllerMessenger.subscribe(
+        `${this.permissionController.name}:stateChange`,
+        (currentValue, previousValue) => {
+          handlePermissionControllerStateChangeSolanaAccountChanged(
+            currentValue,
+            previousValue,
+            {
+              sortMultichainAccountsByLastSelected:
+                this.sortMultichainAccountsByLastSelected.bind(this),
+              notifySolanaAccountChange:
+                this._notifySolanaAccountChange.bind(this),
+            },
+          );
+        },
+        getAuthorizedScopesByOrigin,
+      );
+
+      // wallet_notify for solana accountChanged when selected account changes
+      this.controllerMessenger.subscribe(
+        `${this.accountsController.name}:selectedAccountChange`,
+        (account) => {
+          handleAccountsControllerSelectedAccountChangeSolanaAccountChanged(
+            account,
+            {
+              sortMultichainAccountsByLastSelected:
+                this.sortMultichainAccountsByLastSelected.bind(this),
+              notifySolanaAccountChange:
+                this._notifySolanaAccountChange.bind(this),
+              permissionControllerState: this.permissionController.state,
+              lastSelectedSolanaAccountAddress,
+            },
+          );
+          if (
+            account.type === SolAccountType.DataAccount &&
+            account.address !== lastSelectedSolanaAccountAddress
+          ) {
+            lastSelectedSolanaAccountAddress = account.address;
+          }
+        },
+      );
+    }
 
     this.controllerMessenger.subscribe(
       'NetworkController:networkRemoved',
@@ -3174,24 +3050,30 @@ export default class MetamaskController extends EventEmitter {
   /**
    * If it does not already exist, creates and inserts middleware to handle eth
    * subscriptions for a particular evm scope on a specific Multichain API
-   * JSON-RPC pipeline by origin and tabId.
+   * JSON-RPC pipeline by origin and optional tabId.
    *
    * @param {object} options - The options object.
    * @param {string} options.scope - The evm scope to handle eth susbcriptions for.
    * @param {string} options.origin - The origin to handle eth subscriptions for.
-   * @param {string} options.tabId - The tabId to handle eth subscriptions for.
+   * @param {string} [options.tabId] - The tabId to handle eth subscriptions for, otherwise all tabIds for the origin.
    */
   addMultichainApiEthSubscriptionMiddleware({ scope, origin, tabId }) {
-    const subscriptionManager = this.multichainSubscriptionManager.subscribe({
-      scope,
-      origin,
-      tabId,
-    });
-    this.multichainMiddlewareManager.addMiddleware({
-      scope,
-      origin,
-      tabId,
-      middleware: subscriptionManager.middleware,
+    const tabIdsForOrigin = Object.values(this.connections[origin]).map(
+      (connection) => connection.tabId,
+    );
+    const tabIds = tabId ? [tabId] : tabIdsForOrigin;
+    tabIds.forEach((tabIdForOrign) => {
+      const subscriptionManager = this.multichainSubscriptionManager.subscribe({
+        scope,
+        origin,
+        tabId: tabIdForOrign,
+      });
+      this.multichainMiddlewareManager.addMiddleware({
+        scope,
+        origin,
+        tabId: tabIdForOrign,
+        middleware: subscriptionManager.middleware,
+      });
     });
   }
 
