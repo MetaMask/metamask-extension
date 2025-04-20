@@ -10,6 +10,10 @@ async function main() {
     REPOSITORY: process.env.REPOSITORY || 'metamask-extension',
     WORKFLOW_ID: process.env.WORKFLOW_ID || 'main.yml',
     BRANCH: process.env.BRANCH || 'main',
+    FROM_DATE:
+      process.env.FROM_DATE ||
+      new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // default: yesterday
+    TO_DATE: process.env.TO_DATE || new Date().toISOString(), // default: today
     SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL || '',
     GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
     GITHUB_ACTIONS: process.env.GITHUB_ACTIONS === 'true',
@@ -18,8 +22,8 @@ async function main() {
   const github = new Octokit({ auth: env.GITHUB_TOKEN });
   const webhook = new IncomingWebhook(env.SLACK_WEBHOOK_URL);
 
-  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const today = new Date();
+  const from = new Date(env.FROM_DATE);
+  const to = new Date(env.TO_DATE);
 
   const runs = await github.paginate(github.rest.actions.listWorkflowRuns, {
     owner: env.OWNER,
@@ -28,7 +32,7 @@ async function main() {
     branch: env.BRANCH,
     event: 'push',
     status: 'failure',
-    created: `${yesterday.toISOString()}..${today.toISOString()}`,
+    created: `${from.toISOString()}..${to.toISOString()}`,
     per_page: 100,
   });
 
@@ -80,25 +84,59 @@ async function main() {
 
   const failedTests = testRuns.flatMap((testRun) =>
     testRun.testSuites.flatMap((testSuite) =>
-      testSuite.testCases.filter((testCase) => testCase.status === 'failed'),
+      testSuite.testCases
+        .filter((testCase) => testCase.status === 'failed')
+        .map((testCase) => ({ ...testCase, path: testSuite.path })),
     ),
   );
 
   const summarizedFailedTests = Object.values(
-    failedTests.reduce<Record<string, { name: string; count: number }>>(
-      (summary, test) => {
-        if (summary[test.name]) {
-          summary[test.name].count += 1;
-        } else {
-          summary[test.name] = { name: test.name, count: 1 };
-        }
-        return summary;
-      },
-      {},
-    ),
+    failedTests.reduce<
+      Record<string, (typeof failedTests)[number] & { count: number }>
+    >((summary, test) => {
+      if (summary[test.name]) {
+        summary[test.name].count += 1;
+      } else {
+        summary[test.name] = { ...test, count: 1 };
+      }
+      return summary;
+    }, {}),
   ).sort((a, b) => b.count - a.count);
 
-  await webhook.send({ text: JSON.stringify(summarizedFailedTests) });
+  const options = { year: 'numeric', month: 'long', day: 'numeric' } as const;
+  const fromDateString = from.toLocaleDateString('en-US', options);
+  const toDateString = to.toLocaleDateString('en-US', options);
+
+  console.log(
+    `❌ Failed tests on the ${env.REPOSITORY} repository ${env.BRANCH} branch from ${fromDateString} to ${toDateString}`,
+  );
+  const lines = [
+    `\n\n:x: Failed tests on the <https://github.com/${env.OWNER}/${env.REPOSITORY}|${env.REPOSITORY}> repository <https://github.com/${env.OWNER}/${env.REPOSITORY}/tree/${env.BRANCH}|${env.BRANCH}> branch from ${fromDateString} to ${toDateString}`,
+  ];
+
+  for (const test of summarizedFailedTests) {
+    const issue = {
+      template: 'general-issue.yml',
+      labels: ['type-bug', 'Sev2-normal', 'flaky tests'].toString(),
+      title: `Flaky test: \`${test.name}\``,
+      description: `\`\`\`js\n${test.error}\n\`\`\``,
+    };
+    const params = new URLSearchParams(issue);
+    console.error(
+      `• ${test.name} failed ${test.count} time${test.count > 1 ? 's' : ''}`,
+    );
+    lines.push(
+      `\n• <https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${
+        env.BRANCH
+      }/${test.path}|${test.name}> failed ${test.count} time${
+        test.count > 1 ? 's' : ''
+      } :arrow_right: <https://github.com/${env.OWNER}/${
+        env.REPOSITORY
+      }/issues/new?${params.toString()}|Create an issue>`,
+    );
+  }
+
+  if (env.SLACK_WEBHOOK_URL) await webhook.send({ text: lines.join('\n') });
 }
 
 main();
