@@ -1,6 +1,10 @@
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withRouter } from 'react-router-dom';
 import { startCase } from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+
 import {
   addUrlProtocolPrefix,
   getEnvironmentType,
@@ -23,6 +27,7 @@ import {
   SECURITY_ALERTS_LEARN_MORE_LINK,
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
+
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   Button,
@@ -54,11 +59,17 @@ import {
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
+import {
+  getTypoDetectionEnabled,
+  getDomainDropCatchingDetectionEnabled,
+  setTypoDetectionEnabled,
+  setDomainDropCatchingDetectionEnabled,
+} from '../../../ducks/domains';
 import MetametricsToggle from './metametrics-toggle';
 import ProfileSyncToggle from './profile-sync-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 
-export default class SecurityTab extends PureComponent {
+class SecurityTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
@@ -105,6 +116,10 @@ export default class SecurityTab extends PureComponent {
     toggleExternalServices: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
+    typoDetectionEnabled: PropTypes.bool.isRequired,
+    setTypoDetectionEnabled: PropTypes.func.isRequired,
+    domainDropCatchingDetectionEnabled: PropTypes.bool.isRequired,
+    setDomainDropCatchingDetectionEnabled: PropTypes.func.isRequired,
   };
 
   state = {
@@ -308,6 +323,94 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={usePhishDetect}
             onToggle={(value) => setUsePhishDetect(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderTypoDetectionToggle() {
+    const { t } = this.context;
+    const { typoDetectionEnabled } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[4]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        marginBottom={4}
+      >
+        <div className="settings-page__content-item">
+          <Text variant={TextVariant.bodyMd}>{t('useTypoDetection')}</Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            as="p"
+            marginTop={1}
+          >
+            {t('useTypoDetectionDescription')}
+          </Text>
+        </div>
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={typoDetectionEnabled}
+            onToggle={(value) =>
+              this.toggleSetting(
+                value,
+                MetaMetricsEventName.TypoDetectionToggled,
+                value ? 'enabled' : 'disabled',
+                this.props.setTypoDetectionEnabled,
+              )
+            }
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderDomainDropCatchingDetectionToggle() {
+    const { t } = this.context;
+    const { domainDropCatchingDetectionEnabled } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[6]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        marginBottom={4}
+      >
+        <div className="settings-page__content-item">
+          <Text variant={TextVariant.bodyMd}>
+            {t('useDomainDropCatchingDetection')}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            as="p"
+            marginTop={1}
+          >
+            {t('useDomainDropCatchingDetectionDescription')}
+          </Text>
+        </div>
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={domainDropCatchingDetectionEnabled}
+            onToggle={(value) =>
+              this.toggleSetting(
+                value,
+                MetaMetricsEventName.DomainDropCatchingDetectionToggled,
+                value ? 'enabled' : 'disabled',
+                this.props.setDomainDropCatchingDetectionEnabled,
+              )
+            }
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -1141,17 +1244,13 @@ export default class SecurityTab extends PureComponent {
   };
 
   render() {
-    const {
-      petnamesEnabled,
-      dataCollectionForMarketing,
-      setDataCollectionForMarketing,
-    } = this.props;
-    const { showDataCollectionDisclaimer } = this.state;
+    const { dataCollectionForMarketing, setDataCollectionForMarketing } =
+      this.props;
 
     return (
       <div className="settings-page__body">
         {this.renderUseExternalServices()}
-        {showDataCollectionDisclaimer
+        {this.state.showDataCollectionDisclaimer
           ? this.renderDataCollectionWarning()
           : null}
         <span className="settings-page__security-tab-sub-header__bold">
@@ -1174,6 +1273,8 @@ export default class SecurityTab extends PureComponent {
         </div>
         <div className="settings-page__content-padded">
           {this.renderPhishingDetectionToggle()}
+          {this.renderTypoDetectionToggle()}
+          {this.renderDomainDropCatchingDetectionToggle()}
         </div>
 
         <div>
@@ -1216,7 +1317,7 @@ export default class SecurityTab extends PureComponent {
           {this.renderNftDetectionToggle()}
         </div>
 
-        {petnamesEnabled && (
+        {this.props.petnamesEnabled && (
           <>
             <span className="settings-page__security-tab-sub-header">
               {this.context.t('settingsSubHeadingSignaturesAndTransactions')}
@@ -1242,3 +1343,23 @@ export default class SecurityTab extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  typoDetectionEnabled: getTypoDetectionEnabled(state),
+  domainDropCatchingDetectionEnabled:
+    getDomainDropCatchingDetectionEnabled(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setTypoDetectionEnabled: (enabled) =>
+    dispatch(setTypoDetectionEnabled(enabled)),
+  setDomainDropCatchingDetectionEnabled: (enabled) =>
+    dispatch(setDomainDropCatchingDetectionEnabled(enabled)),
+});
+
+const SecurityTabComponent = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
+)(SecurityTab);
+
+export default SecurityTabComponent;

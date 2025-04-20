@@ -28,6 +28,9 @@ const initialState = {
   chainId: null,
   domainName: null,
   typoWarning: null,
+  domainDropCatchingWarning: null,
+  typoDetectionEnabled: true,
+  domainDropCatchingDetectionEnabled: true,
 };
 
 export const domainInitialState = initialState;
@@ -43,6 +46,8 @@ const slice = createSlice({
       state.warning = 'loading';
       state.error = null;
       state.typoWarning = null;
+      state.domainDropCatchingWarning = null;
+      state.resolutions = null;
     },
     lookupEnd: (state, action) => {
       // first clear out the previous state
@@ -51,7 +56,8 @@ const slice = createSlice({
       state.warning = null;
       state.domainName = null;
       state.typoWarning = null;
-      const { resolutions, domainName, typoWarning } = action.payload;
+      state.domainDropCatchingWarning = null;
+      const { resolutions, domainName } = action.payload;
       const filteredResolutions = resolutions.filter((resolution) => {
         return (
           resolution.resolvedAddress !== BURN_ADDRESS &&
@@ -63,8 +69,13 @@ const slice = createSlice({
       } else if (domainName.length > 0) {
         state.error = NO_RESOLUTION_FOR_DOMAIN;
       }
-      if (typoWarning) {
-        state.typoWarning = typoWarning;
+
+      if (action.payload.typoWarning) {
+        state.typoWarning = action.payload.typoWarning;
+      }
+      if (action.payload.domainDropCatchingWarning) {
+        state.domainDropCatchingWarning =
+          action.payload.domainDropCatchingWarning;
       }
     },
     enableDomainLookup: (state, action) => {
@@ -78,6 +89,14 @@ const slice = createSlice({
       state.resolutions = null;
       state.warning = null;
       state.error = null;
+      state.typoWarning = null;
+      state.domainDropCatchingWarning = null;
+    },
+    setTypoDetectionEnabled: (state, action) => {
+      state.typoDetectionEnabled = action.payload;
+    },
+    setDomainDropCatchingDetectionEnabled: (state, action) => {
+      state.domainDropCatchingDetectionEnabled = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -92,9 +111,20 @@ const slice = createSlice({
 const { reducer, actions } = slice;
 export default reducer;
 
-const { lookupStart, lookupEnd, enableDomainLookup, resetDomainResolution } =
-  actions;
-export { resetDomainResolution };
+const {
+  lookupStart,
+  lookupEnd,
+  enableDomainLookup,
+  resetDomainResolution,
+  setTypoDetectionEnabled,
+  setDomainDropCatchingDetectionEnabled,
+} = actions;
+
+export {
+  resetDomainResolution,
+  setTypoDetectionEnabled,
+  setDomainDropCatchingDetectionEnabled,
+};
 
 export function initializeDomainSlice() {
   return (dispatch, getState) => {
@@ -182,88 +212,86 @@ export async function fetchResolutions({ domain, chainId, state }) {
   return filteredResults;
 }
 
-// Helper function to check if two strings differ by one character
-function isOneCharDifferent(str1, str2) {
-  if (Math.abs(str1.length - str2.length) > 1) {
-    return false;
+function levenshteinTwoMatrixRows(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+
+  let prevRow = new Array(n + 1).fill(0);
+  const currRow = new Array(n + 1).fill(0);
+
+  for (let j = 0; j <= n; j++) {
+    prevRow[j] = j;
   }
+  for (let i = 1; i <= m; i++) {
+    currRow[0] = i;
 
-  let differences = 0;
-  const maxLength = Math.max(str1.length, str2.length);
-
-  for (let i = 0; i < maxLength; i++) {
-    if (str1[i] !== str2[i]) {
-      differences += 1;
-      if (differences > 1) {
-        return false;
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        currRow[j] = prevRow[j - 1];
+      } else {
+        currRow[j] = 1 + Math.min(currRow[j - 1], prevRow[j], prevRow[j - 1]);
       }
+    }
+    prevRow = [...currRow];
+  }
+  return currRow[n];
+}
+
+// Function to check for typos
+function checkForTypos(domain, storedDomains, typoDetectionEnabled) {
+  if (
+    !storedDomains ||
+    !Array.isArray(storedDomains) ||
+    !typoDetectionEnabled
+  ) {
+    return null;
+  }
+  const TYPO_THRESHOLD = 2;
+
+  for (const stored of storedDomains) {
+    const distance = levenshteinTwoMatrixRows(
+      domain.toLowerCase(),
+      stored.ensName.toLowerCase(),
+    );
+
+    if (distance <= TYPO_THRESHOLD && stored.ensName !== domain) {
+      return {
+        warning: `Warning: "${domain}" might be a typo of "${stored.ensName}"`,
+        suggestedDomain: stored.ensName,
+      };
     }
   }
 
-  return differences === 1;
+  return null;
 }
 
-// Helper function to check if two characters are adjacent on a QWERTY keyboard
-function areAdjacentOnKeyboard(char1, char2) {
-  const keyboardLayout = {
-    q: ['w', 'a', 's'],
-    w: ['q', 'e', 'a', 's', 'd'],
-    e: ['w', 'r', 's', 'd', 'f'],
-    r: ['e', 't', 'd', 'f', 'g'],
-    t: ['r', 'y', 'f', 'g', 'h'],
-    y: ['t', 'u', 'g', 'h', 'j'],
-    u: ['y', 'i', 'h', 'j', 'k'],
-    i: ['u', 'o', 'j', 'k', 'l'],
-    o: ['i', 'p', 'k', 'l'],
-    p: ['o', 'l'],
-    a: ['q', 'w', 's', 'z'],
-    s: ['q', 'w', 'e', 'a', 'd', 'z', 'x'],
-    d: ['w', 'e', 'r', 's', 'f', 'x', 'c'],
-    f: ['e', 'r', 't', 'd', 'g', 'c', 'v'],
-    g: ['r', 't', 'y', 'f', 'h', 'v', 'b'],
-    h: ['t', 'y', 'u', 'g', 'j', 'b', 'n'],
-    j: ['y', 'u', 'i', 'h', 'k', 'n', 'm'],
-    k: ['u', 'i', 'o', 'j', 'l', 'm'],
-    l: ['i', 'o', 'p', 'k'],
-    z: ['a', 's', 'x'],
-    x: ['z', 's', 'd', 'c'],
-    c: ['x', 'd', 'f', 'v'],
-    v: ['c', 'f', 'g', 'b'],
-    b: ['v', 'g', 'h', 'n'],
-    n: ['b', 'h', 'j', 'm'],
-    m: ['n', 'j', 'k'],
-  };
-
-  return (
-    keyboardLayout[char1.toLowerCase()]?.includes(char2.toLowerCase()) ||
-    keyboardLayout[char2.toLowerCase()]?.includes(char1.toLowerCase())
-  );
-}
-
-// Function to check for potential typos
-function checkForTypos(domain, storedDomains) {
-  if (!storedDomains || !Array.isArray(storedDomains)) {
+// Function to check for domain drop catching
+function checkForDomainDropCatching(
+  domain,
+  resolvedAddress,
+  domainDropCatchingDetectionEnabled,
+) {
+  if (!domain || !resolvedAddress || !domainDropCatchingDetectionEnabled) {
     return null;
   }
 
-  for (const stored of storedDomains) {
-    if (isOneCharDifferent(domain, stored.ensName)) {
-      // Check if the difference is due to adjacent keyboard keys
-      const diffIndex = Array.from(domain).findIndex(
-        (char, i) => char !== stored.ensName[i],
-      );
-      if (
-        diffIndex !== -1 &&
-        areAdjacentOnKeyboard(domain[diffIndex], stored.ensName[diffIndex])
-      ) {
-        return {
-          warning: `Warning: "${domain}" might be a typo of "${stored.ensName}" (adjacent keys on keyboard)`,
-          suggestedDomain: stored.ensName,
-          resolvedAddress: stored.resolvedAddress,
-          lastUpdated: stored.lastUpdated,
-        };
-      }
+  try {
+    const storedDomains = JSON.parse(
+      window.localStorage.getItem('ensAndResolvedAddresses') || '[]',
+    );
+
+    const existingDomain = storedDomains.find(
+      (stored) => stored.ensName.toLowerCase() === domain.toLowerCase(),
+    );
+
+    if (existingDomain && existingDomain.resolvedAddress !== resolvedAddress) {
+      return {
+        warning: 'Domain drop catching warning',
+        message: `The address for this domain has changed. Please verify the new address.`,
+      };
     }
+  } catch (e) {
+    console.error('Error checking for domain drop catching:', e);
   }
 
   return null;
@@ -271,55 +299,58 @@ function checkForTypos(domain, storedDomains) {
 
 export function lookupDomainName(domainName) {
   return async (dispatch, getState) => {
-    const trimmedDomainName = domainName.trim();
+    const trimmed = domainName.trim();
+
     let state = getState();
     if (state[name].stage === 'UNINITIALIZED') {
       await dispatch(initializeDomainSlice());
+      state = getState();
     }
-    await dispatch(lookupStart(trimmedDomainName));
+
+    await dispatch(lookupStart(trimmed));
     state = getState();
-    log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
+    log.info(`Starting ENS lookup for "${trimmed}"`);
     let error;
-    const chainId = getCurrentChainId(state);
-    const chainIdInt = parseInt(chainId, 16);
+    let typoWarning = null;
+    let domainDropCatchingWarning = null;
+
+    const currentChainHex = getCurrentChainId(state);
+    const chainInt = parseInt(currentChainHex, 16);
     const resolutions = await fetchResolutions({
-      domain: trimmedDomainName,
-      chainId: `eip155:${chainIdInt}`,
+      domain: trimmed,
+      chainId: `eip155:${chainInt}`,
       state,
     });
 
-    // Check for potential typos in stored domains
-    let typoWarning = null;
-    try {
-      const storedDomains = JSON.parse(
+    if (resolutions.length > 0) {
+      const stored = JSON.parse(
         window.localStorage.getItem('ensAndResolvedAddresses') || '[]',
       );
-      typoWarning = checkForTypos(trimmedDomainName, storedDomains);
-
-      // If we have a typo warning and a lastUpdated timestamp, include a human-readable date
-      if (typoWarning && typoWarning.lastUpdated) {
-        const date = new Date(typoWarning.lastUpdated);
-        typoWarning.warning += ` (Last used: ${date.toLocaleDateString()})`;
+      const cs = getState();
+      if (getTypoDetectionEnabled(cs)) {
+        typoWarning = checkForTypos(trimmed, stored, true);
       }
-    } catch (e) {
-      log.error('Error checking for typos:', e);
+      if (getDomainDropCatchingDetectionEnabled(cs)) {
+        domainDropCatchingWarning = checkForDomainDropCatching(
+          trimmed,
+          resolutions[0].resolvedAddress,
+          true,
+        );
+      }
     }
 
-    // Due to the asynchronous nature of looking up domains, we could reach this point
-    // while a new lookup has started, if so we don't use the found result.
     state = getState();
-    if (trimmedDomainName !== state[name].domainName) {
+    if (state[name].domainName !== trimmed) {
       return;
     }
 
-    await dispatch(
+    dispatch(
       lookupEnd({
+        domainName: trimmed,
         resolutions,
         error,
-        chainId,
-        network: chainIdInt,
-        domainName: trimmedDomainName,
         typoWarning,
+        domainDropCatchingWarning,
       }),
     );
   };
@@ -339,4 +370,16 @@ export function getDomainWarning(state) {
 
 export function getDomainTypoWarning(state) {
   return state[name].typoWarning;
+}
+
+export function getTypoDetectionEnabled(state) {
+  return state[name].typoDetectionEnabled;
+}
+
+export function getDomainDropCatchingWarning(state) {
+  return state[name].domainDropCatchingWarning;
+}
+
+export function getDomainDropCatchingDetectionEnabled(state) {
+  return state[name].domainDropCatchingDetectionEnabled;
 }

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
@@ -13,6 +13,8 @@ import {
   getDomainResolutions,
   getDomainWarning,
   getDomainTypoWarning,
+  getDomainDropCatchingWarning,
+  resetDomainResolution,
 } from '../../../../../ducks/domains';
 import {
   BannerAlert,
@@ -26,10 +28,16 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { DomainInputResolutionCell } from './domain-input-resolution-cell';
-import { SendPageAddressBook, SendPageYourAccounts } from '.';
+import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 
 const CONTACTS_TAB_KEY = 'contacts';
 const ACCOUNTS_TAB_KEY = 'accounts';
+
+type WarningObject = {
+  type?: string;
+  message?: string;
+  [key: string]: unknown;
+};
 
 export const SendPageRecipient = () => {
   const t = useContext(I18nContext);
@@ -43,11 +51,16 @@ export const SendPageRecipient = () => {
   const domainError = useSelector(getDomainError);
   const domainWarning = useSelector(getDomainWarning);
   const typoWarning = useSelector(getDomainTypoWarning);
+  const domainDropCatchingWarning = useSelector(getDomainDropCatchingWarning);
 
   const showErrorBanner =
     domainError || (recipient.error && recipient.error !== 'required');
   const showWarningBanner =
-    !showErrorBanner && (domainWarning || recipient.warning || typoWarning);
+    !showErrorBanner &&
+    (domainWarning ||
+      recipient.warning ||
+      typoWarning ||
+      domainDropCatchingWarning);
 
   type DomainResolution = {
     resolvedAddress: string;
@@ -125,46 +138,80 @@ export const SendPageRecipient = () => {
         }
         onTabClick={() => null}
       >
-        {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          <Tab tabKey={ACCOUNTS_TAB_KEY} name={t('yourAccounts')}>
-            <SendPageYourAccounts />
-          </Tab>
-        }
-        {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          <Tab
-            tabKey={CONTACTS_TAB_KEY}
-            name={t('contacts')}
-            data-testid="send-contacts-tab"
-          >
-            <SendPageAddressBook />
-          </Tab>
-        }
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
+        <Tab tabKey={ACCOUNTS_TAB_KEY} name={t('yourAccounts')}>
+          <SendPageYourAccounts />
+        </Tab>
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
+        <Tab
+          tabKey={CONTACTS_TAB_KEY}
+          name={t('contacts')}
+          data-testid="send-contacts-tab"
+        >
+          <SendPageAddressBook />
+        </Tab>
       </Tabs>
     );
   }
 
+  const getWarningTitle = (warning: string | WarningObject): string => {
+    if (typeof warning === 'string') {
+      return warning;
+    }
+    return warning.message || warning.type || 'Warning';
+  };
+
+  useEffect(() => {
+    dispatch(resetDomainResolution());
+  }, [dispatch]);
   return (
     <Box>
-      {showErrorBanner && (
-        <BannerAlert
-          severity={BannerAlertSeverity.Danger}
-          title={domainError || recipient.error}
-        />
-      )}
+      {showErrorBanner ? (
+        <SendPageRow>
+          <BannerAlert
+            severity={BannerAlertSeverity.Danger}
+            data-testid="send-recipient-error"
+          >
+            {t(domainError ?? recipient.error)}
+          </BannerAlert>
+        </SendPageRow>
+      ) : null}
       {showWarningBanner && (
-        <BannerAlert
-          severity={BannerAlertSeverity.Warning}
-          title={typoWarning?.warning || domainWarning || recipient.warning}
-          description={
-            typoWarning?.suggestedDomain
-              ? `Consider using: ${typoWarning.suggestedDomain}`
-              : undefined
-          }
-        />
+        <>
+          {typoWarning && (
+            <SendPageRow>
+              <BannerAlert
+                severity={BannerAlertSeverity.Warning}
+                title={typoWarning.warning}
+                description={
+                  typoWarning.suggestedDomain
+                    ? `Consider using: ${typoWarning.suggestedDomain}`
+                    : undefined
+                }
+              />
+            </SendPageRow>
+          )}
+          {domainDropCatchingWarning && (
+            <SendPageRow>
+              <BannerAlert
+                severity={BannerAlertSeverity.Warning}
+                title={t('domainAddressChanged')}
+                description={
+                  domainDropCatchingWarning.message ||
+                  t('theAddressForThisDomainHasChangedPleaseVerify')
+                }
+              />
+            </SendPageRow>
+          )}
+          {recipient.warning && !typoWarning && !domainDropCatchingWarning && (
+            <BannerAlert
+              severity={BannerAlertSeverity.Warning}
+              title={getWarningTitle(recipient.warning)}
+            />
+          )}
+        </>
       )}
       <Box className="multichain-send-page__recipient">{contents}</Box>
     </Box>

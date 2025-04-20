@@ -6123,6 +6123,12 @@
   "use4ByteResolution": {
     "message": "Decode smart contracts"
   },
+  "useDomainDropCatchingDetection": {
+    "message": "Use domain drop catching detection"
+  },
+  "useDomainDropCatchingDetectionDescription": {
+    "message": "Display a warning for domains that may have been recently expired and re-registered (potential drop catching)."
+  },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
   },
@@ -6153,6 +6159,12 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
+  },
+  "useTypoDetection": {
+    "message": "Use typo detection"
+  },
+  "useTypoDetectionDescription": {
+    "message": "Display a warning if the entered domain is potentially a typo of a previously used domain."
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
