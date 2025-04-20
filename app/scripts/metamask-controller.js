@@ -688,6 +688,10 @@ export default class MetamaskController extends EventEmitter {
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
+      getBlockTrackerOptions: () => ({
+        pollingInterval: 20 * SECOND,
+        retryTimeout: 20 * SECOND,
+      }),
       getRpcServiceOptions: () => ({
         fetch: globalThis.fetch.bind(globalThis),
         btoa: globalThis.btoa.bind(globalThis),
@@ -1853,12 +1857,14 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // Initialize RemoteFeatureFlagController
-    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
-      messenger: this.controllerMessenger.getRestricted({
+    const remoteFeatureFlagControllerMessenger =
+      this.controllerMessenger.getRestricted({
         name: 'RemoteFeatureFlagController',
         allowedActions: [],
         allowedEvents: [],
-      }),
+      });
+    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
+      messenger: remoteFeatureFlagControllerMessenger,
       fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
       disabled: !this.preferencesController.state.useExternalServices,
       getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
@@ -1872,6 +1878,27 @@ export default class MetamaskController extends EventEmitter {
         },
       }),
     });
+    remoteFeatureFlagControllerMessenger.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (isRpcFailoverEnabled) => {
+        if (isRpcFailoverEnabled) {
+          console.log(
+            '[RemoteFeatureFlagController:stateChange] isRpcFailoverEnabled = ',
+            isRpcFailoverEnabled,
+            ', enabling RPC failover',
+          );
+          this.networkController.enableRpcFailover();
+        } else {
+          console.log(
+            '[RemoteFeatureFlagController:stateChange] isRpcFailoverEnabled = ',
+            isRpcFailoverEnabled,
+            ', disabling RPC failover',
+          );
+          this.networkController.disableRpcFailover();
+        }
+      },
+      (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
+    );
 
     const existingControllers = [
       this.networkController,
