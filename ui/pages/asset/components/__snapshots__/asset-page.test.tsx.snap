@@ -32,7 +32,7 @@ exports[`AssetPage should render a native asset 1`] = `
       class="mm-box mm-box--margin-top-4"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly mm-box--width-full"
       >
         <button
           class="icon-button coin-overview__button"
