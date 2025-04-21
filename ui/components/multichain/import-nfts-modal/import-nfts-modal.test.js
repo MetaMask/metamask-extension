@@ -42,6 +42,7 @@ jest.mock('../../../store/actions.ts', () => ({
   updateNftDropDownState: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
+  hideImportNftsModal: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
 describe('ImportNftsModal', () => {

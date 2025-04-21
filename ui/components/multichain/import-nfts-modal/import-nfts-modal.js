@@ -212,7 +212,10 @@ export const ImportNftsModal = ({ onClose }) => {
         <ModalContent>
           <ModalHeader
             onBack={() => setActionMode(ACTION_MODES.IMPORT_NFT)}
-            onClose={onClose}
+            onClose={() => {
+              onClose();
+              history.push();
+            }}
           >
             <Text variant={TextVariant.headingSm} align={TextAlign.Center}>
               {t('networkMenuHeading')}
@@ -275,6 +278,7 @@ export const ImportNftsModal = ({ onClose }) => {
         <ModalHeader
           onClose={() => {
             onClose();
+            history.push(DEFAULT_ROUTE);
           }}
         >
           {t('importNFT')}
@@ -393,7 +397,10 @@ export const ImportNftsModal = ({ onClose }) => {
         >
           <ButtonSecondary
             size={ButtonSecondarySize.Lg}
-            onClick={() => onClose()}
+            onClick={() => {
+              onClose();
+              history.push(DEFAULT_ROUTE);
+            }}
             block
             className="import-nfts-modal__cancel-button"
           >
