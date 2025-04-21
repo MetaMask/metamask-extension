@@ -396,4 +396,45 @@ describe('NetworkListMenu', () => {
       expect(queryByText('Sepolia')).not.toBeInTheDocument();
     });
   });
+
+  describe('NetworkListMenu with REMOVE_GNS enabled', () => {
+    beforeEach(() => {
+      process.env.REMOVE_GNS = '1';
+    });
+
+    afterEach(() => {
+      delete process.env.REMOVE_GNS;
+    });
+
+    it('should not switch networks when clicking network items', () => {
+      const { getByText } = render();
+      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+
+      expect(mockToggleNetworkMenu).not.toHaveBeenCalled();
+      expect(mockSetActiveNetwork).not.toHaveBeenCalled();
+      expect(mockUpdateCustomNonce).not.toHaveBeenCalled();
+      expect(mockSetNextNonce).not.toHaveBeenCalled();
+      expect(mockDetectNfts).not.toHaveBeenCalled();
+    });
+
+    it('should not show any networks as selected', () => {
+      render();
+      const selectedNodes = document.querySelectorAll(
+        '.multichain-network-list-item--selected',
+      );
+      expect(selectedNodes).toHaveLength(0);
+    });
+
+    it('should still allow searching networks even when switching is disabled', () => {
+      const { getByPlaceholderText, queryByText } = render();
+
+      const searchBox = getByPlaceholderText('Search');
+      fireEvent.focus(searchBox);
+      fireEvent.change(searchBox, { target: { value: 'Main' } });
+
+      // Search should still work
+      expect(queryByText(MAINNET_DISPLAY_NAME)).toBeInTheDocument();
+      expect(queryByText('Chain 5')).not.toBeInTheDocument();
+    });
+  });
 });

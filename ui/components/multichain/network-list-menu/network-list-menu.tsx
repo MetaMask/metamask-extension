@@ -140,8 +140,6 @@ export enum ACTION_MODE {
   ADD_NON_EVM_ACCOUNT,
 }
 
-const noop = () => undefined;
-
 type NetworkListMenuProps = {
   onClose: () => void;
 };
@@ -537,9 +535,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
             : undefined
         }
         onClick={async () => {
-          return process.env.REMOVE_GNS
-            ? noop()
-            : await handleNetworkChange(network.chainId);
+          if (!process.env.REMOVE_GNS) {
+            await handleNetworkChange(network.chainId);
+          }
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
