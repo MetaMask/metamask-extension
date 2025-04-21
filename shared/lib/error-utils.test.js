@@ -58,7 +58,7 @@ describe('Error utils Tests', function () {
     };
 
     fetchLocale.mockReturnValue(mockStore.localeMessages.current);
-    const errorHtml = await getErrorHtml(
+    const errorHtml = getErrorHtml(
       'troubleStarting',
       SUPPORT_LINK,
       mockStore.metamask,

@@ -1,55 +1,47 @@
 import log from 'loglevel';
 import { escape as lodashEscape } from 'lodash';
+import { SUPPORT_LINK, VAULT_RECOVERY_LINK } from './ui-utils';
 import {
-  SUPPORT_LINK,
-  VAULT_RECOVERY_LINK,
-} from '../../../shared/lib/ui-utils';
-import {
+  ErrorLike,
+  TranslateFunction,
   getErrorHtmlBase,
-  getLocaleContext,
-  setupLocale,
-} from '../../../shared/lib/error-utils';
+  getLocaleContextFromLocale,
+} from './error-utils';
 import {
   MISSING_VAULT_ERROR,
   CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
-} from '../../../shared/constants/errors';
-import { switchDirectionForPreferredLocale } from '../../../shared/lib/switch-direction';
-import getFirstPreferredLangCode from './get-first-preferred-lang-code';
+} from '../constants/errors';
+import { switchDirectionForLocale } from './switch-direction';
 
-export type ErrorLike = {
-  message: string;
-  name: string;
-  stack?: string;
-};
-
+/**
+ * State corruption error RPC method name
+ */
 export const METHOD_DISPLAY_STATE_CORRUPTION_ERROR =
   'displayStateCorruptionError';
 
+/**
+ * State corruption error types
+ */
 export const KNOWN_STATE_CORRUPTION_ERRORS = new Set([
   MISSING_VAULT_ERROR,
   CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
 ]);
 
-export async function getStateCorruptionErrorHtml(
+/**
+ * Get the HTML for a state corruption error message.
+ *
+ * @param vaultRecoveryLink - The link for vault recovery
+ * @param t - Translation function
+ * @param supportLink - Optional support link
+ * @returns The HTML string for the error message
+ */
+export function getStateCorruptionErrorHtml(
   vaultRecoveryLink: string,
-  currentLocale?: string,
+  t: TranslateFunction,
   supportLink?: string,
 ) {
-  let response, preferredLocale: string;
-  if (currentLocale) {
-    preferredLocale = currentLocale;
-    response = await setupLocale(currentLocale);
-  } else {
-    preferredLocale = await getFirstPreferredLangCode();
-    response = await setupLocale(preferredLocale);
-  }
-
-  switchDirectionForPreferredLocale(preferredLocale);
-  const { currentLocaleMessages, enLocaleMessages } = response;
-  const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
-
   const header = `<p>
-      ${t('stateCorruptionDetectedErrorMessage')}
+      ${lodashEscape(t('stateCorruptionDetectedErrorMessage'))}
     </p>
     <p>
       <a
@@ -82,16 +74,28 @@ export async function getStateCorruptionErrorHtml(
   `);
 }
 
+/**
+ * Display a state corruption error message in the given container.
+ *
+ * @param container - The HTML element to display the error in
+ * @param error - The error object containing error details
+ * @param currentLocale - The current locale for translation
+ */
 export async function displayStateCorruptionError(
   container: HTMLElement,
-  err: ErrorLike,
+  error: ErrorLike,
   currentLocale?: string,
 ) {
-  const html = await getStateCorruptionErrorHtml(
+  const { translate, locale } = await getLocaleContextFromLocale(currentLocale);
+  switchDirectionForLocale(locale);
+
+  const html = getStateCorruptionErrorHtml(
     VAULT_RECOVERY_LINK,
-    currentLocale,
+    translate,
     SUPPORT_LINK,
   );
   container.innerHTML = html;
-  log.error(err);
+
+  log.error(error.stack);
+  throw error;
 }

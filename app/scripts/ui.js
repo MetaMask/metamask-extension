@@ -29,12 +29,13 @@ import {
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
-import { getErrorHtml } from '../../shared/lib/error-utils';
+import { getLocaleContextFromLocale, getErrorHtml } from '../../shared/lib/error-utils';
+import { switchDirectionForLocale } from '../../shared/lib/switch-direction';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   displayStateCorruptionError,
-} from './lib/state-corruption-errors';
+} from '../../shared/lib/state-corruption-errors';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -140,7 +141,7 @@ async function start() {
   }
 
   /**
-   * @typedef {import('./lib/state-corruption-errors').ErrorLike} ErrorLike
+   * @typedef {import('../../shared/lib/error-utils').ErrorLike} ErrorLike
    */
 
   /**
@@ -349,19 +350,26 @@ async function initializeUi(activeTab, connectionStream, traceContext) {
   });
 }
 
-async function displayCriticalError(errorKey, err, metamaskState) {
-  const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState);
+/**
+ *
+ * @param {string} errorKey - The error key to be displayed
+ * @param {ErrorLike} error - The error object to be displayed
+ * @param {string} [locale] - The locale to be used for translation
+ */
+async function displayCriticalError(errorKey, error, locale) {
+  const { translate, locale} = await getLocaleContextFromLocale(locale);
+  switchDirectionForLocale(locale);
 
+  const html = getErrorHtml(errorKey, SUPPORT_LINK, translate);
   container.innerHTML = html;
 
-  const button = document.getElementById('critical-error-button');
-
+  const button = container.querySelector('#critical-error-button');
   button?.addEventListener('click', (_) => {
     browser.runtime.reload();
   });
 
-  log.error(err.stack);
-  throw err;
+  log.error(error.stack);
+  throw error;
 }
 
 /**

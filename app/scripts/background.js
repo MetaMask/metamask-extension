@@ -52,7 +52,7 @@ import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   KNOWN_STATE_CORRUPTION_ERRORS,
-} from './lib/state-corruption-errors';
+} from '../../shared/lib/state-corruption-errors';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -433,7 +433,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
 
       const port = args[0];
       try {
-        // send the `error` TO THE ui
+        // send the `error` to the UI
         port.postMessage({
           data: {
             method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
@@ -443,6 +443,8 @@ browser.runtime.onConnect.addListener(async (...args) => {
                 name: error.name,
                 stack: error.stack,
               },
+              // we want to to try to show the user an error message using their
+              // preferred locale
               currentLocale: _state?.data?.PreferencesController?.currentLocale,
             },
           },

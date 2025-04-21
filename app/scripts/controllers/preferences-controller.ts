@@ -21,6 +21,7 @@ import {
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { getDirectionForPreferredLocale } from '../../../shared/lib/switch-direction';
 
 type AccountIdentityEntry = {
   address: string;
@@ -727,12 +728,10 @@ export class PreferencesController extends BaseController<
   /**
    * Setter for the `currentLocale` property
    *
-   * @param key - he preferred language locale key
+   * @param key - the preferred language locale key
    */
   setCurrentLocale(key: string): string {
-    const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(key)
-      ? 'rtl'
-      : 'auto';
+    const textDirection = getDirectionForPreferredLocale(key);
     this.update((state) => {
       state.currentLocale = key;
       state.textDirection = textDirection;
