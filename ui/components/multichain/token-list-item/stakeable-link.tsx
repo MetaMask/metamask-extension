@@ -77,7 +77,7 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
       </Text>
       <Icon
         name={IconName.Stake}
-        size={IconSize.Sm}
+        size={IconSize.Xs}
         color={IconColor.primaryDefault}
       />
     </Box>
