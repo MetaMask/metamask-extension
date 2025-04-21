@@ -4,15 +4,21 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonVariant,
   ButtonSize,
   Text,
   Icon,
   IconName,
   IconSize,
-  Tag,
 } from '../../../../components/component-library';
 import Tooltip from '../../../../components/ui/tooltip';
 import UnitInput from '../../../../components/ui/unit-input';
@@ -34,6 +40,13 @@ import {
 import Card from '../../../../components/ui/card';
 import { AccountPicker } from '../../../../components/multichain/account-picker';
 import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
+import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../../../components/multichain/pages/page';
+
 import { SwapAllowance, TokenSymbol, ToTokenOption } from '../../remote.types';
 import {
   DEFAULT_ROUTE,
@@ -43,25 +56,15 @@ import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
 import RemoteModeSwapAllowanceCard from '../swap-allowance-card';
 import StepIndicator from '../step-indicator/step-indicator.component';
+import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
+
+import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
+import {
+  getSelectedInternalAccount,
+  getMetaMaskAccountsOrdered,
+} from '../../../../selectors';
 
 const TOTAL_STEPS = 3;
-
-// example account
-const account: InternalAccount = {
-  address: '0x12C7e...q135f',
-  type: 'eip155:eoa',
-  id: '1',
-  options: {},
-  metadata: {
-    name: 'Hardware Lockbox',
-    importTime: 1717334400,
-    keyring: {
-      type: 'eip155',
-    },
-  },
-  scopes: [],
-  methods: [],
-};
 
 /**
  * A multi-step setup component for configuring swaps in remote mode
@@ -70,15 +73,9 @@ const account: InternalAccount = {
  * - Configure swap allowances
  * - Review and confirm changes (including EOA upgrade)
  *
- * @param props - Component props
- * @param [props.accounts] - List of available accounts, defaults to example account (which may not be needed)
  * @returns The rendered component
  */
-export default function RemoteModeSetupSwaps({
-  accounts = [account],
-}: {
-  accounts?: InternalAccount[];
-}) {
+export default function RemoteModeSetupSwaps() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -92,10 +89,28 @@ export default function RemoteModeSetupSwaps({
   const [dailyLimit, setDailyLimit] = useState<string>('');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
+  const [selectedAccount, setSelectedAccount] =
+    useState<InternalAccount | null>(null);
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
+
+  const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
+  const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
+    getMetaMaskAccountsOrdered,
+  );
 
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  useEffect(() => {
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+  }, [selectedHardwareAccount]);
+
+  useEffect(() => {
+    if (authorizedAccounts.length > 0) {
+      setSelectedAccount(authorizedAccounts[0]);
+    }
+  }, [authorizedAccounts]);
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
@@ -154,6 +169,10 @@ export default function RemoteModeSetupSwaps({
     history.replace(REMOTE_ROUTE);
   };
 
+  const onCancel = () => {
+    history.goBack();
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -161,10 +180,14 @@ export default function RemoteModeSetupSwaps({
           <Box width={BlockSize.Full}>
             {isModalOpen && (
               <AccountListMenu
-                onClose={() => {
-                  setIsModalOpen(false);
-                }}
+                onClose={() => setIsModalOpen(false)}
                 showAccountCreation={false}
+                accountListItemProps={{
+                  onClick: (account: InternalAccount) => {
+                    setSelectedAccount(account);
+                    setIsModalOpen(false);
+                  },
+                }}
               />
             )}
             <Card
@@ -192,13 +215,15 @@ export default function RemoteModeSetupSwaps({
                   borderRadius={BorderRadius.LG}
                   borderColor={BorderColor.borderDefault}
                 >
-                  <AccountPicker
-                    address="0x12C7e...q135f"
-                    name="Account #1"
-                    onClick={() => {
-                      setIsModalOpen(true);
-                    }}
-                  />
+                  {selectedAccount && (
+                    <AccountPicker
+                      address={selectedAccount?.address}
+                      name={selectedAccount?.metadata.name}
+                      onClick={() => {
+                        setIsModalOpen(true);
+                      }}
+                    />
+                  )}
                 </Box>
                 <Box
                   display={Display.Flex}
@@ -215,7 +240,15 @@ export default function RemoteModeSetupSwaps({
                       <Icon name={IconName.Info} size={IconSize.Sm} />
                     </Tooltip>
                   </Box>
-                  <Text>{accounts[0].metadata.name}</Text>
+                  <Box display={Display.Flex} gap={2}>
+                    <AvatarAccount
+                      variant={AvatarAccountVariant.Jazzicon}
+                      address={selectedHardwareAccount.address}
+                      size={AvatarAccountSize.Xs}
+                      marginTop={1}
+                    />
+                    <Text>{selectedHardwareAccount.metadata.name}</Text>
+                  </Box>
                 </Box>
               </Box>
             </Card>
@@ -224,7 +257,7 @@ export default function RemoteModeSetupSwaps({
               marginBottom={2}
             >
               <Box marginBottom={2}>
-                <Text variant={TextVariant.headingMd}>Allowances</Text>
+                <Text variant={TextVariant.headingSm}>Swap limit</Text>
               </Box>
               <Box marginTop={4} marginBottom={2}>
                 <Box
@@ -267,7 +300,12 @@ export default function RemoteModeSetupSwaps({
                         setDailyLimit(newDecimalValue)
                       }
                       placeholder="Enter amount"
-                      style={{ width: '100%' }}
+                      style={{
+                        width: '100%',
+                        borderRadius: BorderRadius.MD,
+                        minHeight: '45px',
+                        marginTop: '8px',
+                      }}
                     />
                   </Box>
                 </Box>
@@ -298,9 +336,13 @@ export default function RemoteModeSetupSwaps({
                     style={{ width: '100%' }}
                   />
                 </Box>
-                <Text marginTop={2} marginBottom={2}>
-                  Allow trading for any token. Higher risk option, in case the
-                  authorized account gets compromised.
+                <Text
+                  variant={TextVariant.bodySm}
+                  marginTop={1}
+                  marginBottom={2}
+                >
+                  Tip: This is a higher risk option if your authorized account
+                  is compromised.
                 </Text>
                 <Button
                   width={BlockSize.Full}
@@ -347,56 +389,98 @@ export default function RemoteModeSetupSwaps({
               alignItems={AlignItems.center}
               gap={2}
             >
-              <Tag
-                label="Includes 2 transactions"
-                style={{ padding: '0 1rem' }}
-              />
+              <Text variant={TextVariant.bodyMd} color={TextColor.textMuted}>
+                Unlock enhanced capabilities while keeping the same address.
+              </Text>
             </Box>
 
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
+            <Card
+              backgroundColor={BackgroundColor.backgroundMuted}
+              marginBottom={4}
+            >
               <Box
                 display={Display.Flex}
                 gap={2}
+                paddingBottom={2}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text>Account</Text>
+
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  gap={2}
+                >
+                  <Text
+                    textAlign={TextAlign.Center}
+                    variant={TextVariant.bodySm}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.infoDefault}
+                    backgroundColor={BackgroundColor.primaryMuted}
+                    style={{
+                      padding: '4px 8px',
+                      borderRadius: '16px',
+                      display: 'inline-block',
+                    }}
+                  >
+                    {/* <Box
+                      display={Display.Flex}
+                      alignItems={AlignItems.center}
+                      gap={2}
+                    > */}
+                    {/* <AvatarAccount
+                        variant={AvatarAccountVariant.Jazzicon}
+                        address={selectedHardwareAccount.address}
+                        size={AvatarAccountSize.Xs}
+                        marginTop={1}
+                        paddingRight={2}
+                      /> */}
+                    {selectedHardwareAccount.metadata.name}
+                    {/* </Box> */}
+                  </Text>
+                </Box>
+              </Box>
+              <Box
+                display={Display.Flex}
+                gap={2}
+                paddingBottom={2}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text>Now</Text>
+                <Text>Standard account (EOA)</Text>
+              </Box>
+              <Box
+                display={Display.Flex}
+                gap={2}
+                paddingBottom={2}
                 justifyContent={JustifyContent.spaceBetween}
               >
                 <Text>
-                  Account type <Icon name={IconName.Info} size={IconSize.Sm} />
+                  Updating to <Icon name={IconName.Info} size={IconSize.Sm} />
                 </Text>
                 <Text>Smart account</Text>
               </Box>
+              <Box
+                display={Display.Flex}
+                gap={2}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text>Interacting with</Text>
+                <Text>Smart contract</Text>
+              </Box>
             </Card>
 
             <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box>
-                <Text>Estimated changes</Text>
+              <Box
+                display={Display.Flex}
+                gap={2}
+                paddingBottom={2}
+                justifyContent={JustifyContent.spaceBetween}
+              >
                 <Text>
-                  Authorize Account 1 to swap from your{' '}
-                  {accounts[0].metadata.name} balance.
-                </Text>
-              </Box>
-            </Card>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>Request from</Text>
-                <Text>MetaMask</Text>
-              </Box>
-            </Card>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text paddingBottom={2}>
                   Network fee <Icon name={IconName.Info} size={IconSize.Sm} />
                 </Text>
-                <Text paddingBottom={2}>0.0013 ETH</Text>
+                <Text>0.0013 ETH</Text>
               </Box>
               <Box
                 paddingTop={2}
@@ -404,8 +488,8 @@ export default function RemoteModeSetupSwaps({
                 gap={2}
                 justifyContent={JustifyContent.spaceBetween}
               >
-                <Text paddingBottom={2}>Speed</Text>
-                <Text paddingBottom={2}>🦊 Market &lt; 30 sec</Text>
+                <Text>Speed</Text>
+                <Text>🦊 Market &lt; 30 sec</Text>
               </Box>
             </Card>
           </>
@@ -413,7 +497,10 @@ export default function RemoteModeSetupSwaps({
       case 3:
         return (
           <>
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
+            <Card
+              backgroundColor={BackgroundColor.backgroundMuted}
+              marginBottom={4}
+            >
               <Box
                 display={Display.Flex}
                 gap={2}
@@ -425,7 +512,7 @@ export default function RemoteModeSetupSwaps({
                     color={TextColor.textMuted}
                     variant={TextVariant.bodySm}
                   >
-                    Permission from {accounts[0].metadata.name}
+                    Permission from {selectedHardwareAccount.metadata.name}
                   </Text>
                 </Box>
                 <Text
@@ -457,7 +544,7 @@ export default function RemoteModeSetupSwaps({
                     color={TextColor.textMuted}
                     variant={TextVariant.bodySm}
                   >
-                    Permission from {accounts[0].metadata.name}
+                    Permission from {selectedHardwareAccount.metadata.name}
                   </Text>
                 </Box>
                 <Text
@@ -530,50 +617,53 @@ export default function RemoteModeSetupSwaps({
   };
 
   return (
-    <div className="main-container" data-testid="remote-mode-setup-swaps">
-      <Box
+    <Page className="main-container" data-testid="remote-mode-setup-swaps">
+      <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Sm}
+            ariaLabel={'back'}
+            iconName={IconName.ArrowLeft}
+            onClick={onCancel}
+          />
+        }
+      >
+        Remote mode
+      </Header>
+      <Content
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         gap={2}
-        padding={2}
+        paddingLeft={4}
+        paddingRight={4}
         width={BlockSize.Full}
       >
+        {!isHardwareAccount && (
+          <BannerAlert severity={BannerAlertSeverity.Warning} marginBottom={2}>
+            <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
+              Select a hardware wallet
+            </Text>
+            <Text variant={TextVariant.bodyMd}>
+              To continue, select your hardware wallet from the account menu.
+            </Text>
+          </BannerAlert>
+        )}
         <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
-
         <Text
           textAlign={TextAlign.Center}
           variant={TextVariant.headingMd}
           fontWeight={FontWeight.Bold}
         >
-          {currentStep === 1 && 'Enable Remote Swaps'}
-          {currentStep === 2 && 'Transaction Request'}
-          {currentStep === 3 && 'Confirm changes'}
+          {currentStep === 1 && 'Set up Remote Swaps'}
+          {currentStep === 2 && 'Update to a smart account'}
+          {currentStep === 3 && 'Review changes'}
         </Text>
 
         {renderStepContent()}
 
-        <Box
-          paddingTop={2}
-          display={Display.Flex}
-          gap={6}
-          justifyContent={JustifyContent.center}
-        >
-          <Button
-            onClick={handleBack}
-            variant={ButtonVariant.Secondary}
-            width={BlockSize.Half}
-            size={ButtonSize.Lg}
-          >
-            {currentStep === 1 ? 'Cancel' : 'Back'}
-          </Button>
-          <Button
-            onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
-            width={BlockSize.Half}
-            size={ButtonSize.Lg}
-          >
-            {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
-          </Button>
-        </Box>
         <RemoteModeHardwareWalletConfirm
           visible={isConfirmModalOpen}
           onConfirm={handleConfigureRemoteSwaps}
@@ -581,7 +671,25 @@ export default function RemoteModeSetupSwaps({
             setIsConfirmModalOpen(false);
           }}
         />
-      </Box>
-    </div>
+      </Content>
+      <Footer>
+        <Button
+          onClick={handleBack}
+          variant={ButtonVariant.Secondary}
+          width={BlockSize.Half}
+          size={ButtonSize.Lg}
+        >
+          {currentStep === 1 ? 'Cancel' : 'Back'}
+        </Button>
+        <Button
+          onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
+          width={BlockSize.Half}
+          size={ButtonSize.Lg}
+          disabled={!isHardwareAccount}
+        >
+          {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
+        </Button>
+      </Footer>
+    </Page>
   );
 }
