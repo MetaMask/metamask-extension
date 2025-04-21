@@ -72,7 +72,7 @@ export const AssetMarketDetails = ({
     return null;
   }
 
-  const toNumber = (value: string | number) => new BigNumber(value).toNumber();
+  const toNumber = (value: string | number) => new BigNumber(typeof value === 'string' ? value : value.toString()).toNumber();
 
   let marketCap = toNumber(tokenMarketDetails.marketCap);
   let totalVolume = toNumber(tokenMarketDetails.totalVolume);
