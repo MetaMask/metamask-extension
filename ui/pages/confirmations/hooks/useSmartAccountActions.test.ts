@@ -12,6 +12,7 @@ import { useSmartAccountActions } from './useSmartAccountActions';
 jest.mock('../../../store/actions', () => ({
   disableAccountUpgrade: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
+  setAccountDetailsAddress: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -39,7 +40,7 @@ describe('useSmartAccountActions', () => {
       expect(disableAccountUpgrade).toHaveBeenCalledTimes(1);
       await flushPromises();
       expect(rejectPendingApproval).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(2);
     });
   });
 });

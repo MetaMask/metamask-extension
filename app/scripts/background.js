@@ -47,6 +47,8 @@ import {
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { createCaipStream } from '../../shared/modules/caip-stream';
+import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -71,12 +73,18 @@ import {
   shouldEmitDappViewedEvent,
 } from './lib/util';
 import { createOffscreen } from './offscreen';
+import { setupMultiplex } from './lib/stream-utils';
 import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
+import {
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
+} from './constants/stream';
+import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -369,29 +377,60 @@ function maybeDetectPhishing(theController) {
 }
 
 // These are set after initialization
-let connectRemote;
-let connectExternalExtension;
-let connectExternalCaip;
+/**
+ * Connects a WindowPostMessage Port to the MetaMask controller.
+ * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
+ *
+ * @callback ConnectWindowPostMessage
+ * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
+ * @returns {void}
+ */
+/** @type {ConnectWindowPostMessage} */
+let connectWindowPostMessage;
+
+/**
+ * Connects a externally_connecatable Port to the MetaMask controller.
+ * This method identifies dapp clients and connects them differently from extension clients.
+ *
+ * @callback ConnectExternallyConnectable
+ * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
+ */
+/** @type {ConnectExternallyConnectable} */
+let connectExternallyConnectable;
+
+/**
+ * Connects a Duplexstream to the MetaMask controller EIP-1193 API (via a multiplexed duplex stream).
+ *
+ * @callback ConnectEip1193
+ * @param {DuplexStream} connectionStream - The duplex stream.
+ * @param {chrome.runtime.MessageSender} sender - The remote port sender.
+ */
+/** @type {ConnectEip1193} */
+let connectEip1193;
+
+/**
+ * Connects a DuplexStream to the MetaMask controller Caip Multichain API.
+ *
+ * @callback ConnectCaipMultichain
+ * @param {DuplexStream} connectionStream - The duplex stream.
+ * @param {chrome.runtime.MessageSender} sender - The remote port sender.
+ */
+/** @type {ConnectCaipMultichain} */
+let connectCaipMultichain;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
 
   // This is set in `setupController`, which is called as part of initialization
-  connectRemote(...args);
+  connectWindowPostMessage(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
-  // This is set in `setupController`, which is called as part of initialization
 
-  const port = args[0];
-  const isDappConnecting = port.sender.tab?.id;
-  if (isDappConnecting && process.env.MULTICHAIN_API) {
-    connectExternalCaip(...args);
-  } else {
-    connectExternalExtension(...args);
-  }
+  // This is set in `setupController`, which is called as part of initialization
+  connectExternallyConnectable(...args);
 });
 
 function saveTimestamp() {
@@ -501,6 +540,8 @@ async function initialize() {
         }
       : {};
 
+    const preinstalledSnaps = await loadPreinstalledSnaps();
+
     setupController(
       initState,
       initLangCode,
@@ -508,6 +549,7 @@ async function initialize() {
       isFirstMetaMaskControllerSetup,
       initData.meta,
       offscreenPromise,
+      preinstalledSnaps,
     );
 
     // `setupController` sets up the `controller` object, so we can use it now:
@@ -523,6 +565,20 @@ async function initialize() {
   } catch (error) {
     rejectInitialization(error);
   }
+}
+
+/**
+ * Loads the preinstalled snaps from urls and returns them as an array.
+ * It fails if any Snap fails to load in the expected time range.
+ */
+async function loadPreinstalledSnaps() {
+  const fetchWithTimeout = getFetchWithTimeout();
+  const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
+    const response = await fetchWithTimeout(url);
+    return await response.json();
+  });
+
+  return Promise.all(promises);
 }
 
 /**
@@ -692,7 +748,7 @@ function emitDappViewedMetricEvent(origin) {
 /**
  * Track dapp connection when loaded and permissioned
  *
- * @param {Port} remotePort - The port provided by a new context.
+ * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
  */
 function trackDappView(remotePort) {
   if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
@@ -778,6 +834,7 @@ function trackAppOpened(environment) {
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
+ * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
  */
 export function setupController(
   initState,
@@ -786,6 +843,7 @@ export function setupController(
   isFirstMetaMaskControllerSetup,
   stateMetadata,
   offscreenPromise,
+  preinstalledSnaps,
 ) {
   //
   // MetaMask Controller
@@ -814,6 +872,7 @@ export function setupController(
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
     offscreenPromise,
+    preinstalledSnaps,
   });
 
   setupEnsIpfsResolver({
@@ -868,21 +927,7 @@ export function setupController(
     }
   };
 
-  /**
-   * A runtime.Port object, as provided by the browser:
-   *
-   * @see https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
-   * @typedef Port
-   * @type Object
-   */
-
-  /**
-   * Connects a Port to the MetaMask controller via a multiplexed duplex stream.
-   * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
-   *
-   * @param {Port} remotePort - The port provided by a new context.
-   */
-  connectRemote = async (remotePort) => {
+  connectWindowPostMessage = (remotePort) => {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -989,45 +1034,66 @@ export function setupController(
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
-      connectExternalExtension(remotePort);
+
+      const portStream =
+        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+      connectEip1193(portStream, remotePort.sender);
+
+      if (process.env.MULTICHAIN_API && isFirefox) {
+        const mux = setupMultiplex(portStream);
+        mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+
+        connectCaipMultichain(
+          mux.createStream(METAMASK_CAIP_MULTICHAIN_PROVIDER),
+          remotePort.sender,
+        );
+      }
     }
   };
 
-  // communication with page or other extension
-  connectExternalExtension = (remotePort) => {
+  connectExternallyConnectable = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+    const isDappConnecting = remotePort.sender.tab?.id;
+    if (isDappConnecting && process.env.MULTICHAIN_API) {
+      if (metamaskBlockedPorts.includes(remotePort.name)) {
+        return;
+      }
+
+      // this is triggered when a new tab is opened, or origin(url) is changed
+      trackDappView(remotePort);
+
+      connectCaipMultichain(createCaipStream(portStream), remotePort.sender);
+    } else {
+      connectEip1193(portStream, remotePort.sender);
+    }
+  };
+
+  connectEip1193 = (connectionStream, sender) => {
     controller.setupUntrustedCommunicationEip1193({
-      connectionStream: portStream,
-      sender: remotePort.sender,
+      connectionStream,
+      sender,
     });
   };
 
-  connectExternalCaip = async (remotePort) => {
+  connectCaipMultichain = (connectionStream, sender) => {
     if (!process.env.MULTICHAIN_API) {
       return;
     }
 
-    if (metamaskBlockedPorts.includes(remotePort.name)) {
-      return;
-    }
-
-    // this is triggered when a new tab is opened, or origin(url) is changed
-    if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
-      trackDappView(remotePort);
-    }
-
-    const portStream =
-      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-
     controller.setupUntrustedCommunicationCaip({
-      connectionStream: portStream,
-      sender: remotePort.sender,
+      connectionStream,
+      sender,
     });
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectRemote, connectExternalExtension);
+    overrides.registerConnectListeners(
+      connectWindowPostMessage,
+      connectEip1193,
+    );
   }
 
   //
@@ -1056,13 +1122,6 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
     updateBadge,
   );
-
-  if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
-    controller.controllerMessenger.subscribe(
-      METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
-      updateBadge,
-    );
-  }
 
   controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
@@ -1137,12 +1196,9 @@ export function setupController(
 
   function getPendingApprovalCount() {
     try {
-      let pendingApprovalCount =
+      const pendingApprovalCount =
         controller.appStateController.waitingForUnlock.length +
         controller.approvalController.getTotalApprovalCount();
-
-      pendingApprovalCount +=
-        controller.queuedRequestController.state.queuedRequestCount;
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);

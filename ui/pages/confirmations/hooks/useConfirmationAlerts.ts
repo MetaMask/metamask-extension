@@ -9,7 +9,6 @@ import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsuffici
 import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
-import { useQueuedConfirmationsAlerts } from './alerts/transactions/useQueuedConfirmationsAlerts';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
 import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -46,7 +45,6 @@ function useTransactionAlerts(): Alert[] {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   ///: END:ONLY_INCLUDE_IF
-  const queuedConfirmationsAlerts = useQueuedConfirmationsAlerts();
   const nonContractAddressAlerts = useNonContractAddressAlerts();
 
   return useMemo(
@@ -64,7 +62,6 @@ function useTransactionAlerts(): Alert[] {
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       ...signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
-      ...queuedConfirmationsAlerts,
       ...nonContractAddressAlerts,
     ],
     [
@@ -81,7 +78,6 @@ function useTransactionAlerts(): Alert[] {
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
-      queuedConfirmationsAlerts,
       nonContractAddressAlerts,
     ],
   );

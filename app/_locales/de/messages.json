@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Kontodetails"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Zum regulären Konto zurückwechseln"
-  },
   "accountIdenticon": {
     "message": "Konto-Identicon"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Um das $1-Netzwerk zu aktivieren, müssen Sie ein $1-Konto erstellen.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Um das $1-Netzwerk zu aktivieren, müssen Sie ein $2-Konto erstellen.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "RPC-URL hinzufügen"
@@ -1312,9 +1309,6 @@
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
   },
-  "copyAddressShort": {
-    "message": "Adresse kopieren"
-  },
   "copyPrivateKey": {
     "message": "Privaten Schlüssel kopieren"
   },
@@ -1994,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "Die von Ihnen eingegebenen Informationen sind mit einer bestehenden Chain-ID verknüpft."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Um sich Ihre jüngste Anfrage anzeigen zu lassen und diese zu bestätigen, müssen Sie zunächst bestehende Anfragen genehmigen oder ablehnen."
   },
   "expandView": {
     "message": "Ansicht erweitern"

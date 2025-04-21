@@ -3,10 +3,10 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFourByte } from './useFourByte';
 
 export function useNestedTransactionLabels({
-  nestedTransactions,
+  nestedTransactions = [],
   useIndex,
 }: {
-  nestedTransactions: BatchTransactionParams[];
+  nestedTransactions?: BatchTransactionParams[];
   useIndex?: number;
 }) {
   const t = useI18nContext();

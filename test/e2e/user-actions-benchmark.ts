@@ -5,6 +5,11 @@ import yargs from 'yargs/yargs';
 import { exitWithError } from '../../development/lib/exit-with-error';
 import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
 import FixtureBuilder from './fixture-builder';
+import { Mockttp } from 'mockttp';
+import HomePage from './page-objects/pages/home/homepage';
+import { mockFeatureFlag } from './tests/bridge/bridge-test-utils';
+import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
+import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './tests/bridge/constants';
 import {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
@@ -96,6 +101,65 @@ async function confirmTx(): Promise<number> {
   return loadingTimes;
 }
 
+async function bridgeUserActions(): Promise<any> {
+  let loadPage: number = 0;
+  let loadAssetPicker: number = 0;
+  let searchToken: number = 0;
+
+  const fixtureBuilder = new FixtureBuilder().withNetworkControllerOnMainnet();
+
+  await withFixtures(
+    {
+      fixtures: fixtureBuilder.build(),
+      disableServerMochaToBackground: true,
+      localNodeOptions: 'ganache',
+      title: 'benchmark-userActions-bridgeUserActions',
+      testSpecificMock: async (mockServer: Mockttp) => [
+        await mockFeatureFlag(mockServer, {
+          'extension-config': {
+            ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+            support: true,
+          },
+        }),
+      ],
+    },
+    async ({ driver }: { driver: Driver }) => {
+      await logInWithBalanceValidation(driver);
+      const homePage = new HomePage(driver);
+      const quotePage = new BridgeQuotePage(driver);
+
+      const timestampBeforeLoadPage = new Date();
+      await homePage.startBridgeFlow();
+      const timestampAfterLoadPage = new Date();
+
+      loadPage =
+        timestampAfterLoadPage.getTime() - timestampBeforeLoadPage.getTime();
+
+      const timestampBeforeClickAssetPicker = new Date();
+      await driver.clickElement(quotePage.sourceAssetPickerButton);
+      const timestampAfterClickAssetPicker = new Date();
+
+      loadAssetPicker =
+        timestampAfterClickAssetPicker.getTime() -
+        timestampBeforeClickAssetPicker.getTime();
+
+      const tokenToSearch = 'FXS';
+      const timestampBeforeTokenSearch = new Date();
+      await driver.fill(quotePage.assetPrickerSearchInput, tokenToSearch);
+      await driver.waitForSelector({
+        text: tokenToSearch,
+        css: quotePage.tokenButton,
+      });
+      const timestampAferTokenSearch = new Date();
+
+      searchToken =
+        timestampAferTokenSearch.getTime() -
+        timestampBeforeTokenSearch.getTime();
+    },
+  );
+  return { loadPage, loadAssetPicker, searchToken };
+}
+
 async function main(): Promise<void> {
   const { argv } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
@@ -112,6 +176,8 @@ async function main(): Promise<void> {
   const results: Record<string, number> = {};
   results.loadNewAccount = await loadNewAccount();
   results.confirmTx = await confirmTx();
+  const bridgeResults = await bridgeUserActions();
+  results.bridge = bridgeResults;
   const { out } = argv as { out?: string };
 
   if (out) {
