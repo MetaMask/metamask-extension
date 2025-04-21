@@ -11,7 +11,7 @@ import {
 } from '../../../helpers/constants/connected-sites';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
-import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   getAllPermittedAccountsForCurrentTab,
   getInternalAccountByAddress,

@@ -21,6 +21,9 @@ import {
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getPermittedEthChainIds,
+  getAllScopesFromPermission,
+  getCaipAccountIdsFromCaip25CaveatValue,
+  getCaip25CaveatFromPermission
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
@@ -118,9 +121,6 @@ import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multic
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { getAllScopesFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
-import { getCaipAccountIdsFromCaip25CaveatValue } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import { getCaip25CaveatFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   getAllUnapprovedTransactions,

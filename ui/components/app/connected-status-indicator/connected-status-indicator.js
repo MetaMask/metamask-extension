@@ -19,7 +19,7 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
-import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();

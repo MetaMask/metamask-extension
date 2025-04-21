@@ -1,6 +1,11 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
+import {
+  generateCaip25Caveat,
+  getAllNonWalletNamespacesFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
+  getCaipAccountIdsFromCaip25CaveatValue
+} from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
   CaipChainId,
@@ -66,11 +71,6 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../selectors/selectors.types';
-import {
-  getAllNonWalletNamespacesFromCaip25CaveatValue,
-  getAllScopesFromCaip25CaveatValue,
-} from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
-import { getCaipAccountIdsFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
 import {

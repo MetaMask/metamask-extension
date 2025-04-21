@@ -12,6 +12,10 @@ import {
   getSupportedScopeObjects,
   Caip25CaveatValue,
   setPermittedAccounts,
+  getAllScopesFromScopesObjects,
+  getCaipAccountIdsFromScopesObjects,
+  isKnownSessionPropertyValue,
+  isNamespaceInScopesObject,
 } from '@metamask/chain-agnostic-permission';
 import {
   invalidParams,
@@ -44,12 +48,6 @@ import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { GrantedPermissions } from '../types';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
-import { getAllScopesFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
-import { getCaipAccountIdsFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import {
-  isKnownSessionPropertyValue,
-  isNamespaceInScopesObject,
-} from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
 
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
