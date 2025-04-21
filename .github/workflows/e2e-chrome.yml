@@ -110,4 +110,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-e2e-chrome-report
-          path: test/test-results/test-runs.json
+          path: test/test-results/test-runs*.json

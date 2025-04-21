@@ -69,3 +69,9 @@ export async function retry<T extends (...args: any[]) => any>(
   }
   throw new Error('Retries exhausted');
 }
+
+export function normalizeTestPath(path: string): string {
+  path = path.replace(/\\/g, '/');
+
+  return path.slice(path.indexOf('test/'));
+}
