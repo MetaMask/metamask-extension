@@ -52,7 +52,8 @@ type UpdateCustodianTransactionsParameters = {
   txList: string[];
   custodyController: CustodyController;
   transactionUpdateController: TransactionUpdateController;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   txStateManager: any;
   getPendingNonce: (address: string) => Promise<number>;
@@ -64,7 +65,7 @@ export class MMIController {
 
   public mmiConfigurationController: MmiConfigurationController;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public keyringController: any;
 
@@ -74,11 +75,11 @@ export class MMIController {
 
   private custodyController: CustodyController;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getState: () => any;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getPendingNonce: (address: string) => Promise<any>;
 
@@ -86,7 +87,7 @@ export class MMIController {
 
   #networkControllerState: NetworkState;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private permissionController: any;
 
@@ -94,11 +95,11 @@ export class MMIController {
 
   private messagingSystem: MMIControllerMessenger;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private platform: any;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private extension: any;
 
@@ -110,19 +111,21 @@ export class MMIController {
 
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) => void;
 
   private txStateManager: {
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];
     setTxStatusSigned: (txId: string) => void;
     setTxStatusSubmitted: (txId: string) => void;
     setTxStatusFailed: (txId: string) => void;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateTransaction: (txMeta: any) => void;
   };
@@ -210,7 +213,8 @@ export class MMIController {
 
   async trackTransactionEventFromCustodianEvent(
     txMeta: TransactionMeta,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) {
@@ -368,7 +372,8 @@ export class MMIController {
       string,
       {
         name: string;
-        // TODO: Replace `any` with type
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         custodianDetails: any;
         labels: Label[];

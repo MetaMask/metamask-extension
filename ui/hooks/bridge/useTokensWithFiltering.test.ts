@@ -3,7 +3,7 @@ import {
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MINUTE } from '../../../shared/constants/time';
@@ -159,6 +159,7 @@ describe('useTokensWithFiltering', () => {
     expect(mockFetchBridgeTokens).toHaveBeenCalledWith('0x89');
     // The first 10 tokens returned
     const first10Tokens = [
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ...result.current((_s: any, _a: any, c: string) => c === '0x89'),
     ].slice(0, 10);
