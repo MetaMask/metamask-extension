@@ -18,19 +18,19 @@ export const TokenCellPercentChange = React.memo(
     const multiChainMarketData = useSelector(getMarketData);
     const nonEvmConversionRates = useSelector(getAssetsRates);
 
-    const tokenAddress = token.isNative
-      ? isEvm
+    const tokenAddress =
+      token.isNative && isEvm
         ? getNativeTokenAddress(token.chainId as Hex)
-        : token.address
-      : token.address;
+        : token.address;
 
     const tokenPercentageChange = isEvm
-      ? multiChainMarketData?.[token.chainId]?.[tokenAddress]?.pricePercentChange1d
-      : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData?.pricePercentChange?.['P1D']
+      ? multiChainMarketData?.[token.chainId]?.[tokenAddress]
+          ?.pricePercentChange1d
+      : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData
+          ?.pricePercentChange?.P1D;
 
-
-      return (
-        <PercentageChange value={tokenPercentageChange} address={tokenAddress} />
+    return (
+      <PercentageChange value={tokenPercentageChange} address={tokenAddress} />
     );
   },
   (prevProps, nextProps) => prevProps.token.address === nextProps.token.address,

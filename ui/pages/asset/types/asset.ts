@@ -1,5 +1,5 @@
-import { Hex } from "@metamask/utils";
-import { AssetType } from "../../../../shared/constants/transaction";
+import { Hex } from '@metamask/utils';
+import { AssetType } from '../../../../shared/constants/transaction';
 
 /** Information about a native or token asset */
 export type Asset = (
