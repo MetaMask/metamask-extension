@@ -265,7 +265,7 @@
     "@metamask/bitcoin-wallet-snap": "^0.9.0",
     "@metamask/bridge-controller": "^11.0.0",
     "@metamask/browser-passworder": "^4.3.0",
-    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@0.3.0-preview-c76a33e4",
+    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@0.3.0-preview-90695ddf",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.7.0",
     "@metamask/design-tokens": "^7.0.0",
