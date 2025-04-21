@@ -3,7 +3,6 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
-  setEthAccounts,
   bucketScopes,
   validateAndNormalizeScopes,
   Caip25Authorization,
@@ -12,23 +11,29 @@ import {
   NormalizedScopesObject,
   getSupportedScopeObjects,
   Caip25CaveatValue,
-} from '@metamask/multichain';
+  setPermittedAccounts,
+} from '@metamask/chain-agnostic-permission';
 import {
   invalidParams,
   RequestedPermissions,
 } from '@metamask/permission-controller';
 import {
+  CaipAccountId,
+  CaipChainId,
   Hex,
   isPlainObject,
   Json,
   JsonRpcRequest,
   JsonRpcSuccess,
+  KnownCaipNamespace,
+  parseCaipAccountId,
 } from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
 import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
+import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -38,6 +43,13 @@ import {
 import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { GrantedPermissions } from '../types';
+import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { getAllScopesFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
+import { getCaipAccountIdsFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import {
+  isKnownSessionPropertyValue,
+  isNamespaceInScopesObject,
+} from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
 
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
@@ -59,6 +71,9 @@ import { GrantedPermissions } from '../types';
  * @param hooks.findNetworkClientIdByChainId - The hook that returns the networkClientId for a chainId.
  * @param hooks.requestPermissionsForOrigin - The hook that approves and grants requested permissions.
  * @param hooks.sendMetrics - The hook that tracks an analytics event.
+ * @param hooks.getNonEvmSupportedMethods - The hook that returns the supported methods for a non EVM scope.
+ * @param hooks.isNonEvmScopeSupported - The hook that returns true if a non EVM scope is supported.
+ * @param hooks.getNonEvmAccountAddresses - The hook that returns a list of CaipAccountIds that are supported for a CaipChainId.
  * @param hooks.metamaskState - The wallet state.
  * @param hooks.metamaskState.metaMetricsId - The analytics id.
  * @param hooks.metamaskState.permissionHistory - The permission history object keyed by origin.
@@ -77,16 +92,20 @@ async function walletCreateSessionHandler(
     findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
     requestPermissionsForOrigin: (
       requestedPermissions: RequestedPermissions,
+      metadata?: Record<string, Json>,
     ) => Promise<[GrantedPermissions]>;
     sendMetrics: (
       payload: MetaMetricsEventPayload,
       options?: MetaMetricsEventOptions,
     ) => void;
+    getNonEvmSupportedMethods: (scope: CaipChainId) => string[];
+    isNonEvmScopeSupported: (scope: CaipChainId) => boolean;
     metamaskState: {
       metaMetricsId: string;
       permissionHistory: Record<string, unknown>;
       accounts: Record<string, unknown>;
     };
+    getNonEvmAccountAddresses: (scope: CaipChainId) => CaipAccountId[];
   },
 ) {
   const { origin } = req;
@@ -99,14 +118,26 @@ async function walletCreateSessionHandler(
     return end(new JsonRpcError(5302, 'Invalid sessionProperties requested'));
   }
 
+  const filteredSessionProperties = Object.fromEntries(
+    Object.entries(sessionProperties ?? {}).filter(([key]) =>
+      isKnownSessionPropertyValue(key),
+    ),
+  );
+
   try {
     const { normalizedRequiredScopes, normalizedOptionalScopes } =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       validateAndNormalizeScopes(requiredScopes || {}, optionalScopes || {});
 
     const requiredScopesWithSupportedMethodsAndNotifications =
-      getSupportedScopeObjects(normalizedRequiredScopes);
+      getSupportedScopeObjects(normalizedRequiredScopes, {
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+      });
     const optionalScopesWithSupportedMethodsAndNotifications =
-      getSupportedScopeObjects(normalizedOptionalScopes);
+      getSupportedScopeObjects(normalizedOptionalScopes, {
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+      });
 
     const networkClientExistsForChainId = (chainId: Hex) => {
       try {
@@ -117,55 +148,129 @@ async function walletCreateSessionHandler(
       }
     };
 
+    // if solana is a requested scope but not supported, we add a promptToCreateSolanaAccount flag to request
+    const isSolanaRequested =
+      isNamespaceInScopesObject(
+        requiredScopesWithSupportedMethodsAndNotifications,
+        KnownCaipNamespace.Solana,
+      ) ||
+      isNamespaceInScopesObject(
+        optionalScopesWithSupportedMethodsAndNotifications,
+        KnownCaipNamespace.Solana,
+      );
+
+    let promptToCreateSolanaAccount = false;
+    if (isSolanaRequested) {
+      const supportedSolanaAccounts = await hooks.getNonEvmAccountAddresses(
+        MultichainNetwork.Solana,
+      );
+      promptToCreateSolanaAccount = supportedSolanaAccounts.length === 0;
+    }
+
     const { supportedScopes: supportedRequiredScopes } = bucketScopes(
       requiredScopesWithSupportedMethodsAndNotifications,
       {
-        isChainIdSupported: networkClientExistsForChainId,
-        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        isEvmChainIdSupported: networkClientExistsForChainId,
+        isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+        isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
       },
     );
 
     const { supportedScopes: supportedOptionalScopes } = bucketScopes(
       optionalScopesWithSupportedMethodsAndNotifications,
       {
-        isChainIdSupported: networkClientExistsForChainId,
-        isChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        isEvmChainIdSupported: networkClientExistsForChainId,
+        isEvmChainIdSupportable: () => false, // intended for future usage with eip3085 scopedProperties
+        getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+        isNonEvmScopeSupported: hooks.isNonEvmScopeSupported,
       },
     );
 
-    // Fetch EVM accounts from native wallet keyring
-    // These addresses are lowercased already
+    const allRequestedAccountAddresses = getCaipAccountIdsFromScopesObjects([
+      supportedRequiredScopes,
+      supportedOptionalScopes,
+    ]);
+
+    const allSupportedRequestedCaipChainIds = getAllScopesFromScopesObjects([
+      supportedRequiredScopes,
+      supportedOptionalScopes,
+    ]);
+
     const existingEvmAddresses = hooks
       .listAccounts()
       .map((account) => account.address);
-    const supportedEthAccounts = getEthAccounts({
-      requiredScopes: supportedRequiredScopes,
-      optionalScopes: supportedOptionalScopes,
-    })
-      .map((address) => address.toLowerCase() as Hex)
-      .filter((address) => existingEvmAddresses.includes(address));
+
+    const supportedRequestedAccountAddresses =
+      allRequestedAccountAddresses.filter(
+        (requestedAccountAddress: CaipAccountId) => {
+          const {
+            address,
+            chain: { namespace },
+            chainId: caipChainId,
+          } = parseCaipAccountId(requestedAccountAddress);
+          if (namespace === KnownCaipNamespace.Eip155) {
+            return existingEvmAddresses.some((existingEvmAddress) => {
+              return isEqualCaseInsensitive(address, existingEvmAddress);
+            });
+          }
+
+          // If the namespace is not eip155 (EVM) we do a case sensitive check
+          return hooks
+            .getNonEvmAccountAddresses(caipChainId)
+            .some((existingCaipAddress) => {
+              return requestedAccountAddress === existingCaipAddress;
+            });
+        },
+      );
 
     const requestedCaip25CaveatValue = {
       requiredScopes: getInternalScopesObject(supportedRequiredScopes),
       optionalScopes: getInternalScopesObject(supportedOptionalScopes),
       isMultichainOrigin: true,
+      sessionProperties: filteredSessionProperties,
     };
 
-    const requestedCaip25CaveatValueWithSupportedEthAccounts = setEthAccounts(
-      requestedCaip25CaveatValue,
-      supportedEthAccounts,
-    );
+    const requestedCaip25CaveatValueWithSupportedAccounts =
+      setPermittedAccounts(
+        requestedCaip25CaveatValue,
+        supportedRequestedAccountAddresses,
+      );
 
-    const [grantedPermissions] = await hooks.requestPermissionsForOrigin({
-      [Caip25EndowmentPermissionName]: {
-        caveats: [
-          {
-            type: Caip25CaveatType,
-            value: requestedCaip25CaveatValueWithSupportedEthAccounts,
-          },
-        ],
+    // if `promptToCreateSolanaAccount` is true and there are no other valid scopes requested,
+    // we add a `wallet` scope to the request in order to get passed the CAIP-25 caveat validator.
+    // This is very hacky but is necessary because the solana opt-in flow breaks key assumptions
+    // of the CAIP-25 permission specification -  namely that we can have valid requests with no scopes.
+    if (allSupportedRequestedCaipChainIds.length === 0) {
+      if (promptToCreateSolanaAccount) {
+        requestedCaip25CaveatValueWithSupportedAccounts.optionalScopes[
+          KnownCaipNamespace.Wallet
+        ] = {
+          accounts: [],
+        };
+      } else {
+        // if solana is not requested and there are no supported scopes, we return an error
+        return end(
+          new JsonRpcError(5100, 'Requested scopes are not supported'),
+        );
+      }
+    }
+
+    const [grantedPermissions] = await hooks.requestPermissionsForOrigin(
+      {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: requestedCaip25CaveatValueWithSupportedAccounts,
+            },
+          ],
+        },
       },
-    });
+      {
+        metadata: { promptToCreateSolanaAccount },
+      },
+    );
 
     const approvedCaip25Permission =
       grantedPermissions[Caip25EndowmentPermissionName];
@@ -176,7 +281,12 @@ async function walletCreateSessionHandler(
       throw rpcErrors.internal();
     }
 
-    const sessionScopes = getSessionScopes(approvedCaip25CaveatValue);
+    const sessionScopes = getSessionScopes(approvedCaip25CaveatValue, {
+      getNonEvmSupportedMethods: hooks.getNonEvmSupportedMethods,
+    });
+
+    const { sessionProperties: approvedSessionProperties = {} } =
+      approvedCaip25CaveatValue;
 
     // TODO: Contact analytics team for how they would prefer to track this
     // first time connection to dapp will lead to no log in the permissionHistory
@@ -205,7 +315,7 @@ async function walletCreateSessionHandler(
 
     res.result = {
       sessionScopes,
-      sessionProperties,
+      sessionProperties: approvedSessionProperties,
     };
     return end();
   } catch (err) {
@@ -222,5 +332,8 @@ export const walletCreateSession = {
     requestPermissionsForOrigin: true,
     sendMetrics: true,
     metamaskState: true,
+    getNonEvmSupportedMethods: true,
+    isNonEvmScopeSupported: true,
+    getNonEvmAccountAddresses: true,
   },
 };

@@ -32,7 +32,10 @@ export function TransactionAccountDetails() {
       </ConfirmInfoRow>
       {isUpgrade && (
         <ConfirmInfoRow label={t('confirmAccountType')}>
-          <ConfirmInfoRowText text={t('confirmAccountTypeSmartContract')} />
+          <ConfirmInfoRowText
+            text={t('confirmAccountTypeSmartContract')}
+            data-testid="tx-type"
+          />
         </ConfirmInfoRow>
       )}
       {isDowngrade && (

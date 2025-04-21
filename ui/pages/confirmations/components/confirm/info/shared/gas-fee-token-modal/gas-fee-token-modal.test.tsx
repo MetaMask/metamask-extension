@@ -11,10 +11,12 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import {
   updateBatchTransactions,
   updateSelectedGasFeeToken,
-} from '../../../../../../../store/actions/transaction-controller';
+} from '../../../../../../../store/controller-actions/transaction-controller';
 import { GasFeeTokenModal } from './gas-fee-token-modal';
 
-jest.mock('../../../../../../../store/actions/transaction-controller');
+jest.mock(
+  '../../../../../../../store/controller-actions/transaction-controller',
+);
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   amount: toHex(1000),
@@ -99,7 +101,7 @@ describe('GasFeeTokenModal', () => {
       store,
     );
 
-    expect(result.queryAllByTestId('gas-fee-token-list-item')[1]).toHaveClass(
+    expect(result.getByTestId('gas-fee-token-list-item-USDC')).toHaveClass(
       'gas-fee-token-list-item--selected',
     );
   });
@@ -110,7 +112,7 @@ describe('GasFeeTokenModal', () => {
       configureStore(getState({ noSelectedGasFeeToken: true })),
     );
 
-    expect(result.queryAllByTestId('gas-fee-token-list-item')[0]).toHaveClass(
+    expect(result.getByTestId('gas-fee-token-list-item-ETH')).toHaveClass(
       'gas-fee-token-list-item--selected',
     );
   });
@@ -122,7 +124,7 @@ describe('GasFeeTokenModal', () => {
     );
 
     await act(async () => {
-      result.queryAllByTestId('gas-fee-token-list-item')[2].click();
+      result.getByTestId('gas-fee-token-list-item-WETH').click();
     });
 
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1);

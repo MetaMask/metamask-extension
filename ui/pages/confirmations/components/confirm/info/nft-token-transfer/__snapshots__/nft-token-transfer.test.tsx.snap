@@ -37,12 +37,6 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
             </div>
           </div>
         </button>
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-        />
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
-        />
       </div>
     </div>
     <h2
@@ -449,6 +443,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
           </p>
           <div
             class="mm-box mm-box--padding-inline-2 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            data-testid="selected-gas-fee-token"
             style="cursor: default;"
           >
             <div
@@ -474,6 +469,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          data-testid="gas-fee-token-fee"
         >
            
         </p>
