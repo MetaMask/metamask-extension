@@ -97,23 +97,6 @@ export const AccountOverviewTabs = ({
     [onTabClick],
   );
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  const NeedHelpButtonLink = React.memo((props: Record<string, unknown>) => (
-    <ButtonLink
-      size={ButtonLinkSize.Md}
-      startIconName={IconName.MessageQuestion}
-      data-testid="need-help-link"
-      href={SUPPORT_LINK}
-      display={Display.Flex}
-      onClick={onSupportLinkClick}
-      externalLink
-      {...props}
-    >
-      {t('needHelpLinkText')}
-    </ButtonLink>
-  ));
-  ///: END:ONLY_INCLUDE_IF
-
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
       history.push(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
@@ -134,20 +117,14 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__asset-tab"
             {...tabProps}
           >
-            <Box marginTop={2}>
+            <Box
+              marginTop={2}
+              marginBottom={2}
+            >
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
               />
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-                <NeedHelpButtonLink
-                  justifyContent={JustifyContent.flexStart}
-                  paddingLeft={4}
-                  marginBottom={4}
-                ></NeedHelpButtonLink>
-                ///: END:ONLY_INCLUDE_IF
-              }
             </Box>
           </Tab>
         )}
@@ -160,15 +137,6 @@ export const AccountOverviewTabs = ({
             {...tabProps}
           >
             <NftsTab />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-              <NeedHelpButtonLink
-                justifyContent={JustifyContent.flexStart}
-                paddingLeft={4}
-                marginBottom={4}
-              ></NeedHelpButtonLink>
-              ///: END:ONLY_INCLUDE_IF
-            }
           </Tab>
         )}
 
@@ -180,15 +148,6 @@ export const AccountOverviewTabs = ({
             {...tabProps}
           >
             <TransactionList boxProps={{ paddingTop: 3 }} />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-              <NeedHelpButtonLink
-                justifyContent={JustifyContent.center}
-                marginBottom={4}
-                marginTop={4}
-              ></NeedHelpButtonLink>
-              ///: END:ONLY_INCLUDE_IF
-            }
           </Tab>
         )}
       </Tabs>
