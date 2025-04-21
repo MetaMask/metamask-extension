@@ -6,7 +6,7 @@ import {
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  setCaipChainIdsInCaip25CaveatValue,
+  overwriteCaipChainIdsInCaip25CaveatValue,
   setNonSCACaipAccountIdsInCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
@@ -121,7 +121,7 @@ export function getPermissionBackgroundApiMethods({
       }
     });
 
-    const updatedCaveatValueWithChainIds = setCaipChainIdsInCaip25CaveatValue(
+    const updatedCaveatValueWithChainIds = overwriteCaipChainIdsInCaip25CaveatValue(
       caip25Caveat.value,
       updatedPermittedChainIds,
     );
@@ -155,7 +155,7 @@ export function getPermissionBackgroundApiMethods({
       ]),
     );
 
-    const caveatValueWithChainIds = setCaipChainIdsInCaip25CaveatValue(
+    const caveatValueWithChainIds = overwriteCaipChainIdsInCaip25CaveatValue(
       caip25Caveat.value,
       updatedChainIds,
     );
@@ -302,7 +302,7 @@ export function getPermissionBackgroundApiMethods({
           Caip25EndowmentPermissionName,
         );
       } else {
-        const updatedCaveatValue = setCaipChainIdsInCaip25CaveatValue(
+        const updatedCaveatValue = overwriteCaipChainIdsInCaip25CaveatValue(
           caip25Caveat.value,
           remainingChainIds,
         );
