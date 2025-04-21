@@ -1,7 +1,10 @@
 import { pick } from 'lodash';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { BackgroundColor, Size } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor, 
+  Size,
+} from '../../../helpers/constants/design-system';
 import Box from '../box';
 import Button from '../button';
 import DefinitionList from '../definition-list/definition-list';
