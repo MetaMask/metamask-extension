@@ -11,21 +11,12 @@ import {
 import Tooltip from '../tooltip';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 
-const MARGIN_MAP = {
-  [Size.XS]: 0,
-  [Size.SM]: 2,
-  [Size.MD]: 4,
-  [Size.LG]: 6,
-  [Size.XL]: 8,
-};
-
 export default function DefinitionList({
   dictionary,
   termTypography = {},
   definitionTypography = {},
   tooltips = {},
   warnings = {},
-  gapSize = Size.SM,
 }) {
   return (
     <dl className="definition-list">
