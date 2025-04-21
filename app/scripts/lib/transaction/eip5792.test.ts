@@ -104,11 +104,17 @@ describe('EIP-5792', () => {
     Parameters<typeof processSendCalls>[0]['validateSecurity']
   > = jest.fn();
 
+  const getDismissSmartAccountSuggestionEnabledMock: jest.MockedFn<
+    () => boolean
+  > = jest.fn();
+
   let messenger: EIP5792Messenger;
 
   const sendCallsHooks = {
     addTransactionBatch: addTransactionBatchMock,
     getDisabledAccountUpgradeChains: getDisabledAccountUpgradeChainsMock,
+    getDismissSmartAccountSuggestionEnabled:
+      getDismissSmartAccountSuggestionEnabledMock,
     isAtomicBatchSupported: isAtomicBatchSupportedMock,
     validateSecurity: validateSecurityMock,
   };
@@ -414,7 +420,6 @@ describe('EIP-5792', () => {
       );
     });
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       TransactionStatus.approved,
       TransactionStatus.signed,
@@ -462,6 +467,8 @@ describe('EIP-5792', () => {
       const capabilities = await getCapabilities(
         {
           getDisabledAccountUpgradeChains: getDisabledAccountUpgradeChainsMock,
+          getDismissSmartAccountSuggestionEnabled:
+            getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
         },
         FROM_MOCK,
@@ -490,6 +497,8 @@ describe('EIP-5792', () => {
       const capabilities = await getCapabilities(
         {
           getDisabledAccountUpgradeChains: getDisabledAccountUpgradeChainsMock,
+          getDismissSmartAccountSuggestionEnabled:
+            getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
         },
         FROM_MOCK,
@@ -511,6 +520,8 @@ describe('EIP-5792', () => {
       const capabilities = await getCapabilities(
         {
           getDisabledAccountUpgradeChains: getDisabledAccountUpgradeChainsMock,
+          getDismissSmartAccountSuggestionEnabled:
+            getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
         },
         FROM_MOCK,
@@ -535,6 +546,8 @@ describe('EIP-5792', () => {
       const capabilities = await getCapabilities(
         {
           getDisabledAccountUpgradeChains: getDisabledAccountUpgradeChainsMock,
+          getDismissSmartAccountSuggestionEnabled:
+            getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
         },
         FROM_MOCK,
@@ -557,6 +570,8 @@ describe('EIP-5792', () => {
       const capabilities = await getCapabilities(
         {
           getDisabledAccountUpgradeChains: getDisabledAccountUpgradeChainsMock,
+          getDismissSmartAccountSuggestionEnabled:
+            getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
         },
         FROM_MOCK,

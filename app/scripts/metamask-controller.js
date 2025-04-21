@@ -1231,6 +1231,16 @@ export default class MetamaskController extends EventEmitter {
       subjectCacheLimit: 100,
     });
 
+    // @TODO(snaps): This fixes an issue where `withKeyring` would lock the `KeyringController` mutex.
+    // That meant that if a snap requested a keyring operation (like requesting entropy) while the `KeyringController` was locked,
+    // it would cause a deadlock.
+    // This is a temporary fix until we can refactor how we handle requests to the Snaps Keyring.
+    const withSnapKeyring = async (operation) => {
+      const keyring = await this.getSnapKeyring();
+
+      return operation({ keyring });
+    };
+
     const multichainRouterMessenger = this.controllerMessenger.getRestricted({
       name: 'MultichainRouter',
       allowedActions: [
@@ -1244,13 +1254,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.multichainRouter = new MultichainRouter({
       messenger: multichainRouterMessenger,
-      // Binding the call to provide the selector only giving the controller the option to pass the operation
-      withSnapKeyring: this.keyringController.withKeyring.bind(
-        this.keyringController,
-        {
-          type: 'Snap Keyring',
-        },
-      ),
+      withSnapKeyring,
     });
 
     // account tracker watches balances, nonces, and any code at their address
@@ -2058,6 +2062,9 @@ export default class MetamaskController extends EventEmitter {
             this.preferencesController.getDisabledAccountUpgradeChains.bind(
               this.preferencesController,
             ),
+          getDismissSmartAccountSuggestionEnabled: () =>
+            this.preferencesController.state.preferences
+              .dismissSmartAccountSuggestionEnabled,
           isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
             this.txController,
           ),
@@ -2070,14 +2077,22 @@ export default class MetamaskController extends EventEmitter {
               updateSecurityAlertResponse:
                 this.updateSecurityAlertResponse.bind(this),
             }),
-          getDismissSmartAccountSuggestionEnabled: () =>
-            this.preferencesController.state.preferences
-              .dismissSmartAccountSuggestionEnabled,
         },
         this.controllerMessenger,
       ),
       getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
-      getCapabilities,
+      getCapabilities: getCapabilities.bind(null, {
+        getDisabledAccountUpgradeChains:
+          this.preferencesController.getDisabledAccountUpgradeChains.bind(
+            this.preferencesController,
+          ),
+        getDismissSmartAccountSuggestionEnabled: () =>
+          this.preferencesController.state.preferences
+            .dismissSmartAccountSuggestionEnabled,
+        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+          this.txController,
+        ),
+      }),
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
