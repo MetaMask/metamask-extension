@@ -17,6 +17,7 @@ import { CaipAssetType } from "@metamask/utils";
 import { AssetType } from "../../../../shared/constants/transaction";
 import { getConversionRatesForNativeAsset } from '../../../../app/scripts/lib/util';
 import { Asset } from '../types/asset';
+import BigNumber from 'bignumber.js';
 
 export const AssetMarketDetails = ({
   asset,
@@ -71,11 +72,13 @@ export const AssetMarketDetails = ({
     return null;
   }
 
-  let marketCap = Number(tokenMarketDetails.marketCap);
-  let totalVolume = Number(tokenMarketDetails.totalVolume);
-  let circulatingSupply = Number(tokenMarketDetails.circulatingSupply);
-  let allTimeHigh = Number(tokenMarketDetails.allTimeHigh);
-  let allTimeLow = Number(tokenMarketDetails.allTimeLow);
+  const toNumber = (value: string | number) => new BigNumber(value).toNumber();
+
+  let marketCap = toNumber(tokenMarketDetails.marketCap);
+  let totalVolume = toNumber(tokenMarketDetails.totalVolume);
+  let circulatingSupply = toNumber(tokenMarketDetails.circulatingSupply);
+  let allTimeHigh = toNumber(tokenMarketDetails.allTimeHigh);
+  let allTimeLow = toNumber(tokenMarketDetails.allTimeLow);
 
   if (isEvm) {
     marketCap = tokenExchangeRate * marketCap;
