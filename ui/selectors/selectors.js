@@ -23,7 +23,7 @@ import {
   getPermittedEthChainIds,
   getAllScopesFromPermission,
   getCaipAccountIdsFromCaip25CaveatValue,
-  getCaip25CaveatFromPermission
+  getCaip25CaveatFromPermission,
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';

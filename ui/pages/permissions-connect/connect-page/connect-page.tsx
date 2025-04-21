@@ -4,7 +4,7 @@ import {
   generateCaip25Caveat,
   getAllNonWalletNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
-  getCaipAccountIdsFromCaip25CaveatValue
+  getCaipAccountIdsFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
