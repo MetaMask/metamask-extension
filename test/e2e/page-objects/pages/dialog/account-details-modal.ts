@@ -168,6 +168,10 @@ class AccountDetailsModal {
     console.log('Check that show private key button is not displayed');
     await this.driver.assertElementNotPresent(this.showPrivateKeyButton);
   }
+
+  async triggerAccountSwitch(): Promise<void> {
+    await this.driver.clickElement('[data-testid="switch_account-Localhost 8545"]');
+  }
 }
 
 export default AccountDetailsModal;
