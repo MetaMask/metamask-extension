@@ -9,18 +9,8 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
       class="mm-box confirmation-page__content mm-box--padding-4"
       style="overflow-y: auto;"
     >
-      <h3
-        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
-      >
-        Update Test initial state
-      </h3>
-      <h6
-        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
-      >
-        This site is requesting to update your default network URL. You can edit defaults and network information any time.
-      </h6>
       <div
-        class="mm-box mm-box--margin-top-6 mm-box--margin-right-4 mm-box--margin-left-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-pill mm-box--border-style-solid mm-box--border-color-border-muted mm-box--border-width-1"
+        class="mm-box mm-box--margin-top-1 mm-box--margin-right-4 mm-box--margin-bottom-3 mm-box--margin-left-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
         data-testid="signature-origin-pill"
       >
         <div
@@ -39,39 +29,49 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
           https://test-dapp.metamask.io
         </h6>
       </div>
+      <h4
+        class="box box--md:margin-4 box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
+      >
+        Update Test initial state
+      </h4>
+      <h6
+        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+      >
+        This site is requesting to update your default network URL. You can edit defaults and network information any time.
+      </h6>
       <div
-        class="box box--margin-top-6 box--margin-bottom-6 box--padding-4 box--padding-bottom-3 box--flex-direction-row box--rounded-lg box--border-color-border-muted box--border-style-solid box--border-width-1"
+        class="box box--margin-top-6 box--margin-bottom-6 box--padding-4 box--padding-bottom-3 box--flex-direction-row box--background-color-background-muted box--rounded-lg"
       >
         <dl
           class="definition-list"
         >
           <dt
-            class="mm-box mm-text definition-list__term mm-text--body-md-medium mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
+            class="mm-box mm-text definition-list__term mm-text--body-md-medium mm-box--margin-top-0 mm-box--color-text-default"
           >
-            Currency symbol
+            Network name
             <div>
               <div
                 aria-describedby="tippy-tooltip-1"
                 class="definition-list__tooltip-wrapper"
-                data-original-title="The ticker symbol displayed for this network’s currency."
+                data-original-title="The name associated with this network."
                 data-tooltipped=""
                 style="display: inline;"
                 tabindex="0"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
               </div>
             </div>
           </dt>
           <dd
-            class="mm-box mm-text definition-list__definition mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
+            class="mm-box mm-text definition-list__definition mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-4 mm-box--color-text-alternative"
           >
-            TST
+            Test chain
           </dd>
           <dt
-            class="mm-box mm-text definition-list__term mm-text--body-md-medium mm-box--margin-top-0 mm-box--margin-bottom-1 mm-box--color-text-default"
+            class="mm-box mm-text definition-list__term mm-text--body-md-medium mm-box--margin-top-0 mm-box--color-text-default"
           >
             Network URL
             <div>
@@ -84,16 +84,41 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
               </div>
             </div>
           </dt>
           <dd
-            class="mm-box mm-text definition-list__definition mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-2 mm-box--color-text-alternative"
+            class="mm-box mm-text definition-list__definition mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-4 mm-box--color-text-alternative"
           >
             https://rpcurl.test.chain
+          </dd>
+          <dt
+            class="mm-box mm-text definition-list__term mm-text--body-md-medium mm-box--margin-top-0 mm-box--color-text-default"
+          >
+            Chain ID
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-3"
+                class="definition-list__tooltip-wrapper"
+                data-original-title="The chain ID used to sign transactions for this network."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
+            </div>
+          </dt>
+          <dd
+            class="mm-box mm-text definition-list__definition mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-0 mm-box--margin-bottom-4 mm-box--color-text-alternative"
+          >
+            39321
           </dd>
         </dl>
         <a
@@ -105,7 +130,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
         </a>
       </div>
       <h6
-        class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+        class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-column box--align-items-center typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
       >
         <span>
            

@@ -2,9 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   AlignItems,
-  BorderColor,
-  BorderRadius,
-  BorderStyle,
   Display,
   JustifyContent,
   TextColor,
@@ -33,14 +30,11 @@ export default function OriginPill({
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
-      marginTop={6}
+      marginTop={1}
+      marginBottom={3}
       marginRight={4}
       marginLeft={4}
       padding={2}
-      borderColor={BorderColor.borderMuted}
-      borderStyle={BorderStyle.solid}
-      borderRadius={BorderRadius.pill}
-      borderWidth={1}
       data-testid={dataTestId}
       style={style}
     >

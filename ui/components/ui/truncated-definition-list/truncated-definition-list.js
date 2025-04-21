@@ -1,7 +1,7 @@
 import { pick } from 'lodash';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { BorderColor, Size } from '../../../helpers/constants/design-system';
+import { BackgroundColor, BorderColor, Size } from '../../../helpers/constants/design-system';
 import Box from '../box';
 import Button from '../button';
 import DefinitionList from '../definition-list/definition-list';
@@ -55,7 +55,7 @@ export default function TruncatedDefinitionList({
       padding={4}
       paddingBottom={3}
       borderRadius={Size.LG}
-      borderColor={BorderColor.borderMuted}
+      backgroundColor={BackgroundColor.backgroundMuted}
     >
       {renderContent()}
     </Box>

@@ -35,7 +35,6 @@ export default function DefinitionList({
             variant={TextVariant.bodyMdMedium}
             {...termTypography}
             marginTop={0}
-            marginBottom={1}
             className="definition-list__term"
             as="dt"
           >
@@ -50,7 +49,7 @@ export default function DefinitionList({
                   name={IconName.Question}
                   size={IconSize.Sm}
                   marginLeft={1}
-                  color={IconColor.iconDefault}
+                  color={IconColor.iconAlternative}
                 />
               </Tooltip>
             )}
@@ -60,7 +59,7 @@ export default function DefinitionList({
             color={TextColor.textAlternative}
             {...definitionTypography}
             marginTop={0}
-            marginBottom={MARGIN_MAP[gapSize]}
+            marginBottom={4}
             className="definition-list__definition"
             overflowWrap={OverflowWrap.BreakWord}
             as="dd"
