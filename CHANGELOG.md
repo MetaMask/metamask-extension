@@ -13,8 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
 
-## [12.17.0]
-
 ## [12.16.1]
 ### Added
 - Add support for version 2.0.0 of EIP-5792 ([#31913](https://github.com/MetaMask/metamask-extension/pull/31913))
@@ -5975,7 +5973,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...HEAD
-[12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1..v12.17.0
+[12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...v12.17.0
 [12.16.1]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...v12.16.1
 [12.16.0]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...v12.16.0
 [12.15.2]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.15.2
