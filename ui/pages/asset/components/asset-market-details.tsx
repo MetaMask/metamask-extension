@@ -14,9 +14,9 @@ import { getMultichainConversionRate, getMultichainIsEvm, getMultichainNativeCur
 import { getAssetsRates } from "../../../selectors/assets";
 import { getCurrencyRates, getMarketData } from "../../../selectors/selectors";
 import { CaipAssetType } from "@metamask/utils";
-import { Asset } from "./asset-page";
 import { AssetType } from "../../../../shared/constants/transaction";
 import { getConversionRatesForNativeAsset } from '../../../../app/scripts/lib/util';
+import { Asset } from '../types/asset';
 
 export const AssetMarketDetails = ({
   asset,
