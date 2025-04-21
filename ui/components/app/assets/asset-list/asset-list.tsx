@@ -1,22 +1,18 @@
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
-import TokenList from '../token-list';
-import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../../selectors/multichain';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import DetectedToken from '../../detected-token/detected-token';
 import {
   useAssetListTokenDetection,
   usePrimaryCurrencyProperties,
 } from '../hooks';
-import { getSelectedInternalAccount } from '../../../../selectors';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import TokenList from '../token-list';
+import { trace, TraceName } from '../../../../../shared/lib/trace';
 import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
 
@@ -27,27 +23,21 @@ type AssetListProps = {
 
 const TokenListContainer = React.memo(
   ({ onClickAsset }: Pick<AssetListProps, 'onClickAsset'>) => {
-    const account = useSelector(getSelectedInternalAccount);
-    const { isEvmNetwork } = useMultichainSelector(
-      getMultichainNetwork,
-      account,
-    );
     const trackEvent = useContext(MetaMetricsContext);
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
 
     const onTokenClick = useCallback(
       (chainId: string, tokenAddress: string) => {
-        if (isEvmNetwork) {
-          onClickAsset(chainId, tokenAddress);
-          trackEvent({
-            event: MetaMetricsEventName.TokenScreenOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              token_symbol: primaryCurrencyProperties.suffix,
-              location: 'Home',
-            },
-          });
-        }
+        trace({ name: TraceName.AssetDetails });
+        onClickAsset(chainId, tokenAddress);
+        trackEvent({
+          event: MetaMetricsEventName.TokenScreenOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            token_symbol: primaryCurrencyProperties.suffix,
+            location: 'Home',
+          },
+        });
       },
       [],
     );

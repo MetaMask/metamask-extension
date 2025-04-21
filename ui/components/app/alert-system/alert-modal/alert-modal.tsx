@@ -144,32 +144,30 @@ function BlockaidAlertDetails() {
   const { securityAlertResponse } = currentConfirmation;
   let copy;
   switch (securityAlertResponse?.reason) {
-    case BlockaidReason.rawSignatureFarming:
-      copy = t('blockaidAlertInfoDescription3');
-      break;
     case BlockaidReason.approvalFarming:
     case BlockaidReason.setApprovalForAll:
     case BlockaidReason.permitFarming:
-      copy = t('blockaidAlertInfoDescription2');
+      copy = t('blockaidAlertDescriptionWithdraw');
       break;
     case BlockaidReason.transferFarming:
     case BlockaidReason.transferFromFarming:
     case BlockaidReason.rawNativeTokenTransfer:
-      copy = t('blockaidAlertInfoDescription');
+      copy = t('blockaidAlertDescriptionTokenTransfer');
       break;
     case BlockaidReason.seaportFarming:
-      copy = t('blockaidAlertInfoDescription4');
+      copy = t('blockaidAlertDescriptionOpenSea');
       break;
     case BlockaidReason.blurFarming:
-      copy = t('blockaidAlertInfoDescription5');
+      copy = t('blockaidAlertDescriptionBlur');
       break;
     case BlockaidReason.maliciousDomain:
-      copy = t('blockaidAlertInfoDescription6');
+      copy = t('blockaidAlertDescriptionMalicious');
       break;
+    case BlockaidReason.rawSignatureFarming:
     case BlockaidReason.tradeOrderFarming:
     case BlockaidReason.other:
     default:
-      copy = t('blockaidAlertInfoDescription7');
+      copy = t('blockaidAlertDescriptionOthers');
   }
 
   return (
@@ -237,6 +235,8 @@ export function AcknowledgeCheckboxBase({
   isConfirmed: boolean;
   label?: string;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   if (selectedAlert.isBlocking || selectedAlert.severity !== Severity.Danger) {
     return null;
   }

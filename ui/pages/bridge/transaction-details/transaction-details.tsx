@@ -4,7 +4,7 @@ import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { isStrictHexString } from '@metamask/utils';
+import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -48,7 +48,7 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { selectedAddressTxListSelector } from '../../../selectors';
+import { selectedAddressTxListSelectorAllChain } from '../../../selectors';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -171,7 +171,7 @@ const CrossChainSwapTxDetails = () => {
   const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
   const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
   const selectedAddressTxList = useSelector(
-    selectedAddressTxListSelector,
+    selectedAddressTxListSelectorAllChain,
   ) as TransactionMeta[];
 
   const networkConfigurationsByChainId = useSelector(
@@ -196,27 +196,33 @@ const CrossChainSwapTxDetails = () => {
   });
 
   const srcTxHash = srcChainTxMeta?.hash;
-  const srcBlockExplorerUrl = getBlockExplorerUrl(
-    srcNetwork as EvmNetworkConfiguration,
-    srcTxHash,
-  );
+  const srcBlockExplorerUrl = srcNetwork?.isEvm
+    ? getBlockExplorerUrl(srcNetwork, srcTxHash)
+    : undefined;
 
   const destTxHash = bridgeHistoryItem?.status.destChain?.txHash;
-  const destBlockExplorerUrl = getBlockExplorerUrl(
-    destNetwork as EvmNetworkConfiguration,
-    destTxHash,
-  );
+  const destBlockExplorerUrl = destNetwork?.isEvm
+    ? getBlockExplorerUrl(destNetwork, destTxHash)
+    : undefined;
 
   const status = bridgeHistoryItem
     ? bridgeHistoryItem?.status.status
     : StatusTypes.PENDING;
 
   const srcChainIconUrl = srcNetwork
-    ? getImageForChainId(srcNetwork.chainId)
+    ? getImageForChainId(
+        srcNetwork.isEvm
+          ? formatChainIdToHex(srcNetwork.chainId)
+          : srcNetwork.chainId,
+      )
     : undefined;
 
   const destChainIconUrl = destNetwork
-    ? getImageForChainId(destNetwork.chainId)
+    ? getImageForChainId(
+        destNetwork.isEvm
+          ? formatChainIdToHex(destNetwork.chainId)
+          : destNetwork.chainId,
+      )
     : undefined;
 
   const srcNetworkName =
@@ -330,6 +336,8 @@ const CrossChainSwapTxDetails = () => {
 
           {/* Bridge step list */}
           {status !== StatusTypes.COMPLETE &&
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             (bridgeHistoryItem || srcChainTxMeta) && (
               <BridgeStepList
                 bridgeHistoryItem={bridgeHistoryItem}
@@ -341,13 +349,13 @@ const CrossChainSwapTxDetails = () => {
           {/* Links to block explorers */}
           <BridgeExplorerLinks
             srcChainId={
-              isStrictHexString(srcNetwork?.chainId)
-                ? srcNetwork?.chainId
+              srcNetwork?.isEvm
+                ? formatChainIdToHex(srcNetwork?.chainId)
                 : undefined
             }
             destChainId={
-              isStrictHexString(destNetwork?.chainId)
-                ? destNetwork?.chainId
+              destNetwork?.isEvm
+                ? formatChainIdToHex(destNetwork?.chainId)
                 : undefined
             }
             srcBlockExplorerUrl={srcBlockExplorerUrl}

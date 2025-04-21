@@ -116,12 +116,13 @@ function normalizeDecodedParam(
   };
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function normalizeDecodedParamValue(value: any): any {
   const hexValue = value._hex;
 
   if (hexValue) {
-    return parseInt(hexValue, 16);
+    return BigInt(hexValue).toString();
   }
 
   return value;

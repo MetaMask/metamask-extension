@@ -14,6 +14,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
@@ -130,7 +131,7 @@ function getSignatureEventProperty(
 }
 
 function assertSignatureRequestedMetrics(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   events: any[],
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
@@ -266,7 +267,7 @@ export async function assertAccountDetailsMetrics(
 }
 
 function assertEventPropertiesMatch(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   events: any[],
   eventName: string,
   expectedProperties: object,
@@ -397,8 +398,9 @@ export async function openDappAndTriggerSignature(
   driver: Driver,
   type: string,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
+  await testDapp.check_pageIsLoaded();
   await triggerSignature(type);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }

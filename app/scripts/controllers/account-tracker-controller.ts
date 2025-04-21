@@ -703,6 +703,37 @@ export default class AccountTrackerController extends BaseController<
     }
   }
 
+  async updateAccountByAddress({
+    address,
+    networkClientId,
+  }: {
+    address?: string;
+    networkClientId?: NetworkClientId;
+  } = {}): Promise<void> {
+    const { completedOnboarding } = this.messagingSystem.call(
+      'OnboardingController:getState',
+    );
+    if (!completedOnboarding) {
+      return;
+    }
+
+    const selectedAddress =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      address ||
+      this.messagingSystem.call('AccountsController:getSelectedAccount')
+        .address;
+
+    if (!selectedAddress) {
+      return;
+    }
+
+    const { chainId, provider } =
+      this.#getCorrectNetworkClient(networkClientId);
+
+    await this.#updateAccount(selectedAddress, provider, chainId);
+  }
+
   /**
    * Updates the current balance of an account.
    *

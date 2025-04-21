@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process';
+import { execFileSync, execSync } from 'node:child_process';
 import { arch } from 'node:os';
 import {
   type Checksums,
@@ -64,7 +64,7 @@ export function say(message: string) {
  */
 export function getVersion(binPath: string): Buffer {
   try {
-    return execSync(`${binPath} --version`).subarray(0, -1); // ignore newline
+    return execFileSync(binPath, ['--version']).subarray(0, -1); // ignore newline
   } catch (error: unknown) {
     const msg = `Failed to get version for ${binPath}
 

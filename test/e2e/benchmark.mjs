@@ -112,7 +112,9 @@ async function profilePageLoad(pages, browserLoads, pageLoads, retries) {
 
     for (const [key, path] of Object.entries(ALL_TRACES)) {
       // Using lodash get to support nested properties like 'navigation[0].load'
-      result[key] = runResults.map((metrics) => get(metrics, path)).sort();
+      result[key] = runResults
+        .map((metrics) => get(metrics, path))
+        .sort((a, b) => a - b); // Sort the array as numbers, not strings
     }
 
     results[pageName] = {
