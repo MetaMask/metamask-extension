@@ -22,7 +22,7 @@ exports[`EditSpendingCapModal renders component 1`] = `
       >
         <section
           aria-modal="true"
-          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+          class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-sm"
           role="dialog"
         >
           <header
