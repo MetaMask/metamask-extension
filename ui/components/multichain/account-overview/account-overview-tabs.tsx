@@ -10,24 +10,7 @@ import NftsTab from '../../app/assets/nfts/nfts-tab';
 import AssetList from '../../app/assets/asset-list';
 import TransactionList from '../../app/transaction-list';
 import { Tabs, Tab } from '../../ui/tabs';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import {
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  Display,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-///: END:ONLY_INCLUDE_IF
-import {
-  Box,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  ButtonLink,
-  ButtonLinkSize,
-  IconName,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../component-library';
+import { Box } from '../../component-library';
 
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
@@ -47,9 +30,6 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
 
 export const AccountOverviewTabs = ({
   onTabClick,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  onSupportLinkClick,
-  ///: END:ONLY_INCLUDE_IF
   defaultHomeActiveTabName,
   showTokens,
   showTokensLinks,
@@ -112,10 +92,7 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__asset-tab"
             {...tabProps}
           >
-            <Box
-              marginTop={2}
-              marginBottom={2}
-            >
+            <Box marginTop={2} marginBottom={2}>
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
