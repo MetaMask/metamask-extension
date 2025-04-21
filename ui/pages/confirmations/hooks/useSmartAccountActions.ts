@@ -16,10 +16,10 @@ export function useSmartAccountActions() {
   const { id: confirmationId, chainId } = currentConfirmation ?? {};
 
   const handleRejectUpgrade = useCallback(async () => {
-        const error = new JsonRpcError(
-          EIP5792ErrorCode.RejectedUpgrade,
-          'User rejected account upgrade',
-        );
+    const error = new JsonRpcError(
+      EIP5792ErrorCode.RejectedUpgrade,
+      'User rejected account upgrade',
+    );
     const serializedError = serializeError(error);
 
     await disableAccountUpgradeForChain(chainId as string);
