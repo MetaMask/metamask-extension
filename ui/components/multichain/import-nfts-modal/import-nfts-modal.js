@@ -67,6 +67,7 @@ import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
 import { NetworkListItem } from '../network-list-item';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 const ACTION_MODES = {
   // Displays the import nft modal
@@ -110,6 +111,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
 
   const handleAddNft = async () => {
+    trace({ name: TraceName.ImportNfts });
     try {
       await dispatch(
         // selectedNetworkClientId is for the network the NFT is on, not the globally selected network of the wallet
@@ -132,7 +134,10 @@ export const ImportNftsModal = ({ onClose }) => {
       dispatch(setNewNftAddedMessage(message));
       setNftAddFailed(true);
       return;
+    } finally {
+      endTrace({ name: TraceName.ImportNfts });
     }
+
     if (ignoreErc20Token && nftAddress) {
       await dispatch(
         ignoreTokens({
