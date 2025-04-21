@@ -124,7 +124,10 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
-import { fetchAssetMetadata } from '../../../../shared/lib/asset-utils';
+import {
+  fetchAssetMetadata,
+  toAssetId,
+} from '../../../../shared/lib/asset-utils';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -421,7 +424,16 @@ const PrepareBridgePage = () => {
 
     const handleToken = async () => {
       if (isSolanaChainId(fromChain.chainId)) {
-        const tokenAddress = tokenAddressFromUrl.split('token:')[1];
+        const tokenAddress = tokenAddressFromUrl;
+        const assetId = toAssetId(
+          tokenAddress,
+          formatChainIdToCaip(fromChain.chainId),
+        );
+        if (!assetId) {
+          removeTokenFromUrl();
+          return;
+        }
+
         const tokenMetadata = await fetchAssetMetadata(
           tokenAddress,
           fromChain.chainId,
