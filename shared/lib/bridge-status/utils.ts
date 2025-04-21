@@ -1,4 +1,5 @@
-import { QuoteMetadata, QuoteResponse } from '../../types/bridge';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   QuoteMetadataSerialized,
   StatusRequest,
@@ -73,6 +74,66 @@ export const serializeQuoteMetadata = (
   };
 };
 
+/**
+ * Internal type defining the relevant parts of a transaction object
+ * needed for bridge status utility functions.
+ */
+type BridgeTransaction = {
+  isBridgeTx: boolean;
+  bridgeInfo?: {
+    status?: string;
+    destTxHash?: string;
+  };
+};
+
+export function isBridgeComplete(transaction: BridgeTransaction): boolean {
+  return Boolean(
+    transaction.isBridgeTx &&
+      transaction.bridgeInfo &&
+      (transaction.bridgeInfo.status === StatusTypes.COMPLETE ||
+        transaction.bridgeInfo.status === 'COMPLETE') &&
+      typeof transaction.bridgeInfo.destTxHash === 'string' &&
+      transaction.bridgeInfo.destTxHash.length > 0,
+  );
+}
+
+export function isBridgeFailed(
+  transaction: BridgeTransaction,
+  baseStatusKey: string,
+): boolean {
+  const bridgeFailed = Boolean(
+    transaction.isBridgeTx &&
+      transaction.bridgeInfo &&
+      (transaction.bridgeInfo.status === StatusTypes.FAILED ||
+        transaction.bridgeInfo.status === 'FAILED'),
+  );
+  const baseFailed = baseStatusKey === TransactionStatus.failed;
+
+  return bridgeFailed || baseFailed;
+}
+
+export function getBridgeStatusKey(
+  transaction: BridgeTransaction,
+  baseStatusKey: string,
+): string {
+  if (!transaction.isBridgeTx || !transaction.bridgeInfo) {
+    return baseStatusKey;
+  }
+
+  if (isBridgeFailed(transaction, baseStatusKey)) {
+    return TransactionStatus.failed;
+  }
+
+  if (
+    isBridgeComplete(transaction) &&
+    baseStatusKey === TransactionStatus.confirmed
+  ) {
+    return TransactionStatus.confirmed;
+  }
+
+  return TransactionStatus.submitted;
+}
+
 export const getInitialHistoryItem = ({
   quoteResponse,
   bridgeTxMetaId,
@@ -109,8 +170,6 @@ export const getInitialHistoryItem = ({
     targetContractAddress,
     account,
     status: {
-      // We always have a PENDING status when we start polling for a tx, don't need the Bridge API for that
-      // Also we know the bare minimum fields for status at this point in time
       status: StatusTypes.PENDING,
       srcChain: {
         chainId: statusRequest.srcChainId,

@@ -27,6 +27,10 @@ import {
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
+import Tooltip from '../../ui/tooltip/tooltip';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 type NftItemProps = {
   nft?: NFT;
@@ -54,6 +58,7 @@ export const NftItem = ({
   clickable,
   privacyMode,
   isIpfsURL,
+  name,
 }: NftItemProps) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const isIpfsEnabled = useSelector(getIpfsGateway);
@@ -103,6 +108,15 @@ export const NftItem = ({
       />
     );
 
+  const environmentType = getEnvironmentType();
+  const maxStrLen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN ? 40 : 20;
+
+  const isLongName = nft?.name && nft.name.length > maxStrLen;
+  const isLongCollection =
+    nft?.collection?.name &&
+    typeof nft?.collection?.name === 'string' &&
+    nft.collection.name.length > maxStrLen;
+
   return (
     <Box className="nft-item__card">
       <Box
@@ -116,14 +130,14 @@ export const NftItem = ({
             'nft-item__badge-wrapper__clickable': Boolean(clickable),
           })}
           anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-          positionObj={{ top: -4, right: -4 }}
+          positionObj={{ bottom: 4, right: 4 }}
           display={Display.Block}
           badge={
             <AvatarNetwork
               className="nft-item__network-badge"
               backgroundColor={testNetworkBackgroundColor}
               data-testid="nft-network-badge"
-              size={AvatarNetworkSize.Sm}
+              size={AvatarNetworkSize.Xs}
               name={networkName}
               src={networkSrc}
               borderWidth={2}
@@ -135,16 +149,38 @@ export const NftItem = ({
           {nftImageComponentToRender}
         </BadgeWrapper>
       </Box>
-      <Text variant={TextVariant.bodySm} color={TextColor.textDefault} ellipsis>
-        {nft?.name}
-      </Text>
-      <Text
-        variant={TextVariant.bodySm}
-        color={TextColor.textAlternative}
-        ellipsis
-      >
-        {nft?.collection?.name}
-      </Text>
+      {nft && (
+        <Tooltip
+          position="bottom"
+          html={
+            <>
+              <span>{nft?.name}</span>
+              <br />
+              {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
+              {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+              <span>{nft?.collection?.name || name}</span>
+            </>
+          }
+          disabled={!isLongName && !isLongCollection}
+        >
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textDefault}
+            ellipsis
+          >
+            {nft?.name}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            ellipsis
+          >
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
+            {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+            {nft?.collection?.name || name}
+          </Text>
+        </Tooltip>
+      )}
     </Box>
   );
 };

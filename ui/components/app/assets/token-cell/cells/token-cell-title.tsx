@@ -27,7 +27,7 @@ export const TokenCellTitle = React.memo(
         <Tooltip
           position="bottom"
           html={token.title}
-          tooltipInnerClassName="multichain-token-list-item__tooltip"
+          wrapperClassName="token-cell-title--ellipsis"
         >
           <Text
             as="span"

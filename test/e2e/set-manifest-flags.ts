@@ -3,6 +3,10 @@ import { merge } from 'lodash';
 import { ManifestFlags } from '../../shared/lib/manifestFlags';
 import { fetchManifestFlagsFromPRAndGit } from '../../development/lib/get-manifest-flag';
 
+if (process.env.SELENIUM_BROWSER === undefined) {
+  process.env.SELENIUM_BROWSER = 'chrome';
+}
+
 export const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
 type ManifestType = { _flags?: ManifestFlags; manifest_version: string };

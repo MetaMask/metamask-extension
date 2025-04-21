@@ -25,6 +25,7 @@ import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { getIsRevokeDAIPermit } from '../utils';
 import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
+import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
@@ -96,7 +97,7 @@ const getTitle = (
       }
       return t('confirmTitleSignature');
     case TransactionType.revokeDelegation:
-      return t('confirmTitleRevokeDelegation');
+      return t('confirmTitleDelegationRevoke');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
@@ -159,7 +160,7 @@ const getDescription = (
       }
       return t('confirmTitleDescSign');
     case TransactionType.revokeDelegation:
-      return t('confirmTitleDescRevokeDelegation');
+      return t('confirmTitleDescDelegationRevoke');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         if (tokenStandard === TokenStandard.ERC721) {
@@ -282,6 +283,7 @@ const ConfirmTitle: React.FC = memo(() => {
           {title}
         </Text>
       )}
+      <NestedTransactionTag />
       {description !== '' && (
         <Text
           paddingBottom={4}

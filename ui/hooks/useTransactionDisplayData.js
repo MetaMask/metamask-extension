@@ -6,9 +6,11 @@ import {
 } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
 import {
-  getDetectedTokensInCurrentNetwork,
+  getAllDetectedTokens,
+  getAllTokens,
   getKnownMethodData,
-  getTokenList,
+  getSelectedAddress,
+  selectERC20TokensByChain,
 } from '../selectors/selectors';
 import {
   getStatusKey,
@@ -31,7 +33,7 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
-import { getNfts, getTokens } from '../ducks/metamask/metamask';
+import { getNfts } from '../ducks/metamask/metamask';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -109,10 +111,12 @@ export function useTransactionDisplayData(transactionGroup) {
   const dispatch = useDispatch();
   const locale = useSelector(getIntlLocale);
   const currentAsset = useCurrentAsset();
-  const knownTokens = useSelector(getTokens);
+  const knownTokens = useSelector(getAllTokens);
+  const selectedAddress = useSelector(getSelectedAddress);
   const knownNfts = useSelector(getNfts);
-  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const tokenList = useSelector(getTokenList);
+  const allDetectedTokens = useSelector(getAllDetectedTokens);
+  const tokenListAllChains = useSelector(selectERC20TokensByChain);
+
   const t = useI18nContext();
 
   // Bridge data
@@ -163,13 +167,18 @@ export function useTransactionDisplayData(transactionGroup) {
 
   if (isTokenCategory) {
     token =
-      knownTokens.find(({ address }) =>
+      knownTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
+        selectedAddress
+      ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
       ) ||
-      detectedTokens.find(({ address }) =>
+      allDetectedTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
+        selectedAddress
+      ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
       ) ||
-      tokenList[recipientAddress.toLowerCase()];
+      tokenListAllChains?.[transactionGroup?.initialTransaction?.chainId]
+        ?.data?.[recipientAddress.toLowerCase()];
   }
   useEffect(() => {
     return () => {

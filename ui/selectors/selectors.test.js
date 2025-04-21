@@ -212,11 +212,10 @@ describe('Selectors', () => {
       ).toStrictEqual(0);
     });
 
-    it('returns correct number of unapproved transactions and queued requests', () => {
+    it('returns correct number of unapproved transactions', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
-            queuedRequestCount: 5,
             transactions: [
               {
                 id: 0,
@@ -254,7 +253,7 @@ describe('Selectors', () => {
             },
           },
         }),
-      ).toStrictEqual(8);
+      ).toStrictEqual(3);
     });
 
     it('returns correct number of unapproved transactions and messages', () => {
@@ -298,19 +297,6 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getShouldShowSeedPhraseReminder', () => {
-    it('returns true if the account is a native account', () => {
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          seedPhraseBackedUp: false,
-        },
-      };
-      expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
-    });
-  });
-
   describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
     const SELECTED_ORIGIN_NETWORK_ID = NETWORK_TYPES.LINEA_SEPOLIA;
@@ -340,7 +326,6 @@ describe('Selectors', () => {
             ],
           },
         },
-        queuedRequestCount: 0,
         transactions: [],
         selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
         // networkConfigurations:
@@ -404,18 +389,6 @@ describe('Selectors', () => {
               status: TransactionStatus.approved,
             },
           ],
-        },
-      });
-      expect(networkToSwitchTo).toBe(null);
-    });
-
-    it('should return no network to switch to because there are queued requests', () => {
-      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-          queuedRequestCount: 1,
         },
       });
       expect(networkToSwitchTo).toBe(null);
@@ -1194,41 +1167,6 @@ describe('Selectors', () => {
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
   });
 
-  describe('#getPetnamesEnabled', () => {
-    function createMockStateWithPetnamesEnabled(petnamesEnabled) {
-      return { metamask: { preferences: { petnamesEnabled } } };
-    }
-
-    describe('usePetnamesEnabled', () => {
-      const tests = [
-        {
-          petnamesEnabled: true,
-          expectedResult: true,
-        },
-        {
-          petnamesEnabled: false,
-          expectedResult: false,
-        },
-        {
-          // Petnames is enabled by default.
-          petnamesEnabled: undefined,
-          expectedResult: true,
-        },
-      ];
-
-      tests.forEach(({ petnamesEnabled, expectedResult }) => {
-        it(`should return ${String(
-          expectedResult,
-        )} when petnames preference is ${String(petnamesEnabled)}`, () => {
-          const result = selectors.getPetnamesEnabled(
-            createMockStateWithPetnamesEnabled(petnamesEnabled),
-          );
-          expect(result).toBe(expectedResult);
-        });
-      });
-    });
-  });
-
   it('#getIsBridgeChain', () => {
     const isOptimismSupported = selectors.getIsBridgeChain({
       metamask: {
@@ -1398,6 +1336,30 @@ describe('Selectors', () => {
           '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
             address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
             balance: '0x0',
+          },
+        },
+        accountsByChainId: {
+          '0x5': {
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              balance: '0x0',
+            },
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+              address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+              balance: '0x0',
+            },
+            '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+              address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+              balance: '0x0',
+            },
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
+              address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+              balance: '0x0',
+            },
+            '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+              address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+              balance: '0x0',
+            },
           },
         },
         permissionHistory: {
@@ -2395,89 +2357,42 @@ describe('#getConnectedSitesList', () => {
       expect(result1 === result2).toBe(true);
     });
   });
-});
 
-describe('getShouldShowSeedPhraseReminder', () => {
-  const mockAccount = createMockInternalAccount();
-  const mockAccount2 = createMockInternalAccount({ address: 'mockAddress2' });
-
-  it('shows reminder for seed phrase if the primary srp is not backed up', () => {
-    const state = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          accounts: {
-            [mockAccount.id]: mockAccount,
-          },
-          selectedAccount: mockAccount.id,
-        },
-        keyrings: [
-          {
-            type: 'HD Key Tree',
-            accounts: [mockAccount.address],
-          },
-        ],
-        accounts: {
-          [mockAccount.address]: {
-            address: mockAccount.address,
-            balance: '0x1',
+  describe('getMetaMaskAccounts', () => {
+    it('return balance from cachedBalances if chainId passed is different from currentChainId', () => {
+      const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      const BALANCE = '38D7EA4C680000';
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          accountsByChainId: {
+            ...mockState.metamask.accountsByChainId,
+            '0x1': {
+              [ACCOUNT_ADDRESS]: {
+                balance: BALANCE,
+              },
+            },
           },
         },
-        keyringsMetadata: [{ id: 'mockid', name: '' }],
-        seedPhraseBackedUp: false,
-        isUnlocked: true,
-        dismissSeedBackUpReminder: false,
-      },
-    };
-
-    expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(true);
+      };
+      expect(
+        selectors.getMetaMaskAccounts(state, '0x1')[ACCOUNT_ADDRESS].balance,
+      ).toStrictEqual(BALANCE);
+    });
   });
 
-  it('does not show reminder for imported srps', () => {
-    const state = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          accounts: {
-            [mockAccount.id]: mockAccount,
-            [mockAccount2.id]: mockAccount2,
-          },
-          selectedAccount: mockAccount.id,
+  describe('getManageInstitutionalWallets', () => {
+    it('returns the manageInstitutionalWallets state', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask.metamask,
+          manageInstitutionalWallets: true,
         },
-        keyrings: [
-          // primary srp
-          {
-            type: 'HD Key Tree',
-            accounts: [mockAccount2.address],
-          },
-          // secondary srp
-          {
-            type: 'HD Key Tree',
-            accounts: [mockAccount.address],
-          },
-        ],
-        accounts: {
-          [mockAccount.address]: {
-            address: mockAccount.address,
-            balance: '0x1',
-          },
-          [mockAccount2.address]: {
-            address: mockAccount2.address,
-            balance: '0x1',
-          },
-        },
-        keyringsMetadata: [
-          { id: 'mockid1', name: '' },
-          { id: 'mockid2', name: '' },
-        ],
-        seedPhraseBackedUp: false,
-        isUnlocked: true,
-        dismissSeedBackUpReminder: false,
-      },
-    };
+      };
 
-    expect(selectors.getShouldShowSeedPhraseReminder(state)).toBe(false);
+      expect(selectors.getManageInstitutionalWallets(state)).toBe(true);
+    });
   });
 });

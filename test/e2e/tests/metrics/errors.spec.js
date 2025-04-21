@@ -49,6 +49,7 @@ const maskedBackgroundFields = [
   'CurrencyController.currencyRates.ETH.conversionDate',
   'CurrencyController.currencyRates.LineaETH.conversionDate',
   'CurrencyController.currencyRates.SepoliaETH.conversionDate',
+  'CurrencyController.currencyRates.MegaETH.conversionDate',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
@@ -60,8 +61,8 @@ const removedBackgroundFields = [
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
   'AppStateController.lastInteractedConfirmationInfo',
-  'BridgeController.bridgeState.quoteRequest.walletAddress',
-  'BridgeController.bridgeState.quoteRequest.slippage',
+  'BridgeController.quoteRequest.walletAddress',
+  'BridgeController.quoteRequest.slippage',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
   // This property is timing-dependent
@@ -843,23 +844,21 @@ describe('Sentry errors', function () {
 
   it('should not have extra properties in UI state mask', async function () {
     const expectedMissingState = {
-      bridgeState: {
-        // This can get wiped out during initialization due to a bug in
-        // the "resetState" method
-        quoteRequest: {
-          destChainId: true,
-          destTokenAddress: true,
-          srcChainId: true,
-          srcTokenAmount: true,
-          walletAddress: false,
-          slippage: true,
-        },
-        quotesLastFetched: true,
-        quotesLoadingStatus: true,
-        quotesRefreshCount: true,
-        quoteFetchError: true,
-        quotesInitialLoadTime: true,
+      // This can get wiped out during initialization due to a bug in
+      // the "resetState" method
+      quoteRequest: {
+        destChainId: true,
+        destTokenAddress: true,
+        srcChainId: true,
+        srcTokenAmount: true,
+        walletAddress: false,
+        slippage: true,
       },
+      quotesLastFetched: true,
+      quotesLoadingStatus: true,
+      quotesRefreshCount: true,
+      quoteFetchError: true,
+      quotesInitialLoadTime: true,
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial
       // state

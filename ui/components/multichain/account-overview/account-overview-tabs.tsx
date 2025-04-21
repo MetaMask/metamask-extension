@@ -116,7 +116,7 @@ export const AccountOverviewTabs = ({
 
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
-      history.push(`${ASSET_ROUTE}/${chainId}/${asset}`),
+      history.push(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
     [history],
   );
 

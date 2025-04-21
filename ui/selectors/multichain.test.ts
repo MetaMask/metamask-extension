@@ -2,6 +2,11 @@ import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { BtcScope } from '@metamask/keyring-api';
+import {
+  type SupportedCaipChainId,
+  AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+} from '@metamask/multichain-network-controller';
 import {
   getCurrentCurrency,
   getNativeCurrency,
@@ -55,6 +60,7 @@ type TestState = MultichainState &
       currencyRates: Record<string, { conversionRate: string }>;
       completedOnboarding: boolean;
       selectedNetworkClientId?: string;
+      bitcoinSupportEnabled: boolean;
     };
   };
 
@@ -113,13 +119,22 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         },
       },
       conversionRates: {},
+      historicalPrices: {},
       assetsMetadata: {},
       accountsAssets: {},
+      isEvmSelected: false,
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: BtcScope.Mainnet,
+      bitcoinSupportEnabled: true,
     },
   };
 }
 
-function getNonEvmState(account = MOCK_ACCOUNT_BIP122_P2WPKH): TestState {
+function getNonEvmState(
+  account = MOCK_ACCOUNT_BIP122_P2WPKH,
+  selectedChainId: SupportedCaipChainId = BtcScope.Mainnet,
+): TestState {
   return {
     metamask: {
       ...getEvmState().metamask,
@@ -127,6 +142,7 @@ function getNonEvmState(account = MOCK_ACCOUNT_BIP122_P2WPKH): TestState {
         selectedAccount: account.id,
         accounts: MOCK_ACCOUNTS,
       },
+      selectedMultichainNetworkChainId: selectedChainId,
     },
   };
 }
@@ -267,7 +283,6 @@ describe('Multichain Selectors', () => {
       );
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(['usd', 'ETH'])(
       "returns current currency '%s' if account is EVM",
       (currency: string) => {
@@ -279,7 +294,6 @@ describe('Multichain Selectors', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(['usd', 'BTC'])(
       "returns current currency '%s' if account is non-EVM",
       (currency: string) => {
@@ -360,7 +374,6 @@ describe('Multichain Selectors', () => {
       expect(getMultichainIsMainnet(state)).toBe(false);
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { isMainnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH },
       { isMainnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
@@ -387,7 +400,6 @@ describe('Multichain Selectors', () => {
       expect(getMultichainIsTestnet(state)).toBe(false);
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([CHAIN_IDS.SEPOLIA, CHAIN_IDS.LINEA_SEPOLIA])(
       'returns true if account is EVM (testnet): %s',
       (chainId: Hex) => {
@@ -396,7 +408,6 @@ describe('Multichain Selectors', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { isTestnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH },
       { isTestnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
@@ -425,28 +436,31 @@ describe('Multichain Selectors', () => {
       );
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       {
         network: 'mainnet',
         account: MOCK_ACCOUNT_BIP122_P2WPKH,
         asset: MultichainNativeAssets.BITCOIN,
+        chainId: BtcScope.Mainnet,
       },
       {
         network: 'testnet',
         account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
         asset: MultichainNativeAssets.BITCOIN_TESTNET,
+        chainId: BtcScope.Testnet,
       },
-    ])(
+    ] as const)(
       'returns cached balance if account is non-EVM: $network',
       ({
         account,
         asset,
+        chainId,
       }: {
         account: InternalAccount;
         asset: MultichainNativeAssets;
+        chainId: SupportedCaipChainId;
       }) => {
-        const state = getNonEvmState(account);
+        const state = getNonEvmState(account, chainId);
         const balance = state.metamask.balances[account.id][asset].amount;
 
         state.metamask.internalAccounts.selectedAccount = account.id;

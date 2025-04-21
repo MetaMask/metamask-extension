@@ -35,7 +35,7 @@ describe('Name lookup', function () {
         await sendTokenPage.fillRecipient('metamask.domain');
         await sendTokenPage.check_ensAddressResolution(
           'metamask.domain',
-          '0xc0ff...4979',
+          '0xc0ffe...54979',
         );
       },
     );

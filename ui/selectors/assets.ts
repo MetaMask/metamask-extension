@@ -2,7 +2,6 @@ import {
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
-import { BigNumber } from 'bignumber.js';
 import { CaipAssetId } from '@metamask/keyring-api';
 import {
   CaipAssetType,
@@ -10,12 +9,18 @@ import {
   Hex,
   parseCaipAssetType,
 } from '@metamask/utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { getTokenBalances } from '../ducks/metamask/metamask';
+import { BigNumber } from 'bignumber.js';
+import { groupBy } from 'lodash';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { TEST_CHAINS } from '../../shared/constants/network';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
+import { getTokenBalances } from '../ducks/metamask/metamask';
+import { findAssetByAddress } from '../pages/asset/util';
+import { getSelectedInternalAccount } from './accounts';
+import { getMultichainBalances, getMultichainIsEvm } from './multichain';
 import {
   getCurrencyRates,
   getCurrentNetwork,
@@ -23,9 +28,10 @@ import {
   getMarketData,
   getNativeTokenCachedBalanceByChainIdSelector,
   getPreferences,
+  getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -63,6 +69,16 @@ export function getAssetsMetadata(state: AssetsState) {
  */
 export function getAssetsRates(state: AssetsRatesState) {
   return state.metamask.conversionRates;
+}
+
+/**
+ * Gets non-EVM assets historical prices.
+ *
+ * @param state - Redux state object.
+ * @returns An object containing non-EVM assets historical prices per asset types (CAIP-19).
+ */
+export function getHistoricalPrices(state: AssetsRatesState) {
+  return state.metamask.historicalPrices;
 }
 
 export const getTokenBalancesEvm = createDeepEqualSelector(
@@ -106,6 +122,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
         const tokenList = tokens as Token[];
         tokenList.forEach((token: Token) => {
           const { isNative, address, decimals } = token;
+
           const balance =
             calculateTokenBalance({
               isNative,
@@ -114,6 +131,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               decimals,
               nativeBalances,
               selectedAccountTokenBalancesAcrossChains,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             }) || '0';
 
           const tokenFiatAmount = calculateTokenFiatAmount({
@@ -138,6 +157,16 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
             balance !== '0' ||
             (token.isNative && isOnCurrentNetwork)
           ) {
+            // title is used for sorting. We override native ETH to Ethereum
+            let title;
+            if (token.isNative) {
+              title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
+            } else {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              title = token.name || token.symbol;
+            }
+
             tokensWithBalance.push({
               ...token,
               address: token.address as CaipAssetType,
@@ -147,7 +176,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               string: String(balance),
               primary: '',
               secondary: 0,
-              title: '',
+              title,
             });
           }
         });
@@ -215,11 +244,59 @@ export const getMultiChainAssets = createDeepEqualSelector(
   },
 );
 
+/**
+ * Gets a {@link Token} (EVM or Multichain) owned by the passed account by address and chainId.
+ *
+ * @param state - Redux state object
+ * @param tokenAddress - Token address (Hex for EVM, or CaipAssetType for non-EVM)
+ * @param chainId - Chain ID (Hex for EVM, or CaipChainId for non-EVM)
+ * @param internalAccount - The account holding the token to search for
+ * @returns Token object
+ */
+export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
+  (state) => state,
+  (_state, account?: InternalAccount) => account,
+  (
+    _state,
+    _account?: InternalAccount,
+    tokenAddress?: Hex | CaipAssetType | string,
+  ) => tokenAddress,
+  (
+    _state,
+    _account?: InternalAccount,
+    _tokenAddress?: Hex | CaipAssetType | string,
+    _chainId?: Hex | CaipChainId,
+  ) => _chainId,
+  (
+    state,
+    account?: InternalAccount,
+    tokenAddress?: Hex | CaipAssetType | string,
+    chainId?: Hex | CaipChainId,
+  ) => {
+    const accountToUse = account ?? getSelectedInternalAccount(state);
+    const isEvm = getMultichainIsEvm(state, accountToUse);
+
+    const assetsToSearch = isEvm
+      ? (getSelectedAccountTokensAcrossChains(state) as Record<
+          Hex,
+          TokenWithFiatAmount[]
+        >)
+      : (groupBy(getMultiChainAssets(state, accountToUse), 'chainId') as Record<
+          CaipChainId,
+          TokenWithFiatAmount[]
+        >);
+
+    const result = findAssetByAddress(assetsToSearch, tokenAddress, chainId);
+
+    return result;
+  },
+);
+
 const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
-  getMultichainNetwork,
+  getSelectedMultichainNetworkConfiguration,
   getMultichainBalances,
   getAccountAssets,
   getAssetsRates,
@@ -250,31 +327,56 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
   },
 );
 
-export const getMultichainNativeTokenBalance = createDeepEqualSelector(
-  (_state, selectedAccount) => selectedAccount,
-  getMultichainNetwork,
-  getMultichainBalances,
+/**
+ * Gets the CAIP asset type of the native token of the current network.
+ *
+ * @param state - Redux state object
+ * @param selectedAccount - Selected account
+ * @returns CAIP asset type of the native token, or undefined if no native token is found
+ */
+export const getMultichainNativeAssetType = createDeepEqualSelector(
+  getSelectedInternalAccount,
   getAccountAssets,
+  getSelectedMultichainNetworkConfiguration,
   (
-    selectedAccountAddress,
-    currentNetwork,
-    multichainBalances,
-    accountAssets,
+    selectedAccount: ReturnType<typeof getSelectedInternalAccount>,
+    accountAssets: ReturnType<typeof getAccountAssets>,
+    currentNetwork: ReturnType<
+      typeof getSelectedMultichainNetworkConfiguration
+    >,
   ) => {
-    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
-    const balances = multichainBalances?.[selectedAccountAddress.id];
-
-    let nativeTokenBalance = zeroBalanceAssetFallback;
-
-    assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId, assetNamespace } = parseCaipAssetType(assetId);
-      if (chainId === currentNetwork.chainId && assetNamespace === 'slip44') {
-        const balance = balances?.[assetId] || zeroBalanceAssetFallback;
-
-        nativeTokenBalance = balance;
-      }
+    const assetTypes = accountAssets?.[selectedAccount.id] || [];
+    const nativeAssetType = assetTypes.find((assetType) => {
+      const { chainId, assetNamespace } = parseCaipAssetType(assetType);
+      return chainId === currentNetwork.chainId && assetNamespace === 'slip44';
     });
 
-    return nativeTokenBalance;
+    return nativeAssetType;
+  },
+);
+
+/**
+ * Gets the balance of the native token of the current network for the selected account.
+ *
+ * @param state - Redux state object
+ * @param selectedAccount - Selected account
+ * @returns Balance of the native token, or fallbacks to { amount: 0, unit: '' } if no native token is found
+ */
+export const getMultichainNativeTokenBalance = createDeepEqualSelector(
+  (_state, selectedAccount) => selectedAccount,
+  getMultichainBalances,
+  getMultichainNativeAssetType,
+  (
+    selectedAccountAddress,
+    multichainBalances: ReturnType<typeof getMultichainBalances>,
+    nativeAssetType: ReturnType<typeof getMultichainNativeAssetType>,
+  ) => {
+    const balances = multichainBalances?.[selectedAccountAddress.id];
+
+    if (!nativeAssetType || !balances?.[nativeAssetType]) {
+      return zeroBalanceAssetFallback;
+    }
+
+    return balances[nativeAssetType];
   },
 );

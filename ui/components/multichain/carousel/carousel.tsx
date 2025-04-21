@@ -6,14 +6,16 @@ import {
   TextAlign,
   AlignItems,
   TextVariant,
+  BorderRadius,
+  TextColor,
   FontWeight,
-  BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getSweepstakesCampaignActive } from '../../../hooks/useCarouselManagement';
 import type { CarouselProps } from './carousel.types';
 import { BANNER_STYLES, MAX_SLIDES } from './constants';
 import {
@@ -41,12 +43,26 @@ export const Carousel = React.forwardRef(
     const visibleSlides = slides
       .filter((slide) => !slide.dismissed || slide.undismissable)
       .sort((a, b) => {
+        const isSweepstakesActive = getSweepstakesCampaignActive(
+          new Date(new Date().toISOString()),
+        );
+
+        if (isSweepstakesActive) {
+          if (a.id === 'sweepStake') {
+            return -1;
+          }
+          if (b.id === 'sweepStake') {
+            return 1;
+          }
+        }
+
         if (a.undismissable && !b.undismissable) {
           return -1;
         }
         if (!a.undismissable && b.undismissable) {
           return 1;
         }
+
         return 0;
       })
       .slice(0, MAX_SLIDES);
@@ -132,8 +148,8 @@ export const Carousel = React.forwardRef(
                 className="mm-carousel-slide"
                 textAlign={TextAlign.Left}
                 alignItems={AlignItems.center}
-                borderColor={BorderColor.borderMuted}
                 paddingLeft={0}
+                borderRadius={BorderRadius.XL}
                 paddingRight={0}
                 style={{
                   height: BANNER_STYLES.HEIGHT,
@@ -203,13 +219,13 @@ export const Carousel = React.forwardRef(
               titleProps={{
                 variant: TextVariant.bodySmMedium,
                 fontWeight: FontWeight.Medium,
-                marginLeft: 2,
+                marginLeft: 1,
               }}
-              borderColor={BorderColor.borderMuted}
               descriptionProps={{
                 variant: TextVariant.bodyXs,
                 fontWeight: FontWeight.Normal,
-                marginLeft: 2,
+                color: TextColor.textAlternative,
+                marginLeft: 1,
               }}
               onClose={
                 Boolean(handleClose) && !slide.undismissable
@@ -229,6 +245,7 @@ export const Carousel = React.forwardRef(
               padding={0}
               paddingLeft={3}
               paddingRight={3}
+              borderRadius={BorderRadius.XL}
             />
           ))}
         </ResponsiveCarousel>

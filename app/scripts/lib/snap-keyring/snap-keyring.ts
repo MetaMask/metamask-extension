@@ -1,4 +1,9 @@
-import { SnapKeyring, SnapKeyringCallbacks } from '@metamask/eth-snap-keyring';
+import {
+  getDefaultInternalOptions,
+  SnapKeyring,
+  SnapKeyringCallbacks,
+  SnapKeyringInternalOptions,
+} from '@metamask/eth-snap-keyring';
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
@@ -274,14 +279,18 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     address,
     snapId,
     skipConfirmationDialog,
+    skipSetSelectedAccountStep,
     accountName,
     onceSaved,
+    defaultAccountNameChosen,
   }: {
     address: string;
     snapId: SnapId;
     skipConfirmationDialog: boolean;
+    skipSetSelectedAccountStep: boolean;
     onceSaved: Promise<string>;
     accountName?: string;
+    defaultAccountNameChosen: boolean;
   }) {
     const learnMoreLink =
       'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
@@ -296,6 +305,9 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           account_type: MetaMetricsEventAccountType.Snap,
           snap_id: snapId,
           snap_name: snapName,
+          ...(event === MetaMetricsEventName.AccountAdded && {
+            is_suggested_name: defaultAccountNameChosen,
+          }),
         },
       });
     };
@@ -310,11 +322,13 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         // state, so we can safely uses this state to run post-processing.
         // (e.g. renaming the account, select the account, etc...)
 
-        // Set the selected account to the new account
-        this.#messenger.call(
-          'AccountsController:setSelectedAccount',
-          accountId,
-        );
+        if (!skipSetSelectedAccountStep) {
+          // Set the selected account to the new account
+          this.#messenger.call(
+            'AccountsController:setSelectedAccount',
+            accountId,
+          );
+        }
 
         if (accountName) {
           this.#messenger.call(
@@ -384,8 +398,11 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     handleUserInput: (accepted: boolean) => Promise<void>,
     onceSaved: Promise<string>,
     accountNameSuggestion: string = '',
-    displayConfirmation: boolean = false,
-    displayAccountNameSuggestion: boolean = true,
+    {
+      displayConfirmation,
+      displayAccountNameSuggestion,
+      setSelectedAccount,
+    }: SnapKeyringInternalOptions = getDefaultInternalOptions(),
   ) {
     assertIsValidSnapId(snapId);
 
@@ -396,6 +413,10 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     // Only pre-installed Snaps can skip the account name suggestion dialog.
     const skipAccountNameSuggestionDialog =
       isSnapPreinstalled(snapId) && !displayAccountNameSuggestion;
+
+    // Only pre-installed Snaps can skip the account from being selected.
+    const skipSetSelectedAccountStep =
+      isSnapPreinstalled(snapId) && !setSelectedAccount;
 
     // First part of the flow, which includes confirmation dialogs (if not skipped).
     // Once confirmed, we resume the Snap execution.
@@ -415,8 +436,11 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       address,
       snapId,
       skipConfirmationDialog,
+      skipSetSelectedAccountStep,
       accountName,
       onceSaved,
+      defaultAccountNameChosen:
+        Boolean(accountNameSuggestion) && accountName === accountNameSuggestion,
     });
   }
 

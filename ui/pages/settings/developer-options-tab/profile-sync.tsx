@@ -15,7 +15,7 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useProfileSyncing';
+import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useAccountSyncing';
 
 type DeleteSyncedDataProps = {
   onDelete: () => Promise<void>;
@@ -80,7 +80,7 @@ export const useDeleteAccountSyncDataProps = () => {
   const onDelete = useCallback(async () => {
     await dispatchDeleteAccountSyncingData();
     setDeleteSuccessful(true);
-  }, []);
+  }, [dispatchDeleteAccountSyncingData, setDeleteSuccessful]);
   return {
     deleteSuccessful,
     onDelete,

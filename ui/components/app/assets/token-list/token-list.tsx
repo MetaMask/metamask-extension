@@ -17,9 +17,9 @@ import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 import useMultiChainAssets from '../hooks/useMultichainAssets';
 import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../../selectors/multichain';
+  getSelectedMultichainNetworkConfiguration,
+  getIsEvmMultichainNetworkSelected,
+} from '../../../../selectors/multichain/networks';
 import { getTokenBalancesEvm } from '../../../../selectors/assets';
 
 type TokenListProps = {
@@ -27,10 +27,10 @@ type TokenListProps = {
 };
 
 function TokenList({ onTokenClick }: TokenListProps) {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
-  const currentNetwork = useSelector(getMultichainNetwork);
+  const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -58,17 +58,9 @@ function TokenList({ onTokenClick }: TokenListProps) {
       },
     ]);
 
-    // TODO: consolidate name & title in token fields to avoid this switch
-    if (tokenSortConfig.sortCallback === 'alphaNumeric') {
-      return sortAssets([...filteredAssets], {
-        key: isEvm ? 'name' : 'title',
-        sortCallback: 'alphaNumeric',
-        order: 'asc',
-      });
-    }
-
     // sort filtered tokens based on the tokenSortConfig in state
     return sortAssets([...filteredAssets], tokenSortConfig);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isEvm,
     evmBalances,
@@ -76,6 +68,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
     networkFilter,
     currentNetwork.chainId,
     tokenSortConfig,
+    // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
   ]);
 
