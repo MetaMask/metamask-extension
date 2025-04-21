@@ -2,7 +2,7 @@ name: Bug Report
 description: Using MetaMask, but it's not working as you expect?
 title: '[Bug]: '
 labels: ['type-bug']
-type: Bug
+type: 'Bug'
 body:
   - type: markdown
     attributes:
