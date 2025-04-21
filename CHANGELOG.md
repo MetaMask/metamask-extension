@@ -5,13 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [12.17.0]
 ### Added
 - [Beta] Create Solana account automatically on wallet creation or SRP import [#32038](https://github.com/MetaMask/metamask-extension/pull/32038)
 
 ### Fixed
 - Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
-
-## [12.17.0]
 
 ## [12.16.0]
 ### Added
