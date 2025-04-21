@@ -9,8 +9,8 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
-import AssetListControlBar from './asset-list-control-bar';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
+import AssetListControlBar from './asset-list-control-bar';
 
 const mockHistoryPush = jest.fn();
 jest.mock('react-router-dom', () => ({
