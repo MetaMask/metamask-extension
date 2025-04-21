@@ -121,10 +121,11 @@ export function getPermissionBackgroundApiMethods({
       }
     });
 
-    const updatedCaveatValueWithChainIds = overwriteCaipChainIdsInCaip25CaveatValue(
-      caip25Caveat.value,
-      updatedPermittedChainIds,
-    );
+    const updatedCaveatValueWithChainIds =
+      overwriteCaipChainIdsInCaip25CaveatValue(
+        caip25Caveat.value,
+        updatedPermittedChainIds,
+      );
 
     const updatedCaveatValueWithAccountIds =
       setNonSCACaipAccountIdsInCaip25CaveatValue(

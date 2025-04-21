@@ -136,6 +136,7 @@ export async function setupInitialStore(
     const selectedAccount = getSelectedInternalAccount(draftInitialState);
 
     const currentTabIsConnectedToSelectedAddress =
+      selectedAccount &&
       isInternalAccountInPermittedAccountIds(
         selectedAccount,
         permittedAccountsForCurrentTab,
