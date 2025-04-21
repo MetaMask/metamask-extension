@@ -35,6 +35,8 @@ import log from 'loglevel';
 import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
+import ObjectMultiplex from '@metamask/object-multiplex';
+import { pipeline } from 'readable-stream';
 
 // this is currently equivalent to process.env.MULTICHAIN_API
 // which can't be used for conditional imports
@@ -47,6 +49,7 @@ import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
 ///: END:ONLY_INCLUDE_IF
 
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { METAMASK_PROVIDER } from './constants/stream';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -67,8 +70,17 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
+  const mux = new ObjectMultiplex();
+  pipeline(metamaskStream, mux, metamaskStream, (error) => {
+    let warningMsg = `Lost connection to "${METAMASK_PROVIDER}".`;
+    if (error?.stack) {
+      warningMsg += `\n${error.stack}`;
+    }
+    console.warn(warningMsg);
+  });
+
   initializeProvider({
-    connectionStream: metamaskStream,
+    connectionStream: mux.createStream(METAMASK_PROVIDER),
     logger: log,
     shouldShimWeb3: true,
     providerInfo: {
