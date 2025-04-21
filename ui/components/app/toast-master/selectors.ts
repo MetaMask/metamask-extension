@@ -1,4 +1,5 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
@@ -6,11 +7,13 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../../../helpers/constants/survey';
-import { getAllPermittedAccountsForCurrentTab, isSolanaAccount } from '../../../selectors';
+import {
+  getAllPermittedAccountsForCurrentTab,
+  isSolanaAccount,
+} from '../../../selectors';
 import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { MetaMaskReduxState } from '../../../store/store';
 import { getIsPrivacyToastRecent } from './utils';
-import { isEvmAccountType } from '@metamask/keyring-api';
 
 // TODO: get this into one of the larger definitions of state type
 type State = Omit<MetaMaskReduxState, 'appState'> & {
