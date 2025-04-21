@@ -11,7 +11,7 @@ import {
   NormalizedScopesObject,
   getSupportedScopeObjects,
   Caip25CaveatValue,
-  setPermittedAccounts,
+  setNonSCACaipAccountIdsInCaip25CaveatValue,
   getAllScopesFromScopesObjects,
   getCaipAccountIdsFromScopesObjects,
   isKnownSessionPropertyValue,
@@ -230,7 +230,7 @@ async function walletCreateSessionHandler(
     };
 
     const requestedCaip25CaveatValueWithSupportedAccounts =
-      setPermittedAccounts(
+      setNonSCACaipAccountIdsInCaip25CaveatValue(
         requestedCaip25CaveatValue,
         supportedRequestedAccountAddresses,
       );

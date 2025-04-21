@@ -6,8 +6,8 @@ import {
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  setPermittedChainIds,
-  setPermittedAccounts,
+  setCaipChainIdsInCaip25CaveatValue,
+  setNonSCACaipAccountIdsInCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
   getAllScopesFromCaip25CaveatValue,
@@ -57,7 +57,7 @@ export function getPermissionBackgroundApiMethods({
     });
 
     // Only the first scope in the scopes array is needed because
-    // setPermittedAccounts currently sets accounts on all matching
+    // setNonSCACaipAccountIdsInCaip25CaveatValue currently sets accounts on all matching
     // namespaces, not just the exact CaipChainId.
     const caipAccountIds = internalAccounts.map((internalAccount) => {
       return `${internalAccount.scopes[0]}:${internalAccount.address}`;
@@ -121,15 +121,16 @@ export function getPermissionBackgroundApiMethods({
       }
     });
 
-    const updatedCaveatValueWithChainIds = setPermittedChainIds(
+    const updatedCaveatValueWithChainIds = setCaipChainIdsInCaip25CaveatValue(
       caip25Caveat.value,
       updatedPermittedChainIds,
     );
 
-    const updatedCaveatValueWithAccountIds = setPermittedAccounts(
-      updatedCaveatValueWithChainIds,
-      updatedAccountIds,
-    );
+    const updatedCaveatValueWithAccountIds =
+      setNonSCACaipAccountIdsInCaip25CaveatValue(
+        updatedCaveatValueWithChainIds,
+        updatedAccountIds,
+      );
 
     permissionController.updateCaveat(
       origin,
@@ -154,7 +155,7 @@ export function getPermissionBackgroundApiMethods({
       ]),
     );
 
-    const caveatValueWithChainIds = setPermittedChainIds(
+    const caveatValueWithChainIds = setCaipChainIdsInCaip25CaveatValue(
       caip25Caveat.value,
       updatedChainIds,
     );
@@ -164,10 +165,11 @@ export function getPermissionBackgroundApiMethods({
     );
 
     // ensure that the list of permitted accounts is set for the newly added scopes
-    const caveatValueWithAccountsSynced = setPermittedAccounts(
-      caveatValueWithChainIds,
-      permittedAccountIds,
-    );
+    const caveatValueWithAccountsSynced =
+      setNonSCACaipAccountIdsInCaip25CaveatValue(
+        caveatValueWithChainIds,
+        permittedAccountIds,
+      );
 
     permissionController.updateCaveat(
       origin,
@@ -257,7 +259,7 @@ export function getPermissionBackgroundApiMethods({
           Caip25EndowmentPermissionName,
         );
       } else {
-        const updatedCaveatValue = setPermittedAccounts(
+        const updatedCaveatValue = setNonSCACaipAccountIdsInCaip25CaveatValue(
           caip25Caveat.value,
           remainingAccountIds,
         );
@@ -300,7 +302,7 @@ export function getPermissionBackgroundApiMethods({
           Caip25EndowmentPermissionName,
         );
       } else {
-        const updatedCaveatValue = setPermittedChainIds(
+        const updatedCaveatValue = setCaipChainIdsInCaip25CaveatValue(
           caip25Caveat.value,
           remainingChainIds,
         );
