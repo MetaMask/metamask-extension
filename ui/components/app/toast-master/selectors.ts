@@ -1,5 +1,6 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
@@ -11,7 +12,6 @@ import {
   getAllPermittedAccountsForCurrentTab,
   isSolanaAccount,
 } from '../../../selectors';
-import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { MetaMaskReduxState } from '../../../store/store';
 import { getIsPrivacyToastRecent } from './utils';
 
