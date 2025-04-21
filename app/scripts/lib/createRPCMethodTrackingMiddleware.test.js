@@ -1083,7 +1083,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
 
-      it('should track wallet_invokeMethod events with multichain category and properties', async () => {
+      it('should track wallet_invokeMethod events with multichain_api category, requested_through, and multichain_api_request_scope properties', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -1093,7 +1093,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
               method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
               params: [],
             },
-            scope: 'eip155:1',
+            scope: 'eip155:10',
           },
         };
 
@@ -1110,6 +1110,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            multichain_api_request_scope: 'eip155:10',
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1120,12 +1121,13 @@ describe('createRPCMethodTrackingMiddleware', () => {
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            multichain_api_request_scope: 'eip155:10',
           },
           referrer: { url: 'multichain.dapp' },
         });
       });
 
-      it('should track wallet_invokeMethod rejections with multichain category', async () => {
+      it('should track wallet_invokeMethod rejections with multichain_api category, requested_through, and multichain_api_request_scope properties', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -1135,7 +1137,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
               method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
               params: [],
             },
-            scope: 'eip155:1',
+            scope: 'eip155:137',
           },
         };
 
@@ -1157,6 +1159,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            multichain_api_request_scope: 'eip155:137',
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1167,6 +1170,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           properties: {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            multichain_api_request_scope: 'eip155:137',
           },
           referrer: { url: 'multichain.dapp' },
         });
