@@ -36,7 +36,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
@@ -57,17 +56,16 @@ import {
 } from '../../../selectors';
 import {
   getImageForChainId,
-  getMultichainConversionRate,
   getMultichainIsEvm,
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import { getPricePrecision, localizeLargeNumber } from '../util';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
+import { AssetMarketDetails } from './asset-market-details';
 
 /** Information about a native or token asset */
 export type Asset = (
@@ -112,7 +110,6 @@ const AssetPage = ({
   const history = useHistory();
   const selectedAccount = useSelector(getSelectedAccount);
   const currency = useSelector(getCurrentCurrency);
-  const conversionRate = useMultichainSelector(getMultichainConversionRate);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = useMultichainSelector(getMultichainIsEvm);
 
@@ -224,18 +221,7 @@ const AssetPage = ({
       ? tokenExchangeRate * tokenMarketPrice
       : undefined;
 
-  const tokenMarketDetails = marketData[chainId]?.[address];
-  const shouldDisplayMarketData =
-    conversionRate > 0 &&
-    tokenMarketDetails &&
-    (tokenMarketDetails.marketCap > 0 ||
-      tokenMarketDetails.totalVolume > 0 ||
-      tokenMarketDetails.circulatingSupply > 0 ||
-      tokenMarketDetails.allTimeHigh > 0 ||
-      tokenMarketDetails.allTimeLow > 0);
-
   // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
-
   asset.balance = {
     value: hexToDecimal(tokenHexBalance),
     display: String(balance),
@@ -446,75 +432,7 @@ const AssetPage = ({
               </Box>
             </Box>
           )}
-          {shouldDisplayMarketData && (
-            <Box paddingLeft={4} paddingRight={4}>
-              <Text variant={TextVariant.headingMd} paddingBottom={4}>
-                {t('marketDetails')}
-              </Text>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={2}
-              >
-                {tokenMarketDetails.marketCap > 0 &&
-                  renderRow(
-                    t('marketCap'),
-                    <Text data-testid="asset-market-cap">
-                      {localizeLargeNumber(
-                        t,
-                        tokenExchangeRate * tokenMarketDetails.marketCap,
-                      )}
-                    </Text>,
-                  )}
-                {tokenMarketDetails.totalVolume > 0 &&
-                  renderRow(
-                    t('totalVolume'),
-                    <Text>
-                      {localizeLargeNumber(
-                        t,
-                        tokenExchangeRate * tokenMarketDetails.totalVolume,
-                      )}
-                    </Text>,
-                  )}
-                {tokenMarketDetails.circulatingSupply > 0 &&
-                  renderRow(
-                    t('circulatingSupply'),
-                    <Text>
-                      {localizeLargeNumber(
-                        t,
-                        tokenMarketDetails.circulatingSupply,
-                      )}
-                    </Text>,
-                  )}
-                {tokenMarketDetails.allTimeHigh > 0 &&
-                  renderRow(
-                    t('allTimeHigh'),
-                    <Text>
-                      {formatCurrency(
-                        `${tokenExchangeRate * tokenMarketDetails.allTimeHigh}`,
-                        currency,
-                        getPricePrecision(
-                          tokenExchangeRate * tokenMarketDetails.allTimeHigh,
-                        ),
-                      )}
-                    </Text>,
-                  )}
-                {tokenMarketDetails.allTimeLow > 0 &&
-                  renderRow(
-                    t('allTimeLow'),
-                    <Text>
-                      {formatCurrency(
-                        `${tokenExchangeRate * tokenMarketDetails.allTimeLow}`,
-                        currency,
-                        getPricePrecision(
-                          tokenExchangeRate * tokenMarketDetails.allTimeLow,
-                        ),
-                      )}
-                    </Text>,
-                  )}
-              </Box>
-            </Box>
-          )}
+          <AssetMarketDetails asset={asset} address={address} />
           <Box marginBottom={8}>
             <Text
               paddingLeft={4}
