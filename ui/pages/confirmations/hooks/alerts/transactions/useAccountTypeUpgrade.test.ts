@@ -1,15 +1,12 @@
-import {
-  TransactionMeta,
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
-import { AccountTypeMessage } from './AccountTypeMessage';
+import { genUnapprovedApproveConfirmation } from '../../../../../../test/data/confirmations/token-approve';
 import { useAccountTypeUpgrade } from './useAccountTypeUpgrade';
+import { AccountTypeMessage } from './AccountTypeMessage';
 
 jest.mock('../../../../../../shared/lib/transactions.utils');
 jest.mock(
@@ -20,32 +17,13 @@ jest.mock(
     })),
   }),
 );
+jest.mock('./AccountTypeMessage', () => ({
+  AccountTypeMessage: jest.fn(() => 'Mocked AccountTypeMessage'),
+}));
 
-const TO_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
-const NESTED_TRANSACTIONS_MOCK = [{ data: '0x', to: TO_MOCK }];
-const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-const TRANSACTION_ID_MOCK = '123-456';
-
-const TRANSACTION_META_MOCK = {
-  id: TRANSACTION_ID_MOCK,
-  chainId: '0x5',
-  networkClientId: 'testNetworkClientId',
-  status: TransactionStatus.unapproved,
-  type: TransactionType.contractInteraction,
-  txParams: {
-    from: ACCOUNT_ADDRESS_MOCK,
-  },
-  time: new Date().getTime() - 10000,
-} as TransactionMeta;
-
-function runHook({
-  currentConfirmation,
-}: {
-  currentConfirmation?: TransactionMeta;
-} = {}) {
-  const state = currentConfirmation
-    ? getMockConfirmStateForTransaction(currentConfirmation)
-    : {};
+function runHook() {
+  const transactionMeta = genUnapprovedApproveConfirmation() as TransactionMeta;
+  const state = getMockConfirmStateForTransaction(transactionMeta);
 
   const response = renderHookWithConfirmContextProvider(
     () => useAccountTypeUpgrade(),
@@ -67,18 +45,11 @@ describe('useAccountTypeUpgrade', () => {
 
   it('returns an alert when the transaction is a batch transaction', () => {
     isBatchTransactionMock.mockReturnValue(true);
-    expect(
-      runHook({
-        currentConfirmation: {
-          ...TRANSACTION_META_MOCK,
-          nestedTransactions: NESTED_TRANSACTIONS_MOCK,
-        } as TransactionMeta,
-      }),
-    ).toEqual([
+    expect(runHook()).toEqual([
       {
-        field: 'accountType',
+        field: 'accountTypeUpgrade',
         key: RowAlertKey.AccountTypeUpgrade,
-        content: AccountTypeMessage,
+        content: AccountTypeMessage(),
         reason: 'Account type',
         severity: Severity.Info,
       },
