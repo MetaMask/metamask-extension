@@ -2,7 +2,7 @@ import { pick } from 'lodash';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  BackgroundColor, 
+  BackgroundColor,
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../box';
