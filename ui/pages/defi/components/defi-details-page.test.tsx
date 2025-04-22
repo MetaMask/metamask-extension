@@ -3,8 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import DeFiPage from './defi-details-page';
 import mockState from '../../../../test/data/mock-state.json';
+import DeFiPage from './defi-details-page';
 
 const mockHistoryPush = jest.fn();
 

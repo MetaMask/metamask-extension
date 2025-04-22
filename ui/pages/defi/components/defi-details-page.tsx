@@ -41,7 +41,7 @@ const useExtractUnderlyingTokens = (
     );
   }, [positions]);
 
-export const DeFiPage = () => {
+const DeFiPage = () => {
   const { chainId, protocolId } = useParams<{
     chainId: '0x' & string;
     protocolId: string;
