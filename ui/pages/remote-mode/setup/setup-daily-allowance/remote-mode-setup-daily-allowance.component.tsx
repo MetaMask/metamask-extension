@@ -1,15 +1,9 @@
-import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { createDelegation } from '@metamask/delegation-toolkit';
 
-import {
-  Content,
-  Footer,
-  Header,
-  Page,
-} from '../../../../components/multichain/pages/page';
+import { Hex } from '@metamask/utils';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -17,57 +11,60 @@ import {
   Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonVariant,
   ButtonSize,
-  Text,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../../components/component-library';
+import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
+import { AccountPicker } from '../../../../components/multichain/account-picker';
+import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../../../components/multichain/pages/page';
+import Card from '../../../../components/ui/card';
+import Dropdown from '../../../../components/ui/dropdown';
 import Tooltip from '../../../../components/ui/tooltip';
 import UnitInput from '../../../../components/ui/unit-input';
-import Dropdown from '../../../../components/ui/dropdown';
 import {
   AlignItems,
-  FontWeight,
-  TextVariant,
-  TextAlign,
   BackgroundColor,
-  Display,
-  JustifyContent,
-  FlexDirection,
   BlockSize,
-  TextColor,
   BorderColor,
   BorderRadius,
+  Display,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
-import Card from '../../../../components/ui/card';
-import { AccountPicker } from '../../../../components/multichain/account-picker';
-import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
-import { DailyAllowanceTokenTypes, DailyAllowance } from '../../remote.types';
 import {
   DEFAULT_ROUTE,
   REMOTE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
+import { DailyAllowance, DailyAllowanceTokenTypes } from '../../remote.types';
 
+import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import {
-  signDelegation,
-  storeDelegationEntry,
-} from '../../../../store/actions';
-import {
-  getSelectedNetwork,
-  getSelectedInternalAccount,
   getMetaMaskAccountsOrdered,
+  getSelectedInternalAccount,
+  getSelectedNetwork,
 } from '../../../../selectors';
 import {
-  RemoteModeHardwareWalletConfirm,
   RemoteModeDailyAllowanceCard,
-  StepIndicator,
+  RemoteModeHardwareWalletConfirm,
   SmartAccountUpdateInformation,
+  StepIndicator,
 } from '../../components';
-import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
+import { REMOTE_MODES, useRemoteMode } from '../../hooks/useRemoteMode';
 
 const TOTAL_STEPS = 3;
 
@@ -103,6 +100,11 @@ export default function RemoteModeSetupDailyAllowance() {
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedNetwork = useSelector(getSelectedNetwork);
+
+  const { enableRemoteMode } = useRemoteMode({
+    account: selectedHardwareAccount.address as Hex,
+    chainId: selectedNetwork.configuration.chainId,
+  });
 
   useEffect(() => {
     setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
@@ -173,23 +175,12 @@ export default function RemoteModeSetupDailyAllowance() {
       return;
     }
 
-    const { chainId } = selectedNetwork.configuration;
-
-    const delegation = createDelegation({
-      caveats: [],
-      from: selectedAccount.address as `0x${string}`,
-      to: selectedAccount.address as `0x${string}`,
+    await enableRemoteMode({
+      selectedAccount: selectedHardwareAccount,
+      authorizedAccount: selectedAccount,
+      mode: REMOTE_MODES.DAILY_ALLOWANCE,
     });
 
-    const signature = await signDelegation({ delegation, chainId });
-
-    delegation.signature = signature;
-
-    storeDelegationEntry({
-      delegation,
-      tags: ['daily-allowance'],
-      chainId: selectedNetwork.configuration.chainId,
-    });
     history.replace(REMOTE_ROUTE);
   };
 

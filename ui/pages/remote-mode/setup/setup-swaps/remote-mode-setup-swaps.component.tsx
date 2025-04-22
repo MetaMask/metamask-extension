@@ -1,9 +1,9 @@
-import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { createDelegation } from '@metamask/delegation-toolkit';
+import { Hex } from '@metamask/utils';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -14,51 +14,47 @@ import {
   Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonVariant,
   ButtonSize,
-  Text,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../../components/component-library';
-import Tooltip from '../../../../components/ui/tooltip';
-import UnitInput from '../../../../components/ui/unit-input';
-import Dropdown from '../../../../components/ui/dropdown';
-import {
-  AlignItems,
-  FontWeight,
-  TextVariant,
-  TextAlign,
-  BackgroundColor,
-  Display,
-  JustifyContent,
-  FlexDirection,
-  BlockSize,
-  TextColor,
-  BorderColor,
-  BorderRadius,
-} from '../../../../helpers/constants/design-system';
-import Card from '../../../../components/ui/card';
-import { AccountPicker } from '../../../../components/multichain/account-picker';
 import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
+import { AccountPicker } from '../../../../components/multichain/account-picker';
 import {
   Content,
   Footer,
   Header,
   Page,
 } from '../../../../components/multichain/pages/page';
+import Card from '../../../../components/ui/card';
+import Dropdown from '../../../../components/ui/dropdown';
+import Tooltip from '../../../../components/ui/tooltip';
+import UnitInput from '../../../../components/ui/unit-input';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 
-import { SwapAllowance, TokenSymbol, ToTokenOption } from '../../remote.types';
 import {
   DEFAULT_ROUTE,
   REMOTE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
+import { SwapAllowance, TokenSymbol, ToTokenOption } from '../../remote.types';
 
-import {
-  signDelegation,
-  storeDelegationEntry,
-} from '../../../../store/actions';
 import {
   RemoteModeHardwareWalletConfirm,
   RemoteModeSwapAllowanceCard,
@@ -68,13 +64,13 @@ import {
 
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 
-import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import {
-  getSelectedInternalAccount,
   getMetaMaskAccountsOrdered,
+  getSelectedInternalAccount,
   getSelectedNetwork,
 } from '../../../../selectors';
-import useUpgradeAccount from '../../hooks/useUpgradeAccount';
+import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
+import { useRemoteMode, REMOTE_MODES } from '../../hooks/useRemoteMode';
 
 const TOTAL_STEPS = 3;
 
@@ -114,8 +110,9 @@ export default function RemoteModeSetupSwaps() {
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedNetwork = useSelector(getSelectedNetwork);
-  const { upgradeAccount } = useUpgradeAccount({
-    account: selectedHardwareAccount.address as `0x${string}`,
+  const { enableRemoteMode } = useRemoteMode({
+    account: selectedHardwareAccount.address as Hex,
+    chainId: selectedNetwork.configuration.chainId,
   });
 
   useEffect(() => {
@@ -186,26 +183,10 @@ export default function RemoteModeSetupSwaps() {
       return;
     }
 
-    const { chainId } = selectedNetwork.configuration;
-
-    await upgradeAccount({
-      chainId,
-    });
-
-    const delegation = createDelegation({
-      caveats: [],
-      from: selectedAccount.address as `0x${string}`,
-      to: selectedAccount.address as `0x${string}`,
-    });
-
-    const signature = await signDelegation({ delegation, chainId });
-
-    delegation.signature = signature;
-
-    await storeDelegationEntry({
-      delegation,
-      tags: ['swap'],
-      chainId,
+    await enableRemoteMode({
+      selectedAccount: selectedHardwareAccount,
+      authorizedAccount: selectedAccount,
+      mode: REMOTE_MODES.SWAP,
     });
 
     history.replace(REMOTE_ROUTE);
