@@ -20,7 +20,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   handleDelete = async () => {
     const { chainId, onConfirm, hideModal, removeNetwork } = this.props;
 
-    // NOTE: We can only support EVM networks, so the conversion is safe here.
+    // NOTE: We only support EVM networks removal, so the conversion is safe here.
     const caipChainId = toEvmCaipChainId(chainId);
     await removeNetwork(caipChainId);
 
