@@ -123,10 +123,10 @@ export function getAccountLabels(
       break;
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap: {
-      const snapEntroypySource = account.options.entropySource;
-      if (snapEntroypySource) {
+      const { entropySource } = account.options;
+      if (entropySource) {
         const hdKeyringIndex = hdKeyrings.findIndex(
-          (kr) => kr.metadata.id === snapEntroypySource,
+          (kr) => kr.metadata.id === entropySource,
         );
         const hdKeyringLabel = `SRP #${hdKeyringIndex + 1}`;
         labels.push(hdKeyringLabel);
