@@ -30,6 +30,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -46,12 +47,16 @@ import {
 
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
+const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
 
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
+  const nextRouteByBrowser = isFirefox ? ONBOARDING_WELCOME_ROUTE : nextRoute;
+
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
@@ -62,26 +67,27 @@ export default function OnboardingMetametrics() {
     if (dataCollectionForMarketing === null) {
       await dispatch(setDataCollectionForMarketing(false));
     }
-
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
     try {
-      trackEvent(
-        {
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.WalletSetupStarted,
-          properties: {
-            account_type:
-              firstTimeFlowType === FirstTimeFlowType.create
-                ? MetaMetricsEventAccountType.Default
-                : MetaMetricsEventAccountType.Imported,
+      if (firstTimeFlowType) {
+        trackEvent(
+          {
+            category: MetaMetricsEventCategory.Onboarding,
+            event: MetaMetricsEventName.WalletSetupStarted,
+            properties: {
+              account_type:
+                firstTimeFlowType === FirstTimeFlowType.create
+                  ? MetaMetricsEventAccountType.Default
+                  : MetaMetricsEventAccountType.Imported,
+            },
           },
-        },
-        {
-          isOptIn: true,
-          metaMetricsId,
-          flushImmediately: true,
-        },
-      );
+          {
+            isOptIn: true,
+            metaMetricsId,
+            flushImmediately: true,
+          },
+        );
+      }
 
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
@@ -98,14 +104,14 @@ export default function OnboardingMetametrics() {
         },
       });
     } finally {
-      history.push(nextRoute);
+      history.push(nextRouteByBrowser);
     }
   };
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
-    history.push(nextRoute);
+    history.push(nextRouteByBrowser);
   };
 
   return (
@@ -216,7 +222,7 @@ export default function OnboardingMetametrics() {
         {t('onboardingMetametricsInfuraTerms', [
           <a
             href={
-              getPlatform() === PLATFORM_FIREFOX
+              isFirefox
                 ? 'https://addons.mozilla.org/en-CA/firefox/addon/ether-metamask/privacy/'
                 : 'https://metamask.io/privacy.html'
             }
