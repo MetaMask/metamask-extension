@@ -11,10 +11,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  isSnapPreinstalled,
-  getSnapName,
-} from '../../../../shared/lib/accounts';
+import { isSnapPreinstalled, getSnapName } from '../../../../shared/lib/snaps';
 import {
   showAccountCreationDialog,
   showAccountNameSuggestionDialog,

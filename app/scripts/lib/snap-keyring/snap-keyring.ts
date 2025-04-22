@@ -18,11 +18,8 @@ import { t } from '../../translate';
 // eslint-disable-next-line import/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
 import MetaMetricsController from '../../controllers/metametrics-controller';
-import {
-  getUniqueAccountName,
-  getSnapName,
-  isSnapPreinstalled,
-} from '../../../../shared/lib/accounts';
+import { getUniqueAccountName } from '../../../../shared/lib/accounts';
+import { getSnapName, isSnapPreinstalled } from '../../../../shared/lib/snaps';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
