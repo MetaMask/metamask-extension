@@ -64,12 +64,8 @@ export const OriginRow = () => {
 export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { from } = currentConfirmation?.txParams ?? {};
   const to = recipient ?? currentConfirmation?.txParams?.to;
-  const { nestedTransactions } = currentConfirmation ?? {};
-  const isBatch =
-    Boolean(nestedTransactions?.length) &&
-    to?.toLowerCase() === from.toLowerCase();
+  const isBatch = currentConfirmation?.type === TransactionType.batch;
 
   if (!to || !isValidAddress(to)) {
     return null;
@@ -147,6 +143,7 @@ const PaymasterRow = () => {
   const { id: userOperationId, chainId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const paymasterAddress = useSelector((state: any) =>
     selectPaymasterAddress(state, userOperationId as string),
