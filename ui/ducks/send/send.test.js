@@ -4042,6 +4042,7 @@ describe('Send Slice', () => {
                   'eth_signTypedData_v4',
                 ],
                 options: {},
+                scopes: ['eip155:0'],
                 type: 'eip155:eoa',
               },
               gas: {
