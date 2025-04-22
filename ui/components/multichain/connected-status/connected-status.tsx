@@ -41,6 +41,7 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   );
 
   const currentTabIsConnectedToSelectedAddress =
+    internalAccount &&
     isInternalAccountInPermittedAccountIds(internalAccount, permittedAccounts);
 
   let status = STATUS_NOT_CONNECTED;
