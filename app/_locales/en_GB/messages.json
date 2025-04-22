@@ -1135,7 +1135,7 @@
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
   },
-  "confirmTitleDelegationRevoke": {
+  "confirmTitleAccountTypeSwitch": {
     "message": "Account update"
   },
   "confirmTitleDeployContract": {

@@ -23,6 +23,10 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
+import {
+  useIsDowngradeTransaction,
+  useIsUpgradeTransaction,
+} from '../../hooks/useIsUpgradeTransaction';
 import { HEX_ZERO } from '../constants';
 import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
 import { NetworkRow } from '../network-row/network-row';
@@ -167,6 +171,12 @@ export const TransactionDetails = () => {
     () => checkValueAndNativeBalanceMismatch(currentConfirmation),
     [currentConfirmation],
   );
+  const { isUpgradeWithoutNestedTransactions } = useIsUpgradeTransaction();
+  const isDowngrade = useIsDowngradeTransaction();
+
+  if (isUpgradeWithoutNestedTransactions || isDowngrade) {
+    return null;
+  }
 
   return (
     <>

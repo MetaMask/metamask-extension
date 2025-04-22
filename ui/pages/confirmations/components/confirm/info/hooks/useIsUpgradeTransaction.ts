@@ -3,13 +3,20 @@ import { Hex } from '@metamask/utils';
 import { useConfirmContext } from '../../../../context/confirm';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
 
-export function useIsUpgradeTransaction(): boolean {
+export function useIsUpgradeTransaction() {
   const authorizationAddress = useTransactionAuthorizationAddress();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { nestedTransactions } = currentConfirmation ?? {};
 
-  return (
+  console.log('nestedTransactions = ', nestedTransactions);
+  const isUpgrade =
     Boolean(authorizationAddress) &&
-    authorizationAddress !== EIP_7702_REVOKE_ADDRESS
-  );
+    authorizationAddress !== EIP_7702_REVOKE_ADDRESS;
+  return {
+    isUpgrade,
+    isUpgradeWithoutNestedTransactions:
+      isUpgrade && !nestedTransactions?.length,
+  };
 }
 
 export function useIsDowngradeTransaction(): boolean {

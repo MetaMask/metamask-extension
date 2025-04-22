@@ -8,15 +8,23 @@ import {
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
+import {
+  useIsDowngradeTransaction,
+  useIsUpgradeTransaction,
+} from '../../hooks/useIsUpgradeTransaction';
 import { SmartContractWithLogo } from '../../shared/smart-contract-with-logo';
 
 export function TransactionAccountDetails() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const isUpgrade = useIsUpgradeTransaction();
+  const { isUpgrade } = useIsUpgradeTransaction();
+  const isDowngrade = useIsDowngradeTransaction();
   const { chainId, txParams } = currentConfirmation;
   const { from } = txParams;
+
+  if (!isUpgrade && !isDowngrade) {
+    return null;
+  }
 
   return (
     <ConfirmInfoSection>
