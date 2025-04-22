@@ -121,7 +121,7 @@ function writePrBodyAndInfoToFile(prInfo: PRInfo) {
 async function storeGitDiffOutputAndPrBody() {
   try {
     // Create the directory
-    // This is done first because our CirleCI config requires that this directory is present,
+    // This is done first because our CircleCI config requires that this directory is present,
     // even if we want to skip this step.
     fs.mkdirSync(CHANGED_FILES_DIR, { recursive: true });
 
