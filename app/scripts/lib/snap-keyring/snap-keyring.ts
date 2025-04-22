@@ -18,11 +18,14 @@ import { t } from '../../translate';
 // eslint-disable-next-line import/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
 import MetaMetricsController from '../../controllers/metametrics-controller';
-import { getUniqueAccountName } from '../../../../shared/lib/accounts';
+import {
+  getUniqueAccountName,
+  getSnapName,
+  isSnapPreinstalled,
+} from '../../../../shared/lib/accounts';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
-import { getSnapName, isSnapPreinstalled } from './snaps';
 
 /**
  * Builder type for the Snap keyring.

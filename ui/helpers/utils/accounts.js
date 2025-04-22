@@ -11,6 +11,7 @@ import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../app/scripts/translate';
+import { isSnapPreinstalled } from '../../../shared/lib/accounts';
 
 export function getAccountNameErrorMessage(
   accounts,
@@ -73,43 +74,79 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
-export function getAccountLabel(
+export function getAccountLabels(
   type,
   account,
+  keyrings,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   snapName,
-  snapPreinstalled,
   ///: END:ONLY_INCLUDE_IF
 ) {
   if (!account) {
-    return null;
+    return [];
   }
+
+  const labels = [];
+
+  const hdKeyrings = keyrings.filter(
+    (keyring) => keyring.type === KeyringType.hdKeyTree,
+  );
+
   switch (type) {
-    case KeyringType.hdKeyTree:
-      return null;
+    case KeyringType.hdKeyTree: {
+      if (hdKeyrings.length > 1) {
+        const hdKeyringIndex = hdKeyrings.findIndex((kr) =>
+          kr.accounts.includes(account.address),
+        );
+        const hdKeyringLabel = `SRP #${hdKeyringIndex + 1}`;
+        labels.push(hdKeyringLabel);
+      }
+      break;
+    }
     case KeyringType.imported:
-      return t('imported');
+      labels.push(t('imported'));
+      break;
     case KeyringType.qr:
-      return HardwareKeyringNames.qr;
+      labels.push(HardwareKeyringNames.qr);
+      break;
     case KeyringType.trezor:
-      return HardwareKeyringNames.trezor;
-    case KeyringType.oneKey:
-      return HardwareKeyringNames.oneKey;
+      labels.push(HardwareKeyringNames.trezor);
+      break;
     case KeyringType.ledger:
-      return HardwareKeyringNames.ledger;
+      labels.push(HardwareKeyringNames.ledger);
+      break;
+    case KeyringType.oneKey:
+      labels.push(HardwareKeyringNames.oneKey);
+      break;
     case KeyringType.lattice:
-      return HardwareKeyringNames.lattice;
+      labels.push(HardwareKeyringNames.lattice);
+      break;
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    case KeyringType.snap:
-      if (snapPreinstalled) {
-        return null;
+    case KeyringType.snap: {
+      const snapEntroypySource = account.options.entropySource;
+      if (snapEntroypySource) {
+        const hdKeyringIndex = hdKeyrings.findIndex(
+          (kr) => kr.metadata.id === snapEntroypySource,
+        );
+        const hdKeyringLabel = `SRP #${hdKeyringIndex + 1}`;
+        labels.push(hdKeyringLabel);
       }
+
+      if (isSnapPreinstalled(account.metadata.snap.id)) {
+        break;
+      }
+
       if (snapName) {
-        return `${snapName} (${t('beta')})`;
+        labels.push(`${snapName} (${t('beta')})`);
+        break;
       }
-      return `${t('snaps')} (${t('beta')})`;
+      labels.push(`${t('snaps')} (${t('beta')})`);
+      break;
+    }
     ///: END:ONLY_INCLUDE_IF
-    default:
-      return null;
+    default: {
+      break;
+    }
   }
+  return labels;
 }

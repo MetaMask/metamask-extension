@@ -1,6 +1,22 @@
 import { SnapId } from '@metamask/snaps-sdk';
-import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
+import {
+  stripSnapPrefix,
+  getLocalizedSnapManifest,
+} from '@metamask/snaps-utils';
+// eslint-disable-next-line import/no-restricted-paths
+import type { SnapKeyringBuilderMessenger } from '../../../app/scripts/lib/snap-keyring/types';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
+import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
+
+export const PREINSTALLED_SNAPS = [
+  'npm:@metamask/message-signing-snap',
+  'npm:@metamask/ens-resolver-snap',
+  'npm:@metamask/institutional-wallet-snap',
+  'npm:@metamask/account-watcher',
+  'npm:@metamask/preinstalled-example-snap',
+  'npm:@metamask/bitcoin-wallet-snap',
+  'npm:@metamask/solana-wallet-snap',
+];
 
 /**
  * A constant array that contains the IDs of whitelisted multichain
@@ -20,4 +36,44 @@ const WHITELISTED_SNAPS = [BITCOIN_WALLET_SNAP_ID, SOLANA_WALLET_SNAP_ID];
  */
 export function isMultichainWalletSnap(id: SnapId): boolean {
   return WHITELISTED_SNAPS.includes(id);
+}
+
+/**
+ * Check if a Snap is a preinstalled Snap.
+ *
+ * @param snapId - Snap ID to verify.
+ * @returns True if Snap is a preinstalled Snap, false otherwise.
+ */
+export function isSnapPreinstalled(snapId: SnapId) {
+  return PREINSTALLED_SNAPS.some((snap) => snap === snapId);
+}
+
+/**
+ * Get the localized Snap name or some fallback name otherwise.
+ *
+ * @param snapId - Snap ID.
+ * @param messenger - Snap keyring messenger.
+ * @returns The Snap name.
+ */
+export function getSnapName(
+  snapId: SnapId,
+  messenger: SnapKeyringBuilderMessenger,
+) {
+  const { currentLocale } = messenger.call('PreferencesController:getState');
+  const snap = messenger.call('SnapController:get', snapId);
+
+  if (!snap) {
+    return stripSnapPrefix(snapId);
+  }
+
+  if (snap.localizationFiles) {
+    const localizedManifest = getLocalizedSnapManifest(
+      snap.manifest,
+      currentLocale,
+      snap.localizationFiles,
+    );
+    return localizedManifest.proposedName;
+  }
+
+  return snap.manifest.proposedName;
 }

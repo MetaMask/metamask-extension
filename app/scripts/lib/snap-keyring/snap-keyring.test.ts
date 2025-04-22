@@ -12,6 +12,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
+  isSnapPreinstalled,
+  getSnapName,
+} from '../../../../shared/lib/accounts';
+import {
   showAccountCreationDialog,
   showAccountNameSuggestionDialog,
   snapKeyringBuilder,
@@ -20,7 +24,6 @@ import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderMessenger,
 } from './types';
-import { getSnapName, isSnapPreinstalled } from './snaps';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
@@ -68,8 +71,8 @@ const mockInternalAccount = {
   },
 };
 
-jest.mock('./snaps', () => ({
-  ...jest.requireActual('./snaps'),
+jest.mock('../../../../shared/lib/accounts', () => ({
+  ...jest.requireActual('../../../../shared/lib/accounts'),
   isSnapPreinstalled: jest.fn(),
   getSnapName: jest.fn(),
 }));
