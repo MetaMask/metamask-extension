@@ -71,7 +71,6 @@ export async function retry<T extends (...args: any[]) => any>(
 }
 
 export function normalizeTestPath(path: string): string {
-  path = path.replace(/\\/g, '/');
-
-  return path.slice(path.indexOf('test/'));
+  const normalized = path.replace(/\\/g, '/');
+  return normalized.slice(normalized.indexOf('test/'));
 }

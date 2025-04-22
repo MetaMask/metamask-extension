@@ -237,7 +237,7 @@ async function main() {
         }
 
         const rows = dedupedTestFiles.map((file) => ({
-          'Test suite': file.path,
+          'Test file': file.path,
           Passed: file.totalPassed ? `${file.totalPassed} ✔️` : '',
           Failed: file.totalFailed ? `${file.totalFailed} ❌` : '',
           Skipped: file.totalSkipped ? `${file.totalSkipped} ⏩` : '',
@@ -251,7 +251,7 @@ async function main() {
           .map((row) => {
             const data = {
               ...row,
-              'Test suite': `[${row['Test suite']}](https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${env.BRANCH}/${row['Test suite']})`,
+              'Test file': `[${row['Test file']}](https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${env.BRANCH}/${row['Test file']})`,
             };
             return `| ${Object.values(data).join(' | ')} |`;
           })
