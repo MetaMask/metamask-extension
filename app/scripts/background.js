@@ -579,8 +579,8 @@ async function initialize() {
 
     // Set initial idle state after initialization is complete
     if (
-      initState.RemoteFeatureFlagController.remoteFeatureFlags
-        .extensionUpdateDetection
+      initState.RemoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.extensionUpdateDetection
     ) {
       const isClientOpen = isClientOpenStatus();
       extensionUpdateManager.setIdleState(!isClientOpen);
@@ -842,8 +842,8 @@ function trackAppOpened(environment) {
     isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
   // Set extension idle state based on UI open status
   if (
-    controller.remoteFeatureFlagController.state.remoteFeatureFlags
-      .extensionUpdateDetection
+    controller.remoteFeatureFlagController?.state?.remoteFeatureFlags
+      ?.extensionUpdateDetection
   ) {
     extensionUpdateManager.setIdleState(!isAlreadyOpen);
   }
@@ -939,16 +939,16 @@ export function setupController(
       controller.onClientClosed();
       // Set extension to idle when all UI instances are closed
       if (
-        controller.remoteFeatureFlagController.state.remoteFeatureFlags
-          .extensionUpdateDetection
+        controller.remoteFeatureFlagController?.state?.remoteFeatureFlags
+          ?.extensionUpdateDetection
       ) {
         extensionUpdateManager.setIdleState(true);
       }
     } else {
       // Set extension to not idle when UI instances are open
       if (
-        controller.remoteFeatureFlagController.state.remoteFeatureFlags
-          .extensionUpdateDetection
+        controller.remoteFeatureFlagController?.state?.remoteFeatureFlags
+          ?.extensionUpdateDetection
       ) {
         extensionUpdateManager.setIdleState(false);
       }
@@ -1352,8 +1352,8 @@ async function triggerUi() {
     uiIsTriggering = true;
     // Set extension to not idle when UI is being triggered
     if (
-      controller.remoteFeatureFlagController.state.remoteFeatureFlags
-        .extensionUpdateDetection
+      controller.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.extensionUpdateDetection
     ) {
       extensionUpdateManager.setIdleState(false);
     }
@@ -1370,8 +1370,8 @@ async function triggerUi() {
 
       // Only set to idle if no UI is open
       if (
-        controller.remoteFeatureFlagController.state.remoteFeatureFlags
-          .extensionUpdateDetection
+        controller.remoteFeatureFlagController?.state?.remoteFeatureFlags
+          ?.extensionUpdateDetection
       ) {
         const isClientOpen = isClientOpenStatus();
         extensionUpdateManager.setIdleState(!isClientOpen);
