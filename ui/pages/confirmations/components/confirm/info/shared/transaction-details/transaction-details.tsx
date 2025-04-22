@@ -36,6 +36,7 @@ import {
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../../../../../components/component-library';
+import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -183,7 +184,7 @@ export const TransactionDetails = () => {
   const { from, to } = txParams ?? {};
 
   const isBatch =
-    Boolean(nestedTransactions?.length) &&
+    isBatchTransaction(nestedTransactions) &&
     to?.toLowerCase() === from.toLowerCase();
 
   return (

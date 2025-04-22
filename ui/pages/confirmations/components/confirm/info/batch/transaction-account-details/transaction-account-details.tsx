@@ -15,6 +15,7 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { RecipientRow } from '../../shared/transaction-details/transaction-details';
+import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
 
 export function TransactionAccountDetails() {
   const t = useI18nContext();
@@ -23,7 +24,7 @@ export function TransactionAccountDetails() {
   const isDowngrade = useIsDowngradeTransaction();
   const { chainId, nestedTransactions, txParams, id } = currentConfirmation;
   const { from } = txParams;
-  const isBatch = Boolean(nestedTransactions?.length);
+  const isBatch = isBatchTransaction(nestedTransactions);
 
   if (!isUpgrade && !isDowngrade) {
     return null;
