@@ -24,7 +24,11 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import {
+  KnownCaipNamespace,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -3580,9 +3584,9 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
   const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
-  const connectedAccountsAddresses = connectedAccounts.map((acc) => {
-    const split = acc.split(':');
-    return split[split.length - 1];
+  const connectedAccountsAddresses = connectedAccounts.map((caipAccountId) => {
+    const { address } = parseCaipAccountId(caipAccountId);
+    return address;
   });
 
   return orderedAccounts
