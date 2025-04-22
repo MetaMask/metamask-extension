@@ -22,9 +22,10 @@ class YjsProvider {
     this.pendingUpdates = [];
     this.processedUpdates = new Set<string>();
     doc.on('update', (update: Uint8Array, origin: unknown) => {
-      console.log(`GIGEL doc was updated by ${origin} with ${update.length} bytes`);
-      if (origin !== 'local') {
-        console.log('GIGEL store pending update');
+      if (origin !== 'remote') {
+        console.log(
+          `GIGEL store pending update from ${origin} with ${update.length} bytes`,
+        );
         this.pendingUpdates.push(update);
       }
     });
@@ -44,7 +45,7 @@ class YjsProvider {
         if (updateId && !this.processedUpdates.has(updateId)) {
           console.log('GIGEL applying update', updateId);
           // Apply the update to the document
-          applyUpdate(this.doc, updateData, 'local');
+          applyUpdate(this.doc, updateData, 'remote');
 
           updatesApplied += 1;
 
@@ -78,53 +79,65 @@ export const SyncExperimentsTab: React.FC = () => {
   const textRef = React.useRef(doc.getText(EXPERIMENTAL_KEY));
   const text = textRef.current;
 
-  const inputRef = React.useRef(null);
+  const inputRef = React.useRef<HTMLTextAreaElement>(null);
+  const selStart = React.useRef<number | null>(null);
+  const selEnd = React.useRef<number | null>(null);
 
   const handleBeforeInput = (e: InputEvent) => {
     const { inputType, data, target } = e;
-    const tt = target as HTMLInputElement;
+    const tt = target as HTMLTextAreaElement;
     const start = tt?.selectionStart ?? 0;
     const end = tt?.selectionEnd ?? 0;
+    // 1. Save current selection
+    if (inputRef.current) {
+      console.log(`GIGEL capturing inputRef selection ${start}, ${end}`);
+      selStart.current = inputRef.current.selectionStart ?? start;
+      selEnd.current = inputRef.current.selectionEnd ?? end;
+    }
 
     console.log(`GIGEL beforeinput: ${inputType} "${data}" [${start}, ${end})`);
+    doc.transact(() => {
+      switch (inputType) {
+        // --- Insertions ---
+        case 'insertText':
+        case 'insertCompositionText':
+          if (start !== end) {
+            text.delete(start, end - start);
+            // `Replaced [${start}, ${end}) with "${data}"`;
+          }
+          text.insert(start, data);
+          selStart.current += data?.length ?? 0;
+          break;
 
-    switch (inputType) {
-      // --- Insertions ---
-      case 'insertText':
-      case 'insertCompositionText':
-        if (start !== end) {
+        case 'insertFromPaste':
+        case 'insertFromDrop':
+          text.insert(start, data);
+          selStart.current = start + (data?.length ?? 0);
+          break;
+
+        // --- Deletions ---
+        case 'deleteContentBackward':
+        case 'deleteContentForward':
+        case 'deleteByCut':
+        case 'deleteByDrag':
           text.delete(start, end - start);
-          // `Replaced [${start}, ${end}) with "${data}"`;
-        }
-        text.insert(start, data);
-        break;
-
-      case 'insertFromPaste':
-      case 'insertFromDrop':
-        text.insert(start, data);
-        break;
-
-      // --- Deletions ---
-      case 'deleteContentBackward':
-      case 'deleteContentForward':
-      case 'deleteByCut':
-      case 'deleteByDrag':
-        text.delete(start, end - start);
-        break;
-      case 'historyUndo':
-        // TODO
-        break;
-      case 'historyRedo':
-        // TODO
-        break;
-      // --- Other editing commands (undo/redo, formatting, etc.) ---
-      default:
-        console.log(`GIGEL ${inputType} (no-op handler)`);
-    }
+          break;
+        case 'historyUndo':
+          // TODO
+          break;
+        case 'historyRedo':
+          // TODO
+          break;
+        // --- Other editing commands (undo/redo, formatting, etc.) ---
+        default:
+          console.log(`GIGEL ${inputType} (no-op handler)`);
+      }
+    }, 'local');
+    e.preventDefault();
   };
 
   useEffect(() => {
-    const el = inputRef.current as unknown as HTMLInputElement;
+    const el = inputRef.current as unknown as HTMLTextAreaElement;
     console.log('GIGEL inputRef', el);
     if (!el) {
       return undefined;
@@ -138,10 +151,16 @@ export const SyncExperimentsTab: React.FC = () => {
   useEffect(() => {
     const handleTextChange = () => {
       const newValue = text.toString();
-      // if (newValue !== inputValue) {
-      console.log('GIGEL updating inputValue from DOC');
-      setInputValue(newValue);
-      // }
+      if (newValue !== inputValue) {
+        console.log(
+          `GIGEL updating inputValue from DOC, ref= ${inputRef.current} selection=${selStart}, ${selEnd}`,
+        );
+        setInputValue(newValue);
+        if (inputRef.current && selStart.current !== null) {
+          console.log('GIGEL updating selectionRange', selStart, selEnd);
+          inputRef.current.setSelectionRange(selStart.current, null);
+        }
+      }
     };
 
     text.observe(handleTextChange);
@@ -149,12 +168,13 @@ export const SyncExperimentsTab: React.FC = () => {
     return () => {
       text.unobserve(handleTextChange);
     };
-  }, [text]);
+  }, [text, inputValue]);
 
   const handlePull = async () => {
     setLoading(true);
     try {
       const result = await userStorageGetAllItems(EXPERIMENTAL_KEY);
+      setItems(result);
       const rawUpdates = result.map(hexToBytes);
       provider.processUpdates(rawUpdates);
     } catch (e) {
@@ -181,6 +201,18 @@ export const SyncExperimentsTab: React.FC = () => {
     }
   };
 
+  const fetchAllEntries = async () => {
+    setLoading(true);
+    try {
+      const result = await userStorageGetAllItems(EXPERIMENTAL_KEY);
+      setItems(result);
+    } catch (e) {
+      console.error('Error fetching items:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box className="settings-page__body">
       <div className="settings-page__content-row">
@@ -195,7 +227,6 @@ export const SyncExperimentsTab: React.FC = () => {
               // type="text"
               className="settings-page__input"
               value={inputValue}
-              // onTextChange={handleBeforeInput}
               // onBeforeInput={handleBeforeInput}
               placeholder="type something"
               ref={inputRef}
@@ -226,16 +257,4 @@ export const SyncExperimentsTab: React.FC = () => {
       </div>
     </Box>
   );
-
-  async function fetchAllEntries() {
-    setLoading(true);
-    try {
-      const result = await userStorageGetAllItems(EXPERIMENTAL_KEY);
-      setItems(result);
-    } catch (e) {
-      console.error('Error fetching items:', e);
-    } finally {
-      setLoading(false);
-    }
-  }
 };
