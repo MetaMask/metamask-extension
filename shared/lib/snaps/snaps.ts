@@ -1,6 +1,6 @@
 import { getLocalizedSnapManifest, stripSnapPrefix } from "@metamask/snaps-utils";
 
-import { SnapKeyringBuilderMessenger } from "../../app/scripts/lib/snap-keyring/types";
+import { SnapKeyringBuilderMessenger } from "../../../app/scripts/lib/snap-keyring/types";
 
 import { SnapId } from "@metamask/snaps-sdk";
 
