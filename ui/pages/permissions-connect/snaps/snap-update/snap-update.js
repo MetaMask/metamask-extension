@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -31,10 +31,17 @@ import {
   Text,
 } from '../../../../components/component-library';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
-import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
+import {
+  getSnapMetadata,
+  getSnapsMetadata,
+  selectPendingApproval,
+} from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { Nav } from '../../../confirmations/components/confirm/nav';
-import { setCurrentSnapInApprovalFlow } from '../../../../store/actions';
+import {
+  setCurrentSnapInApprovalFlow,
+  setSnapConnectTime,
+} from '../../../../store/actions';
 
 export default function SnapUpdate({
   request,
@@ -58,14 +65,32 @@ export default function SnapUpdate({
     [request, rejectSnapUpdate],
   );
 
-  const onSubmit = useCallback(() => {
-    dispatch(setCurrentSnapInApprovalFlow(request.metadata.origin));
-    approveSnapUpdate(request.metadata.id);
-  }, [request, approveSnapUpdate, dispatch]);
+  const onSubmit = useCallback(
+    () => approveSnapUpdate(request.metadata.id),
+    [request, approveSnapUpdate],
+  );
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, targetSubjectMetadata.origin),
   );
+
+  const approval = useSelector((state) =>
+    selectPendingApproval(state, request?.metadata?.id),
+  );
+
+  const currentSnapInApprovalFlow = React.useRef(null);
+
+  useEffect(() => {
+    if (!currentSnapInApprovalFlow.current && request.metadata?.origin) {
+      console.log(
+        'Setting currentSnapInApprovalFlow to:',
+        request.metadata.origin,
+      );
+      currentSnapInApprovalFlow.current = request.metadata.origin;
+      dispatch(setCurrentSnapInApprovalFlow(request.metadata.origin));
+      dispatch(setSnapConnectTime(request.metadata.origin, approval.time));
+    }
+  }, [request.metadata?.origin, dispatch, approval]);
 
   const approvedPermissions = requestState.approvedPermissions ?? {};
   const revokedPermissions = requestState.unusedPermissions ?? {};

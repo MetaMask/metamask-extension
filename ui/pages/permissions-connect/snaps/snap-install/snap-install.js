@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
@@ -60,10 +60,10 @@ export default function SnapInstall({
     [request, rejectSnapInstall],
   );
 
-  const onSubmit = useCallback(() => {
-    dispatch(setCurrentSnapInApprovalFlow(request.metadata.origin));
-    approveSnapInstall(request.metadata.id);
-  }, [request, approveSnapInstall, dispatch]);
+  const onSubmit = useCallback(
+    () => approveSnapInstall(request.metadata.id),
+    [request, approveSnapInstall],
+  );
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, targetSubjectMetadata.origin),
@@ -83,6 +83,10 @@ export default function SnapInstall({
   );
 
   const shouldShowWarning = warnings.length > 0;
+
+  useEffect(() => {
+    dispatch(setCurrentSnapInApprovalFlow(request?.metadata?.origin));
+  }, [request, dispatch]);
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
@@ -117,19 +121,28 @@ export default function SnapInstall({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      <Nav confirmationId={request.metadata?.id} />
-      {(isLoading || hasError) && !isOriginSnap ? (
-        <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
-      ) : (
-        <SnapAuthorshipHeader
-          snapId={
-            isLoading && isOriginSnap
-              ? request?.metadata?.dappOrigin
-              : targetSubjectMetadata.origin
-          }
-          onCancel={onCancel}
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Nav
+          key={`snap-install-screen-${request.metadata?.id}`}
+          confirmationId={request.metadata?.id}
         />
-      )}
+        {(isLoading || hasError) && !isOriginSnap ? (
+          <PermissionConnectHeader
+            origin={origin}
+            iconUrl={iconUrl}
+            renderNav={false}
+          />
+        ) : (
+          <SnapAuthorshipHeader
+            snapId={
+              isLoading && isOriginSnap
+                ? request?.metadata?.dappOrigin
+                : targetSubjectMetadata.origin
+            }
+            onCancel={onCancel}
+          />
+        )}
+      </Box>
       <Box
         ref={!isLoading && !hasError ? ref : undefined}
         onScroll={onScroll}

@@ -29,7 +29,11 @@ import {
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 import { Nav } from '../../../confirmations/components/confirm/nav';
-import { setCurrentSnapInApprovalFlow } from '../../../../store/actions';
+import {
+  setCurrentSnapInApprovalFlow,
+  setSnapConnectTime,
+} from '../../../../store/actions';
+import { selectPendingApproval } from '../../../../selectors/approvals';
 
 export default function SnapsConnect({
   request,
@@ -43,6 +47,8 @@ export default function SnapsConnect({
   const { origin } = targetSubjectMetadata;
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const id = request?.metadata?.id;
+  const approval = useSelector((state) => selectPendingApproval(state, id));
 
   const currentPermissions = useSelector((state) =>
     getPermissions(state, request?.metadata?.origin),
@@ -63,8 +69,9 @@ export default function SnapsConnect({
       console.log('Setting currentSnapInApprovalFlow to:', snapId);
       currentSnapInApprovalFlow.current = snapId;
       dispatch(setCurrentSnapInApprovalFlow(snapId));
+      dispatch(setSnapConnectTime(snapId, approval.time));
     }
-  }, [snapId, dispatch]);
+  }, [snapId, dispatch, approval, request?.metadata?.origin, origin, id]);
 
   const isPreinstalled = Object.keys(preinstalledSnaps).includes(snapId);
   const [isShowingSnapsPrivacyWarning, setIsShowingSnapsPrivacyWarning] =

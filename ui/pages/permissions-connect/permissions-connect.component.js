@@ -105,6 +105,7 @@ export default class PermissionConnect extends Component {
       subjectType: PropTypes.string,
     }),
     isRequestingAccounts: PropTypes.bool.isRequired,
+    forceUpdateMetamaskState: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -157,10 +158,7 @@ export default class PermissionConnect extends Component {
       metadata: permissionsRequest?.metadata,
     });
 
-    if (!permissionsRequest) {
-      history.replace(DEFAULT_ROUTE);
-      return;
-    }
+
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       console.log('🚦 Permission Connect routing decision', {
         requestType,
@@ -201,11 +199,19 @@ export default class PermissionConnect extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { permissionsRequest, lastConnectedInfo, targetSubjectMetadata, isRequestingAccounts, requestType } =
-      this.props;
+    const {
+      permissionsRequest,
+      lastConnectedInfo,
+      targetSubjectMetadata,
+      isRequestingAccounts,
+      requestType,
+    } = this.props;
     const { redirecting, origin } = this.state;
 
-    if (prevProps.isRequestingAccounts !== isRequestingAccounts || prevProps.requestType !== requestType) {
+    if (
+      prevProps.isRequestingAccounts !== isRequestingAccounts ||
+      prevProps.requestType !== requestType
+    ) {
       console.log('🔄 PermissionConnect props changed', {
         requestType,
         prevRequestType: prevProps.requestType,
@@ -256,23 +262,18 @@ export default class PermissionConnect extends Component {
       () => {
         switch (requestType) {
           case 'wallet_installSnap':
-            console.log('🧭 Navigating to snapInstallPath after account selection', snapInstallPath);
             this.props.history.push(snapInstallPath);
             break;
           case 'wallet_updateSnap':
-            console.log('🧭 Navigating to snapUpdatePath after account selection', snapUpdatePath);
             this.props.history.push(snapUpdatePath);
             break;
           case 'wallet_installSnapResult':
-            console.log('🧭 Navigating to snapResultPath after account selection', snapResultPath);
             this.props.history.push(snapResultPath);
             break;
           case 'wallet_connectSnaps':
-            console.log('🧭 Navigating to snapsConnectPath after account selection', snapsConnectPath);
             this.props.history.replace(snapsConnectPath);
             break;
           default:
-            console.log('🧭 Navigating to confirmPermissionPath after account selection', confirmPermissionPath);
             this.props.history.push(confirmPermissionPath);
         }
       },
@@ -341,9 +342,11 @@ export default class PermissionConnect extends Component {
   }
 
   approveConnection = (...args) => {
-    const { approvePermissionsRequest } = this.props;
+    const { approvePermissionsRequest, forceUpdateMetamaskState } = this.props;
     approvePermissionsRequest(...args);
-    this.redirect(true);
+    forceUpdateMetamaskState().then(() => {
+      this.redirect(true);
+    });
   };
 
   render() {

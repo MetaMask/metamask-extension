@@ -20,19 +20,41 @@ import { isSignatureTransactionType } from '../utils';
 import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
+  getSnapsConnectTimes,
 } from '../../../selectors';
 
-const CONNECT_APPROVAL_TYPES = [
-  ApprovalType.WalletRequestPermissions,
-  'wallet_installSnap',
-  'wallet_updateSnap',
-  'wallet_installSnapResult',
-];
-
 export function useConfirmationNavigation() {
-  const confirmations = useSelector(selectPendingApprovalsForNavigation);
+  const rawConfirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const snapsConnectTimes = useSelector(getSnapsConnectTimes);
+  const confirmations = rawConfirmations.sort((a, b) => {
+    let aTime;
+    let bTime;
+    if (
+      typeof a.requestData?.metadata === 'object' &&
+      a.requestData.metadata !== null &&
+      'origin' in a.requestData.metadata &&
+      snapsConnectTimes[a.requestData.metadata.origin as string]
+    ) {
+      aTime = snapsConnectTimes[a.requestData.metadata.origin as string];
+    } else {
+      aTime = a.time;
+    }
+    if (
+      typeof b.requestData?.metadata === 'object' &&
+      b.requestData.metadata !== null &&
+      'origin' in b.requestData.metadata &&
+      snapsConnectTimes[b.requestData.metadata.origin as string]
+    ) {
+      bTime = snapsConnectTimes[b.requestData.metadata.origin as string];
+    } else {
+      bTime = b.time;
+    }
+    return aTime - bTime;
+  });
   const history = useHistory();
+
+  console.log('🔍 snapsConnectTimes:', snapsConnectTimes);
 
   const getIndex = useCallback(
     (confirmationId?: string) => {

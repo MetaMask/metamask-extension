@@ -73,10 +73,6 @@ import {
 import { AccountOverview } from '../../components/multichain/account-overview';
 import { setEditedNetwork } from '../../store/actions';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
-import {
-  ReorderType,
-  reorderApprovals,
-} from '../../helpers/utils/approvals.util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -183,14 +179,12 @@ export default class Home extends PureComponent {
     fetchBuyableChains: PropTypes.func.isRequired,
     setCurrentSnapInApprovalFlow: PropTypes.func,
     currentSnapInApprovalFlow: PropTypes.string,
-    fetchLatestPendingApprovals: PropTypes.func,
   };
 
   state = {
     canShowBlockageNotification: true,
     notificationClosing: false,
     redirecting: false,
-    fetchingFreshApprovals: false,
     isNavigating: false,
   };
 
@@ -238,68 +232,55 @@ export default class Home extends PureComponent {
       hasApprovalFlows,
       setCurrentSnapInApprovalFlow,
       currentSnapInApprovalFlow,
-      fetchLatestPendingApprovals,
     } = this.props;
-
-    // If we're already navigating, don't trigger another navigation
-    if (this.state.isNavigating) {
-      console.log(
-        'Navigation already in progress, skipping duplicate navigation',
-      );
-      return;
-    }
 
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
-      this.setState({ isNavigating: true });
       history.push(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      this.setState({ isNavigating: true });
       history.push(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && haveBridgeQuotes) {
-      this.setState({ isNavigating: true });
       history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
-      console.log('Current pending approvals in home component:', pendingApprovals);
+      console.log(
+        'Current pending approvals in home component:',
+        pendingApprovals,
+      );
+      if (this.state.isNavigating) {
+        console.log(
+          'Navigation already in progress, skipping duplicate navigation',
+        );
+        return;
+      }
+
       if (currentSnapInApprovalFlow && pendingApprovals.length > 1) {
-        const installSnapResultApproval = pendingApprovals.find(approval => approval.type === 'wallet_installSnapResult');
-        if (installSnapResultApproval) {
-          const filteredApprovals = pendingApprovals.filter(approval => approval.id !== installSnapResultApproval.id);
+        const installSnapResultApproval = pendingApprovals.find(
+          (approval) =>
+            (approval.type === 'wallet_installSnapResult' ||
+              approval.type === 'wallet_installSnap' ||
+              approval.type === 'wallet_updateSnap') &&
+            approval.requestData.metadata?.origin === currentSnapInApprovalFlow,
+        );
+        if (installSnapResultApproval && !this.state.isNavigating) {
+          this.setState({ isNavigating: true });
+          const filteredApprovals = pendingApprovals.filter(
+            (approval) => approval.id !== installSnapResultApproval.id,
+          );
           const reorderedApprovals = [
             installSnapResultApproval,
             ...filteredApprovals,
           ];
-          setCurrentSnapInApprovalFlow(null);
           navigateToConfirmation(
             installSnapResultApproval.id,
             reorderedApprovals,
             hasApprovalFlows,
             history,
           );
+          setCurrentSnapInApprovalFlow(null);
           return;
         }
-        this.setState({ fetchingFreshApprovals: true });
-        setCurrentSnapInApprovalFlow(null);
-        fetchLatestPendingApprovals().then((latestPendingApprovals) => {
-          const reorderedApprovals = reorderApprovals(
-            ReorderType.SnapInstallFlow,
-            pendingApprovals,
-            Object.values(latestPendingApprovals),
-            {
-              currentSnapInApprovalFlow,
-            },
-          );
-
-          navigateToConfirmation(
-            reorderedApprovals?.[0]?.id,
-            reorderedApprovals,
-            hasApprovalFlows,
-            history,
-          );
-        });
-        return;
       }
 
       navigateToConfirmation(
@@ -312,7 +293,8 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    console.log('Check status and navigate called from componentDidMount');
+    console.log('Home componentDidMount');
+    console.log('pendingApprovals:', this.props.pendingApprovals);
     this.checkStatusAndNavigate();
 
     this.props.fetchBuyableChains();
@@ -325,7 +307,10 @@ export default class Home extends PureComponent {
     return null;
   }
 
-  componentDidUpdate(_prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
+    console.log('Home componentDidUpdate');
+    console.log('prevProps.pendingApprovals:', prevProps.pendingApprovals);
+    console.log('currentProps.pendingApprovals:', this.props.pendingApprovals);
     const {
       attemptCloseNotificationPopup,
       isNotification,
@@ -337,7 +322,7 @@ export default class Home extends PureComponent {
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
-    } = _prevProps;
+    } = prevProps;
     const { notificationClosing } = this.state;
 
     if (
@@ -350,10 +335,7 @@ export default class Home extends PureComponent {
 
     if (notificationClosing && !prevState.notificationClosing) {
       attemptCloseNotificationPopup();
-    } else if (
-      (isNotification || hasAllowedPopupRedirectApprovals) &&
-      !this.state.fetchingFreshApprovals
-    ) {
+    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       console.log('Check status and navigate called from componentDidUpdate');
       this.checkStatusAndNavigate();
     }

@@ -21,7 +21,12 @@ import {
 import { getAvatarFallbackLetter } from '../../../helpers/utils/util';
 import { Nav } from '../../../pages/confirmations/components/confirm/nav';
 
-const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
+const PermissionConnectHeader = ({
+  requestId,
+  origin,
+  iconUrl,
+  renderNav = true,
+}) => {
   const transformOriginToTitle = (rawOrigin) => {
     try {
       const url = new URL(rawOrigin);
@@ -35,7 +40,7 @@ const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
 
   return (
     <>
-      <Nav confirmationId={requestId} />
+      {renderNav && <Nav confirmationId={requestId} />}
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         width={BlockSize.Full}
@@ -95,6 +100,7 @@ PermissionConnectHeader.propTypes = {
   requestId: PropTypes.string,
   origin: PropTypes.string,
   iconUrl: PropTypes.string,
+  renderNav: PropTypes.bool,
 };
 
 export default PermissionConnectHeader;

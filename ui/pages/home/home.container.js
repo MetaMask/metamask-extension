@@ -49,7 +49,7 @@ import {
   setNewTokensImportedError,
   setDataCollectionForMarketing,
   setEditedNetwork,
-  fetchLatestPendingApprovals,
+  forceUpdateMetamaskState,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -190,7 +190,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchLatestPendingApprovals: () => dispatch(fetchLatestPendingApprovals()),
+    forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     setCurrentSnapInApprovalFlow: (flow) =>
       dispatch(setCurrentSnapInApprovalFlow(flow)),
     setDataCollectionForMarketing: (val) =>
