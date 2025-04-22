@@ -57,7 +57,7 @@ body:
       options:
         - In production (default)
         - In public beta
-        - In release candidate or internal build
+        - During RC or internal beta testing
         - On main branch
         - On a feature branch
     validations:
