@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Στοιχεία λογαριασμού"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Επαναφορά σε κανονικό λογαριασμό"
-  },
   "accountIdenticon": {
     "message": "Αναγνωριστικό Λογαριασμού"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Για να ενεργοποιήσετε το δίκτυο $1, πρέπει να δημιουργήσετε έναν λογαριασμό $1.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Για να ενεργοποιήσετε το δίκτυο $1, πρέπει να δημιουργήσετε έναν λογαριασμό $2.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Προσθήκη διεύθυνσης URL RPC"
@@ -1312,9 +1309,6 @@
   "copyAddress": {
     "message": "Αντιγραφή διεύθυνσης στο πρόχειρο"
   },
-  "copyAddressShort": {
-    "message": "Αντιγραφή διεύθυνσης"
-  },
   "copyPrivateKey": {
     "message": "Αντιγραφή ιδιωτικού κλειδιού"
   },
@@ -1994,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "Οι πληροφορίες που έχετε εισάγει συνδέονται με ένα υπάρχον αναγνωριστικό αλυσίδας."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Για να προβάλετε και να επιβεβαιώσετε το πιο πρόσφατο αίτημά σας, θα πρέπει πρώτα να εγκρίνετε ή να απορρίψετε τα υπάρχοντα αιτήματα."
   },
   "expandView": {
     "message": "Ανάπτυξη προβολής"

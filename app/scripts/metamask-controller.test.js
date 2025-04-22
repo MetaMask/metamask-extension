@@ -780,6 +780,40 @@ describe('MetaMaskController', () => {
             allDetectedTokens: { '0x1': { [TEST_ADDRESS_2]: [{}] } },
           });
 
+        const mockSnapKeyring = {
+          createAccount: jest
+            .fn()
+            .mockResolvedValue({ address: 'mockedAddress' }),
+        };
+
+        const originalGetKeyringsByType =
+          metamaskController.keyringController.getKeyringsByType;
+        let snapKeyringCallCount = 0;
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringsByType')
+          .mockImplementation((type) => {
+            if (type === 'Snap Keyring') {
+              snapKeyringCallCount += 1;
+
+              if (snapKeyringCallCount === 1) {
+                // First call - use original implementation to let controller initialize snap keyring
+                return originalGetKeyringsByType.call(
+                  metamaskController.keyringController,
+                  type,
+                );
+              }
+              // Second call and beyond - return mock
+              console.log('returning mocked snap keyring!');
+              return [mockSnapKeyring];
+            }
+
+            // For other types, always use original implementation
+            return originalGetKeyringsByType.call(
+              metamaskController.keyringController,
+              type,
+            );
+          });
+
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
@@ -816,6 +850,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.accountTrackerController, 'state', 'get')
           .mockReturnValue({
             accounts,
+            accountsByChainId: {
+              '0x1': {
+                [TEST_ADDRESS]: { balance },
+              },
+            },
           });
 
         const gotten = await metamaskController.getBalance(TEST_ADDRESS);
@@ -836,6 +875,11 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.accountTrackerController, 'state', 'get')
           .mockReturnValue({
             accounts,
+            accountsByChainId: {
+              '0x1': {
+                [TEST_ADDRESS]: { balance },
+              },
+            },
           });
 
         const gotten = await metamaskController.getBalance(
@@ -2601,7 +2645,7 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
+              type: 'caip-348',
               data: {
                 method: 'wallet_invokeMethod',
                 params: {
@@ -2677,7 +2721,7 @@ describe('MetaMaskController', () => {
           tab: { id: 456 },
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
+          if (chunk && chunk.method) {
             cb(null, chunk);
             return;
           }
@@ -2696,13 +2740,10 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
-              data: {
-                method: 'wallet_invokeMethod',
-                params: {
-                  scope: 'eip155:1',
-                  request: message,
-                },
+              method: 'wallet_invokeMethod',
+              params: {
+                scope: 'eip155:1',
+                request: message,
               },
             },
             null,
@@ -2729,7 +2770,7 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
         };
         const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
+          if (chunk && chunk.method) {
             cb(null, chunk);
             return;
           }
@@ -2748,13 +2789,10 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
-              data: {
-                method: 'wallet_invokeMethod',
-                params: {
-                  scope: 'eip155:1',
-                  request: message,
-                },
+              method: 'wallet_invokeMethod',
+              params: {
+                scope: 'eip155:1',
+                request: message,
               },
             },
             null,
@@ -2767,67 +2805,6 @@ describe('MetaMaskController', () => {
                   'origin',
                   'http://mycrypto.com',
                 );
-                resolve();
-              });
-            },
-          );
-        });
-        streamTest.end();
-      });
-
-      it('should only process `caip-x` CAIP formatted messages', async () => {
-        const messageSender = {
-          url: 'http://mycrypto.com',
-          tab: { id: 456 },
-        };
-        const streamTest = createThroughStream((chunk, _, cb) => {
-          if (chunk.data && chunk.data.method) {
-            cb(null, chunk);
-            return;
-          }
-          cb();
-        });
-
-        localMetamaskController.setupUntrustedCommunicationCaip({
-          connectionStream: streamTest,
-          sender: messageSender,
-        });
-
-        const message = {
-          jsonrpc: '2.0',
-          method: 'eth_chainId',
-        };
-        await new Promise((resolve) => {
-          streamTest.write(
-            {
-              name: 'metamask-provider',
-              data: message,
-            },
-            null,
-            () => {
-              setTimeout(() => {
-                expect(loggerMiddlewareMock.requests).toHaveLength(0);
-                resolve();
-              });
-            },
-          );
-        });
-        await new Promise((resolve) => {
-          streamTest.write(
-            {
-              type: 'caip-x',
-              data: {
-                method: 'wallet_invokeMethod',
-                params: {
-                  scope: 'eip155:1',
-                  request: message,
-                },
-              },
-            },
-            null,
-            () => {
-              setTimeout(() => {
-                expect(loggerMiddlewareMock.requests).toHaveLength(1);
                 resolve();
               });
             },
@@ -3269,8 +3246,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3302,7 +3283,7 @@ describe('MetaMaskController', () => {
 
         const tokenData = {
           decimals: 18,
-          symbol: 'FOO',
+          symbol: 'DAI',
         };
 
         await metamaskController.tokensController.addTokens([
@@ -3371,8 +3352,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3421,8 +3406,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3471,8 +3460,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3528,8 +3521,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+                },
+              },
             },
           };
         });
@@ -3564,8 +3561,12 @@ describe('MetaMaskController', () => {
 
         metamaskController.tokenListController.update(() => {
           return {
-            tokenList: {
-              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            tokensChainsCache: {
+              '0x5': {
+                data: {
+                  '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+                },
+              },
             },
           };
         });
@@ -3945,6 +3946,39 @@ describe('MetaMaskController', () => {
       it('generates a new hd keyring instance with a mnemonic', async () => {
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+        const mockSnapKeyring = {
+          createAccount: jest
+            .fn()
+            .mockResolvedValue({ address: 'mockedAddress' }),
+        };
+
+        const originalGetKeyringsByType =
+          metamaskController.keyringController.getKeyringsByType;
+        let snapKeyringCallCount = 0;
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringsByType')
+          .mockImplementation((type) => {
+            if (type === 'Snap Keyring') {
+              snapKeyringCallCount += 1;
+
+              if (snapKeyringCallCount === 1) {
+                // First call - use original implementation to let controller initialize snap keyring
+                return originalGetKeyringsByType.call(
+                  metamaskController.keyringController,
+                  type,
+                );
+              }
+              // Second call and beyond - return mock
+              console.log('returning mocked snap keyring!');
+              return [mockSnapKeyring];
+            }
+
+            // For other types, always use original implementation
+            return originalGetKeyringsByType.call(
+              metamaskController.keyringController,
+              type,
+            );
+          });
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
 
@@ -4004,10 +4038,9 @@ describe('MetaMaskController', () => {
           .mockImplementation(mockDiscoverAccounts);
 
         const mockCreateAccount = jest.fn().mockResolvedValue(undefined);
-        const mockSnapKeyring = { createAccount: mockCreateAccount };
         jest
           .spyOn(metamaskController, 'getSnapKeyring')
-          .mockResolvedValue(mockSnapKeyring);
+          .mockResolvedValue({ createAccount: mockCreateAccount });
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
@@ -4033,14 +4066,14 @@ describe('MetaMaskController', () => {
         expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(2);
 
         // Assert that createAccount was called correctly for each discovered account
-        expect(mockCreateAccount).toHaveBeenCalledTimes(2);
+        expect(mockCreateAccount).toHaveBeenCalledTimes(3);
 
         // All calls should use the solana snap ID
         expect(mockCreateAccount.mock.calls[0][0]).toStrictEqual(
           expect.stringContaining('solana-wallet'),
         );
-        // First call should use derivation path on index 0
-        expect(mockCreateAccount.mock.calls[0][1]).toStrictEqual({
+        // Second call should use derivation path on index 0
+        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
           derivationPath: "m/44'/501'/0'/0'",
           entropySource: expect.any(String),
         });
@@ -4051,8 +4084,8 @@ describe('MetaMaskController', () => {
           setSelectedAccount: false,
         });
 
-        // Second call should use derivation path on index 1
-        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+        // Third call should use derivation path on index 1
+        expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
           derivationPath: "m/44'/501'/1'/0'",
           entropySource: expect.any(String),
         });
