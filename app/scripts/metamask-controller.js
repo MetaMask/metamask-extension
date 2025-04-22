@@ -166,9 +166,8 @@ import {
   getPermittedAccountsForScopes,
   KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
-
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { BridgeStatusAction } from '@metamask/bridge-status-controller';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
