@@ -8,7 +8,13 @@ import {
   userStorageSetItems,
 } from '../../../store/actions';
 
-const EXPERIMENTAL_KEY = 'test-items-115';
+const EXPERIMENTAL_KEY = 'test-items-116';
+
+// Define the item type
+type SyncItem = {
+  id: string;
+  name: string;
+};
 
 class YjsProvider {
   doc: Doc;
@@ -62,9 +68,11 @@ class YjsProvider {
 }
 
 export const SyncExperimentsTab: React.FC = () => {
-  const [items, setItems] = React.useState<string[]>([]);
+  const [rawItems, setRawItems] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState<string>('');
+  const [listItems, setListItems] = React.useState<SyncItem[]>([]);
+  const [editItemId, setEditItemId] = React.useState<string | null>(null);
+  const [editItemValue, setEditItemValue] = React.useState<string>('');
 
   // Create the doc and provider directly
   const docRef = React.useRef<Doc>(new Doc());
@@ -72,113 +80,89 @@ export const SyncExperimentsTab: React.FC = () => {
 
   // Create the provider ref to avoid recreating it on every render
   const providerRef = React.useRef<YjsProvider>(new YjsProvider(doc));
-
   const provider = providerRef.current;
 
-  // Get the shared text from the document (only once during initialization)
-  const textRef = React.useRef(doc.getText(EXPERIMENTAL_KEY));
-  const text = textRef.current;
+  // Get the shared array from the document (only once during initialization)
+  const itemsArrayRef = React.useRef(doc.getArray<SyncItem>(EXPERIMENTAL_KEY));
+  const itemsArray = itemsArrayRef.current;
 
-  const inputRef = React.useRef<HTMLTextAreaElement>(null);
-  const selStart = React.useRef<number | null>(null);
-  const selEnd = React.useRef<number | null>(null);
-
-  const handleBeforeInput = (e: InputEvent) => {
-    const { inputType, data, target } = e;
-    const tt = target as HTMLTextAreaElement;
-    const start = tt?.selectionStart ?? 0;
-    const end = tt?.selectionEnd ?? 0;
-    // 1. Save current selection
-    if (inputRef.current) {
-      console.log(`GIGEL capturing inputRef selection ${start}, ${end}`);
-      selStart.current = inputRef.current.selectionStart ?? start;
-      selEnd.current = inputRef.current.selectionEnd ?? end;
-    }
-
-    console.log(`GIGEL beforeinput: ${inputType} "${data}" [${start}, ${end})`);
-    doc.transact(() => {
-      switch (inputType) {
-        // --- Insertions ---
-        case 'insertText':
-        case 'insertCompositionText':
-          if (start !== end) {
-            text.delete(start, end - start);
-            // `Replaced [${start}, ${end}) with "${data}"`;
-          }
-          text.insert(start, data);
-          selStart.current += data?.length ?? 0;
-          break;
-
-        case 'insertFromPaste':
-        case 'insertFromDrop':
-          text.insert(start, data);
-          selStart.current = start + (data?.length ?? 0);
-          break;
-
-        // --- Deletions ---
-        case 'deleteContentBackward':
-        case 'deleteContentForward':
-        case 'deleteByCut':
-        case 'deleteByDrag':
-          text.delete(start, end - start);
-          break;
-        case 'historyUndo':
-          // TODO
-          break;
-        case 'historyRedo':
-          // TODO
-          break;
-        // --- Other editing commands (undo/redo, formatting, etc.) ---
-        default:
-          console.log(`GIGEL ${inputType} (no-op handler)`);
-      }
-    }, 'local');
-    e.preventDefault();
-  };
-
+  // Update items when the YJS array changes
   useEffect(() => {
-    const el = inputRef.current as unknown as HTMLTextAreaElement;
-    console.log('GIGEL inputRef', el);
-    if (!el) {
-      return undefined;
-    }
-
-    el.addEventListener('beforeinput', handleBeforeInput);
-    return () => el.removeEventListener('beforeinput', handleBeforeInput);
-  }, []);
-
-  // Update the inputValue when text changes
-  useEffect(() => {
-    const handleTextChange = () => {
-      const newValue = text.toString();
-      if (newValue !== inputValue) {
-        console.log(
-          `GIGEL updating inputValue from DOC, ref= ${inputRef.current} selection=${selStart}, ${selEnd}`,
-        );
-        setInputValue(newValue);
-        if (inputRef.current && selStart.current !== null) {
-          console.log('GIGEL updating selectionRange', selStart, selEnd);
-          inputRef.current.setSelectionRange(selStart.current, null);
-        }
-      }
+    const handleItemsChange = () => {
+      const newItems = itemsArray.toArray();
+      setListItems(newItems);
     };
 
-    text.observe(handleTextChange);
+    itemsArray.observe(handleItemsChange);
+    // Initialize with current values
+    handleItemsChange();
 
     return () => {
-      text.unobserve(handleTextChange);
+      itemsArray.unobserve(handleItemsChange);
     };
-  }, [text, inputValue]);
+  }, [itemsArray]);
+
+  const handleAddItem = () => {
+    const newItem: SyncItem = {
+      id: Date.now().toString(),
+      name: `Item ${listItems.length + 1}`,
+    };
+
+    doc.transact(() => {
+      itemsArray.push([newItem]);
+    }, 'local');
+  };
+
+  const handleDeleteItem = (id: string) => {
+    doc.transact(() => {
+      const index = itemsArray
+        .toArray()
+        .findIndex((item: SyncItem) => item.id === id);
+      if (index !== -1) {
+        itemsArray.delete(index, 1);
+      }
+    }, 'local');
+  };
+
+  const handleEditItem = (id: string, currentValue: string) => {
+    setEditItemId(id);
+    setEditItemValue(currentValue);
+  };
+
+  const handleSaveEdit = () => {
+    if (editItemId === null) {
+      return;
+    }
+
+    doc.transact(() => {
+      const index = itemsArray
+        .toArray()
+        .findIndex((item: SyncItem) => item.id === editItemId);
+      if (index !== -1) {
+        const updatedItem = { ...itemsArray.get(index), name: editItemValue };
+        itemsArray.delete(index, 1);
+        itemsArray.insert(index, [updatedItem]);
+      }
+    }, 'local');
+
+    setEditItemId(null);
+    setEditItemValue('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditItemId(null);
+    setEditItemValue('');
+  };
 
   const handlePull = async () => {
     setLoading(true);
     try {
       const result = await userStorageGetAllItems(EXPERIMENTAL_KEY);
-      setItems(result);
+      setRawItems(result);
       const rawUpdates = result.map(hexToBytes);
       provider.processUpdates(rawUpdates);
     } catch (e) {
-      console.error('GIGEL Error fetching items:', e);
+      console.error('Error fetching items:', e);
     } finally {
       setLoading(false);
     }
@@ -205,7 +189,7 @@ export const SyncExperimentsTab: React.FC = () => {
     setLoading(true);
     try {
       const result = await userStorageGetAllItems(EXPERIMENTAL_KEY);
-      setItems(result);
+      setRawItems(result);
     } catch (e) {
       console.error('Error fetching items:', e);
     } finally {
@@ -223,14 +207,71 @@ export const SyncExperimentsTab: React.FC = () => {
           </div>
 
           <div className="settings-page__content-item-col">
-            <textarea
-              // type="text"
-              className="settings-page__input"
-              value={inputValue}
-              // onBeforeInput={handleBeforeInput}
-              placeholder="type something"
-              ref={inputRef}
-            />
+            <div className="settings-page__item-list">
+              {listItems.length === 0 ? (
+                <div className="settings-page__no-items">
+                  No items. Add an item to get started.
+                </div>
+              ) : (
+                <ul className="settings-page__items">
+                  {listItems.map((item) => (
+                    <li key={item.id} className="settings-page__item">
+                      {editItemId === item.id ? (
+                        <div className="settings-page__item-edit">
+                          <input
+                            type="text"
+                            className="settings-page__input"
+                            value={editItemValue}
+                            onChange={(e) => setEditItemValue(e.target.value)}
+                            autoFocus
+                          />
+                          <div className="settings-page__item-actions">
+                            <button
+                              className="settings-page__button settings-page__button--small"
+                              onClick={handleSaveEdit}
+                            >
+                              Save
+                            </button>
+                            <button
+                              className="settings-page__button settings-page__button--small"
+                              onClick={handleCancelEdit}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="settings-page__item-display">
+                          <span className="settings-page__item-name">
+                            {item.name}
+                          </span>
+                          <div className="settings-page__item-actions">
+                            <button
+                              className="settings-page__button settings-page__button--small"
+                              onClick={() => handleEditItem(item.id, item.name)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="settings-page__button settings-page__button--small settings-page__button--danger"
+                              onClick={() => handleDeleteItem(item.id)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <button
+              className="settings-page__button settings-page__button--primary"
+              onClick={handleAddItem}
+            >
+              Add Item
+            </button>
           </div>
 
           <div className="settings-page__button-group">
@@ -248,9 +289,9 @@ export const SyncExperimentsTab: React.FC = () => {
           {loading && (
             <div className="settings-page__content-description">Loading...</div>
           )}
-          {items && (
+          {rawItems && rawItems.length > 0 && (
             <div className="settings-page__content-description">
-              <pre>{JSON.stringify(items, null, 2)}</pre>
+              <pre>{JSON.stringify(rawItems, null, 2)}</pre>
             </div>
           )}
         </div>
