@@ -10,8 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         index:
-          # prettier-ignore
-          ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19']
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     with:
       test-suite-name: test-e2e-firefox
       build-command: yarn build:test:mv2
@@ -68,4 +67,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-e2e-firefox-report
-          path: test/test-results/test-runs*.json
+          path: test/test-results/test-runs.json

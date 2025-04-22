@@ -24,7 +24,7 @@ on:
         default: 30
         description: The timeout in minutes for the test command
       matrix-index:
-        type: string
+        type: number
         default: 0
         description: The index of the job in the matrix
       matrix-total:
