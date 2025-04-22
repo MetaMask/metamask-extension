@@ -1,6 +1,11 @@
 import * as fs from 'fs/promises';
 import path from 'path';
-import { TestCase, TestFile, TestRun, TestSuite } from './shared/test-reports';
+import type {
+  TestCase,
+  TestFile,
+  TestRun,
+  TestSuite,
+} from './shared/test-reports';
 import {
   consoleBold,
   formatTime,
