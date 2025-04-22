@@ -5076,9 +5076,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:@metamask-previews/chain-agnostic-permission@0.4.0-preview-514219da":
-  version: 0.4.0-preview-514219da
-  resolution: "@metamask-previews/chain-agnostic-permission@npm:0.4.0-preview-514219da"
+"@metamask/chain-agnostic-permission@npm:@metamask-previews/chain-agnostic-permission@0.4.0-preview-72122b6f":
+  version: 0.4.0-preview-72122b6f
+  resolution: "@metamask-previews/chain-agnostic-permission@npm:0.4.0-preview-72122b6f"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
     "@metamask/controller-utils": "npm:^11.7.0"
@@ -5087,7 +5087,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.2.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/4bf60756cf144a38de3459489f82682e592ac0607a7d7c2354554a5f1a09f1ea71410264c4cf4f5239063f619fc5f4e8279afa7c69471b8cbbb13ab39512212d
+  checksum: 10/4573b28f15c1054af7c8f94e27a980c635c6410c5f8161a5dd2ec4980b8eb8ba0fd0162d40b3ad066ebfcbaed59552ce380d99bcd2e9a1c12866cad79a6d70ad
   languageName: node
   linkType: hard
 
@@ -27614,7 +27614,7 @@ __metadata:
     "@metamask/bridge-controller": "npm:^11.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
-    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@0.4.0-preview-514219da"
+    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@0.4.0-preview-72122b6f"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.7.0"
     "@metamask/design-tokens": "npm:^7.0.0"
