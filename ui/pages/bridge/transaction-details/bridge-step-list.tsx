@@ -7,7 +7,7 @@ import {
   BridgeHistoryItem,
   StatusTypes,
   Step,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { formatDate } from '../../../helpers/utils/util';
 import BridgeStepDescription, {
   getStepStatus,

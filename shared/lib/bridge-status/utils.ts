@@ -4,7 +4,7 @@ import {
   QuoteMetadataSerialized,
   StatusRequest,
   StatusTypes,
-} from '../../types/bridge-status';
+} from '@metamask/bridge-status-controller';
 
 export const serializeQuoteMetadata = (
   quoteResponse: QuoteResponse & QuoteMetadata,

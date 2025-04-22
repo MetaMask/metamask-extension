@@ -10,7 +10,7 @@ import {
   Step,
   ActionTypes,
   StatusTypes,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { Box, Text } from '../../../components/component-library';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import {

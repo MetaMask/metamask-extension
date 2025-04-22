@@ -35,7 +35,7 @@ import {
 import {
   BridgeHistoryItem,
   StatusTypes,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import {
   AlignItems,
   Display,

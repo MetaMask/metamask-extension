@@ -19,7 +19,7 @@ import {
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../useMultichainTransactionDisplay';
-import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
+import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 
 /**
  * Defines the structure for additional bridge-related information added to transactions.

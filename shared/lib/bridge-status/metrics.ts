@@ -7,7 +7,7 @@ import { getHexGasTotalUsd } from '../../../app/scripts/lib/bridge-status/metric
 import {
   MetricsBackgroundState,
   BridgeHistoryItem,
-} from '../../types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { isHardwareKeyring } from '../../../ui/helpers/utils/hardware';
 import { ActionType } from '../../../ui/hooks/bridge/events/types';
 import { formatProviderLabel } from '../../../ui/pages/bridge/utils/quote';

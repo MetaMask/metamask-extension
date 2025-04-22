@@ -1,7 +1,7 @@
 import {
   BridgeStatusAction,
   StartPollingForBridgeTxStatusArgsSerialized,
-} from '../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';

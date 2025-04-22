@@ -1,5 +1,5 @@
 import { BRIDGE_API_BASE_URL } from '../../../../shared/constants/bridge';
-import { BridgeStatusState } from '../../../../shared/types/bridge-status';
+import { BridgeStatusState } from '@metamask/bridge-status-controller';
 
 export const REFRESH_INTERVAL_MS = 10 * 1000;
 

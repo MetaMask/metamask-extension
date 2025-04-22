@@ -14,7 +14,7 @@ import {
   BridgeHistoryItem,
   BridgeStatusAction,
   BridgeStatusControllerState,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from './constants';
 import BridgeStatusController from './bridge-status-controller';
 

@@ -4,7 +4,7 @@ import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-
 import {
   MetricsBackgroundState,
   BridgeHistoryItem,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import {
   exchangeRateFromMarketData,
   getTokenExchangeRate,

@@ -4,7 +4,7 @@ import {
   StatusResponse,
   StatusRequestWithSrcTxHash,
   StatusRequestDto,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { validateResponse, validators } from './validators';
 import { BRIDGE_STATUS_BASE_URL } from './constants';
 

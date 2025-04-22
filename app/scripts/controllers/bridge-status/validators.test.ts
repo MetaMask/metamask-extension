@@ -1,4 +1,4 @@
-import { StatusResponse } from '../../../../shared/types/bridge-status';
+import { StatusResponse } from '@metamask/bridge-status-controller';
 import { validateResponse, validators } from './validators';
 
 const BridgeTxStatusResponses = {

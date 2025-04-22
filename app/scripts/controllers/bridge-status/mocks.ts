@@ -7,7 +7,7 @@ import {
   ActionTypes,
   StartPollingForBridgeTxStatusArgsSerialized,
   BridgeHistoryItem,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 
 export const MockStatusResponse = {
   getPending: ({

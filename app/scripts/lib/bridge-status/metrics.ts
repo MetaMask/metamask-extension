@@ -20,7 +20,7 @@ import { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useC
 import {
   StatusTypes,
   MetricsBackgroundState,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
 // eslint-disable-next-line import/no-restricted-paths
 import { type ActionType } from '../../../../ui/hooks/bridge/events/types';

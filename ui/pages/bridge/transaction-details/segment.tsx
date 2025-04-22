@@ -6,7 +6,7 @@ import {
   BlockSize,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
+import { StatusTypes } from '@metamask/bridge-status-controller';
 
 export default function Segment({ type }: { type: StatusTypes | null }) {
   return (

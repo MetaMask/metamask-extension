@@ -1,5 +1,5 @@
 import type { CaipChainId } from '@metamask/utils';
-import type { StatusTypes } from '../../../../shared/types/bridge-status';
+import type { StatusTypes } from '@metamask/bridge-status-controller';
 
 export enum ActionType {
   CROSSCHAIN_V1 = 'crosschain-v1',

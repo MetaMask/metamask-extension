@@ -28,7 +28,7 @@ import { getCommonProperties } from '../../../../shared/lib/bridge-status/metric
 import {
   MetricsBackgroundState,
   StatusTypes,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import useAddToken from './useAddToken';

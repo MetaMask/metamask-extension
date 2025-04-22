@@ -7,7 +7,7 @@ import {
   BridgeStatusControllerState,
   StartPollingForBridgeTxStatusArgsSerialized,
   BridgeStatusState,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import {
   BRIDGE_STATUS_CONTROLLER_NAME,

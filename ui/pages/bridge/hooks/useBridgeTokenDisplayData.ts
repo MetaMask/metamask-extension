@@ -4,7 +4,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
-import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,

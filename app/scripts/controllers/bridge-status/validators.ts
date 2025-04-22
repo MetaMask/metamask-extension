@@ -5,7 +5,7 @@ import {
   SrcChainStatus,
   Asset,
   StatusTypes,
-} from '../../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { BRIDGE_STATUS_BASE_URL } from './constants';
 
 type Validator<ExpectedResponse, DataToValidate> = {

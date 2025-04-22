@@ -3,7 +3,7 @@ import { Hex } from '@metamask/utils';
 import {
   BridgeHistoryItem,
   BridgeStatusAppState,
-} from '../../../shared/types/bridge-status';
+} from '@metamask/bridge-status-controller';
 import { getSelectedAddress } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
