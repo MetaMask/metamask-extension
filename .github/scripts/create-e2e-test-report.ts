@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 import humanizeDuration from 'humanize-duration';
 import path from 'path';
 import * as xml2js from 'xml2js';
-import { TestCase, TestRun, TestSuite } from './shared/test-reports';
+import { TestCase, TestFile, TestRun, TestSuite } from './shared/test-reports';
 import { normalizeTestPath } from './shared/utils';
 
 const XML = {
@@ -74,7 +74,7 @@ async function main() {
       };
 
   try {
-    const testRuns: Record<string, TestRun> = {};
+    const testRuns: TestRun[] = [];
     const filenames = await fs.readdir(env.TEST_RESULTS_PATH);
 
     for (const filename of filenames) {
@@ -86,7 +86,6 @@ async function main() {
 
       for (const suite of results.testsuites.testsuite || []) {
         if (!suite.testcase || !suite.$.file) continue;
-        const path = normalizeTestPath(suite.$.file);
         const tests = +suite.$.tests;
         const failed = +suite.$.failures;
         const skipped = tests - suite.testcase.length;
@@ -104,8 +103,10 @@ async function main() {
           failed,
           skipped,
           time: +suite.$.time * 1000, // convert to ms,
+          attempts: [],
           testCases: [],
         };
+
         for (const test of suite.testcase || []) {
           const testCase: TestCase = {
             name: test.$.name,
@@ -116,45 +117,89 @@ async function main() {
           testSuite.testCases.push(testCase);
         }
 
-        // regex to remove the shard number from the job name
-        const testRunName = testSuite.job.name.replace(/\s+\(\d+\)$/, '');
+        const testFile: TestFile = {
+          path: normalizeTestPath(suite.$.file),
+          tests: testSuite.tests,
+          passed: testSuite.passed,
+          failed: testSuite.failed,
+          skipped: testSuite.skipped,
+          time: testSuite.time,
+          testSuites: [testSuite],
+        };
 
-        if (!testRuns[testRunName]) {
-          testRuns[testRunName] = new TestRun();
+        const testRun: TestRun = {
+          // regex to remove the shard number from the job name
+          name: testSuite.job.name.replace(/\s+\(\d+\)$/, ''),
+          testFiles: [testFile],
+        };
+
+        const existingRun = testRuns.find((run) => run.name === testRun.name);
+        if (existingRun) {
+          const existingFile = existingRun.testFiles.find(
+            (file) => file.path === testFile.path,
+          );
+          if (existingFile) {
+            existingFile.testSuites.push(testSuite);
+          } else {
+            existingRun.testFiles.push(testFile);
+          }
+        } else {
+          testRuns.push(testRun);
         }
-
-        // Add with allowDuplicates = true to keep all test suites
-        testRuns[testRunName].addTestSuite(testSuite, path, true);
       }
     }
 
-    const deduped: Record<string, TestRun> = {};
-
-    for (const testRunName in testRuns) {
-      const testRun = testRuns[testRunName];
-      deduped[testRunName] = new TestRun();
-      const dedupedRun = deduped[testRunName];
-
-      for (const path in testRun.testFiles) {
-        const testFile = testRun.testFiles[path];
-
-        // Sort test suites with newest first
-        testFile.testSuites.sort((a, b) => b.date.getTime() - a.date.getTime());
+    for (const testRun of testRuns) {
+      for (const testFile of testRun.testFiles) {
+        // Group test suites by name
+        const suitesByName: Record<string, TestSuite[]> = {};
 
         for (const suite of testFile.testSuites) {
-          // Add with allowDuplicates = false to keep only the latest test suite
-          dedupedRun.addTestSuite(suite, path, false);
+          if (!suitesByName[suite.name]) {
+            suitesByName[suite.name] = [];
+          }
+          suitesByName[suite.name].push(suite);
         }
+
+        // Determine the latest test suite by date and nest attempts
+        const attempts: TestSuite[][] = [];
+        for (const suites of Object.values(suitesByName)) {
+          suites.sort((a, b) => b.date.getTime() - a.date.getTime()); // sort newest first
+          const [latest, ...otherAttempts] = suites;
+          latest.attempts = otherAttempts;
+          attempts.push(otherAttempts);
+        }
+
+        // Remove the nested attempts from the top-level list
+        const attemptSet = new Set(attempts.flat().map((s) => s));
+        testFile.testSuites = testFile.testSuites.filter(
+          (suite) => !attemptSet.has(suite),
+        );
+
+        const total = testFile.testSuites.reduce(
+          (acc, suite) => ({
+            tests: acc.tests + suite.tests,
+            passed: acc.passed + suite.passed,
+            failed: acc.failed + suite.failed,
+            skipped: acc.skipped + suite.skipped,
+            time: acc.time + suite.time,
+          }),
+          { tests: 0, passed: 0, failed: 0, skipped: 0, time: 0 },
+        );
+
+        testFile.tests = total.tests;
+        testFile.passed = total.passed;
+        testFile.failed = total.failed;
+        testFile.skipped = total.skipped;
+        testFile.time = total.time;
       }
 
-      const dedupedTestFiles = Object.values(dedupedRun.testFiles).sort(
-        (a, b) => a.path.localeCompare(b.path),
-      );
+      testRun.testFiles.sort((a, b) => a.path.localeCompare(b.path));
 
-      const title = `<strong>${testRunName}</strong>`;
+      const title = `<strong>${testRun.name}</strong>`;
 
-      if (dedupedTestFiles.length) {
-        const total = dedupedTestFiles.reduce(
+      if (testRun.testFiles.length) {
+        const total = testRun.testFiles.reduce(
           (acc, file) => ({
             tests: acc.tests + file.tests,
             passed: acc.passed + file.passed,
@@ -165,31 +210,25 @@ async function main() {
         );
 
         if (total.failed > 0) {
-          console.log(consoleBold(title) + ' ❌');
+          console.log(`${consoleBold(title)} ❌`);
           core.summary.addRaw(`\n<details open>\n`);
           core.summary.addRaw(`\n<summary>${title} ❌</summary>\n`);
         } else {
-          console.log(consoleBold(title) + ' ✅');
+          console.log(`${consoleBold(title)} ✅`);
           core.summary.addRaw(`\n<details>\n`);
           core.summary.addRaw(`\n<summary>${title} ✅</summary>\n`);
         }
 
-        let earliestStart = Infinity;
-        let latestEnd = 0;
-
-        for (const file of dedupedTestFiles) {
-          for (const suite of file.testSuites) {
-            const start = suite.date.getTime();
-            const end = start + suite.time;
-            if (start < earliestStart) {
-              earliestStart = start;
-            }
-            if (end > latestEnd) {
-              latestEnd = end;
-            }
-          }
-        }
-
+        const times = testRun.testFiles
+          .map((file) =>
+            file.testSuites.map((suite) => ({
+              start: suite.date.getTime(),
+              end: suite.date.getTime() + suite.time,
+            })),
+          )
+          .flat();
+        const earliestStart = Math.min(...times.map((t) => t.start));
+        const latestEnd = Math.max(...times.map((t) => t.end));
         const executionTime = latestEnd - earliestStart;
 
         const conclusion = `<strong>${total.tests}</strong> ${
@@ -209,13 +248,14 @@ async function main() {
           core.summary.addRaw(
             `\n<hr style="height: 1px; margin-top: -5px; margin-bottom: 10px;">\n`,
           );
-          for (const file of dedupedTestFiles) {
+          for (const file of testRun.testFiles) {
             if (file.failed === 0) continue;
             console.error(file.path);
             core.summary.addRaw(
               `\n#### [${file.path}](https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${env.BRANCH}/${file.path})\n`,
             );
             for (const suite of file.testSuites) {
+              if (suite.failed === 0) continue;
               if (suite.job.name && suite.job.id && env.RUN_ID) {
                 core.summary.addRaw(
                   `\n##### Job: [${suite.job.name}](https://github.com/${
@@ -236,7 +276,7 @@ async function main() {
           }
         }
 
-        const rows = dedupedTestFiles.map((file) => ({
+        const rows = testRun.testFiles.map((file) => ({
           'Test file': file.path,
           Passed: file.passed ? `${file.passed} ✅` : '',
           Failed: file.failed ? `${file.failed} ❌` : '',
@@ -272,10 +312,6 @@ async function main() {
 
     await core.summary.write();
     await fs.writeFile(env.TEST_RUNS_PATH, JSON.stringify(testRuns, null, 2));
-    await fs.writeFile(
-      env.TEST_RUNS_PATH.replace('.json', '-deduped.json'),
-      JSON.stringify(deduped, null, 2),
-    );
   } catch (error) {
     core.setFailed(`Error creating the test report: ${error}`);
   }
