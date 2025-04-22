@@ -3580,16 +3580,13 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
   const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
+  const connectedAccountsAddresses = connectedAccounts.map((acc) => {
+    const split = acc.split(':');
+    return split[split.length - 1];
+  });
 
   return orderedAccounts
-    .filter((account) =>
-      connectedAccounts
-        .map((acc) => {
-          const split = acc.split(':');
-          return split[split.length - 1];
-        })
-        .includes(account.address),
-    )
+    .filter((account) => connectedAccountsAddresses.includes(account.address))
     .map((account) => ({
       ...account,
       metadata: {
