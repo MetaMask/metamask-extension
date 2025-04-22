@@ -31,15 +31,17 @@ export class ExtensionUpdateManager {
   public setIdleState(idle: boolean): void {
     this.#isIdle = idle;
     if (idle && this.#updatePending) {
-      this.#applyPendingUpdate();
+      this.applyPendingUpdate();
     }
   }
 
   /**
    * Applies a pending update by reloading the extension.
    * Should only be called when conditions for update are confirmed.
+   *
+   * @protected
    */
-  #applyPendingUpdate(): void {
+  protected applyPendingUpdate(): void {
     browser.runtime.reload();
   }
 
@@ -58,7 +60,7 @@ export class ExtensionUpdateManager {
 
     // If we're already idle, apply the update immediately
     if (this.#isIdle) {
-      this.#applyPendingUpdate();
+      this.applyPendingUpdate();
     }
   }
 }

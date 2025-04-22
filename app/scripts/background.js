@@ -582,7 +582,8 @@ async function initialize() {
       initState.RemoteFeatureFlagController.remoteFeatureFlags
         .extensionUpdateDetection
     ) {
-      extensionUpdateManager.setIdleState(true);
+      const isClientOpen = isClientOpenStatus();
+      extensionUpdateManager.setIdleState(!isClientOpen);
     }
 
     resolveInitialization();
