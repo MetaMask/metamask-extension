@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add icon image for Lens network ([#31638](https://github.com/MetaMask/metamask-extension/pull/31638))
 
+### Changed
+- Remove failed transaction retry button ([#32024](https://github.com/MetaMask/metamask-extension/pull/32024))
+
 ### Fixed
 - Allow verifyingContract to be omitted from EIP-712 signatures ([#31613](https://github.com/MetaMask/metamask-extension/pull/31613))
 
