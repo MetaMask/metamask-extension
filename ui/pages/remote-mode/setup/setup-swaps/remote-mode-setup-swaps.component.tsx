@@ -54,20 +54,16 @@ import {
   REMOTE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
-import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
-import RemoteModeSwapAllowanceCard from '../swap-allowance-card';
-import StepIndicator from '../step-indicator/step-indicator.component';
-import { getSelectedAccount, getSelectedNetwork } from '../../../../selectors';
+
 import {
   signDelegation,
   storeDelegationEntry,
 } from '../../../../store/actions';
-import useUpgradeAccount from '../../hooks/useUpgradeAccount';
 import {
   RemoteModeHardwareWalletConfirm,
   RemoteModeSwapAllowanceCard,
-  StepIndicator,
   SmartAccountUpdateInformation,
+  StepIndicator,
 } from '../../components';
 
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
@@ -76,7 +72,9 @@ import { InternalAccountWithBalance } from '../../../../selectors/selectors.type
 import {
   getSelectedInternalAccount,
   getMetaMaskAccountsOrdered,
+  getSelectedNetwork,
 } from '../../../../selectors';
+import useUpgradeAccount from '../../hooks/useUpgradeAccount';
 
 const TOTAL_STEPS = 3;
 
@@ -116,7 +114,9 @@ export default function RemoteModeSetupSwaps() {
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedNetwork = useSelector(getSelectedNetwork);
-  const { upgradeAccount } = useUpgradeAccount();
+  const { upgradeAccount } = useUpgradeAccount({
+    account: selectedHardwareAccount.address as `0x${string}`,
+  });
 
   useEffect(() => {
     setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
@@ -188,14 +188,9 @@ export default function RemoteModeSetupSwaps() {
 
     const { chainId } = selectedNetwork.configuration;
 
-    console.log('toUpgrade');
-
     await upgradeAccount({
-      account: selectedAccount.address,
       chainId,
     });
-
-    console.log('upgraded');
 
     const delegation = createDelegation({
       caveats: [],
@@ -203,23 +198,15 @@ export default function RemoteModeSetupSwaps() {
       to: selectedAccount.address as `0x${string}`,
     });
 
-    console.log('delegation created');
-
     const signature = await signDelegation({ delegation, chainId });
 
-    console.log('signature', signature);
-
     delegation.signature = signature;
-
-    console.log('storing delegation');
 
     await storeDelegationEntry({
       delegation,
       tags: ['swap'],
       chainId,
     });
-
-    console.log('delegation stored');
 
     history.replace(REMOTE_ROUTE);
   };

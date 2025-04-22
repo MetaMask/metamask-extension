@@ -1,103 +1,31 @@
-import { DELEGATOR_CONTRACTS } from '@metamask/delegation-toolkit';
-import { Hex, hexToNumber } from '@metamask/utils';
-import { useSelector } from 'react-redux';
-import { getGasFeeEstimates } from '../../../ducks/metamask/metamask';
-import { getNetworkConfigurationIdByChainId } from '../../../selectors';
-import { addTransaction, estimateGas } from '../../../store/actions';
-import {
-  TransactionEnvelopeType,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import { getEIP7702ContractAddresses } from '../../../selectors/remote-mode';
+import { Hex } from '@metamask/utils';
+import { useEIP7702Account } from '../../confirmations/hooks/useEIP7702Account';
+import { useEIP7702Networks } from '../../confirmations/hooks/useEIP7702Networks';
 
-/* export function getEIP7702ContractAddresses(
-  chainId: Hex,
-  publicKey: Hex,
-): Hex[] {
-  const featureFlags = getFeatureFlags(messenger);
-
-  const contracts =
-    featureFlags?.[FeatureFlag.EIP7702]?.contracts?.[
-      chainId.toLowerCase() as Hex
-    ] ?? [];
-
-  return contracts
-    .filter((contract) =>
-      isValidSignature(
-        [contract.address, padHexToEvenLength(chainId) as Hex],
-        contract.signature,
-        publicKey,
-      ),
-    )
-    .map((contract) => contract.address);
-} */
-
-export default function useUpgradeAccount() {
-  const networkGasFeeEstimates = useSelector(getGasFeeEstimates);
-  const networkConfigurationIds = useSelector(
-    getNetworkConfigurationIdByChainId,
-  );
-  const isRemoteModeEnabled = useSelector(getEIP7702ContractAddresses);
+export default function useUpgradeAccount({ account }: { account: Hex }) {
+  const { upgradeAccount: upgradeAccountEIP7702 } = useEIP7702Account();
+  const { network7702List } = useEIP7702Networks(account);
 
   const upgradeAccount = async ({
-    account,
     chainId,
   }: {
-    account: string;
     chainId: Hex;
-  }) => {
-    // TODO: Change this to get address from Launch Darkly
-    const statelessDelegatorImplementation =
-      DELEGATOR_CONTRACTS['1.3.0'][hexToNumber(chainId)]
-        .EIP7702StatelessDeleGatorImpl;
+  }): Promise<void> => {
+    const networkConfig = network7702List.find(
+      (network) => network.chainIdHex === chainId,
+    );
 
-    const txParams = {
-      type: TransactionEnvelopeType.setCode,
-      from: account,
-      to: account,
-      value: '0x0',
-      authorizationList: [
-        {
-          chainId,
-          address: statelessDelegatorImplementation,
-        },
-      ],
-      chainId,
-      data: '0x',
-    };
+    // TODO: remove this and use isSupported when it's ready
+    if (networkConfig?.isSupported) {
+      console.log('no upgrade needed');
+      return;
+    }
 
-    console.log('txParams', JSON.stringify(txParams));
+    if (!networkConfig?.upgradeContractAddress) {
+      throw new Error('No upgrade contract address found');
+    }
 
-    const maxGasLimit = await estimateGas({
-      from: txParams.from,
-      to: txParams.to,
-      value: txParams.value,
-      data: txParams.data,
-      authorizationList: txParams.authorizationList,
-    });
-
-    const finalTxParams = {
-      ...txParams,
-      chainId,
-      gasLimit: maxGasLimit,
-      gas: maxGasLimit,
-    };
-
-    console.log('finalTxParams', finalTxParams);
-
-    const networkClientId =
-      networkConfigurationIds[chainId as keyof typeof networkConfigurationIds];
-
-    console.log('networkClientId', networkClientId);
-
-    const txMeta = await addTransaction(finalTxParams, {
-      requireApproval: true,
-      networkClientId,
-    });
-
-    console.log('txMeta', txMeta);
-
-    return txMeta;
+    await upgradeAccountEIP7702(account, networkConfig?.upgradeContractAddress);
   };
 
   return {

@@ -52,9 +52,6 @@ import {
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 
-import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
-import RemoteModeDailyAllowanceCard from '../daily-allowance-card';
-import StepIndicator from '../step-indicator/step-indicator.component';
 import {
   signDelegation,
   storeDelegationEntry,
