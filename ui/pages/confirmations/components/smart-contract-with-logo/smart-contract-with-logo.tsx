@@ -6,9 +6,9 @@ import {
   Display,
   FlexDirection,
   TextColor,
-} from '../../../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../../../../components/component-library';
-import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+} from '../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../../components/component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 function SmartContractWithLogo() {
   const t = useI18nContext();

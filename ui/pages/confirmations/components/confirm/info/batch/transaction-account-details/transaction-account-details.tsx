@@ -8,11 +8,11 @@ import {
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
 import {
   useIsDowngradeTransaction,
   useIsUpgradeTransaction,
 } from '../../hooks/useIsUpgradeTransaction';
-import { SmartContractWithLogo } from '../../shared/smart-contract-with-logo';
 
 export function TransactionAccountDetails() {
   const t = useI18nContext();
