@@ -168,8 +168,9 @@ async function main() {
             passed: acc.passed + file.passed,
             failed: acc.failed + file.failed,
             skipped: acc.skipped + file.skipped,
+            time: acc.time + file.time,
           }),
-          { tests: 0, passed: 0, failed: 0, skipped: 0 },
+          { tests: 0, passed: 0, failed: 0, skipped: 0, time: 0 },
         );
 
         if (total.failed > 0) {
