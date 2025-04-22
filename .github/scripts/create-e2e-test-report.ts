@@ -156,10 +156,10 @@ async function main() {
       if (dedupedTestFiles.length) {
         const total = dedupedTestFiles.reduce(
           (acc, file) => ({
-            tests: acc.tests + file.totalTests,
-            passed: acc.passed + file.totalPassed,
-            failed: acc.failed + file.totalFailed,
-            skipped: acc.skipped + file.totalSkipped,
+            tests: acc.tests + file.tests,
+            passed: acc.passed + file.passed,
+            failed: acc.failed + file.failed,
+            skipped: acc.skipped + file.skipped,
           }),
           { tests: 0, passed: 0, failed: 0, skipped: 0 },
         );
@@ -210,7 +210,7 @@ async function main() {
             `\n<hr style="height: 1px; margin-top: -5px; margin-bottom: 10px;">\n`,
           );
           for (const file of dedupedTestFiles) {
-            if (file.totalFailed === 0) continue;
+            if (file.failed === 0) continue;
             console.error(file.path);
             core.summary.addRaw(
               `\n#### [${file.path}](https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${env.BRANCH}/${file.path})\n`,
@@ -238,10 +238,10 @@ async function main() {
 
         const rows = dedupedTestFiles.map((file) => ({
           'Test file': file.path,
-          Passed: file.totalPassed ? `${file.totalPassed} ✅` : '',
-          Failed: file.totalFailed ? `${file.totalFailed} ❌` : '',
-          Skipped: file.totalSkipped ? `${file.totalSkipped} ⏩` : '',
-          Time: formatTime(file.totalTime),
+          Passed: file.passed ? `${file.passed} ✅` : '',
+          Failed: file.failed ? `${file.failed} ❌` : '',
+          Skipped: file.skipped ? `${file.skipped} ⏩` : '',
+          Time: formatTime(file.time),
         }));
 
         const columns = Object.keys(rows[0]);

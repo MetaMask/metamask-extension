@@ -11,11 +11,11 @@ export class TestRun {
 
       if (!existingSuite || allowDuplicates) {
         testFile.testSuites.push(testSuite);
-        testFile.totalTime += testSuite.time;
-        testFile.totalTests += testSuite.tests;
-        testFile.totalPassed += testSuite.passed;
-        testFile.totalFailed += testSuite.failed;
-        testFile.totalSkipped += testSuite.skipped;
+        testFile.time += testSuite.time;
+        testFile.tests += testSuite.tests;
+        testFile.passed += testSuite.passed;
+        testFile.failed += testSuite.failed;
+        testFile.skipped += testSuite.skipped;
       } else {
         console.warn(
           `Test suite ${testSuite.name} already exists in ${path}. Skipping duplicate.`,
@@ -24,11 +24,11 @@ export class TestRun {
     } else {
       this.testFiles[path] = {
         path,
-        totalTime: testSuite.time,
-        totalTests: testSuite.tests,
-        totalPassed: testSuite.passed,
-        totalFailed: testSuite.failed,
-        totalSkipped: testSuite.skipped,
+        time: testSuite.time,
+        tests: testSuite.tests,
+        passed: testSuite.passed,
+        failed: testSuite.failed,
+        skipped: testSuite.skipped,
         testSuites: [testSuite],
       };
     }
@@ -37,11 +37,11 @@ export class TestRun {
 
 export interface TestFile {
   path: string;
-  totalTime: number;
-  totalTests: number;
-  totalPassed: number;
-  totalFailed: number;
-  totalSkipped: number;
+  tests: number;
+  passed: number;
+  failed: number;
+  skipped: number;
+  time: number;
   testSuites: TestSuite[];
 }
 
