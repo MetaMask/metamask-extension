@@ -2645,7 +2645,7 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
+              type: 'caip-348',
               data: {
                 method: 'wallet_invokeMethod',
                 params: {

@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import { MemoryRouter, useHistory } from 'react-router-dom';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import * as actions from '../../../store/actions';
 import * as networks from '../../../../shared/modules/selectors/networks';
 import {
