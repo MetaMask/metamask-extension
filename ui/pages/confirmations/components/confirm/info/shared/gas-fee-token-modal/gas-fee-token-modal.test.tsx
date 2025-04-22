@@ -12,12 +12,17 @@ import {
   updateBatchTransactions,
   updateSelectedGasFeeToken,
 } from '../../../../../../../store/controller-actions/transaction-controller';
-import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
+import { GAS_FEE_TOKEN_MOCK as GAS_FEE_TOKEN_MOCK_BASE } from '../../../../../../../../test/data/confirmations/gas';
 import { GasFeeTokenModal } from './gas-fee-token-modal';
 
 jest.mock(
   '../../../../../../../store/controller-actions/transaction-controller',
 );
+
+const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
+  ...GAS_FEE_TOKEN_MOCK_BASE,
+  symbol: 'USDC',
+};
 
 const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
   amount: toHex(20000),

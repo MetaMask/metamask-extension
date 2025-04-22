@@ -102,6 +102,7 @@ describe('useTransactionConfirm', () => {
         )}0000000000000000000000000000000000000000000000000000000000000${GAS_FEE_TOKEN_MOCK.amount.slice(
           2,
         )}`,
+        gas: GAS_FEE_TOKEN_MOCK.gasTransfer,
         maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
         maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
         to: GAS_FEE_TOKEN_MOCK.tokenAddress,
