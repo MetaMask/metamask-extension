@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Στοιχεία λογαριασμού"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Επαναφορά σε κανονικό λογαριασμό"
-  },
   "accountIdenticon": {
     "message": "Αναγνωριστικό Λογαριασμού"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Για να ενεργοποιήσετε το δίκτυο $1, πρέπει να δημιουργήσετε έναν λογαριασμό $1.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Για να ενεργοποιήσετε το δίκτυο $1, πρέπει να δημιουργήσετε έναν λογαριασμό $2.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Προσθήκη διεύθυνσης URL RPC"
@@ -1121,21 +1118,6 @@
   "confirmTitleTransaction": {
     "message": "Αίτημα συναλλαγής"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Εάν επιβεβαιώσετε αυτό το αίτημα, ο λογαριασμός σας θα αναβαθμιστεί σε έξυπνο λογαριασμό."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Ακύρωση συναλλαγής"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Ακύρωση αναβάθμισης & συναλλαγής"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Αν δεν θέλετε να αναβαθμίσετε τον λογαριασμό σας, μπορείτε να το ακυρώσετε εδώ.\n\nΓια να ολοκληρώσετε αυτή τη συναλλαγή χωρίς αναβάθμιση, θα πρέπει να υποβάλετε ξανά αυτό το αίτημα στον ιστότοπο. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Ακύρωση συναλλαγής"
-  },
   "confirmationAlertDetails": {
     "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία, σας προτείνουμε να απορρίψετε το αίτημα."
   },
@@ -1326,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Αντιγραφή διεύθυνσης στο πρόχειρο"
-  },
-  "copyAddressShort": {
-    "message": "Αντιγραφή διεύθυνσης"
   },
   "copyPrivateKey": {
     "message": "Αντιγραφή ιδιωτικού κλειδιού"
@@ -2009,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "Οι πληροφορίες που έχετε εισάγει συνδέονται με ένα υπάρχον αναγνωριστικό αλυσίδας."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Για να προβάλετε και να επιβεβαιώσετε το πιο πρόσφατο αίτημά σας, θα πρέπει πρώτα να εγκρίνετε ή να απορρίψετε τα υπάρχοντα αιτήματα."
   },
   "expandView": {
     "message": "Ανάπτυξη προβολής"

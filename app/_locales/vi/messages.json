@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Chi tiết tài khoản"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Chuyển về tài khoản thông thường"
-  },
   "accountIdenticon": {
     "message": "Biểu tượng nhận dạng tài khoản"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Để kích hoạt mạng $1, bạn cần tạo tài khoản $1.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Để kích hoạt mạng $1, bạn cần tạo tài khoản $2.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Thêm URL RPC"
@@ -1121,21 +1118,6 @@
   "confirmTitleTransaction": {
     "message": "Yêu cầu giao dịch"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Nếu bạn xác nhận yêu cầu này, tài khoản của bạn sẽ được cập nhật thành tài khoản thông minh."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Hủy giao dịch"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Hủy cập nhật & giao dịch"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Nếu bạn không muốn cập nhật tài khoản của mình, bạn có thể hủy tại đây.\n\nĐể hoàn tất giao dịch này mà không cập nhật, bạn sẽ cần thực hiện lại yêu cầu này trên trang web. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Hủy giao dịch"
-  },
   "confirmationAlertDetails": {
     "message": "Để bảo vệ tài sản của bạn, chúng tôi đề nghị bạn từ chối yêu cầu này."
   },
@@ -1326,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Sao chép địa chỉ vào bộ nhớ đệm"
-  },
-  "copyAddressShort": {
-    "message": "Sao chép địa chỉ"
   },
   "copyPrivateKey": {
     "message": "Sao chép khóa riêng tư"
@@ -2009,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Để xem và xác nhận yêu cầu gần đây nhất của bạn, trước tiên bạn cần phải chấp thuận hoặc từ chối các yêu cầu hiện có."
   },
   "expandView": {
     "message": "Chế độ xem mở rộng"

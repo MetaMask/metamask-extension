@@ -12,6 +12,7 @@ import {
   type TxData,
   formatChainIdToHex,
   BridgeClientId,
+  formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
@@ -113,13 +114,14 @@ const fetchTokenExchangeRates = async (
       },
       {} as Record<string, number>,
     );
-  } else {
-    exchangeRates = await fetchTokenExchangeRatesUtil(
-      currency,
-      tokenAddresses,
-      formatChainIdToHex(chainId),
-    );
+    return exchangeRates;
   }
+  // EVM chains
+  exchangeRates = await fetchTokenExchangeRatesUtil(
+    currency,
+    tokenAddresses,
+    formatChainIdToHex(chainId),
+  );
 
   return Object.keys(exchangeRates).reduce(
     (acc: Record<string, number | undefined>, address) => {
@@ -144,8 +146,9 @@ export const getTokenExchangeRate = async (request: {
     currency,
     tokenAddress,
   );
-  if (isSolanaChainId(chainId)) {
-    return exchangeRates?.[tokenAddress];
+  const assetId = toAssetId(tokenAddress, formatChainIdToCaip(chainId));
+  if (isSolanaChainId(chainId) && assetId) {
+    return exchangeRates?.[assetId];
   }
   // The exchange rate can be checksummed or not, so we need to check both
   const exchangeRate =
@@ -157,7 +160,7 @@ export const getTokenExchangeRate = async (request: {
 // This extracts a token's exchange rate from the marketData state object
 // These exchange rates are against the native asset of the chain
 export const exchangeRateFromMarketData = (
-  chainId: Hex | ChainId,
+  chainId: Hex | ChainId | CaipChainId,
   tokenAddress: string,
   marketData?: Record<string, ContractMarketData>,
 ) =>

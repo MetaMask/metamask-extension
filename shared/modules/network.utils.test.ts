@@ -1,10 +1,14 @@
 import { SolScope, BtcScope, EthScope } from '@metamask/keyring-api';
-import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import {
+  toEvmCaipChainId,
+  type MultichainNetworkConfiguration,
+} from '@metamask/multichain-network-controller';
 import {
   type NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
+import { ChainId } from '@metamask/controller-utils';
 import { MAX_SAFE_CHAIN_ID } from '../constants/network';
 import {
   isSafeChainId,
@@ -14,6 +18,7 @@ import {
   convertCaipToHexChainId,
   sortNetworks,
   getRpcDataByChainId,
+  sortNetworksByPrioity,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -166,7 +171,7 @@ describe('network utils', () => {
       const networks: Record<CaipChainId, MultichainNetworkConfiguration> = {
         [SolScope.Mainnet]: {
           chainId: SolScope.Mainnet,
-          name: 'Solana Mainnet',
+          name: 'Solana',
           nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
           isEvm: false,
         },
@@ -188,7 +193,7 @@ describe('network utils', () => {
         },
         [BtcScope.Mainnet]: {
           chainId: BtcScope.Mainnet,
-          name: 'Bitcoin Mainnet',
+          name: 'Bitcoin',
           nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
           isEvm: false,
         },
@@ -202,13 +207,13 @@ describe('network utils', () => {
       expect(sortNetworks(networks, sortedChainIds)).toStrictEqual([
         {
           chainId: SolScope.Mainnet,
-          name: 'Solana Mainnet',
+          name: 'Solana',
           nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
           isEvm: false,
         },
         {
           chainId: BtcScope.Mainnet,
-          name: 'Bitcoin Mainnet',
+          name: 'Bitcoin',
           nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
           isEvm: false,
         },
@@ -319,6 +324,48 @@ describe('network utils', () => {
       expect(() => getRpcDataByChainId('eip155:2', evmNetworks)).toThrow(
         'Network configuration not found for chain ID: eip155:2 (0x2)',
       );
+    });
+  });
+
+  describe('sortNetworksByPrioity', () => {
+    it('sorts a list of networks based on the predefined priority and following with alphabetical order', () => {
+      const networkB = {
+        chainId: 'eip155:0x123456',
+        name: 'Some Testnet',
+      };
+      const networkA = {
+        chainId: 'eip155:0x12345',
+        name: 'Another Testnet',
+      };
+      const sepolia = {
+        chainId: toEvmCaipChainId(ChainId.sepolia),
+        name: 'Sepolia',
+      };
+      const lineaSepolia = {
+        chainId: toEvmCaipChainId(ChainId['linea-sepolia']),
+        name: 'Linea Sepolia',
+      };
+
+      const networks = [
+        networkB,
+        networkA,
+        sepolia,
+        lineaSepolia,
+      ] as unknown as MultichainNetworkConfiguration[];
+
+      const expectedResult = [
+        sepolia,
+        lineaSepolia,
+        networkA,
+        networkB,
+      ] as unknown as MultichainNetworkConfiguration[];
+
+      const result = sortNetworksByPrioity(networks, [
+        sepolia.chainId,
+        lineaSepolia.chainId,
+      ]);
+
+      expect(result).toStrictEqual(expectedResult);
     });
   });
 });

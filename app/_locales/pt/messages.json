@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Detalhes da conta"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Voltar para a conta normal"
-  },
   "accountIdenticon": {
     "message": "Identicon da conta"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Para ativar a rede $1, é necessário criar uma conta $1.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Para ativar a rede $1, é necessário criar uma conta $2.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Adicionar URL da RPC"
@@ -1121,21 +1118,6 @@
   "confirmTitleTransaction": {
     "message": "Solicitação de transação"
   },
-  "confirmUpgradeAcknowledge": {
-    "message": "Se você confirmar esta solicitação, sua conta será atualizada para uma conta inteligente."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Cancelar transação"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Cancelar atualização e transação"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Se você não deseja atualizar sua conta, pode cancelar a atualização aqui.\n\nPara terminar esta transação sem uma atualização, é necessário fazer esta solicitação novamente no site. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Cancelar transação"
-  },
   "confirmationAlertDetails": {
     "message": "Para proteger seus ativos, é recomendável que você recuse a solicitação."
   },
@@ -1326,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
-  },
-  "copyAddressShort": {
-    "message": "Copiar endereço"
   },
   "copyPrivateKey": {
     "message": "Copiar chave privada"
@@ -2009,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "As informações que você inseriu estão associadas a um ID de cadeia existente."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Para visualizar e confirmar sua solicitação mais recente, primeiro é necessário aprovar ou recusar as solicitações existentes."
   },
   "expandView": {
     "message": "Expandir exibição"

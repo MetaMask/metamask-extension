@@ -13,6 +13,10 @@ import {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import { toHex } from '@metamask/controller-utils';
+import {
+  getNativeAssetForChainId,
+  isNativeAddress,
+} from '@metamask/bridge-controller';
 import { MINUTE } from '../constants/time';
 import { decimalToPrefixedHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';
@@ -26,7 +30,11 @@ export const toAssetId = (
 ): CaipAssetType | undefined => {
   if (isCaipAssetType(address)) {
     return address;
-  } else if (chainId === MultichainNetwork.Solana) {
+  }
+  if (isNativeAddress(address)) {
+    return getNativeAssetForChainId(chainId)?.assetId as CaipAssetType;
+  }
+  if (chainId === MultichainNetwork.Solana) {
     return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
   }
   // EVM assets
