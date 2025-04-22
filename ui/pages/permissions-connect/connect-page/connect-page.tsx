@@ -41,6 +41,7 @@ import {
   FlexDirection,
   FlexWrap,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -72,6 +73,7 @@ import {
 } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { getCaipAccountIdsFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
 import {
   PermissionsRequest,
   getRequestedCaip25CaveatValue,
@@ -82,6 +84,9 @@ export type ConnectPageRequest = {
   id: string;
   origin: string;
   permissions?: PermissionsRequest;
+  metadata?: {
+    promptToCreateSolanaAccount?: boolean;
+  };
 };
 
 export type ConnectPageProps = {
@@ -119,6 +124,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
+
+  const promptToCreateSolanaAccount =
+    request.metadata?.promptToCreateSolanaAccount;
 
   const networkConfigurationsByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -158,6 +166,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
+  const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
+    useState(false);
 
   // By default, if a non test network is the globally selected network. We will only show non test networks as default selected.
   const currentlySelectedNetwork = useSelector(getMultichainNetwork);
@@ -292,7 +302,42 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     });
   });
 
-  const onConfirm = () => {
+  const solanaAccountExistsInWallet = useMemo(() => {
+    return allAccounts.some(({ caipAccountId }) => {
+      const { chain } = parseCaipAccountId(caipAccountId);
+      return chain.namespace === KnownCaipNamespace.Solana;
+    });
+  }, [allAccounts]);
+
+  const handleOpenAccountsModal = useCallback(() => {
+    setShowEditAccountsModal(true);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.ViewPermissionedAccounts,
+      properties: {
+        location:
+          'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
+      },
+    });
+  }, [trackEvent]);
+
+  const handleOpenCreateSolanaAccountModal = useCallback(() => {
+    setShowCreateSolanaAccountModal(true);
+  }, []);
+
+  const handleCloseCreateSolanaAccountModal = useCallback(() => {
+    setShowCreateSolanaAccountModal(false);
+  }, []);
+
+  const handleCloseEditAccountsModal = useCallback(() => {
+    setShowEditAccountsModal(false);
+  }, []);
+
+  const handleCancelConnection = useCallback(() => {
+    rejectPermissionsRequest(permissionsRequestId);
+  }, [permissionsRequestId, rejectPermissionsRequest]);
+
+  const onConfirm = useCallback(() => {
     const _request = {
       ...request,
       permissions: {
@@ -305,21 +350,15 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       },
     };
     approveConnection(_request);
-  };
+  }, [
+    request,
+    requestedCaip25CaveatValue,
+    selectedCaipAccountAddresses,
+    selectedChainIds,
+    approveConnection,
+  ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
-
-  const handleOpenAccountsModal = () => {
-    setShowEditAccountsModal(true);
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.ViewPermissionedAccounts,
-      properties: {
-        location:
-          'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
-      },
-    });
-  };
 
   return (
     <Page
@@ -431,22 +470,23 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                     selected={false}
                   />
                 ))}
-                {selectedAccounts.length === 0 && (
-                  <Box
-                    className="connect-page__accounts-empty"
-                    display={Display.Flex}
-                    justifyContent={JustifyContent.center}
-                    alignItems={AlignItems.center}
-                    borderRadius={BorderRadius.XL}
-                  >
-                    <ButtonLink
-                      onClick={() => handleOpenAccountsModal()}
-                      data-testid="edit"
+                {selectedAccounts.length === 0 &&
+                  !promptToCreateSolanaAccount && (
+                    <Box
+                      className="connect-page__accounts-empty"
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.center}
+                      alignItems={AlignItems.center}
+                      borderRadius={BorderRadius.XL}
                     >
-                      {t('selectAccountToConnect')}
-                    </ButtonLink>
-                  </Box>
-                )}
+                      <ButtonLink
+                        onClick={handleOpenAccountsModal}
+                        data-testid="edit"
+                      >
+                        {t('selectAccountToConnect')}
+                      </ButtonLink>
+                    </Box>
+                  )}
               </Box>
               {selectedAccounts.length > 0 && (
                 <Box
@@ -455,18 +495,52 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                   justifyContent={JustifyContent.center}
                 >
                   <ButtonLink
-                    onClick={() => handleOpenAccountsModal()}
+                    onClick={handleOpenAccountsModal}
                     data-testid="edit"
                   >
                     {t('editAccounts')}
                   </ButtonLink>
                 </Box>
               )}
+              {promptToCreateSolanaAccount && !solanaAccountExistsInWallet && (
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                  marginTop={4}
+                  gap={2}
+                >
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textAlternative}
+                    textAlign={TextAlign.Center}
+                  >
+                    {selectedAccounts.length === 0
+                      ? t('solanaAccountRequired')
+                      : t('solanaAccountRequested')}
+                  </Text>
+                  <Button
+                    variant={ButtonVariant.Secondary}
+                    width={BlockSize.Full}
+                    size={ButtonSize.Lg}
+                    onClick={handleOpenCreateSolanaAccountModal}
+                    data-testid="create-solana-account"
+                  >
+                    {t('createSolanaAccount')}
+                  </Button>
+                </Box>
+              )}
+              {showCreateSolanaAccountModal && (
+                <CreateSolanaAccountModal
+                  onClose={handleCloseCreateSolanaAccountModal}
+                />
+              )}
               {showEditAccountsModal && (
                 <EditAccountsModal
                   accounts={allAccounts}
                   defaultSelectedAccountAddresses={selectedCaipAccountAddresses}
-                  onClose={() => setShowEditAccountsModal(false)}
+                  onClose={handleCloseEditAccountsModal}
                   onSubmit={setSelectedCaipAccountAddresses}
                 />
               )}
@@ -477,6 +551,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             tabKey="permissions"
             width={BlockSize.Full}
             data-testid="permissions-tab"
+            disabled={
+              promptToCreateSolanaAccount &&
+              !solanaAccountExistsInWallet &&
+              selectedAccounts.length === 0
+            }
           >
             <Box marginTop={4}>
               <SiteCell
@@ -506,7 +585,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               data-testid="cancel-btn"
-              onClick={() => rejectPermissionsRequest(permissionsRequestId)}
+              onClick={handleCancelConnection}
             >
               {t('cancel')}
             </Button>
