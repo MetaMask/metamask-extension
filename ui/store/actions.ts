@@ -12,7 +12,12 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
-import { type CaipChainId, type Hex, type Json } from '@metamask/utils';
+import {
+  CaipAssetType,
+  type CaipChainId,
+  type Hex,
+  type Json,
+} from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -2212,6 +2217,7 @@ export function addNftVerifyOwnership(
 export function removeAndIgnoreNft(
   address: string,
   tokenID: string,
+  networkClientId: string,
   shouldShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -2225,7 +2231,11 @@ export function removeAndIgnoreNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreNft', [address, tokenID]);
+      await submitRequestToBackground('removeAndIgnoreNft', [
+        address,
+        tokenID,
+        { networkClientId },
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -3584,6 +3594,17 @@ export function setUseCurrencyRateCheck(
         dispatch(displayWarning(err));
       }
     });
+  };
+}
+
+// MultichainAssetsRatesController
+export function fetchHistoricalPricesForAsset(
+  address: CaipAssetType,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.fetchHistoricalPricesForAsset`);
+    await submitRequestToBackground('fetchHistoricalPricesForAsset', [address]);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -6060,6 +6081,8 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   // Sentry uses the Performance interface for more accuracy, so we also must use it to align with
   // other timings.
   const timestamp =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     request.timestamp || performance.timeOrigin + performance.now();
 
   await submitRequestToBackground<void>('endTrace', [

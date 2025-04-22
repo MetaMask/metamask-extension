@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Chi tiết tài khoản"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Chuyển về tài khoản thông thường"
-  },
   "accountIdenticon": {
     "message": "Biểu tượng nhận dạng tài khoản"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Để kích hoạt mạng $1, bạn cần tạo tài khoản $1.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Để kích hoạt mạng $1, bạn cần tạo tài khoản $2.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Thêm URL RPC"
@@ -1311,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Sao chép địa chỉ vào bộ nhớ đệm"
-  },
-  "copyAddressShort": {
-    "message": "Sao chép địa chỉ"
   },
   "copyPrivateKey": {
     "message": "Sao chép khóa riêng tư"
