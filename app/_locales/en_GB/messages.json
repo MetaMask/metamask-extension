@@ -1132,11 +1132,11 @@
   "confirmSimulationApprove": {
     "message": "You approve"
   },
-  "confirmTitleApproveTransactionNFT": {
-    "message": "Withdrawal request"
-  },
   "confirmTitleAccountTypeSwitch": {
     "message": "Account update"
+  },
+  "confirmTitleApproveTransactionNFT": {
+    "message": "Withdrawal request"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
