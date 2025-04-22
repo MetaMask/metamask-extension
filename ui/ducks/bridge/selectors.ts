@@ -23,7 +23,17 @@ import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { CaipAssetType, type CaipChainId, type Hex } from '@metamask/utils';
+import type {
+  CurrencyRateState,
+  MultichainAssetsControllerState,
+  MultichainAssetsRatesControllerState,
+  MultichainBalancesControllerState,
+  RatesControllerState,
+  TokenRatesControllerState,
+} from '@metamask/assets-controllers';
+import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import {
   MultichainNetworks,
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
@@ -33,15 +43,12 @@ import {
 import {
   getHardwareWalletType,
   getIsBridgeEnabled,
-  getMarketData,
-  getUSDConversionRate,
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
 } from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
-import { getConversionRate } from '../metamask/metamask';
 import {} from '../../pages/bridge/utils/quote';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
@@ -57,6 +64,7 @@ import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
@@ -68,14 +76,16 @@ export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
     GasFeeState &
     NetworkState &
-    AccountsControllerState & {
+    AccountsControllerState &
+    MultichainAssetsRatesControllerState &
+    TokenRatesControllerState &
+    RatesControllerState &
+    MultichainBalancesControllerState &
+    MultichainTransactionsControllerState &
+    MultichainAssetsControllerState &
+    MultichainNetworkControllerState &
+    CurrencyRateState & {
       useExternalServices: boolean;
-      currencyRates: {
-        [currency: string]: {
-          conversionRate: number;
-          usdConversionRate?: number;
-        };
-      };
     };
   bridge: BridgeState;
 };
@@ -248,35 +258,68 @@ export const getBridgeSortOrder = (state: BridgeAppState) =>
   state.bridge.sortOrder;
 
 export const getFromTokenConversionRate = createSelector(
-  getFromChain,
-  getMarketData,
-  getAssetsRates,
-  getFromToken,
-  getUSDConversionRate,
-  getMultichainCoinRates,
-  getConversionRate,
-  (state) => state.bridge.fromTokenExchangeRate,
+  [
+    getFromChain,
+    (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
+    getAssetsRates, // non-evm conversion rates multichain equivalent of getMarketData
+    getFromToken,
+    getMultichainCoinRates, // RatesController rates for native assets
+    (state: BridgeAppState) => state.metamask.currencyRates, // EVM only
+    (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
+  ],
   (
     fromChain,
     marketData,
-    assetsRates,
+    conversionRates,
     fromToken,
-    nativeToUsdRate,
-    nonEvmNativeConversionRate,
-    nativeToCurrencyRate,
+    rates,
+    currencyRates,
     fromTokenExchangeRate,
   ) => {
     if (fromChain?.chainId && fromToken) {
-      if (isSolanaChainId(fromChain.chainId)) {
+      const nativeAssetId = getNativeAssetForChainId(
+        fromChain.chainId,
+      )?.assetId;
+      const tokenAssetId = toAssetId(
+        fromToken.address,
+        formatChainIdToCaip(fromChain.chainId),
+      );
+      const nativeToCurrencyRate = isSolanaChainId(fromChain.chainId)
+        ? Number(
+            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+          )
+        : currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null;
+      const nativeToUsdRate = isSolanaChainId(fromChain.chainId)
+        ? Number(
+            rates?.[fromChain.nativeCurrency.toLowerCase()]
+              ?.usdConversionRate ?? null,
+          )
+        : currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null;
+
+      if (isNativeAddress(fromToken.address)) {
+        return {
+          valueInCurrency: nativeToCurrencyRate,
+          usd: nativeToUsdRate,
+        };
+      }
+      if (isSolanaChainId(fromChain.chainId) && nativeAssetId && tokenAssetId) {
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          assetsRates[fromToken.assetId]?.rate,
-          nonEvmNativeConversionRate?.sol?.conversionRate,
+          Number(
+            conversionRates?.[tokenAssetId]?.rate ??
+              fromTokenExchangeRate ??
+              null,
+          ),
+          Number(
+            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
+              rates?.sol?.conversionRate ??
+              null,
+          ),
         );
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
-          nonEvmNativeConversionRate?.sol?.conversionRate,
-          nonEvmNativeConversionRate?.sol?.usdConversionRate,
+          Number(nativeToCurrencyRate),
+          Number(nativeToUsdRate),
         );
       }
       // For EVM tokens, we use the market data to get the exchange rate
@@ -287,6 +330,7 @@ export const getFromTokenConversionRate = createSelector(
           marketData,
         ) ??
         tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
+
       return exchangeRatesFromNativeAndCurrencyRates(
         tokenToNativeAssetRate,
         nativeToCurrencyRate,
@@ -300,25 +344,27 @@ export const getFromTokenConversionRate = createSelector(
 // A dest network can be selected before it's imported
 // The cached exchange rate won't be available so the rate from the bridge state is used
 export const getToTokenConversionRate = createDeepEqualSelector(
-  getToChain,
-  getMarketData,
-  getAssetsRates, // multichain equivalent of getMarketData
-  getToToken,
-  getNetworkConfigurationsByChainId,
-  (state) => ({
-    state,
-    toTokenExchangeRate: state.bridge.toTokenExchangeRate,
-    toTokenUsdExchangeRate: state.bridge.toTokenUsdExchangeRate,
-  }),
-  getMultichainCoinRates, // multichain native rates
+  [
+    getToChain,
+    (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
+    getAssetsRates, // non-evm conversion rates, multichain equivalent of getMarketData
+    getToToken,
+    getNetworkConfigurationsByChainId,
+    (state) => ({
+      state,
+      toTokenExchangeRate: state.bridge.toTokenExchangeRate,
+      toTokenUsdExchangeRate: state.bridge.toTokenUsdExchangeRate,
+    }),
+    getMultichainCoinRates, // multichain native rates
+  ],
   (
     toChain,
     marketData,
-    assetsRates,
+    conversionRates,
     toToken,
     allNetworksByChainId,
     { state, toTokenExchangeRate, toTokenUsdExchangeRate },
-    nonEvmNativeConversionRate,
+    rates,
   ) => {
     // When the toChain is not imported, the exchange rate to native asset is not available
     // The rate in the bridge state is used instead
@@ -333,16 +379,25 @@ export const getToTokenConversionRate = createDeepEqualSelector(
       };
     }
     if (toChain?.chainId && toToken) {
-      if (isSolanaChainId(toChain.chainId)) {
+      const nativeAssetId = getNativeAssetForChainId(toChain.chainId)?.assetId;
+      const tokenAssetId = toAssetId(
+        toToken.address,
+        formatChainIdToCaip(toChain.chainId),
+      );
+
+      if (isSolanaChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          assetsRates[toToken.address]?.rate,
-          nonEvmNativeConversionRate.sol.conversionRate,
+          Number(conversionRates?.[tokenAssetId]?.rate ?? null),
+          Number(
+            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+          ),
         );
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
-          nonEvmNativeConversionRate.sol.conversionRate,
-          nonEvmNativeConversionRate.sol.usdConversionRate,
+          rates?.[toChain.nativeCurrency.toLowerCase()]?.conversionRate ?? null,
+          rates?.[toChain.nativeCurrency.toLowerCase()]?.usdConversionRate ??
+            null,
         );
       }
 
@@ -353,6 +408,14 @@ export const getToTokenConversionRate = createDeepEqualSelector(
         chainId,
       );
       const nativeToUsdRate = getUSDConversionRateByChainId(chainId)(state);
+
+      if (isNativeAddress(toToken.address)) {
+        return {
+          valueInCurrency: nativeToCurrencyRate,
+          usd: nativeToUsdRate,
+        };
+      }
+
       const tokenToNativeAssetRate =
         exchangeRateFromMarketData(chainId, toToken.address, marketData) ??
         tokenPriceInNativeAsset(toTokenExchangeRate, nativeToCurrencyRate);

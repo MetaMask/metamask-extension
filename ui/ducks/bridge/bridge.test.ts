@@ -7,7 +7,7 @@ import {
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
 import * as util from '../../helpers/utils/util';
