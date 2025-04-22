@@ -3579,11 +3579,17 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     // eslint-disable-next-line camelcase
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
+  const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
 
   return orderedAccounts
-    .filter((account) => connectedAccounts.includes(account.address))
-    .filter((account) => isEvmAccountType(account.type))
+    .filter((account) =>
+      connectedAccounts
+        .map((acc) => {
+          const split = acc.split(':');
+          return split[split.length - 1];
+        })
+        .includes(account.address),
+    )
     .map((account) => ({
       ...account,
       metadata: {
