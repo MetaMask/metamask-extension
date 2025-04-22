@@ -643,7 +643,8 @@ class Driver {
 
         if (retryableErrors.includes(error.name) && attempt < retries - 1) {
           console.warn(
-            `Retrying click (attempt ${attempt + 1}/${retries}) due to: ${error.name
+            `Retrying click (attempt ${attempt + 1}/${retries}) due to: ${
+              error.name
             }`,
           );
           await this.delay(1000);
@@ -1349,7 +1350,8 @@ class Driver {
 
   async verboseReportOnFailure(testTitle, error) {
     console.error(
-      `Failure on testcase: '${testTitle}', for more information see the ${process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
+      `Failure on testcase: '${testTitle}', for more information see the ${
+        process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
       }\n`,
     );
     console.error(`${error}\n`);
@@ -1367,8 +1369,9 @@ class Driver {
         await this.driver.switchTo().window(handle);
         const windowTitle = await this.driver.getTitle();
         if (windowTitle !== 'MetaMask Offscreen Page') {
-          const screenshotTitle = `test-failure-screenshot-${windowHandles.indexOf(handle) + 1
-            }`;
+          const screenshotTitle = `test-failure-screenshot-${
+            windowHandles.indexOf(handle) + 1
+          }`;
           await this.takeScreenshot(testTitle, screenshotTitle);
         }
       }
