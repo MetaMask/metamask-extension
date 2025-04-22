@@ -169,9 +169,9 @@ async function main() {
           core.summary.addRaw(`\n<details open>\n`);
           core.summary.addRaw(`\n<summary>${title} ❌</summary>\n`);
         } else {
-          console.log(consoleBold(title) + ' ✔️');
+          console.log(consoleBold(title) + ' ✅');
           core.summary.addRaw(`\n<details>\n`);
-          core.summary.addRaw(`\n<summary>${title} ✔️</summary>\n`);
+          core.summary.addRaw(`\n<summary>${title} ✅</summary>\n`);
         }
 
         let earliestStart = Infinity;
@@ -238,7 +238,7 @@ async function main() {
 
         const rows = dedupedTestFiles.map((file) => ({
           'Test file': file.path,
-          Passed: file.totalPassed ? `${file.totalPassed} ✔️` : '',
+          Passed: file.totalPassed ? `${file.totalPassed} ✅` : '',
           Failed: file.totalFailed ? `${file.totalFailed} ❌` : '',
           Skipped: file.totalSkipped ? `${file.totalSkipped} ⏩` : '',
           Time: formatTime(file.totalTime),
