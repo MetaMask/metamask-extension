@@ -224,8 +224,10 @@ describe('ImportNftsModal', () => {
     });
 
     const onClose = jest.fn();
-    const { getByText, getByPlaceholderText, getByTestId, debug } =
-      renderWithProvider(<ImportNftsModal onClose={onClose} />, store);
+    const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
+      <ImportNftsModal onClose={onClose} />,
+      store,
+    );
 
     // Click network selector button
     const networkSelectorButton = getByTestId(
@@ -236,8 +238,6 @@ describe('ImportNftsModal', () => {
     // Select custom network
     const customNetworkItem = getByText('Custom Network');
     fireEvent.click(customNetworkItem);
-
-    debug();
 
     // Enter NFT details
     const addressInput = getByPlaceholderText('0x...');
