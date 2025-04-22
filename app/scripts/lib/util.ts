@@ -9,6 +9,7 @@ import {
 import type { Provider } from '@metamask/network-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
+import { AssetConversion } from '@metamask/snaps-sdk';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -458,7 +459,7 @@ export function getConversionRatesForNativeAsset({
 }: {
   conversionRates: AssetsRatesState['metamask']['conversionRates'];
   chainId: string;
-}): { rate: number } | null {
+}): AssetConversion | null {
   // Return early if conversionRates is falsy
   if (!conversionRates) {
     return null;
