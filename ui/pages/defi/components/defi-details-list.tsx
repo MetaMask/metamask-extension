@@ -11,6 +11,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { getPreferences } from '../../../selectors';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const PositionTypeLabels = {
   supply: 'supplied',
@@ -43,7 +44,7 @@ const DefiDetailsList = React.memo(
   }: {
     tokens: UnderlyingWithMarketValue[][];
     positionType: PositionTypeKeys;
-    chainId: '0x' & string;
+    chainId: (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
   }) => {
     const t = useI18nContext();
 

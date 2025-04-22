@@ -22,6 +22,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getPreferences, getSelectedAccount } from '../../../selectors';
 import { getDefiPositions } from '../../../components/app/assets/defi-list/defi-list';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import DefiDetailsList, {
   PositionTypeKeys,
   ProtocolTokenWithMarketValue,
@@ -48,6 +49,7 @@ export const DeFiPage = () => {
 
   const defiPositions = useSelector(getDefiPositions);
   const selectedAccount = useSelector(getSelectedAccount);
+
   const history = useHistory();
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
@@ -125,7 +127,7 @@ export const DeFiPage = () => {
               key={positionType}
               tokens={underlyingDefiTokens[positionType as PositionTypeKeys]}
               positionType={positionType as PositionTypeKeys}
-              chainId={chainId}
+              chainId={chainId as (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS]}
             />
           ) : null,
         )}
