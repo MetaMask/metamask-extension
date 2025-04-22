@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
 import {
   Display,
   FlexDirection,
@@ -27,6 +29,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -212,7 +215,11 @@ export default function OnboardingMetametrics() {
       >
         {t('onboardingMetametricsInfuraTerms', [
           <a
-            href="https://metamask.io/privacy.html"
+            href={
+              getPlatform() === PLATFORM_FIREFOX
+                ? 'https://addons.mozilla.org/en-CA/firefox/addon/ether-metamask/privacy/'
+                : 'https://metamask.io/privacy.html'
+            }
             target="_blank"
             rel="noopener noreferrer"
             key="privacy-link"

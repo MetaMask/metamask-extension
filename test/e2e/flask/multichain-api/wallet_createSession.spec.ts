@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Browser, By } from 'selenium-webdriver';
+import { By } from 'selenium-webdriver';
 import { isObject } from 'lodash';
 import {
   largeDelayMs,
@@ -17,10 +17,9 @@ import {
   addAccountInWalletAndAuthorize,
   updateNetworkCheckboxes,
   type FixtureCallbackArgs,
-  describeBrowserOnly,
 } from './testHelpers';
 
-describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
+describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the users enabled networks', function () {
     it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
       await withFixtures(

@@ -17,9 +17,9 @@ import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 import useMultiChainAssets from '../hooks/useMultichainAssets';
 import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../../selectors/multichain';
+  getSelectedMultichainNetworkConfiguration,
+  getIsEvmMultichainNetworkSelected,
+} from '../../../../selectors/multichain/networks';
 import { getTokenBalancesEvm } from '../../../../selectors/assets';
 
 type TokenListProps = {
@@ -27,10 +27,10 @@ type TokenListProps = {
 };
 
 function TokenList({ onTokenClick }: TokenListProps) {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
-  const currentNetwork = useSelector(getMultichainNetwork);
+  const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const selectedAccount = useSelector(getSelectedAccount);

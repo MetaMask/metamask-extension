@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { FunctionFragment, Interface, ParamType } from '@ethersproject/abi';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import {
@@ -81,6 +79,8 @@ export async function decodeTransactionDataWithSourcify(
   const values = contractInterface.decodeFunctionData(
     functionSignature,
     transactionData,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as any[];
 
   const params = inputs.map((input, index) =>
@@ -97,8 +97,14 @@ export async function decodeTransactionDataWithSourcify(
 function decodeParam(
   input: ParamType,
   index: number,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   values: any[],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userDoc: any,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   devDoc: any,
 ): DecodedTransactionDataParam {
   const { name: paramName, type, components } = input;
@@ -115,6 +121,8 @@ function decodeParam(
   if (type.endsWith('[]')) {
     const childType = type.slice(0, -2);
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     children = (value as any[]).map((_arrayItem, arrayIndex) => {
       const childName = `Item ${arrayIndex + 1}`;
 
