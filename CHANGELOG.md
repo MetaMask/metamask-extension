@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for Solana on Firefox ([#32104](https://github.com/MetaMask/metamask-extension/pull/32104))
 - Update CAIP-294 wallet announcement event to include `targets` property and new `caip-348` target object ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
 - Replace `caip-x` with `caip-348` in Multichain API over externally_connectable ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
+- Unify confirmation page styles and responsive behavior ([#31454](https://github.com/MetaMask/metamask-extension/pull/31454))
 
 ### Fixed
 - Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
