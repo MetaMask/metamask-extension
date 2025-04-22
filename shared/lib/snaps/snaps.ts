@@ -1,8 +1,4 @@
-import { getLocalizedSnapManifest, stripSnapPrefix } from "@metamask/snaps-utils";
-
-import { SnapKeyringBuilderMessenger } from "../../../app/scripts/lib/snap-keyring/types";
-
-import { SnapId } from "@metamask/snaps-sdk";
+import { SnapId } from '@metamask/snaps-sdk';
 
 export const PREINSTALLED_SNAPS = [
   'npm:@metamask/message-signing-snap',
@@ -22,34 +18,4 @@ export const PREINSTALLED_SNAPS = [
  */
 export function isSnapPreinstalled(snapId: SnapId) {
   return PREINSTALLED_SNAPS.some((snap) => snap === snapId);
-}
-
-/**
- * Get the localized Snap name or some fallback name otherwise.
- *
- * @param snapId - Snap ID.
- * @param messenger - Snap keyring messenger.
- * @returns The Snap name.
- */
-export function getSnapName(
-  snapId: SnapId,
-  messenger: SnapKeyringBuilderMessenger,
-) {
-  const { currentLocale } = messenger.call('PreferencesController:getState');
-  const snap = messenger.call('SnapController:get', snapId);
-
-  if (!snap) {
-    return stripSnapPrefix(snapId);
-  }
-
-  if (snap.localizationFiles) {
-    const localizedManifest = getLocalizedSnapManifest(
-      snap.manifest,
-      currentLocale,
-      snap.localizationFiles,
-    );
-    return localizedManifest.proposedName;
-  }
-
-  return snap.manifest.proposedName;
 }

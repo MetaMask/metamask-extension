@@ -11,7 +11,7 @@ import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { t } from '../../../app/scripts/translate';
-import { isSnapPreinstalled } from '../../../shared/lib/accounts';
+import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
 export function getAccountNameErrorMessage(
   accounts,
@@ -74,6 +74,10 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
+const toSrpLabel = (index) =>
+  // Index starts at 1, for SRPs.
+  `SRP #${index + 1}`;
+
 export function getAccountLabels(
   type,
   account,
@@ -98,8 +102,7 @@ export function getAccountLabels(
         const hdKeyringIndex = hdKeyrings.findIndex((kr) =>
           kr.accounts.includes(account.address),
         );
-        const hdKeyringLabel = `SRP #${hdKeyringIndex + 1}`;
-        labels.push(hdKeyringLabel);
+        labels.push(toSrpLabel(hdKeyringIndex));
       }
       break;
     }
@@ -128,8 +131,7 @@ export function getAccountLabels(
         const hdKeyringIndex = hdKeyrings.findIndex(
           (kr) => kr.metadata.id === entropySource,
         );
-        const hdKeyringLabel = `SRP #${hdKeyringIndex + 1}`;
-        labels.push(hdKeyringLabel);
+        labels.push(toSrpLabel(hdKeyringIndex));
       }
 
       if (isSnapPreinstalled(account.metadata.snap.id)) {

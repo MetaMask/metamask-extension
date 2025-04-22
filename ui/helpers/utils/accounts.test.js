@@ -9,6 +9,7 @@ import { BackgroundColor } from '../constants/design-system';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import mockState from '../../../test/data/mock-state.json';
+import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
 import {
   getAccountLabels,
   getAccountNameErrorMessage,
@@ -113,7 +114,7 @@ describe('Accounts', () => {
           type: KeyringType.hdKeyTree,
         },
         snap: {
-          id: 'npm:@metamask/solana-wallet-snap',
+          id: SOLANA_WALLET_SNAP_ID,
         },
       },
       options: {},
@@ -205,7 +206,7 @@ describe('Accounts', () => {
           type: KeyringType.snap,
           snap: {
             name: mockSnapName,
-            id: 'npm:@metamask/solana-wallet-snap',
+            id: SOLANA_WALLET_SNAP_ID,
           },
         },
       };
@@ -240,7 +241,7 @@ describe('Accounts', () => {
         ).toStrictEqual([]);
       });
 
-      it('should return empty array if snap is preinstalled', () => {
+      it('should return empty array if snap is preinstalled and the account does not define a entropySource', () => {
         expect(
           getAccountLabels(
             KeyringType.snap,
@@ -261,7 +262,7 @@ describe('Accounts', () => {
         metadata: {
           keyring: { type: KeyringType.hdKeyTree },
           snap: {
-            id: 'npm:@metamask/solana-wallet-snap',
+            id: SOLANA_WALLET_SNAP_ID,
           },
         },
       };
@@ -292,7 +293,7 @@ describe('Accounts', () => {
         metadata: {
           keyring: { type: KeyringType.hdKeyTree },
           snap: {
-            id: 'npm:@metamask/solana-wallet-snap',
+            id: SOLANA_WALLET_SNAP_ID,
           },
         },
       };
@@ -322,7 +323,7 @@ describe('Accounts', () => {
         metadata: {
           keyring: { type: KeyringType.snap },
           snap: {
-            id: 'npm:@metamask/solana-wallet-snap',
+            id: SOLANA_WALLET_SNAP_ID,
           },
         },
       };
