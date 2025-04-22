@@ -19,7 +19,6 @@ import {
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
-  selectExchangeRateByChainIdAndAddress,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -135,14 +134,6 @@ const PrepareBridgePage = () => {
 
   const isSwap = useIsMultichainSwap();
 
-  const fromToken = useSelector(getFromToken);
-  const fromTokens = useSelector(getTokenList) as TokenListMap;
-  const isFromTokensLoading = useMemo(
-    () => false, // Object.keys(fromTokens).length === 0,
-    // TODO if evm, check if fromTokens is empty. if non-evm, always return false
-    [fromTokens],
-  );
-
   const toToken = useSelector(getToToken) as TmpBridgeToken;
 
   const fromChains = useSelector(getFromChains);
@@ -150,16 +141,19 @@ const PrepareBridgePage = () => {
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
 
+  const fromToken = useSelector(getFromToken);
+  const fromTokens = useSelector(getTokenList) as TokenListMap;
+  const isFromTokensLoading = useMemo(
+    () =>
+      // fromTokens does not get populated for solana so default to false
+      fromChain?.chainId && isSolanaChainId(fromChain.chainId)
+        ? false
+        : Object.keys(fromTokens).length === 0,
+    [fromTokens, fromChain?.chainId],
+  );
+
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
-
-  const fromTokenExchangeRate = useSelector((state) =>
-    selectExchangeRateByChainIdAndAddress(
-      state.metamask,
-      fromChain?.chainId,
-      fromToken?.address,
-    ),
-  );
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
