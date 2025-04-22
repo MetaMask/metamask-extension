@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DeFiDetailsPage should render a native asset 1`] = `
+exports[`DeFiDetailsPage renders defi details list 1`] = `
 <div>
   <div
     class="mm-box"
