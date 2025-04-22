@@ -1,12 +1,12 @@
-import { Driver } from '../webdriver/driver';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
-import FixtureBuilder from '../fixture-builder';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { withFixtures } from '../helpers';
-import SettingsPage from '../page-objects/pages/settings/settings-page';
-import PreinstalledExampleSettings from '../page-objects/pages/settings/preinstalled-example-settings';
+import { Driver } from '../../webdriver/driver';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import FixtureBuilder from '../../fixture-builder';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { withFixtures } from '../../helpers';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { strict as assert } from 'assert';
-import HomePage from '../page-objects/pages/home/homepage';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 describe('Pre-install example', function () {
   it('validate the page loads and the components', async function () {

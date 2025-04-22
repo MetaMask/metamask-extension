@@ -100,7 +100,7 @@ class SettingsPage {
   }
 
   async goToPreInstalledExample(): Promise<void> {
-    console.log('Navigating to Privacy & Security Settings page');
+    console.log('Navigating to Preinstalled Example Snap settings page');
     await this.driver.clickElement(this.preInstalledExampleButton);
   }
 
