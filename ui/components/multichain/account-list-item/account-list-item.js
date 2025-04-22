@@ -125,7 +125,7 @@ const AccountListItem = ({
         account,
         keyrings,
         account.metadata.keyring.type === KeyringType.snap
-          ? getSnapName(snapMetadata)(account.metadata?.snap.id)
+          ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
           : null,
       ),
     [account, keyrings, snapMetadata],
