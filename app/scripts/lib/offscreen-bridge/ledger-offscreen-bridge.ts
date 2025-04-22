@@ -147,7 +147,9 @@ export class LedgerOffscreenBridge
           if (response?.success) {
             resolve(response.payload);
           } else {
-            reject(response?.payload?.error || 'Unknown Ledger error');
+            reject(
+              new Error(response?.payload?.error || 'Unknown Ledger error'),
+            );
           }
         },
       );
