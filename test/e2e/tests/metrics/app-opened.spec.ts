@@ -4,6 +4,7 @@ import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {MOCK_META_METRICS_ID} from "../../constants";
 
 /**
  * Mocks the segment API for the App Opened event that we expect to see when
@@ -33,7 +34,7 @@ describe('App Opened metric', function () {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-fd20',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -55,7 +56,7 @@ describe('App Opened metric', function () {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-fd20',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: false,
           })
           .build(),
@@ -78,7 +79,7 @@ describe('App Opened metric', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-fd20',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),

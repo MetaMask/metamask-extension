@@ -964,7 +964,7 @@ export function setupController(
     }
   };
 
-  connectWindowPostMessage = (remotePort) => {
+  connectWindowPostMessage = async (remotePort) => {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -990,9 +990,8 @@ export function setupController(
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
-      initializeRemoteFeatureFlags().then(() => {
-        trackAppOpened(processName);
-      });
+      await initializeRemoteFeatureFlags();
+      trackAppOpened(processName);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
