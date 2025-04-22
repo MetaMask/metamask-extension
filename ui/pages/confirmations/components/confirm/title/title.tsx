@@ -92,7 +92,7 @@ const getTitle = (
       return t('confirmTitleTransaction');
     case TransactionType.batch:
       if (isUpgrade) {
-        return t('confirmTitleDelegationRevoke');
+        return t('confirmTitleAccountTypeSwitch');
       }
       return t('confirmTitleTransaction');
     case TransactionType.deployContract:
@@ -103,7 +103,7 @@ const getTitle = (
       }
       return t('confirmTitleSignature');
     case TransactionType.revokeDelegation:
-      return t('confirmTitleDelegationRevoke');
+      return t('confirmTitleAccountTypeSwitch');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
@@ -212,7 +212,7 @@ const getDescription = (
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
-  const isUpgrade = useIsUpgradeTransaction();
+  const { isUpgrade } = useIsUpgradeTransaction();
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 

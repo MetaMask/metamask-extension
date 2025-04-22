@@ -23,11 +23,15 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
+import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
+import {
+  useIsDowngradeTransaction,
+  useIsUpgradeTransaction,
+} from '../../hooks/useIsUpgradeTransaction';
 import { HEX_ZERO } from '../constants';
 import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
 import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
-import { SmartContractWithLogo } from '../smart-contract-with-logo';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -167,6 +171,12 @@ export const TransactionDetails = () => {
     () => checkValueAndNativeBalanceMismatch(currentConfirmation),
     [currentConfirmation],
   );
+  const { isUpgradeWithNoNestedTransactions } = useIsUpgradeTransaction();
+  const isDowngrade = useIsDowngradeTransaction();
+
+  if (isUpgradeWithNoNestedTransactions || isDowngrade) {
+    return null;
+  }
 
   return (
     <>
