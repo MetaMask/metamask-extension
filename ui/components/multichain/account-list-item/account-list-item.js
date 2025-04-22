@@ -461,7 +461,7 @@ const AccountListItem = ({
                   }}
                   startIconName={
                     account.metadata.keyring.type === KeyringType.snap &&
-                    !isSnapPreinstalled(account.metadata.snap.id)
+                    !isSnapPreinstalled(account.metadata?.snap?.id)
                       ? IconName.Snaps
                       : null
                   }
