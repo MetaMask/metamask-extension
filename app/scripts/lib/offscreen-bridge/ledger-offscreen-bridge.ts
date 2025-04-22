@@ -129,13 +129,11 @@ export class LedgerOffscreenBridge
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
     return new Promise((resolve, reject) => {
-      let hasResponse = false;
+      let responseTimeout: ReturnType<typeof setTimeout>;
 
       if (timeout) {
-        setTimeout(() => {
-          if (!hasResponse) {
-            reject(new Error('Ledger iframe timeout'));
-          }
+        responseTimeout = setTimeout(() => {
+          reject(new Error('Ledger iframe timeout'));
         }, timeout);
       }
 
@@ -145,7 +143,7 @@ export class LedgerOffscreenBridge
           target: OffscreenCommunicationTarget.ledgerOffscreen,
         },
         (response) => {
-          hasResponse = true;
+          clearTimeout(responseTimeout);
           if (response?.success) {
             resolve(response.payload);
           } else {
