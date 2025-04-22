@@ -27737,6 +27737,7 @@ __metadata:
     yaml: "npm:^2.4.1"
     yargs: "npm:^17.7.2"
     yargs-parser: "npm:^21.1.1"
+    yjs: "file:../../work/yjs"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
   linkType: soft
@@ -39092,6 +39093,13 @@ __metadata:
   dependencies:
     buffer-crc32: "npm:~0.2.3"
   checksum: 10/498ea4c6bca26130608c44db166e2f63b3437b94b7ad020ca0c161268d29517e8517146e91e51b78da100ad62feadc1a1a85aaa94aab0b2dc29b355ec75bc8f0
+  languageName: node
+  linkType: hard
+
+"yjs@file:../../work/yjs::locator=metamask-crx%40workspace%3A.":
+  version: 13.6.24
+  resolution: "yjs@file:../../work/yjs#../../work/yjs::hash=d780fe&locator=metamask-crx%40workspace%3A."
+  checksum: 10/fc81744001c520dea7a20b1ef7497c39676c4d51011e8ab4c28d9dc1b3de42ee5d622e4bcde070e57ade8b63f5611b2242879512087d391dcd7135e1c0a8d22c
   languageName: node
   linkType: hard
 

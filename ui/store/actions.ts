@@ -6132,11 +6132,10 @@ export async function createSnapAccount(
 ///: END:ONLY_INCLUDE_IF
 
 // GIGEL SYNC EXPERIMENTS
-export async function userStorageGetAllItems(namespace: string) {
-  const result = await submitRequestToBackground(
-    'userStorageGetAllItems',
-    [namespace],
-  );
+export async function userStorageGetAllItems(namespace: string): Promise<string[]> {
+  const result = await submitRequestToBackground<string[]>('userStorageGetAllItems', [
+    namespace,
+  ]);
   return result;
 }
 
@@ -6144,22 +6143,20 @@ export async function userStorageSetItems(
   namespace: string,
   data: Record<string, string>,
 ) {
-  const result = await submitRequestToBackground('userStorageSetItems', [
+  await submitRequestToBackground('userStorageSetItems', [
     namespace,
     Object.entries(data),
   ]);
-  return result;
 }
 
 export async function userStorageDeleteItems(
   namespace: string,
   keys: string[],
 ) {
-  const result = await submitRequestToBackground('userStorageDeleteItems', [
+  return await submitRequestToBackground('userStorageDeleteItems', [
     namespace,
     keys,
   ]);
-  return result;
 }
 // end GIGEL sync experiments
 

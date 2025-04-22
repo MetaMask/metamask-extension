@@ -415,6 +415,7 @@
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
     "xml2js": "^0.6.2",
+    "yjs": "file:../../work/yjs",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
