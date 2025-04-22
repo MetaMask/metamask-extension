@@ -5057,6 +5057,50 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/bridge-controller@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "@metamask/bridge-controller@npm:13.0.0"
+  dependencies:
+    "@ethersproject/address": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/constants": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/multichain-network-controller": "npm:^0.3.0"
+    "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/snaps-utils": "npm:^8.10.0"
+    "@metamask/utils": "npm:^11.2.0"
+  peerDependencies:
+    "@metamask/accounts-controller": ^27.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/snaps-controllers": ^9.19.0
+    "@metamask/transaction-controller": ^54.0.0
+  checksum: 10/ab444a9694da8a373af45755c2382cb3288c21520ffaca3125ac05e2affbc5ad60af83119dd1ceee82a75659407cb3f5abec5e71c658f60c728e4fe37bf2db7f
+  languageName: node
+  linkType: hard
+
+"@metamask/bridge-status-controller@npm:^12.0.0":
+  version: 12.0.1
+  resolution: "@metamask/bridge-status-controller@npm:12.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/bridge-controller": "npm:^13.0.0"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.2.0"
+  peerDependencies:
+    "@metamask/accounts-controller": ^27.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/transaction-controller": ^54.0.0
+  checksum: 10/33e93829f5358ba0b59f0b6db8202887c10c8b6372d3af671415395eb149ef849d3efe1bb87e9ecc57040b024b8f9423cb5ff979b03e47150d0baa7a6ef3d364
+  languageName: node
+  linkType: hard
+
 "@metamask/browser-passworder@npm:^4.3.0":
   version: 4.3.0
   resolution: "@metamask/browser-passworder@npm:4.3.0"
@@ -27612,6 +27656,7 @@ __metadata:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
     "@metamask/bridge-controller": "npm:^11.0.0"
+    "@metamask/bridge-status-controller": "npm:^12.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
