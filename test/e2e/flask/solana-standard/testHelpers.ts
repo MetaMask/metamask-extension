@@ -1,8 +1,9 @@
 import * as path from 'path';
-import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { withSolanaAccountSnap } from '../solana/common-solana';
+import { By } from 'selenium-webdriver';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -29,10 +30,9 @@ export const connectSolanaTestDapp = async (
   driver: Driver,
   testDapp: TestDappSolana,
   options: {
-    selectAllAccounts: boolean;
-  } = {
-    selectAllAccounts: false,
-  },
+    selectAllAccounts?: boolean;
+    includeDevnet?: boolean;
+  } = {},
 ): Promise<void> => {
   const header = await testDapp.getHeader();
   await header.connect();
@@ -43,13 +43,13 @@ export const connectSolanaTestDapp = async (
   const modal = await testDapp.getWalletModal();
   await modal.connectToMetaMaskWallet();
 
-  // wait to display metamask dialog
-  await driver.delay(regularDelayMs);
-
   // Get to extension modal, and click on the "Connect" button
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  if (options.selectAllAccounts) {
+  if (options?.selectAllAccounts) {
     await selectAccountsAndAuthorize(driver);
+  }
+  if (options?.includeDevnet) {
+    await selectDevnet(driver);
   }
   await driver.clickElementAndWaitForWindowToClose({
     text: 'Connect',
@@ -61,17 +61,54 @@ export const connectSolanaTestDapp = async (
 };
 
 /**
+ * Waits for the Confirm button in the footer to be clickable then clicks it
+ */
+export const clickConfirmButton = async (driver: Driver): Promise<void> => {
+  const footerButtons = await driver.findClickableElements(
+    By.css('button.snap-ui-renderer__footer-button'),
+  );
+  const confirmButton = footerButtons[1];
+  await confirmButton.click();
+};
+
+/**
  * Inspired by `addAccountInWalletAndAuthorize` in test/e2e/flask/multichain-api/testHelpers.ts
  */
-export const selectAccountsAndAuthorize = async (
-  driver: Driver,
-): Promise<void> => {
+const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
   const editButtons = await driver.findElements('[data-testid="edit"]');
   await editButtons[0].click();
 
   const checkboxes = await driver.findElements('input[type="checkbox" i]');
   await checkboxes[0].click(); // select all checkbox
 
+  await driver.clickElement({ text: 'Update', tag: 'button' });
+};
+
+const selectDevnet = async (driver: Driver): Promise<void> => {
+  const permissionsTab = await driver.findElement(
+    '[data-testid="permissions-tab"]',
+  );
+  await permissionsTab.click();
+  const editButtons = await driver.findElements('[data-testid="edit"]');
+  await editButtons[1].click();
+  await driver.delay(largeDelayMs);
+  const networkListItems = await driver.findElements(
+    '.multichain-network-list-item',
+  );
+
+  for (const item of networkListItems) {
+    const networkNameDiv = await item.findElement(By.css('div[data-testid]'));
+    const network = await networkNameDiv.getAttribute('data-testid');
+    if (network === 'Solana Devnet') {
+      const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
+      const isChecked = await checkbox.isSelected();
+
+      if (!isChecked) {
+        await checkbox.click();
+      }
+      break;
+    }
+  }
   await driver.clickElement({ text: 'Update', tag: 'button' });
 };
 

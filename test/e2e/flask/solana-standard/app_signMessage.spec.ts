@@ -1,15 +1,14 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
-import { describeBrowserOnly } from '../multichain-api/testHelpers';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
+  clickConfirmButton,
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 
-describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
+describe('Solana Wallet Standard - Sign Message', function () {
   this.timeout(3000000); // do not remove this line
 
   describe('Sign a message', function () {
@@ -30,11 +29,7 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
           await signMessageTest.signMessage();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await driver.delay(largeDelayMs);
-          await driver.clickElement({
-            text: 'Confirm',
-            tag: 'span',
-          });
+          await clickConfirmButton(driver);
 
           await testDapp.switchTo();
 

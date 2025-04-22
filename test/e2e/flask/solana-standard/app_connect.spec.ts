@@ -1,6 +1,4 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
-import { describeBrowserOnly } from '../multichain-api/testHelpers';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
@@ -10,7 +8,7 @@ import {
 } from './testHelpers';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 
-describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
+describe('Solana Wallet Standard - Connect', function () {
   this.timeout(300000); // do not remove this line
 
   describe('Connect the dapp with solana Standard', function () {
@@ -23,7 +21,6 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
-          await driver.delay(largeDelayMs);
           await connectSolanaTestDapp(driver, testDapp);
 
           const header = await testDapp.getHeader();
@@ -56,7 +53,6 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
-          await driver.delay(largeDelayMs);
           await connectSolanaTestDapp(driver, testDapp);
 
           const header = await testDapp.getHeader();
@@ -101,7 +97,6 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
           async (driver) => {
             const testDapp = new TestDappSolana(driver);
             await testDapp.openTestDappPage();
-            await driver.delay(largeDelayMs);
             await connectSolanaTestDapp(driver, testDapp, {
               selectAllAccounts: true,
             });
@@ -137,7 +132,6 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
           async (driver) => {
             const testDapp = new TestDappSolana(driver);
             await testDapp.openTestDappPage();
-            await driver.delay(largeDelayMs);
             await connectSolanaTestDapp(driver, testDapp, {
               selectAllAccounts: false,
             });
@@ -170,6 +164,32 @@ describeBrowserOnly(Browser.CHROME, 'Solana Wallet Standard', function () {
           },
         );
       });
+    });
+  });
+
+  describe('Page refresh', function () {
+    it('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 1,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assert.strictEqual(account, '4tE7...Uxer');
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assert.strictEqual(accountAfterRefresh, '4tE7...Uxer');
+        },
+      );
     });
   });
 });
