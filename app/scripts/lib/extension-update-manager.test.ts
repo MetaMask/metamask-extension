@@ -31,15 +31,19 @@ describe('ExtensionUpdateManager', () => {
   describe('update handling workflow', () => {
     it('should mark update as pending when update is available', () => {
       updateManager.initialize();
-      const updateAvailableHandler = browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
+      const updateAvailableHandler =
+        browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
       updateAvailableHandler();
-      expect(browser.runtime.onUpdateAvailable.removeListener).toHaveBeenCalled();
+      expect(
+        browser.runtime.onUpdateAvailable.removeListener,
+      ).toHaveBeenCalled();
     });
 
     it('should apply pending update immediately if already idle', () => {
       updateManager.initialize();
       updateManager.setIdleState(true);
-      const updateAvailableHandler = browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
+      const updateAvailableHandler =
+        browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
       updateAvailableHandler();
       expect(applyUpdateSpy).toHaveBeenCalled();
       expect(browser.runtime.reload).toHaveBeenCalled();
@@ -48,7 +52,8 @@ describe('ExtensionUpdateManager', () => {
     it('should not apply update immediately if not idle', () => {
       updateManager.initialize();
       updateManager.setIdleState(false);
-      const updateAvailableHandler = browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
+      const updateAvailableHandler =
+        browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
       updateAvailableHandler();
       expect(applyUpdateSpy).not.toHaveBeenCalled();
       expect(browser.runtime.reload).not.toHaveBeenCalled();
@@ -56,7 +61,8 @@ describe('ExtensionUpdateManager', () => {
 
     it('should apply pending update when becoming idle', () => {
       updateManager.initialize();
-      const updateAvailableHandler = browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
+      const updateAvailableHandler =
+        browser.runtime.onUpdateAvailable.addListener.mock.calls[0][0];
       updateAvailableHandler();
       applyUpdateSpy.mockClear();
       (browser.runtime.reload as jest.Mock).mockClear();

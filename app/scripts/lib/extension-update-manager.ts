@@ -7,6 +7,7 @@ import browser from 'webextension-polyfill';
  */
 export class ExtensionUpdateManager {
   #updatePending = false;
+
   #isIdle = false;
 
   /**
