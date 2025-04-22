@@ -1,12 +1,55 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { screen, act, waitFor } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 import DeFiList from './defi-list';
-import { screen, act, waitFor } from '@testing-library/react';
 
-const render = (allDeFiPositions: any) => {
+const render = (
+  allDeFiPositions: {
+    [x: string]:
+      | {
+          '0x5': {
+            aggregatedMarketValue: number;
+            protocols: {
+              lido: {
+                protocolDetails: { name: string; iconUrl: string };
+                aggregatedMarketValue: number;
+                positionTypes: {
+                  stake: {
+                    aggregatedMarketValue: number;
+                    positions: {
+                      address: string;
+                      name: string;
+                      symbol: string;
+                      decimals: number;
+                      balanceRaw: string;
+                      balance: number;
+                      marketValue: number;
+                      type: string;
+                      tokens: {
+                        address: string;
+                        name: string;
+                        symbol: string;
+                        decimals: number;
+                        type: string;
+                        balanceRaw: string;
+                        balance: number;
+                        price: number;
+                        marketValue: number;
+                        iconUrl: string;
+                      }[];
+                    }[][];
+                  };
+                };
+              };
+            };
+          };
+        }
+      | undefined;
+  } | null,
+) => {
   const mockStore = {
     ...mockState,
     metamask: {
