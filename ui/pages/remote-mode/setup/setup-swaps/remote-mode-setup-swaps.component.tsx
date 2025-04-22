@@ -189,6 +189,7 @@ export default function RemoteModeSetupSwaps() {
       mode: REMOTE_MODES.SWAP,
     });
 
+    // TODO: check better way to route to remote mode if upgrade is needed
     history.replace(REMOTE_ROUTE);
   };
 
