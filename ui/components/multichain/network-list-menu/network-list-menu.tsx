@@ -408,7 +408,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
       // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
       return (
-        (isNetworkDiscoverButtonEnabled as Record<string, boolean>)?.[
+        (isNetworkDiscoverButtonEnabled as Record<Hex, boolean>)?.[
           hexChainId
         ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
       );
