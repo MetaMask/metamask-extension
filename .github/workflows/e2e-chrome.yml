@@ -103,5 +103,11 @@ jobs:
           pattern: test-e2e-chrome*
           merge-multiple: true
 
-      - name: Create Test Report
+      - name: Create test report
         run: yarn tsx .github/scripts/create-e2e-test-report.ts
+
+      - name: Upload test runs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-e2e-chrome-report
+          path: test/test-results/test-runs.json
