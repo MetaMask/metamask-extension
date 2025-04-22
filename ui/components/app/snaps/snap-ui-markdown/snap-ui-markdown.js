@@ -23,6 +23,7 @@ const Paragraph = (props) => (
     {...props}
     variant={TextVariant.bodyMd}
     className="snap-ui-markdown__text"
+    data-testid="snap-ui-markdown-text"
     overflowWrap={OverflowWrap.Anywhere}
     color={TextColor.inherit}
   />

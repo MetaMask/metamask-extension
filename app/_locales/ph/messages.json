@@ -469,9 +469,6 @@
   "fast": {
     "message": "Mabilis"
   },
-  "feeAssociatedRequest": {
-    "message": "May nauugnay na bayarin para sa request na ito."
-  },
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
@@ -488,12 +485,6 @@
   "fromAddress": {
     "message": "Mula kay/sa: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
-  "functionApprove": {
-    "message": "Function: Aprubahan"
-  },
-  "functionType": {
-    "message": "Uri ng Function"
   },
   "gasLimit": {
     "message": "Limitasyon sa Gas"
@@ -580,9 +571,6 @@
   "import": {
     "message": "Mag-import",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Mag-import ng Account"
   },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang Secret Recovery Phrase ng MetaMask account. Matuto pa tungkol sa mga na-import account "
@@ -700,9 +688,6 @@
   "loading": {
     "message": "Nilo-load..."
   },
-  "loadingTokens": {
-    "message": "Nilo-load ang Mga Token..."
-  },
   "localhost": {
     "message": "Localhost 8545"
   },
@@ -812,18 +797,11 @@
   "next": {
     "message": "Susunod"
   },
-  "nextNonceWarning": {
-    "message": "Mas mataas ang nonce sa iminumungkahing nonce na $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
   "noConversionRateAvailable": {
     "message": "Hindi Available ang Rate ng Conversion"
-  },
-  "noTransactions": {
-    "message": "Wala kang transaksyon"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukan ulit."
@@ -833,12 +811,6 @@
   },
   "nonce": {
     "message": "Nonce"
-  },
-  "nonceField": {
-    "message": "I-customize ang nonce ng transaksyon"
-  },
-  "nonceFieldHeading": {
-    "message": "Custom na Nonce"
   },
   "notCurrentAccount": {
     "message": "Ito ba ang tamang account? Iba ito sa kasalukuyang napiling account sa iyong wallet"
@@ -867,9 +839,6 @@
   },
   "origin": {
     "message": "Pinagmulan"
-  },
-  "parameters": {
-    "message": "Mga Parameter"
   },
   "participateInMetaMetrics": {
     "message": "Sumali sa MetaMetrics"
@@ -989,9 +958,6 @@
   "removeAccountDescription": {
     "message": "Aalisin ang account na ito sa iyong wallet. Tiyaking nasa iyo ang orihinal na Secret Recovery Phrase o private key para sa na-import na account na ito bago magpatuloy. Puwede kang mag-import o gumawa ulit ng mga account mula sa drop-down ng account. "
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "mga request na hinihintay na tanggapin"
-  },
   "required": {
     "message": "Kinakailangan"
   },
@@ -1065,9 +1031,6 @@
   "seedPhraseIntroTitle": {
     "message": "I-secure ang iyong wallet"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Bago magsimula, panoorin ang maikling video na ito para matuto tungkol sa recovery phrase at kung paano panatilihing ligtas ang iyong wallet."
-  },
   "seedPhraseReq": {
     "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },
@@ -1117,18 +1080,8 @@
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang field ng hex data sa screen ng pagpapadala"
   },
-  "showIncomingTransactions": {
-    "message": "Ipakita ang Mga Papasok na Transaksyon"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Piliin ito para gamitin ang Etherscan sa pagpapakita ng mga papasok na transaksyon sa listahan ng mga transaksyon",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
-  },
-  "sigRequest": {
-    "message": "Request ng Signature"
   },
   "sign": {
     "message": "Lumagda"
@@ -1497,9 +1450,6 @@
   "transactionErrored": {
     "message": "Nagkaroon ng error sa transaksyon."
   },
-  "transactionFee": {
-    "message": "Bayarin sa Transaksyon"
-  },
   "transactionResubmitted": {
     "message": "Isinumite ulit ang transaksyon nang may bayarin sa gas na tumaas at naging $1 sa $2"
   },
@@ -1530,9 +1480,6 @@
   },
   "unknown": {
     "message": "Hindi Alam"
-  },
-  "unknownNetwork": {
-    "message": "Hindi Alam na Pribadong Network"
   },
   "unknownQrCode": {
     "message": "Error: Hindi namin matukoy ang QR code na iyon"
@@ -1584,18 +1531,11 @@
   "welcomeBack": {
     "message": "Welcome back!"
   },
-  "whatsNew": {
-    "message": "Ano'ng bago",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
-  },
   "whatsThis": {
     "message": "Ano ito?"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."
-  },
-  "youSign": {
-    "message": "Sina-sign mo ang"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong Secret Recovery Phrase"

@@ -8,16 +8,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
-import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
-import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
-import TransactionFailed from '../../institutional/transaction-failed-modal';
-///: END:ONLY_INCLUDE_IF
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
@@ -58,34 +49,6 @@ const modalContainerMobileStyle = {
   top: '12.5%',
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-const custodyConfirmModalStyle = {
-  mobileModalStyle: {
-    width: '95%',
-    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-    borderRadius: '4px',
-    top: '30%',
-    transform: 'none',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-  },
-  laptopModalStyle: {
-    width: '360px',
-    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-    borderRadius: '4px',
-    top: '30%',
-    transform: 'none',
-    left: '0',
-    right: '0',
-    margin: '0 auto',
-  },
-  contentStyle: {
-    borderRadius: '4px',
-  },
-};
-///: END:ONLY_INCLUDE_IF
-
 const MODALS = {
   NEW_ACCOUNT: {
     contents: <NewAccountModal />,
@@ -123,7 +86,7 @@ const MODALS = {
     },
     laptopModalStyle: {
       width:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '357px' : '449px',
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '400px' : '449px',
       top: 'calc(33% + 45px)',
       paddingLeft:
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
@@ -274,53 +237,6 @@ const MODALS = {
     },
   },
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CONFIRM_REMOVE_JWT: {
-    contents: <ConfirmRemoveJWT />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  TRANSACTION_FAILED: {
-    disableBackdropClick: true,
-    contents: <TransactionFailed />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CUSTODY_CONFIRM_LINK: {
-    contents: <CustodyConfirmLink />,
-    ...custodyConfirmModalStyle,
-  },
-
-  INTERACTIVE_REPLACEMENT_TOKEN_MODAL: {
-    contents: <InteractiveReplacementTokenModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-  ///: END:ONLY_INCLUDE_IF
-
   CONFIRM_TURN_OFF_PROFILE_SYNCING: {
     contents: <ConfirmTurnOffProfileSyncing />,
     mobileModalStyle: {
@@ -366,9 +282,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IF
   return {
     hideModal: (customOnHideOpts) => {
       dispatch(actions.hideModal());
@@ -379,10 +292,6 @@ function mapDispatchToProps(dispatch) {
     hideWarning: () => {
       dispatch(actions.hideWarning());
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    ///: END:ONLY_INCLUDE_IF
   };
 }
 
@@ -399,9 +308,6 @@ class Modal extends Component {
     hideModal: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
     modalState: PropTypes.object.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    setWaitForConfirmDeepLinkDialog: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   hide() {
@@ -432,11 +338,6 @@ class Modal extends Component {
         keyboard={false}
         onHide={() => {
           if (modal.onHide) {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            if (this.props.modalState.name === 'CUSTODY_CONFIRM_LINK') {
-              this.props.setWaitForConfirmDeepLinkDialog(false);
-            }
-            ///: END:ONLY_INCLUDE_IF
             modal.onHide({
               hideWarning: this.props.hideWarning,
             });

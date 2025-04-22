@@ -1,0 +1,24 @@
+@use "design-system";
+
+.nft-items {
+  &__wrapper {
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
+
+    /* When used in the send NFT modal */
+    .mm-modal-content & {
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+    }
+  }
+
+  @include design-system.screen-md-max {
+    &__wrapper {
+      grid-template-columns: repeat(3, minmax(100px, 1fr));
+    }
+  }
+
+  @include design-system.screen-sm-max {
+    &__wrapper {
+      grid-template-columns: repeat(3, minmax(85px, 1fr));
+    }
+  }
+}

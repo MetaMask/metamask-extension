@@ -3,13 +3,14 @@ import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import {
-  getCurrentChainSupportsSmartTransactions,
+  getChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
 import {
   fetchSmartTransactionsLiveness,
   setSwapsFeatureFlags,
+  setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 
@@ -24,7 +25,7 @@ export function useSmartTransactionFeatureFlags() {
   );
 
   const currentChainSupportsSmartTransactions = useSelector(
-    getCurrentChainSupportsSmartTransactions,
+    getChainSupportsSmartTransactions,
   );
 
   useEffect(() => {
@@ -40,6 +41,11 @@ export function useSmartTransactionFeatureFlags() {
     Promise.all([fetchSwapsFeatureFlags(), fetchSmartTransactionsLiveness()()])
       .then(([swapsFeatureFlags]) => {
         dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
+        dispatch(
+          setSmartTransactionsRefreshInterval(
+            swapsFeatureFlags.smartTransactions?.batchStatusPollingInterval,
+          ),
+        );
       })
       .catch((error) => {
         log.debug('Error updating smart transaction feature flags', error);

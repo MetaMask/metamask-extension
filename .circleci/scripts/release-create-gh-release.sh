@@ -61,7 +61,6 @@ if [[ $current_commit_msg =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:d
 then
     tag="${BASH_REMATCH[1]}"
     flask_version="$(print_build_version 'flask')"
-    mmi_version="$(print_build_version 'mmi')"
 
     install_github_cli
 
@@ -72,15 +71,12 @@ then
         --attach builds-mv2/metamask-firefox-*.zip \
         --attach builds-flask/metamask-flask-chrome-*.zip \
         --attach builds-flask-mv2/metamask-flask-firefox-*.zip \
-        --attach builds-mmi/metamask-mmi-chrome-*.zip \
-        --attach builds-mmi/metamask-mmi-firefox-*.zip \
         --message "Version ${tag##v}" \
         --message "$release_body" \
         --commitish "$CIRCLE_SHA1" \
         "$tag"
 
     publish_tag 'Flask' "${flask_version}"
-    publish_tag 'MMI' "${mmi_version}"
 else
     printf '%s\n' 'Version not found in commit message; skipping GitHub Release'
     exit 0

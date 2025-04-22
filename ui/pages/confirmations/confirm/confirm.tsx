@@ -1,10 +1,6 @@
 import { ReactNodeLike } from 'prop-types';
 import React, { ReactNode } from 'react';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { MMISignatureMismatchBanner } from '../../../components/institutional/signature-mismatch-banner';
-import NoteToTrader from '../../../components/institutional/note-to-trader';
-///: END:ONLY_INCLUDE_IF
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
@@ -15,13 +11,15 @@ import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
 import { LedgerInfo } from '../components/confirm/ledger-info';
-import { NetworkChangeToast } from '../components/confirm/network-change-toast';
+import { SmartTransactionsBannerAlert } from '../components/smart-transactions-banner-alert';
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
 import { ConfirmNav } from '../components/confirm/nav/nav';
+import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
+import { Splash } from '../components/confirm/splash';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -53,25 +51,17 @@ const Confirm = () => (
           <Page className="confirm_wrapper">
             <ConfirmNav />
             <Header />
+            <SmartTransactionsBannerAlert marginType="noTop" />
             <ScrollToBottom>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <MMISignatureMismatchBanner />
-                ///: END:ONLY_INCLUDE_IF
-              }
               <BlockaidLoadingIndicator />
               <LedgerInfo />
               <Title />
               <Info />
               <PluggableSection />
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <NoteToTrader />
-                ///: END:ONLY_INCLUDE_IF
-              }
             </ScrollToBottom>
+            <GasFeeTokenToast />
             <Footer />
-            <NetworkChangeToast />
+            <Splash />
           </Page>
         </ConfirmAlerts>
       </GasFeeContextProviderWrapper>

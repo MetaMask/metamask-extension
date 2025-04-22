@@ -13,7 +13,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-import { isBeta } from '../../helpers/utils/build-types';
+import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { getCaretCoordinates } from './unlock-page.util';
 
 export default class UnlockPage extends Component {
@@ -152,26 +152,38 @@ export default class UnlockPage extends Component {
     );
   }
 
+  renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+      );
+    }
+    if (isBeta()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={this.animationEventEmitter}
+        width="120"
+        height="120"
+      />
+    );
+  };
+
   render() {
     const { password, error } = this.state;
     const { t } = this.context;
     const { onRestore } = this.props;
 
-    let needHelpText = t('appNameMmi');
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    needHelpText = t('needHelpLinkText');
-    ///: END:ONLY_INCLUDE_IF
+    const needHelpText = t('needHelpLinkText');
 
     return (
       <div className="unlock-page__container">
         <div className="unlock-page" data-testid="unlock-page">
           <div className="unlock-page__mascot-container">
-            <Mascot
-              animationEventEmitter={this.animationEventEmitter}
-              width="120"
-              height="120"
-            />
+            {this.renderMascot()}
             {isBeta() ? (
               <div className="unlock-page__mascot-container__beta">
                 {t('beta')}
@@ -183,11 +195,12 @@ export default class UnlockPage extends Component {
             as="h1"
             variant={TextVariant.headingLg}
             marginTop={1}
-            color={TextColor.textAlternative}
+            color={TextColor.textDefault}
           >
             {t('welcomeBack')}
           </Text>
-          <div>{t('unlockMessage')}</div>
+
+          <Text color={TextColor.textAlternative}>{t('unlockMessage')}</Text>
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"

@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { TransactionType } from '@metamask/transaction-controller';
+import { isSnapId } from '@metamask/snaps-utils';
 
 import {
   getMockConfirmState,
@@ -13,7 +14,8 @@ import {
   signatureRequestSIWE,
   unapprovedPersonalSignMsg,
 } from '../../../../../../../test/data/confirmations/personal_sign';
-import * as snapUtils from '../../../../../../helpers/utils/snaps';
+import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
+import { Severity } from '../../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../../types/confirm';
 import * as utils from '../../../../utils';
 import PersonalSignInfo from './personal-sign';
@@ -43,12 +45,9 @@ jest.mock('../../../../../../../node_modules/@metamask/snaps-utils', () => {
     ...originalUtils,
     stripSnapPrefix: jest.fn().mockReturnValue('@metamask/examplesnap'),
     getSnapPrefix: jest.fn().mockReturnValue('npm:'),
+    isSnapId: jest.fn(),
   };
 });
-
-jest.mock('../../../../../../helpers/utils/snaps', () => ({
-  isSnapId: jest.fn(),
-}));
 
 describe('PersonalSignInfo', () => {
   it('renders correctly for personal sign request', () => {
@@ -149,7 +148,7 @@ describe('PersonalSignInfo', () => {
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
 
     (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
-    (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
+    (isSnapId as unknown as jest.Mock).mockReturnValue(true);
 
     const mockStore = configureMockStore([])(state);
     const { queryByText, getByText } = renderWithConfirmContextProvider(
@@ -171,7 +170,7 @@ describe('PersonalSignInfo', () => {
     const state =
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
     (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
-    (snapUtils.isSnapId as jest.Mock).mockReturnValue(true);
+    (isSnapId as unknown as jest.Mock).mockReturnValue(true);
 
     const mockStore = configureMockStore([])(state);
     const { getByText, queryByText } = renderWithConfirmContextProvider(
@@ -205,5 +204,34 @@ describe('PersonalSignInfo', () => {
       mockStore,
     );
     expect(getByText(message)).toBeDefined();
+  });
+
+  it('display network info if there is an alert on that field', () => {
+    const state = {
+      ...getMockPersonalSignConfirmStateForRequest({
+        ...unapprovedPersonalSignMsg,
+      } as SignatureRequestType),
+      confirmAlerts: {
+        alerts: {
+          [unapprovedPersonalSignMsg.id]: [
+            {
+              key: 'networkSwitchInfo',
+              field: RowAlertKey.Network,
+              severity: Severity.Info,
+              message: 'dummy message',
+              reason: 'dummy reason',
+            },
+          ],
+        },
+        confirmed: {},
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithConfirmContextProvider(
+      <PersonalSignInfo />,
+      mockStore,
+    );
+    expect(getByText('Network')).toBeInTheDocument();
+    expect(getByText('Goerli')).toBeInTheDocument();
   });
 });

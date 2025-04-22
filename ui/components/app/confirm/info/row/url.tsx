@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   Box,
   Icon,
@@ -18,7 +19,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
 import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
-import { isSnapId } from '../../../../../helpers/utils/snaps';
 
 export type ConfirmInfoRowUrlProps = {
   url: string;

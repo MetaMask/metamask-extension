@@ -2,7 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { remove0x } from '@metamask/utils';
 import { BN } from 'bn.js';
-import { DecodedTransactionDataResponse } from '../../../../../../shared/types/transaction-decode';
+import { TransactionDescription } from '@ethersproject/abi';
 import {
   BackgroundColor,
   TextColor,
@@ -11,13 +11,11 @@ import {
 const VALUE_COMPARISON_PERCENT_THRESHOLD = 5;
 
 export function getIsRevokeSetApprovalForAll(
-  value: DecodedTransactionDataResponse | undefined,
+  value: TransactionDescription | undefined,
 ): boolean {
-  const isRevokeSetApprovalForAll =
-    value?.data?.[0]?.name === 'setApprovalForAll' &&
-    value?.data?.[0]?.params?.[1]?.value === false;
-
-  return isRevokeSetApprovalForAll;
+  return (
+    value?.name === 'setApprovalForAll' && value?.args?._approved === false
+  );
 }
 
 export const getAmountColors = (credit?: boolean, debit?: boolean) => {

@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, openDapp, defaultGanacheOptions } = require('../helpers');
+const { withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Multi injected provider interactions', function () {
@@ -8,7 +8,6 @@ describe('Multi injected provider interactions', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {

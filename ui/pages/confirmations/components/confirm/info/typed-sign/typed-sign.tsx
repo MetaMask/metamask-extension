@@ -1,6 +1,7 @@
 import React from 'react';
 import { isValidAddress } from 'ethereumjs-util';
 
+import { isSnapId } from '@metamask/snaps-utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
@@ -21,7 +22,7 @@ import {
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
-import { isSnapId } from '../../../../../../helpers/utils/snaps';
+import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
 
@@ -63,6 +64,7 @@ const TypedSignInfo: React.FC = () => {
             <ConfirmInfoRowDivider />
           </>
         )}
+        <NetworkRow isShownWithAlertsOnly />
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}

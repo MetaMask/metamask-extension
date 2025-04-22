@@ -1,5 +1,5 @@
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import {
@@ -7,7 +7,11 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../../../helpers/constants/survey';
-import { getPermittedAccountsForCurrentTab } from '../../../selectors';
+import {
+  getAllPermittedAccountsForCurrentTab,
+  isSolanaAccount,
+} from '../../../selectors';
+import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { MetaMaskReduxState } from '../../../store/store';
 import { getIsPrivacyToastRecent } from './utils';
 
@@ -15,6 +19,7 @@ import { getIsPrivacyToastRecent } from './utils';
 type State = Omit<MetaMaskReduxState, 'appState'> & {
   appState: {
     showNftDetectionEnablementToast?: boolean;
+    showNewSrpAddedToast?: boolean;
   };
   metamask: {
     newPrivacyPolicyToastClickedOrClosed?: boolean;
@@ -85,17 +90,22 @@ export function selectShowConnectAccountToast(
   account: InternalAccount,
 ): boolean {
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
-  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
-  const isEvmAccount = isEvmAccountType(account?.type);
+  const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
 
-  return (
+  // We only support connection with EVM or Solana accounts
+  // This check prevents Bitcoin snap accounts from showing the toast
+  const isEvmAccount = isEvmAccountType(account?.type);
+  const isSolanaAccountSelected = isSolanaAccount(account);
+  const isConnectableAccount = isEvmAccount || isSolanaAccountSelected;
+
+  const showConnectAccountToast =
     allowShowAccountSetting &&
     account &&
     state.activeTab?.origin &&
-    isEvmAccount &&
-    connectedAccounts.length > 0 &&
-    !connectedAccounts.some((address) => address === account.address)
-  );
+    isConnectableAccount &&
+    !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
+
+  return showConnectAccountToast;
 }
 
 /**
@@ -106,4 +116,14 @@ export function selectShowConnectAccountToast(
  */
 export function selectSwitchedNetworkNeverShowMessage(state: State): boolean {
   return Boolean(state.metamask.switchedNetworkNeverShowMessage);
+}
+
+/**
+ * Retrieves user preference to see the "New SRP Added" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectNewSrpAdded(state: State): boolean {
+  return Boolean(state.appState.showNewSrpAddedToast);
 }

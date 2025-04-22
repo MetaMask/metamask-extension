@@ -289,6 +289,30 @@
       ]
     }
   },
+  "allTokens": {
+    "0xaa36a7": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": [
+        {
+          "address": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+          "symbol": "TEST",
+          "balance": "0x0",
+          "decimals": "0"
+        },
+        {
+          "address": "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5",
+          "decimals": "8",
+          "balance": "0x0",
+          "symbol": "TEST2"
+        },
+        {
+          "address": "0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4",
+          "symbol": "META",
+          "balance": "0x0",
+          "decimals": "18"
+        }
+      ]
+    }
+  },
   "announcements": [],
   "approvalFlows": [],
   "browserEnvironment": {
@@ -458,14 +482,6 @@
   },
   "ignoredNfts": [],
   "ignoredTokens": [],
-  "incomingTransactionsPreferences": {
-    "0x1": true,
-    "0xe708": false,
-    "0xfa": true,
-    "0x5": false,
-    "0xaa36a7": false,
-    "0xe704": true
-  },
   "internalAccounts": {
     "accounts": {
       "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
@@ -485,7 +501,8 @@
           "eth_signTypedData_v3",
           "eth_signTypedData_v4"
         ],
-        "type": "eip155:eoa"
+        "type": "eip155:eoa",
+        "scopes": ["eip155:0"]
       },
       "07c2cfec-36c9-46c4-8115-3836d3ac9047": {
         "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
@@ -504,7 +521,8 @@
           "eth_signTypedData_v3",
           "eth_signTypedData_v4"
         ],
-        "type": "eip155:eoa"
+        "type": "eip155:eoa",
+        "scopes": ["eip155:0"]
       },
       "15e69915-2a1a-4019-93b3-916e11fd432f": {
         "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
@@ -523,7 +541,8 @@
           "eth_signTypedData_v3",
           "eth_signTypedData_v4"
         ],
-        "type": "eip155:eoa"
+        "type": "eip155:eoa",
+        "scopes": ["eip155:0"]
       },
       "784225f4-d30b-4e77-a900-c8bbce735b88": {
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
@@ -542,7 +561,8 @@
           "eth_signTypedData_v3",
           "eth_signTypedData_v4"
         ],
-        "type": "eip155:eoa"
+        "type": "eip155:eoa",
+        "scopes": ["eip155:0"]
       },
       "694225f4-d30b-4e77-a900-c8bbce735b42": {
         "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
@@ -561,7 +581,8 @@
           "eth_signTypedData_v3",
           "eth_signTypedData_v4"
         ],
-        "type": "eip155:eoa"
+        "type": "eip155:eoa",
+        "scopes": ["eip155:0"]
       },
       "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3": {
         "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
@@ -584,13 +605,15 @@
           "eth_signTypedData_v3",
           "eth_signTypedData_v4"
         ],
-        "type": "eip155:eoa"
+        "type": "eip155:eoa",
+        "scopes": ["eip155:0"]
       }
     },
     "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
   },
   "ipfsGateway": "dweb.link",
   "isAccountMenuOpen": false,
+  "isEvmSelected": true,
   "isInitialized": true,
   "isIpfsGatewayEnabled": true,
   "isNetworkMenuOpen": false,
@@ -621,6 +644,20 @@
       "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
     }
   ],
+  "multichainNetworkConfigurationsByChainId": {
+    "bip122:000000000019d6689c085ae165831e93": {
+      "chainId": "bip122:000000000019d6689c085ae165831e93",
+      "name": "Bitcoin",
+      "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0",
+      "isEvm": false
+    },
+    "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+      "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "name": "Solana",
+      "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+      "isEvm": false
+    }
+  },
   "nameSources": {
     "ens": {
       "label": "Ethereum Name Service (ENS)"
@@ -784,8 +821,15 @@
     "smartTransactionsOptInStatus": true,
     "petnamesEnabled": false,
     "showConfirmationAdvancedDetails": false,
+    "featureNotificationsEnabled": false,
     "showMultiRpcModal": false,
-    "tokenNetworkFilter": {}
+    "privacyMode": false,
+    "tokenNetworkFilter": {},
+    "tokenSortConfig": {
+      "key": "token-sort-key",
+      "order": "dsc",
+      "sortCallback": "stringNumeric"
+    }
   },
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
@@ -793,6 +837,7 @@
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+  "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
   "showAccountBanner": false,
   "showBetaHeader": false,
@@ -1228,6 +1273,14 @@
   "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1692109813199,
   "theme": "os",
+  "tokenBalances": {
+    "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {
+      "0x1": {
+        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": "0xbdbd",
+        "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e": "0x501b4176a64d6"
+      }
+    }
+  },
   "tokenList": {
     "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
       "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
@@ -2047,9 +2100,7 @@
   "useExternalNameSources": true,
   "useMultiAccountBalanceChecker": false,
   "useNftDetection": false,
-  "useNonceField": false,
   "usePhishDetect": true,
-  "useRequestQueue": false,
   "useSafeChainsListValidation": true,
   "useTokenDetection": false,
   "useTransactionSimulations": true,

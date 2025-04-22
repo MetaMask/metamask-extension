@@ -12,10 +12,16 @@ import { formatCurrency } from './confirm-tx.util';
 const DEFAULT_SYMBOL = '';
 
 async function getSymbolFromContract(tokenAddress) {
-  const token = util.getContractAtAddress(tokenAddress);
+  const contract = util.getContractAtAddress(tokenAddress);
+
   try {
-    const result = await token.symbol();
-    return result[0];
+    const code = await contract.provider.getCode(tokenAddress);
+
+    if (code === '0x') {
+      return '';
+    }
+
+    return await contract.symbol();
   } catch (error) {
     log.warn(
       `symbol() call for token at address ${tokenAddress} resulted in error:`,
@@ -26,10 +32,16 @@ async function getSymbolFromContract(tokenAddress) {
 }
 
 async function getNameFromContract(tokenAddress) {
-  const token = util.getContractAtAddress(tokenAddress);
+  const contract = util.getContractAtAddress(tokenAddress);
+
   try {
-    const [name] = await token.name();
-    return name;
+    const code = await contract.provider.getCode(tokenAddress);
+
+    if (code === '0x') {
+      return '';
+    }
+
+    return await contract.name();
   } catch (error) {
     log.warn(
       `name() call for token at address ${tokenAddress} resulted in error:`,
@@ -40,11 +52,16 @@ async function getNameFromContract(tokenAddress) {
 }
 
 async function getDecimalsFromContract(tokenAddress) {
-  const token = util.getContractAtAddress(tokenAddress);
+  const contract = util.getContractAtAddress(tokenAddress);
 
   try {
-    const result = await token.decimals();
-    const decimalsBN = result[0];
+    const code = await contract.provider.getCode(tokenAddress);
+
+    if (code === '0x') {
+      return '0';
+    }
+
+    const decimalsBN = await contract.decimals();
     return decimalsBN?.toString();
   } catch (error) {
     log.warn(
@@ -133,8 +150,8 @@ export function tokenInfoGetter() {
   const tokens = {};
 
   return async (address, tokenList) => {
-    if (tokens[address]) {
-      return tokens[address];
+    if (tokens[address.toLowerCase()]) {
+      return tokens[address.toLowerCase()];
     }
 
     tokens[address] = await getSymbolAndDecimalsAndName(address, tokenList);
@@ -177,17 +194,6 @@ export function getTokenIdParam(tokenData = {}) {
   return (
     tokenData?.args?._tokenId?.toString() ?? tokenData?.args?.id?.toString()
   );
-}
-
-/**
- * Gets the '_approved' parameter of the given token transaction data
- * (i.e function call) per the Human Standard Token ABI, if present.
- *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {boolean | undefined} A boolean indicating whether the function is being called to approve or revoke access.
- */
-export function getTokenApprovedParam(tokenData = {}) {
-  return tokenData?.args?._approved;
 }
 
 /**
@@ -237,7 +243,7 @@ export function getTokenFiatAmount(
 
   currentTokenInFiat = currentTokenInFiat.round(2).toString();
   let result;
-  if (hideCurrencySymbol) {
+  if (hideCurrencySymbol && formatted) {
     result = formatCurrency(currentTokenInFiat, currentCurrency);
   } else if (formatted) {
     result = `${formatCurrency(

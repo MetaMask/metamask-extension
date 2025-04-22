@@ -93,6 +93,7 @@ export function getRenderableTokenData(
     decimals,
     name: name || tokenList[address?.toLowerCase()]?.name,
     rawFiat,
+    image: token.image || token.iconUrl,
   };
 }
 

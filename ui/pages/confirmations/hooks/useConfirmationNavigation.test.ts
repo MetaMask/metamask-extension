@@ -12,7 +12,6 @@ import {
   CONNECT_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-  SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 
@@ -28,32 +27,38 @@ jest.mock('../confirmation/templates', () => ({
 const APPROVAL_ID_MOCK = '123-456';
 const APPROVAL_ID_2_MOCK = '456-789';
 
+function renderHookWithState(state: Record<string, unknown>) {
+  const { result } = renderHookWithProvider(() => useConfirmationNavigation(), {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      ...state,
+    },
+  });
+
+  return result.current;
+}
+
 function renderHook(
   approvalType: ApprovalType,
   requestData?: Json,
   approvalFlows?: ApprovalFlowState[],
 ) {
-  const { result } = renderHookWithProvider(() => useConfirmationNavigation(), {
-    ...mockState,
-    metamask: {
-      ...mockState.metamask,
-      pendingApprovals: {
-        [APPROVAL_ID_MOCK]: {
-          id: APPROVAL_ID_MOCK,
-          type: approvalType,
-          requestData,
-        },
-        [APPROVAL_ID_2_MOCK]: {
-          id: APPROVAL_ID_2_MOCK,
-          type: approvalType,
-          requestData,
-        },
+  return renderHookWithState({
+    pendingApprovals: {
+      [APPROVAL_ID_MOCK]: {
+        id: APPROVAL_ID_MOCK,
+        type: approvalType,
+        requestData,
       },
-      approvalFlows,
+      [APPROVAL_ID_2_MOCK]: {
+        id: APPROVAL_ID_2_MOCK,
+        type: approvalType,
+        requestData,
+      },
     },
+    approvalFlows,
   });
-
-  return result.current;
 }
 
 describe('useConfirmationNavigation', () => {
@@ -77,17 +82,6 @@ describe('useConfirmationNavigation', () => {
       );
     });
 
-    it('navigates to signature route', () => {
-      const result = renderHook(ApprovalType.EthSignTypedData);
-
-      result.navigateToId(APPROVAL_ID_MOCK);
-
-      expect(history.replace).toHaveBeenCalledTimes(1);
-      expect(history.replace).toHaveBeenCalledWith(
-        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}${SIGNATURE_REQUEST_PATH}`,
-      );
-    });
-
     it('navigates to template route', () => {
       const result = renderHook(ApprovalType.AddEthereumChain);
 
@@ -107,6 +101,19 @@ describe('useConfirmationNavigation', () => {
       expect(history.replace).toHaveBeenCalledTimes(1);
       expect(history.replace).toHaveBeenCalledWith(
         `${CONFIRMATION_V_NEXT_ROUTE}`,
+      );
+    });
+
+    it('does not navigate to template route if approval flow and pending approval', () => {
+      const result = renderHook(ApprovalType.Transaction, undefined, [
+        {} as never,
+      ]);
+
+      result.navigateToId(APPROVAL_ID_MOCK);
+
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}`,
       );
     });
 
@@ -202,6 +209,35 @@ describe('useConfirmationNavigation', () => {
       const result = renderHook(ApprovalType.Transaction);
       expect(result.count).toBe(2);
     });
+
+    it.each([
+      ['token', undefined],
+      ['NFT', '123'],
+    ])(
+      'ignores additional watch %s approvals',
+      (_title: string, tokenId?: string) => {
+        const result = renderHookWithState({
+          pendingApprovals: {
+            [APPROVAL_ID_MOCK]: {
+              id: APPROVAL_ID_MOCK,
+              type: ApprovalType.WatchAsset,
+              requestData: { asset: { tokenId } },
+            },
+            [APPROVAL_ID_2_MOCK]: {
+              id: APPROVAL_ID_2_MOCK,
+              type: ApprovalType.Transaction,
+            },
+            duplicate: {
+              id: 'duplicate',
+              type: ApprovalType.WatchAsset,
+              requestData: { asset: { tokenId } },
+            },
+          },
+        });
+
+        expect(result.count).toBe(2);
+      },
+    );
   });
 
   describe('getIndex', () => {
@@ -224,5 +260,36 @@ describe('useConfirmationNavigation', () => {
         APPROVAL_ID_2_MOCK,
       ]);
     });
+
+    it.each([
+      ['token', undefined],
+      ['NFT', '123'],
+    ])(
+      'ignores additional watch %s approvals',
+      (_title: string, tokenId?: string) => {
+        const result = renderHookWithState({
+          pendingApprovals: {
+            [APPROVAL_ID_MOCK]: {
+              id: APPROVAL_ID_MOCK,
+              type: ApprovalType.WatchAsset,
+              requestData: { asset: { tokenId } },
+            },
+            [APPROVAL_ID_2_MOCK]: {
+              id: APPROVAL_ID_2_MOCK,
+              type: ApprovalType.Transaction,
+            },
+            duplicate: {
+              id: 'duplicate',
+              type: ApprovalType.WatchAsset,
+              requestData: { asset: { tokenId } },
+            },
+          },
+        });
+
+        expect(
+          result.confirmations.map(({ id }: { id: string }) => id),
+        ).toEqual([APPROVAL_ID_MOCK, APPROVAL_ID_2_MOCK]);
+      },
+    );
   });
 });

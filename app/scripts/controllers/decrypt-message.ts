@@ -1,8 +1,6 @@
-import EventEmitter from 'events';
 import log from 'loglevel';
 import {
   AbstractMessage,
-  AbstractMessageManager,
   AbstractMessageParams,
   AbstractMessageParamsMetamask,
   MessageManagerState,
@@ -11,10 +9,12 @@ import {
   DecryptMessageParams,
   DecryptMessageParamsMetamask,
 } from '@metamask/message-manager';
-import {
-  BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
+import type {
+  DecryptMessageManagerMessenger,
+  DecryptMessageManagerState,
+  DecryptMessageManagerUnapprovedMessageAddedEvent,
+} from '@metamask/message-manager';
+import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import {
   AcceptRequest,
   AddApprovalRequest,
@@ -33,6 +33,8 @@ const stateMetadata = {
   unapprovedDecryptMsgs: { persist: false, anonymous: false },
   unapprovedDecryptMsgCount: { persist: false, anonymous: false },
 };
+
+export const managerName = 'DecryptMessageManager';
 
 /**
  * Type guard that checks for the presence of the required properties
@@ -86,19 +88,20 @@ export type DecryptMessageControllerState = {
   unapprovedDecryptMsgCount: number;
 };
 
-export type GetDecryptMessageState = {
+export type GetDecryptMessageControllerState = {
   type: `${typeof controllerName}:getState`;
   handler: () => DecryptMessageControllerState;
 };
 
-export type DecryptMessageStateChange = {
+export type DecryptMessageControllerStateChange = {
   type: `${typeof controllerName}:stateChange`;
   payload: [DecryptMessageControllerState, Patch[]];
 };
 
-export type DecryptMessageControllerActions = GetDecryptMessageState;
+export type DecryptMessageControllerActions = GetDecryptMessageControllerState;
 
-export type DecryptMessageControllerEvents = DecryptMessageStateChange;
+export type DecryptMessageControllerEvents =
+  DecryptMessageControllerStateChange;
 
 type AllowedActions =
   | AddApprovalRequest
@@ -106,20 +109,31 @@ type AllowedActions =
   | RejectRequest
   | KeyringControllerDecryptMessageAction;
 
-export type DecryptMessageControllerMessenger = RestrictedControllerMessenger<
+type DecryptMessageManagerStateChangeEvent = {
+  type: `DecryptMessageManager:stateChange`;
+  payload: [DecryptMessageManagerState, Patch[]];
+};
+
+type AllowedEvents =
+  | DecryptMessageManagerStateChangeEvent
+  | DecryptMessageManagerUnapprovedMessageAddedEvent;
+
+export type DecryptMessageControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   DecryptMessageControllerActions | AllowedActions,
-  DecryptMessageControllerEvents,
+  DecryptMessageControllerEvents | AllowedEvents,
   AllowedActions['type'],
-  never
+  AllowedEvents['type']
 >;
 
 export type DecryptMessageControllerOptions = {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getState: () => any;
+  managerMessenger: DecryptMessageManagerMessenger;
   messenger: DecryptMessageControllerMessenger;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
 };
@@ -132,13 +146,11 @@ export default class DecryptMessageController extends BaseController<
   DecryptMessageControllerState,
   DecryptMessageControllerMessenger
 > {
-  hub: EventEmitter;
-
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _getState: () => any;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _metricsEvent: (payload: any, options?: any) => void;
 
@@ -151,11 +163,13 @@ export default class DecryptMessageController extends BaseController<
    * @param options.getState - Callback to retrieve all user state.
    * @param options.messenger - A reference to the messaging system.
    * @param options.metricsEvent - A function for emitting a metric event.
+   * @param options.managerMessenger - A reference to the messenger need by the message manager.
    */
   constructor({
     getState,
     metricsEvent,
     messenger,
+    managerMessenger,
   }: DecryptMessageControllerOptions) {
     super({
       metadata: stateMetadata,
@@ -166,28 +180,18 @@ export default class DecryptMessageController extends BaseController<
     this._getState = getState;
     this._metricsEvent = metricsEvent;
 
-    this.hub = new EventEmitter();
-
-    this._decryptMessageManager = new DecryptMessageManager(
-      undefined,
-      undefined,
-      undefined,
-      ['decrypted'],
-    );
-
-    this._decryptMessageManager.hub.on('updateBadge', () => {
-      this.hub.emit('updateBadge');
+    this._decryptMessageManager = new DecryptMessageManager({
+      additionalFinishStatuses: ['decrypted'],
+      messenger: managerMessenger,
     });
 
-    this._decryptMessageManager.hub.on(
-      'unapprovedMessage',
-      (messageParams: AbstractMessageParamsMetamask) => {
-        this._requestApproval(messageParams);
-      },
+    messenger.subscribe(
+      `${managerName}:unapprovedMessage`,
+      this._requestApproval.bind(this),
     );
 
     this._subscribeToMessageState(
-      this._decryptMessageManager,
+      messenger,
       (state, newMessages, messageCount) => {
         state.unapprovedDecryptMsgs = newMessages;
         state.unapprovedDecryptMsgCount = messageCount;
@@ -215,10 +219,7 @@ export default class DecryptMessageController extends BaseController<
    * Clears all unapproved messages from memory.
    */
   clearUnapproved() {
-    this._decryptMessageManager.update({
-      unapprovedMessages: {},
-      unapprovedMessagesCount: 0,
-    });
+    this._decryptMessageManager.clearUnapprovedMessages();
   }
 
   /**
@@ -331,11 +332,7 @@ export default class DecryptMessageController extends BaseController<
   }
 
   private _cancelAbstractMessage(
-    messageManager: AbstractMessageManager<
-      AbstractMessage,
-      AbstractMessageParams,
-      AbstractMessageParamsMetamask
-    >,
+    messageManager: DecryptMessageManager,
     messageId: string,
     reason?: string,
   ) {
@@ -356,27 +353,26 @@ export default class DecryptMessageController extends BaseController<
   }
 
   private _subscribeToMessageState(
-    messageManager: AbstractMessageManager<
-      AbstractMessage,
-      AbstractMessageParams,
-      AbstractMessageParamsMetamask
-    >,
+    controllerMessenger: DecryptMessageControllerMessenger,
     updateState: (
       state: DecryptMessageControllerState,
       newMessages: Record<string, StateMessage>,
       messageCount: number,
     ) => void,
   ) {
-    messageManager.subscribe((state: MessageManagerState<AbstractMessage>) => {
-      const newMessages = this._migrateMessages(
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        state.unapprovedMessages as any,
-      );
-      this.update((draftState) => {
-        updateState(draftState, newMessages, state.unapprovedMessagesCount);
-      });
-    });
+    controllerMessenger.subscribe(
+      `${managerName}:stateChange`,
+      (state: MessageManagerState<AbstractMessage>) => {
+        const newMessages = this._migrateMessages(
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          state.unapprovedMessages as any,
+        );
+        this.update((draftState) => {
+          updateState(draftState, newMessages, state.unapprovedMessagesCount);
+        });
+      },
+    );
   }
 
   private _migrateMessages(
@@ -408,6 +404,8 @@ export default class DecryptMessageController extends BaseController<
 
   private _requestApproval(messageParams: AbstractMessageParamsMetamask) {
     const id = messageParams.metamaskId as string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const origin = messageParams.origin || ORIGIN_METAMASK;
     try {
       this.messagingSystem.call(

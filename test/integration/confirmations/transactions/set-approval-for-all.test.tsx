@@ -49,7 +49,6 @@ const getMetaMaskStateWithUnapprovedSetApprovalForAllTransaction = (opts?: {
     ...mockMetaMaskState,
     preferences: {
       ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
       showConfirmationAdvancedDetails: opts?.showAdvanceDetails ?? false,
     },
     pendingApprovals: {
@@ -137,6 +136,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
       chainId: '0xaa36a7',
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     global.ethereumProvider = provider as any;
   });
@@ -156,6 +156,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
       INCREASE_SET_APPROVAL_FOR_ALL_TEXT_SIG,
     );
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -166,6 +167,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
   });
 
   afterAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (global as any).ethereumProvider;
   });
@@ -246,7 +248,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
     expect(approveDetailsSpender).toHaveTextContent(
       tEn('permissionFor') as string,
     );
-    expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDetailsSpender).toHaveTextContent('0x9bc5b...AfEF4');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );

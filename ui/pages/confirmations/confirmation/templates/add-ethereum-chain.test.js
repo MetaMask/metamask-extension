@@ -159,6 +159,7 @@ describe('add-ethereum-chain confirmation', () => {
           "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue. Punycode version: https://xn--ifura-dig.io/gnosis",
         ),
       ).toBeInTheDocument();
+      expect(getByText('https://iոfura.io/gnosis')).toBeInTheDocument();
     });
   });
 });

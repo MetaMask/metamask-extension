@@ -1,4 +1,5 @@
 import { Token, TokenListToken } from '@metamask/assets-controllers';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import type {
   AssetType,
   TokenStandard,
@@ -8,20 +9,24 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../../shared/constants/network';
-import { TokenWithFiatAmount } from '../../../app/assets/token-list/token-list';
+import { TokenWithFiatAmount } from '../../../app/assets/types';
 
 export type NFT = {
   address: string;
   description: string | null;
   favorite: boolean;
-  image: string | null;
+  image?: string | string[];
   isCurrentlyOwned: boolean;
   name: string | null;
   standard: TokenStandard;
   tokenId: number;
   tokenURI?: string;
-  type: AssetType.NFT;
+  type?: AssetType.NFT;
   symbol?: string;
+  imageOriginal?: string;
+  ipfsImageUpdated?: string;
+  collection?: Record<string, string | number | boolean>;
+  chainId: string;
 };
 
 /**
@@ -32,8 +37,8 @@ export type NFT = {
 export type ERC20Asset = {
   type: AssetType.token;
   image: string;
-} & Pick<TokenListToken, 'address' | 'symbol'> &
-  Pick<TokenWithFiatAmount, 'chainId'>;
+  chainId: Hex | CaipChainId;
+} & Pick<TokenListToken, 'address' | 'symbol'>;
 
 export type NativeAsset = {
   type: AssetType.native;
@@ -44,7 +49,8 @@ export type NativeAsset = {
   symbol: typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP extends Record<string, infer V>
     ? V
     : never; // only allow wallet's hardcoded symbols
-} & Pick<TokenWithFiatAmount, 'chainId'>;
+  chainId: Hex | CaipChainId;
+};
 
 /**
  * ERC20Asset or NativeAsset, plus additional fields for display purposes in the Asset component
@@ -58,7 +64,7 @@ export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
 
 export type Collection = {
   collectionName: string;
-  collectionImage: string | null;
+  collectionImage: string | undefined;
   nfts: NFT[];
 };
 

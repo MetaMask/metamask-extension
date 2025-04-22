@@ -18,11 +18,10 @@ import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
-  getInternalAccounts,
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
-  getPermittedAccountsForSelectedTab,
+  getPermittedEVMAccountsForSelectedTab,
   getSelectedAccount,
   getSubjectMetadata,
   getUnconnectedAccounts,
@@ -43,7 +42,6 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import {
   AccountListItem,
   AccountListItemMenuTypes,
@@ -53,7 +51,7 @@ import {
 import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
 import {
-  requestAccountsPermissionWithId,
+  requestAccountsAndChainPermissionsWithId,
   removePermissionsFor,
 } from '../../../../store/actions';
 import {
@@ -89,17 +87,19 @@ export const Connections = () => {
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const activeTabOrigin = decodeURIComponent(urlParams.origin);
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
   const siteMetadata = useSelector(getSubjectMetadata);
   const connectedSiteMetadata = siteMetadata[activeTabOrigin];
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id } = useSelector((state: any) => state.activeTab);
   const unconnectedAccounts = useSelector((state) =>
@@ -109,21 +109,18 @@ export const Connections = () => {
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
   const selectedAccount = useSelector(getSelectedAccount);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts = mergeAccounts(
-    connectedAccounts,
-    internalAccounts,
-  ) as AccountType[];
 
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as { [key: string]: any[] };
   const subjects = useSelector(getPermissionSubjects);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let tabToConnect: { origin: any } = { origin: null };
   if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
@@ -133,14 +130,14 @@ export const Connections = () => {
   }
   const requestAccountsPermission = async () => {
     const requestId = await dispatch(
-      requestAccountsPermissionWithId(tabToConnect.origin),
+      requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
     );
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
 
   const permittedAccounts = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
+    getPermittedEVMAccountsForSelectedTab(state, activeTabOrigin),
   );
 
   const disconnectAllAccounts = () => {
@@ -168,24 +165,25 @@ export const Connections = () => {
     }
   };
 
-  // In the mergeAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
-  const latestSelected = mergedAccounts.findIndex(
-    // TODO: Replace `any` with type
+  // In the connectedAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
+  const latestSelected = connectedAccounts.findIndex(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_account: any, index: any) => {
       return (
         index ===
-        mergedAccounts.reduce(
+        connectedAccounts.reduce(
           (
             indexOfAccountWIthHighestLastSelected: number,
             currentAccountToCompare: AccountType,
-            // TODO: Replace `any` with type
+
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             i: any,
           ) => {
             const currentLastSelected =
               currentAccountToCompare.metadata.lastSelected ?? 0;
-            const accountAtIndexLastSelected = mergedAccounts[
+            const accountAtIndexLastSelected = connectedAccounts[
               indexOfAccountWIthHighestLastSelected
             ].metadata.lastSelected
               ? i
@@ -214,6 +212,7 @@ export const Connections = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onClick={() => (history as any).goBack()}
             size={ButtonIconSize.Sm}
@@ -251,11 +250,11 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content padding={0}>
-        {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
+        {permittedAccounts.length > 0 && connectedAccounts.length > 0 ? (
           <Box>
-            {/* TODO: Replace `any` with type */}
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973 */}
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {mergedAccounts.map((account: AccountType, index: any) => {
+            {connectedAccounts.map((account: AccountType, index: any) => {
               const connectedSites: ConnectedSites = {};
               const connectedSite = connectedSites[account.address]?.find(
                 ({ origin }) => origin === activeTabOrigin,
@@ -271,7 +270,7 @@ export const Connections = () => {
                 <AccountListItem
                   account={mergedAccountsProps}
                   key={account.address}
-                  accountsCount={mergedAccounts.length}
+                  accountsCount={connectedAccounts.length}
                   selected={isSelectedAccount}
                   connectedAvatar={connectedSite?.iconUrl}
                   menuType={AccountListItemMenuTypes.Connection}
@@ -362,7 +361,7 @@ export const Connections = () => {
               />
             </ToastContainer>
           ) : null}
-          {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
+          {permittedAccounts.length > 0 && connectedAccounts.length > 0 ? (
             <Box
               display={Display.Flex}
               gap={2}
@@ -396,7 +395,7 @@ export const Connections = () => {
               size={ButtonPrimarySize.Lg}
               block
               data-test-id="no-connections-button"
-              onClick={() => dispatch(requestAccountsPermission())}
+              onClick={() => requestAccountsPermission()}
             >
               {t('connectAccounts')}
             </ButtonPrimary>

@@ -19,10 +19,11 @@ export function getAccountNameErrorMessage(
   defaultAccountName,
 ) {
   const isDuplicateAccountName = accounts.some(
-    (item) => item.metadata.name.toLowerCase() === newAccountName.toLowerCase(),
+    (item) =>
+      item.metadata?.name?.toLowerCase() === newAccountName?.toLowerCase(),
   );
 
-  const isEmptyAccountName = newAccountName === '';
+  const isEmptyAccountName = !newAccountName || newAccountName === '';
 
   const localizedWordForAccount = context
     .t('newAccountNumberName')
@@ -34,10 +35,10 @@ export function getAccountNameErrorMessage(
     `^\\s*${localizedWordForAccount} \\d+\\s*$`,
     'iu',
   );
-  const isReservedAccountName = reservedRegEx.test(newAccountName);
+  const isReservedAccountName = reservedRegEx.test(newAccountName || '');
 
   const isValidAccountName =
-    newAccountName.toLowerCase() === defaultAccountName.toLowerCase() || // What is written in the text
+    newAccountName?.toLowerCase() === defaultAccountName?.toLowerCase() || // What is written in the text
     // field is the same as the
     // placeholder
     (!isDuplicateAccountName && !isReservedAccountName && !isEmptyAccountName);
@@ -72,7 +73,14 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
-export function getAccountLabel(type, account) {
+export function getAccountLabel(
+  type,
+  account,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  snapName,
+  snapPreinstalled,
+  ///: END:ONLY_INCLUDE_IF
+) {
   if (!account) {
     return null;
   }
@@ -85,14 +93,19 @@ export function getAccountLabel(type, account) {
       return HardwareKeyringNames.qr;
     case KeyringType.trezor:
       return HardwareKeyringNames.trezor;
+    case KeyringType.oneKey:
+      return HardwareKeyringNames.oneKey;
     case KeyringType.ledger:
       return HardwareKeyringNames.ledger;
     case KeyringType.lattice:
       return HardwareKeyringNames.lattice;
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap:
-      if (account.metadata.snap?.name) {
-        return `${account.metadata.snap?.name} (${t('beta')})`;
+      if (snapPreinstalled) {
+        return null;
+      }
+      if (snapName) {
+        return `${snapName} (${t('beta')})`;
       }
       return `${t('snaps')} (${t('beta')})`;
     ///: END:ONLY_INCLUDE_IF

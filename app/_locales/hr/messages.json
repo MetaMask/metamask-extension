@@ -254,9 +254,6 @@
   "from": {
     "message": "Pošiljatelj"
   },
-  "functionType": {
-    "message": "Vrsta funkcije"
-  },
   "gasLimit": {
     "message": "Ograničenje goriva"
   },
@@ -315,9 +312,6 @@
   "import": {
     "message": "Uvezi",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Uvezi račun"
   },
   "importAccountMsg": {
     "message": "Uvezeni se računi ne pridružuju vašoj izvorno stvorenoj početnoj rečenici za MetaMask. Saznajte više o uvezenim računima"
@@ -381,9 +375,6 @@
   "loading": {
     "message": "Učitavanje..."
   },
-  "loadingTokens": {
-    "message": "Učitavanje tokena..."
-  },
   "lock": {
     "message": "Odjava"
   },
@@ -443,9 +434,6 @@
   "noConversionRateAvailable": {
     "message": "Nijedan konverzijski tečaj nije dostupan"
   },
-  "noTransactions": {
-    "message": "Nemate transkacija"
-  },
   "noWebcamFound": {
     "message": "Mrežna kamera vašeg računala nije pronađena. Pokušajte ponovno."
   },
@@ -469,9 +457,6 @@
   },
   "origin": {
     "message": "Podrijetlo"
-  },
-  "parameters": {
-    "message": "Parametri"
   },
   "participateInMetaMetrics": {
     "message": "Sudjelujte u anketi MetaMetrics"
@@ -541,9 +526,6 @@
   "removeAccountDescription": {
     "message": "Ovaj se račun uklanja iz vašeg novčanika. Provjerite imate li izvornu početnu rečenicu ili privatni ključ za ovaj uvezeni račun prije nastavka. Ponovno možete uvoziti ili stvarati račune uporabom padajućeg izbornika za račun."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "zahtjevi se trebaju odobriti"
-  },
   "required": {
     "message": "Zahtijeva se"
   },
@@ -610,9 +592,6 @@
   },
   "showHexDataDescription": {
     "message": "Odaberite ovu stavku za prikaz polja namijenjenog za podatke hex na zaslonu za slanje"
-  },
-  "sigRequest": {
-    "message": "Zahtjev za potpisom"
   },
   "sign": {
     "message": "Potpis"
@@ -707,9 +686,6 @@
   "transactionErrored": {
     "message": "Došlo je do greške prilikom transakcije."
   },
-  "transactionFee": {
-    "message": "Naknada za transakciju"
-  },
   "transactionResubmitted": {
     "message": "Transakcija je ponovno poslana s naknadom za gorivo povećanom do vrijednosti od $1 u $2."
   },
@@ -736,9 +712,6 @@
   },
   "unknown": {
     "message": "Nepoznato"
-  },
-  "unknownNetwork": {
-    "message": "Nepoznata privatna mreža"
   },
   "unknownQrCode": {
     "message": "Greška: ne možemo identificirati kôd QR"
@@ -769,9 +742,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebate dopustiti pristupanje kameri za korištenje ovom funkcijom."
-  },
-  "youSign": {
-    "message": "Vi potpisujete"
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna početna rečenica"

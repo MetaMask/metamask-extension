@@ -48,20 +48,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+
 import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-} from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IF(build-mmi)
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
-  getNotifySnaps,
+  getThirdPartyNotifySnaps,
   getUseExternalServices,
 } from '../../../selectors';
 import {
@@ -104,15 +96,18 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  ///: END:ONLY_INCLUDE_IF
+  /**
+   * This condition is used to control whether the client shows the "turn on notifications"
+   * modal. This allowed third party users with existing notifications to view their snap
+   * notifications without turning on wallet notifications
+   *
+   * It excludes users with preinstalled notify snaps (e.g. the institutional snap)
+   * which have the notify permission, so as to retain the existing workflow
+   */
 
-  let hasNotifySnaps = false;
+  let hasThirdPartyNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
-  hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
+  hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
 
   let supportText = t('support');
   let supportLink = SUPPORT_LINK;
@@ -146,7 +141,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const handleNotificationsClick = () => {
     const shouldShowEnableModal =
-      !hasNotifySnaps && !isMetamaskNotificationsEnabled;
+      !hasThirdPartyNotifySnaps && !isMetamaskNotificationsEnabled;
 
     if (shouldShowEnableModal) {
       trackEvent({
@@ -255,29 +250,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         {t('allPermissions')}
       </MenuItem>
 
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        mmiPortfolioEnabled && (
-          <MenuItem
-            iconName={IconName.Diagram}
-            onClick={() => {
-              trackEvent({
-                category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-              });
-              window.open(
-                `${mmiPortfolioUrl}?metametricsId=${metaMetricsId}`,
-                '_blank',
-              );
-              closeMenu();
-            }}
-            data-testid="global-menu-mmi-portfolio"
-          >
-            {t('portfolioDashboard')}
-          </MenuItem>
-        )
-        ///: END:ONLY_INCLUDE_IF
-      }
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           iconName={IconName.Expand}

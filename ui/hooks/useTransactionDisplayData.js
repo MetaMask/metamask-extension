@@ -6,9 +6,11 @@ import {
 } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
 import {
-  getDetectedTokensInCurrentNetwork,
+  getAllDetectedTokens,
+  getAllTokens,
   getKnownMethodData,
-  getTokenList,
+  getSelectedAddress,
+  selectERC20TokensByChain,
 } from '../selectors/selectors';
 import {
   getStatusKey,
@@ -31,7 +33,7 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
-import { getNfts, getTokens } from '../ducks/metamask/metamask';
+import { getNfts } from '../ducks/metamask/metamask';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -40,6 +42,7 @@ import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors'
 import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
 import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../ducks/locale/locale';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -108,10 +111,12 @@ export function useTransactionDisplayData(transactionGroup) {
   const dispatch = useDispatch();
   const locale = useSelector(getIntlLocale);
   const currentAsset = useCurrentAsset();
-  const knownTokens = useSelector(getTokens);
+  const knownTokens = useSelector(getAllTokens);
+  const selectedAddress = useSelector(getSelectedAddress);
   const knownNfts = useSelector(getNfts);
-  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const tokenList = useSelector(getTokenList);
+  const allDetectedTokens = useSelector(getAllDetectedTokens);
+  const tokenListAllChains = useSelector(selectERC20TokensByChain);
+
   const t = useI18nContext();
 
   // Bridge data
@@ -122,7 +127,7 @@ export function useTransactionDisplayData(transactionGroup) {
     bridgeHistoryItem,
     srcTxMeta: transactionGroup.initialTransaction,
   });
-  const destChainName = destNetwork?.name;
+  const destChainName = NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork?.chainId];
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
@@ -162,13 +167,18 @@ export function useTransactionDisplayData(transactionGroup) {
 
   if (isTokenCategory) {
     token =
-      knownTokens.find(({ address }) =>
+      knownTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
+        selectedAddress
+      ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
       ) ||
-      detectedTokens.find(({ address }) =>
+      allDetectedTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
+        selectedAddress
+      ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
       ) ||
-      tokenList[recipientAddress.toLowerCase()];
+      tokenListAllChains?.[transactionGroup?.initialTransaction?.chainId]
+        ?.data?.[recipientAddress.toLowerCase()];
   }
   useEffect(() => {
     return () => {
@@ -331,9 +341,13 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodSetApprovalForAll) {
+    const isRevoke = !tokenData?.args?.[1];
+
     category = TransactionGroupCategory.approval;
     prefix = '';
-    title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
+    title = isRevoke
+      ? t('revokePermissionTitle', [token?.symbol || nft?.name || t('token')])
+      : t('setApprovalForAllTitle', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodIncreaseAllowance) {
@@ -342,7 +356,11 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('approveIncreaseAllowance', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (type === TransactionType.contractInteraction) {
+  } else if (
+    type === TransactionType.contractInteraction ||
+    type === TransactionType.batch ||
+    type === TransactionType.revokeDelegation
+  ) {
     category = TransactionGroupCategory.interaction;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =
@@ -404,22 +422,34 @@ export function useTransactionDisplayData(transactionGroup) {
     );
   }
 
-  const primaryCurrencyPreferences = useUserPreferencedCurrency(PRIMARY);
+  const primaryCurrencyPreferences = useUserPreferencedCurrency(
+    PRIMARY,
+    {},
+    transactionGroup?.initialTransaction?.chainId,
+  );
   const secondaryCurrencyPreferences = useUserPreferencedCurrency(SECONDARY);
 
-  const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: primaryDisplayValue,
-    suffix: primarySuffix,
-    ...primaryCurrencyPreferences,
-  });
+  const [primaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: primaryDisplayValue,
+      suffix: primarySuffix,
+      ...primaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
-  const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: secondaryDisplayValue,
-    hideLabel: isTokenCategory || Boolean(swapTokenValue),
-    ...secondaryCurrencyPreferences,
-  });
+  const [secondaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: secondaryDisplayValue,
+      hideLabel: isTokenCategory || Boolean(swapTokenValue),
+      ...secondaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
   return {
     title,

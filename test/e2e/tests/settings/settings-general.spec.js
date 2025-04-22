@@ -1,9 +1,4 @@
-const {
-  defaultGanacheOptions,
-  openMenuSafe,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Settings', function () {
@@ -11,7 +6,6 @@ describe('Settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

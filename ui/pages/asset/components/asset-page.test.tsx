@@ -13,7 +13,10 @@ import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import {
+  mockNetworkState,
+  mockMultichainNetworkState,
+} from '../../../../test/stub/networks';
 import useMultiPolling from '../../../hooks/useMultiPolling';
 import AssetPage from './asset-page';
 
@@ -55,7 +58,11 @@ describe('AssetPage', () => {
     localeMessages: {
       currentLocale: 'en',
     },
+    appState: {
+      confirmationExchangeRates: {},
+    },
     metamask: {
+      ...mockMultichainNetworkState(),
       tokenList: {},
       tokenBalances: {
         [selectedAccountAddress]: {
@@ -115,12 +122,6 @@ describe('AssetPage', () => {
           accounts: [],
         },
       ],
-      mmiConfiguration: {
-        portfolio: {
-          enabled: true,
-        },
-        url: 'https://metamask-institutional.io',
-      },
     },
   };
 
@@ -316,18 +317,6 @@ describe('AssetPage', () => {
     );
     const bridgeButton = queryByTestId('token-overview-bridge');
     expect(bridgeButton).not.toBeInTheDocument();
-  });
-
-  it('should show the MMI Portfolio and Stake buttons', () => {
-    const { queryByTestId } = renderWithProvider(
-      <AssetPage asset={token} optionsButton={null} />,
-      store,
-    );
-    const mmiStakeButton = queryByTestId('token-overview-mmi-stake');
-    const mmiPortfolioButton = queryByTestId('token-overview-mmi-portfolio');
-
-    expect(mmiStakeButton).toBeInTheDocument();
-    expect(mmiPortfolioButton).toBeInTheDocument();
   });
 
   it('should render the network name', async () => {

@@ -31,6 +31,7 @@ export default function SmartTransactionListItem({
   smartTransaction,
   transactionGroup,
   isEarliestNonce = false,
+  chainId,
 }) {
   const dispatch = useDispatch();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
@@ -127,6 +128,7 @@ export default function SmartTransactionListItem({
               statusOnly
             />
           )}
+          chainId={chainId}
         />
       )}
     </>
@@ -137,4 +139,5 @@ SmartTransactionListItem.propTypes = {
   smartTransaction: PropTypes.object.isRequired,
   isEarliestNonce: PropTypes.bool,
   transactionGroup: PropTypes.object,
+  chainId: PropTypes.string,
 };

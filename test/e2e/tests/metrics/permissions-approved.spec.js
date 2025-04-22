@@ -1,13 +1,14 @@
 const { strict: assert } = require('assert');
 const {
-  defaultGanacheOptions,
   withFixtures,
   connectToDapp,
   unlockWallet,
   getEventPayloads,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-
+const {
+  MetaMetricsRequestedThrough,
+} = require('../../../../shared/constants/metametrics');
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
  * see when these tests are run. In this case we are looking for
@@ -44,7 +45,7 @@ async function mockSegment(mockServer) {
 }
 
 describe('Permissions Approved Event', function () {
-  it('Successfully tracked when connecting to dapp @no-mmi', async function () {
+  it('Successfully tracked when connecting to dapp', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -54,7 +55,6 @@ describe('Permissions Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -69,6 +69,7 @@ describe('Permissions Approved Event', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
         });
         assert.deepStrictEqual(events[1].properties, {
           method: 'eth_requestAccounts',
@@ -76,6 +77,7 @@ describe('Permissions Approved Event', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
     );

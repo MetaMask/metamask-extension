@@ -21,13 +21,6 @@ import {
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
-import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
-import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
-import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
-import CustodyPage from '../institutional/custody';
-///: END:ONLY_INCLUDE_IF
 
 import {
   ASSET_ROUTE,
@@ -49,19 +42,15 @@ import {
   CONNECTIONS,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  INSTITUTIONAL_FEATURES_DONE_ROUTE,
-  CUSTODY_ACCOUNT_DONE_ROUTE,
-  CONFIRM_ADD_CUSTODIAN_TOKEN,
-  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
-  CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  REMOTE_ROUTE,
+  REMOTE_ROUTE_SETUP_SWAPS,
+  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -147,6 +136,14 @@ const ReviewPermissions = mmLazy(() =>
   ),
 );
 const Home = mmLazy(() => import('../home'));
+
+const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview'));
+const RemoteModeSetupSwaps = mmLazy(() =>
+  import('../remote-mode/setup/setup-swaps'),
+);
+const RemoteModeSetupDailyAllowance = mmLazy(() =>
+  import('../remote-mode/setup/setup-daily-allowance'),
+);
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -177,7 +174,7 @@ export default class Routes extends Component {
     isAccountMenuOpen: PropTypes.bool,
     toggleAccountMenu: PropTypes.func,
     isNetworkMenuOpen: PropTypes.bool,
-    toggleNetworkMenu: PropTypes.func,
+    networkMenuClose: PropTypes.func,
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
@@ -189,15 +186,21 @@ export default class Routes extends Component {
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
+    switchedNetworkDetails: PropTypes.oneOf([
+      null,
+      PropTypes.shape({
+        origin: PropTypes.string.isRequired,
+        networkClientId: PropTypes.string.isRequired,
+      }),
+    ]),
+    switchedNetworkNeverShowMessage: PropTypes.bool,
     networkToAutomaticallySwitchTo: PropTypes.object,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
     totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
-    useRequestQueue: PropTypes.bool,
-    clearEditedNetwork: PropTypes.func.isRequired,
-    oldestPendingApproval: PropTypes.object.isRequired,
+    oldestPendingApproval: PropTypes.object,
     pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
-    transactionsMetadata: PropTypes.arrayOf(PropTypes.object).isRequired,
+    transactionsMetadata: PropTypes.object.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -217,7 +220,6 @@ export default class Routes extends Component {
       activeTabOrigin,
       totalUnapprovedConfirmationCount,
       isUnlocked,
-      useRequestQueue,
       currentExtensionPopupId,
     } = this.props;
     if (theme !== prevProps.theme) {
@@ -243,7 +245,6 @@ export default class Routes extends Component {
     // Terminate the popup when another popup is opened
     // if the user is using RPC queueing
     if (
-      useRequestQueue &&
       currentExtensionPopupId !== undefined &&
       global.metamask.id !== undefined &&
       currentExtensionPopupId !== global.metamask.id
@@ -297,9 +298,10 @@ export default class Routes extends Component {
             exact
           />
           <Authenticated
-            path={REVEAL_SEED_ROUTE}
+            // `:keyringId` is optional here, if not provided, this will fallback
+            // to the main seed phrase.
+            path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
             component={RevealSeedConfirmation}
-            exact
           />
           <Authenticated path={SETTINGS_ROUTE} component={Settings} />
           <Authenticated
@@ -342,41 +344,6 @@ export default class Routes extends Component {
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
             component={ConfirmationPage}
           />
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          }
-          <Authenticated
-            path={CUSTODY_ACCOUNT_DONE_ROUTE}
-            component={InstitutionalEntityDonePage}
-            exact
-          />
-          <Authenticated
-            path={INSTITUTIONAL_FEATURES_DONE_ROUTE}
-            component={InstitutionalEntityDonePage}
-            exact
-          />
-          <Authenticated
-            path={CONFIRM_ADD_CUSTODIAN_TOKEN}
-            component={ConfirmAddCustodianToken}
-            exact
-          />
-          <Authenticated
-            path={INTERACTIVE_REPLACEMENT_TOKEN_PAGE}
-            component={InteractiveReplacementTokenPage}
-            exact
-          />
-          <Authenticated
-            path={CONFIRM_ADD_CUSTODIAN_TOKEN}
-            component={ConfirmAddCustodianToken}
-          />
-          <Authenticated
-            path={CUSTODY_ACCOUNT_ROUTE}
-            component={CustodyPage}
-            exact
-          />
-          {
-            ///: END:ONLY_INCLUDE_IF
-          }
           <Authenticated
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
@@ -408,6 +375,22 @@ export default class Routes extends Component {
             component={ReviewPermissions}
             exact
           />
+          <Authenticated
+            path={REMOTE_ROUTE}
+            component={RemoteModeOverview}
+            exact
+          />
+          <Authenticated
+            path={REMOTE_ROUTE_SETUP_SWAPS}
+            component={RemoteModeSetupSwaps}
+            exact
+          />
+          <Authenticated
+            path={REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE}
+            component={RemoteModeSetupDailyAllowance}
+            exact
+          />
+
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
@@ -439,7 +422,6 @@ export default class Routes extends Component {
       isAccountMenuOpen,
       toggleAccountMenu,
       isNetworkMenuOpen,
-      toggleNetworkMenu,
       accountDetailsAddress,
       isImportTokensModalOpen,
       isDeprecatedNetworkModalOpen,
@@ -452,11 +434,13 @@ export default class Routes extends Component {
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
       clearSwitchedNetworkDetails,
-      clearEditedNetwork,
+      networkMenuClose,
       privacyMode,
       oldestPendingApproval,
       pendingApprovals,
       transactionsMetadata,
+      switchedNetworkDetails,
+      switchedNetworkNeverShowMessage,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -521,8 +505,8 @@ export default class Routes extends Component {
         })}
         dir={textDirection}
         onMouseUp={
-          getShowAutoNetworkSwitchTest(this.props)
-            ? () => clearSwitchedNetworkDetails()
+          switchedNetworkDetails && !switchedNetworkNeverShowMessage
+            ? clearSwitchedNetworkDetails
             : undefined
         }
       >
@@ -533,51 +517,37 @@ export default class Routes extends Component {
         {!hideAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
         {showOnboardingHeader(location) && <OnboardingAppHeader />}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          isUnlocked ? <InteractiveReplacementTokenNotification /> : null
-          ///: END:ONLY_INCLUDE_IF
-        }
         {isAccountMenuOpen ? (
           <AccountListMenu
-            onClose={() => toggleAccountMenu()}
+            onClose={toggleAccountMenu}
             privacyMode={privacyMode}
           />
         ) : null}
         {isNetworkMenuOpen ? (
-          <NetworkListMenu
-            onClose={() => {
-              toggleNetworkMenu();
-              clearEditedNetwork();
-            }}
-          />
+          <NetworkListMenu onClose={networkMenuClose} />
         ) : null}
         <NetworkConfirmationPopover />
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}
         {isImportNftsModalOpen ? (
-          <ImportNftsModal onClose={() => hideImportNftsModal()} />
+          <ImportNftsModal onClose={hideImportNftsModal} />
         ) : null}
 
-        {isIpfsModalOpen ? (
-          <ToggleIpfsModal onClose={() => hideIpfsModal()} />
-        ) : null}
+        {isIpfsModalOpen ? <ToggleIpfsModal onClose={hideIpfsModal} /> : null}
         {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
         {isImportTokensModalOpen ? (
-          <ImportTokensModal onClose={() => hideImportTokensModal()} />
+          <ImportTokensModal onClose={hideImportTokensModal} />
         ) : null}
         {isDeprecatedNetworkModalOpen ? (
-          <DeprecatedNetworkModal
-            onClose={() => hideDeprecatedNetworkModal()}
-          />
+          <DeprecatedNetworkModal onClose={hideDeprecatedNetworkModal} />
         ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           isShowKeyringSnapRemovalResultModal && (
             <KeyringSnapRemovalResult
               isOpen={isShowKeyringSnapRemovalResultModal}
-              onClose={() => hideShowKeyringSnapRemovalResultModal()}
+              onClose={hideShowKeyringSnapRemovalResultModal}
             />
           )
           ///: END:ONLY_INCLUDE_IF
@@ -594,9 +564,4 @@ export default class Routes extends Component {
       </div>
     );
   }
-}
-
-// Will eventually delete this function
-function getShowAutoNetworkSwitchTest(props) {
-  return props.switchedNetworkDetails && !props.switchedNetworkNeverShowMessage;
 }

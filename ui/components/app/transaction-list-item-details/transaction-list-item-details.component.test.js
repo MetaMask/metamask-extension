@@ -1,8 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { act, waitFor } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { act, waitFor } from '@testing-library/react';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
@@ -17,14 +17,6 @@ jest.mock('../../../store/actions.ts', () => ({
   getNetworkConfigurationByNetworkClientId: jest
     .fn()
     .mockResolvedValue({ chainId: '0x5' }),
-}));
-
-let mockGetCustodianTransactionDeepLink = jest.fn();
-
-jest.mock('../../../store/institutional/institution-background', () => ({
-  mmiActionsFactory: () => ({
-    getCustodianTransactionDeepLink: () => mockGetCustodianTransactionDeepLink,
-  }),
 }));
 
 const transaction = {
@@ -42,7 +34,6 @@ const transaction = {
   metadata: {
     note: 'some note',
   },
-  custodyId: '1',
 };
 
 const transactionGroup = {
@@ -67,7 +58,7 @@ const render = async (overrideProps) => {
   const props = {
     onClose: jest.fn(),
     title: 'Test Transaction Details',
-    recipientAddress: '0xAddress',
+    recipientAddress: '0x0000000000000000000000000000000000000000',
     senderAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     tryReverseResolveAddress: jest.fn(),
     transactionGroup,
@@ -122,50 +113,6 @@ describe('TransactionListItemDetails Component', () => {
       const { queryByTestId } = await render({ showSpeedUp: true });
 
       expect(queryByTestId('speedup-button')).toBeInTheDocument();
-    });
-  });
-
-  describe('Institutional', () => {
-    it('should render correctly if custodyTransactionDeepLink has a url', async () => {
-      mockGetCustodianTransactionDeepLink = jest
-        .fn()
-        .mockReturnValue({ url: 'https://url.com' });
-
-      await render({ showCancel: true });
-
-      await waitFor(() => {
-        const custodianViewButton = document.querySelector(
-          '[data-original-title="View in custodian app"]',
-        );
-
-        // Assert that the custodian view button is rendered
-        expect(custodianViewButton).toBeInTheDocument();
-      });
-    });
-
-    it('should render correctly if transactionNote is provided', async () => {
-      const newTransaction = {
-        ...transaction,
-        metadata: {
-          note: 'some note',
-        },
-        custodyId: '1',
-      };
-
-      const newTransactionGroup = {
-        ...transactionGroup,
-        transactions: [newTransaction],
-        primaryTransaction: newTransaction,
-        initialTransaction: newTransaction,
-      };
-
-      const { queryByText } = await render({
-        transactionGroup: newTransactionGroup,
-      });
-
-      await waitFor(() => {
-        expect(queryByText('some note')).toBeInTheDocument();
-      });
     });
   });
 });

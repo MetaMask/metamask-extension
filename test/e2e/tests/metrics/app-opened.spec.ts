@@ -1,13 +1,9 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import {
-  withFixtures,
-  getEventPayloads,
-  unlockWallet,
-  connectToDapp,
-} from '../../helpers';
+import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 /**
  * Mocks the segment API for the App Opened event that we expect to see when
@@ -31,7 +27,7 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-describe('App Opened metric @no-mmi', function () {
+describe('App Opened metric', function () {
   it('should send AppOpened metric when app is opened and metrics are enabled', async function () {
     await withFixtures(
       {
@@ -45,7 +41,7 @@ describe('App Opened metric @no-mmi', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
@@ -67,7 +63,7 @@ describe('App Opened metric @no-mmi', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
@@ -80,6 +76,7 @@ describe('App Opened metric @no-mmi', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-fd20',
             participateInMetaMetrics: true,
@@ -89,10 +86,12 @@ describe('App Opened metric @no-mmi', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
-        // Connect to dapp which will trigger MetaMask to open
-        await connectToDapp(driver);
+        // Go to dapp which will trigger MetaMask to open
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         // Wait for events to be tracked
         const events = await getEventPayloads(driver, mockedEndpoints);

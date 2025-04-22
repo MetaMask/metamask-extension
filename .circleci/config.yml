@@ -3,13 +3,13 @@ version: 2.1
 executors:
   node-browsers-small:
     docker:
-      - image: cimg/node:20.18-browsers
+      - image: cimg/node:22.14-browsers
     resource_class: small
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-medium:
     docker:
-      - image: cimg/node:20.18-browsers
+      - image: cimg/node:22.14-browsers
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
@@ -21,14 +21,10 @@ executors:
       NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:20.18-browsers
+      - image: cimg/node:22.14-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
-  shellcheck:
-    docker:
-      - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
-    resource_class: small
   playwright:
     docker:
       - image: mcr.microsoft.com/playwright:v1.44.1-focal
@@ -87,18 +83,6 @@ aliases:
         cat ${HOME}/project/.circleci/scripts/enable-vnc.sh >> ~/.bashrc
       fi
 
-  # Check if MMI tests should run
-  - &check-mmi-trigger
-    name: Check if MMI tests should run
-    command: |
-      source mmi_trigger.env
-      if [ "${run_mmi_tests}" == "true" ]; then
-        echo "Running MMI tests"
-      else
-        echo "Skipping MMI tests"
-        circleci step halt
-      fi
-
 workflows:
   test_and_release:
     when:
@@ -111,44 +95,12 @@ workflows:
               pattern: /^rerun-from-failed.*/
               value: << pipeline.schedule.name >>
     jobs:
-      - create_release_pull_request:
-          <<: *rc_branch_only
-          requires:
-            - prep-deps
-      - trigger-beta-build:
-          requires:
-            - prep-deps
-      - check-mmi-trigger
       - prep-deps
       - get-changed-files-with-git-diff:
           filters:
             branches:
               ignore:
                 - master
-          requires:
-            - prep-deps
-      - test-deps-audit:
-          requires:
-            - prep-deps
-      - test-deps-depcheck:
-          requires:
-            - prep-deps
-      - test-yarn-dedupe:
-          requires:
-            - prep-deps
-      - validate-lavamoat-allow-scripts:
-          requires:
-            - prep-deps
-      - validate-lavamoat-policy-build:
-          requires:
-            - prep-deps
-      - validate-lavamoat-policy-webapp:
-          matrix:
-            parameters:
-              build-type: [main, beta, flask, mmi]
-          requires:
-            - prep-deps
-      - prep-build-mmi:
           requires:
             - prep-deps
       - prep-build:
@@ -176,31 +128,9 @@ workflows:
           requires:
             - prep-deps
       - prep-build-test-flask-mv2:
-          <<: *main_master_rc_only
-          requires:
-            - prep-deps
-      - prep-build-test-mmi:
-          requires:
-            - prep-deps
-            - check-mmi-trigger
-      - prep-build-test-mmi-playwright:
-          requires:
-            - prep-deps
-            - check-mmi-trigger
-      - prep-build-storybook:
           requires:
             - prep-deps
       - prep-build-ts-migration-dashboard:
-          requires:
-            - prep-deps
-      - test-lint:
-          requires:
-            - prep-deps
-      - test-lint-shellcheck
-      - test-lint-lockfile:
-          requires:
-            - prep-deps
-      - test-lint-changelog:
           requires:
             - prep-deps
       - test-e2e-chrome-webpack:
@@ -225,6 +155,10 @@ workflows:
           requires:
             - prep-build-test
             - get-changed-files-with-git-diff
+      - test-api-specs-multichain:
+          requires:
+            - prep-build-test-flask
+            - get-changed-files-with-git-diff
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
@@ -237,20 +171,9 @@ workflows:
           <<: *main_master_rc_only
           requires:
             - prep-build-test-flask-mv2
-      - test-e2e-chrome-mmi:
-          requires:
-            - prep-build-test-mmi
-            - get-changed-files-with-git-diff
-      - test-e2e-mmi-playwright:
-          requires:
-            - prep-build-test-mmi-playwright
       - test-e2e-swap-playwright - OPTIONAL:
           requires:
             - prep-build
-      - test-e2e-chrome-rpc-mmi:
-          requires:
-            - prep-build-test-mmi
-            - get-changed-files-with-git-diff
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -259,22 +182,12 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-      - test-storybook:
-          requires:
-            - prep-deps
-            - prep-build-storybook
       - validate-source-maps:
           requires:
             - prep-build
       - validate-source-maps-mv2:
           requires:
             - prep-build-mv2
-      - validate-source-maps-beta:
-          requires:
-            - trigger-beta-build
-      - validate-source-maps-mmi:
-          requires:
-            - prep-build-mmi
       - validate-source-maps-flask:
           requires:
             - prep-build-flask
@@ -291,18 +204,8 @@ workflows:
             - prep-build-flask-mv2
       - all-tests-pass:
           requires:
-            - test-deps-depcheck
-            - validate-lavamoat-allow-scripts
-            - validate-lavamoat-policy-build
-            - validate-lavamoat-policy-webapp
-            - test-lint
-            - test-lint-shellcheck
-            - test-lint-lockfile
-            - test-lint-changelog
             - validate-source-maps
-            - validate-source-maps-beta
             - validate-source-maps-flask
-            - validate-source-maps-mmi
             - test-mozilla-lint-mv2
             - test-mozilla-lint-flask-mv2
             - test-e2e-chrome
@@ -310,34 +213,20 @@ workflows:
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
-            - test-e2e-chrome-mmi
-            - test-e2e-chrome-rpc-mmi
             - test-e2e-chrome-vault-decryption
             - test-e2e-chrome-webpack
-            - test-storybook
-      - benchmark:
-          requires:
-            - prep-build-test
-      - user-actions-benchmark:
-          requires:
-            - prep-build-test
-      - stats-module-load-init:
-          requires:
-            - prep-build-test
       - job-publish-prerelease:
           requires:
             - prep-deps
             - prep-build
             - prep-build-mv2
-            - trigger-beta-build
-            - prep-build-mmi
             - prep-build-flask
             - prep-build-flask-mv2
-            - prep-build-storybook
+            - prep-build-test
+            - prep-build-test-mv2
+            - prep-build-test-flask
+            - prep-build-test-flask-mv2
             - prep-build-ts-migration-dashboard
-            - benchmark
-            - user-actions-benchmark
-            - stats-module-load-init
             - all-tests-pass
       - job-publish-release:
           filters:
@@ -347,16 +236,9 @@ workflows:
             - prep-deps
             - prep-build
             - prep-build-mv2
-            - prep-build-mmi
             - prep-build-flask
             - prep-build-flask-mv2
             - all-tests-pass
-      - job-publish-storybook:
-          filters:
-            branches:
-              only: main
-          requires:
-            - prep-build-storybook
       - job-publish-ts-migration-dashboard:
           filters:
             branches:
@@ -378,76 +260,7 @@ workflows:
           requires:
             - prep-deps
 
-  locales_only:
-    when:
-      matches:
-        pattern: /^l10n_crowdin_action$/
-        value: << pipeline.git.branch >>
-    jobs:
-      - prep-deps
-      - get-changed-files-with-git-diff
-      - validate-locales-only:
-          requires:
-            - prep-deps
-            - get-changed-files-with-git-diff
-      - test-lint:
-          requires:
-            - prep-deps
-      - all-tests-pass:
-          requires:
-            - test-lint
-            - validate-locales-only
-
 jobs:
-  trigger-beta-build:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: Build beta prod
-                command: .circleci/scripts/trigger-beta-build.sh
-            - run:
-                name: Move beta build to 'dist-beta' to avoid conflict with production build
-                command: mv ./dist ./dist-beta
-            - run:
-                name: Move beta zips to 'builds-beta' to avoid conflict with production build
-                command: mv ./builds ./builds-beta
-            - persist_to_workspace:
-                root: .
-                paths:
-                  - dist-beta
-                  - builds-beta
-
-  create_release_pull_request:
-    executor: node-browsers-medium
-    steps:
-      - checkout
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Bump manifest version
-          command: .circleci/scripts/release-bump-manifest-version.sh
-      - run:
-          name: Update changelog
-          command: yarn update-changelog --rc
-      - run:
-          name: Commit changes
-          command: .circleci/scripts/release-commit-version-bump.sh
-      - run:
-          name: Create GitHub Pull Request for version
-          command: .circleci/scripts/release-create-release-pr.sh
-
   prep-deps:
     executor: node-browsers-medium
     steps:
@@ -456,12 +269,15 @@ jobs:
       - run:
           name: Save Yarn version
           command: yarn --version > /tmp/YARN_VERSION
+      - run:
+          name: Save Foundry version
+          command: node -e "process.stdout.write(require('./package.json').foundryup.version)" > /tmp/FOUNDRY_VERSION
       - restore_cache:
           keys:
             # First try to get the specific cache for the checksum of the yarn.lock file.
             # This cache key lookup will fail if the lock file is modified and a cache
             # has not yet been persisted for the new checksum.
-            - dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
+            - dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}-{{ checksum "/tmp/FOUNDRY_VERSION" }}
             # To prevent having to do a full install of every node_module when
             # dependencies change, restore from the last known cache of any
             # branch/checksum with the same Yarn version, the install step will remove
@@ -473,12 +289,14 @@ jobs:
           name: Install dependencies
           command: yarn --immutable
       - save_cache:
-          key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
+          key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}-{{ checksum "/tmp/FOUNDRY_VERSION" }}
           paths:
             - .yarn/cache
+            - .metamask/cache # should match yarn's relative location
       - persist_to_workspace:
           root: .
           paths:
+            - .metamask/cache # ensures anvil is installed
             - node_modules
             - build-artifacts
 
@@ -494,65 +312,14 @@ jobs:
           at: .
       - run:
           name: Get changed files with git diff
-          command: yarn git-diff-default-branch
+          command: yarn tsx .circleci/scripts/git-diff-default-branch.ts
       - persist_to_workspace:
           root: .
           paths:
             - changed-files
-
-  validate-locales-only:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run: yarn tsx .circleci/scripts/validate-locales-only.ts
-
-  validate-lavamoat-allow-scripts:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate allow-scripts config
-          command: yarn allow-scripts auto
-      - run:
-          name: Check working tree
-          command: .circleci/scripts/check-working-tree.sh
-
-  validate-lavamoat-policy-build:
-    executor: node-browsers-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate LavaMoat build policy
-          command: yarn lavamoat:build:auto
-      - run:
-          name: Check working tree
-          command: .circleci/scripts/check-working-tree.sh
-
-  validate-lavamoat-policy-webapp:
-    executor: node-browsers-medium-plus
-    parameters:
-      build-type:
-        type: string
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate LavaMoat << parameters.build-type >>  policy
-          command: yarn lavamoat:webapp:auto:ci '--build-types=<< parameters.build-type >>'
-      - run:
-          name: Check working tree
-          command: .circleci/scripts/check-working-tree.sh
+      - store_artifacts:
+          path: changed-files
+          destination: changed-files
 
   prep-build:
     executor: node-linux-medium
@@ -633,50 +400,6 @@ jobs:
           paths:
             - dist-mv2
             - builds-mv2
-
-  prep-build-mmi:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:dist
-                command: yarn build --build-type mmi dist
-      - when:
-          condition:
-            matches:
-              pattern: /^master$/
-              value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:prod
-                command: yarn build --build-type mmi prod
-      - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - run:
-          name: Move mmi build to 'dist-mmi' to avoid conflict with production build
-          command: mv ./dist ./dist-mmi
-      - run:
-          name: Move mmi zips to 'builds-mmi' to avoid conflict with production build
-          command: mv ./builds ./builds-mmi
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-mmi
-            - builds-mmi
-      - store_artifacts:
-          path: builds-mmi
-          destination: builds-mmi
 
   prep-build-flask:
     executor: node-linux-medium
@@ -793,67 +516,16 @@ jobs:
           name: Build extension for testing
           command: yarn build:test:flask:mv2
       - run:
-          name: Move test build to 'dist-test-flask' to avoid conflict with production build
+          name: Move test build to 'dist-test-flask-mv2' to avoid conflict with production build
           command: mv ./dist ./dist-test-flask-mv2
       - run:
-          name: Move test zips to 'builds-test-flask' to avoid conflict with production build
+          name: Move test zips to 'builds-test-flask-mv2' to avoid conflict with production build
           command: mv ./builds ./builds-test-flask-mv2
       - persist_to_workspace:
           root: .
           paths:
             - dist-test-flask-mv2
             - builds-test-flask-mv2
-
-  prep-build-test-mmi:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run: *check-mmi-trigger
-      - run:
-          name: Build extension for testing
-          command: yarn build:test:mmi
-      - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test-mmi
-      - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
-          command: mv ./builds ./builds-test-mmi
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-mmi
-            - builds-test-mmi
-
-  prep-build-test-mmi-playwright:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run: *check-mmi-trigger
-      - run:
-          name: Build MMI extension for Playwright e2e
-          command: |
-            export MMI_CONFIGURATION_SERVICE_URL=$MMI_DEV_CONFIGURATION_SERVICE_URL
-            yarn dist:mmi
-      - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test-mmi-playwright
-      - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
-          command: mv ./builds ./builds-test-mmi-playwright
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-mmi-playwright
-            - builds-test-mmi-playwright
-      - store_artifacts:
-          path: builds-test-mmi-playwright
-          destination: builds-test-mmi-playwright
 
   prep-build-test:
     executor: node-linux-medium
@@ -923,21 +595,6 @@ jobs:
           paths:
             - dist-test-webpack
 
-  prep-build-storybook:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build Storybook
-          command: yarn storybook:build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - storybook-build
-
   prep-build-ts-migration-dashboard:
     executor: node-browsers-small
     steps:
@@ -964,117 +621,6 @@ jobs:
           name: Rerun workflows from failed
           command: yarn ci-rerun-from-failed
 
-  test-yarn-dedupe:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Detect yarn lock deduplications
-          command: yarn dedupe --check
-
-  test-lint:
-    executor: node-browsers-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Lint
-          command: yarn lint
-      - run:
-          name: Verify locales
-          command: yarn verify-locales --quiet
-
-  test-storybook:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install Playwright browsers
-          command: yarn exec playwright install chromium
-      - run:
-          name: Test Storybook
-          command: yarn test-storybook:ci
-
-  test-lint-shellcheck:
-    executor: shellcheck
-    steps:
-      - checkout
-      - run: apk add --no-cache bash jq yarn
-      - run:
-          name: ShellCheck Lint
-          command: ./development/shellcheck.sh
-
-  test-lint-lockfile:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: lockfile-lint
-          command: yarn lint:lockfile
-      - run:
-          name: check yarn resolutions
-          command: yarn --check-resolutions
-
-  test-lint-changelog:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^Version-v(\d+)[.](\d+)[.](\d+)$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: Validate changelog
-                command: yarn lint:changelog
-      - when:
-          condition:
-            matches:
-              pattern: /^Version-v(\d+)[.](\d+)[.](\d+)$/
-              value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: Validate release candidate changelog
-                command: .circleci/scripts/validate-changelog-in-rc.sh
-
-  test-deps-audit:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: yarn audit
-          command: yarn audit
-
-  test-deps-depcheck:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: depcheck
-          command: yarn depcheck
-
   test-e2e-chrome-webpack:
     executor: node-browsers-medium-plus
     parallelism: 20
@@ -1095,6 +641,37 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+
+  test-api-specs-multichain:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone-and-enable-vnc
+      - run: sudo corepack enable
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-flask ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-flask ./builds
+      - gh/install
+      - run:
+          name: test:api-specs-multichain
+          command: .circleci/scripts/test-run-e2e.sh yarn test:api-specs-multichain
+          no_output_timeout: 5m
+      - run:
+          name: Comment on PR
+          command: |
+            if [  -f html-report-multichain/index.html ]; then
+              gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: Multichain API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report-multichain/index.html)."
+            else
+              echo "Multichain API Spec Report not found!"
+            fi
+          when: on_fail
+      - store_artifacts:
+          path: html-report-multichain
+          destination: html-report-multichain
 
   test-api-specs:
     executor: node-browsers-medium-plus
@@ -1199,30 +776,6 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-chrome-rpc-mmi:
-    executor: node-browsers-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run: *check-mmi-trigger
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-mmi ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-mmi ./builds
-      - run:
-          name: test:e2e:chrome:rpc
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:rpc --build-type=mmi
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
   test-e2e-chrome-vault-decryption:
     executor: node-browsers-medium-plus
     steps:
@@ -1288,72 +841,6 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-chrome-mmi:
-    executor: node-browsers-medium-plus
-    parallelism: 12
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run: *check-mmi-trigger
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-mmi ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-mmi ./builds
-      - run:
-          name: test:e2e:chrome:mmi
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:mmi --build-type=mmi
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-mmi-playwright:
-    executor: playwright
-    parallelism: 2
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run: *check-mmi-trigger
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-mmi-playwright ./dist
-      - run:
-          name: Install chromium
-          command: yarn playwright install chromium
-      - run:
-          name: test:e2e:chrome:mmi
-          command: |
-            TESTFILES=$(circleci tests glob "test/e2e/playwright/mmi/**/*.spec.ts")
-            echo "$TESTFILES"
-            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=mmi" verbose --split-by=timings
-          no_output_timeout: 10m
-      - slack/notify:
-          branch_pattern: Version-v*
-          event: fail
-          mentions: <@antonio.regadas>, @ramon.acitores134
-          template: basic_fail_1
-          channel: C01LUJL3T98
-      - slack/notify:
-          branch_pattern: main
-          event: fail
-          mentions: <@antonio.regadas>, @ramon.acitores134
-          template: basic_fail_1
-          channel: C05QXJA7NP8
-      - store_artifacts:
-          name: html-report and artifacts
-          path: public/playwright/playwright-reports
-      - store_test_results:
-          name: report for pipeline integration
-          path: public/playwright/playwright-reports/junit/test-results.xml
-
   test-e2e-swap-playwright - OPTIONAL:
     executor: playwright
     parallelism: 2
@@ -1370,7 +857,8 @@ jobs:
           command: |
             TESTFILES=$(circleci tests glob "test/e2e/playwright/swap/**/*.spec.ts")
             echo "$TESTFILES"
-            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=swap" verbose
+            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=swap" verbose || true
+            # above line makes it never fail, and these tests are going away soon
           no_output_timeout: 10m
       - slack/notify:
           event: fail
@@ -1408,92 +896,6 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  benchmark:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: Run page load benchmark
-          command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - persist_to_workspace:
-          root: .
-          paths:
-            - test-artifacts
-
-  user-actions-benchmark:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: Run page load benchmark
-          command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - persist_to_workspace:
-          root: .
-          paths:
-            - test-artifacts
-
-  stats-module-load-init:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: Run page load benchmark
-          command: |
-            mkdir -p test-artifacts/chrome/
-            cp -R development/charts/flamegraph test-artifacts/chrome/initialisation
-            cp -R development/charts/flamegraph/chart test-artifacts/chrome/initialisation/background
-            cp -R development/charts/flamegraph/chart test-artifacts/chrome/initialisation/ui
-            cp -R development/charts/table test-artifacts/chrome/load_time
-      - run:
-          name: Run page load benchmark
-          command: yarn mv3:stats:chrome --out test-artifacts/chrome
-      - run:
-          name: Install jq
-          command: sudo apt install jq -y
-      - run:
-          name: Record bundle size at commit
-          command: ./.circleci/scripts/bundle-stats-commit.sh
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - persist_to_workspace:
-          root: .
-          paths:
-            - test-artifacts
-
   job-publish-prerelease:
     executor: node-browsers-medium
     steps:
@@ -1508,17 +910,11 @@ jobs:
           path: dist/sourcemaps
           destination: builds/sourcemaps
       - store_artifacts:
-          path: dist-beta/sourcemaps
-          destination: builds-beta/sourcemaps
-      - store_artifacts:
           path: dist-flask/sourcemaps
           destination: builds-flask/sourcemaps
       - store_artifacts:
           path: builds
           destination: builds
-      - store_artifacts:
-          path: builds-beta
-          destination: builds-beta
       - store_artifacts:
           path: builds-flask
           destination: builds-flask
@@ -1526,15 +922,16 @@ jobs:
           path: builds-flask-mv2
           destination: builds-flask-mv2
       - store_artifacts:
-          path: builds-mmi
-          destination: builds-mmi
-      - store_artifacts:
           path: builds-mv2
           destination: builds-mv2
       - store_artifacts:
           path: builds-test
       - store_artifacts:
+          path: builds-test-mv2
+      - store_artifacts:
           path: builds-test-flask
+      - store_artifacts:
+          path: builds-test-flask-mv2
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1546,23 +943,15 @@ jobs:
           path: build-artifacts
           destination: build-artifacts
       - store_artifacts:
-          path: storybook-build
-          destination: storybook
-      - store_artifacts:
           path: development/ts-migration-dashboard/build/final
           destination: ts-migration-dashboard
-      - run:
-          name: Set branch parent commit env var
-          command: |
-            echo "export PARENT_COMMIT=$(git merge-base origin/HEAD HEAD)" >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: build:announce
-          command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
     executor: node-browsers-small
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - 'SHA256:It7UdNvvXY8g5aN32yfbPKFxZSV9ny7K8ifDdlP53rQ'
       - run: *shallow-git-clone-and-enable-vnc
       - run: sudo corepack enable
       - attach_workspace:
@@ -1580,27 +969,11 @@ jobs:
           name: Publish Flask MV2 release to Sentry
           command: yarn sentry:publish --build-type flask --dist mv2
       - run:
-          name: Publish MMI release to Sentry
-          command: yarn sentry:publish --build-type mmi
-      - run:
           name: Create GitHub release
           command: .circleci/scripts/release-create-gh-release.sh
-
-  job-publish-storybook:
-    executor: node-browsers-small
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
       - run:
-          name: storybook:deploy
-          command: |
-            git remote add storybook git@github.com:MetaMask/metamask-storybook.git
-            yarn storybook:deploy
+          name: Push Firefox bundle script
+          command: .circleci/scripts/push-firefox-bundle-script.sh
 
   job-publish-ts-migration-dashboard:
     executor: node-browsers-small
@@ -1627,34 +1000,6 @@ jobs:
       - run: sudo corepack enable
       - attach_workspace:
           at: .
-      - run:
-          name: Validate source maps
-          command: yarn validate-source-maps
-
-  validate-source-maps-beta:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Validate source maps
-          command: .circleci/scripts/validate-source-maps-beta.sh
-
-  validate-source-maps-mmi:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move mmi build to dist
-          command: mv ./dist-mmi ./dist
-      - run:
-          name: Move mmi zips to builds
-          command: mv ./builds-mmi ./builds
       - run:
           name: Validate source maps
           command: yarn validate-source-maps
@@ -1750,18 +1095,3 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'whew - everything passed!'
-
-  check-mmi-trigger:
-    executor: node-browsers-small
-    steps:
-      - checkout
-      - run:
-          name: Check for MMI Team Label or Reviewer
-          command: ./.circleci/scripts/check_mmi_trigger.sh
-      - store_artifacts:
-          path: mmi_trigger.env
-          destination: mmi_trigger.env
-      - persist_to_workspace:
-          root: .
-          paths:
-            - mmi_trigger.env

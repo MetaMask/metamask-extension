@@ -1,21 +1,12 @@
 import { createSelector } from 'reselect';
 import { Hex } from '@metamask/utils';
 import {
-  BridgeStatusControllerState,
   BridgeHistoryItem,
+  BridgeStatusAppState,
 } from '../../../shared/types/bridge-status';
 import { getSelectedAddress } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
-import {
-  getCurrentChainId,
-  ProviderConfigState,
-} from '../../../shared/modules/selectors/networks';
-
-export type BridgeStatusAppState = ProviderConfigState & {
-  metamask: {
-    bridgeStatusState: BridgeStatusControllerState;
-  };
-};
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 
 export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
   state.metamask.bridgeStatusState;
@@ -26,7 +17,8 @@ export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
 export const selectBridgeHistoryForAccount = createSelector(
   [getSelectedAddress, selectBridgeStatusState],
   (selectedAddress, bridgeStatusState) => {
-    const { txHistory } = bridgeStatusState;
+    // Handle the case when bridgeStatusState is undefined
+    const { txHistory = {} } = bridgeStatusState || {};
 
     return Object.keys(txHistory).reduce<Record<string, BridgeHistoryItem>>(
       (acc, txMetaId) => {

@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import { setBackgroundConnection } from '../../store/background-connection';
 import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -30,6 +30,8 @@ setBackgroundConnection({
   selectSrcNetwork: jest.fn(),
   resetState: () => mockResetBridgeState(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any);
 
@@ -90,6 +92,6 @@ describe('Bridge', () => {
 
     expect(getByText('Bridge')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
-    expect(mockResetBridgeState).toHaveBeenCalledTimes(2);
+    expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });
 });

@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   updateNetwork,
@@ -18,6 +19,8 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
 }));
+
+const mockOnNetworkChange = jest.fn();
 
 jest.mock('../../../../store/actions', () => ({
   updateNetwork: jest.fn(),
@@ -51,7 +54,10 @@ describe('SelectRpcUrlModal Component', () => {
 
   it('renders select rpc url', () => {
     const { container } = renderWithProvider(
-      <SelectRpcUrlModal networkConfiguration={networkConfiguration} />,
+      <SelectRpcUrlModal
+        networkConfiguration={networkConfiguration}
+        onNetworkChange={mockOnNetworkChange}
+      />,
       store,
     );
     expect(container).toMatchSnapshot();
@@ -59,7 +65,10 @@ describe('SelectRpcUrlModal Component', () => {
 
   it('should render the component correctly with network image and name', () => {
     const { getByRole, getByText } = renderWithProvider(
-      <SelectRpcUrlModal networkConfiguration={networkConfiguration} />,
+      <SelectRpcUrlModal
+        networkConfiguration={networkConfiguration}
+        onNetworkChange={mockOnNetworkChange}
+      />,
       store,
     );
 
@@ -77,7 +86,10 @@ describe('SelectRpcUrlModal Component', () => {
 
   it('should render all RPC endpoints and highlight the selected one', () => {
     const { getByText } = renderWithProvider(
-      <SelectRpcUrlModal networkConfiguration={networkConfiguration} />,
+      <SelectRpcUrlModal
+        networkConfiguration={networkConfiguration}
+        onNetworkChange={mockOnNetworkChange}
+      />,
       store,
     );
 
@@ -94,7 +106,10 @@ describe('SelectRpcUrlModal Component', () => {
 
   it('should dispatch the correct actions when an RPC endpoint is clicked', () => {
     const { getByText } = renderWithProvider(
-      <SelectRpcUrlModal networkConfiguration={networkConfiguration} />,
+      <SelectRpcUrlModal
+        networkConfiguration={networkConfiguration}
+        onNetworkChange={mockOnNetworkChange}
+      />,
       store,
     );
 
@@ -116,7 +131,10 @@ describe('SelectRpcUrlModal Component', () => {
 
   it('should render the selected indicator correctly for the default RPC', () => {
     const { container } = renderWithProvider(
-      <SelectRpcUrlModal networkConfiguration={networkConfiguration} />,
+      <SelectRpcUrlModal
+        networkConfiguration={networkConfiguration}
+        onNetworkChange={mockOnNetworkChange}
+      />,
       store,
     );
 
@@ -128,7 +146,10 @@ describe('SelectRpcUrlModal Component', () => {
 
   it('should render the modal with a network image', () => {
     renderWithProvider(
-      <SelectRpcUrlModal networkConfiguration={networkConfiguration} />,
+      <SelectRpcUrlModal
+        networkConfiguration={networkConfiguration}
+        onNetworkChange={mockOnNetworkChange}
+      />,
       store,
     );
 
@@ -142,9 +163,17 @@ describe('SelectRpcUrlModal Component', () => {
     );
   });
 
-  it('should handle click on RPC URL and update the network', () => {
+  it('should handle click on RPC URL and call onNetworkChange', () => {
+    const updatedNetwork = {
+      ...networkConfiguration,
+      defaultRpcEndpointIndex: 1,
+    };
+
     renderWithProvider(
-      <SelectRpcUrlModal networkConfiguration={networkConfiguration} />,
+      <SelectRpcUrlModal
+        networkConfiguration={networkConfiguration}
+        onNetworkChange={mockOnNetworkChange}
+      />,
       store,
     );
 
@@ -152,16 +181,10 @@ describe('SelectRpcUrlModal Component', () => {
       screen.getByText(stripProtocol(networkConfiguration.rpcEndpoints[1].url)),
     );
 
-    expect(mockDispatch).toHaveBeenCalledWith(
-      updateNetwork({
-        ...networkConfiguration,
-        defaultRpcEndpointIndex: 1,
-      }),
-    );
-    expect(mockDispatch).toHaveBeenCalledWith(
-      setActiveNetwork(networkConfiguration.rpcEndpoints[1].networkClientId),
-    );
+    expect(mockDispatch).toHaveBeenCalledWith(updateNetwork(updatedNetwork));
     expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
-    expect(mockDispatch).toHaveBeenCalledWith(toggleNetworkMenu());
+    expect(mockOnNetworkChange).toHaveBeenCalledWith(
+      toEvmCaipChainId(updatedNetwork.chainId),
+    );
   });
 });

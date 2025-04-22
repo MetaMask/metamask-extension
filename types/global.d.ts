@@ -1,5 +1,4 @@
 // Many of the state hooks return untyped raw state.
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // In order for variables to be considered on the global scope they must be
 // declared using var and not const or let, which is why this rule is disabled
@@ -17,10 +16,11 @@ import {
   EthereumSignMessage,
   EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
+import type { Provider } from '@metamask/network-controller';
 import {
   OffscreenCommunicationTarget,
   TrezorAction,
-} from 'shared/constants/offscreen-communication';
+} from '../shared/constants/offscreen-communication';
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 
 declare class Platform {
@@ -75,7 +75,7 @@ type sendMessage = {
     callback?: (response: Record<string, unknown>) => void,
   ): void;
   (
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     message: any,
     options?: Record<string, unknown>,
@@ -199,7 +199,8 @@ type sendMessage = {
         url: string;
       };
     },
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (response: { result: any; error?: Error }) => void,
   );
@@ -213,7 +214,7 @@ declare class Runtime {
   onMessage: {
     addListener: (
       callback: (
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         message: any,
         sender: MessageSender,
@@ -233,27 +234,48 @@ type SentryObject = Sentry & {
   getMetaMetricsEnabled: () => Promise<boolean>;
 };
 
-type HttpProvider = {
-  host: string;
-  timeout: number;
-};
-
 type StateHooks = {
   getCustomTraces?: () => { [name: string]: number };
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getCleanAppState?: () => Promise<any>;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getLogs?: () => any[];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getMostRecentPersistedState?: () => any;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getPersistedState: () => Promise<any>;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getSentryAppState?: () => any;
   getSentryState: () => {
     browser: string;
     version: string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     state?: any;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     persistedState?: any;
   };
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskGetState?: () => Promise<any>;
   throwTestBackgroundError?: (msg?: string) => Promise<void>;
   throwTestError?: (msg?: string) => void;
+  /**
+   * This is set in `app-init.js` to communicate that MetaMask was just installed, and is read in
+   * `background.js`.
+   */
+  metamaskWasJustInstalled?: boolean;
+  /**
+   * This is set in `background.js` so that `app-init.js` can trigger "on install" actions when
+   * the `onInstalled` listener is called.
+   */
+  metamaskTriggerOnInstall?: () => void;
 };
 
 export declare global {
@@ -263,7 +285,7 @@ export declare global {
 
   var chrome: Chrome;
 
-  var ethereumProvider: HttpProvider;
+  var ethereumProvider: Provider;
 
   var stateHooks: StateHooks;
 

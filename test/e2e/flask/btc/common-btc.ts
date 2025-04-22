@@ -2,11 +2,13 @@ import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import {
+  ACCOUNT_TYPE,
   DEFAULT_BTC_ACCOUNT,
   DEFAULT_BTC_BALANCE,
   DEFAULT_BTC_FEES_RATE,
   DEFAULT_BTC_TRANSACTION_ID,
   DEFAULT_BTC_CONVERSION_RATE,
+  DEFAULT_BTC_BLOCK_NUMBER,
   SATS_IN_1_BTC,
 } from '../../constants';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
@@ -14,15 +16,9 @@ import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { ACCOUNT_TYPE } from '../../page-objects/common';
 
+const SIMPLEHASH_URL = 'https://api.simplehash.com';
 const QUICKNODE_URL_REGEX = /^https:\/\/.*\.btc.*\.quiknode\.pro(\/|$)/u;
-
-export enum SendFlowPlaceHolders {
-  AMOUNT = 'Enter amount to send',
-  RECIPIENT = 'Enter receiving address',
-  LOADING = 'Preparing transaction',
-}
 
 export function btcToSats(btc: number): number {
   // Watchout, we're not using BigNumber(s) here (but that's ok for test purposes)
@@ -118,7 +114,7 @@ export async function mockGetUTXO(mockServer: Mockttp) {
               txid: DEFAULT_BTC_TRANSACTION_ID,
               vout: 0,
               value: btcToSats(DEFAULT_BTC_BALANCE).toString(),
-              height: 101100110,
+              height: DEFAULT_BTC_BLOCK_NUMBER,
               confirmations: 6,
             },
           ],
@@ -183,6 +179,36 @@ export async function mockRampsDynamicFeatureFlag(
     }));
 }
 
+export async function mockBtcSatProtectionService(
+  mockServer: Mockttp,
+  address: string = DEFAULT_BTC_ACCOUNT,
+) {
+  // NOTE: This endpoint is also used to compute the total balance if Sat Protection is enabled, so we have
+  // to compute the set of UTXOS here too.
+  const utxos = [
+    {
+      output: `${DEFAULT_BTC_TRANSACTION_ID}:0`,
+      value: btcToSats(DEFAULT_BTC_BALANCE),
+      block_number: DEFAULT_BTC_BLOCK_NUMBER,
+    },
+  ];
+
+  return await mockServer
+    .forGet(`${SIMPLEHASH_URL}/api/v0/custom/wallet_assets_by_utxo/${address}`)
+    .withQuery({
+      without_inscriptions_runes_raresats: '1',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          count: utxos.length,
+          utxos,
+        },
+      };
+    });
+}
+
 export async function withBtcAccountSnap(
   {
     title,
@@ -193,7 +219,7 @@ export async function withBtcAccountSnap(
   await withFixtures(
     {
       fixtures: new FixtureBuilder()
-        .withPreferencesControllerAndFeatureFlag({
+        .withPreferencesController({
           bitcoinSupportEnabled: bitcoinSupportEnabled ?? true,
         })
         .build(),
@@ -210,6 +236,8 @@ export async function withBtcAccountSnap(
         await mockBtcFeeCallQuote(mockServer),
         await mockGetUTXO(mockServer),
         await mockSendTransaction(mockServer),
+        // Sat Protection
+        await mockBtcSatProtectionService(mockServer),
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
@@ -218,7 +246,7 @@ export async function withBtcAccountSnap(
       await new HeaderNavbar(driver).openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       await accountListPage.check_pageIsLoaded();
-      await accountListPage.addAccount(ACCOUNT_TYPE.Bitcoin, '');
+      await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
       await test(driver, mockServer);
     },
   );

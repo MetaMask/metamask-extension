@@ -3,7 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import { BtcAccountType, BtcMethod, BtcScope } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
@@ -86,13 +87,17 @@ const mockBuyableChainsWithBtc = [...mockBuyableChainsWithoutBtc, mockBtcChain];
 
 const mockMetamaskStore = {
   ...mockState.metamask,
+  useExternalServices: true,
+  accountsAssets: {
+    [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
+  },
   internalAccounts: {
     accounts: {
       [mockNonEvmAccount.id]: mockNonEvmAccount,
     },
     selectedAccount: mockNonEvmAccount.id,
   },
-  // (Multichain) BalancesController
+  // MultichainBalancesController
   balances: {
     [mockNonEvmAccount.id]: {
       [MultichainNativeAssets.BITCOIN]: {
@@ -103,7 +108,7 @@ const mockMetamaskStore = {
   },
   // (Multichain) RatesController
   fiatCurrency: 'usd',
-  rates: {
+  conversionRates: {
     [Cryptocurrency.Btc]: {
       conversionRate: '1.000',
       conversionDate: 0,
@@ -117,6 +122,11 @@ const mockMetamaskStore = {
   // Used when clicking on some buttons
   metaMetricsId: mockMetaMetricsId,
   // Override state if provided
+  multichainNetworkConfigurationsByChainId:
+    AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+  selectedMultichainNetworkChainId: BtcScope.Mainnet,
+  isEvmSelected: false,
+  bitcoinSupportEnabled: true,
 };
 const mockRampsStore = {
   buyableChains: mockBuyableChainsWithoutBtc,
@@ -125,6 +135,9 @@ const mockRampsStore = {
 function getStore(state?: Record<string, unknown>) {
   return configureMockStore([thunk])({
     metamask: mockMetamaskStore,
+    localeMessages: {
+      currentLocale: 'en',
+    },
     ramps: mockRampsStore,
     ...state,
   });
@@ -178,6 +191,13 @@ describe('NonEvmOverview', () => {
           preferences: {
             showNativeTokenAsMainBalance: false,
             tokenNetworkFilter: {},
+            privacyMode: false,
+          },
+          currentCurrency: 'usd',
+          conversionRates: {
+            [MultichainNativeAssets.BITCOIN]: {
+              rate: '1',
+            },
           },
         },
       }),
@@ -196,6 +216,9 @@ describe('NonEvmOverview', () => {
           ...mockMetamaskStore,
           // The balances won't be available
           balances: {},
+          accountsAssets: {
+            [mockNonEvmAccount.id]: [],
+          },
         },
       }),
     );
@@ -316,6 +339,8 @@ describe('NonEvmOverview', () => {
         location: 'Home',
         snap_id: mockNonEvmAccount.metadata.snap.id,
         text: 'Buy',
+        // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
+        token_symbol: expect.any(Object),
       },
     });
   });
@@ -399,5 +424,24 @@ describe('NonEvmOverview', () => {
       },
       expect.any(Object),
     );
+  });
+
+  it('disables the Send and Bridge buttons if external services are disabled', () => {
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          useExternalServices: false,
+        },
+      }),
+    );
+
+    const sendButton = queryByTestId(BTC_OVERVIEW_SEND);
+    const bridgeButton = queryByTestId(BTC_OVERVIEW_BRIDGE);
+    expect(sendButton).toBeInTheDocument();
+    expect(sendButton).toBeDisabled();
+    expect(bridgeButton).toBeInTheDocument();
+    expect(bridgeButton).toBeDisabled();
   });
 });

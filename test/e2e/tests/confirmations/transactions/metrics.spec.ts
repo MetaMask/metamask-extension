@@ -6,6 +6,7 @@ import {
   TransactionMetaMetricsEvent,
 } from '../../../../../shared/constants/transaction';
 import { Driver } from '../../../webdriver/driver';
+import { MOCK_META_METRICS_ID } from '../../../constants';
 import {
   confirmContractDeploymentTransaction,
   confirmDepositTransaction,
@@ -23,25 +24,19 @@ const {
 } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 
-describe('Metrics @no-mmi', function () {
+describe('Metrics', function () {
   it('Sends a contract interaction type 2 transaction (EIP1559) with the right properties in the metric events', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptionsForType2Transactions,
+        localNodeOptions: defaultGanacheOptionsForType2Transactions,
         title: this.test?.fullTitle(),
         testSpecificMock: mocks,
       },

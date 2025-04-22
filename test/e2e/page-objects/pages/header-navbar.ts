@@ -9,6 +9,8 @@ class HeaderNavbar {
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
+  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+
   private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
 
@@ -16,14 +18,25 @@ class HeaderNavbar {
 
   private readonly lockMetaMaskButton = '[data-testid="global-menu-lock"]';
 
-  private readonly mmiPortfolioButton =
-    '[data-testid="global-menu-mmi-portfolio"]';
+  private readonly openAccountDetailsButton =
+    '[data-testid="account-list-menu-details"]';
+
+  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
   private readonly switchNetworkDropDown = '[data-testid="network-display"]';
 
   private readonly networkPicker = '.mm-picker-network';
+
+  private readonly notificationsButton =
+    '[data-testid="notifications-menu-item"]';
+
+  private readonly notificationCountOption =
+    '[data-testid="global-menu-notification-count"]';
+
+  private readonly firstTimeTurnOnNotificationsButton =
+    '[data-testid="turn-on-notifications-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -42,6 +55,10 @@ class HeaderNavbar {
     console.log('Header navbar is loaded');
   }
 
+  async clickAddressCopyButton(): Promise<void> {
+    await this.driver.clickElement(this.copyAddressButton);
+  }
+
   async lockMetaMask(): Promise<void> {
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
@@ -49,15 +66,19 @@ class HeaderNavbar {
 
   async openAccountMenu(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.waitForSelector('.multichain-account-menu-popover__list');
+  }
+
+  async openAccountDetailsModal(): Promise<void> {
+    console.log('Open account details modal');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.openAccountDetailsButton);
+    await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
     await this.driver.clickElement(this.threeDotMenuButton);
-    // fix race condition with mmi build
-    if (process.env.MMI) {
-      await this.driver.waitForSelector(this.mmiPortfolioButton);
-    }
   }
 
   async openPermissionsPage(): Promise<void> {
@@ -83,6 +104,32 @@ class HeaderNavbar {
     await this.driver.clickElement(this.switchNetworkDropDown);
   }
 
+  async enableNotifications(): Promise<void> {
+    console.log('Enabling notifications for the first time');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.notificationsButton);
+    await this.driver.clickElement(this.firstTimeTurnOnNotificationsButton);
+  }
+
+  async goToNotifications(): Promise<void> {
+    console.log('Click notifications button');
+    await this.driver.clickElement(this.notificationsButton);
+  }
+
+  async clickNotificationsOptions(): Promise<void> {
+    console.log('Click notifications options');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.notificationsButton);
+  }
+
+  async check_notificationCountInMenuOption(count: number): Promise<void> {
+    await this.openThreeDotMenu();
+    await this.driver.findElement({
+      css: this.notificationCountOption,
+      text: count.toString(),
+    });
+  }
+
   async check_currentSelectedNetwork(networkName: string): Promise<void> {
     console.log(`Validate the Switch network to ${networkName}`);
     await this.driver.waitForSelector(
@@ -96,6 +143,21 @@ class HeaderNavbar {
       await (await this.driver.findElement(this.networkPicker)).isEnabled(),
       clickable,
     );
+  }
+
+  /**
+   * Verifies that the displayed account address in header matches the expected address.
+   *
+   * @param expectedAddress - The expected address of the account.
+   */
+  async check_accountAddress(expectedAddress: string): Promise<void> {
+    console.log(
+      `Verify the displayed account address in header is: ${expectedAddress}`,
+    );
+    await this.driver.waitForSelector({
+      css: this.copyAddressButton,
+      text: expectedAddress,
+    });
   }
 
   /**

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import classnames from 'classnames';
 import type { PolymorphicRef, BoxProps } from '../box';
-import { Box } from '..';
+import { Box } from '../box';
 import { SelectContext } from '../select-wrapper';
 import { Display } from '../../../helpers/constants/design-system';
 import {

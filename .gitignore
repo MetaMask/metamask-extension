@@ -52,6 +52,9 @@ notes.txt
 .metamaskrc
 .metamaskprodrc
 
+# Customized manifest configuration
+.manifest-overrides*.json
+
 # Test results
 test-results/
 
@@ -67,21 +70,23 @@ test-results/
 !.yarn/versions
 development/generate-attributions/.yarn/*
 
-# MMI Playwright
+# MetaMask
+.metamask/*
+
+# Playwright
 public/playwright
-test/e2e/playwright/mmi/.env
-test/e2e/playwright/mmi/playwright.config.ts
-test/e2e/playwright/mmi/specs/**/*-darwin.png
-test/e2e/playwright/mmi/dist/
 lavamoat/**/policy-debug.json
 
 # Attributions
 licenseInfos.json
 
+# Branding
+/app/images/branding
+
 # API Spec tests
 html-report/
+html-report-multichain/
 
-/app/images/branding
 /changed-files
 
 # UI Integration tests

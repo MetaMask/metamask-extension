@@ -9,11 +9,15 @@ import {
 } from '../../../store/actions';
 import { CreateAccount } from '../create-account';
 
-export const CreateEthAccount = ({ onActionComplete }) => {
+export const CreateEthAccount = ({
+  onActionComplete,
+  onSelectSrp,
+  selectedKeyringId,
+}) => {
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name) => {
-    const newAccountAddress = await dispatch(addNewAccount());
+    const newAccountAddress = await dispatch(addNewAccount(selectedKeyringId));
     if (name) {
       dispatch(setAccountLabel(newAccountAddress, name));
     }
@@ -29,6 +33,10 @@ export const CreateEthAccount = ({ onActionComplete }) => {
       onActionComplete={onActionComplete}
       onCreateAccount={onCreateAccount}
       getNextAvailableAccountName={getNextAvailableAccountName}
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      onSelectSrp={onSelectSrp}
+      selectedKeyringId={selectedKeyringId}
+      ///: END:ONLY_INCLUDE_IF(multi-srp)
     ></CreateAccount>
   );
 };
@@ -38,4 +46,14 @@ CreateEthAccount.propTypes = {
    * Executes when the Create button is clicked
    */
   onActionComplete: PropTypes.func.isRequired,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+  /**
+   * Callback to select the SRP
+   */
+  onSelectSrp: PropTypes.func,
+  /**
+   * Currently selected HD keyring
+   */
+  selectedKeyringId: PropTypes.string,
+  ///: END:ONLY_INCLUDE_IF(multi-srp)
 };

@@ -36,6 +36,11 @@
     height: 100%;
     margin-bottom: 16px;
     padding: 0 16px;
+    width: 100%;
+
+    .wallet-overview-fullscreen > & {
+      width: auto;
+    }
   }
 
   &__currency-wrapper {
@@ -86,7 +91,7 @@
     @include design-system.H2;
 
     color: var(--color-text-default);
-    font-weight: 700;
+    font-weight: 500;
   }
 
   &__cached-star {

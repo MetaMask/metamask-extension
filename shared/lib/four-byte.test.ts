@@ -1,4 +1,4 @@
-import { HttpProvider } from '@metamask/ethjs';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import nock from 'nock';
 
 import {
@@ -28,15 +28,13 @@ describe('Four Byte', () => {
       expect(result).toStrictEqual('someOtherFunction(address,uint256)');
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([undefined, null, '', '0x', '0X'])(
       'returns undefined if four byte prefix is %s',
-      async (prefix: string) => {
-        expect(await getMethodFrom4Byte(prefix)).toBeUndefined();
+      async (prefix) => {
+        expect(await getMethodFrom4Byte(prefix as string)).toBeUndefined();
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['with hex prefix', '0x1234567'],
       ['without hex prefix', '1234567'],
@@ -47,7 +45,6 @@ describe('Four Byte', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['undefined', { results: undefined }],
       ['object', { results: {} }],
@@ -68,10 +65,10 @@ describe('Four Byte', () => {
   });
 
   describe('getMethodDataAsync', () => {
-    global.ethereumProvider = new HttpProvider(
-      'https://mainnet.infura.io/v3/341eacb578dd44a1a049cbc5f6fd4035',
-    );
     it('returns a valid signature for setApprovalForAll when use4ByteResolution privacy setting is ON', async () => {
+      const provider = new JsonRpcProvider({
+        url: 'https://mainnet.infura.io/v3/341eacb578dd44a1a049cbc5f6fd4035',
+      });
       nock('https://www.4byte.directory:443', { encodedQueryParams: true })
         .get('/api/v1/signatures/')
         .query({ hex_signature: '0xa22cb465' })
@@ -96,7 +93,9 @@ describe('Four Byte', () => {
             },
           ],
         });
-      expect(await getMethodDataAsync('0xa22cb465', true)).toStrictEqual({
+      expect(
+        await getMethodDataAsync('0xa22cb465', true, provider),
+      ).toStrictEqual({
         name: 'Set Approval For All',
         params: [{ type: 'address' }, { type: 'bool' }],
       });

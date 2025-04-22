@@ -251,9 +251,6 @@
   "from": {
     "message": "Daripada"
   },
-  "functionType": {
-    "message": "Jenis Fungsi"
-  },
   "gasLimit": {
     "message": "Had Gas"
   },
@@ -308,9 +305,6 @@
   },
   "history": {
     "message": "Sejarah"
-  },
-  "importAccount": {
-    "message": "Import Akaun"
   },
   "importAccountMsg": {
     "message": "Akaun yang diimport tidak akan dikaitkan dengan frasa benih akaun MetaMask asal yang anda cipta. Ketahui lebih lanjut tentang akaun import"
@@ -374,9 +368,6 @@
   "loading": {
     "message": "Memuatkan..."
   },
-  "loadingTokens": {
-    "message": "Memuatkan Token..."
-  },
   "lock": {
     "message": "Log keluar"
   },
@@ -433,9 +424,6 @@
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"
   },
-  "noTransactions": {
-    "message": "Anda tiada transaksi"
-  },
   "noWebcamFound": {
     "message": "Webcam komputer anda tidak dijumpai. Sila cuba semula."
   },
@@ -456,9 +444,6 @@
   },
   "origin": {
     "message": "Asal"
-  },
-  "parameters": {
-    "message": "Parameter"
   },
   "participateInMetaMetrics": {
     "message": "Sertai MetaMetrics"
@@ -528,9 +513,6 @@
   "removeAccountDescription": {
     "message": "Akaun ini akan dibuang daripada dompet anda. Sila pastikan anda mempunyai ungkapan benih asal atau kunci persendirian untuk akaun yang diimport ini sebelum meneruskan. Anda boleh import atau cipta akaun semula daripada juntai bawah akaun."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "permintaan menunggu untuk diakui"
-  },
   "required": {
     "message": "Diwajibkan"
   },
@@ -597,9 +579,6 @@
   },
   "showHexDataDescription": {
     "message": "Pilih ini untuk menunjukkan medan data hex pada skrin hantar"
-  },
-  "sigRequest": {
-    "message": "Permintaan Tandatangan"
   },
   "sign": {
     "message": "Tandatangan"
@@ -694,9 +673,6 @@
   "transactionErrored": {
     "message": "Transaksi berdepan ralat."
   },
-  "transactionFee": {
-    "message": "Yuran Transaksi"
-  },
   "transactionResubmitted": {
     "message": "Transaksi dihantar semula dengan fi gas ditingkatkan kepada $1 pada $2."
   },
@@ -723,9 +699,6 @@
   },
   "unknown": {
     "message": "Tidak diketahui"
-  },
-  "unknownNetwork": {
-    "message": "Rangkaian Persendirian Tidak Dikenali"
   },
   "unknownQrCode": {
     "message": "Ralat: Kami tidak dapat mengenal pasti kod QR tersebut"
@@ -756,9 +729,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."
-  },
-  "youSign": {
-    "message": "Anda menandatangani"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ungkapan benih peribadi anda"

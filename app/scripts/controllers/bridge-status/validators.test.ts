@@ -204,11 +204,20 @@ const BridgeTxStatusResponses = {
     isExpectedToken: true,
     bridge: 'across',
   },
+  STATUS_FAILED_VALID: {
+    status: 'FAILED',
+    bridge: 'across',
+    srcChain: {
+      chainId: 42161,
+      txHash:
+        '0x4c57876fad21fb5149af5a58a4aba2ca9d6b212014505dd733b75667ca4f0f2b',
+      token: {},
+    },
+  },
 };
 
 describe('validators', () => {
   describe('bridgeStatusValidator', () => {
-    // @ts-expect-error - it.each is a function
     it.each([
       {
         input: BridgeTxStatusResponses.STATUS_PENDING_VALID,
@@ -249,6 +258,11 @@ describe('validators', () => {
         input: BridgeTxStatusResponses.STATUS_COMPLETE_VALID_MISSING_FIELDS,
         expected: true,
         description: 'complete bridge status with missing fields',
+      },
+      {
+        input: BridgeTxStatusResponses.STATUS_FAILED_VALID,
+        expected: true,
+        description: 'valid failed bridge status',
       },
       {
         input: undefined,

@@ -5,8 +5,10 @@ describe('Profile Syncing Selectors', () => {
     metamask: {
       isProfileSyncingEnabled: true,
       isProfileSyncingUpdateLoading: false,
+      isAccountSyncingEnabled: true,
       isAccountSyncingReadyToBeDispatched: false,
       hasAccountSyncingSyncedAtLeastOnce: false,
+      isAccountSyncingInProgress: false,
     },
   };
 

@@ -34,21 +34,20 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useCreateSession } from '../../../hooks/identity/useCreateSession';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const learnMoreLink =
     'https://support.metamask.io/hc/en-us/articles/360015489591-Basic-Safety-and-Security-Tips-for-MetaMask';
   const learnHowToKeepWordsSafe =
     'https://community.metamask.io/t/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/3440';
-
-  const { createSession } = useCreateSession();
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
@@ -203,9 +202,9 @@ export default function CreationSuccessful() {
               properties: {
                 method: firstTimeFlowType,
                 is_profile_syncing_enabled: isProfileSyncingEnabled,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
-            createSession();
             history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
           }}
         >

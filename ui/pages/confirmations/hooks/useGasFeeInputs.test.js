@@ -185,6 +185,7 @@ describe('useGasFeeInputs', () => {
             ...mockTransaction.txParams,
             gas: '0x5208',
           },
+          gasLimitNoBuffer: '0x5208',
         }),
       );
       expect(result.current.balanceError).toBe(true);

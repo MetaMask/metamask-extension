@@ -1,21 +1,7 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { showCustodianDeepLink } from '@metamask-institutional/extension';
-import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-  getCustodianDeepLink,
-  getWaitForConfirmDeepLinkDialog,
-} from '../../selectors/institutional/selectors';
-import {
-  mmiActionsFactory,
-  setCustodianDeepLink,
-} from '../../store/institutional/institution-background';
-import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
-import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
-///: END:ONLY_INCLUDE_IF
+
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -32,22 +18,20 @@ import {
   getIsSigningQRHardwareTransaction,
   getNewNftAddedMessage,
   getNewTokensImported,
-  getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
-  getQueuedRequestCount,
   getEditedNetwork,
-  pendingApprovalsSortedSelector,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getAccountType,
+  selectPendingApprovalsForNavigation,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
-  closeNotificationPopup,
+  attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
@@ -87,6 +71,7 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -96,23 +81,18 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
+    quotes,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const selectedAccount = getSelectedInternalAccount(state);
+  const { address: selectedAddress } = selectedAccount;
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const queuedRequestCount = getQueuedRequestCount(state);
-  const totalUnapprovedAndQueuedRequestCount =
-    totalUnapprovedCount + queuedRequestCount;
   const swapsEnabled = getSwapsFeatureIsLive(state);
-  const pendingApprovals = pendingApprovalsSortedSelector(state);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const institutionalConnectRequests = getInstitutionalConnectRequests(state);
-  ///: END:ONLY_INCLUDE_IF
+  const pendingApprovals = selectPendingApprovalsForNavigation(state);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -135,23 +115,36 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  const TEMPORARY_DISABLE_WHATS_NEW = true;
+  let TEMPORARY_DISABLE_WHATS_NEW = true;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  const solanaSupportEnabled = getIsSolanaSupportEnabled(state);
+
+  // TODO: Remove this once the feature flag is enabled by default
+  // If the feature flag is enabled, we should show the whats new modal
+  if (solanaSupportEnabled) {
+    TEMPORARY_DISABLE_WHATS_NEW = false;
+  }
+  ///: END:ONLY_INCLUDE_IF
+
   const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
     ? false
     : getShowWhatsNewPopup(state);
+
+  const shouldShowSeedPhraseReminder =
+    selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
 
   return {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
     swapsEnabled,
-    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    shouldShowSeedPhraseReminder,
     isPopup,
     isNotification,
     dataCollectionForMarketing,
     selectedAddress,
     totalUnapprovedCount,
-    totalUnapprovedAndQueuedRequestCount,
     participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
@@ -161,6 +154,7 @@ const mapStateToProps = (state) => {
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
+    haveBridgeQuotes: Boolean(Object.values(quotes || {}).length),
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
@@ -183,29 +177,15 @@ const mapStateToProps = (state) => {
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
     hasAllowedPopupRedirectApprovals,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
-    institutionalConnectRequests,
-    modalOpen: state.appState.modal.open,
-    mmiPortfolioUrl: getMmiPortfolioUrl(state),
-    mmiPortfolioEnabled: getMmiPortfolioEnabled(state),
-    notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    custodianDeepLink: getCustodianDeepLink(state),
-    accountType: getAccountType(state),
-    ///: END:ONLY_INCLUDE_IF
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IF
-
   return {
     setDataCollectionForMarketing: (val) =>
       dispatch(setDataCollectionForMarketing(val)),
-    closeNotificationPopup: () => closeNotificationPopup(),
+    attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
     onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
@@ -247,34 +227,6 @@ const mapDispatchToProps = (dispatch) => {
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    showCustodianDeepLink: ({
-      txId = undefined,
-      fromAddress,
-      custodyId,
-      onDeepLinkFetched = () => undefined,
-      onDeepLinkShown = () => undefined,
-      isSignature = false,
-      isNotification = false,
-    }) =>
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        txId,
-        fromAddress,
-        custodyId,
-        closeNotification: isNotification,
-        onDeepLinkFetched,
-        onDeepLinkShown,
-        showCustodyConfirmLink,
-        isSignature,
-      }),
-    cleanCustodianDeepLink: () => {
-      dispatch(setCustodianDeepLink({}));
-    },
-    ///: END:ONLY_INCLUDE_IF
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),

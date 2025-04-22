@@ -22,6 +22,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       UserStorageController: {
         isProfileSyncingEnabled: true,
+        isAccountSyncingEnabled: true,
       },
       NotificationServicesController: {
         subscriptionAccountsSeen: [],
@@ -54,6 +55,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
             },
           },
         },
@@ -113,35 +115,47 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        isRampCardClosed: false,
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
       },
       BridgeController: {
-        bridgeState: {
-          bridgeFeatureFlags: {
-            extensionConfig: {
-              support: false,
-              chains: {
-                '0x1': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
-                '0xa': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
-                '0xe708': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
+        bridgeFeatureFlags: {
+          mobileConfig: {
+            support: false,
+            chains: {
+              'eip155:1': {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+              'eip155:10': {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+              'eip155:59144': {
+                isActiveSrc: true,
+                isActiveDest: true,
               },
             },
           },
-          destTokens: {},
-          destTopAssets: [],
-          srcTokens: {},
-          srcTopAssets: [],
+          extensionConfig: {
+            support: false,
+            chains: {
+              'eip155:1': {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+              'eip155:10': {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+              'eip155:59144': {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
         },
       },
       CurrencyController: {
@@ -225,7 +239,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',
@@ -239,12 +252,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
-        useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: true,
         isMultiAccountBalancesEnabled: true,
         showIncomingTransactions: {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
@@ -268,9 +279,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
-      },
-      QueuedRequestController: {
-        queuedRequestCount: 0,
       },
       SelectedNetworkController: {
         domains: {},
@@ -301,9 +309,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         allDetectedTokens: {},
         allIgnoredTokens: {},
         allTokens: {},
-        detectedTokens: [],
-        ignoredTokens: [],
-        tokens: [],
       },
       TransactionController: {
         transactions: {},

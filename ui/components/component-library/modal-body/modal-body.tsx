@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { Box } from '..';
+import { Box } from '../box';
 import type { PolymorphicRef, BoxProps } from '../box';
 
 import { ModalBodyProps, ModalBodyComponent } from './modal-body.types';

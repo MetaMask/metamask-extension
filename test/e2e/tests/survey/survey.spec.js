@@ -1,10 +1,7 @@
 const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  unlockWallet,
-  defaultGanacheOptions,
-} = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 describe('Test Survey', function () {
   it('should show 2 surveys, and then none', async function () {
@@ -14,11 +11,10 @@ describe('Test Survey', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesController()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id-power-user',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

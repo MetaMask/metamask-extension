@@ -1,10 +1,6 @@
 import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-} from '../../helpers';
+import { unlockWallet, withFixtures } from '../../helpers';
 import {
   expectMockRequest,
   expectNoMockRequest,
@@ -34,7 +30,6 @@ describe('Sessions', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentrySession,
         manifestFlags: {
@@ -48,7 +43,7 @@ describe('Sessions', function () {
     );
   });
 
-  it('does not send session in UI if metrics disabled @no-mmi', async function () {
+  it('does not send session in UI if metrics disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -56,7 +51,6 @@ describe('Sessions', function () {
             participateInMetaMetrics: false,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockSentrySession,
         manifestFlags: {

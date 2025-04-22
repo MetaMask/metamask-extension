@@ -245,9 +245,6 @@
   "from": {
     "message": "ከ"
   },
-  "functionType": {
-    "message": "የተግባር ዓይነት"
-  },
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
@@ -306,9 +303,6 @@
   "import": {
     "message": "ከውጭ አስመጣ",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "መለያ አስመጣ"
   },
   "importAccountMsg": {
     "message": "የመጡ መለያዎች በመጀመሪያ ከተፈጠረው የእርስዎ MetaMask መለያ የዘር ሐረግ ጋር አይዛመዱም። ስለሚመጡ መለያዎቸ ተጨማሪ መረጃ ያግኙ"
@@ -369,9 +363,6 @@
   "loading": {
     "message": "በመጫን ላይ…"
   },
-  "loadingTokens": {
-    "message": "ተለዋጭ ስሞችን በመጫን ላይ..."
-  },
   "lock": {
     "message": "ዘግተህ ውጣ"
   },
@@ -431,9 +422,6 @@
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"
   },
-  "noTransactions": {
-    "message": "ግብይቶች የሉዎትም"
-  },
   "noWebcamFound": {
     "message": "የኮምፒዩተርዎ ካሜራ አልተገኘም። እባክዎ እንደገና ይሞክሩ።"
   },
@@ -457,9 +445,6 @@
   },
   "origin": {
     "message": "መነሻ"
-  },
-  "parameters": {
-    "message": "መለኪያዎች"
   },
   "participateInMetaMetrics": {
     "message": "በ MetaMetrics ውስጥ ይሳተፉ"
@@ -529,9 +514,6 @@
   "removeAccountDescription": {
     "message": "ይህ መለያ ከቋትዎ ይወገዳል። እባክዎ ከመቀጠልዎ በፊት የዚህ የመጣ መለያ የመጀመሪያው የዘር ሐረግ ወይም የግል ቁልፍ እንዳለዎት ያረጋግጡ። መለያዎችን ከመለያ ተቆልቋይ ማስመጣት ወይም መፍጠር ይችላሉ።"
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ማረጋገጫ የሚጠባበቁ ጥያቄዎች"
-  },
   "required": {
     "message": "የሚያስፈልግ"
   },
@@ -598,9 +580,6 @@
   },
   "showHexDataDescription": {
     "message": "በመላኪያ ማያ ላይ የ hex ውሂብ መስክን ለማሳየት ይህን ይምረጡ"
-  },
-  "sigRequest": {
-    "message": "የፊርማ ጥያቄ"
   },
   "sign": {
     "message": "ፈርም"
@@ -698,9 +677,6 @@
   "transactionErrored": {
     "message": "ግብይቱ እንከን አጋጥሞታል።"
   },
-  "transactionFee": {
-    "message": " የግብይት ክፍያ"
-  },
   "transactionResubmitted": {
     "message": "ግብይቱ በድጋሚ ሲቀርብ የነዳጅ ክፍያ ወደ $1በ$2ጨምሯል"
   },
@@ -727,9 +703,6 @@
   },
   "unknown": {
     "message": "ያልታወቀ"
-  },
-  "unknownNetwork": {
-    "message": "የማይታወቅ የግል አውታረ መረብ"
   },
   "unknownQrCode": {
     "message": "ስህተት፡ ያን የ QR ኮድ መለየት አልቻልንም"
@@ -760,9 +733,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "ይህን ባህርይ ለመጠቀም የካሜራን መድረስ መፍቀድ አለብዎት።"
-  },
-  "youSign": {
-    "message": "እየፈረሙ ነው"
   },
   "yourPrivateSeedPhrase": {
     "message": "የግል ዘር ሐረግዎ"

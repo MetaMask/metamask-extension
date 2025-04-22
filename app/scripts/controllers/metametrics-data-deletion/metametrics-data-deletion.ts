@@ -1,7 +1,4 @@
-import {
-  BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
+import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import { PublicInterface } from '@metamask/utils';
 import type { DataDeletionService } from '../../services/data-deletion-service';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
@@ -82,14 +79,13 @@ export type AllowedActions = MetaMetricsControllerGetStateAction;
 export type AllowedEvents = never;
 
 // Type for the messenger of MetaMetricsDataDeletionController
-export type MetaMetricsDataDeletionControllerMessenger =
-  RestrictedControllerMessenger<
-    typeof controllerName,
-    MetaMetricsDataDeletionControllerMessengerActions | AllowedActions,
-    AllowedEvents,
-    AllowedActions['type'],
-    AllowedEvents['type']
-  >;
+export type MetaMetricsDataDeletionControllerMessenger = RestrictedMessenger<
+  typeof controllerName,
+  MetaMetricsDataDeletionControllerMessengerActions | AllowedActions,
+  AllowedEvents,
+  AllowedActions['type'],
+  AllowedEvents['type']
+>;
 
 /**
  * Controller responsible for maintaining

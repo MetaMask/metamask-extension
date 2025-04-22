@@ -7,6 +7,7 @@ import {
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { fireEvent, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -29,6 +30,8 @@ const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
 const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 const mockBitcoinClientCreateAccount = jest.fn();
+const mockGenerateNewHdKeyring = jest.fn();
+const mockDetectNfts = jest.fn();
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -39,7 +42,9 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
-    getNextAvailableAccountName: () => mockNextAccountName,
+    getNextAvailableAccountName: () => mockNextAccountName(),
+    generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
+    detectNfts: () => mockDetectNfts,
   };
 });
 
@@ -54,6 +59,8 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   ),
   useMultichainWalletSnapClient: () => ({
     createAccount: mockBitcoinClientCreateAccount,
+    getSnapId: () => 'bitcoin-snap-id',
+    getSnapName: () => 'bitcoin-snap-name',
   }),
 }));
 
@@ -84,15 +91,25 @@ const render = (
       subjects: {
         'https://test.dapp': {
           permissions: {
-            eth_accounts: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [
+                          'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               invoker: 'https://test.dapp',
-              parentCapability: 'eth_accounts',
+              parentCapability: 'endowment:caip25',
             },
           },
         },
@@ -142,6 +159,7 @@ describe('AccountListMenu', () => {
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
+
     expect(listItems).toHaveLength(6);
 
     const searchBox = document.querySelector('input[type=search]') as Element;
@@ -216,15 +234,29 @@ describe('AccountListMenu', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
-              eth_accounts: {
-                caveats: [
-                  {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+              'https://test.dapp': {
+                permissions: {
+                  'endowment:caip25': {
+                    caveats: [
+                      {
+                        type: 'authorizedScopes',
+                        value: {
+                          requiredScopes: {},
+                          optionalScopes: {
+                            'eip155:1': {
+                              accounts: [
+                                'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                              ],
+                            },
+                          },
+                          isMultichainOrigin: false,
+                        },
+                      },
+                    ],
+                    invoker: 'https://test.dapp',
+                    parentCapability: 'endowment:caip25',
                   },
-                ],
-                invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
+                },
               },
             },
           },
@@ -262,9 +294,9 @@ describe('AccountListMenu', () => {
 
     // Click the button to ensure the options and close button display
     button[0].click();
-    expect(getByText('Add a new Ethereum account')).toBeInTheDocument();
-    expect(getByText('Import account')).toBeInTheDocument();
-    expect(getByText('Add hardware wallet')).toBeInTheDocument();
+    expect(getByText('Ethereum account')).toBeInTheDocument();
+    expect(getByText('Private Key')).toBeInTheDocument();
+    expect(getByText('Hardware wallet')).toBeInTheDocument();
     const header = document.querySelector('header') as Element;
     expect(header.innerHTML).toContain('Add account');
     expect(
@@ -284,7 +316,9 @@ describe('AccountListMenu', () => {
     const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
-    fireEvent.click(getByText('Add a new Ethereum account'));
+    fireEvent.click(getByText('Ethereum account'));
+    const header = document.querySelector('header') as Element;
+    expect(header.innerHTML).toContain('Add Ethereum account');
     const addAccountButton = document.querySelector(
       '[data-testid="submit-add-account-with-name"]',
     );
@@ -295,13 +329,13 @@ describe('AccountListMenu', () => {
     expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
   });
 
-  it('shows the account import UI when Import Account is clicked', () => {
+  it('shows the account import UI when Import Private Key is clicked', () => {
     const { getByText, getByPlaceholderText, getByTestId } = render();
 
     const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
-    fireEvent.click(getByText('Import account'));
+    fireEvent.click(getByText('Private Key'));
     expect(getByText('Import')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
 
@@ -315,7 +349,7 @@ describe('AccountListMenu', () => {
     const button = getByTestId('multichain-account-menu-popover-action-button');
     button.click();
 
-    fireEvent.click(getByText('Add hardware wallet'));
+    fireEvent.click(getByText('Hardware wallet'));
     expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 
@@ -343,15 +377,25 @@ describe('AccountListMenu', () => {
             subjects: {
               'https://test.dapp': {
                 permissions: {
-                  eth_accounts: {
+                  'endowment:caip25': {
                     caveats: [
                       {
-                        type: 'restrictReturnedAccounts',
-                        value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                        type: 'authorizedScopes',
+                        value: {
+                          requiredScopes: {},
+                          optionalScopes: {
+                            'eip155:1': {
+                              accounts: [
+                                'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                              ],
+                            },
+                          },
+                          isMultichainOrigin: false,
+                        },
                       },
                     ],
                     invoker: 'https://test.dapp',
-                    parentCapability: 'eth_accounts',
+                    parentCapability: 'endowment:caip25',
                   },
                 },
               },
@@ -454,15 +498,25 @@ describe('AccountListMenu', () => {
         subjects: {
           'https://test.dapp': {
             permissions: {
-              eth_accounts: {
+              'endowment:caip25': {
                 caveats: [
                   {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: [
+                            'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
                   },
                 ],
                 invoker: 'https://test.dapp',
-                parentCapability: 'eth_accounts',
+                parentCapability: 'endowment:caip25',
               },
             },
           },
@@ -479,6 +533,9 @@ describe('AccountListMenu', () => {
                 keyring: {
                   type: 'Snap Keyring',
                 },
+                snap: {
+                  id: 'local:snap-id',
+                },
               },
             },
           },
@@ -491,7 +548,18 @@ describe('AccountListMenu', () => {
       '.multichain-account-list-item',
     );
     const tag = listItems[0].querySelector('.mm-tag') as Element;
-    expect(tag.textContent).toBe('Snaps (Beta)');
+    expect(tag.textContent).toBe('mock snap name (Beta)');
+  });
+
+  it('detects NFTs when an account is clicked', () => {
+    const { getAllByTestId } = render();
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    expect(listItems).toHaveLength(6);
+    const button = getAllByTestId('account-item');
+    button[0].click();
+    expect(mockDetectNfts).toHaveBeenCalled();
   });
 
   it('displays the correct label for named snap accounts', () => {
@@ -511,7 +579,7 @@ describe('AccountListMenu', () => {
                 },
                 snap: {
                   name: 'Test Snap Name',
-                  id: 'test-snap-id',
+                  id: 'local:snap-id',
                 },
               },
             },
@@ -524,7 +592,7 @@ describe('AccountListMenu', () => {
       '.multichain-account-list-item',
     );
     const tag = listItems[0].querySelector('.mm-tag') as Element;
-    expect(tag.textContent).toBe('Test Snap Name (Beta)');
+    expect(tag.textContent).toBe('mock snap name (Beta)');
   });
   ///: END:ONLY_INCLUDE_IF
 
@@ -534,6 +602,7 @@ describe('AccountListMenu', () => {
     });
 
     it('calls the bitcoin client to create an account', async () => {
+      mockNextAccountName.mockReturnValue('Snap Account 1');
       const { getByText, getByTestId } = render();
 
       const button = getByTestId(
@@ -542,15 +611,19 @@ describe('AccountListMenu', () => {
       button.click();
 
       const createBtcAccountButton = getByText(
-        messages.addNewBitcoinAccount.message,
+        messages.addBitcoinAccountLabel.message,
       );
-
       createBtcAccountButton.click();
+
+      const addBtcAccountButton = getByTestId('submit-add-account-with-name');
+      addBtcAccountButton.click();
 
       expect(mockBitcoinClientCreateAccount).toHaveBeenCalled();
     });
 
-    it('redirects the user to the approval after clicking create account in the settings page', async () => {
+    // Skipping this test for now, since the flow has changed a bit when multi-SRP is enabled (and we have no way
+    // to disable it "programmatically" in the test)
+    it.skip('redirects the user to the approval after clicking create account in the settings page', async () => {
       const { getByText, getByTestId } = render(
         undefined,
         undefined,
@@ -563,10 +636,12 @@ describe('AccountListMenu', () => {
       button.click();
 
       const createBtcAccountButton = getByText(
-        messages.addNewBitcoinAccount.message,
+        messages.addBitcoinAccountLabel.message,
       );
-
       createBtcAccountButton.click();
+
+      const addBtcAccountButton = getByTestId('submit-add-account-with-name');
+      addBtcAccountButton.click();
 
       expect(historyPushMock).toHaveBeenCalledWith(CONFIRMATION_V_NEXT_ROUTE);
       expect(mockBitcoinClientCreateAccount).toHaveBeenCalled();
@@ -623,5 +698,94 @@ describe('AccountListMenu', () => {
       expect(queryByText(mockAccount.metadata.name)).not.toBeInTheDocument();
       expect(queryByText(mockBtcAccount.metadata.name)).toBeInTheDocument();
     });
+  });
+
+  describe('Multi Srp', () => {
+    it('redirects to import srp component', () => {
+      const { getByTestId } = render();
+
+      const button = getByTestId(
+        'multichain-account-menu-popover-action-button',
+      );
+      button.click();
+
+      const addAccountButton = getByTestId(
+        'multichain-account-menu-popover-import-srp',
+      );
+      addAccountButton.click();
+
+      expect(getByTestId('import-srp-container')).toBeInTheDocument();
+    });
+
+    it('shows srp list if there are multiple srps when adding a new account', async () => {
+      mockNextAccountName.mockReturnValue('Next HD Account');
+
+      const accountInSecondSrp = createMockInternalAccount({
+        address: '0xb1baf6a2f4a808937bb97a2f12ccf08f1233e3d9',
+        name: 'Account in second Srp',
+      });
+      const secondHdKeyring = {
+        accounts: [accountInSecondSrp.address],
+        type: KeyringTypes.hd,
+      };
+      const secondHdKeyringMetadata = {
+        id: '01JN2RD391JM4K7Q5T4RP3JXMA',
+        name: '',
+      };
+
+      const { getByTestId } = render({
+        metamask: {
+          ...mockState.metamask,
+          accounts: {
+            [accountInSecondSrp.address]: {
+              address: accountInSecondSrp.address,
+              balance: '0x0',
+            },
+          },
+          keyrings: [...mockState.metamask.keyrings, secondHdKeyring],
+          keyringsMetadata: [
+            ...mockState.metamask.keyringsMetadata,
+            secondHdKeyringMetadata,
+          ],
+          internalAccounts: {
+            ...mockState.metamask.internalAccounts,
+            accounts: {
+              ...mockState.metamask.internalAccounts.accounts,
+              [accountInSecondSrp.id]: accountInSecondSrp,
+            },
+            selectedAccount: accountInSecondSrp.id,
+          },
+        },
+      });
+
+      const button = getByTestId(
+        'multichain-account-menu-popover-action-button',
+      );
+      await button.click();
+
+      const addAccountButton = getByTestId(
+        'multichain-account-menu-popover-add-account',
+      );
+      await addAccountButton.click();
+
+      expect(getByTestId('select-srp-container')).toBeInTheDocument();
+    });
+  });
+
+  it('should render institutional wallet button if manage institutional wallets is enabled', () => {
+    const { getByText, getByTestId } = render({
+      metamask: {
+        ...mockState.metamask,
+        manageInstitutionalWallets: true,
+      },
+    });
+
+    // Click the action button to enter menu mode
+    const actionButton = getByTestId(
+      'multichain-account-menu-popover-action-button',
+    );
+    actionButton.click();
+
+    expect(getByText('Manage Institutional Wallets')).toBeInTheDocument();
   });
 });

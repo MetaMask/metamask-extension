@@ -254,9 +254,6 @@
   "from": {
     "message": "ನಿಂದ"
   },
-  "functionType": {
-    "message": "ಕಾರ್ಯದ ಪ್ರಕಾರ"
-  },
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
@@ -315,9 +312,6 @@
   "import": {
     "message": "ಆಮದು",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "ಖಾತೆಯನ್ನು ಆಮದು ಮಾಡಿ"
   },
   "importAccountMsg": {
     "message": "ನಿಮ್ಮ ಮೂಲ ರಚಿಸಿರುವ MetaMask ಖಾತೆಯ ಸೀಡ್‌ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಆಮದು ಮಾಡಲಾದ ಖಾತೆಗಳನ್ನು ಸಂಯೋಜನೆ ಮಾಡಲಾಗಿಲ್ಲ. ಆಮದು ಮಾಡಲಾಗಿರುವ ಖಾತೆಗಳ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
@@ -381,9 +375,6 @@
   "loading": {
     "message": "ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
   },
-  "loadingTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."
-  },
   "localhost": {
     "message": "ಲೋಕಲ್‌ಹೋಸ್ಟ್ 8545"
   },
@@ -446,9 +437,6 @@
   "noConversionRateAvailable": {
     "message": "ಯಾವುದೇ ಪರಿವರ್ತನೆ ದರ ಲಭ್ಯವಿಲ್ಲ"
   },
-  "noTransactions": {
-    "message": "ನೀವು ಯಾವುದೇ ವಹಿವಾಟುಗಳನ್ನು ಹೊಂದಿಲ್ಲ"
-  },
   "noWebcamFound": {
     "message": "ನಿಮ್ಮ ಕಂಪ್ಯೂಟರ್‌ನ ವೆಬ್‌ಕ್ಯಾಮ್ ಕಂಡುಬಂದಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
   },
@@ -472,9 +460,6 @@
   },
   "origin": {
     "message": "ಮೂಲ"
-  },
-  "parameters": {
-    "message": "ಪ್ಯಾರಾಮೀಟರ್‌ಗಳು"
   },
   "participateInMetaMetrics": {
     "message": "MetaMetrics ನಲ್ಲಿ ಭಾಗವಹಿಸಿ"
@@ -544,9 +529,6 @@
   "removeAccountDescription": {
     "message": "ಈ ಖಾತೆಯನ್ನು ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಿಂದ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ದಯವಿಟ್ಟು ಮುಂದುವರಿಯುವ ಮೊದಲು ಈ ಆಮದು ಖಾತೆಗಾಗಿ ನೀವು ಸೀಡ್ ಫ್ರೇಸ್ ಅಥವಾ ಖಾಸಗಿ ಕೀಯನ್ನು ಹೊಂದಿರುವಿರಾ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಖಾತೆಯ ಡ್ರಾಪ್-ಡೌನ್‌ನಿಂದ ನೀವು ಮತ್ತೆ ಖಾತೆಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಬಹುದು ಅಥವಾ ರಚಿಸಬಹುದು."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ಅಂಗೀಕರಿಸಲು ನಿರೀಕ್ಷಿಸುತ್ತಿರುವ ವಿನಂತಿಗಳು"
-  },
   "required": {
     "message": "ಅಗತ್ಯವಿದೆ"
   },
@@ -613,9 +595,6 @@
   },
   "showHexDataDescription": {
     "message": "ಕಳುಹಿಸುವ ಪರದೆಯಲ್ಲಿ ಹೆಕ್ಸ್ ಡೇಟಾ ಕ್ಷೇತ್ರವನ್ನು ತೋರಿಸಲು ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "sigRequest": {
-    "message": "ಸಹಿಯ ವಿನಂತಿ"
   },
   "sign": {
     "message": "ಸಹಿ"
@@ -713,9 +692,6 @@
   "transactionErrored": {
     "message": "ವಹಿವಾಟಿನಲ್ಲಿ ದೋಷ ಕಂಡುಬಂದಿದೆ."
   },
-  "transactionFee": {
-    "message": "ವಹಿವಾಟು ಶುಲ್ಕ"
-  },
   "transactionResubmitted": {
     "message": "$2 ನಲ್ಲಿ $1 ಗೆ ಏರಿದ ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ವಹಿವಾಟನ್ನು ಮರುಸಲ್ಲಿಸಲಾಗಿದೆ"
   },
@@ -742,9 +718,6 @@
   },
   "unknown": {
     "message": "ಅಪರಿಚಿತ"
-  },
-  "unknownNetwork": {
-    "message": "ಅಪರಿಚಿತ ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
   },
   "unknownQrCode": {
     "message": "ದೋಷ: ನಮಗೆ ಆ QR ಕೋಡ್ ಅನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
@@ -775,9 +748,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು ನೀವು ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಬೇಕಾಗುತ್ತದೆ."
-  },
-  "youSign": {
-    "message": "ನೀವು ಸಹಿ ಮಾಡುತ್ತಿರುವಿರಿ"
   },
   "yourPrivateSeedPhrase": {
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಸೀಡ್ ಫ್ರೇಸ್"

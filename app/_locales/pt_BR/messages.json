@@ -143,10 +143,6 @@
   "alerts": {
     "message": "Alertas"
   },
-  "allowSpendToken": {
-    "message": "Você concede acesso aos seus $1?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
-  },
   "allowWithdrawAndSpend": {
     "message": "Permitir que $1 saque e gaste até o seguinte valor:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
@@ -272,9 +268,6 @@
   },
   "cancelPopoverTitle": {
     "message": "Cancelar transação"
-  },
-  "cancelSpeedUp": {
-    "message": "cancelar ou acelerar uma transação."
   },
   "cancelSpeedUpLabel": {
     "message": "Essa taxa de gás vai $1 a original.",
@@ -405,9 +398,6 @@
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
   },
-  "copyRawTransactionData": {
-    "message": "Copiar dados brutos da transação"
-  },
   "copyToClipboard": {
     "message": "Copiar para a área de transferência"
   },
@@ -472,9 +462,6 @@
   },
   "data": {
     "message": "Dados"
-  },
-  "dataHex": {
-    "message": "Hex"
   },
   "decimal": {
     "message": "Decimal do token"
@@ -627,10 +614,6 @@
   "editGasPriceTooltip": {
     "message": "Essa rede requer um campo de \"Preço do gás\" ao enviar uma transação. O preço do gás é o valor pago por unidade de gás."
   },
-  "editGasSubTextAmountLabel": {
-    "message": "Valor máximo:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
-  },
   "editGasSubTextFeeLabel": {
     "message": "Taxa máxima:"
   },
@@ -738,9 +721,6 @@
   "fast": {
     "message": "Rápido"
   },
-  "feeAssociatedRequest": {
-    "message": "Há uma taxa associada a essa solicitação."
-  },
   "fileImportFail": {
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
     "description": "Helps user import their account from a JSON file"
@@ -780,12 +760,6 @@
   "fromAddress": {
     "message": "De: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
-  "functionApprove": {
-    "message": "Função: aprovar"
-  },
-  "functionType": {
-    "message": "Tipo de função"
   },
   "gas": {
     "message": "Gás"
@@ -858,9 +832,6 @@
   "goerli": {
     "message": "Rede de testes Goerli"
   },
-  "grantedToWithColon": {
-    "message": "Concedido a:"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -915,9 +886,6 @@
   "import": {
     "message": "Importar",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importar conta"
   },
   "importAccountError": {
     "message": "Erro de importação de conta."
@@ -1020,10 +988,6 @@
   "lastConnected": {
     "message": "Conectado pela última vez em"
   },
-  "learnCancelSpeeedup": {
-    "message": "Saiba como $1",
-    "description": "$1 is link to cancel or speed up transactions"
-  },
   "learnMore": {
     "message": "mais informações"
   },
@@ -1085,9 +1049,6 @@
   },
   "loading": {
     "message": "Carregando..."
-  },
-  "loadingTokens": {
-    "message": "Carregando tokens..."
   },
   "localhost": {
     "message": "Host local 8545"
@@ -1260,10 +1221,6 @@
   "next": {
     "message": "Seguinte"
   },
-  "nextNonceWarning": {
-    "message": "Nonce é maior que o nonce sugerido de $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nfts": {
     "message": "NFTs"
   },
@@ -1276,9 +1233,6 @@
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
   },
-  "noTransactions": {
-    "message": "Você não tem transações"
-  },
   "noWebcamFound": {
     "message": "A webcam do seu computador não foi encontrada. Tente novamente."
   },
@@ -1287,12 +1241,6 @@
   },
   "nonce": {
     "message": "Nonce"
-  },
-  "nonceField": {
-    "message": "Personalizar nonce da transação"
-  },
-  "nonceFieldHeading": {
-    "message": "Nonce personalizado"
   },
   "notBusy": {
     "message": "Não ocupado"
@@ -1371,14 +1319,8 @@
   "optional": {
     "message": "Opcional"
   },
-  "or": {
-    "message": "ou"
-  },
   "origin": {
     "message": "Origem"
-  },
-  "parameters": {
-    "message": "Parâmetros"
   },
   "participateInMetaMetrics": {
     "message": "Participe do MetaMetrics"
@@ -1407,19 +1349,6 @@
   },
   "pending": {
     "message": "Pendente"
-  },
-  "pendingTransactionInfo": {
-    "message": "Essa transação só será processada quando a anterior estiver concluída."
-  },
-  "pendingTransactionMultiple": {
-    "message": "Você tem ($1) transações pendentes."
-  },
-  "pendingTransactionSingle": {
-    "message": "Você tem (1) transação pendente.",
-    "description": "$1 is count of pending transactions"
-  },
-  "permissionRequest": {
-    "message": "Solicitação de permissão"
   },
   "permission_ethereumAccounts": {
     "message": "Ver endereço, saldo da conta, atividade e iniciar transações",
@@ -1538,9 +1467,6 @@
   "replace": {
     "message": "substituir"
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "solicitações aguardando confirmação"
-  },
   "required": {
     "message": "Obrigatório"
   },
@@ -1632,9 +1558,6 @@
   "seedPhraseIntroTitle": {
     "message": "Proteja sua carteira"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Antes de iniciar, assista a esse vídeo curto para aprender sobre sua Frase de Recuperação Secreta e sobre como manter sua carteira segura."
-  },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
   },
@@ -1703,13 +1626,6 @@
   "showHexDataDescription": {
     "message": "Selecione essa opção para mostrar o campo de dados hexadecimais na tela de envio"
   },
-  "showIncomingTransactions": {
-    "message": "Mostrar transações recebidas"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Selecione essa opção para usar o Etherscan e mostrar as transações recebidas na lista de transações",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
   "showPermissions": {
     "message": "Mostrar permissões"
   },
@@ -1718,9 +1634,6 @@
   },
   "showTestnetNetworksDescription": {
     "message": "Selecione essa opção para mostrar redes de teste na lista de redes"
-  },
-  "sigRequest": {
-    "message": "Solicitação de assinatura"
   },
   "sign": {
     "message": "Assinar"
@@ -2158,29 +2071,8 @@
   "transactionCreated": {
     "message": "Transação criada com valor de $1 às $2."
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Site sugerido"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "Edite para usar a taxa de gás recomendada pela MetaMask com base no bloco mais recente."
-  },
   "transactionDetailGasHeading": {
     "message": "Taxa de gás estimada"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "Saiba mais sobre taxas de gás"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "As taxas de gás são determinadas pela rede e oscilam com base no tráfego da rede e na complexidade da transação."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "As taxas de gás são pagas aos mineradores de criptoativos que processam as transações na rede de $1. A MetaMask não lucra com taxas de gás."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Valor + taxa de gás"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Taxa de gás de camada 2"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Valor + taxas"
@@ -2196,9 +2088,6 @@
   },
   "transactionErrored": {
     "message": "A transação encontrou um erro."
-  },
-  "transactionFee": {
-    "message": "Taxa de transação"
   },
   "transactionHistoryBaseFee": {
     "message": "Taxa de base (GWEI)"
@@ -2240,9 +2129,6 @@
     "message": "Tivemos dificuldade para conectar-nos à sua $1. Revise $2 e tente novamente.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "trustSiteApprovePermission": {
-    "message": "Ao conceder permissão, você estará autorizando que o $1 a seguir acesse seus fundos"
-  },
   "tryAgain": {
     "message": "Tente novamente"
   },
@@ -2264,9 +2150,6 @@
   },
   "unknown": {
     "message": "Desconhecido"
-  },
-  "unknownNetwork": {
-    "message": "Rede privada desconhecida"
   },
   "unknownQrCode": {
     "message": "Erro: não conseguimos identificar esse QR code"
@@ -2308,9 +2191,6 @@
   },
   "viewContact": {
     "message": "Ver contato"
-  },
-  "viewFullTransactionDetails": {
-    "message": "Ver detalhes completos da transação"
   },
   "viewMore": {
     "message": "Ver mais"
@@ -2368,18 +2248,11 @@
   "welcomeToMetaMaskIntro": {
     "message": "Aprovada por milhões de pessoas, a MetaMask é uma carteira segura que torna o mundo da web3 acessível para todos."
   },
-  "whatsNew": {
-    "message": "Novidades",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
-  },
   "whatsThis": {
     "message": "O que é isso?"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Você precisa permitir o acesso à câmera para usar esse recurso."
-  },
-  "youSign": {
-    "message": "Você está assinando"
   },
   "yourPrivateSeedPhrase": {
     "message": "Sua Frase de Recuperação Secreta privada"

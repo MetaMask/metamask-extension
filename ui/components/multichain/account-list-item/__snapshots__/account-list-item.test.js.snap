@@ -4,6 +4,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
 <div>
   <div
     class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+    data-testid="account-item"
   >
     <div
       class="mm-box mm-box--display-flex mm-box--sm:display-none"
@@ -69,54 +70,11 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 </div>
               </div>
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-              >
-                <div
-                  class="mm-avatar-account__jazzicon"
-                >
-                  <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 47);"
-                  >
-                    <svg
-                      height="32"
-                      width="32"
-                      x="0"
-                      y="0"
-                    >
-                      <rect
-                        fill="#F2C602"
-                        height="32"
-                        transform="translate(5.020620447504322 0.8103948904236289) rotate(161.5 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#F5ED00"
-                        height="32"
-                        transform="translate(-9.408121353992403 -10.305042584072448) rotate(246.0 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#FB183A"
-                        height="32"
-                        transform="translate(9.192555269879563 26.914160820887155) rotate(215.5 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div
                 class="mm-box mm-badge-wrapper__badge-container"
                 style="bottom: -1px; right: 2px;"
               >
                 <div
-                  class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                  class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                 />
               </div>
             </div>
@@ -127,49 +85,6 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
     <div
       class="mm-box mm-box--display-none mm-box--sm:display-flex"
     >
-      <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-      >
-        <div
-          class="mm-avatar-account__jazzicon"
-        >
-          <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 47);"
-          >
-            <svg
-              height="32"
-              width="32"
-              x="0"
-              y="0"
-            >
-              <rect
-                fill="#F2C602"
-                height="32"
-                transform="translate(5.020620447504322 0.8103948904236289) rotate(161.5 16 16)"
-                width="32"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#F5ED00"
-                height="32"
-                transform="translate(-9.408121353992403 -10.305042584072448) rotate(246.0 16 16)"
-                width="32"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#FB183A"
-                height="32"
-                transform="translate(9.192555269879563 26.914160820887155) rotate(215.5 16 16)"
-                width="32"
-                x="0"
-                y="0"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
       <div
         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
       >
@@ -312,6 +227,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
 <div>
   <div
     class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+    data-testid="account-item"
   >
     <div
       class="mm-box mm-box--display-flex mm-box--sm:display-none"
@@ -377,54 +293,11 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 </div>
               </div>
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-              >
-                <div
-                  class="mm-avatar-account__jazzicon"
-                >
-                  <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
-                  >
-                    <svg
-                      height="32"
-                      width="32"
-                      x="0"
-                      y="0"
-                    >
-                      <rect
-                        fill="#18CDF2"
-                        height="32"
-                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#035E56"
-                        height="32"
-                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                      <rect
-                        fill="#F26602"
-                        height="32"
-                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
-                        width="32"
-                        x="0"
-                        y="0"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div
                 class="mm-box mm-badge-wrapper__badge-container"
                 style="bottom: -1px; right: 2px;"
               >
                 <div
-                  class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                  class="mm-box multichain-badge-status__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                 />
               </div>
             </div>
@@ -435,49 +308,6 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
     <div
       class="mm-box mm-box--display-none mm-box--sm:display-flex"
     >
-      <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-      >
-        <div
-          class="mm-avatar-account__jazzicon"
-        >
-          <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
-          >
-            <svg
-              height="32"
-              width="32"
-              x="0"
-              y="0"
-            >
-              <rect
-                fill="#18CDF2"
-                height="32"
-                transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
-                width="32"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#035E56"
-                height="32"
-                transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
-                width="32"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#F26602"
-                height="32"
-                transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
-                width="32"
-                x="0"
-                y="0"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
       <div
         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
       >

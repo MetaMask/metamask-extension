@@ -142,6 +142,13 @@ describe('Accounts', () => {
       );
     });
 
+    it('should return the correct label for OneKey hardware wallet', () => {
+      mockAccount.metadata.keyring.type = KeyringType.oneKey;
+      expect(getAccountLabel(KeyringType.oneKey, mockAccount)).toBe(
+        HardwareKeyringNames.oneKey,
+      );
+    });
+
     it('should return the correct label for Ledger hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.ledger;
       expect(getAccountLabel(KeyringType.ledger, mockAccount)).toBe(
@@ -162,12 +169,13 @@ describe('Accounts', () => {
     });
 
     describe('Snap Account Label', () => {
+      const mockSnapName = 'Test Snap Name';
       const mockSnapAccountWithName = {
         ...mockAccount,
         metadata: {
           ...mockAccount.metadata,
           type: KeyringType.snap,
-          snap: { name: 'Test Snap Name' },
+          snap: { name: mockSnapName },
         },
       };
       const mockSnapAccountWithoutName = {
@@ -179,15 +187,36 @@ describe('Accounts', () => {
       };
 
       it('should return snap name with beta tag if snap name is provided', () => {
-        expect(getAccountLabel(KeyringType.snap, mockSnapAccountWithName)).toBe(
-          'Test Snap Name (Beta)',
-        );
+        expect(
+          getAccountLabel(
+            KeyringType.snap,
+            mockSnapAccountWithName,
+            mockSnapName,
+            false,
+          ),
+        ).toBe('Test Snap Name (Beta)');
       });
 
       it('should return generic snap label with beta tag if snap name is not provided', () => {
         expect(
-          getAccountLabel(KeyringType.snap, mockSnapAccountWithoutName),
+          getAccountLabel(
+            KeyringType.snap,
+            mockSnapAccountWithoutName,
+            null,
+            false,
+          ),
         ).toBe('Snaps (Beta)');
+      });
+
+      it('should return null if snap is preinstalled', () => {
+        expect(
+          getAccountLabel(
+            KeyringType.snap,
+            mockSnapAccountWithName,
+            mockSnapName,
+            true,
+          ),
+        ).toBeNull();
       });
     });
   });

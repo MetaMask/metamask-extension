@@ -8,33 +8,25 @@ import {
 } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
-import { Ganache } from '../../../seeder/ganache';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
 
-const { defaultGanacheOptions, withFixtures } = require('../../../helpers');
+const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign Contract Interaction Transaction Decoding', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  describe('Create a mint nft transaction @no-mmi', function () {
+  describe('Create a mint nft transaction', function () {
     it(`decodes 4 bytes transaction data`, async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           testSpecificMock: mocked4BytesResponse,
           smartContract,
           title: this.test?.fullTitle(),
@@ -68,14 +60,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockedSourcifyResponse,
         smartContract,
         title: this.test?.fullTitle(),
@@ -107,14 +92,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -146,19 +124,12 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmationsEnabled: true,
-              isRedesignedConfirmationsDeveloperEnabled: true,
-            },
-          })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+      async ({ driver, localNodes }: TestSuiteArguments) => {
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);
@@ -206,7 +177,7 @@ async function mocked4BytesResponse(mockServer: MockttpServer) {
     }));
 }
 
-export const SOURCIFY_RESPONSE = {
+const SOURCIFY_RESPONSE = {
   files: [
     {
       name: 'metadata.json',
@@ -219,7 +190,9 @@ export const SOURCIFY_RESPONSE = {
 
 async function mockedSourcifyResponse(mockServer: MockttpServer) {
   return await mockServer
-    .forGet('https://sourcify.dev/server/files/any/1337/0x')
+    .forGet(
+      'https://sourcify.dev/server/files/any/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
+    )
     .always()
     .thenCallback(() => ({
       statusCode: 200,

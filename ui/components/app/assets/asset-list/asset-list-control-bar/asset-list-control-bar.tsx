@@ -55,9 +55,13 @@ import { getMultichainNetwork } from '../../../../../selectors/multichain';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
+  showTokenFiatBalance?: boolean;
 };
 
-const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
+const AssetListControlBar = ({
+  showTokensLinks,
+  showTokenFiatBalance,
+}: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -98,10 +102,7 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    if (
-      process.env.PORTFOLIO_VIEW &&
-      Object.keys(tokenNetworkFilter).length === 0
-    ) {
+    if (Object.keys(tokenNetworkFilter).length === 0) {
       dispatch(setTokenNetworkFilter(allOpts));
     } else {
       dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
@@ -113,6 +114,8 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
   useEffect(() => {
     if (Object.keys(tokenNetworkFilter).length === 1) {
       dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
+    } else {
+      dispatch(setTokenNetworkFilter(allOpts));
     }
   }, [Object.keys(allNetworks).length]);
 
@@ -176,13 +179,11 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
       <Box
         display={Display.Flex}
         justifyContent={
-          process.env.PORTFOLIO_VIEW && isEvmNetwork
-            ? JustifyContent.spaceBetween
-            : JustifyContent.flexEnd
+          isEvmNetwork ? JustifyContent.spaceBetween : JustifyContent.flexEnd
         }
       >
         {/* TODO: Remove isEvmNetwork check when we are ready to show the network filter in all networks including non-EVM */}
-        {process.env.PORTFOLIO_VIEW && isEvmNetwork ? (
+        {isEvmNetwork ? (
           <ButtonBase
             data-testid="sort-by-networks"
             variant={TextVariant.bodyMdMedium}
@@ -253,7 +254,10 @@ const AssetListControlBar = ({ showTokensLinks }: AssetListControlBarProps) => {
           minWidth: isFullScreen ? '250px' : '',
         }}
       >
-        <NetworkFilter handleClose={closePopover} />
+        <NetworkFilter
+          handleClose={closePopover}
+          showTokenFiatBalance={showTokenFiatBalance}
+        />
       </Popover>
       <Popover
         onClickOutside={closePopover}

@@ -2,7 +2,6 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
@@ -26,19 +25,20 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
-describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - Personal Sign', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
-        const publicAddress = addresses?.[0] as string;
+        const addresses = await localNodes?.[0]?.getAccounts();
+        const publicAddress = addresses?.[0].toLowerCase() as string;
         await initializePages(driver);
 
         await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
@@ -64,6 +64,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureApproved,
@@ -94,6 +95,7 @@ describe('Confirmation Signature - Personal Sign @no-mmi', function (this: Suite
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
           location: 'confirmation',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejected,

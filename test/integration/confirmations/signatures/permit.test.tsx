@@ -6,13 +6,16 @@ import {
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation } from '../../helpers';
-import { getMetaMaskStateWithUnapprovedPermitSign } from './signature-helpers';
+import { tEn } from '../../../lib/i18n-helpers';
+import {
+  getMetamaskStateWithMaliciousPermit,
+  getMetaMaskStateWithUnapprovedPermitSign,
+} from './signature-helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -43,6 +46,7 @@ describe('Permit Confirmation', () => {
       }),
     );
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -121,6 +125,7 @@ describe('Permit Confirmation', () => {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            hd_entropy_index: 0,
           },
         }),
       ]),
@@ -252,20 +257,15 @@ describe('Permit Confirmation', () => {
     expect(scope.isDone()).toBe(true);
   });
 
-  it('displays the MMI header warning when account signing is not the same as the account selected', async () => {
+  it('displays the malicious banner', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        '07c2cfec-36c9-46c4-8115-3836d3ac9047'
-      ];
-    const selectedAccount =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
           .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
       ];
 
-    const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
+    const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
       account.address,
-      'Permit',
     );
 
     await act(async () => {
@@ -275,12 +275,50 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    const mismatchAccountText = `Your selected account (${shortenAddress(
-      selectedAccount.address,
-    )}) is different than the account trying to sign (${shortenAddress(
-      account.address,
-    )})`;
+    const headingText = tEn('blockaidTitleDeceptive') as string;
+    const bodyText = tEn('blockaidDescriptionApproveFarming') as string;
+    expect(await screen.findByText(headingText)).toBeInTheDocument();
+    expect(await screen.findByText(bodyText)).toBeInTheDocument();
+  });
 
-    expect(await screen.findByText(mismatchAccountText)).toBeInTheDocument();
+  it('tracks external link clicked property in signature rejected event', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
+      account.address,
+    );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    fireEvent.click(await screen.findByTestId('disclosure'));
+    expect(
+      await screen.findByTestId('alert-provider-report-link'),
+    ).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByTestId('alert-provider-report-link'));
+
+    fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
+
+    expect(
+      mockedBackgroundConnection.submitRequestToBackground,
+    ).toHaveBeenCalledWith(
+      'updateEventFragment',
+      expect.arrayContaining([
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            external_link_clicked: 'security_alert_support_link',
+          }),
+        }),
+      ]),
+    );
   });
 });

@@ -21,16 +21,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  getUseBlockie,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getSelectedAddress,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors';
+import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
 import { trace, TraceName } from '../../../../shared/lib/trace';
 
 export const AccountPicker = ({
@@ -47,13 +39,6 @@ export const AccountPicker = ({
 }) => {
   const useBlockie = useSelector(getUseBlockie);
   const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const selectedAddress = useSelector(getSelectedAddress);
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, selectedAddress),
-  );
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <ButtonBase
@@ -80,7 +65,7 @@ export const AccountPicker = ({
         size: Size.SM,
       }}
       {...props}
-      gap={2}
+      gap={1}
     >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -94,30 +79,6 @@ export const AccountPicker = ({
           size={showAddress ? Size.MD : Size.XS}
           borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
         />
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        custodianIcon ? (
-          <img
-            src={custodianIcon}
-            data-testid="custody-logo"
-            className="custody-logo"
-            alt="custody logo"
-          />
-        ) : (
-          <AvatarAccount
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            address={address}
-            size={showAddress ? Size.MD : Size.XS}
-            borderColor={BackgroundColor.backgroundDefault}
-          />
-        )
         ///: END:ONLY_INCLUDE_IF
       }
 

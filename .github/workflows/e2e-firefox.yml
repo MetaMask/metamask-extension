@@ -1,0 +1,70 @@
+name: E2E Firefox
+
+on:
+  workflow_call:
+
+jobs:
+  test-e2e-firefox:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        index:
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    with:
+      test-suite-name: test-e2e-firefox
+      build-command: yarn build:test:mv2
+      test-command: yarn test:e2e:firefox
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-firefox-flask:
+    uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    with:
+      test-suite-name: test-e2e-firefox-flask
+      build-command: yarn build:test:flask:mv2
+      test-command: yarn test:e2e:firefox:flask
+      matrix-index: ${{ matrix.index }}
+      matrix-total: ${{ strategy.job-total }}
+
+  test-e2e-firefox-report:
+    needs:
+      - test-e2e-firefox
+      - test-e2e-firefox-flask
+    runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
+    env:
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
+      # For a `pull_request` event, the branch is `github.head_ref`.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      TEST_RESULTS_PATH: test/test-results/e2e
+      RUN_ID: ${{ github.run_id }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          pattern: test-e2e-firefox*
+          merge-multiple: true
+
+      - name: Create test report
+        run: yarn tsx .github/scripts/create-e2e-test-report.ts
+
+      - name: Upload test runs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-e2e-firefox-report
+          path: test/test-results/test-runs.json

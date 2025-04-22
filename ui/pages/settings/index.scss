@@ -56,7 +56,7 @@
 
       &__title {
         @include design-system.screen-sm-min {
-          width: 197px;
+          margin-right: 16px;
         }
 
         @include design-system.screen-sm-max {
@@ -225,11 +225,13 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
+    scrollbar-color: var(--color-icon-muted) transparent;
 
     &__tabs {
       display: flex;
       flex-direction: column;
       flex: 1 1 auto;
+      max-width: 100vw;
 
       @include design-system.screen-sm-min {
         flex: 0 0 40%;

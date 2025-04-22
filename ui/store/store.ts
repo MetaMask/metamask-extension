@@ -29,12 +29,6 @@ export type TemporaryMessageDataType = {
     metamaskId: string;
     data: string;
   };
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  metadata?: {
-    custodyId?: string;
-  };
-  status?: string;
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export type MessagesIndexedById = {
@@ -81,11 +75,6 @@ type TemporaryBackgroundState = NftControllerState &
     };
     gasFeeEstimates: GasFeeEstimates;
     gasEstimateType: GasEstimateType;
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    custodyAccountDetails?: { [key: string]: any };
-    ///: END:ONLY_INCLUDE_IF
     internalAccounts: {
       accounts: {
         [key: string]: InternalAccount;
@@ -114,7 +103,7 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
   localeMessages: RootReducerReturnType['localeMessages'];
 };
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
   const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);

@@ -32,8 +32,6 @@ function getAlertTextColors(
     case Severity.Warning:
       return TextColor.warningDefault;
     case ConfirmInfoRowVariant.Default:
-    case Severity.Info:
-      return TextColor.infoDefault;
     default:
       return TextColor.textDefault;
   }

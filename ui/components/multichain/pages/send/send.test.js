@@ -196,6 +196,10 @@ const baseStore = {
     completedOnboarding: true,
     useCurrencyRateCheck: true,
     ticker: 'ETH',
+    snaps: {},
+  },
+  localeMessages: {
+    currentLocale: 'en',
   },
   activeTab: {
     origin: 'https://uniswap.org/',

@@ -3,7 +3,6 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockPermitDecoding,
@@ -29,18 +28,19 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
-describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
+describe('Confirmation Signature - Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
     await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
         await initializePages(driver);
 
@@ -69,8 +69,10 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
-          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
+          decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
         await assertVerifiedResults(driver, publicAddress);
@@ -107,8 +109,10 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
           primaryType: 'Permit',
           uiCustomizations: ['redesigned_confirmation', 'permit'],
           location: 'confirmation',
-          decodingChangeTypes: ['RECEIVE', 'LISTING'],
+          decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
+          decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejectedWithDecoding,
@@ -126,12 +130,12 @@ describe('Confirmation Signature - Permit @no-mmi', function (this: Suite) {
         const simulationSection = driver.findElement({
           text: 'Estimated changes',
         });
-        const receiveChange = driver.findElement({ text: 'You receive' });
+        const receiveChange = driver.findElement({ text: 'Listing price' });
         const listChange = driver.findElement({ text: 'You list' });
         const listChangeValue = driver.findElement({ text: '#2101' });
 
         assert.ok(await simulationSection, 'Estimated changes');
-        assert.ok(await receiveChange, 'You receive');
+        assert.ok(await receiveChange, 'Listing price');
         assert.ok(await listChange, 'You list');
         assert.ok(await listChangeValue, '#2101');
 

@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
+import { Anvil } from '../../../seeder/anvil';
 import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
 
@@ -12,6 +13,16 @@ class HomePage {
     testId: 'account-overview__activity-tab',
   };
 
+  private readonly backupSecretRecoveryPhraseButton = {
+    text: 'Back up now',
+    css: '.home-notification__accept-button',
+  };
+
+  private readonly backupSecretRecoveryPhraseNotification = {
+    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
+    css: '.home-notification__text',
+  };
+
   protected readonly balance: string =
     '[data-testid="eth-overview__primary-currency"]';
 
@@ -19,6 +30,9 @@ class HomePage {
     text: 'Basic functionality is off',
     css: '.mm-banner-alert',
   };
+
+  protected readonly bridgeButton: string =
+    '[data-testid="eth-overview-bridge"]';
 
   private readonly closeUseNetworkNotificationModalButton = {
     text: 'Got it',
@@ -45,11 +59,14 @@ class HomePage {
     testId: 'sensitive-toggle',
   };
 
+  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
+
+  protected readonly swapButton: string =
+    '[data-testid="token-overview-button-swap"]';
+
   private readonly refreshErc20Tokens = {
     testId: 'refreshList',
   };
-
-  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
   private readonly tokensTab = {
     testId: 'account-overview__asset-tab',
@@ -96,9 +113,20 @@ class HomePage {
     await this.driver.clickElement(this.activityTab);
   }
 
+  async goToBackupSRPPage(): Promise<void> {
+    console.log(`Go to backup secret recovery phrase on homepage`);
+    await this.driver.waitForSelector(this.backupSecretRecoveryPhraseNotification);
+    await this.driver.clickElement(this.backupSecretRecoveryPhraseButton);
+  }
+
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
+  }
+
+  async goToTokensTab(): Promise<void> {
+    console.log(`Go to tokens tab on homepage`);
+    await this.driver.clickElement(this.tokensTab);
   }
 
   async openPortfolioPage(): Promise<void> {
@@ -114,6 +142,10 @@ class HomePage {
 
   async startSendFlow(): Promise<void> {
     await this.driver.clickElement(this.sendButton);
+  }
+
+  async startBridgeFlow(): Promise<void> {
+    await this.driver.clickElement(this.bridgeButton);
   }
 
   async togglePrivacyBalance(): Promise<void> {
@@ -135,11 +167,23 @@ class HomePage {
     });
   }
 
+  async check_backupReminderIsNotDisplayed(): Promise<void> {
+    console.log('Check backup reminder is not displayed on homepage');
+    await this.driver.assertElementNotPresent(this.backupSecretRecoveryPhraseNotification);
+  }
+
   async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check if basic functionality off warning message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
+  }
+
+  async check_disabledButtonTooltip(tooltipText: string): Promise<void> {
+    console.log(`Check if disabled button tooltip is displayed on homepage`);
+    await this.driver.waitForSelector(
+      `.icon-button--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
+    );
   }
 
   /**
@@ -162,11 +206,11 @@ class HomePage {
   /**
    * Checks if the expected balance is displayed on homepage.
    *
-   * @param expectedBalance - The expected balance to be displayed. Defaults to '0'.
+   * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
    */
   async check_expectedBalanceIsDisplayed(
-    expectedBalance: string = '0',
+    expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
     try {
@@ -187,6 +231,22 @@ class HomePage {
   }
 
   /**
+   * Checks if the expected token balance is displayed on homepage.
+   *
+   * @param expectedTokenBalance - The expected balance to be displayed.
+   * @param symbol - The symbol of the currency or token.
+   */
+  async check_expectedTokenBalanceIsDisplayed(
+    expectedTokenBalance: string,
+    symbol: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: '[data-testid="multichain-token-list-item-value"]',
+      text: `${expectedTokenBalance} ${symbol}`,
+    });
+  }
+
+  /**
    * This function checks if account syncing has been successfully completed at least once.
    */
   async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
@@ -194,22 +254,61 @@ class HomePage {
     await this.driver.wait(async () => {
       const uiState = await getCleanAppState(this.driver);
       return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
-    }, 10000);
+    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
-  async check_localBlockchainBalanceIsDisplayed(
-    localBlockchainServer?: Ganache,
+  async check_ifBridgeButtonIsClickable(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.bridgeButton, 1000);
+    } catch (e) {
+      console.log('Bridge button not clickable', e);
+      return false;
+    }
+    console.log('Bridge button is clickable');
+    return true;
+  }
+
+  async check_ifSendButtonIsClickable(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.sendButton, 1000);
+    } catch (e) {
+      console.log('Send button not clickable', e);
+      return false;
+    }
+    console.log('Send button is clickable');
+    return true;
+  }
+
+  async check_ifSwapButtonIsClickable(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.swapButton, 1000);
+    } catch (e) {
+      console.log('Swap button not clickable', e);
+      return false;
+    }
+    console.log('Swap button is clickable');
+    return true;
+  }
+
+  async check_localNodeBalanceIsDisplayed(
+    localNode?: Ganache | Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
-    if (localBlockchainServer) {
-      expectedBalance = (
-        await localBlockchainServer.getBalance(address)
-      ).toString();
+    if (localNode) {
+      expectedBalance = (await localNode.getBalance(address)).toString();
     } else {
-      expectedBalance = '0';
+      expectedBalance = '25';
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
+  }
+
+  async check_newSrpAddedToastIsDisplayed(
+    srpNumber: number = 2,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
   }
 }
 

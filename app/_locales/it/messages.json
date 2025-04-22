@@ -44,57 +44,12 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
-  "SIWEAddressInvalid": {
-    "message": "L'indirizzo nella richiesta di accesso non corrisponde all'indirizzo dell'account che stai utilizzando per accedere."
-  },
-  "SIWEDomainWarningBody": {
-    "message": "Il sito Web ($1) ti chiede di accedere al dominio sbagliato. Potrebbe trattarsi di un attacco di phishing.",
-    "description": "$1 represents the website domain"
-  },
-  "SIWELabelExpirationTime": {
-    "message": "Scade il:"
-  },
-  "SIWELabelIssuedAt": {
-    "message": "Rilasciato a:"
-  },
-  "SIWELabelMessage": {
-    "message": "Messaggio:"
-  },
-  "SIWELabelNonce": {
-    "message": "Nonce:"
-  },
-  "SIWELabelNotBefore": {
-    "message": "Non prima:"
-  },
-  "SIWELabelResources": {
-    "message": "Risorse: $1",
-    "description": "$1 represents the number of resources"
-  },
-  "SIWELabelVersion": {
-    "message": "Versione:"
-  },
-  "SIWESiteRequestSubtitle": {
-    "message": "Questo sito richiede l'accesso con"
-  },
-  "SIWESiteRequestTitle": {
-    "message": "Richiesta di accesso"
-  },
-  "SIWEWarningSubtitle": {
-    "message": "Per confermare di aver compreso, controlla:"
-  },
-  "SIWEWarningTitle": {
-    "message": "Sei sicuro?"
-  },
   "about": {
     "message": "Informazioni"
   },
   "acceptTermsOfUse": {
     "message": "Ho letto e accetto i $1",
     "description": "$1 is the `terms` message"
-  },
-  "accessAndSpendNoticeNFT": {
-    "message": "$1 può accedere e spendere questa risorsa",
-    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessYourWalletWithSRP": {
     "message": "Accedi al tuo portafoglio con la tua frase di recupero segreta"
@@ -195,14 +150,6 @@
   "alerts": {
     "message": "Avvisi"
   },
-  "allOfYour": {
-    "message": "Tutti i tuoi $1",
-    "description": "$1 is the symbol or name of the token that the user is approving spending"
-  },
-  "allowSpendToken": {
-    "message": "Dai il permesso di spendere tuoi $1?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
-  },
   "allowWithdrawAndSpend": {
     "message": "Consenti a $1 di ritirare e spendere fino a questo importo:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
@@ -229,18 +176,11 @@
   "approve": {
     "message": "Approva"
   },
-  "approveAllTokensTitle": {
-    "message": "Consenti l'accesso e il trasferimento di tutti i tuoi $1?",
-    "description": "$1 is the symbol of the token for which the user is granting approval"
-  },
   "approveButtonText": {
     "message": "Approva"
   },
   "approved": {
     "message": "Approvato"
-  },
-  "approvedAsset": {
-    "message": "Asset approvato"
   },
   "approvedOn": {
     "message": "Approvato il $1",
@@ -291,9 +231,6 @@
   "basic": {
     "message": "Base"
   },
-  "beCareful": {
-    "message": "Presta attenzione"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask Versione Beta"
   },
@@ -326,10 +263,6 @@
   "busy": {
     "message": "Occupato"
   },
-  "buyAsset": {
-    "message": "Compra $1",
-    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
   "canToggleInSettings": {
     "message": "Puoi riabilitare questa notifica in Impostazioni -> Avvisi."
   },
@@ -338,9 +271,6 @@
   },
   "cancelPopoverTitle": {
     "message": "Annulla transazione"
-  },
-  "cancelSpeedUp": {
-    "message": "annulla o velocizza una transazione."
   },
   "cancelSpeedUpLabel": {
     "message": "Questa commissione di gas $1 l'originale.",
@@ -459,20 +389,8 @@
   "contractDeployment": {
     "message": "Distribuzione Contratto"
   },
-  "contractDescription": {
-    "message": "Per proteggerti dai truffatori, prenditi un momento per verificare i dettagli del contratto."
-  },
   "contractInteraction": {
     "message": "Interazione Contratto"
-  },
-  "contractRequestingSpendingCap": {
-    "message": "Il contratto richiede un limite di spesa"
-  },
-  "contractTitle": {
-    "message": "Dettagli contratto"
-  },
-  "contractToken": {
-    "message": "Token contratto"
   },
   "convertTokenToNFTDescription": {
     "message": "Abbiamo rilevato che questa risorsa è un NFT. MetaMask ora ha il supporto nativo completo per NFT. Vuoi rimuoverlo dal tuo elenco di token e aggiungerlo come NFT?"
@@ -485,9 +403,6 @@
   },
   "copyAddress": {
     "message": "Copia l'indirizzo"
-  },
-  "copyRawTransactionData": {
-    "message": "Copia i dati grezzi della transazione"
   },
   "copyToClipboard": {
     "message": "Copia negli appunti"
@@ -546,9 +461,6 @@
   },
   "customSpendLimit": {
     "message": "Limite Spesa Personalizzato"
-  },
-  "customSpendingCap": {
-    "message": "Custom spending cap"
   },
   "customToken": {
     "message": "Token Personalizzato"
@@ -766,9 +678,6 @@
   "fast": {
     "message": "Veloce"
   },
-  "feeAssociatedRequest": {
-    "message": "Una tassa è associata a questa richiesta."
-  },
   "fileImportFail": {
     "message": "Importazione file non funziona? Clicca qui!",
     "description": "Helps user import their account from a JSON file"
@@ -788,12 +697,6 @@
   "fromAddress": {
     "message": "Da: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
-  "functionApprove": {
-    "message": "Funzione: Approve"
-  },
-  "functionType": {
-    "message": "Tipo della Funzione"
   },
   "gasLimit": {
     "message": "Gas Limite"
@@ -861,9 +764,6 @@
   "import": {
     "message": "Importa",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importa Account"
   },
   "importAccountMsg": {
     "message": " Gli account importati non saranno associati alla frase seed originariamente creata con MetaMask. Scopri di più sugli account importati "
@@ -965,9 +865,6 @@
   "loading": {
     "message": "Caricamento..."
   },
-  "loadingTokens": {
-    "message": "Caricamento Tokens..."
-  },
   "lock": {
     "message": "Disconnetti"
   },
@@ -1032,10 +929,6 @@
   "next": {
     "message": "Avanti"
   },
-  "nextNonceWarning": {
-    "message": "Numero di transazione deve essere maggiore di $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nftAddFailedMessage": {
     "message": "Non è possibile aggiungere questo NFT poiché i dettagli della proprietà non corrispondono. Assicurati di aver inserito le informazioni corrette."
   },
@@ -1049,20 +942,11 @@
   "noConversionRateAvailable": {
     "message": "Tasso di conversione non disponibile"
   },
-  "noTransactions": {
-    "message": "Nessuna Transazione"
-  },
   "noWebcamFound": {
     "message": "La fotocamera del tuo computer non è stata trovata. Riprova."
   },
   "noWebcamFoundTitle": {
     "message": "Fotocamera non trovata"
-  },
-  "nonceField": {
-    "message": "Personalizza il numero della transazione"
-  },
-  "nonceFieldHeading": {
-    "message": "Numero Transazione Personalizzato"
   },
   "notCurrentAccount": {
     "message": "È questo l'account corretto? È diverso dall'account selezionato nel tuo portafoglio"
@@ -1082,9 +966,6 @@
   },
   "origin": {
     "message": "Origine"
-  },
-  "parameters": {
-    "message": "Parametri"
   },
   "participateInMetaMetrics": {
     "message": "Participa in MetaMetrics"
@@ -1173,9 +1054,6 @@
   },
   "removeAccountDescription": {
     "message": "Questo account sarà rimosso dal tuo portafoglio. Per favore assicurati che hai la frase seed originale o la chiave privata per questo account importato prima di continuare. Puoi nuovamente importare o creare un account dal menù a tendina. "
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "richiedi che l'attesa sia recepita"
   },
   "required": {
     "message": "Richiesto"
@@ -1266,18 +1144,8 @@
   "showHexDataDescription": {
     "message": "Seleziona per mostrare il campo dei dati hex nella schermata di invio"
   },
-  "showIncomingTransactions": {
-    "message": "Mostra Transazioni in Ingresso"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Usa Etherscan per visualizzare le transazioni in ingresso nella lista delle transazioni",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
   "showPermissions": {
     "message": "Mostra permessi"
-  },
-  "sigRequest": {
-    "message": "Firma Richiesta"
   },
   "sign": {
     "message": "Firma"
@@ -1558,9 +1426,6 @@
   "transactionErrored": {
     "message": "La transazione ha riscontrato un errore."
   },
-  "transactionFee": {
-    "message": "Costo Transazione"
-  },
   "transactionResubmitted": {
     "message": "Transazione reinviata con costo in gas aumentato a $1 alle $2"
   },
@@ -1591,9 +1456,6 @@
   },
   "unknown": {
     "message": "Sconosciuto"
-  },
-  "unknownNetwork": {
-    "message": "Rete Privata Sconosciuta"
   },
   "unknownQrCode": {
     "message": "Errore: Non siamo riusciti a identificare il codice QR"
@@ -1643,9 +1505,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Devi consentire l'accesso alla fotocamera per usare questa funzionalità."
-  },
-  "youSign": {
-    "message": "Ti stai connettendo"
   },
   "yourPrivateSeedPhrase": {
     "message": "La tua frase seed privata"

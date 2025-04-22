@@ -1,17 +1,16 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { isHexString } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { isBoolean } from 'lodash';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
-import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
+import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { useIsNFT } from './use-is-nft';
 
-function isSpendingCapUnlimited(decodedSpendingCap: number) {
+export function isSpendingCapUnlimited(decodedSpendingCap: number) {
   return decodedSpendingCap >= TOKEN_VALUE_UNLIMITED_THRESHOLD;
 }
 
@@ -21,30 +20,17 @@ export const useApproveTokenSimulation = (
 ) => {
   const locale = useSelector(getIntlLocale);
   const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
-  const decodedResponse = useDecodedTransactionData();
-  const { value, pending } = decodedResponse;
+  const transactionData = transactionMeta?.txParams?.data as Hex | undefined;
 
-  const decodedSpendingCap = useMemo(() => {
-    if (!value) {
-      return '0';
-    }
+  const { amountOrTokenId: parsedValue } =
+    parseApprovalTransactionData(transactionData ?? '0x') ?? {};
 
-    const paramIndex = value.data[0].params.findIndex(
-      (param) =>
-        param.value !== undefined &&
-        !isHexString(param.value) &&
-        param.value.length === undefined &&
-        !isBoolean(param.value),
-    );
-    if (paramIndex === -1) {
-      return '0';
-    }
+  const value = parsedValue ?? new BigNumber(0);
 
-    return calcTokenAmount(
-      value.data[0].params[paramIndex].value,
-      Number(decimals || '0'),
-    ).toFixed();
-  }, [value, decimals]);
+  const decodedSpendingCap = calcTokenAmount(
+    value,
+    Number(decimals ?? '0'),
+  ).toFixed();
 
   const tokenPrefix = isNFT ? '#' : '';
 
@@ -69,6 +55,6 @@ export const useApproveTokenSimulation = (
     spendingCap,
     formattedSpendingCap,
     value,
-    pending: pending || isNFTPending,
+    pending: isNFTPending,
   };
 };

@@ -1,11 +1,11 @@
 import { useCallback, useContext } from 'react';
+import { SortOrder } from '@metamask/bridge-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../shared/constants/metametrics';
-import { SortOrder } from '../../pages/bridge/types';
 import {
   RequestParams,
   RequestMetadata,
@@ -23,8 +23,9 @@ export type CrossChainSwapsEventProperties = {
     RequestMetadata &
     TradeData &
     TxStatusData & {
-      usd_actual_return: number;
       actual_time_minutes: number;
+      usd_actual_return: number;
+      usd_actual_gas: number;
       quote_vs_execution_ratio: number;
       quoted_vs_used_gas_ratio: number;
     };

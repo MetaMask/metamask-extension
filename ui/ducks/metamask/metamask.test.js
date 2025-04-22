@@ -22,6 +22,7 @@ import reduceMetamask, {
   getSendToAccounts,
   isNotEIP1559Network,
   getCurrentCurrency,
+  getAllNfts,
 } from './metamask';
 
 jest.mock('@metamask/transaction-controller', () => ({
@@ -267,28 +268,6 @@ describe('MetaMask Reducers', () => {
     });
   });
 
-  it('toggles account menu', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.TOGGLE_ACCOUNT_MENU,
-      },
-    );
-
-    expect(state.isAccountMenuOpen).toStrictEqual(true);
-  });
-
-  it('toggles network menu', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.TOGGLE_NETWORK_MENU,
-      },
-    );
-
-    expect(state.isNetworkMenuOpen).toStrictEqual(true);
-  });
-
   it('updates value of tx by id', () => {
     const oldState = {
       transactions: [
@@ -306,53 +285,6 @@ describe('MetaMask Reducers', () => {
     });
 
     expect(state.transactions[0].txParams).toStrictEqual('bar');
-  });
-
-  it('close welcome screen', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.CLOSE_WELCOME_SCREEN,
-      },
-    );
-
-    expect(state.welcomeScreenSeen).toStrictEqual(true);
-  });
-
-  it('sets pending tokens', () => {
-    const payload = {
-      address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-      decimals: 18,
-      symbol: 'META',
-    };
-
-    const pendingTokensState = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_PENDING_TOKENS,
-        payload,
-      },
-    );
-
-    expect(pendingTokensState.pendingTokens).toStrictEqual(payload);
-  });
-
-  it('clears pending tokens', () => {
-    const payload = {
-      address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-      decimals: 18,
-      symbol: 'META',
-    };
-
-    const pendingTokensState = {
-      pendingTokens: payload,
-    };
-
-    const state = reduceMetamask(pendingTokensState, {
-      type: actionConstants.CLEAR_PENDING_TOKENS,
-    });
-
-    expect(state.pendingTokens).toStrictEqual({});
   });
 
   describe('metamask state selectors', () => {
@@ -768,6 +700,44 @@ describe('MetaMask Reducers', () => {
       expect(getGasEstimateTypeByChainId(state, '0x1')).toStrictEqual(
         GAS_ESTIMATE_TYPES.FEE_MARKET,
       );
+    });
+  });
+
+  describe('getAllNfts', () => {
+    it('should return all nfts', () => {
+      const testAddress = '0xaccount';
+      const state = {
+        metamask: {
+          internalAccounts: {
+            accounts: {
+              testId: {
+                address: testAddress,
+                id: 'testId',
+              },
+            },
+            selectedAccount: 'testId',
+          },
+          allNfts: {
+            [testAddress]: {
+              '0x1': [
+                {
+                  address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+                  tokenId: '100',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      expect(getAllNfts(state)).toStrictEqual({
+        '0x1': [
+          {
+            address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+            tokenId: '100',
+          },
+        ],
+      });
     });
   });
 });

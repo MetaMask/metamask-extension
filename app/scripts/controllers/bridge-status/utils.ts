@@ -1,21 +1,14 @@
-import {
-  BRIDGE_API_BASE_URL,
-  BRIDGE_CLIENT_ID,
-} from '../../../../shared/constants/bridge';
+import { BridgeClientId, type Quote } from '@metamask/bridge-controller';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   StatusResponse,
   StatusRequestWithSrcTxHash,
   StatusRequestDto,
 } from '../../../../shared/types/bridge-status';
-// TODO fix this
-// eslint-disable-next-line import/no-restricted-paths
-import { Quote } from '../../../../ui/pages/bridge/types';
 import { validateResponse, validators } from './validators';
+import { BRIDGE_STATUS_BASE_URL } from './constants';
 
-const CLIENT_ID_HEADER = { 'X-Client-Id': BRIDGE_CLIENT_ID };
-
-export const BRIDGE_STATUS_BASE_URL = `${BRIDGE_API_BASE_URL}/getTxStatus`;
+const CLIENT_ID_HEADER = { 'X-Client-Id': BridgeClientId.EXTENSION };
 
 export const getStatusRequestDto = (
   statusRequest: StatusRequestWithSrcTxHash,
@@ -25,7 +18,7 @@ export const getStatusRequestDto = (
   const statusRequestNoQuoteFormatted = Object.fromEntries(
     Object.entries(statusRequestNoQuote).map(([key, value]) => [
       key,
-      value.toString(),
+      value?.toString(),
     ]),
   ) as unknown as Omit<StatusRequestDto, 'requestId'>;
 

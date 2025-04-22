@@ -2,15 +2,15 @@
 import { MockttpServer } from 'mockttp';
 import { tinyDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
+  confirmApproveTransaction,
+  mocked4BytesApprove,
   openDAppWithContract,
   TestSuiteArguments,
   toggleAdvancedDetails,
 } from './shared';
 
 const {
-  defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
   withFixtures,
 } = require('../../../helpers');
@@ -20,21 +20,14 @@ const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 describe('Confirmation Redesign ERC20 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  describe('Submit an Approve transaction @no-mmi', function () {
+  describe('Submit an Approve transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -59,14 +52,8 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -87,35 +74,11 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
   });
 });
 
-export async function mocked4BytesApprove(mockServer: MockttpServer) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
-    .always()
-    .withQuery({ hex_signature: '0x095ea7b3' })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            id: 149,
-            created_at: '2016-07-09T03:58:29.617584Z',
-            text_signature: 'approve(address,uint256)',
-            hex_signature: '0x095ea7b3',
-            bytes_signature: '\t^§³',
-          },
-        ],
-      },
-    }));
-}
-
 async function mocks(server: MockttpServer) {
   return [await mocked4BytesApprove(server)];
 }
 
-export async function importTST(driver: Driver) {
+async function importTST(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="import-token-button"]');
   await driver.clickElement('[data-testid="importTokens"]');
@@ -128,6 +91,12 @@ export async function importTST(driver: Driver) {
     css: '.import-tokens-modal__button-tab',
     text: 'Custom token',
   });
+
+  await driver.clickElement(
+    '[data-testid="test-import-tokens-drop-down-custom-import"]',
+  );
+
+  await driver.clickElement('[data-testid="select-network-item-0x539"]');
 
   await driver.fill(
     '[data-testid="import-tokens-modal-custom-address"]',
@@ -147,7 +116,7 @@ export async function importTST(driver: Driver) {
   });
 }
 
-export async function createERC20ApproveTransaction(driver: Driver) {
+async function createERC20ApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#approveTokens');
 }
@@ -206,25 +175,6 @@ async function assertApproveDetails(driver: Driver) {
 
   await driver.waitForSelector({
     css: 'p',
-    text: 'Account balance',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
     text: 'Spending cap',
   });
-}
-
-export async function confirmApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await scrollAndConfirmAndAssertConfirm(driver);
-
-  await driver.delay(veryLargeDelayMs);
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
-  await driver.waitForSelector(
-    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-  );
 }
