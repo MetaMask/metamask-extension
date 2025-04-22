@@ -614,6 +614,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user signs in
    */
   ProfileId = 'profile_id',
+  /**
+   * Identified when the user adds or removes configured chains (evm or non-evm)
+   */
+  ChainIdList = 'chain_id_list',
 }
 
 /**
@@ -949,6 +953,7 @@ export enum MetaMetricsEventCategory {
   Footer = 'Footer',
   Home = 'Home',
   InpageProvider = 'inpage_provider',
+  MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
   Navigation = 'Navigation',
@@ -1020,6 +1025,11 @@ export enum MetaMetricsTokenEventSource {
 export enum MetaMetricsTransactionEventSource {
   Dapp = 'dapp',
   User = 'user',
+}
+
+export enum MetaMetricsRequestedThrough {
+  EthereumProvider = 'ethereum_provider',
+  MultichainApi = 'multichain_api',
 }
 
 export enum MetaMetricsEventLocation {
