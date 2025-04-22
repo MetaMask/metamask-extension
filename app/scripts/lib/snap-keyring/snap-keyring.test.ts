@@ -71,8 +71,8 @@ const mockInternalAccount = {
   },
 };
 
-jest.mock('../../../../shared/lib/accounts', () => ({
-  ...jest.requireActual('../../../../shared/lib/accounts'),
+jest.mock('../../../../shared/lib/snaps/snaps', () => ({
+  ...jest.requireActual('../../../../shared/lib/snaps/snaps'),
   isSnapPreinstalled: jest.fn(),
   getSnapName: jest.fn(),
 }));

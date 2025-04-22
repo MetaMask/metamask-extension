@@ -84,7 +84,7 @@ import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 ///: END:ONLY_INCLUDE_IF
-import { isSnapPreinstalled } from '../../../../shared/lib/accounts';
+import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
