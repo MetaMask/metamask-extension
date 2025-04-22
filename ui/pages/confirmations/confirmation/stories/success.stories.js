@@ -206,6 +206,7 @@ export const TemplateOnlyStory = () => {
                 'eth_signTypedData_v3',
                 'eth_signTypedData_v4',
               ],
+              scopes: ['eip155:0'],
               type: 'eip155:eoa',
               keyring: 'HD Key Tree',
               label: null,
