@@ -1,4 +1,10 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  GasFeeEstimateType,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+
+import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
 
 export const upgradeAccountConfirmation = {
   batchId: '0x6046131032d748a6bfac42fd5117479f',
@@ -196,7 +202,7 @@ export const upgradeAccountConfirmation = {
     },
     tokenBalanceChanges: [],
   },
-};
+} as Confirmation;
 
 export const downgradeAccountConfirmation = {
   actionId: 1743757606797.6257,
@@ -304,6 +310,119 @@ export const downgradeAccountConfirmation = {
     low: { maxFeePerGas: '0x9374a3b7', maxPriorityFeePerGas: '0x3b9aca00' },
     medium: { maxFeePerGas: '0xd0017b51', maxPriorityFeePerGas: '0x59682f00' },
     high: { maxFeePerGas: '0x10c8e52eb', maxPriorityFeePerGas: '0x77359400' },
+  },
+  gasFeeEstimatesLoaded: true,
+  gasFeeTokens: [],
+  simulationData: { tokenBalanceChanges: [] },
+};
+
+export const upgradeAccountConfirmationWithoutNestedTransactions = {
+  actionId: '1745326968248.2673',
+  chainId: '0xaa36a7',
+  id: '171998b0-1f7a-11f0-8c59-f7ce445fc54e',
+  networkClientId: 'sepolia',
+  origin: 'metamask',
+  status: TransactionStatus.unapproved,
+  time: 1745326968251,
+  txParams: {
+    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    authorizationList: [
+      { address: '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' },
+    ],
+    gas: '0x10fc5',
+    to: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    value: '0x0',
+    maxFeePerGas: '0x579740946',
+    maxPriorityFeePerGas: '0x59682f00',
+    type: '0x4',
+  },
+  type: TransactionType.batch,
+  userEditedGasLimit: false,
+  verifiedOnBlockchain: false,
+  gasLimitNoBuffer: '0xb52e',
+  originalGasEstimate: '0x10fc5',
+  defaultGasEstimates: {
+    gas: '0x10fc5',
+    maxFeePerGas: '0x52a009bc5',
+    maxPriorityFeePerGas: '0x59682f00',
+    estimateType: 'medium',
+  },
+  userFeeLevel: 'medium',
+  sendFlowHistory: [],
+  history: [
+    {
+      actionId: '1745326968248.2673',
+      chainId: '0xaa36a7',
+      id: '171998b0-1f7a-11f0-8c59-f7ce445fc54e',
+      networkClientId: 'sepolia',
+      origin: 'metamask',
+      status: TransactionStatus.unapproved,
+      time: 1745326968251,
+      txParams: {
+        from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+        authorizationList: [
+          { address: '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' },
+        ],
+        to: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+        type: '0x4',
+        value: '0x0',
+        gas: '0x10fc5',
+        maxFeePerGas: '0x52a009bc5',
+        maxPriorityFeePerGas: '0x59682f00',
+      },
+      type: TransactionType.batch,
+      userEditedGasLimit: false,
+      verifiedOnBlockchain: false,
+      gasLimitNoBuffer: '0xb52e',
+      originalGasEstimate: '0x10fc5',
+      defaultGasEstimates: {
+        gas: '0x10fc5',
+        maxFeePerGas: '0x52a009bc5',
+        maxPriorityFeePerGas: '0x59682f00',
+        estimateType: 'medium',
+      },
+      userFeeLevel: 'medium',
+      sendFlowHistory: [],
+    },
+    [
+      {
+        op: 'add',
+        path: '/gasFeeEstimates',
+        value: {
+          type: 'fee-market',
+          low: {
+            maxFeePerGas: '0x3cca3666c',
+            maxPriorityFeePerGas: '0x3b9aca00',
+          },
+          medium: {
+            maxFeePerGas: '0x52a009bc5',
+            maxPriorityFeePerGas: '0x59682f00',
+          },
+          high: {
+            maxFeePerGas: '0x6875dd11e',
+            maxPriorityFeePerGas: '0x77359400',
+          },
+        },
+        note: 'TransactionController#updateSimulationData - Update simulation data',
+        timestamp: 1745326970973,
+      },
+      { op: 'add', path: '/gasFeeEstimatesLoaded', value: true },
+      { op: 'add', path: '/gasFeeTokens', value: [] },
+      {
+        op: 'add',
+        path: '/simulationData',
+        value: { tokenBalanceChanges: [] },
+      },
+    ],
+  ],
+  gasFeeEstimates: {
+    type: GasFeeEstimateType.FeeMarket,
+    low: { maxFeePerGas: '0x4077da492', maxPriorityFeePerGas: '0x3b9aca00' },
+    medium: {
+      maxFeePerGas: '0x579740946',
+      maxPriorityFeePerGas: '0x59682f00',
+    },
+    high: { maxFeePerGas: '0x6eb6a6df9', maxPriorityFeePerGas: '0x77359400' },
   },
   gasFeeEstimatesLoaded: true,
   gasFeeTokens: [],

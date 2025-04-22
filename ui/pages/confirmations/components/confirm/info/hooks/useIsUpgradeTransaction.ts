@@ -8,7 +8,6 @@ export function useIsUpgradeTransaction() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
 
-  console.log('nestedTransactions = ', nestedTransactions);
   const isUpgrade =
     Boolean(authorizationAddress) &&
     authorizationAddress !== EIP_7702_REVOKE_ADDRESS;
