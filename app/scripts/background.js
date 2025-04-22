@@ -578,7 +578,12 @@ async function initialize() {
     log.info('MetaMask initialization complete.');
 
     // Set initial idle state after initialization is complete
-    extensionUpdateManager.setIdleState(true);
+    if (
+      initState.RemoteFeatureFlagController.remoteFeatureFlags
+        .extensionUpdateDetection
+    ) {
+      extensionUpdateManager.setIdleState(true);
+    }
 
     resolveInitialization();
   } catch (error) {
@@ -834,9 +839,13 @@ function trackAppOpened(environment) {
   const isFullscreenOpen = Object.values(openMetamaskTabsIDs).some(Boolean);
   const isAlreadyOpen =
     isFullscreenOpen || notificationIsOpen || openPopupCount > 0;
-
   // Set extension idle state based on UI open status
-  extensionUpdateManager.setIdleState(!isAlreadyOpen);
+  if (
+    controller.remoteFeatureFlagController.state.remoteFeatureFlags
+      .extensionUpdateDetection
+  ) {
+    extensionUpdateManager.setIdleState(!isAlreadyOpen);
+  }
 
   // Only emit event if no UI is open and environment is valid
   if (!isAlreadyOpen && environmentTypeList.includes(environment)) {
@@ -928,10 +937,20 @@ export function setupController(
     if (isClientOpen === false) {
       controller.onClientClosed();
       // Set extension to idle when all UI instances are closed
-      extensionUpdateManager.setIdleState(true);
+      if (
+        controller.remoteFeatureFlagController.state.remoteFeatureFlags
+          .extensionUpdateDetection
+      ) {
+        extensionUpdateManager.setIdleState(true);
+      }
     } else {
       // Set extension to not idle when UI instances are open
-      extensionUpdateManager.setIdleState(false);
+      if (
+        controller.remoteFeatureFlagController.state.remoteFeatureFlags
+          .extensionUpdateDetection
+      ) {
+        extensionUpdateManager.setIdleState(false);
+      }
       // in the case of fullscreen environment a user might have multiple tabs open so we don't want to disconnect all of
       // its corresponding polling tokens unless all tabs are closed.
       if (
@@ -969,9 +988,10 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
-      trackAppOpened(processName);
 
-      initializeRemoteFeatureFlags();
+      initializeRemoteFeatureFlags().then(() => {
+        trackAppOpened(processName);
+      });
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -1330,7 +1350,13 @@ async function triggerUi() {
   ) {
     uiIsTriggering = true;
     // Set extension to not idle when UI is being triggered
-    extensionUpdateManager.setIdleState(false);
+    if (
+      controller.remoteFeatureFlagController.state.remoteFeatureFlags
+        .extensionUpdateDetection
+    ) {
+      extensionUpdateManager.setIdleState(false);
+    }
+
     try {
       const currentPopupId = controller.appStateController.getCurrentPopupId();
       await notificationManager.showPopup(
@@ -1340,10 +1366,15 @@ async function triggerUi() {
       );
     } finally {
       uiIsTriggering = false;
-      // Check if UI is still open after triggering
-      const isClientOpen = isClientOpenStatus();
+
       // Only set to idle if no UI is open
-      extensionUpdateManager.setIdleState(!isClientOpen);
+      if (
+        controller.remoteFeatureFlagController.state.remoteFeatureFlags
+          .extensionUpdateDetection
+      ) {
+        const isClientOpen = isClientOpenStatus();
+        extensionUpdateManager.setIdleState(!isClientOpen);
+      }
     }
   }
 }
