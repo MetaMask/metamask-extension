@@ -1,49 +1,12 @@
 import * as fs from 'fs/promises';
-import humanizeDuration from 'humanize-duration';
 import path from 'path';
-import * as xml2js from 'xml2js';
 import { TestCase, TestFile, TestRun, TestSuite } from './shared/test-reports';
-import { normalizeTestPath } from './shared/utils';
-
-const XML = {
-  parse: new xml2js.Parser().parseStringPromise,
-};
-
-const humanizer = humanizeDuration.humanizer({
-  language: 'shortEn',
-  languages: {
-    shortEn: {
-      y: () => 'y',
-      mo: () => 'mo',
-      w: () => 'w',
-      d: () => 'd',
-      h: () => 'h',
-      m: () => 'm',
-      s: () => 's',
-      ms: () => 'ms',
-    },
-  },
-  delimiter: ' ',
-  spacer: '',
-  round: true,
-});
-
-function formatTime(ms: number): string {
-  if (ms < 1000) {
-    return `${Math.round(ms)}ms`;
-  }
-  return humanizer(ms);
-}
-
-/**
- * Replaces HTML `<strong>` tags with ANSI escape codes to format
- * text as bold in the console output.
- */
-function consoleBold(str: string): string {
-  return str
-    .replaceAll('<strong>', '\x1b[1m')
-    .replaceAll('</strong>', '\x1b[0m');
-}
+import {
+  consoleBold,
+  formatTime,
+  normalizeTestPath,
+  XML,
+} from './shared/utils';
 
 async function main() {
   const env = {
