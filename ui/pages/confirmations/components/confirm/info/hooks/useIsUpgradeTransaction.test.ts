@@ -55,7 +55,7 @@ describe('useIsUpgradeTransaction', () => {
   it('isUpgrade is true if authorization address is not empty', async () => {
     const result = runUpgradeHook([{ address: '0x123' }]);
     expect(result.isUpgrade).toBe(true);
-    expect(result.isUpgradeWithoutNestedTransactions).toBe(true);
+    expect(result.isUpgradeWithNoNestedTransactions).toBe(true);
   });
 
   it.each([undefined, null, []] as const)(
@@ -65,20 +65,20 @@ describe('useIsUpgradeTransaction', () => {
         authorizationList as unknown as AuthorizationList,
       );
       expect(result.isUpgrade).toBe(false);
-      expect(result.isUpgradeWithoutNestedTransactions).toBe(false);
+      expect(result.isUpgradeWithNoNestedTransactions).toBe(false);
     },
   );
 
   it('isUpgrade is false if authorization address is zero address', async () => {
     const result = runUpgradeHook([{ address: EIP_7702_REVOKE_ADDRESS }]);
     expect(result.isUpgrade).toBe(false);
-    expect(result.isUpgradeWithoutNestedTransactions).toBe(false);
+    expect(result.isUpgradeWithNoNestedTransactions).toBe(false);
   });
 
-  it('isUpgradeWithoutNestedTransactions is false if authorization address is not empty and there are nested transactions', async () => {
+  it('isUpgradeWithNoNestedTransactions is false if authorization address is not empty and there are nested transactions', async () => {
     const result = runUpgradeHookForConfirmation(upgradeAccountConfirmation);
     expect(result.isUpgrade).toBe(true);
-    expect(result.isUpgradeWithoutNestedTransactions).toBe(false);
+    expect(result.isUpgradeWithNoNestedTransactions).toBe(false);
   });
 });
 

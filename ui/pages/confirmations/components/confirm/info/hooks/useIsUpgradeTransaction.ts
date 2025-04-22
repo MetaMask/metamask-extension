@@ -13,8 +13,7 @@ export function useIsUpgradeTransaction() {
     authorizationAddress !== EIP_7702_REVOKE_ADDRESS;
   return {
     isUpgrade,
-    isUpgradeWithoutNestedTransactions:
-      isUpgrade && !nestedTransactions?.length,
+    isUpgradeWithNoNestedTransactions: isUpgrade && !nestedTransactions?.length,
   };
 }
 

@@ -21,7 +21,7 @@ import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 
 export function BatchSimulationDetails() {
   const t = useI18nContext();
-  const { isUpgradeWithoutNestedTransactions } = useIsUpgradeTransaction();
+  const { isUpgradeWithNoNestedTransactions } = useIsUpgradeTransaction();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -58,7 +58,7 @@ export function BatchSimulationDetails() {
 
   if (
     transactionMeta?.type === TransactionType.revokeDelegation ||
-    isUpgradeWithoutNestedTransactions
+    isUpgradeWithNoNestedTransactions
   ) {
     return null;
   }
