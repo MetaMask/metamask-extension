@@ -63,6 +63,13 @@ import {
   storeDelegationEntry,
 } from '../../../../store/actions';
 import useUpgradeAccount from '../../hooks/useUpgradeAccount';
+import {
+  RemoteModeHardwareWalletConfirm,
+  RemoteModeSwapAllowanceCard,
+  StepIndicator,
+  SmartAccountUpdateInformation,
+} from '../../components';
+
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
@@ -442,81 +449,9 @@ export default function RemoteModeSetupSwaps() {
               </Text>
             </Box>
 
-            <Card
-              backgroundColor={BackgroundColor.backgroundMuted}
-              marginBottom={4}
-            >
-              <Box
-                display={Display.Flex}
-                gap={2}
-                paddingBottom={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>Account</Text>
-
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  gap={2}
-                >
-                  <Text
-                    textAlign={TextAlign.Center}
-                    variant={TextVariant.bodySm}
-                    fontWeight={FontWeight.Medium}
-                    color={TextColor.infoDefault}
-                    backgroundColor={BackgroundColor.primaryMuted}
-                    style={{
-                      padding: '4px 8px',
-                      borderRadius: '16px',
-                      display: 'inline-block',
-                    }}
-                  >
-                    {/* <Box
-                      display={Display.Flex}
-                      alignItems={AlignItems.center}
-                      gap={2}
-                    > */}
-                    {/* <AvatarAccount
-                        variant={AvatarAccountVariant.Jazzicon}
-                        address={selectedHardwareAccount.address}
-                        size={AvatarAccountSize.Xs}
-                        marginTop={1}
-                        paddingRight={2}
-                      /> */}
-                    {selectedHardwareAccount.metadata.name}
-                    {/* </Box> */}
-                  </Text>
-                </Box>
-              </Box>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                paddingBottom={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>Now</Text>
-                <Text>Standard account (EOA)</Text>
-              </Box>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                paddingBottom={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>
-                  Updating to <Icon name={IconName.Info} size={IconSize.Sm} />
-                </Text>
-                <Text>Smart account</Text>
-              </Box>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>Interacting with</Text>
-                <Text>Smart contract</Text>
-              </Box>
-            </Card>
+            <SmartAccountUpdateInformation
+              selectedHardwareAccount={selectedHardwareAccount}
+            />
 
             <Card backgroundColor={BackgroundColor.backgroundMuted}>
               <Box

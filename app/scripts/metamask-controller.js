@@ -7098,6 +7098,25 @@ export default class MetamaskController extends EventEmitter {
       return next();
     });
 
+    engine.push(
+      createRPCMethodTrackingMiddleware({
+        getAccountType: this.getAccountType.bind(this),
+        getDeviceModel: this.getDeviceModel.bind(this),
+        getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
+        getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
+        snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
+          name: 'SnapAndHardwareMessenger',
+          allowedActions: [
+            'KeyringController:getKeyringForAccount',
+            'SnapController:get',
+            'AccountsController:getSelectedAccount',
+          ],
+        }),
+        appStateController: this.appStateController,
+        metaMetricsController: this.metaMetricsController,
+      }),
+    );
+
     engine.push(multichainMethodCallValidatorMiddleware);
     const middlewareMaker = makeMethodMiddlewareMaker([
       walletRevokeSession,
