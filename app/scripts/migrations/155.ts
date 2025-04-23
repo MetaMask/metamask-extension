@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 157;
+export const version = 155;
 
 /**
  * This migration removes the `bridgeStatusState` property from the BridgeStatusController state.
