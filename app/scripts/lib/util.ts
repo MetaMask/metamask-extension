@@ -536,11 +536,11 @@ export function isKnownDomain(domain: string): boolean {
  * Extracts the domain from an RPC endpoint URL with privacy considerations
  *
  * @param rpcUrl - The RPC endpoint URL
- * @returns The domain value to track in metrics
+ * @returns The domain for known providers, 'private' for private/custom networks, or 'invalid' for invalid URLs
  */
 export function extractRpcDomain(rpcUrl: string): string {
   if (!rpcUrl) {
-    return 'unknown';
+    return 'invalid';
   }
 
   try {
@@ -570,29 +570,13 @@ export function extractRpcDomain(rpcUrl: string): string {
       hostname.startsWith('127.') || // All 127.*.*.* addresses are loopback
       hostname === '::1' // IPv6 loopback
     ) {
-      return 'localhost';
+      return 'private';
     }
 
-    // Check for private network addresses
-    const privateIPv4Patterns = [
-      /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/u, // 10.0.0.0 - 10.255.255.255
-      /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/u, // 172.16.0.0 - 172.31.255.255
-      /^192\.168\.\d{1,3}\.\d{1,3}$/u, // 192.168.0.0 - 192.168.255.255
-    ];
-
-    // Check if it's a standard IPv4 address
+    // All IP addresses (both IPv4 and IPv6) are treated as private
     const ipv4Regex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/u;
-    if (ipv4Regex.test(hostname)) {
-      // Check if it's a private network address
-      if (privateIPv4Patterns.some((pattern) => pattern.test(hostname))) {
-        return 'private_network';
-      }
-      return 'ip_address';
-    }
-
-    // Check for IPv6 private addresses
-    if (hostname.startsWith('fd') && hostname.includes(':')) {
-      return 'private_network';
+    if (ipv4Regex.test(hostname) || hostname.includes(':')) {
+      return 'private';
     }
 
     // Check if the domain is in our known list
@@ -604,6 +588,6 @@ export function extractRpcDomain(rpcUrl: string): string {
     return 'private';
   } catch (error) {
     console.error('Error extracting RPC domain:', error);
-    return 'error';
+    return 'invalid';
   }
 }
