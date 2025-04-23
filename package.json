@@ -427,7 +427,7 @@
     "redux-thunk": "^2.3.0",
     "remove-trailing-slash": "^0.1.1",
     "reselect": "^3.0.1",
-    "ses": "^1.1.0",
+    "ses": "^1.12.0",
     "simple-git": "^3.20.0",
     "single-call-balance-checker-abi": "^1.0.0",
     "ts-mixer": "patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch",
