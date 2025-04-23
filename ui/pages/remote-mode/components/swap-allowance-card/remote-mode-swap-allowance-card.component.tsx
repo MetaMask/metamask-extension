@@ -19,7 +19,10 @@ import {
   BorderRadius,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
+
 import { SwapAllowance, TokenInfo, TOKEN_DETAILS } from '../../remote.types';
+import { getChainNamesForDisplayByIds } from '../../../../helpers/utils/remote-mode';
+import { SUPPORTED_CHAINS_IDS } from '../../remote.constants';
 
 /**
  * RemoteModeSwapAllowanceCard displays a card showing swap allowance details
@@ -94,7 +97,17 @@ export default function RemoteModeSwapAllowanceCard({
         >
           <Text variant={TextVariant.bodyMd}>Daily limit</Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {swapAllowance.amount}
+            {swapAllowance.amount} {selectedToken.symbol}
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          gap={2}
+        >
+          <Text variant={TextVariant.bodyMd}>Networks</Text>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {getChainNamesForDisplayByIds(SUPPORTED_CHAINS_IDS)}
           </Text>
         </Box>
       </Box>

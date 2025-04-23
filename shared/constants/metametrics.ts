@@ -929,7 +929,6 @@ export enum MetaMetricsEventAccountType {
 
 export enum QueueType {
   NavigationHeader = 'navigation_header',
-  QueueController = 'queue_controller',
 }
 
 export enum MetaMetricsEventAccountImportType {
