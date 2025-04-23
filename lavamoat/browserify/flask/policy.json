@@ -1230,22 +1230,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/delegation-toolkit": {
-      "packages": {
-        "@metamask/delegation-toolkit>@metamask/delegation-utils>@metamask/delegation-abis": true,
-        "@metamask/delegation-toolkit>@metamask/delegation-utils": true,
-        "viem": true
-      }
-    },
-    "@metamask/delegation-toolkit>@metamask/delegation-utils": {
-      "packages": {
-        "@metamask/delegation-toolkit>@metamask/delegation-utils>@metamask/delegation-abis": true,
-        "@metamask/delegation-toolkit>@metamask/delegation-utils>@metamask/delegation-deployments": true,
-        "browserify>buffer": true,
-        "viem": true,
-        "@metamask/delegation-toolkit>webauthn-p256": true
-      }
-    },
     "@metamask/ens-controller": {
       "packages": {
         "@ethersproject/providers": true,
@@ -2636,19 +2620,6 @@
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
         "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
-      }
-    },
-    "viem>@scure/bip32": {
-      "packages": {
-        "viem>@noble/curves": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
-      }
-    },
-    "viem>@scure/bip39": {
-      "packages": {
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
       }
     },
     "@segment/loosely-validate-event": {
@@ -4738,13 +4709,7 @@
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
-        "crypto.getRandomValues": true,
-        "crypto.subtle.exportKey": true,
-        "crypto.subtle.importKey": true,
-        "document.title": true,
-        "location.hostname": true,
-        "location.origin": true,
-        "navigator.credentials": true
+        "crypto.getRandomValues": true
       },
       "packages": {
         "viem>@noble/curves": true,
@@ -5818,8 +5783,6 @@
       "packages": {
         "viem>@noble/curves": true,
         "viem>@noble/hashes": true,
-        "viem>@scure/bip32": true,
-        "viem>@scure/bip39": true,
         "viem>abitype": true,
         "viem>isows": true,
         "viem>ox": true
@@ -5854,22 +5817,6 @@
     "@metamask/controllers>web3": {
       "globals": {
         "XMLHttpRequest": true
-      }
-    },
-    "@metamask/delegation-toolkit>webauthn-p256": {
-      "globals": {
-        "atob": true,
-        "btoa": true,
-        "crypto.subtle.digest": true,
-        "crypto.subtle.exportKey": true,
-        "crypto.subtle.importKey": true,
-        "document.title": true,
-        "location.hostname": true,
-        "navigator.credentials": true
-      },
-      "packages": {
-        "viem>@noble/curves": true,
-        "@noble/hashes": true
       }
     },
     "webextension-polyfill": {
