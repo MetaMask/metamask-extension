@@ -17,10 +17,9 @@ import {
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
 import useSnapConfirmation from './useSnapConfirmation';
-import {
-  ALLOWANCE_RESET_ERROR,
-  APPROVAL_TX_ERROR,
-} from './useHandleApprovalTx';
+
+const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
+const APPROVAL_TX_ERROR = 'Approve transaction failed';
 
 const debugLog = createProjectLogger('bridge');
 
