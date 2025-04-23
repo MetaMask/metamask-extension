@@ -46,7 +46,11 @@ function getSecurityApiScanTokenRequestBody(
  */
 function getFirstTokenAlert(features: TokenFeature[]): TokenFeature | null {
   return (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     features.find((feature) => feature.type === TokenFeatureType.MALICIOUS) ||
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     features.find((feature) => feature.type === TokenFeatureType.WARNING) ||
     null
   );
@@ -110,6 +114,10 @@ export function getTokenFeatureTitleDescriptionIds(
     case 'AIRDROP_PATTERN':
       titleId = 'airDropPatternTitle';
       descriptionId = 'airDropPatternDescription';
+      break;
+    case 'CONCENTRATED_SUPPLY_DISTRIBUTION':
+      titleId = 'concentratedSupplyDistributionTitle';
+      descriptionId = 'concentratedSupplyDistributionDescription';
       break;
 
     default:

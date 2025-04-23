@@ -15,6 +15,7 @@ import type { TransactionParams } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
 
 import { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { AssetType, TokenStandard } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
@@ -88,6 +89,8 @@ export function txParamsAreDappSuggested(
     transactionMeta?.txParams || {};
   return Boolean(
     (gasPrice &&
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       gasPrice === transactionMeta?.dappSuggestedGasFees?.gasPrice) ||
       (maxPriorityFeePerGas &&
         maxFeePerGas &&
@@ -246,6 +249,8 @@ export async function determineTransactionAssetType(
   ].find((methodName) => methodName === inferrableType);
 
   if (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     isTokenMethod ||
     // We can also check any contract interaction type to see if the to address
     // is a token contract. If it isn't, then the method will throw and we can
@@ -315,6 +320,8 @@ export const parseTypedDataMessage = (dataToParse: string) => {
 
   const messageValue = extractLargeMessageValue(dataToParse);
   if (result.message?.value) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     result.message.value = messageValue || String(result.message.value);
   }
 
@@ -325,4 +332,38 @@ export function hasTransactionData(transactionData?: Hex): boolean {
   return Boolean(
     transactionData?.length && transactionData?.toLowerCase?.() !== '0x',
   );
+}
+
+export function parseApprovalTransactionData(data: Hex):
+  | {
+      amountOrTokenId?: BigNumber;
+      isApproveAll?: boolean;
+      isRevokeAll?: boolean;
+    }
+  | undefined {
+  const transactionDescription = parseStandardTokenTransactionData(data);
+  const { args, name } = transactionDescription ?? {};
+
+  if (
+    !['approve', 'increaseAllowance', 'setApprovalForAll'].includes(name ?? '')
+  ) {
+    return undefined;
+  }
+
+  const rawAmountOrTokenId =
+    args?._value ?? // ERC-20 - approve
+    args?.increment; // Fiat Token V2 - increaseAllowance
+
+  const amountOrTokenId = rawAmountOrTokenId
+    ? new BigNumber(rawAmountOrTokenId?.toString())
+    : undefined;
+
+  const isApproveAll = name === 'setApprovalForAll' && args?._approved === true;
+  const isRevokeAll = name === 'setApprovalForAll' && args?._approved === false;
+
+  return {
+    amountOrTokenId,
+    isApproveAll,
+    isRevokeAll,
+  };
 }

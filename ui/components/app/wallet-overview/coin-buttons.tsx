@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useState,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -26,7 +19,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { SnapId } from '@metamask/snaps-sdk';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
@@ -34,9 +26,6 @@ import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  CONFIRMATION_V_NEXT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
@@ -48,10 +37,8 @@ import {
   getCurrentKeyring,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  getMemoizedUnapprovedTemplatedConfirmations,
-  ///: END:ONLY_INCLUDE_IF
   getNetworkConfigurationIdByChainId,
+  isNonEvmAccount,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -69,6 +56,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import {
+  BlockSize,
   Display,
   IconColor,
   JustifyContent,
@@ -83,14 +71,7 @@ import { ReceiveModal } from '../../multichain/receive-modal';
 import {
   setSwitchedNetworkDetails,
   setActiveNetworkWithError,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  sendMultichainTransaction,
-  setDefaultHomeActiveTabName,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { isMultichainWalletSnap } from '../../../../shared/lib/accounts/snaps';
-///: END:ONLY_INCLUDE_IF
 import {
   getMultichainNativeCurrency,
   getMultichainNetwork,
@@ -99,6 +80,9 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
+import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
 
 type CoinButtonsProps = {
@@ -143,12 +127,11 @@ const CoinButtons = ({
     string
   >;
   const currentChainId = useSelector(getCurrentChainId);
+
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  const currentActivityTabName = useSelector(
-    // @ts-expect-error TODO: fix state type
-    (state) => state.metamask.defaultHomeActiveTabName,
-  );
+  const handleSendNonEvm = useHandleSendNonEvm();
   ///: END:ONLY_INCLUDE_IF
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
@@ -169,6 +152,9 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+
+  const isNonEvmAccountWithoutExternalServices =
+    !isExternalServicesEnabled && isNonEvmAccount(account);
 
   const buttonTooltips = {
     buyButton: [
@@ -240,29 +226,6 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  const unapprovedTemplatedConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
-  );
-
-  useEffect(() => {
-    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
-      (approval) => {
-        return (
-          approval.type === 'snap_dialog' &&
-          account.metadata.snap &&
-          account.metadata.snap.id === approval.origin &&
-          isMultichainWalletSnap(account.metadata.snap.id as SnapId)
-        );
-      },
-    );
-
-    if (templatedSnapApproval) {
-      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
-    }
-  }, [unapprovedTemplatedConfirmations, history, account]);
-  ///: END:ONLY_INCLUDE_IF
-
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
@@ -301,31 +264,7 @@ const CoinButtons = ({
 
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     if (!isEvmAccountType(account.type)) {
-      // Non-EVM (Snap) Send flow
-      if (!account.metadata.snap) {
-        throw new Error('Non-EVM needs to be Snap accounts');
-      }
-
-      // TODO: Remove this once we want to enable all non-EVM Snaps
-      if (!isMultichainWalletSnap(account.metadata.snap.id as SnapId)) {
-        throw new Error(
-          `Non-EVM Snap is not whitelisted: ${account.metadata.snap.id}`,
-        );
-      }
-
-      try {
-        // FIXME: We switch the tab before starting the send flow (we
-        // faced some inconsistencies when changing it after).
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        await sendMultichainTransaction(account.metadata.snap.id, {
-          account: account.id,
-          scope: chainId as CaipChainId,
-        });
-      } catch {
-        // Restore the previous tab in case of any error (see FIXME comment above).
-        await dispatch(setDefaultHomeActiveTabName(currentActivityTabName));
-      }
-
+      await handleSendNonEvm();
       // Early return, not to let the non-EVM flow slip into the native send flow.
       return;
     }
@@ -335,7 +274,14 @@ const CoinButtons = ({
     await setCorrectChain();
     await dispatch(startNewDraftTransaction({ type: AssetType.native }));
     history.push(SEND_ROUTE);
-  }, [chainId, account, setCorrectChain]);
+  }, [
+    chainId,
+    account,
+    setCorrectChain,
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    handleSendNonEvm,
+    ///: END:ONLY_INCLUDE_IF
+  ]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleBuyAndSellOnClick = useCallback(() => {
@@ -414,7 +360,11 @@ const CoinButtons = ({
   ]);
 
   return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
+    <Box
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceEvenly}
+      width={BlockSize.Full}
+    >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
@@ -463,7 +413,11 @@ const CoinButtons = ({
         <IconButton
           className={`${classPrefix}-overview__button`}
           iconButtonClassName={iconButtonClassName}
-          disabled={!isBridgeChain || !isSigningEnabled}
+          disabled={
+            !isBridgeChain ||
+            !isSigningEnabled ||
+            isNonEvmAccountWithoutExternalServices
+          }
           data-testid={`${classPrefix}-overview-bridge`}
           Icon={
             <Icon
@@ -491,7 +445,7 @@ const CoinButtons = ({
             size={IconSize.Sm}
           />
         }
-        disabled={!isSigningEnabled}
+        disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
         label={t('send')}
         onClick={handleSendOnClick}
         tooltipRender={(contents: React.ReactElement) =>

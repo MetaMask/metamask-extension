@@ -3,7 +3,6 @@ import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   withFixtures,
@@ -17,7 +16,6 @@ describe('AssetPickerSendFlow', function () {
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
     localNodeOptions: {
-      ...defaultGanacheOptions,
       chainId: parseInt(chainId, 16),
     },
   };
@@ -87,6 +85,10 @@ describe('AssetPickerSendFlow', function () {
         );
         await searchInputField.sendKeys('CHZ');
 
+        await driver.elementCountBecomesN(
+          '[data-testid="multichain-token-list-button"]',
+          1,
+        );
         // check that CHZ is disabled
         const [tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',

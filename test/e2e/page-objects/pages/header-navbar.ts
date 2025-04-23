@@ -21,6 +21,8 @@ class HeaderNavbar {
   private readonly openAccountDetailsButton =
     '[data-testid="account-list-menu-details"]';
 
+  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
+
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
   private readonly switchNetworkDropDown = '[data-testid="network-display"]';
@@ -29,6 +31,9 @@ class HeaderNavbar {
 
   private readonly notificationsButton =
     '[data-testid="notifications-menu-item"]';
+
+  private readonly notificationCountOption =
+    '[data-testid="global-menu-notification-count"]';
 
   private readonly firstTimeTurnOnNotificationsButton =
     '[data-testid="turn-on-notifications-button"]';
@@ -50,6 +55,10 @@ class HeaderNavbar {
     console.log('Header navbar is loaded');
   }
 
+  async clickAddressCopyButton(): Promise<void> {
+    await this.driver.clickElement(this.copyAddressButton);
+  }
+
   async lockMetaMask(): Promise<void> {
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
@@ -64,6 +73,7 @@ class HeaderNavbar {
     console.log('Open account details modal');
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
+    await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
   async openThreeDotMenu(): Promise<void> {
@@ -104,6 +114,20 @@ class HeaderNavbar {
   async goToNotifications(): Promise<void> {
     console.log('Click notifications button');
     await this.driver.clickElement(this.notificationsButton);
+  }
+
+  async clickNotificationsOptions(): Promise<void> {
+    console.log('Click notifications options');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.notificationsButton);
+  }
+
+  async check_notificationCountInMenuOption(count: number): Promise<void> {
+    await this.openThreeDotMenu();
+    await this.driver.findElement({
+      css: this.notificationCountOption,
+      text: count.toString(),
+    });
   }
 
   async check_currentSelectedNetwork(networkName: string): Promise<void> {

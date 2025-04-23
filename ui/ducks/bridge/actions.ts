@@ -3,7 +3,7 @@ import {
   BridgeBackgroundAction,
   BridgeUserAction,
   type GenericQuoteRequest,
-} from '../../../shared/types/bridge';
+} from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';

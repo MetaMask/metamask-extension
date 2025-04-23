@@ -108,8 +108,8 @@ class SendTokenPage {
     const inputAmount = await this.driver.waitForSelector(this.inputAmount);
     await this.driver.pasteIntoField(this.inputAmount, amount);
     // The return value is not ts-compatible, requiring a temporary any cast to access the element's value. This will be corrected with the driver function's ts migration.
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+
     const inputValue = await (inputAmount as any).getProperty('value');
     assert.equal(
       inputValue,
@@ -156,7 +156,7 @@ class SendTokenPage {
     // Wait for both fields to be present and have the expected values
     await this.driver.waitForSelector({
       css: this.gasFeeField,
-      text: '0.0004 ETH',
+      text: '0.0004',
     });
     await this.driver.waitForSelector({
       css: this.fiatFeeField,

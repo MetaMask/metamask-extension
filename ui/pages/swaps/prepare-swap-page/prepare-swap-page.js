@@ -147,6 +147,7 @@ import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useBridging from '../../../hooks/bridge/useBridging';
+import useSwapDefaultToToken from '../../../hooks/swap/useSwapDefaultToToken';
 import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
@@ -208,6 +209,8 @@ export default function PrepareSwapPage({
   const areQuotesPresent = numberOfQuotes > 0 && usedQuote;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
+  const { defaultToToken } = useSwapDefaultToToken();
+
   const transactionSettingsOpened = useSelector(
     getTransactionSettingsOpened,
     shallowEqual,
@@ -754,6 +757,14 @@ export default function PrepareSwapPage({
     }
   }, [showQuotesLoadingAnimation]);
 
+  // Set the default destination token for the swap
+  useEffect(() => {
+    if (fromToken?.address && !selectedToToken?.address && defaultToToken) {
+      dispatch(setSwapToToken(defaultToToken));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromToken?.address]);
+
   const onOpenImportTokenModalClick = (item) => {
     setTokenForImport(item);
     setIsImportTokenModalOpen(true);
@@ -1208,6 +1219,8 @@ export default function PrepareSwapPage({
             onModalClose={() => {
               dispatch(setTransactionSettingsOpened(false));
             }}
+            sourceTokenSymbol={fromToken?.symbol}
+            destinationTokenSymbol={toToken?.symbol}
           />
         )}
         {showQuotesLoadingAnimation && (

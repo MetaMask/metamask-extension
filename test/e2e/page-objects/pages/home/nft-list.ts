@@ -16,8 +16,18 @@ class NftListPage {
 
   private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
 
+  private readonly noNftInfo = {
+    text: 'No NFTs yet',
+    tag: 'p',
+  };
+
   private readonly successImportNftMessage = {
     text: 'NFT was successfully added!',
+    tag: 'h6',
+  };
+
+  private readonly successRemoveNftMessage = {
+    text: 'NFT was successfully removed!',
     tag: 'h6',
   };
 
@@ -78,11 +88,23 @@ class NftListPage {
     });
   }
 
+  async check_noNftInfoIsDisplayed(): Promise<void> {
+    console.log('Check that no NFT info is displayed on nft tab');
+    await this.driver.waitForSelector(this.noNftInfo);
+  }
+
   async check_successImportNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success imported NFT message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.successImportNftMessage);
+  }
+
+  async check_successRemoveNftMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Check that success removed NFT message is displayed on homepage',
+    );
+    await this.driver.waitForSelector(this.successRemoveNftMessage);
   }
 }
 

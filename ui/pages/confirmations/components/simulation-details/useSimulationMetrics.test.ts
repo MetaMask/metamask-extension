@@ -79,10 +79,11 @@ describe('useSimulationMetrics', () => {
   const useLoadingTimeMock = jest.mocked(useLoadingTime);
   const setLoadingCompleteMock = jest.fn();
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let updateTransactionEventFragmentMock: jest.MockedFunction<any>;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let trackEventMock: jest.MockedFunction<any>;
 
@@ -94,7 +95,7 @@ describe('useSimulationMetrics', () => {
       balanceChanges?: BalanceChange[];
       simulationData?: SimulationData | undefined;
     },
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expected: any,
   ) {
@@ -123,12 +124,12 @@ describe('useSimulationMetrics', () => {
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
 
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useStateMock.mockImplementation(((initialValue: any) => [
       initialValue,
       jest.fn(),
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ]) as any);
 
@@ -167,22 +168,33 @@ describe('useSimulationMetrics', () => {
       jest.restoreAllMocks();
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['in progress', undefined, 'simulation_in_progress'],
       [
         'reverted',
-        { error: { code: SimulationErrorCode.Reverted } },
+        { error: { code: SimulationErrorCode.Reverted } } as SimulationData,
         'transaction_revert',
       ],
-      ['failed', { error: { message: 'testError' } }, 'failed'],
-      ['no changes', { tokenBalanceChanges: [] }, 'no_balance_change'],
-      ['changes', { tokenBalanceChanges: [{}] }, 'balance_change'],
+      [
+        'failed',
+        { error: { message: 'testError' } } as SimulationData,
+        'failed',
+      ],
+      [
+        'no changes',
+        { tokenBalanceChanges: [] } as SimulationData,
+        'no_balance_change',
+      ],
+      [
+        'changes',
+        { tokenBalanceChanges: [{}] } as SimulationData,
+        'balance_change',
+      ],
     ])(
       'with simulation response if %s',
       (
         _: string,
-        simulationData: Record<string, unknown>,
+        simulationData: SimulationData | undefined,
         simulationResponse: string,
       ) => {
         useDisplayNamesMock.mockReset();
@@ -201,7 +213,6 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['receiving', false, 'simulation_receiving_assets_quantity'],
       ['sending', true, 'simulation_sending_assets_quantity'],
@@ -226,7 +237,6 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving ERC-20',
@@ -312,7 +322,6 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving and available',
@@ -370,7 +379,6 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving and native',
@@ -469,7 +477,6 @@ describe('useSimulationMetrics', () => {
       },
     );
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['receiving', false, 'simulation_receiving_assets_total_value'],
       ['sending', true, 'simulation_sending_assets_total_value'],
@@ -554,7 +561,6 @@ describe('useSimulationMetrics', () => {
     });
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [
       'simulation disabled',

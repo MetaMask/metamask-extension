@@ -21,7 +21,7 @@ class Substream extends Duplex {
     callback: (error?: Error | null) => void,
   ) {
     this.parent.push({
-      type: 'caip-x',
+      type: 'caip-348',
       data: value,
     });
     callback();
@@ -45,7 +45,7 @@ export class CaipStream extends Duplex {
     _encoding: BufferEncoding,
     callback: (error?: Error | null) => void,
   ) {
-    if (isObject(value) && value.type === 'caip-x') {
+    if (isObject(value) && value.type === 'caip-348') {
       this.substream.push(value.data);
     }
     callback();
@@ -65,9 +65,10 @@ export class CaipStream extends Duplex {
 export const createCaipStream = (portStream: Duplex): Duplex => {
   const caipStream = new CaipStream();
 
-  pipeline(portStream, caipStream, portStream, (err: Error) =>
-    console.log('MetaMask CAIP stream', err),
-  );
+  pipeline(portStream, caipStream, portStream, (err: Error) => {
+    caipStream.substream.destroy();
+    console.log('MetaMask CAIP stream', err);
+  });
 
   return caipStream.substream;
 };

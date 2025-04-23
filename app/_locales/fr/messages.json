@@ -44,6 +44,20 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
   },
+  "SrpListHideAccounts": {
+    "message": "Masquer $1 comptes",
+    "description": "$1 is the number of accounts"
+  },
+  "SrpListHideSingleAccount": {
+    "message": "Masquer 1 compte"
+  },
+  "SrpListShowAccounts": {
+    "message": "Afficher $1 comptes",
+    "description": "$1 is the number of accounts"
+  },
+  "SrpListShowSingleAccount": {
+    "message": "Afficher 1 compte"
+  },
   "about": {
     "message": "À propos"
   },
@@ -153,6 +167,12 @@
   "addAlias": {
     "message": "Ajouter un alias"
   },
+  "addBitcoinAccountLabel": {
+    "message": "Compte Bitcoin (Bêta)"
+  },
+  "addBitcoinTestnetAccountLabel": {
+    "message": "Compte Bitcoin (Testnet)"
+  },
   "addBlockExplorer": {
     "message": "Ajouter un explorateur de blocs"
   },
@@ -193,6 +213,9 @@
   "addFriendsAndAddresses": {
     "message": "Ajoutez uniquement des amis et des adresses de confiance"
   },
+  "addHardwareWalletLabel": {
+    "message": "Portefeuille matériel"
+  },
   "addIPFSGateway": {
     "message": "Ajoutez votre passerelle IPFS préférée"
   },
@@ -212,11 +235,25 @@
   "addNewAccount": {
     "message": "Ajouter un nouveau compte Ethereum"
   },
+  "addNewEthereumAccountLabel": {
+    "message": "Compte Ethereum"
+  },
+  "addNewSolanaAccountLabel": {
+    "message": "Compte Solana"
+  },
   "addNft": {
     "message": "Ajouter un NFT"
   },
   "addNfts": {
     "message": "Ajouter des NFT"
+  },
+  "addNonEvmAccount": {
+    "message": "Ajouter un compte $1",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+  },
+  "addNonEvmAccountFromNetworkPicker": {
+    "message": "Pour activer le réseau $1, vous devez créer un compte $2.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Ajouter l’URL du RPC"
@@ -300,13 +337,15 @@
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
-  "aggregatedBalancePopover": {
-    "message": "Cette valeur reflète la valeur de tous les jetons que vous possédez sur un réseau donné. Si vous préférez que cette valeur soit affichée en ETH ou dans d’autres monnaies, veuillez accéder à $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "J’accepte les $1 de MetaMask",
     "description": "$1 is the `terms` link"
+  },
+  "airDropPatternDescription": {
+    "message": "L’historique du jeton sur la chaîne révèle des cas antérieurs d’activités d’airdrop suspectes."
+  },
+  "airDropPatternTitle": {
+    "message": "Modèle d’airdrop"
   },
   "airgapVault": {
     "message": "Coffre-fort AirGap"
@@ -664,9 +703,6 @@
   "blockaid": {
     "message": "BlockAid"
   },
-  "blockaidAlertInfo": {
-    "message": "Nous ne vous recommandons pas de donner suite à cette demande."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Si vous approuvez cette demande, un tiers connu pour ses activités frauduleuses pourrait s’emparer de tous vos actifs."
   },
@@ -729,8 +765,20 @@
   "bridgeConfirmTwoTransactions": {
     "message": "Vous devrez confirmer 2 transactions sur votre portefeuille matériel :"
   },
+  "bridgeCreateSolanaAccount": {
+    "message": "Créer un compte Solana"
+  },
+  "bridgeCreateSolanaAccountDescription": {
+    "message": "Pour échanger avec le réseau Solana, vous avez besoin d’un compte et d’une adresse de réception."
+  },
+  "bridgeCreateSolanaAccountTitle": {
+    "message": "Vous devez d’abord avoir un compte Solana."
+  },
   "bridgeEnterAmount": {
     "message": "Saisissez le montant"
+  },
+  "bridgeEnterAmountAndSelectAccount": {
+    "message": "Entrez le montant et sélectionnez le compte de destination"
   },
   "bridgeExplorerLinkViewOn": {
     "message": "Consulter sur $1"
@@ -754,8 +802,14 @@
   "bridgeQuoteExpired": {
     "message": "Votre cotation a expiré."
   },
+  "bridgeSelectDestinationAccount": {
+    "message": "Sélectionnez le compte de destination"
+  },
   "bridgeSelectNetwork": {
     "message": "Sélectionner un réseau"
+  },
+  "bridgeSelectTokenAmountAndAccount": {
+    "message": "Sélectionnez le jeton, le montant et le compte de destination"
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Sélectionnez le jeton et le montant"
@@ -947,6 +1001,12 @@
     "message": "Aucune option trouvée",
     "description": "Default text shown in the combo field dropdown if no options."
   },
+  "concentratedSupplyDistributionDescription": {
+    "message": "La majorité de l’offre de jetons est détenue par les principaux détenteurs de jetons, ce qui présente un risque de manipulation centralisée des prix"
+  },
+  "concentratedSupplyDistributionTitle": {
+    "message": "Distribution concentrée de l'offre"
+  },
   "configureSnapPopupDescription": {
     "message": "Vous devez maintenant quitter MetaMask pour configurer ce snap."
   },
@@ -965,6 +1025,15 @@
   "confirm": {
     "message": "Confirmer"
   },
+  "confirmAccountType": {
+    "message": "Type"
+  },
+  "confirmAccountTypeSmartContract": {
+    "message": "Compte intelligent"
+  },
+  "confirmAccountTypeStandard": {
+    "message": "Compte standard"
+  },
   "confirmAlertModalAcknowledgeMultiple": {
     "message": "J’ai pris connaissance des alertes, mais je souhaite quand même continuer"
   },
@@ -977,11 +1046,35 @@
   "confirmFieldTooltipPaymaster": {
     "message": "Les frais de cette transaction seront payés par le contrat « Paymaster » intelligent."
   },
+  "confirmGasFeeTokenBalance": {
+    "message": "Solde :"
+  },
+  "confirmGasFeeTokenInsufficientBalance": {
+    "message": "Fonds insuffisants"
+  },
+  "confirmGasFeeTokenMetaMaskFee": {
+    "message": "Comprend des frais de $1"
+  },
+  "confirmGasFeeTokenModalTitle": {
+    "message": "Sélectionner un jeton"
+  },
+  "confirmGasFeeTokenToast": {
+    "message": "Vous payez ces frais de réseau avec $1"
+  },
+  "confirmGasFeeTokenTooltip": {
+    "message": "Ces frais sont payés au réseau pour traiter votre transaction. Il inclut des frais de MetaMask de $1 pour les jetons non-ETH."
+  },
+  "confirmNestedTransactionTitle": {
+    "message": "Transaction $1"
+  },
   "confirmPassword": {
     "message": "Confirmer le mot de passe"
   },
   "confirmRecoveryPhrase": {
     "message": "Confirmer la phrase secrète de récupération"
+  },
+  "confirmSimulationApprove": {
+    "message": "Vous approuvez"
   },
   "confirmTitleApproveTransactionNFT": {
     "message": "Demande de retrait"
@@ -1028,8 +1121,8 @@
   "confirmationAlertDetails": {
     "message": "Pour protéger vos actifs, nous vous suggérons de rejeter la demande."
   },
-  "confirmationAlertModalTitle": {
-    "message": "Cette demande est suspecte"
+  "confirmationAlertModalTitleDescription": {
+    "message": "Vous risquez de perdre une partie ou la totalité de vos actifs"
   },
   "confirmed": {
     "message": "Confirmé"
@@ -1057,6 +1150,9 @@
   },
   "connectAccounts": {
     "message": "Connecter les comptes"
+  },
+  "connectAnAccountHeader": {
+    "message": "Connecter un compte"
   },
   "connectManually": {
     "message": "Se connecter manuellement au site actuel"
@@ -1164,6 +1260,9 @@
     "message": "L’extraction de $1 a échoué, vérifiez votre connexion réseau et réessayez.",
     "description": "$1 is the name of the snap being fetched."
   },
+  "connectionPopoverDescription": {
+    "message": "Pour vous connecter à un site, sélectionnez le bouton de connexion. MetaMask ne peut se connecter qu’à des sites Web3."
+  },
   "connectionRequest": {
     "message": "Demande de connexion"
   },
@@ -1210,9 +1309,6 @@
   "copyAddress": {
     "message": "Copier l’addresse dans le presse-papier"
   },
-  "copyAddressShort": {
-    "message": "Copier l’adresse"
-  },
   "copyPrivateKey": {
     "message": "Copier la clé privée"
   },
@@ -1225,6 +1321,9 @@
   "create": {
     "message": "Créer"
   },
+  "createNewAccountHeader": {
+    "message": "Créer un nouveau compte"
+  },
   "createNewWallet": {
     "message": "Créer un nouveau portefeuille"
   },
@@ -1236,6 +1335,9 @@
   },
   "createSnapAccountTitle": {
     "message": "Créer un compte"
+  },
+  "createSolanaAccount": {
+    "message": "Créer un compte Solana"
   },
   "creatorAddress": {
     "message": "Adresse du créateur"
@@ -1477,6 +1579,21 @@
     "message": "Description provenant de $1",
     "description": "$1 represents the name of the snap"
   },
+  "destinationAccountPickerNoEligible": {
+    "message": "Aucun compte admissible n’a été trouvé"
+  },
+  "destinationAccountPickerNoMatching": {
+    "message": "Aucun compte correspondant n’a été trouvé"
+  },
+  "destinationAccountPickerReceiveAt": {
+    "message": "Recevoir sur"
+  },
+  "destinationAccountPickerSearchPlaceholderToMainnet": {
+    "message": "Adresse de réception ou ENS"
+  },
+  "destinationAccountPickerSearchPlaceholderToSolana": {
+    "message": "Adresse de réception"
+  },
   "details": {
     "message": "Détails"
   },
@@ -1521,6 +1638,9 @@
   "disconnectedSingleAccountToast": {
     "message": "$1 déconnecté de $2",
     "description": "$1 is name of the name and $2 represents the dapp name`"
+  },
+  "discover": {
+    "message": "Découvrir"
   },
   "discoverSnaps": {
     "message": "Découvrir des Snaps",
@@ -1869,14 +1989,14 @@
   "existingChainId": {
     "message": "Les informations que vous avez saisies sont associées à un ID de chaîne existant."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Pour afficher et confirmer votre demande la plus récente, vous devez d’abord approuver ou rejeter les demandes existantes."
-  },
   "expandView": {
     "message": "Agrandir la vue"
   },
   "experimental": {
     "message": "Expérimental"
+  },
+  "exploreweb3": {
+    "message": "Explorer le Web3"
   },
   "exportYourData": {
     "message": "Exportez vos données"
@@ -1890,6 +2010,9 @@
   "extendWalletWithSnaps": {
     "message": "Explorez les Snaps créés par la communauté pour personnaliser votre expérience web3",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
+  },
+  "externalAccount": {
+    "message": "Compte externe"
   },
   "externalExtension": {
     "message": "Extension externe"
@@ -2203,6 +2326,12 @@
   "holdToRevealUnlockedLabel": {
     "message": "appuyez longuement pour révéler le cercle déverrouillé"
   },
+  "honeypotDescription": {
+    "message": "Ce jeton peut présenter un risque d’arnaque au pot de miel. Il est conseillé de faire preuve de diligence raisonnable avant d’interagir ce jeton afin d’éviter toute perte financière potentielle."
+  },
+  "honeypotTitle": {
+    "message": "Pot de miel"
+  },
   "howNetworkFeesWorkExplanation": {
     "message": "Estimation des frais requis pour traiter la transaction. Le montant maximum des frais est de $1."
   },
@@ -2268,6 +2397,30 @@
   "importNFTTokenIdToolTip": {
     "message": "L’ID d’un NFT est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
   },
+  "importNWordSRP": {
+    "message": "J’ai une phrase de récupération de $1 mots",
+    "description": "$1 is the number of words in the recovery phrase"
+  },
+  "importPrivateKey": {
+    "message": "Clé privée"
+  },
+  "importSRPDescription": {
+    "message": "Importez un portefeuille existant en utilisant votre phrase secrète de récupération de 12 ou 24 mots."
+  },
+  "importSRPNumberOfWordsError": {
+    "message": "Les phrases secrètes de récupération sont composées de 12 ou 24 mots"
+  },
+  "importSRPWordError": {
+    "message": "Le mot $1 est incorrect ou mal orthographié.",
+    "description": "$1 is the word that is incorrect or misspelled"
+  },
+  "importSRPWordErrorAlternative": {
+    "message": "Les mots $1 et $2 sont incorrects ou mal orthographiés.",
+    "description": "$1 and $2 are multiple words that are mispelled."
+  },
+  "importSecretRecoveryPhrase": {
+    "message": "Importer la phrase secrète de récupération"
+  },
   "importSelectedTokens": {
     "message": "Voulez-vous importer les jetons sélectionnés ?"
   },
@@ -2285,6 +2438,12 @@
   },
   "importTokensError": {
     "message": "Impossible d’importer les jetons. Veuillez ressayer plus tard."
+  },
+  "importWallet": {
+    "message": "Importer le portefeuille"
+  },
+  "importWalletOrAccountHeader": {
+    "message": "Importer un portefeuille ou un compte"
   },
   "importWithCount": {
     "message": "Importer $1",
@@ -2333,6 +2492,12 @@
   "insufficientFundsForGas": {
     "message": "Fonds insuffisants pour le carburant"
   },
+  "insufficientLockedLiquidityDescription": {
+    "message": "L’absence de liquidités bloquées ou brûlées de manière adéquate rend le jeton vulnérable aux retraits soudains de liquidités, ce qui peut entraîner une instabilité du marché."
+  },
+  "insufficientLockedLiquidityTitle": {
+    "message": "Insuffisance de liquidités bloquées"
+  },
   "insufficientTokens": {
     "message": "Jetons insuffisants."
   },
@@ -2367,6 +2532,9 @@
   },
   "invalidCustomNetworkAlertTitle": {
     "message": "Réseau personnalisé invalide"
+  },
+  "invalidHexData": {
+    "message": "Données hexadécimales non valides"
   },
   "invalidHexNumber": {
     "message": "Numéro hexadécimal invalide."
@@ -2546,6 +2714,9 @@
   "ledgerLocked": {
     "message": "Impossible de se connecter au dispositif Ledger. Veuillez vous assurer que votre périphérique est déverrouillé et que l’application Ethereum est ouverte."
   },
+  "ledgerMultipleDevicesUnsupportedErrorMessage": {
+    "message": "Il n’est pas possible de connecter plusieurs dispositifs Ledger en même temps. Vous devez d’abord déconnecter le dispositif actuel avant d’en connecter un autre."
+  },
   "ledgerTimeout": {
     "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’application Ledger Live est bien ouverte et que votre appareil est déverrouillé."
   },
@@ -2642,6 +2813,9 @@
   },
   "manageDefaultSettings": {
     "message": "Gérer les paramètres de confidentialité par défaut"
+  },
+  "managePermissions": {
+    "message": "Gérer les autorisations"
   },
   "marketCap": {
     "message": "Capitalisation boursière"
@@ -2761,6 +2935,15 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Vous allez ajouter ce réseau à MetaMask et donner à ce site l’autorisation de l’utiliser."
   },
+  "multichainQuoteCardBridgingLabel": {
+    "message": "Établissement d’une passerelle"
+  },
+  "multichainQuoteCardQuoteLabel": {
+    "message": "Cotation"
+  },
+  "multichainQuoteCardTimeLabel": {
+    "message": "Temps"
+  },
   "multipleSnapConnectionWarning": {
     "message": "$1 veut utiliser $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2874,6 +3057,13 @@
   },
   "network": {
     "message": "Réseau :"
+  },
+  "networkChanged": {
+    "message": "Le réseau a été modifié"
+  },
+  "networkChangedMessage": {
+    "message": "Vous effectuez maintenant une transaction sur $1.",
+    "description": "$1 is the name of the network"
   },
   "networkDetails": {
     "message": "Détails du réseau"
@@ -3148,6 +3338,9 @@
   },
   "notEnoughGas": {
     "message": "Pas assez de gaz"
+  },
+  "notNow": {
+    "message": "Pas maintenant"
   },
   "notificationDetail": {
     "message": "Détails"
@@ -3491,9 +3684,6 @@
     "message": "1 an",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3513,6 +3703,13 @@
   },
   "origin": {
     "message": "Origine"
+  },
+  "originChanged": {
+    "message": "Le site a été modifié"
+  },
+  "originChangedMessage": {
+    "message": "Vous êtes en train d’examiner une demande de $1.",
+    "description": "$1 is the name of the origin"
   },
   "osTheme": {
     "message": "Système"
@@ -3567,6 +3764,14 @@
   },
   "pending": {
     "message": "En attente"
+  },
+  "pendingConfirmationAddNetworkAlertMessage": {
+    "message": "La mise à jour du réseau annulera $1 transactions en attente sur ce site.",
+    "description": "Number of transactions."
+  },
+  "pendingConfirmationSwitchNetworkAlertMessage": {
+    "message": "Le changement de réseau annulera $1 transactions en attente sur ce site.",
+    "description": "Number of transactions."
   },
   "pendingTransactionAlertMessage": {
     "message": "La transaction précédente doit être finalisée avant que celle-ci ne soit traitée. $1",
@@ -3851,8 +4056,8 @@
   "permitSimulationChange_receive": {
     "message": "Vous recevez"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Plafond de dépenses"
+  "permitSimulationChange_revoke2": {
+    "message": "Révoquer"
   },
   "permitSimulationChange_transfer": {
     "message": "Vous envoyez"
@@ -3865,12 +4070,6 @@
   },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Autoriser les pseudonymes"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "Cette option vous permet d’attribuer un pseudonyme à n’importe quelle adresse. Nous vous suggérerons, si possible, des pseudonymes que vous pourrez attribuer aux adresses avec lesquelles vous interagissez."
   },
   "pinToTop": {
     "message": "Épingler en haut de la page"
@@ -4255,6 +4454,9 @@
   "reusedTokenNameWarning": {
     "message": "L’un de ces jetons réutilise le symbole d’un autre jeton que vous surveillez, ce qui peut être déroutant ou trompeur."
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "Révéler la phrase secrète de récupération"
+  },
   "revealSeedWords": {
     "message": "Révéler la phrase secrète de récupération"
   },
@@ -4304,11 +4506,18 @@
   "reviewAlerts": {
     "message": "Examiner les alertes"
   },
+  "reviewPendingTransactions": {
+    "message": "Revoir les transactions en attente"
+  },
   "reviewPermissions": {
     "message": "Revoir les autorisations"
   },
   "revokePermission": {
     "message": "Retirer l'autorisation"
+  },
+  "revokePermissionTitle": {
+    "message": "Révoquer l’autorisation de $1",
+    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "Vous révoquez l’autorisation que vous avez accordée à quelqu’un d’autre de dépenser des jetons à partir de votre compte."
@@ -4351,6 +4560,10 @@
   },
   "secretRecoveryPhrase": {
     "message": "Phrase secrète de récupération"
+  },
+  "secretRecoveryPhrasePlusNumber": {
+    "message": "Phrase secrète de récupération $1",
+    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Portefeuille sécurisé"
@@ -4442,6 +4655,9 @@
   "select": {
     "message": "Sélectionner"
   },
+  "selectAccountToConnect": {
+    "message": "Sélectionner un compte à connecter"
+  },
   "selectAccounts": {
     "message": "Sélectionnez le(s) compte(s) à utiliser sur ce site"
   },
@@ -4471,6 +4687,9 @@
   },
   "selectRpcUrl": {
     "message": "Sélectionner l’URL du RPC"
+  },
+  "selectSecretRecoveryPhrase": {
+    "message": "Sélectionnez la phrase secrète de récupération"
   },
   "selectType": {
     "message": "Sélectionner le type"
@@ -4583,16 +4802,6 @@
   "showHexDataDescription": {
     "message": "Selectionner ici pour afficher le champs de données hex dans l’écran d’envoi"
   },
-  "showIncomingTransactions": {
-    "message": "Afficher les transactions entrantes"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Sélectionnez ceci pour utiliser Etherscan afin d’afficher les transactions entrantes dans la liste des transactions",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "Ce processus fait appel à différentes API tierces pour chaque réseau et expose ainsi votre adresse Ethereum et votre adresse IP."
-  },
   "showLess": {
     "message": "Afficher moins"
   },
@@ -4610,6 +4819,9 @@
   },
   "showPrivateKey": {
     "message": "Afficher la clé privée"
+  },
+  "showSRP": {
+    "message": "Afficher la phrase secrète de récupération"
   },
   "showTestnetNetworks": {
     "message": "Afficher les réseaux de test"
@@ -4732,11 +4944,23 @@
   "slideCashOutTitle": {
     "message": "Effectuez des retraits avec MetaMask"
   },
+  "slideDebitCardDescription": {
+    "message": "Disponible dans certaines régions"
+  },
   "slideDebitCardTitle": {
     "message": "Carte de débit MetaMask"
   },
+  "slideFundWalletDescription": {
+    "message": "Ajoutez ou transférez des jetons pour commencer"
+  },
   "slideFundWalletTitle": {
     "message": "Approvisionnez votre portefeuille"
+  },
+  "slideSweepStakeDescription": {
+    "message": "Mintez un NFT maintenant pour avoir une chance de gagner"
+  },
+  "slideSweepStakeTitle": {
+    "message": "Participez au tirage au sort qui vous permet de gagner $5000 USDC !"
   },
   "smartContracts": {
     "message": "Contrats intelligents"
@@ -4884,6 +5108,9 @@
   "snapResultSuccessDescription": {
     "message": "$1 est prêt à être utilisé"
   },
+  "snapUIAssetSelectorTitle": {
+    "message": "Sélectionner un actif"
+  },
   "snapUpdateAlertDescription": {
     "message": "Obtenez la dernière version de $1",
     "description": "Description used in Snap update alert banner when snap update is available. $1 is the Snap name."
@@ -4943,6 +5170,27 @@
     "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
+  "solanaImportAccounts": {
+    "message": "Importer des comptes Solana"
+  },
+  "solanaImportAccountsDescription": {
+    "message": "Importez une phrase secrète de récupération pour faire migrer votre compte Solana depuis un autre portefeuille."
+  },
+  "solanaMoreFeaturesComingSoon": {
+    "message": "D’autres fonctionnalités seront bientôt disponibles"
+  },
+  "solanaMoreFeaturesComingSoonDescription": {
+    "message": "Les dapps Solana, les NFT, la prise en charge des portefeuilles matériels, etc., seront bientôt disponibles."
+  },
+  "solanaOnMetaMask": {
+    "message": "Solana sur MetaMask"
+  },
+  "solanaSendReceiveSwapTokens": {
+    "message": "Envoyez, recevez et échangez des jetons"
+  },
+  "solanaSendReceiveSwapTokensDescription": {
+    "message": "Transférez et effectuez des transactions avec des jetons tels que SOL, USDC, etc."
+  },
   "someNetworks": {
     "message": "$1 réseaux"
   },
@@ -4968,6 +5216,21 @@
   },
   "source": {
     "message": "Source"
+  },
+  "spamModalBlockedDescription": {
+    "message": "Ce site sera bloqué pendant 1 minute."
+  },
+  "spamModalBlockedTitle": {
+    "message": "Vous avez temporairement bloqué ce site"
+  },
+  "spamModalDescription": {
+    "message": "Si vous êtes inondé de demandes, vous pouvez bloquer temporairement le site."
+  },
+  "spamModalTemporaryBlockButton": {
+    "message": "Bloquer temporairement ce site"
+  },
+  "spamModalTitle": {
+    "message": "Nous avons remarqué un afflux de demandes"
   },
   "speed": {
     "message": "Vitesse"
@@ -5018,9 +5281,27 @@
   "spendingCap": {
     "message": "Plafond de dépenses"
   },
+  "spendingCaps": {
+    "message": "Plafonds de dépenses"
+  },
   "srpInputNumberOfWords": {
     "message": "J’ai une phrase de $1 mots",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
+  },
+  "srpListName": {
+    "message": "Phrase secrète de récupération $1",
+    "description": "$1 is the order of the Secret Recovery Phrase"
+  },
+  "srpListNumberOfAccounts": {
+    "message": "$1 comptes",
+    "description": "$1 is the number of accounts in the list"
+  },
+  "srpListSelectionDescription": {
+    "message": "La phrase secrète de récupération à partir de laquelle votre nouveau compte sera généré"
+  },
+  "srpListSingleOrZero": {
+    "message": "$1 compte",
+    "description": "$1 is the number of accounts in the list, it is either 1 or 0"
   },
   "srpPasteFailedTooManyWords": {
     "message": "Le collage a échoué parce que la phrase contenait plus de 24 mots. Une phrase secrète de récupération peut contenir un maximum de 24 mots.",
@@ -5140,13 +5421,6 @@
     "message": "Téléchargez, configurez et saisissez votre mot de passe pour déverrouiller $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step1OneKeyWallet": {
-    "message": "Connecter votre portefeuille OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Branchez votre OneKey directement sur votre ordinateur et déverrouillez-le. Veillez à utiliser la bonne phrase secrète.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "step1TrezorWallet": {
     "message": "Connecter le portefeuille Trezor"
   },
@@ -5182,6 +5456,9 @@
   "stxFailureDescription": {
     "message": "Les fluctuations soudaines du marché peuvent provoquer des échecs. Si le problème persiste, veuillez contacter $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInSupportedNetworksDescription": {
+    "message": "Activez les transactions intelligentes pour profiter de transactions plus fiables et plus sûres sur les réseaux pris en charge. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Soumission privée de votre Swap..."
@@ -5836,9 +6113,6 @@
   "transactionErrored": {
     "message": "La transaction a rencontré une erreur."
   },
-  "transactionFailedBannerMessage": {
-    "message": "Cette transaction vous aurait occasionné des frais supplémentaires, c’est pourquoi nous l’avons annulée. Votre argent est toujours dans votre portefeuille."
-  },
   "transactionFlowNetwork": {
     "message": "Réseau"
   },
@@ -5962,9 +6236,6 @@
   "twelveHrTitle": {
     "message": "12 h :"
   },
-  "typeYourSRP": {
-    "message": "Saisissez votre phrase secrète de récupération"
-  },
   "u2f": {
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
@@ -6007,6 +6278,12 @@
   "unsendableAsset": {
     "message": "L’envoi de jetons NFT (ERC-721) n’est pas pris en charge actuellement",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
+  },
+  "unstableTokenPriceDescription": {
+    "message": "Le prix de ce jeton en USD est extrêmement volatil, ce qui signifie qu’il peut perdre rapidement de sa valeur."
+  },
+  "unstableTokenPriceTitle": {
+    "message": "Prix du jeton instable"
   },
   "upArrow": {
     "message": "flèche vers le haut"
@@ -6129,6 +6406,18 @@
   },
   "visitSite": {
     "message": "Visiter le site"
+  },
+  "visitSupportDataConsentModalAccept": {
+    "message": "Confirmer"
+  },
+  "visitSupportDataConsentModalDescription": {
+    "message": "Voulez-vous partager votre identifiant MetaMask et la version de l’application que vous utilisez actuellement avec notre centre d’assistance ? Cela peut nous aider à résoudre le problème, mais vous n’êtes pas obligé à le faire."
+  },
+  "visitSupportDataConsentModalReject": {
+    "message": "Ne pas partager"
+  },
+  "visitSupportDataConsentModalTitle": {
+    "message": "Partager les détails de l’appareil avec le centre d’assistance"
   },
   "visitWebSite": {
     "message": "Visitez notre site web"
