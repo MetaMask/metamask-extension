@@ -6,6 +6,7 @@ import {
   GroupedDeFiPositions,
 } from '@metamask/assets-controllers';
 
+import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getPreferences,
@@ -81,26 +82,17 @@ export function ErrorMessage({ title, text }: { title: string; text: string }) {
   );
 }
 
-const extractIconGroup = (
-  protocolPositions: GroupedDeFiPositions['protocols'][keyof GroupedDeFiPositions['protocols']],
-) => {
-  if (!protocolPositions?.positionTypes) {
-    return [];
-  }
-
-  return Object.values(protocolPositions.positionTypes).flatMap(
-    (displayTokens) =>
-      displayTokens?.positions?.flatMap(
-        (nestedToken) =>
-          nestedToken?.flatMap(
-            (token) =>
-              token?.tokens?.map((underlying) => ({
-                symbol: underlying?.symbol || '',
-                avatarValue: underlying?.iconUrl || '',
-              })) || [],
-          ) || [],
-      ) || [],
-  );
+const DEFI_EMPTY_STATE_TOKEN = {
+  address: '0x' as Hex,
+  title: 'Start earning',
+  symbol: 'Start earning',
+  tokenFiatAmount: 0,
+  image: `images/logo/metamask-fox.svg`,
+  primary: '0',
+  secondary: 0,
+  decimals: 10,
+  chainId: '0x1' as Hex,
+  isStakeable: true,
 };
 
 function DefiList({ onClick }: DefiListProps) {
@@ -141,6 +133,28 @@ function DefiList({ onClick }: DefiListProps) {
       currentAddressDefiPositions,
     ).flatMap(([chainId, chainData]) =>
       Object.entries(chainData.protocols).map(([protocolId, protocol]) => {
+        const extractIconGroup = (
+          protocolPositions: GroupedDeFiPositions['protocols'][keyof GroupedDeFiPositions['protocols']],
+        ) => {
+          if (!protocolPositions?.positionTypes) {
+            return [];
+          }
+
+          return Object.values(protocolPositions.positionTypes).flatMap(
+            (displayTokens) =>
+              displayTokens?.positions?.flatMap(
+                (nestedToken) =>
+                  nestedToken?.flatMap(
+                    (token) =>
+                      token?.tokens?.map((underlying) => ({
+                        symbol: underlying?.symbol || '',
+                        avatarValue: underlying?.iconUrl || '',
+                      })) || [],
+                  ) || [],
+              ) || [],
+          );
+        };
+
         const iconGroup = extractIconGroup(protocol);
         return {
           protocolId,
@@ -219,7 +233,7 @@ function DefiList({ onClick }: DefiListProps) {
               token={token}
               privacyMode={privacyMode}
               onClick={handleTokenClick(token)}
-              primaryDisplayOverride={() => (
+              TokenCellPrimaryDisplayOverride={() => (
                 <AvatarGroup
                   avatarType={AvatarType.TOKEN}
                   limit={4}
@@ -234,19 +248,7 @@ function DefiList({ onClick }: DefiListProps) {
       ) : (
         <TokenCell
           key={`empty-defi-list`}
-          token={{
-            address: '0x',
-            title: 'Start earning',
-            symbol: 'Start earning',
-            tokenFiatAmount: 0,
-            image: `images/logo/metamask-fox.svg`,
-            primary: '0',
-            secondary: 0,
-            decimals: 10,
-            chainId: '0x1',
-            isStakeable: true,
-          }}
-          primaryDisplayOverride={() => <></>}
+          token={DEFI_EMPTY_STATE_TOKEN}
           privacyMode={privacyMode}
           onClick={undefined}
           fixCurrencyToUSD={true}

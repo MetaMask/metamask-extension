@@ -23,8 +23,10 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences, getSelectedAccount } from '../../../selectors';
 import { getDefiPositions } from '../../../components/app/assets/defi-list/defi-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { formatWithThreshold } from '../../../components/app/assets/util/formatWithThreshold';
 import DefiDetailsList, {
   PositionTypeKeys,
+  PositionTypeLabels,
   ProtocolTokenWithMarketValue,
 } from './defi-details-list';
 
@@ -113,15 +115,22 @@ const DeFiPage = () => {
           isHidden={privacyMode}
           length={SensitiveTextLength.Medium}
         >
-          {'$'}
-          {protocolPosition.aggregatedMarketValue.toFixed(2)}
+          {formatWithThreshold(
+            protocolPosition.aggregatedMarketValue,
+            0.0,
+            'USD',
+            {
+              style: 'currency',
+              currency: 'USD',
+            },
+          )}
         </SensitiveText>
       </Box>
       <Box paddingLeft={4} paddingBottom={4} paddingRight={4}>
         <hr style={{ border: '1px solid var(--border-muted, #858B9A33)' }} />
       </Box>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        {['supply', 'borrow', 'stake', 'reward'].map((positionType) =>
+        {Object.keys(PositionTypeLabels).map((positionType) =>
           protocolPosition.positionTypes[positionType as PositionTypeKeys] ? (
             <DefiDetailsList
               key={positionType}

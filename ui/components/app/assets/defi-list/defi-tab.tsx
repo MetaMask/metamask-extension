@@ -6,7 +6,7 @@ import DefiList from './defi-list';
 const DeFiTab = ({ onClickAsset }: AssetListProps) => {
   return (
     <>
-      <AssetListControlBar showImportControlls={false} />
+      <AssetListControlBar showImportTokenButton={false} />
       <DefiList onClick={onClickAsset} />
     </>
   );

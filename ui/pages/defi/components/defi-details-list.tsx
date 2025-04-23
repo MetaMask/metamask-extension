@@ -13,7 +13,7 @@ import { getPreferences } from '../../../selectors';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
-const PositionTypeLabels = {
+export const PositionTypeLabels = {
   supply: 'supplied',
   stake: 'staked',
   borrow: 'borrowed',

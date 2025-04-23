@@ -41,7 +41,7 @@ export type TokenCellProps = {
   privacyMode?: boolean;
   disableHover?: boolean;
   onClick?: () => void;
-  primaryDisplayOverride?: () => React.ReactElement;
+  TokenCellPrimaryDisplayOverride?: React.ComponentType;
   fixCurrencyToUSD?: boolean;
 };
 
@@ -50,7 +50,7 @@ export default function TokenCell({
   privacyMode = false,
   onClick,
   disableHover = false,
-  primaryDisplayOverride,
+  TokenCellPrimaryDisplayOverride,
   fixCurrencyToUSD = false,
 }: TokenCellProps) {
   const dispatch = useDispatch();
@@ -82,6 +82,16 @@ export default function TokenCell({
   if (!token.chainId) {
     return null;
   }
+
+  const PrimaryDisplay = () =>
+    TokenCellPrimaryDisplayOverride ? (
+      <TokenCellPrimaryDisplayOverride />
+    ) : (
+      <TokenCellPrimaryDisplay
+        token={{ ...token, ...tokenDisplayInfo }}
+        privacyMode={privacyMode}
+      />
+    );
 
   return (
     <Box
@@ -149,12 +159,7 @@ export default function TokenCell({
             justifyContent={JustifyContent.spaceBetween}
           >
             <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
-            {primaryDisplayOverride?.() ?? (
-              <TokenCellPrimaryDisplay
-                token={{ ...token, ...tokenDisplayInfo }}
-                privacyMode={privacyMode}
-              />
-            )}
+            <PrimaryDisplay />
           </Box>
         </Box>
       </Box>
