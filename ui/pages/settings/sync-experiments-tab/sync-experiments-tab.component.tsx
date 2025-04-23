@@ -1,12 +1,8 @@
-import React, { useEffect } from 'react';
-import { sha256 } from '@noble/hashes/sha256';
-import { bytesToHex, hexToBytes } from '@metamask/utils';
-import { Doc, applyUpdate } from 'yjs';
+import React, { useEffect, useCallback } from 'react';
+import { Array as YArray, Doc } from 'yjs';
 import { Box } from '../../../components/component-library';
-import {
-  userStorageGetAllItems,
-  userStorageSetItems,
-} from '../../../store/actions';
+import { userStorageGetAllItems } from '../../../store/actions';
+import { YjsProvider } from './yjs.provider';
 
 const EXPERIMENTAL_KEY = 'test-items-116';
 
@@ -16,57 +12,6 @@ type SyncItem = {
   name: string;
 };
 
-class YjsProvider {
-  doc: Doc;
-
-  pendingUpdates: Uint8Array[];
-
-  processedUpdates: Set<string>;
-
-  constructor(doc: Doc) {
-    this.doc = doc;
-    this.pendingUpdates = [];
-    this.processedUpdates = new Set<string>();
-    doc.on('update', (update: Uint8Array, origin: unknown) => {
-      if (origin !== 'remote') {
-        console.log(
-          `GIGEL store pending update from ${origin} with ${update.length} bytes`,
-        );
-        this.pendingUpdates.push(update);
-      }
-    });
-  }
-
-  processUpdates(updates: Uint8Array[]) {
-    if (!Array.isArray(updates) || updates.length === 0) {
-      return 0;
-    }
-
-    let updatesApplied = 0;
-
-    updates.forEach((updateData) => {
-      const updateId = bytesToHex(sha256(updateData));
-      try {
-        // Only apply if we haven't seen this update ID before
-        if (updateId && !this.processedUpdates.has(updateId)) {
-          console.log('GIGEL applying update', updateId);
-          // Apply the update to the document
-          applyUpdate(this.doc, updateData, 'remote');
-
-          updatesApplied += 1;
-
-          // Track the processed update
-          this.processedUpdates.add(updateId);
-        }
-      } catch (err) {
-        console.error(`GIGEL Provider error applying update:`, err);
-      }
-    });
-
-    return updatesApplied;
-  }
-}
-
 export const SyncExperimentsTab: React.FC = () => {
   const [rawItems, setRawItems] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -75,61 +20,107 @@ export const SyncExperimentsTab: React.FC = () => {
   const [editItemValue, setEditItemValue] = React.useState<string>('');
 
   // Create the doc and provider directly
-  const docRef = React.useRef<Doc>(new Doc());
-  const doc = docRef.current;
+  const doc = React.useMemo<Doc>(() => new Doc(), []);
 
   // Create the provider ref to avoid recreating it on every render
-  const providerRef = React.useRef<YjsProvider>(new YjsProvider(doc));
-  const provider = providerRef.current;
+  const provider = React.useMemo<YjsProvider>(
+    () => new YjsProvider(doc, EXPERIMENTAL_KEY),
+    [doc],
+  );
 
   // Get the shared array from the document (only once during initialization)
-  const itemsArrayRef = React.useRef(doc.getArray<SyncItem>(EXPERIMENTAL_KEY));
-  const itemsArray = itemsArrayRef.current;
+  const itemsArray = React.useMemo<YArray<SyncItem>>(
+    () => doc.getArray<SyncItem>(EXPERIMENTAL_KEY),
+    [doc],
+  );
+
+  // Use memoized handler to avoid recreating it on every render
+  const handleItemsChange = useCallback(() => {
+    const newItems = itemsArray.toArray();
+    setListItems(newItems);
+  }, [itemsArray]);
 
   // Update items when the YJS array changes
   useEffect(() => {
-    const handleItemsChange = () => {
-      const newItems = itemsArray.toArray();
-      setListItems(newItems);
-    };
-
-    itemsArray.observe(handleItemsChange);
     // Initialize with current values
     handleItemsChange();
+
+    // Use a single observer to reduce event handling
+    itemsArray.observe(handleItemsChange);
 
     return () => {
       itemsArray.unobserve(handleItemsChange);
     };
-  }, [itemsArray]);
+  }, [itemsArray, handleItemsChange]);
 
-  const handleAddItem = () => {
+  // Memoize handlers to prevent unnecessary recreations
+  const handlePull = useCallback(async () => {
+    setLoading(true);
+    try {
+      const updates = await provider.handlePull();
+      setRawItems(updates);
+    } catch (e) {
+      console.error('Error fetching items:', e);
+    } finally {
+      setLoading(false);
+    }
+  }, [provider]);
+
+  const handlePush = useCallback(async () => {
+    setLoading(true);
+    try {
+      await provider.handlePush();
+    } catch (e) {
+      console.error('Error pushing items:', e);
+    } finally {
+      setLoading(false);
+    }
+  }, [provider]);
+
+  const fetchAllEntries = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await userStorageGetAllItems(EXPERIMENTAL_KEY);
+      setRawItems(result);
+    } catch (e) {
+      console.error('Error fetching items:', e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleAddItem = useCallback(() => {
     const newItem: SyncItem = {
       id: Date.now().toString(),
       name: `Item ${listItems.length + 1}`,
     };
 
+    // Use a single transaction for all changes
     doc.transact(() => {
       itemsArray.push([newItem]);
     }, 'local');
-  };
+  }, [doc, itemsArray, listItems.length]);
 
-  const handleDeleteItem = (id: string) => {
-    doc.transact(() => {
-      const index = itemsArray
-        .toArray()
-        .findIndex((item: SyncItem) => item.id === id);
-      if (index !== -1) {
-        itemsArray.delete(index, 1);
-      }
-    }, 'local');
-  };
+  const handleDeleteItem = useCallback(
+    (id: string) => {
+      doc.transact(() => {
+        const index = itemsArray
+          .toArray()
+          .findIndex((item: SyncItem) => item.id === id);
+        if (index !== -1) {
+          itemsArray.delete(index, 1);
+        }
+      }, 'local');
+    },
+    [doc, itemsArray],
+  );
 
-  const handleEditItem = (id: string, currentValue: string) => {
+  const handleEditItem = useCallback((id: string, currentValue: string) => {
     setEditItemId(id);
     setEditItemValue(currentValue);
-  };
+  }, []);
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = useCallback(() => {
     if (editItemId === null) {
       return;
     }
@@ -147,55 +138,12 @@ export const SyncExperimentsTab: React.FC = () => {
 
     setEditItemId(null);
     setEditItemValue('');
-  };
+  }, [doc, itemsArray, editItemId, editItemValue]);
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = useCallback(() => {
     setEditItemId(null);
     setEditItemValue('');
-  };
-
-  const handlePull = async () => {
-    setLoading(true);
-    try {
-      const result = await userStorageGetAllItems(EXPERIMENTAL_KEY);
-      setRawItems(result);
-      const rawUpdates = result.map(hexToBytes);
-      provider.processUpdates(rawUpdates);
-    } catch (e) {
-      console.error('Error fetching items:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePush = async () => {
-    const entries = provider.pendingUpdates.map((update) => {
-      const key = bytesToHex(sha256(update));
-      const value = bytesToHex(update);
-      return [key, value];
-    });
-    const itemsToPush: Record<string, string> = Object.fromEntries(entries);
-    setLoading(true);
-    try {
-      await userStorageSetItems(EXPERIMENTAL_KEY, itemsToPush);
-    } catch (e) {
-      console.error('Error pushing items:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchAllEntries = async () => {
-    setLoading(true);
-    try {
-      const result = await userStorageGetAllItems(EXPERIMENTAL_KEY);
-      setRawItems(result);
-    } catch (e) {
-      console.error('Error fetching items:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, []);
 
   return (
     <Box className="settings-page__body">

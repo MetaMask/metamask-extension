@@ -1,1 +1,1 @@
-export { SyncExperimentsTab } from './sync-experiments-tab.component.tsx';
+export { SyncExperimentsTab } from './sync-experiments-tab.component';
