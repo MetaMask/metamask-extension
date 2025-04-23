@@ -454,42 +454,74 @@ describe('app utils', () => {
   });
 
   describe('extractRpcDomain', () => {
+    // Create test known domains
+    const testKnownDomains = new Set([
+      'mainnet.infura.io',
+      'linea-goerli.infura.io',
+      'eth-mainnet.alchemyapi.io',
+      'rpc.tenderly.co',
+    ]);
+
     it('should extract domain from standard URLs', () => {
-      expect(extractRpcDomain('https://mainnet.infura.io/v3/abc123')).toBe(
-        'mainnet.infura.io',
-      );
-      expect(extractRpcDomain('https://eth-mainnet.alchemyapi.io/v2/key')).toBe(
-        'eth-mainnet.alchemyapi.io',
-      );
-      expect(extractRpcDomain('https://rpc.tenderly.co/fork/123')).toBe(
-        'rpc.tenderly.co',
-      );
+      expect(
+        extractRpcDomain(
+          'https://mainnet.infura.io/v3/ab7g2cat5c4r3d53m8a2a4321g1e2gg0',
+          testKnownDomains,
+        ),
+      ).toBe('mainnet.infura.io');
+
+      expect(
+        extractRpcDomain(
+          'wss://linea-goerli.infura.io/v3/ab7g2cat5c4r3d53m8a2a4321g1e2gg0',
+          testKnownDomains,
+        ),
+      ).toBe('linea-goerli.infura.io');
+
+      expect(
+        extractRpcDomain(
+          'https://eth-mainnet.alchemyapi.io/v2/key',
+          testKnownDomains,
+        ),
+      ).toBe('eth-mainnet.alchemyapi.io');
+
+      expect(
+        extractRpcDomain('https://rpc.tenderly.co/fork/123', testKnownDomains),
+      ).toBe('rpc.tenderly.co');
     });
 
     it('should handle localhost URLs', () => {
-      expect(extractRpcDomain('http://localhost:8545')).toBe('localhost');
-      expect(extractRpcDomain('https://localhost:8545/path')).toBe('localhost');
-      expect(extractRpcDomain('http://127.0.0.1:8545')).toBe('localhost');
-      expect(extractRpcDomain('https://192.168.1.1:8545')).toBe('localhost');
+      expect(extractRpcDomain('http://localhost:8545', testKnownDomains)).toBe(
+        'private',
+      );
+      expect(extractRpcDomain('https://localhost:8545/path')).toBe('private');
+      expect(extractRpcDomain('http://127.0.0.1:8545')).toBe('private');
+      expect(extractRpcDomain('https://192.168.1.1:8545')).toBe('private');
     });
 
     it('should handle private IP addresses', () => {
-      expect(extractRpcDomain('http://10.0.0.1:8545')).toBe('private_url');
-      expect(extractRpcDomain('http://172.16.0.5:8545')).toBe('private_url');
-      expect(extractRpcDomain('https://11.22.33.44')).toBe('private_url');
+      expect(extractRpcDomain('http://10.0.0.1:8545')).toBe('private');
+      expect(extractRpcDomain('http://172.16.0.5:8545')).toBe('private');
+      expect(extractRpcDomain('https://11.22.33.44')).toBe('private');
     });
 
     it('should handle URLs without protocol', () => {
-      expect(extractRpcDomain('mainnet.infura.io/v3/abc123')).toBe(
-        'mainnet.infura.io',
+      expect(
+        extractRpcDomain('mainnet.infura.io/v3/abc123', testKnownDomains),
+      ).toBe('mainnet.infura.io');
+
+      // Unknown domain should return 'private'
+      expect(
+        extractRpcDomain('http://custom-domain.xyz', testKnownDomains),
+      ).toBe('private');
+      expect(extractRpcDomain('chaindaddy.io', testKnownDomains)).toBe(
+        'private',
       );
     });
 
     it('should handle invalid URLs and edge cases', () => {
-      expect(extractRpcDomain('')).toBe('unknown');
-      expect(extractRpcDomain(null)).toBe('unknown');
-      // The function currently treats 'invalid-url-format' as a valid hostname after adding https://
-      expect(extractRpcDomain('invalid-url-format')).toBe('invalid-url-format');
+      expect(extractRpcDomain('')).toBe('invalid');
+      expect(extractRpcDomain(null)).toBe('invalid');
+      expect(extractRpcDomain('invalid-url-format')).toBe('private'); // Assuming this domain isn't in knownDomainsSet
     });
   });
 });

@@ -536,9 +536,20 @@ export function isKnownDomain(domain: string): boolean {
  * Extracts the domain from an RPC endpoint URL with privacy considerations
  *
  * @param rpcUrl - The RPC endpoint URL
+ * @param knownDomainsForTesting
  * @returns The domain for known providers, 'private' for private/custom networks, or 'invalid' for invalid URLs
  */
-export function extractRpcDomain(rpcUrl: string): string {
+/**
+ * Extracts the domain from an RPC endpoint URL with privacy considerations
+ *
+ * @param rpcUrl - The RPC endpoint URL
+ * @param knownDomainsForTesting - Optional Set of known domains for testing purposes
+ * @returns The domain for known providers, 'private' for private/custom networks, or 'invalid' for invalid URLs
+ */
+export function extractRpcDomain(
+  rpcUrl: string,
+  knownDomainsForTesting?: Set<string>,
+): string {
   if (!rpcUrl) {
     return 'invalid';
   }
@@ -579,8 +590,9 @@ export function extractRpcDomain(rpcUrl: string): string {
       return 'private';
     }
 
-    // Check if the domain is in our known list
-    if (knownDomainsSet?.has(hostname)) {
+    // Check if the domain is in our known list - use test set if available
+    const domainsToCheck = knownDomainsForTesting || knownDomainsSet;
+    if (domainsToCheck?.has(hostname)) {
       return hostname; // It's safe to show the actual domain
     }
 
