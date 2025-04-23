@@ -3,13 +3,6 @@ import {
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
-// import {
-//   ConnectedDevice,
-//   ConsoleLogger,
-//   DeviceManagementKit,
-//   DeviceManagementKitBuilder,
-//   TransportIdentifier,
-// } from '@ledgerhq/device-management-kit';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
@@ -22,14 +15,11 @@ import {
  */
 type LedgerOffscreenBridgeOptions = Record<never, never>;
 
-// const webHidIdentifier: TransportIdentifier = 'WEB-HID';
-
 /**
  * This class is used as a custom bridge for the Ledger connection. Every
  * hardware wallet keyring also requires a bridge that has a known interface
  * that the keyring can call into for specific functions. The bridge then makes
  * whatever calls or requests it needs to in order to fulfill the request from
- *
  * the keyring. In this case, the bridge is used to communicate with the
  * Offscreen Document. Inside the Offscreen document the ledger script is
  * loaded and registers a listener for these calls and communicate with the
@@ -39,15 +29,7 @@ type LedgerOffscreenBridgeOptions = Record<never, never>;
 export class LedgerOffscreenBridge
   implements LedgerBridge<LedgerOffscreenBridgeOptions>
 {
-  // dmk: DeviceManagementKit = new DeviceManagementKitBuilder()
-  //   .addLogger(new ConsoleLogger())
-  //   .build();
-
   isDeviceConnected = false;
-
-  sessionId: string | null = null;
-
-  // connectedDevice: ConnectedDevice | undefined;
 
   init() {
     chrome.runtime.onMessage.addListener((msg) => {
@@ -75,29 +57,7 @@ export class LedgerOffscreenBridge
     return Promise.resolve();
   }
 
-  async attemptMakeApp() {
-    // if (!this.connectedDevice) {
-    //   const dmkSdk = this.dmk;
-    //   console.log('Attempting to make app');
-    //   dmkSdk.startDiscovering({ transport: webHidIdentifier }).subscribe({
-    //     next: (device) => {
-    //       console.log('Device found:', device);
-    //       dmkSdk.connect({ device }).then((sessionId) => {
-    //         const connectedDevice = dmkSdk.getConnectedDevice({ sessionId });
-    //         console.log('Connected device:', connectedDevice);
-    //         this.connectedDevice = connectedDevice;
-    //         this.sessionId = sessionId;
-    //       });
-    //     },
-    //     error: (error) => {
-    //       console.error('Error:', error);
-    //     },
-    //     complete: () => {
-    //       console.log('Discovery complete');
-    //     },
-    //   });
-    // }
-    // return true;
+  attemptMakeApp() {
     return new Promise<boolean>((resolve, reject) => {
       chrome.runtime.sendMessage(
         {

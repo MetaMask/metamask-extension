@@ -39,4 +39,8 @@ export class CallbackProcessor {
     }
     return null;
   }
+
+  resetCurrentMessageId() {
+    this.currentMessageId = 0;
+  }
 }

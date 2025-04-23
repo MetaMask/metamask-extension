@@ -46,6 +46,8 @@ export enum LedgerAction {
   signTransaction = 'ledger-sign-transaction',
   signPersonalMessage = 'ledger-sign-personal-message',
   signTypedData = 'ledger-sign-typed-data',
+  ledgerDeviceConnected = 'ledger-device-connected',
+  ledgerBridgeClose = 'ledger-bridge-close',
 }
 
 /**
