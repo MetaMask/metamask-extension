@@ -143,13 +143,7 @@ describe('accounts', () => {
 
     describe('createAccount', () => {
       it('forwards options and internal options to the Snap keyring', async () => {
-        const snapKeyring = getSnapKeyring();
-        const client = new MultichainWalletSnapClient(
-          SOLANA_WALLET_SNAP_ID,
-          SOLANA_SCOPES,
-          snapKeyring,
-          getMessenger(),
-        );
+        const client = getSolanaClient();
 
         mockSnapKeyringCreateAccount.mockResolvedValue({});
 
@@ -167,6 +161,37 @@ describe('accounts', () => {
         expect(mockSnapKeyringCreateAccount).toHaveBeenCalledWith(
           client.getSnapId(),
           options,
+          internalOptions,
+        );
+      });
+
+      it('auto-injects an account name if not provided', async () => {
+        const client = getSolanaClient();
+
+        // First, get the name that will be auto-injected.
+        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
+          `Account Name 2`,
+        );
+        const autoInjectedAccountNameSuggestion =
+          await client.getNextAvailableAccountName(); // Will be named for Solana account index 2.
+
+        const options: WalletSnapOptions = {
+          derivationPath: 'm/',
+          // No explicit `accountNameSuggestion`.
+        };
+        const internalOptions: SnapKeyringInternalOptions = {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        };
+        await client.createAccount(options, internalOptions);
+
+        expect(mockSnapKeyringCreateAccount).toHaveBeenCalledWith(
+          client.getSnapId(),
+          {
+            ...options,
+            accountNameSuggestion: autoInjectedAccountNameSuggestion,
+          },
           internalOptions,
         );
       });

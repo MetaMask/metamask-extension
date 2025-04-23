@@ -4946,14 +4946,9 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const client = await this._getSolanaWalletSnapClient();
-    const accountNameSuggestion = await client.getNextAvailableAccountName();
     return await client.createAccount(
       {
         entropySource,
-        // FIXME: We forward the suggestion here, so this got renamed later by
-        // the Snap keyring. We should be able to rename without passing this
-        // through the Snap (maybe use a new "internal option" for this).
-        accountNameSuggestion,
       },
       {
         displayConfirmation: false,

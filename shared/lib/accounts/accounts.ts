@@ -158,13 +158,23 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
   }
 
   async createAccount(
-    options: WalletSnapOptions,
+    { accountNameSuggestion, ...options }: WalletSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount> {
+    // Automatically name the account if not provided.
+    const autoAccountNameSuggestion = accountNameSuggestion
+      ? { accountNameSuggestion }
+      : { accountNameSuggestion: await this.getNextAvailableAccountName() };
+
     // TODO: Use `withKeyring` instead of using the keyring directly.
     return await this.#snapKeyring.createAccount(
       this.#snapId,
-      options,
+      {
+        ...options,
+        // TODO: Stop forwarding the account name to the Snap, we should make this
+        // an internal option at some point.
+        ...autoAccountNameSuggestion,
+      },
       internalOptions,
     );
   }
@@ -206,18 +216,11 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
       // NOTE: We are doing this sequentially mainly to avoid race-conditions with the
       // account naming logic.
-      for (const discoveredAccount of discovered) {
+      for (const { derivationPath } of discovered) {
         try {
-          const accountNameSuggestion =
-            await this.getNextAvailableAccountName();
-
           const options: WalletSnapOptions = {
-            derivationPath: discoveredAccount.derivationPath,
+            derivationPath,
             entropySource,
-            // FIXME: We forward the suggestion here, so this got renamed later by
-            // the Snap keyring. We should be able to rename without passing this
-            // through the Snap (maybe use a new "internal option" for this).
-            accountNameSuggestion,
           };
 
           await this.createAccount(options, {
@@ -227,7 +230,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
           });
         } catch (error) {
           console.warn(
-            `Unable to create discovered account: ${discoveredAccount.derivationPath}:`,
+            `Unable to create discovered account: ${derivationPath}:`,
             error,
           );
         }
