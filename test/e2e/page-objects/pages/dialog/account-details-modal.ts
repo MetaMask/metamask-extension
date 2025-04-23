@@ -3,6 +3,12 @@ import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../../constants';
 
+type RevealPrivateKeyOptions = {
+  expectedPrivateKey: string;
+  password?: string;
+  expectedPasswordError?: boolean;
+};
+
 class AccountDetailsModal {
   private driver: Driver;
 
@@ -114,7 +120,7 @@ class AccountDetailsModal {
     expectedPrivateKey,
     password = WALLET_PASSWORD,
     expectedPasswordError = false,
-  }): Promise<void> {
+  }: RevealPrivateKeyOptions): Promise<void> {
     console.log(
       `Reveal private key and verify it is correct in account details modal`,
     );
