@@ -30,8 +30,8 @@ describe('Incremental Security', function (this: Suite) {
         );
         await driver.navigate();
 
+        // skip collect metametrics
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          // skip collect metametrics
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.clickNoThanksButton();
         }
@@ -42,8 +42,8 @@ describe('Incremental Security', function (this: Suite) {
         await startOnboardingPage.checkTermsCheckbox();
         await startOnboardingPage.clickCreateWalletButton();
 
+        // skip collect metametrics
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          // skip collect metametrics
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.clickNoThanksButton();
         }
