@@ -1585,6 +1585,10 @@ export default class MetamaskController extends EventEmitter {
           fetchOptions: { method: 'GET', headers, signal },
           ...requestOptions,
         }),
+      // eslint-disable-next-line no-empty-function
+      trackMetaMetricsFn: () => {
+        // TODO implement these when ready to start tracking new unified swap events
+      },
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },

@@ -48,10 +48,11 @@ describe('BridgeQuotesModal', () => {
           },
         },
         currencyRates: {
-          eth: {
+          ETH: {
             conversionRate: 1,
+            usdConversionRate: 1,
           },
-          pol: {
+          POL: {
             conversionRate: 1,
             usdConversionRate: 1,
           },
