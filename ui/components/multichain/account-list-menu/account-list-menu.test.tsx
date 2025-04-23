@@ -4,6 +4,7 @@ import reactRouterDom from 'react-router-dom';
 import {
   BtcAccountType,
   EthAccountType,
+  EthScope,
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
@@ -218,6 +219,7 @@ describe('AccountListMenu', () => {
               },
               options: {},
               methods: ETH_EOA_METHODS,
+              scopes: [EthScope.Eoa],
               type: EthAccountType.Eoa,
             },
           },
