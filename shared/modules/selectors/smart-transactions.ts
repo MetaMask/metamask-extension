@@ -117,7 +117,6 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  * @param state
  * @returns
  */
-
 // @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsPreferenceEnabled = createSelector(
   getSmartTransactionsOptInStatusInternal,
