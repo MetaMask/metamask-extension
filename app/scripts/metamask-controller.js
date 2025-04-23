@@ -247,7 +247,6 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
-import { BridgeStatusAction } from '../../shared/types/bridge-status';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { addDiscoveredSolanaAccounts } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
