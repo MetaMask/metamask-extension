@@ -6,6 +6,7 @@ import {
   ButtonVariant,
   Text,
 } from '../../../../components/component-library';
+import Card from '../../../../components/ui/card';
 import {
   FontWeight,
   TextVariant,
@@ -35,22 +36,18 @@ export default function RemoteModeDailyAllowanceCard({
   onRemove,
 }: {
   dailyAllowance: DailyAllowance;
-  onRemove: () => void;
+  onRemove?: () => void;
 }) {
   const handleRemoveToken = useCallback(() => {
-    onRemove();
+    onRemove?.();
   }, [onRemove]);
 
   return (
-    <Box width={BlockSize.Full} marginTop={4}>
+    <Card width={BlockSize.Full} marginTop={4} backgroundColor={BackgroundColor.backgroundPressed}>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         gap={4}
-        padding={4}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        borderRadius={BorderRadius.LG}
-        borderColor={BorderColor.borderDefault}
       >
         <Box
           display={Display.Flex}
@@ -63,9 +60,11 @@ export default function RemoteModeDailyAllowanceCard({
               {dailyAllowance.tokenType}
             </Text>
           </Box>
-          <Button variant={ButtonVariant.Link} onClick={handleRemoveToken}>
-            Remove
-          </Button>
+          {onRemove && (
+            <Button variant={ButtonVariant.Link} onClick={handleRemoveToken}>
+              Remove
+            </Button>
+          )}
         </Box>
         <Box
           display={Display.Flex}
@@ -78,6 +77,6 @@ export default function RemoteModeDailyAllowanceCard({
           </Text>
         </Box>
       </Box>
-    </Box>
+    </Card>
   );
 }
