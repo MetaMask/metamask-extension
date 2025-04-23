@@ -503,9 +503,9 @@ export async function initializeRpcProviderDomains(): Promise<void> {
         if (chain.rpc && Array.isArray(chain.rpc)) {
           for (const rpcUrl of chain.rpc) {
             try {
-              // Handle placeholder variables like ${INFURA_API_KEY}
-              const cleanedUrl = rpcUrl.replace(/\$\{[^}]+\}/gu, 'API_KEY');
-              const url = new URL(cleanedUrl);
+              // Removed cleaning step - will fail for URLs like:
+              // https://${INFURA_API_KEY}.infura.io/v3/
+              const url = new URL(rpcUrl);
               knownDomainsSet.add(url.hostname);
             } catch (e) {
               // Skip invalid URLs

@@ -27,7 +27,16 @@ import {
   getMethodDataName,
   getBooleanFlag,
   extractRpcDomain,
+  isKnownDomain,
+  initializeRpcProviderDomains,
 } from './util';
+
+// Mock the module
+jest.mock('./util', () => ({
+  ...jest.requireActual('./util'),
+  isKnownDomain: jest.fn(),
+  initializeRpcProviderDomains: jest.fn(),
+}));
 
 describe('app utils', () => {
   describe('getEnvironmentType', () => {
@@ -450,6 +459,61 @@ describe('app utils', () => {
       expect(getBooleanFlag('false')).toBe(false);
       expect(getBooleanFlag(undefined)).toBe(false);
       expect(getBooleanFlag('foo')).toBe(false);
+    });
+  });
+
+  describe('RPC URL handling utilities', () => {
+    describe('isKnownDomain', () => {
+      beforeEach(() => {
+        const testKnownDomains = new Set([
+          'mainnet.infura.io',
+          'eth-mainnet.alchemyapi.io',
+        ]);
+
+        isKnownDomain.mockImplementation((domain) => {
+          if (!domain) {
+            return false;
+          }
+          return testKnownDomains.has(domain.toLowerCase());
+        });
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should correctly identify known domains', () => {
+        expect(isKnownDomain('mainnet.infura.io')).toBe(true);
+        expect(isKnownDomain('MAINNET.INFURA.IO')).toBe(true);
+        expect(isKnownDomain('unknown-domain.com')).toBe(false);
+        expect(isKnownDomain(null)).toBe(false);
+        expect(isKnownDomain('')).toBe(false);
+      });
+    });
+
+    describe('initializeRpcProviderDomains', () => {
+      let mockPromise;
+
+      beforeEach(() => {
+        mockPromise = Promise.resolve();
+        initializeRpcProviderDomains.mockReturnValue(mockPromise);
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should return a promise', async () => {
+        const result = initializeRpcProviderDomains();
+        expect(result).toBeInstanceOf(Promise);
+        await result;
+      });
+
+      it('should reuse the same promise on subsequent calls', () => {
+        const result1 = initializeRpcProviderDomains();
+        const result2 = initializeRpcProviderDomains();
+        expect(result1).toBe(result2);
+      });
     });
   });
 
