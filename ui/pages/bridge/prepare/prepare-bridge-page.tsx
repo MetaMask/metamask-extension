@@ -19,6 +19,7 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   type GenericQuoteRequest,
   getNativeAssetForChainId,
+  isNativeAddress,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -122,8 +123,11 @@ import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import {
+  fetchAssetMetadata,
+  toAssetId,
+} from '../../../../shared/lib/asset-utils';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -138,10 +142,6 @@ const PrepareBridgePage = () => {
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
-  const isFromTokensLoading = useMemo(
-    () => Object.keys(fromTokens).length === 0,
-    [fromTokens],
-  );
 
   const toToken = useSelector(getToToken) as TmpBridgeToken;
 
@@ -149,6 +149,14 @@ const PrepareBridgePage = () => {
   const toChains = useSelector(getToChains);
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
+
+  const isFromTokensLoading = useMemo(() => {
+    // This is an EVM token list. Solana tokens should not trigger loading state.
+    if (fromChain && isSolanaChainId(fromChain.chainId)) {
+      return false;
+    }
+    return Object.keys(fromTokens).length === 0;
+  }, [fromTokens, fromChain]);
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
@@ -284,6 +292,8 @@ const PrepareBridgePage = () => {
           setFromToken({
             ...srcAsset,
             chainId: srcChainId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             image: srcAsset.icon || srcAsset.iconUrl || '',
             address: srcAsset.address,
           }),
@@ -414,34 +424,68 @@ const PrepareBridgePage = () => {
       });
     };
 
-    // fromTokens is for EVM chains so it's ok to lowercase the token address
-    const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+    const handleToken = async () => {
+      if (isSolanaChainId(fromChain.chainId)) {
+        const tokenAddress = tokenAddressFromUrl;
+        const assetId = toAssetId(
+          tokenAddress,
+          formatChainIdToCaip(fromChain.chainId),
+        );
+        if (!assetId) {
+          removeTokenFromUrl();
+          return;
+        }
 
-    switch (tokenAddressFromUrl) {
-      case fromToken?.address:
-        // If the token is already set, remove the query param
-        removeTokenFromUrl();
-        break;
-      case matchedToken?.address:
-      case matchedToken?.address
-        ? toChecksumAddress(matchedToken.address)
-        : undefined: {
-        // If there is a match, set it as the fromToken
+        const tokenMetadata = await fetchAssetMetadata(
+          tokenAddress,
+          fromChain.chainId,
+        );
+        if (!tokenMetadata) {
+          removeTokenFromUrl();
+          return;
+        }
+
         dispatch(
           setFromToken({
-            ...matchedToken,
-            image: matchedToken.iconUrl,
+            ...tokenMetadata,
             chainId: fromChain.chainId,
+            image: tokenMetadata.image || '',
           }),
         );
         removeTokenFromUrl();
-        break;
+        return;
       }
-      default:
-        // Otherwise remove query param
-        removeTokenFromUrl();
-        break;
-    }
+
+      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+
+      switch (tokenAddressFromUrl) {
+        case fromToken?.address:
+          // If the token is already set, remove the query param
+          removeTokenFromUrl();
+          break;
+        case matchedToken?.address:
+        case matchedToken?.address
+          ? toChecksumAddress(matchedToken.address)
+          : undefined: {
+          // If there is a match, set it as the fromToken
+          dispatch(
+            setFromToken({
+              ...matchedToken,
+              image: matchedToken.iconUrl,
+              chainId: fromChain.chainId,
+            }),
+          );
+          removeTokenFromUrl();
+          break;
+        }
+        default:
+          // Otherwise remove query param
+          removeTokenFromUrl();
+          break;
+      }
+    };
+
+    handleToken();
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
   // Set the default destination token and slippage for swaps
@@ -456,9 +500,8 @@ const PrepareBridgePage = () => {
   }, []);
 
   const occurrences = Number(toToken?.occurrences ?? 0);
-  const toTokenIsNotDefault =
-    toToken?.address &&
-    !isSwapsDefaultTokenAddress(toToken?.address, toChain?.chainId as string);
+  const toTokenIsNotNative =
+    toToken?.address && !isNativeAddress(toToken?.address);
 
   const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
@@ -537,6 +580,8 @@ const PrepareBridgePage = () => {
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             value: fromAmount || undefined,
           }}
           isTokenListLoading={isFromTokensLoading}
@@ -670,9 +715,13 @@ const PrepareBridgePage = () => {
                   }
             }
             customTokenListGenerator={
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               toChain || isSwap ? toTokenListGenerator : undefined
             }
             amountInFiat={
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               activeQuote?.toTokenAmount?.valueInCurrency || undefined
             }
             amountFieldProps={{
@@ -855,7 +904,7 @@ const PrepareBridgePage = () => {
           {isCannotVerifyTokenBannerOpen &&
             isEvm &&
             toToken &&
-            toTokenIsNotDefault &&
+            toTokenIsNotNative &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}

@@ -55,6 +55,7 @@ import {
   getShowFiatInTestnets,
   getChainIdsToPoll,
   getSnapsMetadata,
+  getSnap,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -115,13 +116,18 @@ const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
+
+  const snap = useSelector((state) =>
+    getSnap(state, account.metadata?.snap?.id),
+  );
   const snapMetadata = useSelector(getSnapsMetadata);
   const accountLabel = getAccountLabel(
     account.metadata.keyring.type,
     account,
     account.metadata.keyring.type === KeyringType.snap
-      ? getSnapName(snapMetadata)(account.metadata?.snap.id)
+      ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
       : null,
+    snap?.preinstalled,
   );
 
   const useBlockie = useSelector(getUseBlockie);
@@ -256,6 +262,7 @@ const AccountListItem = ({
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
         'multichain-account-list-item--clickable': Boolean(onClick),
       })}
+      data-testid="account-item"
       ref={itemRef}
       onClick={() => {
         // Without this check, the account will be selected after

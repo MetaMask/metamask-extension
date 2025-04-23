@@ -22,6 +22,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       UserStorageController: {
         isProfileSyncingEnabled: true,
+        isAccountSyncingEnabled: true,
       },
       NotificationServicesController: {
         subscriptionAccountsSeen: [],
@@ -279,9 +280,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
       },
-      QueuedRequestController: {
-        queuedRequestCount: 0,
-      },
       SelectedNetworkController: {
         domains: {},
       },
@@ -311,9 +309,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         allDetectedTokens: {},
         allIgnoredTokens: {},
         allTokens: {},
-        detectedTokens: [],
-        ignoredTokens: [],
-        tokens: [],
       },
       TransactionController: {
         transactions: {},
