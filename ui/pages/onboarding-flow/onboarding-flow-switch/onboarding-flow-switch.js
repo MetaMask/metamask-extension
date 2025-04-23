@@ -24,9 +24,11 @@ import {
   getIsUnlocked,
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
 // eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getPlatform } from '../../../../app/scripts/lib/util'; // eslint-disable-line no-unused-vars
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
+///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
