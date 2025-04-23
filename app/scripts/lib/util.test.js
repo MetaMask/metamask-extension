@@ -454,7 +454,6 @@ describe('app utils', () => {
   });
 
   describe('extractRpcDomain', () => {
-    // Create test known domains
     const testKnownDomains = new Set([
       'mainnet.infura.io',
       'linea-goerli.infura.io',
@@ -465,25 +464,58 @@ describe('app utils', () => {
     it('should extract domain from standard URLs', () => {
       expect(
         extractRpcDomain(
-          'https://mainnet.infura.io/v3/ab7g2cat5c4r3d53m8a2a4321g1e2gg0',
+          'https://mainnet.infura.io/v3/ab7g2cat5c4r3d53m8a2a4321g1e2gg0/some/extra/path',
           testKnownDomains,
         ),
       ).toBe('mainnet.infura.io');
-
+      expect(
+        extractRpcDomain(
+          'https://Mainnet.Infura.Io/v3/abc123',
+          testKnownDomains,
+        ),
+      ).toBe('mainnet.infura.io');
+      expect(
+        extractRpcDomain(
+          'https://mainnet.infura.io/v3/abc123/',
+          testKnownDomains,
+        ),
+      ).toBe('mainnet.infura.io');
+      expect(
+        extractRpcDomain(
+          'https://mainnet.infura.io/v3/abc123?foo=bar#section',
+          testKnownDomains,
+        ),
+      ).toBe('mainnet.infura.io');
+      expect(
+        extractRpcDomain(
+          'https://mainnet.infura.io//v3/abc123',
+          testKnownDomains,
+        ),
+      ).toBe('mainnet.infura.io');
+      expect(
+        extractRpcDomain(
+          ' https://mainnet.infura.io/v3/abc123 ',
+          testKnownDomains,
+        ),
+      ).toBe('mainnet.infura.io');
+      expect(
+        extractRpcDomain(
+          'https://mainnet.infura.io/v3/abc123\u200B',
+          testKnownDomains,
+        ),
+      ).toBe('mainnet.infura.io');
       expect(
         extractRpcDomain(
           'wss://linea-goerli.infura.io/v3/ab7g2cat5c4r3d53m8a2a4321g1e2gg0',
           testKnownDomains,
         ),
       ).toBe('linea-goerli.infura.io');
-
       expect(
         extractRpcDomain(
           'https://eth-mainnet.alchemyapi.io/v2/key',
           testKnownDomains,
         ),
       ).toBe('eth-mainnet.alchemyapi.io');
-
       expect(
         extractRpcDomain('https://rpc.tenderly.co/fork/123', testKnownDomains),
       ).toBe('rpc.tenderly.co');
@@ -502,17 +534,28 @@ describe('app utils', () => {
       expect(extractRpcDomain('http://10.0.0.1:8545')).toBe('private');
       expect(extractRpcDomain('http://172.16.0.5:8545')).toBe('private');
       expect(extractRpcDomain('https://11.22.33.44')).toBe('private');
+      expect(extractRpcDomain('http://[::1]:8545')).toBe('private'); // IPv6
+    });
+
+    it('should handle punycode domains as private', () => {
+      expect(extractRpcDomain('ws://adıdas.de')).toBe('private');
+      expect(extractRpcDomain('http://xn--addas-o4a.de')).toBe('private');
+    });
+
+    it('should handle chain aggregators that proxy RPCs', () => {
+      expect(extractRpcDomain('https://rpc.ankr.com/eth_goerli')).toBe(
+        'private',
+      );
+      expect(extractRpcDomain('https://rpc.mevblocker.io')).toBe('private');
     });
 
     it('should handle URLs without protocol', () => {
       expect(
         extractRpcDomain('mainnet.infura.io/v3/abc123', testKnownDomains),
       ).toBe('mainnet.infura.io');
-
-      // Unknown domain should return 'private'
-      expect(
-        extractRpcDomain('http://custom-domain.xyz', testKnownDomains),
-      ).toBe('private');
+      expect(extractRpcDomain('custom-domain.xyz', testKnownDomains)).toBe(
+        'private',
+      );
       expect(extractRpcDomain('chaindaddy.io', testKnownDomains)).toBe(
         'private',
       );
@@ -521,7 +564,7 @@ describe('app utils', () => {
     it('should handle invalid URLs and edge cases', () => {
       expect(extractRpcDomain('')).toBe('invalid');
       expect(extractRpcDomain(null)).toBe('invalid');
-      expect(extractRpcDomain('invalid-url-format')).toBe('private'); // Assuming this domain isn't in knownDomainsSet
+      expect(extractRpcDomain('invalid-url-format')).toBe('private');
     });
   });
 });

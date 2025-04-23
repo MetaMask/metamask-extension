@@ -536,13 +536,6 @@ export function isKnownDomain(domain: string): boolean {
  * Extracts the domain from an RPC endpoint URL with privacy considerations
  *
  * @param rpcUrl - The RPC endpoint URL
- * @param knownDomainsForTesting
- * @returns The domain for known providers, 'private' for private/custom networks, or 'invalid' for invalid URLs
- */
-/**
- * Extracts the domain from an RPC endpoint URL with privacy considerations
- *
- * @param rpcUrl - The RPC endpoint URL
  * @param knownDomainsForTesting - Optional Set of known domains for testing purposes
  * @returns The domain for known providers, 'private' for private/custom networks, or 'invalid' for invalid URLs
  */
@@ -554,16 +547,19 @@ export function extractRpcDomain(
     return 'invalid';
   }
 
+  const trimmedRpcUrl = rpcUrl.trim();
+
   try {
-    // Try to parse the URL
     let url;
     try {
-      url = new URL(rpcUrl);
+      url = new URL(trimmedRpcUrl);
     } catch (e) {
-      // Handle URLs without protocol by adding one
-      if (!rpcUrl.startsWith('http://') && !rpcUrl.startsWith('https://')) {
+      if (
+        !trimmedRpcUrl.startsWith('http://') &&
+        !trimmedRpcUrl.startsWith('https://')
+      ) {
         try {
-          url = new URL(`https://${rpcUrl}`);
+          url = new URL(`https://${trimmedRpcUrl}`);
         } catch (e2) {
           return 'invalid';
         }
@@ -572,31 +568,48 @@ export function extractRpcDomain(
       }
     }
 
-    // Extract hostname
-    const { hostname } = url;
+    const hostname = url.hostname.toLowerCase();
 
-    // Handle localhost and loopback addresses
     if (
       hostname === 'localhost' ||
-      hostname.startsWith('127.') || // All 127.*.*.* addresses are loopback
-      hostname === '::1' // IPv6 loopback
+      hostname === '::1' ||
+      hostname.startsWith('127.')
     ) {
       return 'private';
     }
 
-    // All IP addresses (both IPv4 and IPv6) are treated as private
-    const ipv4Regex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/u;
-    if (ipv4Regex.test(hostname) || hostname.includes(':')) {
+    const validIPv4 =
+      /^(?:(?:25[0-5]|2[0-4]\d|1?\d{1,2})\.){3}(?:25[0-5]|2[0-4]\d|1?\d{1,2})$/u;
+
+    const isPrivateIPv4 = (ip: string): boolean => {
+      if (!validIPv4.test(ip)) {
+        return false;
+      }
+      const [a, b] = ip.split('.').map(Number);
+      return (
+        a === 10 ||
+        (a === 172 && b >= 16 && b <= 31) ||
+        (a === 192 && b === 168)
+      );
+    };
+
+    if (validIPv4.test(hostname) && isPrivateIPv4(hostname)) {
       return 'private';
     }
 
-    // Check if the domain is in our known list - use test set if available
-    const domainsToCheck = knownDomainsForTesting || knownDomainsSet;
-    if (domainsToCheck?.has(hostname)) {
-      return hostname; // It's safe to show the actual domain
+    if (hostname.includes(':')) {
+      return 'private';
     }
 
-    // For all other domains, return 'private' to protect user privacy
+    if (hostname.startsWith('xn--')) {
+      return 'private';
+    }
+
+    const domainsToCheck = knownDomainsForTesting || knownDomainsSet;
+    if (domainsToCheck?.has(hostname)) {
+      return hostname;
+    }
+
     return 'private';
   } catch (error) {
     console.error('Error extracting RPC domain:', error);
