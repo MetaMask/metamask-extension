@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { Anvil } from '@viem/anvil';
+import { Anvil } from '../../seeder/anvil';
 import { withFixtures } from '../../helpers';
 import { WALLET_PASSWORD } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
@@ -29,7 +29,7 @@ describe('Incremental Security', function (this: Suite) {
         localNodes: Anvil[];
       }) => {
         // Seed Account
-        await localNodes[0].setAccountBalance(
+        await localNodes?.[0]?.setAccountBalance(
           '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3',
           '0x100000000000000000000',
         );

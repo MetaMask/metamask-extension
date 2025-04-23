@@ -214,6 +214,26 @@ class TestDapp {
   }
 
   /**
+   * Sends a JSON-RPC request to the connected wallet using window.ethereum.
+   *
+   * @param method - The RPC method name.
+   * @param params - The parameters for the RPC method.
+   * @returns The result of the RPC call.
+   */
+  async request<T>(method: string, params?: unknown[] | object): Promise<T> {
+    console.log(`Sending request: ${method}`, params);
+    return await this.driver.executeScript(
+      'return window.ethereum.request(arguments[0])',
+      [
+        {
+          method,
+          params,
+        },
+      ],
+    );
+  }
+
+  /**
    * Verifies the accounts connected to the test dapp.
    *
    * @param connectedAccounts - Account addresses to check if connected to test dapp, separated by a comma.
