@@ -71,7 +71,7 @@ const withMetamaskConnectedToMainnet = {
           'aave-v3': {
             protocolDetails: {
               name: 'AaveV3 Mainnet',
-              iconUrl: 'https://cryptologos.cc/logos/aave-aave-logo.png',
+              iconUrl: '',
             },
             aggregatedMarketValue: 4650.38,
             positionTypes: {
@@ -191,7 +191,7 @@ const withMetamaskConnectedToMainnet = {
           'aave-v3': {
             protocolDetails: {
               name: 'AaveV3 Polygon',
-              iconUrl: 'https://cryptologos.cc/logos/aave-aave-logo.png',
+              iconUrl: '',
             },
             aggregatedMarketValue: 0.0009252860881990987,
             positionTypes: {
