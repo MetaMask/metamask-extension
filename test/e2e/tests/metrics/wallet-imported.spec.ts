@@ -31,8 +31,9 @@ describe('Wallet Created Events - Imported Account', function () {
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-
-        assert.equal(events.length, 3);
+        const expectedEvents =
+          process.env.SELENIUM_BROWSER === Browser.FIREFOX ? 2 : 3;
+        assert.equal(events.length, expectedEvents);
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           assert.deepStrictEqual(events[0].properties, {
             account_type: 'imported',

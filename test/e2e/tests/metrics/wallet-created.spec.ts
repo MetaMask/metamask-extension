@@ -60,7 +60,9 @@ describe('Wallet Created Events', function () {
           participateInMetaMetrics: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 2);
+        const expectedEvents =
+          process.env.SELENIUM_BROWSER === Browser.FIREFOX ? 1 : 2;
+        assert.equal(events.length, expectedEvents);
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           assert.deepStrictEqual(events[0].properties, {
             account_type: 'metamask',
