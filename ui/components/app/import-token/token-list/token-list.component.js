@@ -74,7 +74,7 @@ export default class TokenList extends Component {
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
           >
-            {Array(12)
+            {Array(Math.min(12, results.length))
               .fill(undefined)
               .map((_, i) => {
                 const { symbol, name, address, chainId } = results[i] || {};
