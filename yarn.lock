@@ -5004,21 +5004,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^3.4.4":
-  version: 3.4.4
-  resolution: "@metamask/auto-changelog@npm:3.4.4"
-  dependencies:
-    diff: "npm:^5.0.0"
-    execa: "npm:^5.1.1"
-    prettier: "npm:^2.8.8"
-    semver: "npm:^7.3.5"
-    yargs: "npm:^17.0.1"
-  bin:
-    auto-changelog: dist/cli.js
-  checksum: 10/70e98529a153ebeab10410dbc3f567014999f77ed82f2b52f1b36501b28a4e3614c809a90c89600a739d7710595bfecc30e2260410e6afac7539f8db65a48f2c
-  languageName: node
-  linkType: hard
-
 "@metamask/base-controller@npm:^7.0.1, @metamask/base-controller@npm:^7.0.3, @metamask/base-controller@npm:^7.1.1":
   version: 7.1.1
   resolution: "@metamask/base-controller@npm:7.1.1"
@@ -5149,15 +5134,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-abis@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/delegation-abis@npm:0.9.0"
-  dependencies:
-    "@metamask/auto-changelog": "npm:^3.4.4"
-  checksum: 10/cd727e64894ad05a0ec23eee56dd093ae06602099ac82c8ca4a59953a3bc4410de6279d7c3fcbf5568956eeec3a408ea88ed12eef4ead8af4b066357ecc66114
-  languageName: node
-  linkType: hard
-
 "@metamask/delegation-controller@npm:^0.1.0":
   version: 0.1.0
   resolution: "@metamask/delegation-controller@npm:0.1.0"
@@ -5171,37 +5147,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-deployments@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/delegation-deployments@npm:0.9.0"
-  dependencies:
-    "@metamask/auto-changelog": "npm:^3.4.4"
-  checksum: 10/7d1b7eba51e8067e8a18755c795077d1506134243a101cca86503acca59fa6fff6c7988aaa19925cee446d3f5057b3c2f62767316837efa8a4fa3737a1741373
-  languageName: node
-  linkType: hard
-
-"@metamask/delegation-toolkit@npm:^0.10.2":
-  version: 0.10.2
-  resolution: "@metamask/delegation-toolkit@npm:0.10.2"
-  dependencies:
-    "@metamask/delegation-utils": "npm:^0.10.0"
-    webauthn-p256: "npm:^0.0.5"
-  peerDependencies:
-    viem: ">=2.18.2 <3.0.0"
-  checksum: 10/80d114d4edf2851ce4018a7dc942f61e2b4974e166d46a290ffdf95237f113cbf82eda648a7690e394c2c9b68f7189d6d07f5ebde3e18a96a09c98d93822b294
-  languageName: node
-  linkType: hard
-
-"@metamask/delegation-utils@npm:^0.10.0":
+"@metamask/delegation-deployments@npm:^0.10.0":
   version: 0.10.0
-  resolution: "@metamask/delegation-utils@npm:0.10.0"
-  dependencies:
-    "@metamask/delegation-abis": "npm:^0.9.0"
-    "@metamask/delegation-deployments": "npm:^0.9.0"
-    buffer: "npm:^6.0.3"
-  peerDependencies:
-    viem: ">=2.18.2 <3.0.0"
-  checksum: 10/ed9df621981ea3104f09228ab79c4b424c607297469f7455e9bf9347215c603fe5e2f457a50030da8307dd08f6cc16df3d08c110f87cb989ed278b590e5def87
+  resolution: "@metamask/delegation-deployments@npm:0.10.0"
+  checksum: 10/e37dc8a547fe025c4b24afa4bb41da4c05b796db114aa2f21f610ef780e4f58f8d8dbe5f8548cb1a6c7f433298aef2c72601bb339978474b76dbc014d89efd2a
   languageName: node
   linkType: hard
 
@@ -6829,7 +6778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.8.1, @noble/curves@npm:^1.2.0, @noble/curves@npm:^1.4.0, @noble/curves@npm:^1.6.0, @noble/curves@npm:^1.8.1, @noble/curves@npm:~1.8.1":
+"@noble/curves@npm:1.8.1, @noble/curves@npm:^1.2.0, @noble/curves@npm:^1.6.0, @noble/curves@npm:^1.8.1, @noble/curves@npm:~1.8.1":
   version: 1.8.1
   resolution: "@noble/curves@npm:1.8.1"
   dependencies:
@@ -27705,7 +27654,7 @@ __metadata:
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.7.0"
     "@metamask/delegation-controller": "npm:^0.1.0"
-    "@metamask/delegation-toolkit": "npm:^0.10.2"
+    "@metamask/delegation-deployments": "npm:^0.10.0"
     "@metamask/design-tokens": "npm:^7.0.0"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
@@ -31441,7 +31390,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.5.1, prettier@npm:^2.7.1, prettier@npm:^2.8.0, prettier@npm:^2.8.8":
+"prettier@npm:^2.5.1, prettier@npm:^2.7.1, prettier@npm:^2.8.0":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
@@ -38589,16 +38538,6 @@ __metadata:
     "@zxing/text-encoding":
       optional: true
   checksum: 10/243518cfa8388ac05eeb4041bd330d38c599476ff9a93239b386d1ba2af130089a2fcefb0cf65b385f989105ff460ae69dca7e42236f4d98dc776b04e558cdb5
-  languageName: node
-  linkType: hard
-
-"webauthn-p256@npm:^0.0.5":
-  version: 0.0.5
-  resolution: "webauthn-p256@npm:0.0.5"
-  dependencies:
-    "@noble/curves": "npm:^1.4.0"
-    "@noble/hashes": "npm:^1.4.0"
-  checksum: 10/6bf5d1857dfb99ecb3b318af06eddea874c10135e6ebb9f046270f5cbb162933bc6caf77aedb033e14c09971dda544a5fb367ac545e4ec8001b309ba517555cf
   languageName: node
   linkType: hard
 

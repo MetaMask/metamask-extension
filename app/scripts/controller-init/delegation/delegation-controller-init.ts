@@ -2,11 +2,11 @@ import {
   DelegationController,
   DelegationControllerMessenger,
 } from '@metamask/delegation-controller';
+import { Hex, hexToNumber } from 'viem';
 import {
   getDelegationHashOffchain,
   getDeleGatorEnvironment,
-} from '@metamask/delegation-toolkit';
-import { Hex, hexToNumber } from 'viem';
+} from '../../../../shared/lib/delegation';
 import { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messenger';
 import { ControllerInitFunction, ControllerInitResult } from '../types';
 
