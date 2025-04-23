@@ -715,17 +715,6 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
 );
 
 /**
- * Get the accounts by chainId
- *
- * @param {object} state - Redux state
- * @returns {object} The accounts by chainId
- */
-export const selectAccountsByChainId = createSelector(
-  (state) => state,
-  (state) => state.metamask.accountsByChainId,
-);
-
-/**
  * Get the native token balance for a given account address and chainId
  *
  * @param {object} state - Redux state
