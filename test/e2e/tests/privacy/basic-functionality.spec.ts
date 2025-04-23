@@ -100,6 +100,7 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
+          .withNetworkControllerOnMainnet()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => mockApis(server, userStorageMockttpController, mockedAccountSyncResponse),
@@ -147,6 +148,7 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
+          .withNetworkControllerOnMainnet()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => mockApis(server, userStorageMockttpController, mockedAccountSyncResponse),
