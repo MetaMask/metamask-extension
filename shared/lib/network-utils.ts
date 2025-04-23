@@ -7,7 +7,7 @@ type ChainInfo = {
   shortName?: string;
   chainId: number;
   rpc?: string[];
-}
+};
 
 export async function getSafeChainsList(): Promise<ChainInfo[]> {
   return await fetchWithCache({
