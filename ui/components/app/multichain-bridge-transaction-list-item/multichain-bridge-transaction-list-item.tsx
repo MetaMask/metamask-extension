@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { StatusTypes } from '@metamask/bridge-status-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import {
   getBridgeStatusKey,
   isBridgeComplete,

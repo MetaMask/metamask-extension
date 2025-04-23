@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusTypes } from '@metamask/bridge-status-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import {
   Icon,
   IconName,

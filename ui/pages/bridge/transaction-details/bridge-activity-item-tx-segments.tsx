@@ -3,10 +3,8 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import {
-  BridgeHistoryItem,
-  StatusTypes,
-} from '@metamask/bridge-status-controller';
+import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import { Box, Text } from '../../../components/component-library';
 import {
   BlockSize,

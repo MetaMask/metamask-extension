@@ -1,11 +1,14 @@
 /* eslint-disable camelcase */
 import { TransactionControllerTransactionFailedEvent } from '@metamask/transaction-controller';
-import { formatChainIdToHex, isEthUsdt } from '@metamask/bridge-controller';
+import {
+  formatChainIdToHex,
+  isEthUsdt,
+  StatusTypes,
+} from '@metamask/bridge-controller';
 // eslint-disable-next-line import/no-restricted-paths
 import {
   BridgeStatusControllerBridgeTransactionCompleteEvent,
   BridgeStatusControllerBridgeTransactionFailedEvent,
-  StatusTypes,
 } from '@metamask/bridge-status-controller';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';

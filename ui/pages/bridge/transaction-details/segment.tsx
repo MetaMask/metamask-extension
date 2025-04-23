@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { StatusTypes } from '@metamask/bridge-status-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import { Box } from '../../../components/component-library';
 import {
   BackgroundColor,

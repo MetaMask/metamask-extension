@@ -7,9 +7,8 @@ import {
 import {
   BridgeHistoryItem,
   ActionTypes,
-  StatusTypes,
 } from '@metamask/bridge-status-controller';
-import { type Step } from '@metamask/bridge-controller';
+import { StatusTypes, type Step } from '@metamask/bridge-controller';
 import { Box, Text } from '../../../components/component-library';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import {

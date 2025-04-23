@@ -1,9 +1,7 @@
 import React from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import {
-  BridgeHistoryItem,
-  StatusTypes,
-} from '@metamask/bridge-status-controller';
+import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import { Box } from '../../../components/component-library';
 import { formatDate } from '../../../helpers/utils/util';
 import BridgeStepDescription, {
