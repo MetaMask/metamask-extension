@@ -18817,7 +18817,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/keyring-controller
-21.0.1 <https://github.com/MetaMask/core>
+21.0.3 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
