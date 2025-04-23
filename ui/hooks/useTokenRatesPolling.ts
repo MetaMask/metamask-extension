@@ -10,6 +10,7 @@ import {
   tokenRatesStartPolling,
   tokenRatesStopPollingByPollingToken,
 } from '../store/actions';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
   getCompletedOnboarding,
   getIsUnlocked,
@@ -22,6 +23,14 @@ const useTokenRatesPolling = () => {
   const isUnlocked = useSelector(getIsUnlocked);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const chainIds = useSelector(getChainIdsToPoll);
+  const networkConfiguration = useSelector(getNetworkConfigurationsByChainId);
+
+  const input = chainIds.map((chainId) => ({
+    chainId,
+    // TODO: use the selected currency instead of the native currency
+    nativeCurrency:
+      networkConfiguration[chainId as `0x${string}`].nativeCurrency,
+  }));
 
   // Selectors returning state updated by the polling
   const tokenExchangeRates = useSelector(getTokenExchangeRates);
@@ -33,8 +42,10 @@ const useTokenRatesPolling = () => {
   useMultiPolling({
     startPolling: tokenRatesStartPolling,
     stopPollingByPollingToken: tokenRatesStopPollingByPollingToken,
-    input: enabled ? chainIds : [],
+    input: enabled ? [input] : [],
   });
+
+  // price -> 1 / 1usdt , balance -> balanceController
 
   return {
     tokenExchangeRates,
