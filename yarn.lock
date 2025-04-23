@@ -5086,7 +5086,10 @@ __metadata:
   linkType: hard
 
 "@metamask/browser-passworder@npm:^4.3.0":
+  version: 4.3.0
   resolution: "@metamask/browser-passworder@npm:4.3.0"
+  dependencies:
+    "@metamask/utils": "npm:^8.2.0"
   checksum: 10/8ba5c50cd6274b0cc0f90a1ee16b960ee150f14c29083f3515f4abe018a28ead32c21f5f4a62a6e27a946b1228adc2ff1f195e71e38782fa39fa8fff116173e6
   languageName: node
   linkType: hard
@@ -6686,7 +6689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^8.3.0":
+"@metamask/utils@npm:^8.2.0, @metamask/utils@npm:^8.3.0":
   version: 8.5.0
   resolution: "@metamask/utils@npm:8.5.0"
   dependencies:
