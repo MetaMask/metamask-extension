@@ -5777,10 +5777,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-client@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/multichain-api-client@npm:0.3.0"
-  checksum: 10/3a82a36dbdad88f16464e7655d77a5562d636a387b93d69438421c1fd25f4767eb28ed4c423647b6b06fb0c85cf7dcbe7e4bca474cddd022c78652d631de23fe
+"@metamask/multichain-api-client@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/multichain-api-client@npm:0.5.0"
+  checksum: 10/3703a71f9643633084198c2d4abc3c1c03bc231a3d377f510a0088fb586d70231664aa77908934ec90b8cdc7a277747f11ee4a443680685f2f38ffca756e5499
   languageName: node
   linkType: hard
 
@@ -6492,9 +6492,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-standard@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@metamask/solana-wallet-standard@npm:0.1.1"
+"@metamask/solana-wallet-standard@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/solana-wallet-standard@npm:0.2.0"
   dependencies:
     "@solana/wallet-standard-chains": "npm:^1.1.1"
     "@solana/wallet-standard-features": "npm:^1.3.0"
@@ -6502,7 +6502,7 @@ __metadata:
     "@wallet-standard/features": "npm:^1.1.0"
     "@wallet-standard/wallet": "npm:^1.1.0"
     bs58: "npm:^6.0.0"
-  checksum: 10/06559ac73f590d360c8b8e053bdfde94077558bc861e4bc03dffa6578d939e3774c94957f95488e9394c75efd3bd0533035f1f10da2f5b8dfba2533e16193af4
+  checksum: 10/28e76dac1e00bc46fc53b7efa613cc922b97b29a6737294a75afa8100d3fe94009b8a79df7eb3bede6fc658efbbeb51aaa50d3d56ae8468ff999209759b97516
   languageName: node
   linkType: hard
 
@@ -27678,7 +27678,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:^1.1.1"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-api-client": "npm:^0.3.0"
+    "@metamask/multichain-api-client": "npm:^0.5.0"
     "@metamask/multichain-api-middleware": "npm:^0.1.1"
     "@metamask/multichain-network-controller": "npm:^0.5.1"
     "@metamask/multichain-transactions-controller": "npm:^0.9.0"
@@ -27712,7 +27712,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^6.22.0"
     "@metamask/snaps-utils": "npm:^9.2.0"
     "@metamask/solana-wallet-snap": "npm:^1.24.0"
-    "@metamask/solana-wallet-standard": "npm:^0.1.1"
+    "@metamask/solana-wallet-standard": "npm:^0.2.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.10.0"
