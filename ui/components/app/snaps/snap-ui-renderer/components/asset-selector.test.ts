@@ -1,6 +1,6 @@
 import { AssetSelector, Box, Field } from '@metamask/snaps-sdk/jsx';
-import { renderInterface } from '../test-utils';
 import { fireEvent } from '@testing-library/dom';
+import { renderInterface } from '../test-utils';
 
 describe('SnapUIAssetSelector', () => {
   const mockMetamaskState = {
@@ -187,7 +187,7 @@ describe('SnapUIAssetSelector', () => {
   });
 
   it('renders inside a field', () => {
-    const { container, getAllByTestId, getByText } = renderInterface(
+    const { container, getByText } = renderInterface(
       Box({
         children: Field({
           label: 'Asset Selector',
