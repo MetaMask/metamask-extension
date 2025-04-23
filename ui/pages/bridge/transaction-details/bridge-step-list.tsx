@@ -1,7 +1,5 @@
 import React from 'react';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
 import {
   BridgeHistoryItem,
   StatusTypes,

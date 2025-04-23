@@ -4089,23 +4089,12 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,
       ),
-      [BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE}`,
-        ),
       [BridgeUserAction.UPDATE_QUOTE_PARAMS]:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
         ),
 
-      // Bridge Status
-      [BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_STATUS_CONTROLLER_NAME}:${BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS}`,
-        ),
       // Bridge Tx submission
       [BridgeStatusAction.SUBMIT_TX]: this.controllerMessenger.call.bind(
         this.controllerMessenger,

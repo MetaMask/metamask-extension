@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,

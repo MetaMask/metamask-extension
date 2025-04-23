@@ -110,6 +110,7 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => optInStatus,
 );
+
 /**
  * Returns the user's preference for the smart transactions feature.
  * Defaults to `true` if the user has not set a preference.
