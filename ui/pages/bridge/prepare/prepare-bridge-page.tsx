@@ -122,6 +122,10 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import {
+  fetchAssetMetadata,
+  toAssetId,
+} from '../../../../shared/lib/asset-utils';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -134,6 +138,9 @@ const PrepareBridgePage = () => {
 
   const isSwap = useIsMultichainSwap();
 
+  const fromToken = useSelector(getFromToken);
+  const fromTokens = useSelector(getTokenList) as TokenListMap;
+
   const toToken = useSelector(getToToken) as TmpBridgeToken;
 
   const fromChains = useSelector(getFromChains);
@@ -141,16 +148,13 @@ const PrepareBridgePage = () => {
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
 
-  const fromToken = useSelector(getFromToken);
-  const fromTokens = useSelector(getTokenList) as TokenListMap;
-  const isFromTokensLoading = useMemo(
-    () =>
-      // fromTokens does not get populated for solana so default to false
-      fromChain?.chainId && isSolanaChainId(fromChain.chainId)
-        ? false
-        : Object.keys(fromTokens).length === 0,
-    [fromTokens, fromChain?.chainId],
-  );
+  const isFromTokensLoading = useMemo(() => {
+    // This is an EVM token list. Solana tokens should not trigger loading state.
+    if (fromChain && isSolanaChainId(fromChain.chainId)) {
+      return false;
+    }
+    return Object.keys(fromTokens).length === 0;
+  }, [fromTokens, fromChain]);
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
@@ -421,34 +425,68 @@ const PrepareBridgePage = () => {
       });
     };
 
-    // fromTokens is for EVM chains so it's ok to lowercase the token address
-    const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+    const handleToken = async () => {
+      if (isSolanaChainId(fromChain.chainId)) {
+        const tokenAddress = tokenAddressFromUrl;
+        const assetId = toAssetId(
+          tokenAddress,
+          formatChainIdToCaip(fromChain.chainId),
+        );
+        if (!assetId) {
+          removeTokenFromUrl();
+          return;
+        }
 
-    switch (tokenAddressFromUrl) {
-      case fromToken?.address:
-        // If the token is already set, remove the query param
-        removeTokenFromUrl();
-        break;
-      case matchedToken?.address:
-      case matchedToken?.address
-        ? toChecksumAddress(matchedToken.address)
-        : undefined: {
-        // If there is a match, set it as the fromToken
+        const tokenMetadata = await fetchAssetMetadata(
+          tokenAddress,
+          fromChain.chainId,
+        );
+        if (!tokenMetadata) {
+          removeTokenFromUrl();
+          return;
+        }
+
         dispatch(
           setFromToken({
-            ...matchedToken,
-            image: matchedToken.iconUrl,
+            ...tokenMetadata,
             chainId: fromChain.chainId,
+            image: tokenMetadata.image || '',
           }),
         );
         removeTokenFromUrl();
-        break;
+        return;
       }
-      default:
-        // Otherwise remove query param
-        removeTokenFromUrl();
-        break;
-    }
+
+      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+
+      switch (tokenAddressFromUrl) {
+        case fromToken?.address:
+          // If the token is already set, remove the query param
+          removeTokenFromUrl();
+          break;
+        case matchedToken?.address:
+        case matchedToken?.address
+          ? toChecksumAddress(matchedToken.address)
+          : undefined: {
+          // If there is a match, set it as the fromToken
+          dispatch(
+            setFromToken({
+              ...matchedToken,
+              image: matchedToken.iconUrl,
+              chainId: fromChain.chainId,
+            }),
+          );
+          removeTokenFromUrl();
+          break;
+        }
+        default:
+          // Otherwise remove query param
+          removeTokenFromUrl();
+          break;
+      }
+    };
+
+    handleToken();
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
   // Set the default destination token and slippage for swaps
