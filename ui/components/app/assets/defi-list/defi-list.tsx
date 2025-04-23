@@ -178,7 +178,7 @@ function DefiList({ onClick }: DefiListProps) {
 
     trackEvent({
       category: MetaMetricsEventCategory.DeFi,
-      event: MetaMetricsEventName.DefiDetailsOpened,
+      event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
         chain_id: token.chainId,

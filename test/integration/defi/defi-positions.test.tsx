@@ -355,7 +355,7 @@ describe('Defi positions list', () => {
           (call) =>
             call[0] === 'trackMetaMetricsEvent' &&
             (call[1] as unknown as Record<string, unknown>[])[0]?.event ===
-              MetaMetricsEventName.DefiDetailsOpened,
+              MetaMetricsEventName.DeFiDetailsOpened,
         );
 
       console.log(JSON.stringify(metricsEvents));
@@ -373,7 +373,7 @@ describe('Defi positions list', () => {
 
     expect(aaveEvent).toMatchObject({
       category: MetaMetricsEventCategory.DeFi,
-      event: MetaMetricsEventName.DefiDetailsOpened,
+      event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
         chain_id: '0x1',
@@ -389,7 +389,7 @@ describe('Defi positions list', () => {
 
     expect(stakingEvent).toMatchObject({
       category: MetaMetricsEventCategory.DeFi,
-      event: MetaMetricsEventName.DefiDetailsOpened,
+      event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
         chain_id: '0x1',
