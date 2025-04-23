@@ -60,7 +60,7 @@ import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { extractRpcDomain, categorizeDomain } from '../util';
+import { extractRpcDomain } from '../util';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
@@ -1100,7 +1100,7 @@ async function buildEventFragmentProperties({
   );
 
   // Get RPC URL from provider
-  let rpcUrl = 'unknown';
+  let rpcUrl = 'invalid';
   if (transactionMetricsRequest.getNetworkRpcUrl && transactionMeta.chainId) {
     rpcUrl = transactionMetricsRequest.getNetworkRpcUrl(
       transactionMeta.chainId,

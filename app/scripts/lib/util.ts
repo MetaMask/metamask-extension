@@ -489,7 +489,7 @@ let initPromise: Promise<void> | null = null;
 /**
  * Initialize the set of known domains from the chains list
  */
-export async function initializeKnownDomains(): Promise<void> {
+export async function initializeRpcProviderDomains(): Promise<void> {
   if (initPromise) {
     return initPromise;
   }
