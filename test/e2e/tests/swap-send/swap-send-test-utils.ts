@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
+import { WebElement } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -123,7 +124,7 @@ export class SwapSendPage {
     const inputAmounts = await this.driver.findElements('.asset-picker-amount');
     assert.equal(inputAmounts.length, 2);
     await Promise.all(
-      inputAmounts.map(async (e: any, index: number) => {
+      inputAmounts.map(async (e: WebElement, index: number) => {
         await this.driver.delay(delayInMs);
         const i = await this.driver.findNestedElement(e, 'input');
         assert.ok(i);

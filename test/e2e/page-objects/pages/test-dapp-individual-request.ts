@@ -1,6 +1,6 @@
+import { JsonRpcParams } from '@metamask/utils';
 import { Driver } from '../../webdriver/driver';
 import { DAPP_URL } from '../../constants';
-import { JsonRpcParams } from '@metamask/utils';
 
 class TestDappIndividualRequest {
   private readonly driver: Driver;

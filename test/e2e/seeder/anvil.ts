@@ -135,7 +135,7 @@ export class Anvil {
 
     if (!provider) {
       console.log('No provider found');
-      return;
+      return undefined;
     }
     const { publicClient } = provider;
 

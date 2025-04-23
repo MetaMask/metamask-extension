@@ -112,8 +112,7 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
               error.message
             } `,
             methodName: method.name,
-
-            params: params,
+            params,
             url: '',
             resultSchema: (method.result as ContentDescriptorObject).schema,
             expectedResult: error,

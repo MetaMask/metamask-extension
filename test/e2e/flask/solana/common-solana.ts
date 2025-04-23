@@ -749,7 +749,7 @@ export async function simulateSolanaTransactionFailed(mockServer: Mockttp) {
             ],
             accounts: null,
             unitsConsumed: 200000,
-          }
+          },
         },
         id: 1,
       },
