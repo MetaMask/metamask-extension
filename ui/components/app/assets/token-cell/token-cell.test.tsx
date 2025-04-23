@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
@@ -18,6 +19,8 @@ import {
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { TokenWithFiatAmount } from '../types';
+import { TokenCellProps } from './token-cell';
 import TokenCell from '.';
 
 jest.mock('react-redux', () => {
@@ -83,26 +86,46 @@ describe('Token Cell', () => {
   };
 
   const mockStore = configureMockStore([thunk])(mockState);
+  const propToken: Partial<TokenWithFiatAmount> & { currentCurrency: string } =
+    {
+      address: '0xAnotherToken' as Hex,
+      symbol: 'TEST',
+      string: '5.000',
+      currentCurrency: 'usd',
+      primary: '5.00',
+      image: '',
+      chainId: '0x1' as Hex,
+      tokenFiatAmount: 5,
+      aggregators: [],
+      decimals: 18,
+      isNative: false,
+    };
 
   const props = {
-    address: '0xAnotherToken',
-    symbol: 'TEST',
-    string: '5.000',
-    currentCurrency: 'usd',
-    image: '',
-    chainId: '0x1',
-    tokenFiatAmount: 5,
+    token: {
+      ...propToken,
+    },
     onClick: jest.fn(),
   };
-
-  const propsLargeAmount = {
-    address: '0xAnotherToken',
+  const propAnotherToken: Partial<TokenWithFiatAmount> & {
+    currentCurrency: string;
+  } = {
+    address: '0xAnotherToken' as Hex,
     symbol: 'TEST',
     string: '5000000',
     currentCurrency: 'usd',
     image: '',
-    chainId: '0x1',
+    chainId: '0x1' as Hex,
     tokenFiatAmount: 5000000,
+    primary: '5000000',
+    aggregators: [],
+    decimals: 18,
+    isNative: false,
+  };
+  const propsLargeAmount = {
+    token: {
+      ...propAnotherToken,
+    },
     onClick: jest.fn(),
   };
   const useSelectorMock = useSelector;
@@ -134,7 +157,7 @@ describe('Token Cell', () => {
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -143,7 +166,7 @@ describe('Token Cell', () => {
 
   it('calls onClick when clicked', () => {
     const { queryByTestId } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -156,7 +179,7 @@ describe('Token Cell', () => {
 
   it('should render the correct token and filter by symbol and address', () => {
     const { getByTestId, getByAltText } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -169,7 +192,7 @@ describe('Token Cell', () => {
 
   it('should render amount with the correct format', () => {
     const { getByTestId } = renderWithProvider(
-      <TokenCell {...propsLargeAmount} />,
+      <TokenCell {...(propsLargeAmount as TokenCellProps)} />,
       mockStore,
     );
 

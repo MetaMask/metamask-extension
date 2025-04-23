@@ -19,6 +19,7 @@ export type SnapUIDropdownProps = {
   error?: string;
   options: { name: string; value: string }[];
   form?: string;
+  disabled?: boolean;
 };
 
 export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
@@ -26,6 +27,7 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
   label,
   error,
   form,
+  disabled,
   ...props
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
@@ -61,6 +63,7 @@ export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
         style={{
           border: '1px solid var(--color-border-muted)',
         }}
+        disabled={disabled}
         {...props}
       />
       {error && (

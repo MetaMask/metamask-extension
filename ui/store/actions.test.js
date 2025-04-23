@@ -5,6 +5,7 @@ import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -24,6 +25,8 @@ import { setBackgroundConnection } from './background-connection';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
+const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
+
 const middleware = [thunk];
 const defaultState = {
   metamask: {
@@ -39,6 +42,22 @@ const defaultState = {
         balance: '0x0',
       },
     },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: [
+          {
+            address: '0xFirstAddress',
+          },
+        ],
+      },
+    ],
+    keyringsMetadata: [
+      {
+        id: mockUlid,
+        name: '',
+      },
+    ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     internalAccounts: {
       accounts: {
@@ -67,7 +86,12 @@ describe('Actions', () => {
 
   const currentChainId = '0x5';
 
+  let originalNavigator;
+
   beforeEach(async () => {
+    // Save original navigator for restoring after tests
+    originalNavigator = global.navigator;
+
     background = sinon.createStubInstance(MetaMaskController, {
       getState: sinon.stub().callsFake((cb) => cb(null, [])),
     });
@@ -82,6 +106,27 @@ describe('Actions', () => {
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
+
+    // Make sure navigator.hid is defined for WebHID tests
+    if (!global.navigator) {
+      global.navigator = {};
+    }
+
+    if (!global.navigator.hid) {
+      global.navigator.hid = {
+        requestDevice: sinon.stub(),
+      };
+    }
+  });
+
+  afterEach(() => {
+    // Restore original window.navigator after each test
+    Object.defineProperty(window, 'navigator', {
+      value: originalNavigator,
+      writable: true,
+    });
+
+    sinon.restore();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -210,7 +255,7 @@ describe('Actions', () => {
       const verifyPassword = background.verifyPassword.callsFake((_, cb) =>
         cb(),
       );
-      const getSeedPhrase = background.getSeedPhrase.callsFake((_, cb) =>
+      const getSeedPhrase = background.getSeedPhrase.callsFake((_, _2, cb) =>
         cb(null, Array.from(Buffer.from('test').values())),
       );
 
@@ -225,7 +270,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.verifyPassword.callsFake((_, cb) => cb());
-      background.getSeedPhrase.callsFake((_, cb) => {
+      background.getSeedPhrase.callsFake((_, _2, cb) => {
         cb(new Error('error'));
       });
 
@@ -397,22 +442,23 @@ describe('Actions', () => {
         metamask: { ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
-        cb(null, {
-          addedAccountAddress: '0x123',
-        }),
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
       );
 
       setBackgroundConnection(background);
 
-      await store.dispatch(actions.addNewAccount(1));
+      await store.dispatch(actions.addNewAccount());
       expect(addNewAccount.callCount).toStrictEqual(1);
     });
 
     it('displays warning error message when addNewAccount in background callback errors', async () => {
       const store = mockStore();
 
-      background.addNewAccount.callsFake((_, cb) => {
+      background.addNewAccount.callsFake((_, _secondUnusedVar, cb) => {
         cb(new Error('error'));
       });
 
@@ -424,11 +470,49 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await expect(store.dispatch(actions.addNewAccount(1))).rejects.toThrow(
+      await expect(store.dispatch(actions.addNewAccount())).rejects.toThrow(
         'error',
       );
 
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('adds an account to a specific keyring by id', async () => {
+      const store = mockStore({
+        metamask: { ...defaultState.metamask },
+      });
+
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
+      );
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.addNewAccount(mockUlid));
+      expect(addNewAccount.callCount).toStrictEqual(1);
+    });
+
+    it('throws if an invalid keyring id is provided', async () => {
+      const store = mockStore({
+        metamask: { ...defaultState.metamask },
+      });
+
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
+      );
+
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.addNewAccount('invalidKeyringId')),
+      ).rejects.toThrow('Keyring not found');
+      expect(addNewAccount.callCount).toStrictEqual(0);
     });
   });
 
@@ -563,6 +647,264 @@ describe('Actions', () => {
         store.dispatch(actions.connectHardware(HardwareDeviceNames.ledger)),
       ).rejects.toThrow('error');
 
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('handles WebHID connection when loadHid=true for Ledger devices', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const mockHidDevice = { vendorId: 11415 };
+      const mockRequestDevice = sinon.stub().resolves([mockHidDevice]);
+
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      const connectHardware = background.connectHardware.callsFake(
+        (_, __, ___, cb) => cb(null, [{ address: '0xLedgerAddress' }]),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Ledger...',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      const accounts = await store.dispatch(
+        actions.connectHardware(
+          HardwareDeviceNames.ledger,
+          0,
+          `m/44'/60'/0'/0`,
+          true,
+          (key) => `translated_${key}`,
+        ),
+      );
+
+      expect(connectHardware.callCount).toStrictEqual(1);
+      expect(mockRequestDevice.callCount).toStrictEqual(1);
+      expect(accounts).toStrictEqual([{ address: '0xLedgerAddress' }]);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('throws a specific error when user denies WebHID permissions with loadHid=true', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const mockRequestDevice = sinon.stub();
+      mockRequestDevice.resolves([]);
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Ledger...',
+        },
+        {
+          type: 'DISPLAY_WARNING',
+          payload: 'translated_ledgerWebHIDNotConnectedErrorMessage',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      const mockTranslation = (key) => `translated_${key}`;
+
+      await expect(
+        store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.ledger,
+            0,
+            `m/44'/60'/0'/0`,
+            true,
+            mockTranslation,
+          ),
+        ),
+      ).rejects.toThrow('translated_ledgerWebHIDNotConnectedErrorMessage');
+
+      expect(mockRequestDevice.callCount).toStrictEqual(1);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('handles loadHid=false and skips WebHID request process', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const mockRequestDevice = sinon.spy();
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      const connectHardware = background.connectHardware.callsFake(
+        (_, __, ___, cb) => cb(null, [{ address: '0xLedgerAddress' }]),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Ledger...',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      const accounts = await store.dispatch(
+        actions.connectHardware(
+          HardwareDeviceNames.ledger,
+          0,
+          `m/44'/60'/0'/0`,
+          false,
+          (key) => `translated_${key}`,
+        ),
+      );
+
+      expect(connectHardware.callCount).toStrictEqual(1);
+      expect(mockRequestDevice.callCount).toStrictEqual(0);
+      expect(accounts).toStrictEqual([{ address: '0xLedgerAddress' }]);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('handles specific Ledger WebHID device open failure error', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const mockHidDevice = { vendorId: 11415 };
+      const mockRequestDevice = sinon.stub();
+      mockRequestDevice.resolves([mockHidDevice]);
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      const deviceOpenError = new Error('Failed to open the device');
+      background.connectHardware.callsFake((_, __, ___, cb) =>
+        cb(deviceOpenError),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Ledger...',
+        },
+        {
+          type: 'DISPLAY_WARNING',
+          payload: 'translated_ledgerDeviceOpenFailureMessage',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      const mockTranslation = (key) => `translated_${key}`;
+
+      await expect(
+        store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.ledger,
+            0,
+            `m/44'/60'/0'/0`,
+            true,
+            mockTranslation,
+          ),
+        ),
+      ).rejects.toThrow('translated_ledgerDeviceOpenFailureMessage');
+
+      expect(mockRequestDevice.callCount).toStrictEqual(1);
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('handles non-Ledger hardware devices', async () => {
+      const store = mockStore();
+
+      const mockRequestDevice = sinon.spy();
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      const connectHardware = background.connectHardware.callsFake(
+        (_, __, ___, cb) => cb(null, [{ address: '0xTrezorAddress' }]),
+      );
+
+      setBackgroundConnection(background);
+
+      const expectedActions = [
+        {
+          type: 'SHOW_LOADING_INDICATION',
+          payload: 'Looking for your Trezor...',
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      const accounts = await store.dispatch(
+        actions.connectHardware(
+          HardwareDeviceNames.trezor,
+          0,
+          `m/44'/60'/0'/0`,
+          true,
+          (key) => `translated_${key}`,
+        ),
+      );
+
+      expect(connectHardware.callCount).toStrictEqual(1);
+      expect(mockRequestDevice.callCount).toStrictEqual(0);
+      expect(accounts).toStrictEqual([{ address: '0xTrezorAddress' }]);
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -2031,43 +2373,37 @@ describe('Actions', () => {
     });
   });
 
-  describe('#enableProfileSyncing', () => {
+  describe('#setIsBackupAndSyncFeatureEnabled', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls enableProfileSyncing in the background', async () => {
+    it('calls setIsBackupAndSyncFeatureEnabled in the background', async () => {
       const store = mockStore();
 
-      const enableProfileSyncingStub = sinon.stub().callsFake((cb) => cb());
+      const setIsBackupAndSyncFeatureEnabledStub = sinon
+        .stub()
+        .callsFake((_feature, _enabled, cb) => {
+          return cb();
+        });
 
       background.getApi.returns({
-        enableProfileSyncing: enableProfileSyncingStub,
+        setIsBackupAndSyncFeatureEnabled: setIsBackupAndSyncFeatureEnabledStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.enableProfileSyncing());
-      expect(enableProfileSyncingStub.calledOnceWith()).toBe(true);
-    });
-  });
-
-  describe('#disableProfileSyncing', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls disableProfileSyncing in the background', async () => {
-      const store = mockStore();
-
-      const disableProfileSyncingStub = sinon.stub().callsFake((cb) => cb());
-
-      background.getApi.returns({
-        disableProfileSyncing: disableProfileSyncingStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.disableProfileSyncing());
-      expect(disableProfileSyncingStub.calledOnceWith()).toBe(true);
+      await store.dispatch(
+        actions.setIsBackupAndSyncFeatureEnabled(
+          BACKUPANDSYNC_FEATURES.main,
+          true,
+        ),
+      );
+      expect(
+        setIsBackupAndSyncFeatureEnabledStub.calledOnceWith(
+          BACKUPANDSYNC_FEATURES.main,
+          true,
+        ),
+      ).toBe(true);
     });
   });
 
@@ -2670,6 +3006,103 @@ describe('Actions', () => {
       await store.dispatch(actions.setSmartTransactionsRefreshInterval(null));
 
       expect(background.setStatusRefreshInterval.called).toBe(false);
+    });
+  });
+
+  describe('generateNewMnemonicAndAddToVault', () => {
+    it('calls generateNewMnemonicAndAddToVault in the background', async () => {
+      const store = mockStore();
+      const generateNewMnemonicAndAddToVaultStub = sinon
+        .stub()
+        .callsFake((cb) => cb(null, {}));
+      background.getApi.returns({
+        generateNewMnemonicAndAddToVault: generateNewMnemonicAndAddToVaultStub,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.generateNewMnemonicAndAddToVault());
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(generateNewMnemonicAndAddToVaultStub.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('importMnemonicToVault', () => {
+    it('calls importMnemonicToVault in the background', async () => {
+      const store = mockStore();
+      const importMnemonicToVaultStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(null, {}));
+      background.getApi.returns({
+        importMnemonicToVault: importMnemonicToVaultStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const mnemonic = 'mock seed';
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.importMnemonicToVault(mnemonic));
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(importMnemonicToVaultStub.calledOnceWith(mnemonic)).toStrictEqual(
+        true,
+      );
+    });
+  });
+
+  describe('getTokenStandardAndDetailsByChain', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getTokenStandardAndDetailsByChain in background', async () => {
+      const getTokenStandardAndDetailsByChain =
+        background.getTokenStandardAndDetailsByChain.callsFake(
+          (_, _2, _3, _4, cb) => cb(null, {}),
+        );
+
+      setBackgroundConnection(background);
+
+      await actions.getTokenStandardAndDetailsByChain();
+      expect(getTokenStandardAndDetailsByChain.callCount).toStrictEqual(1);
+    });
+
+    it('throw error when getTokenStandardAndDetailsByChain in background with error', async () => {
+      background.getTokenStandardAndDetailsByChain.callsFake(
+        (_, _2, _3, _4, cb) => cb(new Error('error')),
+      );
+
+      setBackgroundConnection(background);
+
+      await expect(actions.getTokenStandardAndDetailsByChain()).rejects.toThrow(
+        'error',
+      );
+    });
+  });
+
+  describe('setManageInstitutionalWallets', () => {
+    it('calls setManageInstitutionalWallets in the background', async () => {
+      const store = mockStore();
+      const setManageInstitutionalWalletsStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      background.getApi.returns({
+        setManageInstitutionalWallets: setManageInstitutionalWalletsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.setManageInstitutionalWallets(true));
+      expect(setManageInstitutionalWalletsStub.calledOnceWith(true)).toBe(true);
     });
   });
 });

@@ -254,9 +254,6 @@
   "from": {
     "message": "Alkaen"
   },
-  "functionType": {
-    "message": "Funktion tyyppi"
-  },
   "gasLimit": {
     "message": "Gas-raja"
   },
@@ -315,9 +312,6 @@
   "import": {
     "message": "Tuo",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Tuo tili"
   },
   "importAccountMsg": {
     "message": "Tuotuja tilejä ei liitetä alkuperäisen MetaMask-tilisi siemenlauseeseen. Lue lisää tuoduista tileistä"
@@ -464,9 +458,6 @@
   "origin": {
     "message": "Alkuperä"
   },
-  "parameters": {
-    "message": "Parametrit"
-  },
   "participateInMetaMetrics": {
     "message": "Osallistu MetaMetricsiin"
   },
@@ -535,9 +526,6 @@
   "removeAccountDescription": {
     "message": "Tämä tili poistetaan kukkarostasi. Varmistathan ennen kuin jatkat, että sinulla on alkuperäinen salausteksti tai yksityinen avain tätä tuotua tiliä varten. Voit tuoda tai luoda tilejä uudestaan tilin pudotusvalikosta."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "vahvistusta odottavaa pyyntöä"
-  },
   "required": {
     "message": "Pakollinen"
   },
@@ -604,9 +592,6 @@
   },
   "showHexDataDescription": {
     "message": "Näytä hex-tietokenttä lähetysnäytössä valitsemalla tämän"
-  },
-  "sigRequest": {
-    "message": "Allekirjoitus pyydetään"
   },
   "sign": {
     "message": "Allekirjoita"
@@ -731,9 +716,6 @@
   "unknown": {
     "message": "Tuntematon"
   },
-  "unknownNetwork": {
-    "message": "Tuntematon yksityinen verkko"
-  },
   "unknownQrCode": {
     "message": "Virhe: Emme onnistuneet tunnistamaan kyseistä QR-koodia"
   },
@@ -763,9 +745,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Käyttääksesi tätä ominaisuutta sinun tarvitsee antaa kameralle käyttöoikeudet."
-  },
-  "youSign": {
-    "message": "Olet allekirjoittamassa"
   },
   "yourPrivateSeedPhrase": {
     "message": "Sinun yksityinen siemenlauseesi"

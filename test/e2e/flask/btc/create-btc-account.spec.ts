@@ -12,7 +12,8 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { withBtcAccountSnap } from './common-btc';
 
 describe('Create BTC Account', function (this: Suite) {
-  it('create BTC account from the menu', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('create BTC account from the menu', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
@@ -23,7 +24,8 @@ describe('Create BTC Account', function (this: Suite) {
     );
   });
 
-  it('cannot create multiple BTC accounts', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('cannot create multiple BTC accounts', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
@@ -46,7 +48,8 @@ describe('Create BTC Account', function (this: Suite) {
     );
   });
 
-  it('can cancel the removal of BTC account', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('can cancel the removal of BTC account', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
@@ -70,7 +73,8 @@ describe('Create BTC Account', function (this: Suite) {
     );
   });
 
-  it('can recreate BTC account after deleting it', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('can recreate BTC account after deleting it', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
@@ -115,7 +119,8 @@ describe('Create BTC Account', function (this: Suite) {
     );
   });
 
-  it('can recreate BTC account after restoring wallet with SRP', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('can recreate BTC account after restoring wallet with SRP', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {

@@ -2,7 +2,7 @@ import { SnapCaveatType } from '@metamask/snaps-rpc-methods';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   getCaveatSpecifications,
   getPermissionSpecifications,
@@ -16,7 +16,7 @@ describe('PermissionController specifications', () => {
   describe('caveat specifications', () => {
     it('getCaveatSpecifications returns the expected specifications object', () => {
       const caveatSpecifications = getCaveatSpecifications({});
-      expect(Object.keys(caveatSpecifications)).toHaveLength(12);
+      expect(Object.keys(caveatSpecifications)).toHaveLength(13);
       expect(caveatSpecifications[Caip25CaveatType].type).toStrictEqual(
         Caip25CaveatType,
       );
@@ -53,6 +53,9 @@ describe('PermissionController specifications', () => {
       );
       expect(caveatSpecifications.lookupMatchers.type).toStrictEqual(
         SnapCaveatType.LookupMatchers,
+      );
+      expect(caveatSpecifications.protocolSnapScopes.type).toStrictEqual(
+        SnapCaveatType.ProtocolSnapScopes,
       );
     });
   });

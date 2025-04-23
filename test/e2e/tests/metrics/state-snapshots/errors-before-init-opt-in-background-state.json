@@ -1,7 +1,10 @@
 {
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
-    "UserStorageController": { "isProfileSyncingEnabled": true },
+    "UserStorageController": {
+      "isProfileSyncingEnabled": true,
+      "isAccountSyncingEnabled": true
+    },
     "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
@@ -40,9 +43,23 @@
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
+      "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
+    },
+    "BridgeController": {
+      "bridgeFeatureFlags": {
+        "mobileConfig": "object",
+        "extensionConfig": {
+          "support": "boolean",
+          "chains": {
+            "eip155:1": "object",
+            "eip155:10": "object",
+            "eip155:59144": "object"
+          }
+        }
+      }
     },
     "CurrencyController": {
       "currentCurrency": "usd",
@@ -63,7 +80,7 @@
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
       "fragments": "object",
-      "metaMetricsId": "fake-metrics-id",
+      "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
       "participateInMetaMetrics": true,
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
@@ -108,12 +125,12 @@
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
-        "petnamesEnabled": true,
+        "petnamesEnabled": "boolean",
+        "showMultiRpcModal": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
-        "tokenNetworkFilter": {},
-        "showMultiRpcModal": "boolean",
-        "shouldShowAggregatedBalancePopover": "boolean"
+        "shouldShowAggregatedBalancePopover": "boolean",
+        "tokenNetworkFilter": {}
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -126,7 +143,6 @@
       "isMultiAccountBalancesEnabled": "boolean",
       "showIncomingTransactions": "object"
     },
-    "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
@@ -137,28 +153,11 @@
         "smartTransactions": "object"
       }
     },
-    "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionConfig": {
-            "support": "boolean",
-            "chains": {
-              "0x1": "object",
-              "0xa": "object",
-              "0xe708": "object"
-            }
-          }
-        }
-      }
-    },
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
-      "allTokens": {},
-      "detectedTokens": "object",
-      "ignoredTokens": "object",
-      "tokens": "object"
+      "allTokens": {}
     },
     "TransactionController": { "transactions": "object" },
     "config": "object",

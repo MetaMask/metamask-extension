@@ -16,7 +16,7 @@ import {
   Color,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '..';
+import { Box } from '../box';
 
 import README from './README.mdx';
 import { Text } from './text';
@@ -286,29 +286,3 @@ export const Strong: StoryFn<typeof Text> = (args) => (
     </Text>
   </>
 );
-
-export const IsBrandEvolution = (args) => (
-  <>
-    {Object.values(TextVariant).map((variant) => {
-      // Wrap TextVariant.inherit in a span to show it's inherited styles
-      if (variant === TextVariant.inherit) {
-        return (
-          <Text as="span" {...args}>
-            <Text {...args} variant={variant} key={variant}>
-              {args.children || variant}
-            </Text>
-          </Text>
-        );
-      }
-      return (
-        <Text {...args} variant={variant} key={variant}>
-          {args.children || variant}
-        </Text>
-      );
-    })}
-  </>
-);
-
-IsBrandEvolution.args = {
-  isBrandEvolution: true,
-};

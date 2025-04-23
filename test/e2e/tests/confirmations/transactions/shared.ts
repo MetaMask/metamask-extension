@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { largeDelayMs, veryLargeDelayMs } from '../../../helpers';
+import { Anvil } from '../../../seeder/anvil';
 import { Ganache } from '../../../seeder/ganache';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
+import { Mockttp } from '../../../mock-e2e';
 
 const {
   logInWithBalanceValidation,
@@ -14,7 +16,7 @@ const { scrollAndConfirmAndAssertConfirm } = require('../helpers');
 
 export type TestSuiteArguments = {
   driver: Driver;
-  ganacheServer?: Ganache;
+  localNodes?: Anvil[] | Ganache[] | undefined;
   contractRegistry?: ContractAddressRegistry;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };
@@ -300,4 +302,68 @@ export async function mocked4BytesApprove(mockServer: MockttpServer) {
         ],
       },
     }));
+}
+
+export async function mocked4BytesSetApprovalForAll(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .withQuery({ hex_signature: '0xa22cb465' })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: 1,
+        next: null,
+        previous: null,
+        results: [
+          {
+            bytes_signature: '¢,´e',
+            created_at: '2018-04-11T21:47:39.980645Z',
+            hex_signature: '0xa22cb465',
+            id: 29659,
+            text_signature: 'setApprovalForAll(address,bool)',
+          },
+        ],
+      },
+    }));
+}
+
+export async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .always()
+    .withQuery({ hex_signature: '0x39509351' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          count: 1,
+          next: null,
+          previous: null,
+          results: [
+            {
+              id: 46002,
+              created_at: '2018-06-24T21:43:27.354648Z',
+              text_signature: 'increaseAllowance(address,uint256)',
+              hex_signature: '0x39509351',
+              bytes_signature: '9PQ',
+            },
+          ],
+        },
+      };
+    });
+}
+
+export async function confirmApproveTransaction(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await scrollAndConfirmAndAssertConfirm(driver);
+
+  await driver.delay(veryLargeDelayMs);
+  await driver.waitUntilXWindowHandles(2);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  await driver.clickElement({ text: 'Activity', tag: 'button' });
+  await driver.waitForSelector(
+    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+  );
 }

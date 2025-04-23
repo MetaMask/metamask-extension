@@ -44,6 +44,11 @@ offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
 # make all such communication opt IN versus opt OUT.
 privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
+
+# A machine-generated file that tracks circular dependencies in the codebase.
+# It is updated using yarn circular-deps:update
+development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBraham @dbrans
+
 # The CODEOWNERS file constitutes an agreement amongst organization
 # admins and maintainers to restrict approval capabilities to a subset
 # of contributors. Modifications to this file result in a modification of
@@ -106,7 +111,10 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 **/snaps/**                          @MetaMask/snaps-devs
 shared/constants/permissions.ts      @MetaMask/snaps-devs
 ui/helpers/utils/permission.js       @MetaMask/snaps-devs
-ui/hooks/useTransactionInsights.js   @MetaMask/snaps-devs
+app/scripts/constants/snaps.ts       @MetaMask/snaps-devs
+
+# Co-owned by Confirmations and Snaps
+ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/snaps-devs
 
 # Wallet UX
 ui/components/multichain              @MetaMask/wallet-ux
@@ -128,3 +136,7 @@ ui/components/app/nfts-items                          @MetaMask/metamask-assets
 ui/components/app/nfts-tab                            @MetaMask/metamask-assets
 ui/components/ui/deprecated-networks                  @MetaMask/metamask-assets
 ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
+
+# Extension Platform
+.yarnrc.yml                                           @MetaMask/extension-platform
+test/e2e/mock-e2e-allowlist.js                        @MetaMask/extension-platform

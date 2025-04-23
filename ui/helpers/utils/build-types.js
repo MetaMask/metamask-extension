@@ -3,11 +3,14 @@
 // eslint-disable-next-line import/no-restricted-paths
 import flaskJson from '../../../app/build-types/flask/images/flask-mascot.json';
 ///: END:ONLY_INCLUDE_IF
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import foxJson from '../../../app/build-types/main/fox.json';
 
 const assetList = {
   main: {
     // Will use default provided by the @metamask/logo library
-    foxMeshJson: undefined,
+    foxMeshJson: foxJson,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
   beta: {
@@ -23,6 +26,10 @@ const assetList = {
 
 export function isBeta() {
   return process.env.METAMASK_BUILD_TYPE === 'beta';
+}
+
+export function isFlask() {
+  return process.env.METAMASK_BUILD_TYPE === 'flask';
 }
 
 // Returns a specific version of an asset based on

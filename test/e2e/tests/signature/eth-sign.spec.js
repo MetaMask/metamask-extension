@@ -1,10 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  openDapp,
-  defaultGanacheOptions,
-  unlockWallet,
-} = require('../../helpers');
+const { withFixtures, openDapp, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Eth sign', function () {
@@ -15,7 +10,6 @@ describe('Eth sign', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

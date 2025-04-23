@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
+import { Anvil } from '../../../seeder/anvil';
 import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
 
@@ -10,6 +11,16 @@ class HomePage {
 
   private readonly activityTab = {
     testId: 'account-overview__activity-tab',
+  };
+
+  private readonly backupSecretRecoveryPhraseButton = {
+    text: 'Back up now',
+    css: '.home-notification__accept-button',
+  };
+
+  private readonly backupSecretRecoveryPhraseNotification = {
+    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
+    css: '.home-notification__text',
   };
 
   protected readonly balance: string =
@@ -102,6 +113,12 @@ class HomePage {
     await this.driver.clickElement(this.activityTab);
   }
 
+  async goToBackupSRPPage(): Promise<void> {
+    console.log(`Go to backup secret recovery phrase on homepage`);
+    await this.driver.waitForSelector(this.backupSecretRecoveryPhraseNotification);
+    await this.driver.clickElement(this.backupSecretRecoveryPhraseButton);
+  }
+
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
@@ -127,6 +144,10 @@ class HomePage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async startBridgeFlow(): Promise<void> {
+    await this.driver.clickElement(this.bridgeButton);
+  }
+
   async togglePrivacyBalance(): Promise<void> {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
@@ -144,6 +165,11 @@ class HomePage {
       tag: 'h6',
       text: `“${networkName}” was successfully added!`,
     });
+  }
+
+  async check_backupReminderIsNotDisplayed(): Promise<void> {
+    console.log('Check backup reminder is not displayed on homepage');
+    await this.driver.assertElementNotPresent(this.backupSecretRecoveryPhraseNotification);
   }
 
   async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
@@ -180,11 +206,11 @@ class HomePage {
   /**
    * Checks if the expected balance is displayed on homepage.
    *
-   * @param expectedBalance - The expected balance to be displayed. Defaults to '0'.
+   * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
    */
   async check_expectedBalanceIsDisplayed(
-    expectedBalance: string = '0',
+    expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
     try {
@@ -205,6 +231,22 @@ class HomePage {
   }
 
   /**
+   * Checks if the expected token balance is displayed on homepage.
+   *
+   * @param expectedTokenBalance - The expected balance to be displayed.
+   * @param symbol - The symbol of the currency or token.
+   */
+  async check_expectedTokenBalanceIsDisplayed(
+    expectedTokenBalance: string,
+    symbol: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: '[data-testid="multichain-token-list-item-value"]',
+      text: `${expectedTokenBalance} ${symbol}`,
+    });
+  }
+
+  /**
    * This function checks if account syncing has been successfully completed at least once.
    */
   async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
@@ -212,7 +254,7 @@ class HomePage {
     await this.driver.wait(async () => {
       const uiState = await getCleanAppState(this.driver);
       return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
-    }, 10000);
+    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
   async check_ifBridgeButtonIsClickable(): Promise<boolean> {
@@ -248,19 +290,25 @@ class HomePage {
     return true;
   }
 
-  async check_localBlockchainBalanceIsDisplayed(
-    localBlockchainServer?: Ganache,
+  async check_localNodeBalanceIsDisplayed(
+    localNode?: Ganache | Anvil,
     address = null,
   ): Promise<void> {
     let expectedBalance: string;
-    if (localBlockchainServer) {
-      expectedBalance = (
-        await localBlockchainServer.getBalance(address)
-      ).toString();
+    if (localNode) {
+      expectedBalance = (await localNode.getBalance(address)).toString();
     } else {
-      expectedBalance = '0';
+      expectedBalance = '25';
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
+  }
+
+  async check_newSrpAddedToastIsDisplayed(
+    srpNumber: number = 2,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
   }
 }
 

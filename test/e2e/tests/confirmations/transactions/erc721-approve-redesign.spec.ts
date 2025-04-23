@@ -10,7 +10,6 @@ import {
 } from './shared';
 
 const {
-  defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
   withFixtures,
 } = require('../../../helpers');
@@ -28,7 +27,6 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -54,7 +52,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -106,7 +104,7 @@ async function createMintTransaction(driver: Driver) {
   await driver.clickElement('#mintButton');
 }
 
-export async function confirmMintTransaction(driver: Driver) {
+async function confirmMintTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({

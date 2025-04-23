@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { BRIDGE_MM_FEE_RATE } from '@metamask/bridge-controller';
 import {
   Text,
   PopoverPosition,
@@ -41,14 +42,10 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import {
-  BRIDGE_MM_FEE_RATE,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
-import { getLocale } from '../../../selectors';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getImageForChainId } from '../../../selectors/multichain';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {
@@ -65,7 +62,7 @@ export const BridgeQuoteCard = () => {
 
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
-  const locale = useSelector(getLocale);
+  const locale = useSelector(getIntlLocale);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
   const [shouldShowNetworkFeesInGasToken, setShouldShowNetworkFeesInGasToken] =
@@ -97,7 +94,7 @@ export const BridgeQuoteCard = () => {
             </Row>
             <Column height={BlockSize.Full} alignItems={AlignItems.flexEnd}>
               <Text
-                as={'a'}
+                as="a"
                 variant={TextVariant.bodyMd}
                 color={TextColor.primaryDefault}
                 onClick={() => {
@@ -131,45 +128,37 @@ export const BridgeQuoteCard = () => {
                 <AvatarNetwork
                   name={fromChain?.name ?? ''}
                   src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      decimalToPrefixedHex(
-                        activeQuote.quote.srcChainId,
-                      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
+                    fromChain?.chainId
+                      ? getImageForChainId(fromChain.chainId)
+                      : undefined
                   }
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
                 <Text style={{ whiteSpace: 'nowrap' }}>
-                  {
-                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      decimalToPrefixedHex(
-                        activeQuote.quote.srcChainId,
-                      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ]
-                  }
+                  {fromChain?.chainId
+                    ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                        fromChain.chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+                      ]
+                    : fromChain?.name}
                 </Text>
                 <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
                 <AvatarNetwork
                   name={toChain?.name ?? ''}
                   src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      decimalToPrefixedHex(
-                        activeQuote.quote.destChainId,
-                      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
+                    toChain?.chainId
+                      ? getImageForChainId(toChain.chainId)
+                      : undefined
                   }
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
                 <Text style={{ whiteSpace: 'nowrap' }}>
-                  {
-                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      decimalToPrefixedHex(
-                        activeQuote.quote.destChainId,
-                      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ]
-                  }
+                  {toChain?.chainId
+                    ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                        toChain.chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+                      ]
+                    : toChain?.name}
                 </Text>
               </Row>
             </Row>
@@ -189,60 +178,69 @@ export const BridgeQuoteCard = () => {
                     : TextColor.textAlternativeSoft
                 }
               >
-                {t('networkFees')}
+                {t('networkFee')}
               </Text>
               <Row gap={1}>
-                <Text
-                  style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'visible',
-                  }}
-                  color={
-                    isEstimatedReturnLow ? TextColor.warningDefault : undefined
-                  }
-                >
-                  {shouldShowNetworkFeesInGasToken
-                    ? //  Network fee in gas token amounts
-                      `${
-                        activeQuote.totalNetworkFee?.valueInCurrency
-                          ? formatTokenAmount(
-                              locale,
-                              activeQuote.totalNetworkFee?.amount,
-                            )
+                <Tooltip
+                  position={PopoverPosition.TopStart}
+                  offset={[-16, 16]}
+                  iconName={IconName.Question}
+                  triggerElement={
+                    <Text
+                      style={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'visible',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                      color={
+                        isEstimatedReturnLow
+                          ? TextColor.warningDefault
                           : undefined
-                      } - ${
-                        activeQuote.totalMaxNetworkFee?.valueInCurrency
-                          ? formatTokenAmount(
+                      }
+                    >
+                      {shouldShowNetworkFeesInGasToken
+                        ? //  Network fee in gas token amounts
+                          `${
+                            activeQuote?.totalNetworkFee?.valueInCurrency
+                              ? formatTokenAmount(
+                                  locale,
+                                  activeQuote?.totalNetworkFee?.amount,
+                                  ticker,
+                                )
+                              : undefined
+                          }`
+                        : // Network fee in display currency
+                          `${
+                            formatCurrencyAmount(
+                              activeQuote?.totalNetworkFee?.valueInCurrency,
+                              currency,
+                              2,
+                            ) ??
+                            formatTokenAmount(
                               locale,
-                              activeQuote.totalMaxNetworkFee?.amount,
+                              activeQuote?.totalNetworkFee?.amount,
                               ticker,
                             )
-                          : undefined
-                      }`
-                    : // Network fee in display currency
-                      `${
-                        formatCurrencyAmount(
-                          activeQuote.totalNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ??
-                        formatTokenAmount(
+                          }`}
+                    </Text>
+                  }
+                >
+                  {t('howNetworkFeesWorkExplanation', [
+                    shouldShowNetworkFeesInGasToken
+                      ? formatTokenAmount(
                           locale,
-                          activeQuote.totalNetworkFee?.amount,
-                        )
-                      } - ${
-                        formatCurrencyAmount(
-                          activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ??
-                        formatTokenAmount(
-                          locale,
-                          activeQuote.totalMaxNetworkFee?.amount,
+                          activeQuote?.totalMaxNetworkFee.amount,
                           ticker,
                         )
-                      }`}
-                </Text>
+                      : formatCurrencyAmount(
+                          activeQuote?.totalMaxNetworkFee.valueInCurrency,
+                          currency,
+                          2,
+                        ),
+                  ])}
+                </Tooltip>
+
                 <Icon
                   style={{ cursor: 'pointer' }}
                   color={

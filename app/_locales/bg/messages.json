@@ -254,9 +254,6 @@
   "from": {
     "message": "От"
   },
-  "functionType": {
-    "message": "Тип функция"
-  },
   "gasLimit": {
     "message": "Ограничение на газ"
   },
@@ -315,9 +312,6 @@
   "import": {
     "message": "Импортиране",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Импортиране на акаунт"
   },
   "importAccountMsg": {
     "message": "Импортираните акаунти няма да бъдат свързани с първоначално създадената ви фраза за метаМаск акаунт. Научете повече за импортираните акаунти"
@@ -467,9 +461,6 @@
   "origin": {
     "message": "Произход"
   },
-  "parameters": {
-    "message": "Параметри"
-  },
   "participateInMetaMetrics": {
     "message": "Участвайте в MetaMetrics"
   },
@@ -538,9 +529,6 @@
   "removeAccountDescription": {
     "message": "Този акаунт ще бъде премахнат от портфейла ви. Моля, уверете се, че имате оригиналната фраза или частен ключ за този импортиран акаунт, преди да продължите. Можете да импортирате или създавате отново акаунти от падащото меню."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "искания, които чакат да бъдат потвърдени"
-  },
   "required": {
     "message": "Задължително"
   },
@@ -607,9 +595,6 @@
   },
   "showHexDataDescription": {
     "message": "Изберете това, за да се покаже полето с шестнадесетични данни на екрана за изпращане"
-  },
-  "sigRequest": {
-    "message": "Заявка за подпис"
   },
   "sign": {
     "message": "Подпис"
@@ -734,9 +719,6 @@
   "unknown": {
     "message": "Неизвестно"
   },
-  "unknownNetwork": {
-    "message": "Неизвестна частна мрежа"
-  },
   "unknownQrCode": {
     "message": "Грешка: Не можахме да идентифицираме този QR код"
   },
@@ -766,9 +748,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Трябва да разрешите достъпа на камерата, за да използвате тази функция."
-  },
-  "youSign": {
-    "message": "Вие подписвате"
   },
   "yourPrivateSeedPhrase": {
     "message": "Вашата лична фраза зародиш"

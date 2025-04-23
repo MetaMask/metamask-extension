@@ -269,9 +269,6 @@
   "cancelPopoverTitle": {
     "message": "Cancelar transacción"
   },
-  "cancelSpeedUp": {
-    "message": "cancelar o acelerar una transacción."
-  },
   "cancelSpeedUpLabel": {
     "message": "Esta tarifa de gas va a $1 el original.",
     "description": "$1 is text 'replace' in bold"
@@ -401,9 +398,6 @@
   "copyAddress": {
     "message": "Copiar dirección al Portapapeles"
   },
-  "copyRawTransactionData": {
-    "message": "Copiar los datos de las transacciones en bruto"
-  },
   "copyToClipboard": {
     "message": "Copiar al Portapapeles"
   },
@@ -468,9 +462,6 @@
   },
   "data": {
     "message": "Datos"
-  },
-  "dataHex": {
-    "message": "Hex"
   },
   "decimal": {
     "message": "Decimales del token"
@@ -770,9 +761,6 @@
     "message": "De: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
-  "functionType": {
-    "message": "Tipo de función"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -899,9 +887,6 @@
     "message": "Importar",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importar cuenta"
-  },
   "importAccountError": {
     "message": "Error al importar la cuenta."
   },
@@ -1002,10 +987,6 @@
   },
   "lastConnected": {
     "message": "Última conexión"
-  },
-  "learnCancelSpeeedup": {
-    "message": "Aprenda cómo $1",
-    "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "más información"
@@ -1341,9 +1322,6 @@
   "origin": {
     "message": "Origen"
   },
-  "parameters": {
-    "message": "Parámetros"
-  },
   "participateInMetaMetrics": {
     "message": "Participar en MetaMetrics"
   },
@@ -1371,16 +1349,6 @@
   },
   "pending": {
     "message": "Pendiente"
-  },
-  "pendingTransactionInfo": {
-    "message": "Esta transacción no se procesará hasta que aquella haya finalizado."
-  },
-  "pendingTransactionMultiple": {
-    "message": "Tiene ($1) transacciones pendientes."
-  },
-  "pendingTransactionSingle": {
-    "message": "Tiene (1) transacción pendiente.",
-    "description": "$1 is count of pending transactions"
   },
   "permission_ethereumAccounts": {
     "message": "Ver dirección, saldo de cuenta, actividad e iniciar transacciones",
@@ -1499,9 +1467,6 @@
   "replace": {
     "message": "reemplazar"
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "solicitudes en espera de confirmación"
-  },
   "required": {
     "message": "Requerido"
   },
@@ -1593,9 +1558,6 @@
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Antes de comenzar, mire este breve video para aprender sobre su frase de recuperación y sobre cómo proteger su cartera."
-  },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
@@ -1664,13 +1626,6 @@
   "showHexDataDescription": {
     "message": "Seleccione esta opción para mostrar el campo de datos hexadecimales en la pantalla de envío"
   },
-  "showIncomingTransactions": {
-    "message": "Mostrar transacciones entrantes"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
   "showPermissions": {
     "message": "Mostrar permisos"
   },
@@ -1679,9 +1634,6 @@
   },
   "showTestnetNetworksDescription": {
     "message": "Seleccione esta opción para mostrar las redes de prueba en la lista de redes"
-  },
-  "sigRequest": {
-    "message": "Solicitud de firma"
   },
   "sign": {
     "message": "Firmar"
@@ -2199,9 +2151,6 @@
   "unknown": {
     "message": "Desconocido"
   },
-  "unknownNetwork": {
-    "message": "Red privada desconocida"
-  },
   "unknownQrCode": {
     "message": "Error: No se pudo identificar ese código QR"
   },
@@ -2299,18 +2248,11 @@
   "welcomeToMetaMaskIntro": {
     "message": "Con la confianza de millones de personas, MetaMask es una cartera segura que pone el mundo de la web3 al alcance de todos."
   },
-  "whatsNew": {
-    "message": "Novedades",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
-  },
   "whatsThis": {
     "message": "¿Qué es esto?"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."
-  },
-  "youSign": {
-    "message": "Está firmando"
   },
   "yourPrivateSeedPhrase": {
     "message": "Su frase secreta de recuperación privada"

@@ -77,6 +77,7 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
@@ -97,6 +98,92 @@ export type CoinOverviewProps = {
   ///: END:ONLY_INCLUDE_IF
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
+};
+
+export const LegacyAggregatedBalance = ({
+  classPrefix,
+  account,
+  balance,
+  balanceIsCached,
+  handleSensitiveToggle,
+}: {
+  classPrefix: string;
+  account: InternalAccount;
+  balance: string;
+  balanceIsCached: boolean;
+  handleSensitiveToggle: () => void;
+}) => {
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const allChainIDs = useSelector(getChainIdsToPoll) as string[];
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    account,
+  );
+  const { privacyMode, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
+  const isTestnet = useSelector(getIsTestnet);
+
+  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
+    account,
+    shouldHideZeroBalanceTokens,
+    isTokenNetworkFilterEqualCurrentNetwork,
+    allChainIDs,
+  );
+
+  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
+    account,
+    formattedTokensWithBalancesPerChain,
+  );
+
+  const isNotAggregatedFiatBalance =
+    !shouldShowFiat || showNativeTokenAsMainBalance || isTestnet;
+
+  let balanceToDisplay;
+  if (isNotAggregatedFiatBalance) {
+    balanceToDisplay = balance;
+  } else {
+    balanceToDisplay = totalFiatBalance;
+  }
+
+  if (!balanceToDisplay) {
+    return <Spinner className="loading-overlay__spinner" />;
+  }
+  return (
+    <>
+      <UserPreferencedCurrencyDisplay
+        style={{ display: 'contents' }}
+        account={account}
+        className={classnames(`${classPrefix}-overview__primary-balance`, {
+          [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
+        })}
+        data-testid={`${classPrefix}-overview__primary-currency`}
+        value={balanceToDisplay}
+        type={PRIMARY}
+        ethNumberOfDecimals={4}
+        hideTitle
+        shouldCheckShowNativeToken
+        isAggregatedFiatOverviewBalance={
+          !showNativeTokenAsMainBalance && !isTestnet && shouldShowFiat
+        }
+        privacyMode={privacyMode}
+      />
+      <ButtonIcon
+        color={IconColor.iconAlternative}
+        marginLeft={2}
+        size={ButtonIconSize.Md}
+        onClick={handleSensitiveToggle}
+        iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
+        justifyContent={JustifyContent.center}
+        ariaLabel="Sensitive toggle"
+        data-testid="sensitive-toggle"
+      />
+    </>
+  );
 };
 
 export const CoinOverview = ({
@@ -149,36 +236,7 @@ export const CoinOverview = ({
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
 
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-  const allChainIDs = useSelector(getChainIdsToPoll);
-  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
-    account,
-    shouldHideZeroBalanceTokens,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    allChainIDs,
-  );
-  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
-    account,
-    formattedTokensWithBalancesPerChain,
-  );
-
-  const shouldShowFiat = useMultichainSelector(
-    getMultichainShouldShowFiat,
-    account,
-  );
-
   const isEvm = useSelector(getMultichainIsEvm);
-  const isNotAggregatedFiatBalance =
-    !shouldShowFiat || showNativeTokenAsMainBalance || isTestnet || !isEvm;
-
-  let balanceToDisplay;
-  if (isNotAggregatedFiatBalance) {
-    balanceToDisplay = balance;
-  } else {
-    balanceToDisplay = totalFiatBalance;
-  }
 
   const tokensMarketData = useSelector(getTokensMarketData);
   const [isOpen, setIsOpen] = useState(true);
@@ -257,8 +315,7 @@ export const CoinOverview = ({
 
     const renderAggregatedView = () => (
       <Box className="wallet-overview__currency-wrapper">
-        {isTokenNetworkFilterEqualCurrentNetwork ||
-        !process.env.PORTFOLIO_VIEW ? (
+        {isTokenNetworkFilterEqualCurrentNetwork ? (
           <AggregatedPercentageOverview />
         ) : (
           <AggregatedPercentageOverviewCrossChains />
@@ -296,44 +353,20 @@ export const CoinOverview = ({
               onMouseEnter={handleMouseEnter}
               ref={setBoxRef}
             >
-              {balanceToDisplay ? (
-                <>
-                  <UserPreferencedCurrencyDisplay
-                    style={{ display: 'contents' }}
-                    account={account}
-                    className={classnames(
-                      `${classPrefix}-overview__primary-balance`,
-                      {
-                        [`${classPrefix}-overview__cached-balance`]:
-                          balanceIsCached,
-                      },
-                    )}
-                    data-testid={`${classPrefix}-overview__primary-currency`}
-                    value={balanceToDisplay}
-                    type={PRIMARY}
-                    ethNumberOfDecimals={4}
-                    hideTitle
-                    shouldCheckShowNativeToken
-                    isAggregatedFiatOverviewBalance={
-                      !showNativeTokenAsMainBalance &&
-                      !isTestnet &&
-                      shouldShowFiat
-                    }
-                    privacyMode={privacyMode}
-                  />
-                  <ButtonIcon
-                    color={IconColor.iconAlternative}
-                    marginLeft={2}
-                    size={ButtonIconSize.Md}
-                    onClick={handleSensitiveToggle}
-                    iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
-                    justifyContent={JustifyContent.center}
-                    ariaLabel="Sensitive toggle"
-                    data-testid="sensitive-toggle"
-                  />
-                </>
+              {isEvm ? (
+                <LegacyAggregatedBalance
+                  classPrefix={classPrefix}
+                  account={account}
+                  balance={balance}
+                  balanceIsCached={balanceIsCached}
+                  handleSensitiveToggle={handleSensitiveToggle}
+                />
               ) : (
-                <Spinner className="loading-overlay__spinner" />
+                <AggregatedBalance
+                  classPrefix={classPrefix}
+                  balanceIsCached={balanceIsCached}
+                  handleSensitiveToggle={handleSensitiveToggle}
+                />
               )}
               {balanceIsCached && (
                 <span className={`${classPrefix}-overview__cached-star`}>
@@ -380,37 +413,21 @@ export const CoinOverview = ({
                   </Box>
 
                   <Text variant={TextVariant.bodySm}>
-                    {process.env.PORTFOLIO_VIEW
-                      ? t('crossChainAggregatedBalancePopover', [
-                          <ButtonLink
-                            size={ButtonLinkSize.Inherit}
-                            textProps={{
-                              variant: TextVariant.bodyMd,
-                              alignItems: AlignItems.flexStart,
-                            }}
-                            as="a"
-                            href={`#${showNativeTokenAsMainBalanceRoute.route}`}
-                            rel="noopener noreferrer"
-                            onClick={handleClick}
-                          >
-                            {t('settings')}
-                          </ButtonLink>,
-                        ])
-                      : t('aggregatedBalancePopover', [
-                          <ButtonLink
-                            size={ButtonLinkSize.Inherit}
-                            textProps={{
-                              variant: TextVariant.bodyMd,
-                              alignItems: AlignItems.flexStart,
-                            }}
-                            as="a"
-                            href={`#${showNativeTokenAsMainBalanceRoute.route}`}
-                            rel="noopener noreferrer"
-                            onClick={handleClick}
-                          >
-                            {t('settings')}
-                          </ButtonLink>,
-                        ])}
+                    {t('crossChainAggregatedBalancePopover', [
+                      <ButtonLink
+                        size={ButtonLinkSize.Inherit}
+                        textProps={{
+                          variant: TextVariant.bodyMd,
+                          alignItems: AlignItems.flexStart,
+                        }}
+                        as="a"
+                        href={`#${showNativeTokenAsMainBalanceRoute.route}`}
+                        rel="noopener noreferrer"
+                        onClick={handleClick}
+                      >
+                        {t('settings')}
+                      </ButtonLink>,
+                    ])}
                   </Text>
                 </Box>
               </Popover>

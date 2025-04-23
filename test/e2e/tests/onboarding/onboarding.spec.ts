@@ -3,6 +3,7 @@ import {
   TEST_SEED_PHRASE,
   WALLET_PASSWORD,
   withFixtures,
+  unlockWallet,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
@@ -20,6 +21,7 @@ import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
+  incompleteCreateNewWalletOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
@@ -34,6 +36,38 @@ describe('MetaMask onboarding', function () {
     ],
   };
 
+  it("Creates a new wallet, sets up a secure password, and doesn't complete the onboarding process and refreshes the page", async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await incompleteCreateNewWalletOnboardingFlow({ driver });
+        await driver.refresh();
+
+        await unlockWallet(driver, {
+          navigate: true,
+          waitLoginSuccess: true,
+          password: WALLET_PASSWORD,
+        });
+
+        const secureWalletPage = new SecureWalletPage(driver);
+        await secureWalletPage.check_pageIsLoaded();
+        await secureWalletPage.revealAndConfirmSRP();
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
+        await onboardingCompletePage.completeOnboarding();
+
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+      },
+    );
+  });
+
   it('Creates a new wallet, sets up a secure password, and completes the onboarding process', async function () {
     await withFixtures(
       {
@@ -46,7 +80,7 @@ describe('MetaMask onboarding', function () {
         });
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
       },
     );
   });
@@ -161,12 +195,22 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions: {
-          concurrent: [{ port, chainId, ganacheOptions2 }],
-        },
+        localNodeOptions: [
+          {
+            type: 'ganache',
+          },
+          {
+            type: 'ganache',
+            options: {
+              port,
+              chainId,
+              ...ganacheOptions2,
+            },
+          },
+        ],
         title: this.test?.fullTitle(),
       },
-      async ({ driver, secondaryGanacheServer }) => {
+      async ({ driver, localNodes }) => {
         await importSRPOnboardingFlow({
           driver,
           seedPhrase: TEST_SEED_PHRASE,
@@ -197,10 +241,8 @@ describe('MetaMask onboarding', function () {
         await homePage.check_addNetworkMessageIsDisplayed(networkName);
 
         // Check the correct balance for the custom network is displayed
-        if (secondaryGanacheServer && Array.isArray(secondaryGanacheServer)) {
-          await homePage.check_localBlockchainBalanceIsDisplayed(
-            secondaryGanacheServer[0],
-          );
+        if (localNodes[1] && Array.isArray(localNodes)) {
+          await homePage.check_localNodeBalanceIsDisplayed(localNodes[1]);
         } else {
           throw new Error('Custom network Ganache server not available');
         }

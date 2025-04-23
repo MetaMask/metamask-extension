@@ -69,15 +69,13 @@ class FirefoxDriver {
       'browser.download.dir',
       `${process.cwd()}/test-artifacts/downloads`,
     );
-    if (process.env.CI === 'true') {
-      options.setBinary('/opt/firefox/firefox');
-    }
+
     if (isHeadless('SELENIUM')) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
       );
-      options.headless();
+      options.addArguments('-headless');
     }
     const builder = new Builder()
       .forBrowser('firefox')

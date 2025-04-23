@@ -20,6 +20,7 @@ exports[`BridgeStatusController constructor rehydrates the tx history state 1`] 
       ],
       "destAsset": {
         "address": "0x0000000000000000000000000000000000000000",
+        "assetId": "eip155:10/slip44:60",
         "chainId": 10,
         "coinKey": "ETH",
         "decimals": 18,
@@ -36,6 +37,7 @@ exports[`BridgeStatusController constructor rehydrates the tx history state 1`] 
           "amount": "8750000000000",
           "asset": {
             "address": "0x0000000000000000000000000000000000000000",
+            "assetId": "eip155:42161/slip44:60",
             "chainId": 42161,
             "coinKey": "ETH",
             "decimals": 18,
@@ -50,6 +52,7 @@ exports[`BridgeStatusController constructor rehydrates the tx history state 1`] 
       "requestId": "197c402f-cb96-4096-9f8c-54aed84ca776",
       "srcAsset": {
         "address": "0x0000000000000000000000000000000000000000",
+        "assetId": "eip155:42161/slip44:60",
         "chainId": 42161,
         "coinKey": "ETH",
         "decimals": 18,
@@ -67,6 +70,7 @@ exports[`BridgeStatusController constructor rehydrates the tx history state 1`] 
           "destAmount": "990654755978612",
           "destAsset": {
             "address": "0x0000000000000000000000000000000000000000",
+            "assetId": "eip155:10/slip44:60",
             "chainId": 10,
             "coinKey": "ETH",
             "decimals": 18,
@@ -85,6 +89,7 @@ exports[`BridgeStatusController constructor rehydrates the tx history state 1`] 
           "srcAmount": "991250000000000",
           "srcAsset": {
             "address": "0x0000000000000000000000000000000000000000",
+            "assetId": "eip155:42161/slip44:60",
             "chainId": 42161,
             "coinKey": "ETH",
             "decimals": 18,
@@ -133,6 +138,7 @@ exports[`BridgeStatusController startPollingForBridgeTxStatus sets the inital tx
       ],
       "destAsset": {
         "address": "0x0000000000000000000000000000000000000000",
+        "assetId": "eip155:10/slip44:60",
         "chainId": 10,
         "coinKey": "ETH",
         "decimals": 18,
@@ -149,6 +155,7 @@ exports[`BridgeStatusController startPollingForBridgeTxStatus sets the inital tx
           "amount": "8750000000000",
           "asset": {
             "address": "0x0000000000000000000000000000000000000000",
+            "assetId": "eip155:42161/slip44:60",
             "chainId": 42161,
             "coinKey": "ETH",
             "decimals": 18,
@@ -163,6 +170,7 @@ exports[`BridgeStatusController startPollingForBridgeTxStatus sets the inital tx
       "requestId": "197c402f-cb96-4096-9f8c-54aed84ca776",
       "srcAsset": {
         "address": "0x0000000000000000000000000000000000000000",
+        "assetId": "eip155:42161/slip44:60",
         "chainId": 42161,
         "coinKey": "ETH",
         "decimals": 18,
@@ -180,6 +188,7 @@ exports[`BridgeStatusController startPollingForBridgeTxStatus sets the inital tx
           "destAmount": "990654755978612",
           "destAsset": {
             "address": "0x0000000000000000000000000000000000000000",
+            "assetId": "eip155:10/slip44:60",
             "chainId": 10,
             "coinKey": "ETH",
             "decimals": 18,
@@ -198,6 +207,7 @@ exports[`BridgeStatusController startPollingForBridgeTxStatus sets the inital tx
           "srcAmount": "991250000000000",
           "srcAsset": {
             "address": "0x0000000000000000000000000000000000000000",
+            "assetId": "eip155:42161/slip44:60",
             "chainId": 42161,
             "coinKey": "ETH",
             "decimals": 18,

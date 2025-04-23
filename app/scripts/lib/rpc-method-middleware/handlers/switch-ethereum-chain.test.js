@@ -10,6 +10,7 @@ jest.mock('./ethereum-chain-utils', () => ({
   ...jest.requireActual('./ethereum-chain-utils'),
   validateSwitchEthereumChainParams: jest.fn(),
   switchChain: jest.fn(),
+  setTokenNetworkFilter: jest.fn(),
 }));
 
 const NON_INFURA_CHAIN_ID = '0x123456789';
@@ -38,14 +39,16 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const mocks = {
+    hasApprovalRequestsForOrigin: () => false,
     getNetworkConfigurationByChainId: jest
       .fn()
       .mockReturnValue(createMockMainnetConfiguration()),
     setActiveNetwork: jest.fn(),
     getCaveat: jest.fn(),
     getCurrentChainIdForDomain: jest.fn().mockReturnValue(NON_INFURA_CHAIN_ID),
-    requestPermittedChainsPermissionForOrigin: jest.fn(),
     requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
+    setTokenNetworkFilter: jest.fn(),
+    requestUserApproval: jest.fn(),
   };
   const response = {};
   const handler = (request) =>
@@ -166,11 +169,32 @@ describe('switchEthereumChainHandler', () => {
       'mainnet',
       {
         setActiveNetwork: mocks.setActiveNetwork,
+        fromNetworkConfiguration: {
+          chainId: '0xe708',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'linea-mainnet',
+            },
+          ],
+        },
         getCaveat: mocks.getCaveat,
-        requestPermittedChainsPermissionForOrigin:
-          mocks.requestPermittedChainsPermissionForOrigin,
+        hasApprovalRequestsForOrigin: mocks.hasApprovalRequestsForOrigin,
+        isSwitchFlow: true,
+        origin: 'example.com',
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
+        requestUserApproval: mocks.requestUserApproval,
+        setTokenNetworkFilter: mocks.setTokenNetworkFilter,
+        toNetworkConfiguration: {
+          chainId: '0x1',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'mainnet',
+            },
+          ],
+        },
       },
     );
   });

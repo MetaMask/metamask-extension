@@ -39,6 +39,7 @@ function getDescriptionNode({
 }
 
 export default function PermissionsConnectPermissionList({
+  isRequestApprovalPermittedChains,
   permissions,
   subjectName,
   accounts,
@@ -51,6 +52,7 @@ export default function PermissionsConnectPermissionList({
     <Box as="span">
       {getWeightedPermissions({
         t,
+        isRequestApprovalPermittedChains,
         permissions,
         getSubjectName: getSnapName(snapsMetadata),
         subjectName,
@@ -71,4 +73,5 @@ PermissionsConnectPermissionList.propTypes = {
   subjectName: PropTypes.string.isRequired,
   requestedChainIds: PropTypes.array,
   accounts: PropTypes.arrayOf(PropTypes.object),
+  isRequestApprovalPermittedChains: PropTypes.boolean,
 };

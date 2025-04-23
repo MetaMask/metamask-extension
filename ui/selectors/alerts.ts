@@ -9,7 +9,7 @@ export type AlertsState = {
 };
 
 export function selectAlerts(state: AlertsState, ownerId: string): Alert[] {
-  return state.confirmAlerts.alerts[ownerId] ?? [];
+  return state.confirmAlerts?.alerts[ownerId] ?? [];
 }
 
 export const selectGeneralAlerts = createSelector(
@@ -26,7 +26,7 @@ export function selectConfirmedAlertKeys(
   state: AlertsState,
   ownerId: string,
 ): string[] {
-  const { confirmed } = state.confirmAlerts;
-  const ownerConfirmed = confirmed[ownerId] || {};
+  const { confirmed } = state.confirmAlerts ?? {};
+  const ownerConfirmed = confirmed?.[ownerId] || {};
   return Object.keys(ownerConfirmed).filter((key) => ownerConfirmed[key]);
 }

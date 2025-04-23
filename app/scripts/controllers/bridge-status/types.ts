@@ -1,14 +1,14 @@
 import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
 import { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
 import {
   BridgeHistoryItem,
@@ -63,7 +63,7 @@ type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
-  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetSelectedMultichainAccountAction
   | TransactionControllerGetStateAction;
 
 /**
@@ -74,7 +74,7 @@ type AllowedEvents = never;
 /**
  * The messenger for the BridgeStatusController.
  */
-export type BridgeStatusControllerMessenger = RestrictedControllerMessenger<
+export type BridgeStatusControllerMessenger = RestrictedMessenger<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusControllerActions | AllowedActions,
   BridgeStatusControllerEvents | AllowedEvents,

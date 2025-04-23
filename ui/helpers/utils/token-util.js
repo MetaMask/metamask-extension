@@ -150,8 +150,8 @@ export function tokenInfoGetter() {
   const tokens = {};
 
   return async (address, tokenList) => {
-    if (tokens[address]) {
-      return tokens[address];
+    if (tokens[address.toLowerCase()]) {
+      return tokens[address.toLowerCase()];
     }
 
     tokens[address] = await getSymbolAndDecimalsAndName(address, tokenList);
@@ -194,17 +194,6 @@ export function getTokenIdParam(tokenData = {}) {
   return (
     tokenData?.args?._tokenId?.toString() ?? tokenData?.args?.id?.toString()
   );
-}
-
-/**
- * Gets the '_approved' parameter of the given token transaction data
- * (i.e function call) per the Human Standard Token ABI, if present.
- *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {boolean | undefined} A boolean indicating whether the function is being called to approve or revoke access.
- */
-export function getTokenApprovedParam(tokenData = {}) {
-  return tokenData?.args?._approved;
 }
 
 /**

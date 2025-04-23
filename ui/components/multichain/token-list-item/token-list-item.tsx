@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import { type Hex, isStrictHexString } from '@metamask/utils';
 import {
   BackgroundColor,
   BlockSize,
@@ -25,9 +25,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonSecondary,
-  Icon,
   IconName,
-  IconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -38,13 +36,7 @@ import {
   SensitiveTextLength,
   Text,
 } from '../../component-library';
-import {
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getDataCollectionForMarketing,
-  getMarketData,
-  getCurrencyRates,
-} from '../../../selectors';
+import { getMarketData, getCurrencyRates } from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -58,10 +50,8 @@ import {
   NON_EVM_CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   SafeChain,
   useSafeChains,
@@ -69,6 +59,7 @@ import {
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { PercentageChange } from './price/percentage-change/percentage-change';
+import { StakeableLink } from './stakeable-link';
 
 type TokenListItemProps = {
   className?: string;
@@ -91,7 +82,7 @@ type TokenListItemProps = {
   privacyMode?: boolean;
 };
 
-export const TokenListItem = ({
+export const TokenListItemComponent = ({
   className,
   onClick,
   tokenSymbol,
@@ -114,15 +105,12 @@ export const TokenListItem = ({
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const { safeChains } = useSafeChains();
   const currencyRates = useSelector(getCurrencyRates);
 
-  const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
-
   const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
+    const decimalChainId =
+      isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
     if (typeof decimalChainId === 'number') {
       return chain.chainId === decimalChainId.toString();
     }
@@ -174,62 +162,13 @@ export const TokenListItem = ({
   const tokenMainTitleToDisplay =
     shouldShowPercentage && !isTitleNetworkName ? tokenTitle : tokenSymbol;
 
-  const stakeableTitle = (
-    <Box
-      as="button"
-      backgroundColor={BackgroundColor.transparent}
-      data-testid={`staking-entrypoint-${chainId}`}
-      gap={1}
-      paddingInline={0}
-      paddingInlineStart={1}
-      paddingInlineEnd={1}
-      tabIndex={0}
-      onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const url = getPortfolioUrl(
-          'stake',
-          'ext_stake_button',
-          metaMetricsId,
-          isMetaMetricsEnabled,
-          isMarketingEnabled,
-        );
-        global.platform.openTab({ url });
-        trackEvent({
-          event: MetaMetricsEventName.StakingEntryPointClicked,
-          category: MetaMetricsEventCategory.Tokens,
-          properties: {
-            location: 'Token List Item',
-            text: 'Stake',
-            // FIXME: This might not be a number for non-EVM accounts
-            chain_id: chainId,
-            token_symbol: tokenSymbol,
-          },
-        });
-      }}
-    >
-      <Text as="span">•</Text>
-      <Text
-        as="span"
-        color={TextColor.primaryDefault}
-        paddingInlineStart={1}
-        paddingInlineEnd={1}
-        fontWeight={FontWeight.Medium}
-      >
-        {t('stake')}
-      </Text>
-      <Icon
-        name={IconName.Stake}
-        size={IconSize.Sm}
-        color={IconColor.primaryDefault}
-      />
-    </Box>
-  );
   // Used for badge icon
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   return (
     <Box
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       className={classnames('multichain-token-list-item', className || {})}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -282,6 +221,8 @@ export const TokenListItem = ({
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
               name={allNetworks?.[chainId as Hex]?.name}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               src={tokenChainImage || undefined}
               backgroundColor={BackgroundColor.backgroundDefault}
               borderWidth={2}
@@ -320,7 +261,9 @@ export const TokenListItem = ({
                   ellipsis
                 >
                   {tokenMainTitleToDisplay}
-                  {isStakeable && stakeableTitle}
+                  {isStakeable && (
+                    <StakeableLink chainId={chainId} symbol={tokenSymbol} />
+                  )}
                 </Text>
               </Tooltip>
             ) : (
@@ -330,7 +273,9 @@ export const TokenListItem = ({
                 ellipsis
               >
                 {tokenMainTitleToDisplay}
-                {isStakeable && stakeableTitle}
+                {isStakeable && (
+                  <StakeableLink chainId={chainId} symbol={tokenSymbol} />
+                )}
               </Text>
             )}
 
@@ -348,7 +293,7 @@ export const TokenListItem = ({
                 size={ButtonIconSize.Md}
                 backgroundColor={BackgroundColor.transparent}
                 data-testid="scam-warning"
-                ariaLabel={''}
+                ariaLabel=""
               />
             ) : (
               <SensitiveText
@@ -432,6 +377,8 @@ export const TokenListItem = ({
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
                 tokenSymbol,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 safeChainDetails?.nativeCurrency?.symbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}
@@ -453,3 +400,5 @@ export const TokenListItem = ({
     </Box>
   );
 };
+
+export const TokenListItem = React.memo(TokenListItemComponent);

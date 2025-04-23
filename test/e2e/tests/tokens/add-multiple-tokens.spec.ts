@@ -3,7 +3,6 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import {
   withFixtures,
-  defaultGanacheOptions,
   openDapp,
   WINDOW_TITLES,
   DAPP_URL,
@@ -20,7 +19,6 @@ describe('Multiple ERC20 Watch Asset', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

@@ -10,10 +10,10 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 
-import type { PolymorphicRef, TextProps } from '..';
-import { Box, Icon, IconName, Text } from '..';
-
-import { CheckboxProps, CheckboxComponent } from './checkbox.types';
+import { type PolymorphicRef, Box } from '../box';
+import { Text, type TextProps } from '../text';
+import { Icon, IconName } from '../icon';
+import type { CheckboxProps, CheckboxComponent } from './checkbox.types';
 
 export const Checkbox: CheckboxComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
@@ -44,6 +44,8 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
 
     // If no title is provided, use the label as the title only if the label is a string
     const sanitizedTitle =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       !title && typeof label === 'string' ? label : title || id;
 
     return (
@@ -81,11 +83,15 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             margin={0}
             marginRight={label ? 2 : 0}
             backgroundColor={
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               isChecked || isIndeterminate
                 ? BackgroundColor.primaryDefault
                 : BackgroundColor.backgroundDefault
             }
             borderColor={
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               isChecked || isIndeterminate
                 ? BorderColor.primaryDefault
                 : BorderColor.borderDefault
@@ -105,6 +111,8 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
               },
             )}
           />
+          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
           {(isChecked || isIndeterminate) && (
             <Icon
               color={IconColor.primaryInverse}

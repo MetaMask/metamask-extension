@@ -227,9 +227,6 @@
   "from": {
     "message": "Mula sa"
   },
-  "functionType": {
-    "message": "Uri ng Function"
-  },
   "gasLimit": {
     "message": "Limitasyon sa Gas"
   },
@@ -276,9 +273,6 @@
   "import": {
     "message": "I-import",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Mag-import ng Account"
   },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi iuugnay sa orihinal na seedphrase na ginawa ng iyong MetaMask account. Matuto pa tungkol sa mga na-import na account "
@@ -402,9 +396,6 @@
   "origin": {
     "message": "Pinanggalingan"
   },
-  "parameters": {
-    "message": "Mga Parameter"
-  },
   "participateInMetaMetrics": {
     "message": "Makilahok sa MetaMetrics"
   },
@@ -465,9 +456,6 @@
   },
   "removeAccountDescription": {
     "message": "Tatanggalin ang account na ito sa iyong wallet. Pakitiyak na nasa iyo ang orihinal na seed phrase o private key para sa naka-import na account na ito bago magpatuloy. Maaari kang mag-import o gumawa ulit ng mga account mual sa drop-down ng account. "
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "naghihintay na matugunan ang mga request"
   },
   "required": {
     "message": "Kailangan"
@@ -650,9 +638,6 @@
   "unknown": {
     "message": "Hindi Alam"
   },
-  "unknownNetwork": {
-    "message": "Hindi Kilalang Pribadong Network"
-  },
   "unknownQrCode": {
     "message": "Error: Hindi namin nakilala ang QR code na iyan"
   },
@@ -679,9 +664,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang access sa camera para magamit ang feature na ito."
-  },
-  "youSign": {
-    "message": "Sina-sign mo ang"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong pribadong seed phrase"

@@ -3,6 +3,8 @@ import { Driver } from '../../webdriver/driver';
 class TokenOverviewPage {
   private driver: Driver;
 
+  private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
+
   private readonly receiveButton = {
     text: 'Receive',
     css: '.icon-button',
@@ -16,6 +18,11 @@ class TokenOverviewPage {
   private readonly swapButton = {
     text: 'Swap',
     css: '.icon-button',
+  };
+
+  private readonly viewAssetInExplorerButton = {
+    text: 'View Asset in explorer',
+    tag: 'div',
   };
 
   constructor(driver: Driver) {
@@ -48,6 +55,17 @@ class TokenOverviewPage {
 
   async clickSwap(): Promise<void> {
     await this.driver.clickElement(this.swapButton);
+  }
+
+  /**
+   * This method opens the asset in explorer.
+   */
+  async viewAssetInExplorer(): Promise<void> {
+    console.log('Viewing asset in explorer');
+    await this.driver.clickElement(this.assetOptionsButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.viewAssetInExplorerButton,
+    );
   }
 }
 

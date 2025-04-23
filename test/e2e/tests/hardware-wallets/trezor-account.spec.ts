@@ -48,7 +48,7 @@ describe('Trezor Hardware', function () {
         // Unlock first account of first page and check that the correct account has been added
         await selectTrezorAccountPage.unlockAccount(1);
         await headerNavbar.check_pageIsLoaded();
-        await new HomePage(driver).check_expectedBalanceIsDisplayed();
+        await new HomePage(driver).check_expectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
         await accountListPage.check_accountDisplayedInAccountList('Trezor 1');
@@ -91,7 +91,7 @@ describe('Trezor Hardware', function () {
         // Check that all 5 Trezor accounts are displayed in account list
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
         for (let i = 0; i < 5; i++) {
@@ -106,7 +106,7 @@ describe('Trezor Hardware', function () {
         // Remove Trezor 1 account and check Trezor 1 account is removed
         await accountListPage.removeAccount('Trezor 1');
         await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_expectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
         await accountListPage.check_accountIsNotDisplayedInAccountList(
           'Trezor 1',

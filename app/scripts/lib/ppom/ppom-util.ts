@@ -12,15 +12,14 @@ import {
   BlockaidReason,
   BlockaidResultType,
   LOADING_SECURITY_ALERT_RESPONSE,
-  SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state-controller';
+import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
+import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 import {
-  getSecurityAlertsAPISupportedChainIds,
   isSecurityAlertsAPIEnabled,
   SecurityAlertsAPIRequest,
   validateWithSecurityAlertsAPI,
@@ -56,15 +55,6 @@ export async function validateRequestWithPPOM({
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
 }) {
   try {
-    if (!(await isChainSupported(chainId))) {
-      await updateSecurityResponse(
-        request.method,
-        securityAlertId,
-        SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
-      );
-      return;
-    }
-
     await updateSecurityResponse(
       request.method,
       securityAlertId,
@@ -151,22 +141,6 @@ export function handlePPOMError(
   };
 }
 
-export async function isChainSupported(chainId: Hex): Promise<boolean> {
-  let supportedChainIds = SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS_FALLBACK_LIST;
-
-  try {
-    if (isSecurityAlertsAPIEnabled()) {
-      supportedChainIds = await getSecurityAlertsAPISupportedChainIds();
-    }
-  } catch (error: unknown) {
-    handlePPOMError(
-      error,
-      `Error fetching supported chains from security alerts API`,
-    );
-  }
-  return supportedChainIds.includes(chainId as Hex);
-}
-
 function normalizePPOMRequest(
   request: PPOMRequest | JsonRpcRequest,
 ): PPOMRequest | JsonRpcRequest {
@@ -193,10 +167,26 @@ function sanitizeRequest(request: JsonRpcRequest): JsonRpcRequest {
     request.method === METHOD_SIGN_TYPED_DATA_V4 ||
     request.method === METHOD_SIGN_TYPED_DATA_V3
   ) {
-    if (Array.isArray(request.params)) {
+    if (Array.isArray(request.params) && request.params[1]) {
+      const typedDataMessage = parseTypedDataMessage(
+        request.params[1].toString(),
+      );
+
+      const sanitizedMessageRecursively = sanitizeMessageRecursively(
+        typedDataMessage.message,
+        typedDataMessage.types,
+        typedDataMessage.primaryType,
+      );
+
       return {
         ...request,
-        params: request.params.slice(0, 2),
+        params: [
+          request.params[0],
+          JSON.stringify({
+            ...typedDataMessage,
+            message: sanitizedMessageRecursively,
+          }),
+        ],
       };
     }
   }
@@ -239,6 +229,7 @@ async function findConfirmationBySecurityAlertId(
     } else {
       confirmation = transactionController.state.transactions.find(
         (meta) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (meta.securityAlertResponse as any)?.securityAlertId ===
           securityAlertId,

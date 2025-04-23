@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PPOMController } from '@metamask/ppom-validator';
 import { PPOM } from '@blockaid/ppom_release';
 import {
@@ -15,13 +14,11 @@ import {
   BlockaidReason,
   BlockaidResultType,
   LOADING_SECURITY_ALERT_RESPONSE,
-  SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { AppStateController } from '../../controllers/app-state-controller';
 import {
   generateSecurityAlertId,
-  isChainSupported,
   METHOD_SIGN_TYPED_DATA_V3,
   METHOD_SIGN_TYPED_DATA_V4,
   updateSecurityAlertResponse,
@@ -114,10 +111,6 @@ describe('PPOM Utils', () => {
   const normalizeTransactionParamsMock = jest.mocked(
     normalizeTransactionParams,
   );
-  const getSupportedChainIdsMock = jest.spyOn(
-    securityAlertAPI,
-    'getSecurityAlertsAPISupportedChainIds',
-  );
   let isSecurityAlertsEnabledMock: jest.SpyInstance;
 
   const updateSecurityAlertResponseMock = jest.fn();
@@ -145,6 +138,8 @@ describe('PPOM Utils', () => {
       ppom.validateJsonRpc.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
       ppomController.usePPOM.mockImplementation(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (callback) => callback(ppom as any) as any,
       );
 
@@ -188,6 +183,7 @@ describe('PPOM Utils', () => {
 
       ppomController.usePPOM.mockImplementation(
         (callback) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           callback(ppom as any) as any,
       );
@@ -237,6 +233,7 @@ describe('PPOM Utils', () => {
 
       ppomController.usePPOM.mockImplementation(
         (callback) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           callback(ppom as any) as any,
       );
@@ -267,7 +264,6 @@ describe('PPOM Utils', () => {
       );
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([METHOD_SIGN_TYPED_DATA_V3, METHOD_SIGN_TYPED_DATA_V4])(
       'sanitizes request params if method is %s',
       async (method: string) => {
@@ -276,6 +272,7 @@ describe('PPOM Utils', () => {
 
         ppomController.usePPOM.mockImplementation(
           (callback) =>
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             callback(ppom as any) as any,
         );
@@ -308,23 +305,6 @@ describe('PPOM Utils', () => {
         });
       },
     );
-
-    it('updates response indicating chain is not supported', async () => {
-      const ppomController = {} as PPOMController;
-      const CHAIN_ID_UNSUPPORTED_MOCK = '0x2';
-
-      await validateRequestWithPPOM({
-        ...validateRequestWithPPOMOptionsBase,
-        ppomController,
-        chainId: CHAIN_ID_UNSUPPORTED_MOCK,
-      });
-
-      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
-        validateRequestWithPPOMOptionsBase.request.method,
-        SECURITY_ALERT_ID_MOCK,
-        SECURITY_ALERT_RESPONSE_CHAIN_NOT_SUPPORTED,
-      );
-    });
   });
 
   describe('generateSecurityAlertId', () => {
@@ -381,10 +361,14 @@ describe('PPOM Utils', () => {
       } as unknown as TransactionController['state']);
 
       await updateSecurityAlertResponse({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         appStateController: {} as any,
         method: 'eth_sendTransaction',
         securityAlertId: SECURITY_ALERT_ID_MOCK,
         securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         signatureController: {} as any,
         transactionController,
       });
@@ -455,38 +439,6 @@ describe('PPOM Utils', () => {
         CHAIN_ID_MOCK,
         request,
       );
-    });
-  });
-
-  describe('isChainSupported', () => {
-    describe('when security alerts API is enabled', () => {
-      beforeEach(async () => {
-        isSecurityAlertsEnabledMock.mockReturnValue(true);
-        getSupportedChainIdsMock.mockResolvedValue([CHAIN_ID_MOCK]);
-      });
-
-      it('returns true if chain is supported', async () => {
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-
-      it('returns false if chain is not supported', async () => {
-        expect(await isChainSupported('0x2')).toStrictEqual(false);
-      });
-
-      it('returns correctly if security alerts API throws', async () => {
-        getSupportedChainIdsMock.mockRejectedValue(new Error('Test Error'));
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-    });
-
-    describe('when security alerts API is disabled', () => {
-      it('returns true if chain is supported', async () => {
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-
-      it('returns false if chain is not supported', async () => {
-        expect(await isChainSupported('0x2')).toStrictEqual(false);
-      });
     });
   });
 });

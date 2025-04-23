@@ -27,7 +27,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
@@ -155,7 +155,7 @@ export type AllowedEvents =
 /**
  * Messenger type for the {@link AccountTrackerController}.
  */
-export type AccountTrackerControllerMessenger = RestrictedControllerMessenger<
+export type AccountTrackerControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   AccountTrackerControllerActions | AllowedActions,
   AccountTrackerControllerEvents | AllowedEvents,
@@ -701,6 +701,37 @@ export default class AccountTrackerController extends BaseController<
         chainId,
       );
     }
+  }
+
+  async updateAccountByAddress({
+    address,
+    networkClientId,
+  }: {
+    address?: string;
+    networkClientId?: NetworkClientId;
+  } = {}): Promise<void> {
+    const { completedOnboarding } = this.messagingSystem.call(
+      'OnboardingController:getState',
+    );
+    if (!completedOnboarding) {
+      return;
+    }
+
+    const selectedAddress =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      address ||
+      this.messagingSystem.call('AccountsController:getSelectedAccount')
+        .address;
+
+    if (!selectedAddress) {
+      return;
+    }
+
+    const { chainId, provider } =
+      this.#getCorrectNetworkClient(networkClientId);
+
+    await this.#updateAccount(selectedAddress, provider, chainId);
   }
 
   /**

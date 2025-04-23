@@ -7,8 +7,11 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     hideModal: PropTypes.func.isRequired,
     removeNetwork: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
+    switchEvmNetwork: PropTypes.func.isRequired,
     networkNickname: PropTypes.string.isRequired,
     chainId: PropTypes.string.isRequired,
+    currentChainId: PropTypes.string.isRequired,
+    ethereumMainnetClientId: PropTypes.string.isRequired,
   };
 
   static contextTypes = {
@@ -16,9 +19,31 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   };
 
   handleDelete = async () => {
-    await this.props.removeNetwork(this.props.chainId);
-    this.props.onConfirm();
-    this.props.hideModal();
+    const {
+      chainId,
+      currentChainId,
+      ethereumMainnetClientId,
+      onConfirm,
+      hideModal,
+      removeNetwork,
+      switchEvmNetwork,
+    } = this.props;
+
+    // An implicit auto-switch in the network-controller should occur
+    // to mainnet when the network being deleted is the current selected
+    // EVM network and the active network is a non-EVM network.
+    //
+    // TODO: This logic must be ported to the
+    // multichain-network-controller so the "remove use case" can
+    // be properly handled.
+    if (chainId === currentChainId) {
+      await switchEvmNetwork(ethereumMainnetClientId);
+    }
+
+    await removeNetwork(chainId);
+
+    onConfirm();
+    hideModal();
   };
 
   render() {

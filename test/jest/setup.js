@@ -9,11 +9,7 @@ jest.mock('webextension-polyfill', () => {
   };
 });
 
-jest.mock('../../ui/hooks/usePetnamesEnabled', () => ({
-  usePetnamesEnabled: () => false,
-}));
-
-jest.mock('../../app/scripts/snaps/preinstalled-snaps', () => ({
+jest.mock('../../app/scripts/constants/snaps', () => ({
   __esModule: true,
   default: [],
 }));

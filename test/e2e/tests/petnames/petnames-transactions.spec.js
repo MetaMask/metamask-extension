@@ -3,7 +3,6 @@ const {
   switchToNotificationWindow,
   withFixtures,
   unlockWallet,
-  defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -44,7 +43,6 @@ describe('Petnames - Transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -90,7 +88,6 @@ describe('Petnames - Transactions', function () {
           })
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

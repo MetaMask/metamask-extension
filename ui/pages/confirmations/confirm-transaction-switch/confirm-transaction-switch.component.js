@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom';
 import Loading from '../../../components/ui/loading-screen';
 import {
   CONFIRM_TRANSACTION_ROUTE,
-  SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
@@ -18,10 +17,8 @@ export default class ConfirmTransactionSwitch extends Component {
   render() {
     const { txData } = this.props;
     if (txData.msgParams) {
-      let pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${SIGNATURE_REQUEST_PATH}`;
-      if (txData.type === MESSAGE_TYPE.ETH_DECRYPT) {
-        pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${DECRYPT_MESSAGE_REQUEST_PATH}`;
-      } else if (txData.type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
+      let pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${DECRYPT_MESSAGE_REQUEST_PATH}`;
+      if (txData.type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
         pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`;
       }
       return <Redirect to={{ pathname }} />;

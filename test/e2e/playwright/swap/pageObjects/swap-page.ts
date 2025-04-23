@@ -175,6 +175,7 @@ export class SwapPage {
   async selectTokenFromList(symbol: string) {
     await this.tokenSearch.waitFor();
     await this.tokenSearch.fill(symbol);
+    await this.page.waitForTimeout(1000);
     const regex = new RegExp(`^${symbol}$`, 'u');
     const searchItem = await this.tokenList.filter({ hasText: regex });
     await searchItem.click({ timeout: 5000 });

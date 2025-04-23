@@ -40,10 +40,12 @@ export function NotificationsSettingsAllowNotifications({
   loading,
   setLoading,
   disabled,
+  dataTestId,
 }: {
   loading: boolean;
   setLoading: (loading: boolean) => void;
   disabled: boolean;
+  dataTestId: string;
 }) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -63,6 +65,8 @@ export function NotificationsSettingsAllowNotifications({
     useEnableNotifications();
   const { disableNotifications, error: errorDisableNotifications } =
     useDisableNotifications();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const error = errorEnableNotifications || errorDisableNotifications;
 
   useEffect(() => {
@@ -142,13 +146,13 @@ export function NotificationsSettingsAllowNotifications({
       paddingLeft={8}
       paddingRight={8}
       paddingBottom={8}
-      data-testid="notifications-settings-allow-notifications"
     >
       <NotificationsSettingsBox
         value={toggleValue}
         onToggle={toggleNotifications}
         disabled={disabled}
         loading={loading}
+        dataTestId={dataTestId}
       >
         <NotificationsSettingsType title={t('allowNotifications')} />
       </NotificationsSettingsBox>

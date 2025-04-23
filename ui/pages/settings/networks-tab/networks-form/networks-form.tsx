@@ -2,7 +2,7 @@ import log from 'loglevel';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  NetworkConfiguration,
+  type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString } from '@metamask/utils';
@@ -78,7 +78,7 @@ export const NetworksForm = ({
   onBlockExplorerAdd,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
-  existingNetwork?: NetworkConfiguration;
+  existingNetwork?: UpdateNetworkFields;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
 }) => {
@@ -343,6 +343,8 @@ export const NetworksForm = ({
           data-testid="network-form-name-input"
           autoFocus
           helpText={
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ((name && warnings?.name?.msg) || suggestedName) && (
               <>
                 {name && warnings?.name?.msg && (
@@ -380,6 +382,7 @@ export const NetworksForm = ({
               </>
             )
           }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
             setName(e.target?.value);
@@ -407,6 +410,8 @@ export const NetworksForm = ({
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
           renderItem={(item, isList) =>
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
             ) : (
@@ -547,6 +552,7 @@ export const NetworksForm = ({
               </Text>
             ) : null
           }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
             setTicker(e.target?.value);

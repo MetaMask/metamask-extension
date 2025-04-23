@@ -12,7 +12,11 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { toggleExternalServices } from '../../../store/actions';
+import {
+  setDataCollectionForMarketing,
+  setParticipateInMetaMetrics,
+  toggleExternalServices,
+} from '../../../store/actions';
 import {
   ModalOverlay,
   ModalContent,
@@ -135,6 +139,7 @@ export function BasicConfigurationModal() {
               size={ButtonSize.Lg}
               width={BlockSize.Half}
               variant={ButtonVariant.Secondary}
+              data-testid="basic-configuration-modal-cancel-button"
               onClick={closeModal}
             >
               {t('cancel')}
@@ -144,6 +149,7 @@ export function BasicConfigurationModal() {
               disabled={!hasAgreed && isExternalServicesEnabled}
               width={BlockSize.Half}
               variant={ButtonVariant.Primary}
+              data-testid="basic-configuration-modal-toggle-button"
               onClick={() => {
                 const event = onboardingFlow
                   ? {
@@ -171,6 +177,11 @@ export function BasicConfigurationModal() {
                     };
 
                 trackEvent(event);
+
+                if (isExternalServicesEnabled || onboardingFlow) {
+                  dispatch(setParticipateInMetaMetrics(false));
+                  dispatch(setDataCollectionForMarketing(false));
+                }
 
                 if (onboardingFlow) {
                   dispatch(hideBasicFunctionalityModal());

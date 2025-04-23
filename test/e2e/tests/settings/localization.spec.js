@@ -1,8 +1,4 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 async function mockPhpConversion(mockServer) {
@@ -37,7 +33,6 @@ describe('Localization', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         testSpecificMock: mockPhpConversion,
         title: this.test.fullTitle(),
       },

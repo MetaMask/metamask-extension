@@ -1,15 +1,17 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { zeroAddress } from 'ethereumjs-util';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { setBackgroundConnection } from '../../store/background-connection';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-} from '../../../shared/types/bridge';
+  BRIDGE_DEFAULT_SLIPPAGE,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { setBackgroundConnection } from '../../store/background-connection';
 import * as util from '../../helpers/utils/util';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../shared/constants/bridge';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import bridgeReducer from './bridge';
 import {
   setBridgeFeatureFlags,
@@ -28,6 +30,7 @@ import {
 const middleware = [thunk];
 
 describe('Ducks - Bridge', () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const store = configureMockStore<any>(middleware)(createBridgeMockStore());
 
@@ -61,32 +64,51 @@ describe('Ducks - Bridge', () => {
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setToChainId');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.toChainId).toStrictEqual(actionPayload);
+      expect(newState.toChainId).toStrictEqual(
+        formatChainIdToCaip(actionPayload),
+      );
     });
   });
 
   describe('setFromToken', () => {
     it('calls the "bridge/setFromToken" action', () => {
       const state = store.getState().bridge;
-      const actionPayload = { symbol: 'SYMBOL', address: '0x13341432' };
+      const actionPayload = {
+        symbol: 'SYMBOL',
+        address: '0x13341432',
+        chainId: MultichainNetworks.SOLANA,
+      };
       store.dispatch(setFromToken(actionPayload as never) as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setFromToken');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.fromToken).toStrictEqual(actionPayload);
+      expect(newState.fromToken).toStrictEqual(
+        expect.objectContaining(actionPayload),
+      );
     });
   });
 
   describe('setToToken', () => {
     it('calls the "bridge/setToToken" action', () => {
       const state = store.getState().bridge;
-      const actionPayload = { symbol: 'SYMBOL', address: '0x13341431' };
+      const actionPayload = {
+        symbol: 'SYMBOL',
+        address: '0x13341431',
+        chainId: '0xa',
+      };
 
       store.dispatch(setToToken(actionPayload as never) as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setToToken');
       const newState = bridgeReducer(state, actions[0]);
-      expect(newState.toToken).toStrictEqual(actionPayload);
+      expect(newState.toToken).toStrictEqual(
+        expect.objectContaining({
+          ...actionPayload,
+          balance: '0',
+          chainId: '0xa',
+          string: '0',
+        }),
+      );
     });
   });
 
@@ -166,6 +188,7 @@ describe('Ducks - Bridge', () => {
 
   describe('resetBridgeState', () => {
     it('dispatches action to the bridge controller', () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
         createBridgeMockStore({
@@ -206,6 +229,7 @@ describe('Ducks - Bridge', () => {
 
   describe('setDestTokenExchangeRates', () => {
     it('fetches token prices and updates dest exchange rates in state, native dest token', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
         createBridgeMockStore(),
@@ -249,6 +273,7 @@ describe('Ducks - Bridge', () => {
     });
 
     it('fetches token prices and updates dest exchange rates in state, erc20 dest token', async () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockStore = configureMockStore<any>(middleware)(
         createBridgeMockStore(),

@@ -14,13 +14,16 @@ import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
-import { withTransactionEnvelopeTypeFixtures } from '../helpers';
+import {
+  mockedSourcifyTokenSend,
+  withTransactionEnvelopeTypeFixtures,
+} from '../helpers';
 import { TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC20 Token Send', function () {
-  describe('Wallet initiated', async function () {
+  describe('Wallet initiated', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
@@ -52,7 +55,7 @@ describe('Confirmation Redesign ERC20 Token Send', function () {
     });
   });
 
-  describe('dApp initiated', async function () {
+  describe('dApp initiated', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
@@ -87,30 +90,6 @@ describe('Confirmation Redesign ERC20 Token Send', function () {
 
 async function mocks(server: Mockttp) {
   return [await mockedSourcifyTokenSend(server)];
-}
-
-export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
-    .withQuery({ hex_signature: '0xa9059cbb' })
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            bytes_signature: '©\u0005»',
-            created_at: '2016-07-09T03:58:28.234977Z',
-            hex_signature: '0xa9059cbb',
-            id: 145,
-            text_signature: 'transfer(address,uint256)',
-          },
-        ],
-      },
-    }));
 }
 
 async function createWalletInitiatedTransactionAndAssertDetails(

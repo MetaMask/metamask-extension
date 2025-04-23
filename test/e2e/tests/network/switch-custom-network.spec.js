@@ -4,7 +4,6 @@ const {
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
-  generateGanacheOptions,
 } = require('../../helpers');
 
 describe('Switch ethereum chain', function () {
@@ -15,15 +14,18 @@ describe('Switch ethereum chain', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions: generateGanacheOptions({
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 8546,
               chainId: 1338,
-              ganacheOptions2: {},
             },
-          ],
-        }),
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

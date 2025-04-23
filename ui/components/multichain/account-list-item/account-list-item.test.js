@@ -95,6 +95,11 @@ const render = (props = {}, state = {}) => {
           conversionRate: '100000',
         },
       },
+      conversionRates: {
+        'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+          rate: '100000',
+        },
+      },
       snaps: {
         ...mockState.metamask.snaps,
         [mockSnap.id]: mockSnap,
@@ -207,25 +212,68 @@ describe('AccountListItem', () => {
   });
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  it('renders the snap name for named snap accounts', () => {
-    const { container } = render({
-      account: {
-        ...mockAccount,
-        metadata: {
-          ...mockAccount.metadata,
-          snap: {
-            id: mockSnap.id,
+  it('renders the tag with the snap name for named snap accounts', () => {
+    const { container } = render(
+      {
+        account: {
+          ...mockAccount,
+          metadata: {
+            ...mockAccount.metadata,
+            snap: {
+              id: mockSnap.id,
+            },
+            keyring: {
+              type: 'Snap Keyring',
+            },
           },
-          keyring: {
-            type: 'Snap Keyring',
+          balance: '0x0',
+        },
+      },
+      {
+        metamask: {
+          snaps: {
+            [mockSnap.id]: {
+              ...mockSnap,
+              preinstalled: false,
+            },
           },
         },
-
-        balance: '0x0',
       },
-    });
+    );
     const tag = container.querySelector('.mm-tag');
     expect(tag.textContent).toBe(`${mockSnap.manifest.proposedName} (Beta)`);
+  });
+
+  it('does not render the tag with the snap name for preinstalled snap accounts', () => {
+    const { container } = render(
+      {
+        account: {
+          ...mockAccount,
+          metadata: {
+            ...mockAccount.metadata,
+            snap: {
+              id: mockSnap.id,
+            },
+            keyring: {
+              type: 'Snap Keyring',
+            },
+          },
+          balance: '0x0',
+        },
+      },
+      {
+        metamask: {
+          snaps: {
+            [mockSnap.id]: {
+              ...mockSnap,
+              preinstalled: true,
+            },
+          },
+        },
+      },
+    );
+    const tag = container.querySelector('.mm-tag');
+    expect(tag).not.toBeInTheDocument();
   });
   ///: END:ONLY_INCLUDE_IF
 

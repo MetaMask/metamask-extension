@@ -65,8 +65,15 @@ PATH_NAME_MAP[`${CONTACT_VIEW_ROUTE}/:address`] = 'View Contact Settings Page';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
 PATH_NAME_MAP[`${SNAP_SETTINGS_ROUTE}/:snapId`] = 'Snap Settings Page';
 
+export const REVEAL_SRP_LIST_ROUTE =
+  '/settings/security-and-privacy/reveal-srp-list';
+PATH_NAME_MAP[REVEAL_SRP_LIST_ROUTE] =
+  'Reveal Secret Recovery Phrase List Page';
+
 export const REVEAL_SEED_ROUTE = '/seed';
-PATH_NAME_MAP[REVEAL_SEED_ROUTE] = 'Reveal Secret Recovery Phrase Page';
+// This `:keyringId` parameter is actually optional.
+PATH_NAME_MAP[`${REVEAL_SEED_ROUTE}/:keyringId`] =
+  'Reveal Secret Recovery Phrase Page';
 
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 PATH_NAME_MAP[RESTORE_VAULT_ROUTE] = 'Restore Vault Page';
@@ -96,6 +103,17 @@ PATH_NAME_MAP[CONNECT_HARDWARE_ROUTE] = 'Connect Hardware Wallet Page';
 
 export const SEND_ROUTE = '/send';
 PATH_NAME_MAP[SEND_ROUTE] = 'Send Page';
+
+export const REMOTE_ROUTE = '/remote';
+PATH_NAME_MAP[REMOTE_ROUTE] = 'Remote Mode Page';
+
+export const REMOTE_ROUTE_SETUP_SWAPS = '/remote/setup-swaps';
+PATH_NAME_MAP[REMOTE_ROUTE_SETUP_SWAPS] = 'Remote Mode Setup Swaps Page';
+
+export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
+  '/remote/setup-daily-allowance';
+PATH_NAME_MAP[REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE] =
+  'Remote Mode Setup Daily Allowance Page';
 
 export const CONNECTIONS = '/connections';
 PATH_NAME_MAP[CONNECTIONS] = 'Connections';
@@ -155,6 +173,46 @@ PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id`] = 'Confirmation Root Page';
 export const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
 PATH_NAME_MAP[CONFIRMATION_V_NEXT_ROUTE] = 'New Confirmation Page';
 PATH_NAME_MAP[`${CONFIRMATION_V_NEXT_ROUTE}/:id`] = 'New Confirmation Page';
+
+export const CONFIRM_SEND_ETHER_PATH = '/send-ether';
+PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_ETHER_PATH}`] =
+  'Confirm Send Ether Transaction Page';
+
+export const CONFIRM_SEND_TOKEN_PATH = '/send-token';
+PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_TOKEN_PATH}`] =
+  'Confirm Send Token Transaction Page';
+
+export const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract';
+PATH_NAME_MAP[
+  `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_DEPLOY_CONTRACT_PATH}`
+] = 'Confirm Deploy Contract Transaction Page';
+
+export const CONFIRM_APPROVE_PATH = '/approve';
+PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_APPROVE_PATH}`] =
+  'Confirm Approve Transaction Page';
+
+export const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = '/set-approval-for-all';
+PATH_NAME_MAP[
+  `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`
+] = 'Confirm Set Approval For All Transaction Page';
+
+export const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
+PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TRANSFER_FROM_PATH}`] =
+  'Confirm Transfer From Transaction Page';
+
+export const CONFIRM_SAFE_TRANSFER_FROM_PATH = '/safe-transfer-from';
+PATH_NAME_MAP[
+  `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SAFE_TRANSFER_FROM_PATH}`
+] = 'Confirm Safe Transfer From Transaction Page';
+
+export const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
+PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TOKEN_METHOD_PATH}`] =
+  'Confirm Token Method Transaction Page';
+
+export const CONFIRM_INCREASE_ALLOWANCE_PATH = '/increase-allowance';
+PATH_NAME_MAP[
+  `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_INCREASE_ALLOWANCE_PATH}`
+] = 'Confirm Increase Allowance Transaction Page';
 
 export const SIGNATURE_REQUEST_PATH = '/signature-request';
 PATH_NAME_MAP[`${CONFIRM_TRANSACTION_ROUTE}/:id${SIGNATURE_REQUEST_PATH}`] =

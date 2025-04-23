@@ -1,10 +1,18 @@
 import { Server, server } from 'ganache';
+import { BigNumber } from 'bignumber.js';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../constants';
+
+const PRIVATE_KEY =
+  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
+const convertToHexValue = (val: number) =>
+  `0x${new BigNumber(val, 10).toString(16)}`;
+
+const convertETHToHexGwei = (eth: number) => convertToHexValue(eth * 10 ** 18);
 
 const defaultOptions = {
   blockTime: 2,
   network_id: 1337,
-  mnemonic:
-    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
   port: 8545,
   vmErrorsOnRPCResponse: false,
   hardfork: 'muirGlacier',
@@ -14,13 +22,30 @@ const defaultOptions = {
 export class Ganache {
   #server: Server | undefined;
 
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async start(opts: any) {
-    const options = { ...defaultOptions, ...opts };
 
-    this.#server = server(options);
-    await this.#server.listen(options.port);
+  async start(opts: any) {
+    let customOptions = {
+      ...defaultOptions,
+      ...opts,
+    };
+    // Check if mnemonic and custom accounts are provided in options
+    // and add a default account value if not
+    if (!customOptions.mnemonic && !customOptions.accounts) {
+      customOptions = {
+        ...customOptions,
+        accounts: [
+          {
+            secretKey: PRIVATE_KEY,
+            balance: convertETHToHexGwei(
+              Number(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
+            ),
+          },
+        ],
+      };
+    }
+
+    this.#server = server(customOptions);
+    await this.#server.listen(customOptions.port);
   }
 
   getProvider() {
@@ -89,8 +114,8 @@ export class Ganache {
     }
     try {
       await this.#server.close();
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+
     } catch (e: any) {
       // We can safely ignore the EBUSY error
       if (e.code !== 'EBUSY') {

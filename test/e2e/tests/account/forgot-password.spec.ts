@@ -1,7 +1,8 @@
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { E2E_SRP } from '../../default-fixture';
+import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -15,17 +16,16 @@ describe('Forgot password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodes,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Lock Wallet
         const homePage = new HomePage(driver);
@@ -42,7 +42,7 @@ describe('Forgot password', function () {
         await homePage.headerNavbar.lockMetaMask();
 
         // Check user can log in with new password
-        await loginWithBalanceValidation(driver, ganacheServer, newPassword);
+        await loginWithBalanceValidation(driver, localNodes[0], newPassword);
       },
     );
   });

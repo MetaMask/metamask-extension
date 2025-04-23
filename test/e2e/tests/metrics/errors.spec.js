@@ -10,12 +10,12 @@ const {
 } = require('../../../../app/scripts/constants/sentry-state');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  convertToHexValue,
   logInWithBalanceValidation,
   withFixtures,
   sentryRegEx,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 /**
  * Derive a UI state field from a background state field.
@@ -49,6 +49,7 @@ const maskedBackgroundFields = [
   'CurrencyController.currencyRates.ETH.conversionDate',
   'CurrencyController.currencyRates.LineaETH.conversionDate',
   'CurrencyController.currencyRates.SepoliaETH.conversionDate',
+  'CurrencyController.currencyRates.MegaETH.conversionDate',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
@@ -60,7 +61,8 @@ const removedBackgroundFields = [
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
   'AppStateController.lastInteractedConfirmationInfo',
-  'BridgeController.bridgeState.quoteRequest.walletAddress',
+  'BridgeController.quoteRequest.walletAddress',
+  'BridgeController.quoteRequest.slippage',
   'PPOMController.chainStatus.0x539.lastVisited',
   'PPOMController.versionInfo',
   // This property is timing-dependent
@@ -221,15 +223,6 @@ describe('Sentry errors', function () {
         };
       });
   }
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   describe('before initialization, after opting out of metrics', function () {
     it('should NOT send error events in the background', async function () {
@@ -245,7 +238,6 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
@@ -276,7 +268,6 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -310,14 +301,13 @@ describe('Sentry errors', function () {
           fixtures: {
             ...new FixtureBuilder()
               .withMetaMetricsController({
-                metaMetricsId: 'fake-metrics-id',
+                metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
@@ -356,14 +346,13 @@ describe('Sentry errors', function () {
           fixtures: {
             ...new FixtureBuilder()
               .withMetaMetricsController({
-                metaMetricsId: 'fake-metrics-id',
+                metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
@@ -418,13 +407,12 @@ describe('Sentry errors', function () {
           fixtures: {
             ...new FixtureBuilder()
               .withMetaMetricsController({
-                metaMetricsId: 'fake-metrics-id',
+                metaMetricsId: MOCK_META_METRICS_ID,
                 participateInMetaMetrics: true,
               })
               .withBadPreferencesControllerState()
               .build(),
           },
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryInvariantMigrationError,
           manifestFlags: {
@@ -468,11 +456,10 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -514,11 +501,10 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -583,7 +569,6 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -618,7 +603,6 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -650,11 +634,10 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
@@ -696,19 +679,18 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
             sentry: { forceEnable: false },
           },
         },
-        async ({ driver, ganacheServer, mockedEndpoint }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
+        async ({ driver, mockedEndpoint }) => {
+          await logInWithBalanceValidation(driver);
 
           await driver.delay(2000);
           // Trigger error
@@ -759,11 +741,10 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -803,11 +784,10 @@ describe('Sentry errors', function () {
         {
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
-              metaMetricsId: 'fake-metrics-id',
+              metaMetricsId: MOCK_META_METRICS_ID,
               participateInMetaMetrics: true,
             })
             .build(),
-          ganacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
@@ -815,8 +795,8 @@ describe('Sentry errors', function () {
             sentry: { forceEnable: false },
           },
         },
-        async ({ driver, ganacheServer, mockedEndpoint }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
+        async ({ driver, mockedEndpoint }) => {
+          await logInWithBalanceValidation(driver);
 
           await driver.delay(2000);
 
@@ -864,22 +844,21 @@ describe('Sentry errors', function () {
 
   it('should not have extra properties in UI state mask', async function () {
     const expectedMissingState = {
-      bridgeState: {
-        // This can get wiped out during initialization due to a bug in
-        // the "resetState" method
-        quoteRequest: {
-          destChainId: true,
-          destTokenAddress: true,
-          srcChainId: true,
-          srcTokenAmount: true,
-          walletAddress: false,
-        },
-        quotesLastFetched: true,
-        quotesLoadingStatus: true,
-        quotesRefreshCount: true,
-        quoteFetchError: true,
-        quotesInitialLoadTime: true,
+      // This can get wiped out during initialization due to a bug in
+      // the "resetState" method
+      quoteRequest: {
+        destChainId: true,
+        destTokenAddress: true,
+        srcChainId: true,
+        srcTokenAmount: true,
+        walletAddress: false,
+        slippage: true,
       },
+      quotesLastFetched: true,
+      quotesLoadingStatus: true,
+      quotesRefreshCount: true,
+      quoteFetchError: true,
+      quotesInitialLoadTime: true,
       currentPopupId: false, // Initialized as undefined
       // Part of transaction controller store, but missing from the initial
       // state
@@ -889,6 +868,10 @@ describe('Sentry errors', function () {
         showConfirmationAdvancedDetails: true,
         privacyMode: false,
       },
+      balances: false,
+      accountsAssets: false,
+      assetsMetadata: false,
+      assetsRates: false,
       smartTransactionsState: {
         fees: {
           approvalTxFees: true, // Initialized as undefined
@@ -905,8 +888,11 @@ describe('Sentry errors', function () {
       // Part of the AuthenticationController store, but initialized as undefined
       // Only populated once the client is authenticated
       sessionData: {
-        accessToken: false,
-        expiresIn: true,
+        token: {
+          accessToken: false,
+          expiresIn: true,
+          obtainedAt: true,
+        },
         profile: true,
       },
       // This can get erased due to a bug in the app state controller's
@@ -921,7 +907,6 @@ describe('Sentry errors', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
         title: this.test.fullTitle(),
         manifestFlags: {
           sentry: { forceEnable: false },

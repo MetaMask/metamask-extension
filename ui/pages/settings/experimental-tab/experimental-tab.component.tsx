@@ -29,27 +29,24 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { SurveyUrl } from '../../../../shared/constants/urls';
 ///: END:ONLY_INCLUDE_IF
 
 type ExperimentalTabProps = {
   watchAccountEnabled: boolean;
   setWatchAccountEnabled: (value: boolean) => void;
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  solanaSupportEnabled: boolean;
-  setSolanaSupportEnabled: (value: boolean) => void;
-  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   bitcoinSupportEnabled: boolean;
   setBitcoinSupportEnabled: (value: boolean) => void;
   bitcoinTestnetSupportEnabled: boolean;
   setBitcoinTestnetSupportEnabled: (value: boolean) => void;
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   addSnapAccountEnabled: boolean;
   setAddSnapAccountEnabled: (value: boolean) => void;
   ///: END:ONLY_INCLUDE_IF
   petnamesEnabled: boolean;
-  setPetnamesEnabled: (value: boolean) => void;
   featureNotificationsEnabled: boolean;
   setFeatureNotificationsEnabled: (value: boolean) => void;
 };
@@ -126,21 +123,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         </div>
       </Box>
     );
-  }
-
-  renderTogglePetnames() {
-    const { t } = this.context;
-    const { petnamesEnabled, setPetnamesEnabled } = this.props;
-
-    return this.renderToggleSection({
-      title: t('petnamesEnabledToggle'),
-      description: t('petnamesEnabledToggleDescription'),
-      toggleValue: petnamesEnabled,
-      toggleCallback: (value) => setPetnamesEnabled(!value),
-      toggleDataTestId: 'toggle-petnames',
-      toggleOffLabel: t('off'),
-      toggleOnLabel: t('on'),
-    });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -245,9 +227,11 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
       toggleOnLabel: t('on'),
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   // We're only setting the code fences here since
   // we should remove it for the feature release
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   renderBitcoinSupport() {
     const { t, trackEvent } = this.context;
     const {
@@ -319,50 +303,9 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  renderSolanaSupport() {
-    const { t, trackEvent } = this.context;
-    const { solanaSupportEnabled, setSolanaSupportEnabled } = this.props;
-
-    return (
-      <>
-        <Text
-          variant={TextVariant.headingSm}
-          as="h4"
-          color={TextColor.textAlternative}
-          marginBottom={2}
-          fontWeight={FontWeight.Bold}
-        >
-          {t('solanaSupportSectionTitle')}
-        </Text>
-        {this.renderToggleSection({
-          title: t('solanaSupportToggleTitle'),
-          description: t('solanaSupportToggleDescription'),
-          toggleValue: solanaSupportEnabled,
-          toggleCallback: (value) => {
-            trackEvent({
-              event: MetaMetricsEventName.SolanaSupportToggled,
-              category: MetaMetricsEventCategory.Settings,
-              properties: {
-                enabled: !value,
-              },
-            });
-            setSolanaSupportEnabled(!value);
-          },
-          toggleContainerDataTestId: 'solana-support-toggle-div',
-          toggleDataTestId: 'solana-support-toggle',
-          toggleOffLabel: t('off'),
-          toggleOnLabel: t('on'),
-        })}
-      </>
-    );
-  }
-  ///: END:ONLY_INCLUDE_IF
-
   render() {
     return (
       <div className="settings-page__body">
-        {this.renderTogglePetnames()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {/* Section: Account Management Snaps */}
         {
@@ -376,16 +319,11 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           ///: END:ONLY_INCLUDE_IF
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
           // We're only setting the code fences here since
           // we should remove it for the feature release
           /* Section: Bitcoin Accounts */
           this.renderBitcoinSupport()
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(solana)
-          this.renderSolanaSupport()
           ///: END:ONLY_INCLUDE_IF
         }
       </div>

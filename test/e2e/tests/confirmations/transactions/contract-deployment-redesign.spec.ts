@@ -9,7 +9,6 @@ import {
 } from './shared';
 
 const {
-  defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
   withFixtures,
 } = require('../../../helpers');
@@ -24,7 +23,6 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: TestSuiteArguments) => {
@@ -51,7 +49,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: TestSuiteArguments) => {

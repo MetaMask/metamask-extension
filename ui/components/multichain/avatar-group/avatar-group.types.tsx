@@ -1,5 +1,5 @@
 import { BorderColor } from '../../../helpers/constants/design-system';
-import { AvatarTokenSize } from '../../component-library';
+import { AvatarTokenSize } from '../../component-library/avatar-token/avatar-token.types';
 import type { StyleUtilityProps } from '../../component-library/box';
 
 export type AvatarGroupProps = StyleUtilityProps & {

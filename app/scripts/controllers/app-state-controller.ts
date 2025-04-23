@@ -6,7 +6,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import {
   AcceptRequest,
@@ -32,6 +32,10 @@ import {
   AccountOverviewTabKey,
   CarouselSlide,
 } from '../../../shared/constants/app-state';
+import type {
+  ThrottledOrigins,
+  ThrottledOrigin,
+} from '../../../shared/types/origin-throttling';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -59,6 +63,7 @@ export type AppStateControllerState = {
   currentPopupId?: number;
   onboardingDate: number | null;
   lastViewedUserSurvey: number | null;
+  isRampCardClosed: boolean;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   // This key is only used for checking if the user had set advancedGasFee
@@ -80,6 +85,7 @@ export type AppStateControllerState = {
   noteToTraderMessage?: string;
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
+  throttledOrigins: ThrottledOrigins;
 };
 
 const controllerName = 'AppStateController';
@@ -132,7 +138,7 @@ type AllowedEvents =
   | PreferencesControllerStateChangeEvent
   | KeyringControllerQRKeyringStateChangeEvent;
 
-export type AppStateControllerMessenger = RestrictedControllerMessenger<
+export type AppStateControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   AppStateControllerActions | AllowedActions,
   AppStateControllerEvents | AllowedEvents,
@@ -185,12 +191,14 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   onboardingDate: null,
   lastViewedUserSurvey: null,
+  isRampCardClosed: false,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   surveyLinkLastClickedOrClosed: null,
   switchedNetworkNeverShowMessage: false,
   slides: [],
+  throttledOrigins: {},
   ...getInitialStateOverrides(),
 });
 
@@ -285,6 +293,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  isRampCardClosed: {
+    persist: true,
+    anonymous: true,
+  },
   newPrivacyPolicyToastClickedOrClosed: {
     persist: true,
     anonymous: true,
@@ -353,6 +365,10 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  throttledOrigins: {
+    persist: false,
+    anonymous: true,
+  },
 };
 
 export class AppStateController extends BaseController<
@@ -392,6 +408,8 @@ export class AppStateController extends BaseController<
     });
 
     this.#extension = extension;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
@@ -528,6 +546,12 @@ export class AppStateController extends BaseController<
     });
   }
 
+  setRampCardClosed(): void {
+    this.update((state) => {
+      state.isRampCardClosed = true;
+    });
+  }
+
   setNewPrivacyPolicyToastClickedOrClosed(): void {
     this.update((state) => {
       state.newPrivacyPolicyToastClickedOrClosed = true;
@@ -541,34 +565,27 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Updates slides by adding new slides that don't already exist in state
+   * Replaces slides in state with new slides. If a slide with the same id
+   * already exists, it will be merged with the new slide.
    *
-   * @param slides - Array of new slides to add
+   * @param slides - Array of new slides
    */
   updateSlides(slides: CarouselSlide[]): void {
     this.update((state) => {
       const currentSlides = state.slides || [];
 
-      // Updates the undismissable property for slides that already exist in state
-      const updatedCurrentSlides = currentSlides.map((currentSlide) => {
-        const matchingNewSlide = slides.find((s) => s.id === currentSlide.id);
-        if (matchingNewSlide) {
+      const newSlides = slides.map((slide) => {
+        const existingSlide = currentSlides.find((s) => s.id === slide.id);
+        if (existingSlide) {
           return {
-            ...currentSlide,
-            undismissable: matchingNewSlide.undismissable,
+            ...existingSlide,
+            ...slide,
           };
         }
-        return currentSlide;
+        return slide;
       });
 
-      // Adds new slides that don't already exist in state
-      const newSlides = slides.filter((newSlide) => {
-        return !currentSlides.some(
-          (currentSlide) => currentSlide.id === newSlide.id,
-        );
-      });
-
-      state.slides = [...updatedCurrentSlides, ...newSlides];
+      state.slides = [...newSlides];
     });
   }
 
@@ -1074,5 +1091,18 @@ export class AppStateController extends BaseController<
     }
 
     this.#approvalRequestId = null;
+  }
+
+  getThrottledOriginState(origin: string): ThrottledOrigin {
+    return this.state.throttledOrigins[origin];
+  }
+
+  updateThrottledOriginState(
+    origin: string,
+    throttledOriginState: ThrottledOrigin,
+  ): void {
+    this.update((state) => {
+      state.throttledOrigins[origin] = throttledOriginState;
+    });
   }
 }

@@ -1,4 +1,8 @@
 /* eslint-disable import/no-restricted-paths, camelcase */
+import {
+  formatChainIdToCaip,
+  BRIDGE_DEFAULT_SLIPPAGE,
+} from '@metamask/bridge-controller';
 import { getHexGasTotalUsd } from '../../../app/scripts/lib/bridge-status/metrics-utils';
 import {
   MetricsBackgroundState,
@@ -8,8 +12,6 @@ import { isHardwareKeyring } from '../../../ui/helpers/utils/hardware';
 import { ActionType } from '../../../ui/hooks/bridge/events/types';
 import { formatProviderLabel } from '../../../ui/pages/bridge/utils/quote';
 import { getCurrentKeyring } from '../../../ui/selectors';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../constants/bridge';
-import { decimalToPrefixedHex } from '../../modules/conversion.utils';
 import { getIsSmartTransaction } from '../../modules/selectors';
 
 export const getCommonProperties = (
@@ -20,10 +22,10 @@ export const getCommonProperties = (
   // @ts-expect-error keyring type is possibly wrong
   const is_hardware_wallet = isHardwareKeyring(keyring.type) ?? false;
 
-  const chain_id_source = decimalToPrefixedHex(
+  const chain_id_source = formatChainIdToCaip(
     bridgeHistoryItem.quote.srcChainId,
   );
-  const chain_id_destination = decimalToPrefixedHex(
+  const chain_id_destination = formatChainIdToCaip(
     bridgeHistoryItem.quote.destChainId,
   );
 

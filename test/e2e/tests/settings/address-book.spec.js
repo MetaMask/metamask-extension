@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const { By } = require('selenium-webdriver');
 const {
-  defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
@@ -30,11 +29,10 @@ describe('Address Book', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
         await openActionMenuAndStartSendFlow(driver);
 
         await driver.clickElement({ css: 'button', text: 'Contacts' });
@@ -74,7 +72,6 @@ describe('Address Book', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -125,7 +122,6 @@ describe('Address Book', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -179,7 +175,6 @@ describe('Address Book', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

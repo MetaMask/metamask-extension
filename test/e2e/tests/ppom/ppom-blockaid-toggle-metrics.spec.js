@@ -2,11 +2,11 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 
 const {
-  defaultGanacheOptions,
   unlockWallet,
   withFixtures,
   getEventPayloads,
 } = require('../../helpers');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 
 async function mockServerCalls(mockServer) {
   return [
@@ -61,11 +61,10 @@ describe('PPOM Blockaid Alert - Metrics', function () {
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockServerCalls,
       },
@@ -102,7 +101,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             blockaid_alerts_enabled: true,
             category: 'Settings',
           },
-          userId: 'fake-metrics-id',
+          userId: MOCK_META_METRICS_ID,
           type: 'track',
         };
         const matchToggleOnEvent = {
@@ -122,7 +121,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             blockaid_alerts_enabled: false,
             category: 'Settings',
           },
-          userId: 'fake-metrics-id',
+          userId: MOCK_META_METRICS_ID,
           type: 'track',
         };
         const matchToggleOffEvent = {

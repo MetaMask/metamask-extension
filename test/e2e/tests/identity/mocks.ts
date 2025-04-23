@@ -1,8 +1,10 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
-import { accountsSyncMockResponse } from './account-syncing/mockData';
+import {
+  UserStorageMockttpController,
+  UserStorageResponseData,
+} from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -76,8 +78,8 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
 }
 
 type MockInfuraAndAccountSyncOptions = {
-  accountsToMock?: string[];
-  accountsSyncResponse?: typeof accountsSyncMockResponse;
+  accountsToMockBalances?: string[];
+  accountsSyncResponse?: UserStorageResponseData[];
 };
 
 const MOCK_ETH_BALANCE = '0xde0b6b3a7640000';
@@ -96,7 +98,7 @@ export async function mockInfuraAndAccountSync(
   userStorageMockttpController: UserStorageMockttpController,
   options: MockInfuraAndAccountSyncOptions = {},
 ): Promise<void> {
-  const accounts = options.accountsToMock ?? [];
+  const accounts = options.accountsToMockBalances ?? [];
 
   // Set up User Storage / Account Sync mock
   userStorageMockttpController.setupPath(
@@ -133,4 +135,32 @@ export async function mockInfuraAndAccountSync(
   }
 
   mockIdentityServices(mockServer, userStorageMockttpController);
+}
+
+/**
+ * Sets up mock responses for NFT API calls
+ *
+ * @param mockServer - The Mockttp server instance
+ * @param userAddress - The user address to mock the NFT API call for
+ */
+export async function mockNftApiCall(
+  mockServer: Mockttp,
+  userAddress: string,
+): Promise<void> {
+  mockServer
+    .forGet(`https://nft.api.cx.metamask.io/users/${userAddress}/tokens`)
+    .withQuery({
+      limit: 50,
+      includeTopBid: 'true',
+      chainIds: ['1', '59144'],
+      continuation: '',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+        },
+      };
+    });
 }

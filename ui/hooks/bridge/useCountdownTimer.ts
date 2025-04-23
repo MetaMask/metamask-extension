@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getBridgeQuotes,
-  getBridgeQuotesConfig,
+  getQuoteRefreshRate,
 } from '../../ducks/bridge/selectors';
 
 const STEP = 1000;
@@ -15,7 +15,7 @@ const STEP = 1000;
  */
 export const useCountdownTimer = () => {
   const { quotesLastFetchedMs } = useSelector(getBridgeQuotes);
-  const { refreshRate } = useSelector(getBridgeQuotesConfig);
+  const refreshRate = useSelector(getQuoteRefreshRate);
 
   const [timeRemaining, setTimeRemaining] = useState(refreshRate);
 

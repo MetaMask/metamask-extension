@@ -17,7 +17,6 @@ const ERC20_TOKEN = {
 const NATIVE_TOKEN = { decimals: 18, address: zeroAddress() };
 
 describe('Bridge quote utils', () => {
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [
       'native',
@@ -57,13 +56,17 @@ describe('Bridge quote utils', () => {
       _: string,
       destAsset: { decimals: number; address: string },
       destTokenAmount: string,
-      toTokenExchangeRate: number,
-      usdExchangeRate: number,
+      toTokenExchangeRate: number | null,
+      usdExchangeRate: number | null,
       {
         amount,
         valueInCurrency,
         usd,
-      }: { amount: string; valueInCurrency: string; usd: string },
+      }: {
+        amount: string;
+        valueInCurrency: string | undefined;
+        usd: string | undefined;
+      },
     ) => {
       const result = calcToAmount(
         {
@@ -79,7 +82,6 @@ describe('Bridge quote utils', () => {
     },
   );
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [
       'native',
@@ -123,13 +125,17 @@ describe('Bridge quote utils', () => {
       _: string,
       srcAsset: { decimals: number; address: string },
       srcTokenAmount: string,
-      fromTokenExchangeRate: number,
-      usdExchangeRate: number,
+      fromTokenExchangeRate: number | null,
+      usdExchangeRate: number | null,
       {
         amount,
         valueInCurrency,
         usd,
-      }: { amount: string; valueInCurrency: string; usd: string },
+      }: {
+        amount: string;
+        valueInCurrency: string | undefined;
+        usd: string | undefined;
+      },
     ) => {
       const result = calcSentAmount(
         {
@@ -150,7 +156,6 @@ describe('Bridge quote utils', () => {
     },
   );
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [
       'native',
@@ -244,8 +249,12 @@ describe('Bridge quote utils', () => {
       const result = {
         amount: gasFee.amount.plus(relayerFee.amount),
         valueInCurrency:
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
           null,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
       };
       expect(result.amount?.toString()).toStrictEqual(amount);
@@ -254,7 +263,6 @@ describe('Bridge quote utils', () => {
     },
   );
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [
       'native',
@@ -349,8 +357,12 @@ describe('Bridge quote utils', () => {
       const result = {
         amount: gasFee.amount.plus(relayerFee.amount),
         valueInCurrency:
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
           null,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
       };
       expect(result.amount?.toString()).toStrictEqual(amount);
@@ -359,7 +371,6 @@ describe('Bridge quote utils', () => {
     },
   );
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [
       'available',
@@ -372,9 +383,9 @@ describe('Bridge quote utils', () => {
     'calcAdjustedReturn: valueInCurrency amounts are %s',
     (
       _: string,
-      destTokenAmountInCurrency: BigNumber,
-      totalNetworkFeeInCurrency: BigNumber,
-      valueInCurrency: string,
+      destTokenAmountInCurrency: BigNumber | null,
+      totalNetworkFeeInCurrency: BigNumber | null,
+      valueInCurrency: BigNumber | null,
     ) => {
       const result = calcAdjustedReturn(
         {
@@ -393,7 +404,6 @@ describe('Bridge quote utils', () => {
     },
   );
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['< 1', new BigNumber('100'), new BigNumber('5'), new BigNumber('0.05')],
     ['>= 1', new BigNumber('1'), new BigNumber('2000'), new BigNumber('2000')],
@@ -404,14 +414,13 @@ describe('Bridge quote utils', () => {
       _: string,
       sentAmount: BigNumber,
       destTokenAmount: BigNumber,
-      rate: string,
+      rate: BigNumber,
     ) => {
       const result = calcSwapRate(sentAmount, destTokenAmount);
       expect(result).toStrictEqual(rate);
     },
   );
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['exact', 120, '2'],
     ['rounded down', 2000, '33'],

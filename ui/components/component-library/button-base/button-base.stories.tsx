@@ -7,10 +7,12 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { Box, TextDirection, IconName } from '..';
 import { ButtonBaseSize } from './button-base.types';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
+import { IconName } from '../icon';
+import { Box } from '../box';
+import { TextDirection } from '../text';
 
 const marginSizeControlOptions = [
   undefined,

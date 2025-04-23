@@ -1,5 +1,4 @@
-import { validHex, validateData } from '../../../../shared/lib/swaps-utils';
-import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { truthyString, validateData } from '../../../../shared/lib/swaps-utils';
 import {
   BridgeId,
   DestChainStatus,
@@ -7,7 +6,7 @@ import {
   Asset,
   StatusTypes,
 } from '../../../../shared/types/bridge-status';
-import { BRIDGE_STATUS_BASE_URL } from './utils';
+import { BRIDGE_STATUS_BASE_URL } from './constants';
 
 type Validator<ExpectedResponse, DataToValidate> = {
   property: keyof ExpectedResponse | string;
@@ -35,7 +34,7 @@ const assetValidators = [
   {
     property: 'address',
     type: 'string',
-    validator: (v: unknown): v is string => isValidHexAddress(v as string),
+    validator: (v: unknown): v is string => truthyString(v as string),
   },
   {
     property: 'symbol',
@@ -75,7 +74,7 @@ const srcChainStatusValidators = [
   {
     property: 'txHash',
     type: 'string',
-    validator: validHex,
+    validator: truthyString,
   },
   {
     property: 'amount',
@@ -88,6 +87,8 @@ const srcChainStatusValidators = [
     type: 'object|undefined',
     validator: (v: unknown): v is object | undefined =>
       v === undefined ||
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       (v && typeof v === 'object' && Object.keys(v).length === 0) ||
       assetValidator(v),
   },
@@ -125,6 +126,8 @@ const destChainStatusValidators = [
     type: 'object|undefined',
     validator: (v: unknown): v is Asset | undefined =>
       v === undefined ||
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       (v && typeof v === 'object' && Object.keys(v).length === 0) ||
       assetValidator(v),
   },
@@ -159,7 +162,7 @@ export const validators = [
     property: 'bridge',
     type: 'string|undefined',
     validator: (v: unknown): v is BridgeId | undefined =>
-      v === undefined || Object.values(BridgeId).includes(v as BridgeId),
+      v === undefined || typeof v === 'string',
   },
   {
     property: 'isExpectedToken',

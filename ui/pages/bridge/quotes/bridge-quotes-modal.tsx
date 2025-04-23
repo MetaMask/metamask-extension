@@ -3,6 +3,11 @@ import { IconName } from '@metamask/snaps-sdk/jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
+  type QuoteMetadata,
+  type QuoteResponse,
+  SortOrder,
+} from '@metamask/bridge-controller';
+import {
   ButtonLink,
   IconSize,
   Modal,
@@ -24,28 +29,22 @@ import {
   formatTokenAmount,
 } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getLocale } from '../../../selectors';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
-import {
-  type QuoteMetadata,
-  type QuoteResponse,
-  SortOrder,
-} from '../../../../shared/types/bridge';
 import {
   getBridgeQuotes,
   getBridgeSortOrder,
 } from '../../../ducks/bridge/selectors';
 import { Column, Row } from '../layout';
-import {
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getMultichainNativeCurrency } from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -58,8 +57,8 @@ export const BridgeQuotesModal = ({
     useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const locale = useSelector(getLocale);
+  const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
+  const locale = useSelector(getIntlLocale);
 
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();

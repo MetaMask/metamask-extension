@@ -1,3 +1,4 @@
+import { ChainId } from '@metamask/bridge-controller';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import BridgeStatusController from './bridge-status-controller';
@@ -20,7 +21,7 @@ const getMessengerMock = ({
 } = {}) =>
   ({
     call: jest.fn((method: string) => {
-      if (method === 'AccountsController:getSelectedAccount') {
+      if (method === 'AccountsController:getSelectedMultichainAccount') {
         return { address: account };
       } else if (method === 'NetworkController:findNetworkClientIdByChainId') {
         return 'networkClientId';
@@ -216,7 +217,7 @@ describe('BridgeStatusController', () => {
       let getSelectedAccountCalledTimes = 0;
       const messengerMock = {
         call: jest.fn((method: string) => {
-          if (method === 'AccountsController:getSelectedAccount') {
+          if (method === 'AccountsController:getSelectedMultichainAccount') {
             let account;
             if (getSelectedAccountCalledTimes === 0) {
               account = '0xaccount1';
@@ -358,7 +359,7 @@ describe('BridgeStatusController', () => {
           srcTxHash: '0xsrcTxHash2',
           txMetaId: 'bridgeTxMetaId2',
           srcChainId: 10,
-          destChainId: 123,
+          destChainId: ChainId.SOLANA,
         }),
       );
       jest.advanceTimersByTime(10_000);
@@ -381,7 +382,7 @@ describe('BridgeStatusController', () => {
       expect(
         bridgeStatusController.state.bridgeStatusState.txHistory.bridgeTxMetaId2
           .quote.destChainId,
-      ).toEqual(123);
+      ).toEqual(1151111081099710);
 
       bridgeStatusController.wipeBridgeStatus({
         address: '0xaccount1',
@@ -399,7 +400,7 @@ describe('BridgeStatusController', () => {
       jest.useFakeTimers();
       const messengerMock = {
         call: jest.fn((method: string) => {
-          if (method === 'AccountsController:getSelectedAccount') {
+          if (method === 'AccountsController:getSelectedMultichainAccount') {
             return { address: '0xaccount1' };
           } else if (
             method === 'NetworkController:findNetworkClientIdByChainId'
@@ -455,7 +456,7 @@ describe('BridgeStatusController', () => {
           srcTxHash: '0xsrcTxHash2',
           txMetaId: 'bridgeTxMetaId2',
           srcChainId: 10,
-          destChainId: 123,
+          destChainId: 137,
         }),
       );
       jest.advanceTimersByTime(10_000);
@@ -478,7 +479,7 @@ describe('BridgeStatusController', () => {
       expect(
         bridgeStatusController.state.bridgeStatusState.txHistory.bridgeTxMetaId2
           .quote.destChainId,
-      ).toEqual(123);
+      ).toEqual(137);
 
       bridgeStatusController.wipeBridgeStatus({
         address: '0xaccount1',
@@ -491,7 +492,7 @@ describe('BridgeStatusController', () => {
       );
       expect(txHistoryItems).toHaveLength(1);
       expect(txHistoryItems[0].quote.srcChainId).toEqual(10);
-      expect(txHistoryItems[0].quote.destChainId).toEqual(123);
+      expect(txHistoryItems[0].quote.destChainId).toEqual(137);
     });
   });
 });

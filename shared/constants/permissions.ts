@@ -61,6 +61,7 @@ export const PermissionWeight = Object.freeze({
   wallet_snap: 4,
   endowment_networkAccess: 3,
   endowment_assets: 3,
+  endowment_protocol: 3,
   endowment_webassembly: 4,
   endowment_transactionInsight: 4,
   endowment_cronjob: 4,

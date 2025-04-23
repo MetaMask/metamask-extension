@@ -6,7 +6,6 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   regularDelayMs,
-  defaultGanacheOptions,
   WINDOW_TITLES,
   largeDelayMs,
 } = require('../../helpers');
@@ -19,25 +18,29 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
+          .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -119,7 +122,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // eth_sendTransaction request
         await driver.clickElement('#sendButton');
-        await driver.waitUntilXWindowHandles(3);
+        await driver.waitUntilXWindowHandles(4);
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -127,6 +130,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.clickElement('#signTypedData');
 
         await driver.waitUntilXWindowHandles(4);
+        await driver.delay(regularDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.

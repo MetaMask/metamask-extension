@@ -1,11 +1,12 @@
 /**
  * @jest-environment node
  */
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { AccountsController } from '@metamask/accounts-controller';
-import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
-import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
 import { Hex } from '@metamask/utils';
+import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
+import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
+import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
 import {
   SnapKeyringAccountAssetListUpdatedEvent,
   SnapKeyringAccountBalancesUpdatedEvent,
@@ -44,7 +45,7 @@ const setupController = ({
 }: {
   state?: Partial<PreferencesControllerState>;
 }) => {
-  const controllerMessenger = new ControllerMessenger<
+  const messenger = new Messenger<
     AllowedActions,
     | AllowedEvents
     | KeyringControllerStateChangeEvent
@@ -52,9 +53,10 @@ const setupController = ({
     | SnapKeyringAccountAssetListUpdatedEvent
     | SnapKeyringAccountBalancesUpdatedEvent
     | SnapKeyringAccountTransactionsUpdatedEvent
+    | MultichainNetworkControllerNetworkDidChangeEvent
   >();
   const preferencesControllerMessenger: PreferencesControllerMessenger =
-    controllerMessenger.getRestricted({
+    messenger.getRestricted({
       name: 'PreferencesController',
       allowedActions: [
         'AccountsController:getAccountByAddress',
@@ -66,7 +68,7 @@ const setupController = ({
       allowedEvents: ['AccountsController:stateChange'],
     });
 
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'NetworkController:getState',
     jest.fn().mockReturnValue({
       networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
@@ -77,7 +79,7 @@ const setupController = ({
     state,
   });
 
-  const accountsControllerMessenger = controllerMessenger.getRestricted({
+  const accountsControllerMessenger = messenger.getRestricted({
     name: 'AccountsController',
     allowedEvents: [
       'KeyringController:stateChange',
@@ -85,6 +87,7 @@ const setupController = ({
       'SnapKeyring:accountAssetListUpdated',
       'SnapKeyring:accountBalancesUpdated',
       'SnapKeyring:accountTransactionsUpdated',
+      'MultichainNetworkController:networkDidChange',
     ],
     allowedActions: [],
   });
@@ -101,7 +104,7 @@ const setupController = ({
 
   return {
     controller,
-    messenger: controllerMessenger,
+    messenger,
     accountsController,
   };
 };
@@ -152,6 +155,12 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
+            },
+          ],
         },
         [],
       );
@@ -195,6 +204,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -248,6 +263,12 @@ describe('preferences controller', () => {
               accounts: [firstAddress, secondAddress],
             },
           ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
+            },
+          ],
         },
         [],
       );
@@ -281,6 +302,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -472,45 +499,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setIncomingTransactionsPreferences', () => {
-    const { controller } = setupController({});
-    const addedNonTestNetworks = Object.keys(NETWORK_CONFIGURATION_DATA);
-
-    it('should have default value combined', () => {
-      const { state } = controller;
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
-          true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
-          true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      });
-    });
-
-    it('should update incomingTransactionsPreferences with given value set', () => {
-      controller.setIncomingTransactionsPreferences(
-        CHAIN_IDS.LINEA_MAINNET,
-        false,
-      );
-      const { state } = controller;
-      expect(state.incomingTransactionsPreferences).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: false,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[0] as Hex].chainId]:
-          true,
-        [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1] as Hex].chainId]:
-          true,
-        [CHAIN_IDS.GOERLI]: true,
-        [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      });
-    });
-  });
-
   describe('AccountsController:stateChange subscription', () => {
     const { controller, messenger, accountsController } = setupController({});
     it('sync the identities with the accounts in the accounts controller', () => {
@@ -524,6 +512,12 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
+            },
+          ],
+          keyringsMetadata: [
+            {
+              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+              name: '',
             },
           ],
         },
@@ -715,6 +709,7 @@ describe('preferences controller', () => {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         shouldShowAggregatedBalancePopover: true,
+        dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
@@ -743,6 +738,7 @@ describe('preferences controller', () => {
         petnamesEnabled: true,
         privacyMode: false,
         shouldShowAggregatedBalancePopover: true,
+        dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
@@ -843,18 +839,86 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setSolanaSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+  describe('getDisabledUpgradeAccountsByChain', () => {
+    it('returns empty object if disabledAccountUpgradeChainsAddresses is empty', () => {
+      const { controller } = setupController({});
+      expect(controller.getDisabledUpgradeAccountsByChain()).toStrictEqual({});
     });
 
-    it('sets the solanaSupportEnabled property in state to true and then false', () => {
-      controller.setSolanaSupportEnabled(true);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(true);
+    it('returns disabledAccountUpgrades state', () => {
+      const mockStateObject = {
+        [CHAIN_IDS.MAINNET]: ['0x0'] as Hex[],
+        [CHAIN_IDS.GOERLI]: ['0x1'] as Hex[],
+      };
+      const { controller } = setupController({
+        state: {
+          disabledUpgradeAccountsByChain: mockStateObject,
+        },
+      });
 
-      controller.setSolanaSupportEnabled(false);
-      expect(controller.state.solanaSupportEnabled).toStrictEqual(false);
+      expect(controller.getDisabledUpgradeAccountsByChain()).toStrictEqual(
+        mockStateObject,
+      );
+    });
+  });
+
+  describe('disableAccountUpgrade', () => {
+    it('adds chain ID, address to disabledAccountUpgrades if empty', () => {
+      const { controller } = setupController({});
+
+      controller.disableAccountUpgrade(CHAIN_IDS.GOERLI, '0x0');
+
+      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
+        [CHAIN_IDS.GOERLI]: ['0x0'],
+      });
+    });
+
+    it('adds chain ID, address to disabledAccountUpgrades if not empty', () => {
+      const { controller } = setupController({
+        state: {
+          disabledUpgradeAccountsByChain: {
+            [CHAIN_IDS.MAINNET]: ['0x0'],
+          },
+        },
+      });
+
+      controller.disableAccountUpgrade(CHAIN_IDS.GOERLI, '0x1');
+
+      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: ['0x0'],
+        [CHAIN_IDS.GOERLI]: ['0x1'],
+      });
+    });
+
+    it('does not add chain ID to disabledAccountUpgrades if duplicate', () => {
+      const { controller } = setupController({
+        state: {
+          disabledUpgradeAccountsByChain: {
+            [CHAIN_IDS.MAINNET]: ['0x0'],
+          },
+        },
+      });
+
+      controller.disableAccountUpgrade(CHAIN_IDS.MAINNET, '0x0');
+
+      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
+        [CHAIN_IDS.MAINNET]: ['0x0'],
+      });
+    });
+  });
+
+  describe('manageInstitutionalWallets', () => {
+    it('defaults manageInstitutionalWallets to false', () => {
+      const { controller } = setupController({});
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(false);
+    });
+  });
+
+  describe('setManageInstitutionalWallets', () => {
+    it('sets manageInstitutionalWallets to true', () => {
+      const { controller } = setupController({});
+      controller.setManageInstitutionalWallets(true);
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(true);
     });
   });
 });
