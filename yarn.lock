@@ -6130,14 +6130,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/profile-sync-controller@npm:12.0.0"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@12.0.0-preview-4bcedc0":
+  version: 12.0.0-preview-4bcedc0
+  resolution: "@metamask-previews/profile-sync-controller@npm:12.0.0-preview-4bcedc0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/keyring-api": "npm:^17.4.0"
-    "@metamask/snaps-sdk": "npm:^6.17.1"
-    "@metamask/snaps-utils": "npm:^8.10.0"
+    "@metamask/snaps-sdk": "npm:^6.22.0"
+    "@metamask/snaps-utils": "npm:^9.2.0"
     "@noble/ciphers": "npm:^0.5.2"
     "@noble/hashes": "npm:^1.4.0"
     immer: "npm:^9.0.6"
@@ -6147,10 +6147,10 @@ __metadata:
     "@metamask/accounts-controller": ^27.0.0
     "@metamask/keyring-controller": ^21.0.0
     "@metamask/network-controller": ^23.0.0
-    "@metamask/providers": ^18.1.0
-    "@metamask/snaps-controllers": ^9.19.0
+    "@metamask/providers": ^21.0.0
+    "@metamask/snaps-controllers": ^11.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/8c59dddf5d105fcddeb5dd175613ced6fd83d673585a874c25ae7c43d0e8ca243cd53ebd56958998a5d3badb9a958ee4cb61899e04318b87434c059394676c4b
+  checksum: 10/a873e941e4ebcd50050e392aca482e0549bfb363aea31ac01d28e3090022e0168e2fbec98049e08ba716a05ad5bf6df7b36221183222b1384d211da1dde0a885
   languageName: node
   linkType: hard
 
@@ -27669,7 +27669,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
-    "@metamask/profile-sync-controller": "npm:^12.0.0"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@12.0.0-preview-4bcedc0"
     "@metamask/providers": "npm:^22.0.0"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
