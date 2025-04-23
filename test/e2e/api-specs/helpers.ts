@@ -1,3 +1,4 @@
+import { Window } from 'selenium-webdriver';
 import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
 import { Json, JsonRpcFailure, JsonRpcResponse } from '@metamask/utils';
@@ -5,7 +6,7 @@ import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import { Driver } from '../webdriver/driver';
 
 // eslint-disable-next-line @typescript-eslint/no-shadow
-declare let window: any;
+declare let window: Window;
 
 type QueueItem = {
   task: () => Promise<unknown>;

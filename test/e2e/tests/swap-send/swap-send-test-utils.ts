@@ -4,14 +4,12 @@ import FixtureBuilder from '../../fixture-builder';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { SWAP_SEND_QUOTES_RESPONSE_ETH_TST } from './mocks/eth-data';
+import { Driver } from '../../webdriver/driver';
 
 export const NATIVE_TOKEN_SYMBOL = 'ETH';
-
 export class SwapSendPage {
-
-  driver: any;
-
-  constructor(driver: any) {
+  driver: Driver;
+  constructor(driver: Driver) {
     this.driver = driver;
   }
 

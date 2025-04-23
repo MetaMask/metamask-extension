@@ -13,9 +13,7 @@ class PrivacySettings {
     tag: 'button',
   };
 
-  private readonly confirmDeleteMetaMetricsDataButton =
-  '[data-testid="clear-metametrics-data"]';
-
+  private readonly confirmDeleteMetaMetricsDataButton = '[data-testid="clear-metametrics-data"]';
 
   private readonly copiedSrpExclamation = {
     text: tEn('copiedExclamation'),
@@ -127,7 +125,9 @@ class PrivacySettings {
     // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown in the background
     // we cannot wait for a UI conditon, so we a delay to mitigate this until another solution is found
     await this.driver.delay(3000);
-    await this.driver.clickElementAndWaitToDisappear(this.confirmDeleteMetaMetricsDataButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmDeleteMetaMetricsDataButton,
+    );
   }
 
   async closeRevealSrpDialog(): Promise<void> {
@@ -241,15 +241,14 @@ class PrivacySettings {
   async check_deleteMetaMetricsDataButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(
-        this.deleteMetaMetricsDataButton,
-        {
+        this.deleteMetaMetricsDataButton, {
           waitAtLeastGuard: 2000,
           timeout: 5000,
         },
       );
-      } catch (e) {
-        console.log('Delete MetaMetrics data button not enabled', e);
-        return false;
+    } catch (e) {
+      console.log('Delete MetaMetrics data button not enabled', e);
+      return false;
     }
     console.log('Delete MetaMetrics data button is enabled');
     return true;

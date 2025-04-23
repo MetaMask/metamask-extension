@@ -1,11 +1,12 @@
 import { promises as fs } from 'fs';
+import { Mockttp } from 'mockttp';
 import path from 'path';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
+import { Driver } from './webdriver/driver';
 import { exitWithError } from '../../development/lib/exit-with-error';
 import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
 import FixtureBuilder from './fixture-builder';
-import { Mockttp } from 'mockttp';
 import HomePage from './page-objects/pages/home/homepage';
 import { mockFeatureFlag } from './tests/bridge/bridge-test-utils';
 import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
@@ -16,7 +17,6 @@ import {
   unlockWallet,
   withFixtures,
 } from './helpers';
-import { Driver } from './webdriver/driver';
 
 async function loadNewAccount(): Promise<number> {
   let loadingTimes: number = 0;

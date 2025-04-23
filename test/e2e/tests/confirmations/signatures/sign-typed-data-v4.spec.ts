@@ -14,6 +14,7 @@ import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -27,7 +28,6 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
-import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 const signatureMessageWithoutVerifyingContract = [
   DEFAULT_FIXTURE_ACCOUNT,

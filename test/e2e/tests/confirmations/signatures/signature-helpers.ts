@@ -93,6 +93,7 @@ export async function initializePages(driver: Driver) {
  * @param decodingChangeTypes
  * @param decodingResponse
  * @param decodingDescription
+ * @param requestedThrough
  */
 function getSignatureEventProperty(
   signatureType: string,
@@ -135,7 +136,6 @@ function getSignatureEventProperty(
 }
 
 function assertSignatureRequestedMetrics(
-
   events: any[],
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
@@ -275,7 +275,6 @@ export async function assertAccountDetailsMetrics(
 }
 
 function assertEventPropertiesMatch(
-
   events: any[],
   eventName: string,
   expectedProperties: object,
