@@ -1276,6 +1276,7 @@ describe('Transaction metrics', () => {
           args.transactionMeta as TransactionMetaEventPayload,
         ),
     ],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ])('%s', (_title, fn) => {
     it('includes batch properties', async () => {
       const transactionMeta = {
