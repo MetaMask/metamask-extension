@@ -23,10 +23,12 @@ describe('Show account details', function () {
         await accountListPage.openAccountDetailsModal('Account 1');
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.revealPrivateKeyAndVerify({
-          expectedPrivateKey:
-            '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
-        });
+        await accountDetailsModal.goToDetailsTab();
+        await accountDetailsModal.revealPrivateKeyAndVerify(
+          {
+            expectedPrivateKey: '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
+          },
+        );
       },
     );
   });
@@ -57,10 +59,12 @@ describe('Show account details', function () {
         await accountListPage.openAccountDetailsModal('Account 1');
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.revealPrivateKeyAndVerify({
-          expectedPrivateKey:
-            '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
-        });
+        await accountDetailsModal.goToDetailsTab();
+        await accountDetailsModal.revealPrivateKeyAndVerify(
+          {
+            expectedPrivateKey: '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
+          },
+        );
       },
     );
   });
@@ -76,10 +80,12 @@ describe('Show account details', function () {
         await new HeaderNavbar(driver).openAccountDetailsModal();
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.revealPrivateKeyAndVerify({
-          expectedPrivateKey:
-            '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
-        });
+        await accountDetailsModal.goToDetailsTab();
+        await accountDetailsModal.revealPrivateKeyAndVerify(
+          {
+            expectedPrivateKey: '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
+          },
+        );
       },
     );
   });
@@ -108,10 +114,12 @@ describe('Show account details', function () {
         await headerNavbar.openAccountDetailsModal();
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
-        await accountDetailsModal.revealPrivateKeyAndVerify({
-          expectedPrivateKey:
-            'f444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8',
-        });
+        await accountDetailsModal.goToDetailsTab();
+        await accountDetailsModal.revealPrivateKeyAndVerify(
+          {
+            expectedPrivateKey: 'f444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8',
+          },
+        );
       },
     );
   });
@@ -131,6 +139,7 @@ describe('Show account details', function () {
         await accountListPage.openAccountDetailsModal('Account 1');
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
+        await accountDetailsModal.goToDetailsTab();
 
         // Attempt to reveal private key from account menu with a wrong password and verify the error message
         await accountDetailsModal.revealPrivateKeyAndVerify({

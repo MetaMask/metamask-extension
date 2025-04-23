@@ -89,6 +89,7 @@ describe('Upgrade Account', function (this: Suite) {
       },
     );
   });
+
   it('an EOA account is not upgraded when rejecting a batch and upgrade transaction, and cannot trigger new send calls', async function () {
     await withFixtures(
       {
@@ -137,11 +138,12 @@ describe('Upgrade Account', function (this: Suite) {
         await testDapp.clickSendCalls();
 
         await testDapp.checkEip5792SendCallsError(
-          'Error: EIP-5792 is not supported for this chain and account - Chain ID: 0x539, Account: 0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          'Error: EIP-7702 upgrade rejected for this chain and account - Chain ID: 0x539, Account: 0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
       },
     );
   });
+
   it('an EOA account is not upgraded when rejecting a batch transaction, but can trigger a new send call', async function () {
     await withFixtures(
       {

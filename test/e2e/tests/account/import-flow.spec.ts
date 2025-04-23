@@ -1,7 +1,7 @@
 import path from 'path';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT_SHORTENED } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -66,7 +66,7 @@ describe('Import flow', function () {
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
         await accountDetailsModal.check_addressInAccountDetailsModal(
-          DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+          DEFAULT_FIXTURE_ACCOUNT_SHORTENED.toLowerCase(),
         );
       },
     );

@@ -75,7 +75,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 ///: END:ONLY_INCLUDE_IF
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import type { Asset } from './asset-page';
+import { Asset } from '../types/asset';
 
 const TokenButtons = ({
   token,
@@ -197,6 +197,8 @@ const TokenButtons = ({
         }),
       );
       history.push(SEND_ROUTE);
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (!err.message.includes(INVALID_ASSET_TYPE)) {
@@ -302,6 +304,8 @@ const TokenButtons = ({
           label={t('buyAndSell')}
           data-testid="token-overview-buy"
           onClick={handleBuyAndSellOnClick}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           disabled={token.isERC721 || !isBuyableChain}
           tooltipRender={null}
         />
