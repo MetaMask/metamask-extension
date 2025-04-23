@@ -862,12 +862,12 @@ describe('Bridge selectors', () => {
       const result = getBridgeQuotes(state as never);
 
       expect(result).toStrictEqual({
-        activeQuote: undefined,
+        activeQuote: null,
         isLoading: false,
         isQuoteGoingToRefresh: false,
         quotesLastFetchedMs: null,
         quotesRefreshCount: 0,
-        recommendedQuote: undefined,
+        recommendedQuote: null,
         quotesInitialLoadTimeMs: null,
         sortedQuotes: [],
         quoteFetchError: null,
@@ -1365,9 +1365,7 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(
-        undefined,
-      );
+      expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(null);
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
     });
   });
