@@ -28,23 +28,21 @@ describe('Alert for insufficient funds', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await openDAppWithContract(driver, contractRegistry, nftSmartContract);
-
-        await mintNft(driver);
+        const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
         const alertModal = new AlertModal(driver);
+
+        await openDAppWithContract(driver, contractRegistry, nftSmartContract);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.clickERC721MintButton();
+        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.clickInlineAlert();
         await alertModal.check_messageForInsufficientBalance();
+        await alertModal.clickConfirmButton();
       },
     );
   });
 });
 
-async function mintNft(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  const testDapp = new TestDapp(driver);
-  await testDapp.clickERC721MintButton();
 
-  await driver.waitUntilXWindowHandles(3);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-}

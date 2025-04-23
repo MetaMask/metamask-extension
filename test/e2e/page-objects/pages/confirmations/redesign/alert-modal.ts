@@ -8,7 +8,6 @@ class AlertModal {
     text: 'You do not have enough ETH in your account to pay for network fees.',
   };
 
-
   private confirmAlertButton = '[data-testid="alert-modal-button"]';
 
   constructor(driver: Driver) {
@@ -19,7 +18,8 @@ class AlertModal {
     await this.driver.clickElement(this.confirmAlertButton);
   }
   async check_messageForInsufficientBalance(): Promise<void> {
-    await this.driver.clickElement(this.insufficientFundsAlert);
+    console.log('Checking for insufficient balance alert');
+    await this.driver.waitForSelector(this.insufficientFundsAlert);
   }
 }
 
