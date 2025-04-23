@@ -179,11 +179,11 @@ async function main() {
         );
 
         if (total.failed > 0) {
-          console.log(`${consoleBold(title)} ❌`);
+          if (testRun.name) console.log(`${consoleBold(title)} ❌`);
           core.summary.addRaw(`\n<details open>\n`);
           core.summary.addRaw(`\n<summary>${title} ❌</summary>\n`);
         } else {
-          console.log(`${consoleBold(title)} ✅`);
+          if (testRun.name) console.log(`${consoleBold(title)} ✅`);
           core.summary.addRaw(`\n<details>\n`);
           core.summary.addRaw(`\n<summary>${title} ✅</summary>\n`);
         }
