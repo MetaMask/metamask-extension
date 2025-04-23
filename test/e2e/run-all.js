@@ -153,7 +153,8 @@ function runningOnGitHubActions(testPaths) {
 
   const myTestList = testsArray.slice(startIndex, endIndex);
   console.log(
-    `Running tests ${startIndex + 1} to ${endIndex} of ${testsArray.length
+    `Running tests ${startIndex + 1} to ${endIndex} of ${
+      testsArray.length
     } total tests`,
   );
 
@@ -295,10 +296,10 @@ async function main() {
   let myTestList;
   let changedOrNewTests;
   if (process.env.CIRCLECI) {
-    ({ fullTestList: myTestList, changedOrNewTests =[] } =
+    ({ fullTestList: myTestList, changedOrNewTests = [] } =
       runningOnCircleCI(testPaths));
   } else if (process.env.GITHUB_ACTION) {
-    ({ fullTestList: myTestList, changedOrNewTests =[] } =
+    ({ fullTestList: myTestList, changedOrNewTests = [] } =
       runningOnGitHubActions(testPaths));
   } else {
     myTestList = testPaths;
