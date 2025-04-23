@@ -16,7 +16,6 @@ import {
   FlexDirection,
   BlockSize,
   TextColor,
-  BorderColor,
   BorderRadius,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
@@ -43,12 +42,12 @@ export default function RemoteModeDailyAllowanceCard({
   }, [onRemove]);
 
   return (
-    <Card width={BlockSize.Full} marginTop={4} backgroundColor={BackgroundColor.backgroundPressed}>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={4}
-      >
+    <Card
+      width={BlockSize.Full}
+      marginTop={4}
+      backgroundColor={BackgroundColor.backgroundPressed}
+    >
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}

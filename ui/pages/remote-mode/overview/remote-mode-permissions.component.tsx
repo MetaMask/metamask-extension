@@ -27,16 +27,14 @@ import {
 import { DailyAllowance, SwapAllowance } from '../remote.types';
 import { RevokeWithdrawlConfirmModalType } from '../components/revoke-withdrawl-confirm-modal';
 
-interface RemoteModeConfig {
+type RemoteModeConfig = {
   swapAllowance: {
     allowances: SwapAllowance[];
-    delegation: any;
   };
   dailyAllowance: {
     allowances: DailyAllowance[];
-    delegation: any;
   };
-}
+};
 
 export default function RemoteModePermissions({
   remoteModeConfig,
@@ -48,9 +46,12 @@ export default function RemoteModePermissions({
   setStartEnableDailyAllowance?: (startEnableDailyAllowance: boolean) => void;
 }) {
   const [isAllowancesExpanded, setIsAllowancesExpanded] = useState(false);
-  const [isDailyAllowanceExpanded, setIsDailyAllowanceExpanded] = useState(false);
-  const [isRevokeWithdrawlConfirmVisible, setIsRevokeWithdrawlConfirmVisible] = useState(false);
-  const [isRevokeSpendAllowanceVisible, setIsRevokeSpendAllowanceVisible] = useState(false);
+  const [isDailyAllowanceExpanded, setIsDailyAllowanceExpanded] =
+    useState(false);
+  const [isRevokeWithdrawlConfirmVisible, setIsRevokeWithdrawlConfirmVisible] =
+    useState(false);
+  const [isRevokeSpendAllowanceVisible, setIsRevokeSpendAllowanceVisible] =
+    useState(false);
 
   const swapAllowance = remoteModeConfig?.swapAllowance || null;
   const dailyAllowance = remoteModeConfig?.dailyAllowance || null;
@@ -69,9 +70,11 @@ export default function RemoteModePermissions({
 
   const handleRevokeRemoteSwap = () => {
     // todo: handoff to the confirmation screen (when available)
-    const remoteMode = JSON.parse(localStorage.getItem('remoteMode') || 'null');
-    if (remoteMode) {
-      const { swapAllowance, ...updatedRemoteMode } = remoteMode;
+    const remoteModeData = JSON.parse(
+      localStorage.getItem('remoteMode') || 'null',
+    );
+    if (remoteModeData) {
+      const { swapAllowance: _, ...updatedRemoteMode } = remoteModeData;
       localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
     }
     setIsRevokeWithdrawlConfirmVisible(false);
@@ -79,14 +82,15 @@ export default function RemoteModePermissions({
 
   const handleRevokeDailyAllowance = () => {
     // todo: handoff to the confirmation screen (when available)
-    const remoteMode = JSON.parse(localStorage.getItem('remoteMode') || 'null');
-    if (remoteMode) {
-      const { dailyAllowance, ...updatedRemoteMode } = remoteMode;
+    const remoteModeData = JSON.parse(
+      localStorage.getItem('remoteMode') || 'null',
+    );
+    if (remoteModeData) {
+      const { dailyAllowance: _, ...updatedRemoteMode } = remoteModeData;
       localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
     }
     setIsRevokeSpendAllowanceVisible(false);
   };
-
 
   return (
     <Box>
@@ -298,7 +302,9 @@ export default function RemoteModePermissions({
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
                 alignItems={AlignItems.center}
-                onClick={() => setIsDailyAllowanceExpanded(!isDailyAllowanceExpanded)}
+                onClick={() =>
+                  setIsDailyAllowanceExpanded(!isDailyAllowanceExpanded)
+                }
                 style={{ cursor: 'pointer' }}
               >
                 <Text color={TextColor.infoDefault}>
@@ -325,10 +331,10 @@ export default function RemoteModePermissions({
               )}
             </Box>
           ) : (
-          <Text color={TextColor.textAlternativeSoft}>
-            Allow your MetaMask account to withdraw from hardware funds up to
-            the daily limit.
-          </Text>
+            <Text color={TextColor.textAlternativeSoft}>
+              Allow your MetaMask account to withdraw from hardware funds up to
+              the daily limit.
+            </Text>
           )}
         </Card>
         <RevokeWithdrawlConfirm
@@ -337,7 +343,7 @@ export default function RemoteModePermissions({
           onClose={() => setIsRevokeWithdrawlConfirmVisible(false)}
           type={RevokeWithdrawlConfirmModalType.Swap}
         />
-       <RevokeWithdrawlConfirm
+        <RevokeWithdrawlConfirm
           visible={isRevokeSpendAllowanceVisible}
           onConfirm={handleRevokeDailyAllowance}
           onClose={() => setIsRevokeSpendAllowanceVisible(false)}
