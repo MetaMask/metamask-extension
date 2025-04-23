@@ -1,6 +1,29 @@
 import React, { useEffect, useCallback } from 'react';
 import { Array as YArray, Doc } from 'yjs';
-import { Box } from '../../../components/component-library';
+import {
+  Box,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  Text,
+  TextField,
+  TextFieldSize,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
+import {
+  Display,
+  FlexDirection,
+  AlignItems,
+  JustifyContent,
+  TextColor,
+  BackgroundColor,
+  BorderColor,
+  IconColor,
+  BorderRadius,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { userStorageGetAllItems } from '../../../store/actions';
 import { YjsProvider } from './yjs.provider';
 
@@ -146,104 +169,158 @@ export const SyncExperimentsTab: React.FC = () => {
   }, []);
 
   return (
-    <Box className="settings-page__body">
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <h1>Sync Debug Page</h1>
-          <div className="settings-page__content-description">
+    <Box padding={4}>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+        <Box>
+          <Text variant={TextVariant.headingLg}>Sync Debug Page</Text>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             This is a debugging page for sync functionality.
-          </div>
+          </Text>
+        </Box>
 
-          <div className="settings-page__content-item-col">
-            <div className="settings-page__item-list">
-              {listItems.length === 0 ? (
-                <div className="settings-page__no-items">
-                  No items. Add an item to get started.
-                </div>
-              ) : (
-                <ul className="settings-page__items">
-                  {listItems.map((item) => (
-                    <li key={item.id} className="settings-page__item">
-                      {editItemId === item.id ? (
-                        <div className="settings-page__item-edit">
-                          <input
-                            type="text"
-                            className="settings-page__input"
-                            value={editItemValue}
-                            onChange={(e) => setEditItemValue(e.target.value)}
-                            autoFocus
-                          />
-                          <div className="settings-page__item-actions">
-                            <button
-                              className="settings-page__button settings-page__button--small"
-                              onClick={handleSaveEdit}
-                            >
-                              Save
-                            </button>
-                            <button
-                              className="settings-page__button settings-page__button--small"
-                              onClick={handleCancelEdit}
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="settings-page__item-display">
-                          <span className="settings-page__item-name">
-                            {item.name}
-                          </span>
-                          <div className="settings-page__item-actions">
-                            <button
-                              className="settings-page__button settings-page__button--small"
-                              onClick={() => handleEditItem(item.id, item.name)}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="settings-page__button settings-page__button--small settings-page__button--danger"
-                              onClick={() => handleDeleteItem(item.id)}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <button
-              className="settings-page__button settings-page__button--primary"
-              onClick={handleAddItem}
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          {listItems.length === 0 ? (
+            <Box
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              borderRadius={BorderRadius.MD}
             >
+              <Text variant={TextVariant.bodyMd}>
+                No items. Add an item to get started.
+              </Text>
+            </Box>
+          ) : (
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              borderColor={BorderColor.borderMuted}
+              borderRadius={BorderRadius.MD}
+            >
+              {listItems.map((item) => (
+                <Box
+                  key={item.id}
+                  borderRadius={BorderRadius.SM}
+                  borderColor={BorderColor.borderMuted}
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                >
+                  {editItemId === item.id ? (
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                    >
+                      <TextField
+                        size={TextFieldSize.Md}
+                        value={editItemValue}
+                        onChange={(e) => setEditItemValue(e.target.value)}
+                        autoFocus
+                      />
+                      <Box display={Display.Flex} gap={2}>
+                        <Button size={ButtonSize.Sm} onClick={handleSaveEdit}>
+                          Save
+                        </Button>
+                        <Button
+                          variant={ButtonVariant.Secondary}
+                          size={ButtonSize.Sm}
+                          onClick={handleCancelEdit}
+                        >
+                          Cancel
+                        </Button>
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Box
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.spaceBetween}
+                      alignItems={AlignItems.center}
+                    >
+                      <Text variant={TextVariant.bodyMd}>{item.name}</Text>
+                      <Box display={Display.Flex} gap={2}>
+                        <Button
+                          variant={ButtonVariant.Secondary}
+                          size={ButtonSize.Sm}
+                          onClick={() => handleEditItem(item.id, item.name)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant={ButtonVariant.Secondary}
+                          size={ButtonSize.Sm}
+                          danger
+                          onClick={() => handleDeleteItem(item.id)}
+                        >
+                          Delete
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          <Box>
+            <Button variant={ButtonVariant.Primary} onClick={handleAddItem}>
               Add Item
-            </button>
-          </div>
+            </Button>
+          </Box>
+        </Box>
 
-          <div className="settings-page__button-group">
-            <button className="settings-page__button" onClick={fetchAllEntries}>
-              Load raw data
-            </button>
-            <button className="settings-page__button" onClick={handlePull}>
-              Pull
-            </button>
-            <button className="settings-page__button" onClick={handlePush}>
-              Push
-            </button>
-          </div>
+        <Box display={Display.Flex}>
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Md}
+            onClick={fetchAllEntries}
+          >
+            Load raw data
+          </Button>
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Md}
+            onClick={handlePull}
+          >
+            Pull
+          </Button>
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Md}
+            onClick={handlePush}
+          >
+            Push
+          </Button>
+        </Box>
 
-          {loading && (
-            <div className="settings-page__content-description">Loading...</div>
-          )}
-          {rawItems && rawItems.length > 0 && (
-            <div className="settings-page__content-description">
-              <pre>{JSON.stringify(rawItems, null, 2)}</pre>
-            </div>
-          )}
-        </div>
-      </div>
+        {loading && (
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            <Icon
+              name={IconName.Loading}
+              size={IconSize.Sm}
+              color={IconColor.iconDefault}
+            />
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              Loading...
+            </Text>
+          </Box>
+        )}
+
+        {rawItems && rawItems.length > 0 && (
+          <Box borderRadius={BorderRadius.MD}>
+            <Text variant={TextVariant.bodyMd}>
+              Raw data from user storage:
+            </Text>
+            <Box
+              as="pre"
+              style={{ overflow: 'auto' }}
+              backgroundColor={BackgroundColor.backgroundAlternative}
+            >
+              <Text variant={TextVariant.bodyXs} as="code">
+                {JSON.stringify(rawItems, null, 2)}
+              </Text>
+            </Box>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };
