@@ -113,7 +113,10 @@ async function requestEthereumAccountsHandler(
         number_of_accounts: Object.keys(metamaskState.accounts).length,
         number_of_accounts_connected: ethAccounts.length,
       },
-    });
+      {
+        excludeMetaMetricsId: true,
+      },
+    );
   }
 
   res.result = ethAccounts;
