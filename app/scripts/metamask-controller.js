@@ -235,7 +235,6 @@ import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
   getIsSmartTransaction,
   getFeatureFlagsByChainId,
-  DEFAULT_SMART_TRANSACTIONS_ENABLED,
 } from '../../shared/modules/selectors';
 import { BaseUrl } from '../../shared/constants/urls';
 import {
