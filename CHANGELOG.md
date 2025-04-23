@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Move MetaMetrics opt-in page to first position during onboarding flow for Firefox users to comply with updated Firefox Add-on policies ([#32179](https://github.com/MetaMask/metamask-extension/pull/32179))
+- Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
 
 ### Fixed
 - Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
