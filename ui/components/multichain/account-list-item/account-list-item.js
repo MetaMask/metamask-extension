@@ -74,7 +74,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { getChainIdsWithTransactionActivity } from '../../../selectors/multichain/networks';
+import { getNetworksWithTransactionActivity } from '../../../selectors/multichain/networks';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
@@ -173,7 +173,7 @@ const AccountListItem = ({
     formattedTokensWithBalancesPerChain,
   );
   const chainsWithTransactionActivity = useSelector(
-    getChainIdsWithTransactionActivity,
+    getNetworksWithTransactionActivity,
   );
 
   const sortedNetworkIcons = useMemo(() => {
