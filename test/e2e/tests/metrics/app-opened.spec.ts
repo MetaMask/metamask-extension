@@ -4,7 +4,7 @@ import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import {MOCK_META_METRICS_ID} from "../../constants";
+import { MOCK_META_METRICS_ID } from "../../constants";
 
 /**
  * Mocks the segment API for the App Opened event that we expect to see when
