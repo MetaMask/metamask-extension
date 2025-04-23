@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  test-e2e-firefox:
+  test-e2e-firefox-browserify:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
       fail-fast: false
@@ -12,7 +12,7 @@ jobs:
         index:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     with:
-      test-suite-name: test-e2e-firefox
+      test-suite-name: test-e2e-firefox-browserify
       build-command: yarn build:test:mv2
       test-command: yarn test:e2e:firefox
       matrix-index: ${{ matrix.index }}
@@ -33,7 +33,7 @@ jobs:
 
   test-e2e-firefox-report:
     needs:
-      - test-e2e-firefox
+      - test-e2e-firefox-browserify
       - test-e2e-firefox-flask
     runs-on: ubuntu-latest
     if: ${{ !cancelled() }}
