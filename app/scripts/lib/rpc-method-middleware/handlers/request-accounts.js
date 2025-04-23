@@ -102,16 +102,18 @@ async function requestEthereumAccountsHandler(
     const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
       origin,
     );
-    sendMetrics({
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        is_first_visit: isFirstVisit,
-        number_of_accounts: Object.keys(metamaskState.accounts).length,
-        number_of_accounts_connected: ethAccounts.length,
+    sendMetrics(
+      {
+        event: MetaMetricsEventName.DappViewed,
+        category: MetaMetricsEventCategory.InpageProvider,
+        referrer: {
+          url: origin,
+        },
+        properties: {
+          is_first_visit: isFirstVisit,
+          number_of_accounts: Object.keys(metamaskState.accounts).length,
+          number_of_accounts_connected: ethAccounts.length,
+        },
       },
       {
         excludeMetaMetricsId: true,
