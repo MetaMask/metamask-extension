@@ -34,7 +34,7 @@ export default function useHandleTx() {
     getNetworkConfigurationIdByChainId,
   );
 
-  const handleEvmTx = async ({
+  const handleTx = async ({
     txType,
     txParams,
     fieldsToAddToTxMeta,
@@ -103,35 +103,6 @@ export default function useHandleTx() {
   };
 
   return {
-    handleTx: async ({
-      txType,
-      txParams,
-      fieldsToAddToTxMeta,
-    }: {
-      txType: TransactionType.bridgeApproval | TransactionType.bridge;
-      txParams: {
-        chainId: ChainId;
-        to: string;
-        from: string;
-        value: string;
-        data: string;
-        gasLimit: number | null;
-      };
-      fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>; // We don't add status, so omit it to fix the type error
-    }) => {
-      // Handle as EVM transaction
-      return handleEvmTx({
-        txType,
-        txParams: txParams as {
-          chainId: ChainId;
-          to: string;
-          from: string;
-          value: string;
-          data: string;
-          gasLimit: number | null;
-        },
-        fieldsToAddToTxMeta,
-      });
-    },
+    handleTx,
   };
 }

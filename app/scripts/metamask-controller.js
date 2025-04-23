@@ -235,6 +235,7 @@ import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
   getIsSmartTransaction,
   getFeatureFlagsByChainId,
+  DEFAULT_SMART_TRANSACTIONS_ENABLED,
 } from '../../shared/modules/selectors';
 import { BaseUrl } from '../../shared/constants/urls';
 import {
@@ -1562,63 +1563,6 @@ export default class MetamaskController extends EventEmitter {
       initState.SwapsController,
     );
 
-    const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
-      name: BRIDGE_CONTROLLER_NAME,
-      allowedActions: [
-        'AccountsController:getSelectedMultichainAccount',
-        'SnapController:handleRequest',
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'NetworkController:findNetworkClientIdByChainId',
-        'TokenRatesController:getState',
-        'MultichainAssetsRatesController:getState',
-        'CurrencyRateController:getState',
-      ],
-      allowedEvents: [],
-    });
-    this.bridgeController = new BridgeController({
-      messenger: bridgeControllerMessenger,
-      clientId: BridgeClientId.EXTENSION,
-      // TODO: Remove once TransactionController exports this action type
-      getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
-      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
-        await fetchWithCache({
-          url,
-          fetchOptions: { method: 'GET', headers, signal },
-          ...requestOptions,
-        }),
-      config: {
-        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
-      },
-    });
-
-    const bridgeStatusControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: BRIDGE_STATUS_CONTROLLER_NAME,
-        allowedActions: [
-          'AccountsController:getSelectedMultichainAccount',
-          'NetworkController:getNetworkClientById',
-          'NetworkController:findNetworkClientIdByChainId',
-          'NetworkController:getState',
-          'SnapController:handleRequest',
-          'TransactionController:getState',
-        ],
-        allowedEvents: [],
-      });
-    this.bridgeStatusController = new BridgeStatusController({
-      messenger: bridgeStatusControllerMessenger,
-      state: initState.BridgeStatusController,
-      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
-        await fetchWithCache({
-          url,
-          fetchOptions: { method: 'GET', headers, signal },
-          ...requestOptions,
-        }),
-      config: {
-        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
-      },
-    });
-
     const smartTransactionsControllerMessenger =
       this.controllerMessenger.getRestricted({
         name: 'SmartTransactionsController',
@@ -1882,6 +1826,71 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.NotificationServicesPushController;
 
     this.notificationServicesController.init();
+
+    const bridgeControllerMessenger = this.controllerMessenger.getRestricted({
+      name: BRIDGE_CONTROLLER_NAME,
+      allowedActions: [
+        'AccountsController:getSelectedMultichainAccount',
+        'SnapController:handleRequest',
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+        'NetworkController:findNetworkClientIdByChainId',
+        'TokenRatesController:getState',
+        'MultichainAssetsRatesController:getState',
+        'CurrencyRateController:getState',
+      ],
+      allowedEvents: [],
+    });
+    this.bridgeController = new BridgeController({
+      messenger: bridgeControllerMessenger,
+      clientId: BridgeClientId.EXTENSION,
+      // TODO: Remove once TransactionController exports this action type
+      getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
+      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
+        await fetchWithCache({
+          url,
+          fetchOptions: { method: 'GET', headers, signal },
+          ...requestOptions,
+        }),
+      config: {
+        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      },
+    });
+
+    const bridgeStatusControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: BRIDGE_STATUS_CONTROLLER_NAME,
+        allowedActions: [
+          'AccountsController:getSelectedMultichainAccount',
+          'NetworkController:getNetworkClientById',
+          'NetworkController:findNetworkClientIdByChainId',
+          'NetworkController:getState',
+          'TokensController:addDetectedTokens',
+          'BridgeController:getBridgeERC20Allowance',
+          'GasFeeController:getState',
+          'AccountsController:getAccountByAddress',
+          'SnapController:handleRequest',
+          'TransactionController:getState',
+        ],
+        allowedEvents: [],
+      });
+    this.bridgeStatusController = new BridgeStatusController({
+      messenger: bridgeStatusControllerMessenger,
+      state: initState.BridgeStatusController,
+      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
+        await fetchWithCache({
+          url,
+          fetchOptions: { method: 'GET', headers, signal },
+          ...requestOptions,
+        }),
+      addTransactionFn: (...args) => this.txController.addTransaction(...args),
+      estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
+      addUserOperationFromTransactionFn: (...args) =>
+        this.userOperationController.addUserOperationFromTransaction(...args),
+      config: {
+        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      },
+    });
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
