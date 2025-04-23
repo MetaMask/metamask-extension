@@ -44,12 +44,11 @@ describe('useIsUpgradeTransaction', () => {
     expect(result).toBe(true);
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([undefined, null, []] as const)(
-    'returns false if authorizationList is %s',
-    async (authorizationList) => {
-      const result = runUpgradeHook(
-        authorizationList as unknown as AuthorizationList,
-      );
+    'returns false if authorization address is %s',
+    async (authorizationList: never) => {
+      const result = runUpgradeHook(authorizationList);
       expect(result).toBe(false);
     },
   );
@@ -66,12 +65,11 @@ describe('useIsDowngradeTransaction', () => {
     expect(result).toBe(true);
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([undefined, null, []] as const)(
     'returns false if authorization address is %s',
-    async (authorizationList) => {
-      const result = runDowngradeHook(
-        authorizationList as unknown as AuthorizationList,
-      );
+    async (authorizationList: never) => {
+      const result = runDowngradeHook(authorizationList);
       expect(result).toBe(false);
     },
   );
