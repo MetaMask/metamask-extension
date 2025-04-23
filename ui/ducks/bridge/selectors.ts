@@ -30,6 +30,7 @@ import type {
   MultichainAssetsRatesControllerState,
   MultichainBalancesControllerState,
   RatesControllerState,
+  TokenListState,
   TokenRatesControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
@@ -84,6 +85,7 @@ export type BridgeAppState = {
     MultichainTransactionsControllerState &
     MultichainAssetsControllerState &
     MultichainNetworkControllerState &
+    TokenListState &
     CurrencyRateState & {
       useExternalServices: boolean;
     };
