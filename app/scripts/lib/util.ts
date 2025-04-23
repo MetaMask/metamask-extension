@@ -563,11 +563,10 @@ export function extractRpcDomain(
       }
     }
 
-    const hostname = url.hostname.toLowerCase();
     const domainsToCheck = knownDomainsForTesting || knownDomainsSet;
 
-    if (domainsToCheck?.has(hostname)) {
-      return hostname;
+    if (domainsToCheck?.has(url.hostname)) {
+      return url.hostname;
     }
 
     return 'private';
