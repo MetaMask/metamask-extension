@@ -124,6 +124,8 @@ export type Delegation = {
   signature: Hex;
 };
 
+export type UnsignedDelegation = Omit<Delegation, 'signature'>;
+
 /**
  * Represents a DelegationStruct as defined in the Delegation Framework.
  * This is distinguished from the Delegation type by requiring the salt to be a bigint

@@ -14,6 +14,7 @@ export {
   toDelegationStruct,
   type Delegation,
   type DelegationStruct,
+  type UnsignedDelegation,
 } from './delegation';
 export {
   BATCH_DEFAULT_MODE,

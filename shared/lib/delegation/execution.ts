@@ -65,8 +65,8 @@ export const encodeSingleExecution = (execution: ExecutionStruct): Hex => {
 
 /**
  * Encodes a batch of Executions. Used for executing a batch of Executions in a DeleGator SCA.
+ * If there's only a single execution, the contracts expect the `encodeSingleExecution` format.
  *
- * @dev If there's only a single execution, the contracts expect the `encodeSingleExecution` format.
  * @param executions - the executions to encode
  * @returns the encoded executions
  */
@@ -90,13 +90,13 @@ export const encodeBatchExecution = (executions: ExecutionStruct[]): Hex => {
  * @returns the encoded execution(s)
  */
 export const encodeExecutionCalldata = (executions: ExecutionStruct[]): Hex => {
-  if (executions.length == 0) {
+  if (executions.length === 0) {
     throw new Error(
       `Error while getting the execution calldatas, executions is empty`,
     );
   }
-  if (executions.length == 1) {
-    const execution = executions[0]!;
+  if (executions.length === 1) {
+    const execution = executions[0];
     return encodeSingleExecution(execution);
   }
 
@@ -112,7 +112,7 @@ export const encodeExecutionCalldata = (executions: ExecutionStruct[]): Hex => {
 export const encodeExecutionCalldatas = (
   executionsBatch: ExecutionStruct[][],
 ): Hex[] => {
-  if (executionsBatch.length == 0) {
+  if (executionsBatch.length === 0) {
     throw new Error(
       `Error while getting the execution calldatas, executionsBatch is empty`,
     );
