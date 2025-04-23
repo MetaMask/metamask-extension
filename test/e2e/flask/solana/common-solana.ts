@@ -128,7 +128,7 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
     statusCode: 200,
     json: {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        id: "solana",
+        id: 'solana',
         price: 112.87,
         marketCap: 58245152246,
         allTimeHigh: 293.31,
@@ -146,7 +146,7 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
         pricePercentChange14d: -17.42211401987578,
         pricePercentChange30d: -7.317068682545842,
         pricePercentChange200d: -22.09390252653303,
-        pricePercentChange1y: -31.856951873653344
+        pricePercentChange1y: -31.856951873653344,
       },
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
         {
@@ -2322,7 +2322,10 @@ export async function withSolanaAccountSnap(
             ...[
               await mockSolanaBalanceQuote(mockServer),
               await mockSolanaBalanceQuoteDevnet(mockServer),
-              await mockGetTokenAccountsByOwner(mockServer, SOLANA_TOKEN_PROGRAM),
+              await mockGetTokenAccountsByOwner(
+                mockServer,
+                SOLANA_TOKEN_PROGRAM,
+              ),
               await mockGetTokenAccountsByOwnerDevnet(mockServer),
               await mockMultiCoinPrice(mockServer),
               await mockGetLatestBlockhash(mockServer),

@@ -22,7 +22,6 @@ const defaultOptions = {
 export class Ganache {
   #server: Server | undefined;
 
-
   async start(opts: any) {
     let customOptions = {
       ...defaultOptions,
@@ -114,8 +113,6 @@ export class Ganache {
     }
     try {
       await this.#server.close();
-
-
     } catch (e: any) {
       // We can safely ignore the EBUSY error
       if (e.code !== 'EBUSY') {

@@ -1,5 +1,4 @@
 import { MockttpServer } from 'mockttp';
-import { setupAutoDetectMocking } from './mocks';
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixture-builder';
@@ -10,6 +9,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
+import { setupAutoDetectMocking } from './mocks';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [

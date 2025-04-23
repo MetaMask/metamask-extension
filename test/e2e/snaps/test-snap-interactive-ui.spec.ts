@@ -8,11 +8,12 @@ import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow'
 
 describe('Interactive UI Snap', function () {
   it('validate the interactive ui elements', async function () {
-        await withFixtures({
-          fixtures: new FixtureBuilder().build(),
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver }: { driver: Driver }) => {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);

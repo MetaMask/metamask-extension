@@ -1,4 +1,3 @@
-import { Window } from 'selenium-webdriver';
 import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
 import { Json, JsonRpcFailure, JsonRpcResponse } from '@metamask/utils';

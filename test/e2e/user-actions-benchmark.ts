@@ -1,11 +1,11 @@
 import { promises as fs } from 'fs';
-import { Mockttp } from 'mockttp';
 import path from 'path';
+import { Mockttp } from 'mockttp';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { Driver } from './webdriver/driver';
 import { exitWithError } from '../../development/lib/exit-with-error';
 import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
+import { Driver } from './webdriver/driver';
 import FixtureBuilder from './fixture-builder';
 import HomePage from './page-objects/pages/home/homepage';
 import { mockFeatureFlag } from './tests/bridge/bridge-test-utils';
