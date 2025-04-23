@@ -38,20 +38,23 @@ export const createNewWalletOnboardingFlow = async ({
     await driver.navigate();
   }
 
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
+  }
+
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
   await startOnboardingPage.checkTermsCheckbox();
   await startOnboardingPage.clickCreateWalletButton();
 
-  const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-  await onboardingMetricsPage.check_pageIsLoaded();
-  if (dataCollectionForMarketing) {
-    await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
-  }
-  if (participateInMetaMetrics) {
-    await onboardingMetricsPage.clickIAgreeButton();
-  } else {
-    await onboardingMetricsPage.clickNoThanksButton();
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
   }
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
