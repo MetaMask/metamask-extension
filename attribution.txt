@@ -20303,7 +20303,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/solana-wallet-snap
-1.22.0 <https://github.com/MetaMask/snap-solana-wallet>
+1.24.0 <https://github.com/MetaMask/snap-solana-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
