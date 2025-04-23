@@ -296,31 +296,21 @@ const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
-  getSelectedMultichainNetworkConfiguration,
   getMultichainBalances,
   getAccountAssets,
   getAssetsRates,
-  (
-    selectedAccountAddress,
-    currentNetwork,
-    multichainBalances,
-    accountAssets,
-    assetRates,
-  ) => {
+  (selectedAccountAddress, multichainBalances, accountAssets, assetRates) => {
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
 
     let aggregatedBalance = new BigNumber(0);
 
     assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId } = parseCaipAssetType(assetId);
-      if (chainId === currentNetwork.chainId) {
-        const balance = balances?.[assetId] || zeroBalanceAssetFallback;
-        const rate = assetRates?.[assetId]?.rate || '0';
-        const balanceInFiat = new BigNumber(balance.amount).times(rate);
+      const balance = balances?.[assetId] || zeroBalanceAssetFallback;
+      const rate = assetRates?.[assetId]?.rate || '0';
+      const balanceInFiat = new BigNumber(balance.amount).times(rate);
 
-        aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
-      }
+      aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
     });
 
     return aggregatedBalance.toNumber();
