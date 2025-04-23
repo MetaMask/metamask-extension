@@ -17,7 +17,6 @@ import {
   type CaipChainId,
   type Hex,
   type Json,
-  hexToNumber,
 } from '@metamask/utils';
 import {
   AssetsContractController,
@@ -53,10 +52,7 @@ import {
   type DelegationEntry,
   type DelegationFilter,
 } from '@metamask/delegation-controller';
-import {
-  getDeleGatorEnvironment,
-  type UnsignedDelegation,
-} from '@metamask/delegation-toolkit';
+import type { UnsignedDelegation } from '@metamask/delegation-toolkit';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
@@ -6205,11 +6201,8 @@ export const signDelegation = async ({
   delegation: UnsignedDelegation;
   chainId: Hex;
 }): Promise<Hex> => {
-  const verifyingContract = getDeleGatorEnvironment(
-    hexToNumber(chainId),
-  ).DelegationManager;
   return await submitRequestToBackground('signDelegation', [
-    { delegation, verifyingContract, chainId },
+    { delegation, chainId },
   ]);
 };
 
