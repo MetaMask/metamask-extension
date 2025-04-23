@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import { MemoryRouter, useHistory } from 'react-router-dom';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import * as actions from '../../../store/actions';
 import * as networks from '../../../../shared/modules/selectors/networks';
 import {
@@ -97,6 +96,8 @@ jest.mock('../../../selectors', () => {
 const middleware = [thunk];
 
 const makeMockStore = () => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const store = configureMockStore<any>(middleware)(
     createBridgeMockStore({
       metamaskStateOverrides: {
@@ -150,6 +151,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Execute
       await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
       );
 
@@ -201,6 +204,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Execute
       await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
       );
 
@@ -257,6 +262,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Execute
       await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
       );
 
@@ -298,6 +305,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Execute
       await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0] as any,
       );
 
@@ -323,6 +332,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Execute
       await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
       );
 
@@ -364,6 +375,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Execute
       await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0] as any,
       );
 
@@ -432,6 +445,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Execute
       await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
       );
 
@@ -464,6 +479,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Execute
       await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
       );
 

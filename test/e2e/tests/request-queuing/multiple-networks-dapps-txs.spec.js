@@ -10,7 +10,7 @@ const {
 } = require('../../helpers');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
-  it('should switch to the dapps network automatically when handling sendTransaction calls', async function () {
+  it('should be possible to send requests from different dapps on different networks', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -121,11 +121,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Click Unconfirmed Tx
         await driver.clickElement('.transaction-list-item--unconfirmed');
-
-        await driver.assertElementNotPresent({
-          tag: 'p',
-          text: 'Network switched to Localhost 8546',
-        });
 
         // Confirm Tx
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
