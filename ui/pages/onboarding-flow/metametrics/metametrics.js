@@ -55,13 +55,17 @@ export default function OnboardingMetametrics() {
   const history = useHistory();
 
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
-  const nextRouteByBrowser = isFirefox ? ONBOARDING_WELCOME_ROUTE : nextRoute;
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  let nextRouteByBrowser = nextRoute;
+  if (isFirefox && firstTimeFlowType !== FirstTimeFlowType.restore) {
+    nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
+  }
 
   const onConfirm = async () => {
     if (dataCollectionForMarketing === null) {
