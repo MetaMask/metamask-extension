@@ -429,6 +429,7 @@ import {
   onRpcEndpointUnavailable,
   onRpcEndpointDegraded,
 } from './lib/network-controller/messenger-action-handlers';
+import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -690,12 +691,42 @@ export default class MetamaskController extends EventEmitter {
       infuraProjectId: opts.infuraProjectId,
       getBlockTrackerOptions: () => ({
         pollingInterval: 20 * SECOND,
+        // The retry timeout is pretty short by default, and if the endpoint is
+        // down, it will end up exhausting the max number of consecutive
+        // failures quickly.
         retryTimeout: 20 * SECOND,
       }),
-      getRpcServiceOptions: () => ({
-        fetch: globalThis.fetch.bind(globalThis),
-        btoa: globalThis.btoa.bind(globalThis),
-      }),
+      getRpcServiceOptions: (rpcEndpointUrl) => {
+        const maxRetries = 4;
+        const commonOptions = {
+          fetch: globalThis.fetch.bind(globalThis),
+          btoa: globalThis.btoa.bind(globalThis),
+        };
+
+        if (getIsQuicknodeEndpointUrl(rpcEndpointUrl)) {
+          return {
+            ...commonOptions,
+            policyOptions: {
+              maxRetries,
+              // When we fail over to Quicknode, we expect it to be down at
+              // first while it is being automatically activated. If an endpoint
+              // is down, the failover logic enters a "cooldown period" of 30
+              // minutes. We'd really rather not enter that for Quicknode, so
+              // keep retrying longer.
+              maxConsecutiveFailures: (maxRetries + 1) * 14,
+            },
+          };
+        }
+
+        return {
+          ...commonOptions,
+          policyOptions: {
+            maxRetries,
+            // Ensure that the circuit does not break too quickly.
+            maxConsecutiveFailures: (maxRetries + 1) * 7,
+          },
+        };
+      },
     });
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointUnavailable',
@@ -1863,21 +1894,6 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [],
         allowedEvents: [],
       });
-    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
-      messenger: remoteFeatureFlagControllerMessenger,
-      fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
-      disabled: !this.preferencesController.state.useExternalServices,
-      getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
-      clientConfigApiService: new ClientConfigApiService({
-        fetch: globalThis.fetch.bind(globalThis),
-        config: {
-          client: ClientType.Extension,
-          distribution:
-            this._getConfigForRemoteFeatureFlagRequest().distribution,
-          environment: this._getConfigForRemoteFeatureFlagRequest().environment,
-        },
-      }),
-    });
     remoteFeatureFlagControllerMessenger.subscribe(
       'RemoteFeatureFlagController:stateChange',
       (isRpcFailoverEnabled) => {
@@ -1899,6 +1915,21 @@ export default class MetamaskController extends EventEmitter {
       },
       (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
     );
+    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
+      messenger: remoteFeatureFlagControllerMessenger,
+      fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
+      disabled: !this.preferencesController.state.useExternalServices,
+      getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
+      clientConfigApiService: new ClientConfigApiService({
+        fetch: globalThis.fetch.bind(globalThis),
+        config: {
+          client: ClientType.Extension,
+          distribution:
+            this._getConfigForRemoteFeatureFlagRequest().distribution,
+          environment: this._getConfigForRemoteFeatureFlagRequest().environment,
+        },
+      }),
+    });
 
     const existingControllers = [
       this.networkController,
