@@ -547,19 +547,14 @@ export function extractRpcDomain(
     return 'invalid';
   }
 
-  const trimmedRpcUrl = rpcUrl.trim();
-
   try {
     let url;
     try {
-      url = new URL(trimmedRpcUrl);
+      url = new URL(rpcUrl);
     } catch (e) {
-      if (
-        !trimmedRpcUrl.startsWith('http://') &&
-        !trimmedRpcUrl.startsWith('https://')
-      ) {
+      if (!rpcUrl.startsWith('http://') && !rpcUrl.startsWith('https://')) {
         try {
-          url = new URL(`https://${trimmedRpcUrl}`);
+          url = new URL(`https://${rpcUrl}`);
         } catch (e2) {
           return 'invalid';
         }
@@ -569,43 +564,8 @@ export function extractRpcDomain(
     }
 
     const hostname = url.hostname.toLowerCase();
-
-    if (
-      hostname === 'localhost' ||
-      hostname === '::1' ||
-      hostname.startsWith('127.')
-    ) {
-      return 'private';
-    }
-
-    const validIPv4 =
-      /^(?:(?:25[0-5]|2[0-4]\d|1?\d{1,2})\.){3}(?:25[0-5]|2[0-4]\d|1?\d{1,2})$/u;
-
-    const isPrivateIPv4 = (ip: string): boolean => {
-      if (!validIPv4.test(ip)) {
-        return false;
-      }
-      const [a, b] = ip.split('.').map(Number);
-      return (
-        a === 10 ||
-        (a === 172 && b >= 16 && b <= 31) ||
-        (a === 192 && b === 168)
-      );
-    };
-
-    if (validIPv4.test(hostname) && isPrivateIPv4(hostname)) {
-      return 'private';
-    }
-
-    if (hostname.includes(':')) {
-      return 'private';
-    }
-
-    if (hostname.startsWith('xn--')) {
-      return 'private';
-    }
-
     const domainsToCheck = knownDomainsForTesting || knownDomainsSet;
+
     if (domainsToCheck?.has(hostname)) {
       return hostname;
     }

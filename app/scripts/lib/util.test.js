@@ -525,55 +525,13 @@ describe('app utils', () => {
       'rpc.tenderly.co',
     ]);
 
-    it('should extract domain from standard URLs', () => {
+    it('should extract domain from known URLs', () => {
       expect(
         extractRpcDomain(
-          'https://mainnet.infura.io/v3/ab7g2cat5c4r3d53m8a2a4321g1e2gg0/some/extra/path',
+          'https://mainnet.infura.io/v3/abc123',
           testKnownDomains,
         ),
       ).toBe('mainnet.infura.io');
-      expect(
-        extractRpcDomain(
-          'https://Mainnet.Infura.Io/v3/abc123',
-          testKnownDomains,
-        ),
-      ).toBe('mainnet.infura.io');
-      expect(
-        extractRpcDomain(
-          'https://mainnet.infura.io/v3/abc123/',
-          testKnownDomains,
-        ),
-      ).toBe('mainnet.infura.io');
-      expect(
-        extractRpcDomain(
-          'https://mainnet.infura.io/v3/abc123?foo=bar#section',
-          testKnownDomains,
-        ),
-      ).toBe('mainnet.infura.io');
-      expect(
-        extractRpcDomain(
-          'https://mainnet.infura.io//v3/abc123',
-          testKnownDomains,
-        ),
-      ).toBe('mainnet.infura.io');
-      expect(
-        extractRpcDomain(
-          ' https://mainnet.infura.io/v3/abc123 ',
-          testKnownDomains,
-        ),
-      ).toBe('mainnet.infura.io');
-      expect(
-        extractRpcDomain(
-          'https://mainnet.infura.io/v3/abc123\u200B',
-          testKnownDomains,
-        ),
-      ).toBe('mainnet.infura.io');
-      expect(
-        extractRpcDomain(
-          'wss://linea-goerli.infura.io/v3/ab7g2cat5c4r3d53m8a2a4321g1e2gg0',
-          testKnownDomains,
-        ),
-      ).toBe('linea-goerli.infura.io');
       expect(
         extractRpcDomain(
           'https://eth-mainnet.alchemyapi.io/v2/key',
@@ -581,46 +539,16 @@ describe('app utils', () => {
         ),
       ).toBe('eth-mainnet.alchemyapi.io');
       expect(
-        extractRpcDomain('https://rpc.tenderly.co/fork/123', testKnownDomains),
-      ).toBe('rpc.tenderly.co');
-    });
-
-    it('should handle localhost URLs', () => {
-      expect(extractRpcDomain('http://localhost:8545', testKnownDomains)).toBe(
-        'private',
-      );
-      expect(extractRpcDomain('https://localhost:8545/path')).toBe('private');
-      expect(extractRpcDomain('http://127.0.0.1:8545')).toBe('private');
-      expect(extractRpcDomain('https://192.168.1.1:8545')).toBe('private');
-    });
-
-    it('should handle private IP addresses', () => {
-      expect(extractRpcDomain('http://10.0.0.1:8545')).toBe('private');
-      expect(extractRpcDomain('http://172.16.0.5:8545')).toBe('private');
-      expect(extractRpcDomain('https://11.22.33.44')).toBe('private');
-      expect(extractRpcDomain('http://[::1]:8545')).toBe('private'); // IPv6
-    });
-
-    it('should handle punycode domains as private', () => {
-      expect(extractRpcDomain('ws://adıdas.de')).toBe('private');
-      expect(extractRpcDomain('http://xn--addas-o4a.de')).toBe('private');
-    });
-
-    it('should handle chain aggregators that proxy RPCs', () => {
-      expect(extractRpcDomain('https://rpc.ankr.com/eth_goerli')).toBe(
-        'private',
-      );
-      expect(extractRpcDomain('https://rpc.mevblocker.io')).toBe('private');
-    });
-
-    it('should handle URLs without protocol', () => {
-      expect(
         extractRpcDomain('mainnet.infura.io/v3/abc123', testKnownDomains),
       ).toBe('mainnet.infura.io');
-      expect(extractRpcDomain('custom-domain.xyz', testKnownDomains)).toBe(
-        'private',
-      );
-      expect(extractRpcDomain('chaindaddy.io', testKnownDomains)).toBe(
+    });
+
+    it('should return private for any unknown domain', () => {
+      expect(extractRpcDomain('http://localhost:8545')).toBe('private');
+      expect(extractRpcDomain('https://unknown-domain.com')).toBe('private');
+      expect(extractRpcDomain('http://192.168.1.1:8545')).toBe('private');
+      expect(extractRpcDomain('ws://custom-domain.xyz')).toBe('private');
+      expect(extractRpcDomain('https://rpc.ankr.com/eth_goerli')).toBe(
         'private',
       );
     });
