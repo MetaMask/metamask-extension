@@ -514,11 +514,11 @@ describe('Bridge selectors', () => {
         },
         metamaskStateOverrides: {
           currencyRates: {
-            eth: {
+            ETH: {
               conversionRate: 1,
               usdConversionRate: 1,
             },
-            pol: {
+            POL: {
               conversionRate: 0.99,
               usdConversionRate: 0.99,
             },
@@ -629,11 +629,11 @@ describe('Bridge selectors', () => {
         },
         metamaskStateOverrides: {
           currencyRates: {
-            eth: {
+            ETH: {
               conversionRate: 1,
               usdConversionRate: 20,
             },
-            pol: {
+            POL: {
               conversionRate: 0.9899999999999999,
               usdConversionRate: 0.99 / 0.354073,
             },
@@ -759,11 +759,11 @@ describe('Bridge selectors', () => {
         },
         metamaskStateOverrides: {
           currencyRates: {
-            eth: {
+            ETH: {
               conversionRate: 1,
               usdConversionRate: 20,
             },
-            pol: {
+            POL: {
               conversionRate: 0.99,
               usdConversionRate: 0.99,
             },
@@ -1249,10 +1249,10 @@ describe('Bridge selectors', () => {
         },
         metamaskStateOverrides: {
           currencyRates: {
-            eth: {
+            ETH: {
               conversionRate: 2524.25,
             },
-            pol: {
+            POL: {
               conversionRate: 0.61,
               usdConversionRate: 1,
             },
@@ -1312,11 +1312,11 @@ describe('Bridge selectors', () => {
         },
         metamaskStateOverrides: {
           currencyRates: {
-            eth: {
+            ETH: {
               conversionRate: 2524.25,
               usdConversionRate: 1,
             },
-            pol: {
+            POL: {
               conversionRate: 0.95,
               usdConversionRate: 0.95,
             },

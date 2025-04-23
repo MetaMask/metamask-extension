@@ -65,10 +65,10 @@ describe('BridgeQuoteCard', () => {
           },
         },
         currencyRates: {
-          eth: {
+          ETH: {
             conversionRate: 2524.25,
           },
-          pol: {
+          POL: {
             conversionRate: 1,
             usdConversionRate: 1,
           },
@@ -125,11 +125,11 @@ describe('BridgeQuoteCard', () => {
           },
         },
         currencyRates: {
-          eth: {
+          ETH: {
             conversionRate: 2524.25,
             usdConversionRate: 1,
           },
-          pol: {
+          POL: {
             conversionRate: 1,
             usdConversionRate: 1,
           },

@@ -337,8 +337,8 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
+    "assetExchangeRates": "object",
     "bridgeFeatureFlags": {
-      "assetExchangeRates": "object",
       "extensionConfig": {
         "maxRefreshCount": "number",
         "refreshRate": "number",
