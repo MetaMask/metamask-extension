@@ -306,7 +306,7 @@ describe('Defi positions list', () => {
     expect(title).toHaveTextContent('AaveV3 Mainnet');
 
     const marketValue = screen.getByTestId('defi-details-page-market-value');
-    expect(marketValue).toHaveTextContent('$4650.38');
+    expect(marketValue).toHaveTextContent('$4,650.38');
 
     const supplyPosition = screen.getByTestId(
       'defi-details-list-supply-position',
@@ -335,7 +335,7 @@ describe('Defi positions list', () => {
     const marketValueStaking = screen.getByTestId(
       'defi-details-page-market-value',
     );
-    expect(marketValueStaking).toHaveTextContent('$6522.67');
+    expect(marketValueStaking).toHaveTextContent('$6,522.67');
 
     const stakingPosition = screen.getByTestId(
       'defi-details-list-stake-position',
