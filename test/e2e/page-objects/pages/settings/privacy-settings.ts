@@ -13,7 +13,8 @@ class PrivacySettings {
     tag: 'button',
   };
 
-  private readonly confirmDeleteMetaMetricsDataButton = '[data-testid="clear-metametrics-data"]';
+  private readonly confirmDeleteMetaMetricsDataButton =
+    '[data-testid="clear-metametrics-data"]';
 
   private readonly copiedSrpExclamation = {
     text: tEn('copiedExclamation'),

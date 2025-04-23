@@ -101,7 +101,11 @@ async function confirmTx(): Promise<number> {
   return loadingTimes;
 }
 
-async function bridgeUserActions(): Promise<any> {
+async function bridgeUserActions(): Promise<{
+  loadPage: number;
+  loadAssetPicker: number;
+  searchToken: number;
+}> {
   let loadPage: number = 0;
   let loadAssetPicker: number = 0;
   let searchToken: number = 0;
@@ -173,7 +177,10 @@ async function main(): Promise<void> {
       }),
   );
 
-  const results: Record<string, number> = {};
+  const results: Record<
+    string,
+    number | { loadPage: number; loadAssetPicker: number; searchToken: number }
+  > = {};
   results.loadNewAccount = await loadNewAccount();
   results.confirmTx = await confirmTx();
   const bridgeResults = await bridgeUserActions();
