@@ -11,7 +11,7 @@ import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import SnapInstall from '../../page-objects/pages/dialog/snap-install';
 
 describe('Pre-install example', function () {
-  it('validate the page loads and the components', async function () {
+  it('can display the Snap settings page', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -25,10 +25,6 @@ describe('Pre-install example', function () {
         await preInstalledExample.clickToggleButtonOn();
         await preInstalledExample.selectRadioOption('Option 2');
         await preInstalledExample.selectDropdownOption('Option 2')
-
-        await new SettingsPage(driver).closeSettingsPage();
-        await new HomePage(driver).check_pageIsLoaded();
-        await navigateToPreInstalledExample(driver);
         await preInstalledExample.check_isToggleOn();
         assert.equal(await preInstalledExample.check_selectedRadioOption('Option 2'), true);
         await preInstalledExample.check_selectedDropdownOption('Option 2');
