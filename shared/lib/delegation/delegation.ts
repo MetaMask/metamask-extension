@@ -1,17 +1,17 @@
 import {
-  type Hex,
   encodeAbiParameters,
-  parseAbiParameters,
-  keccak256,
-  toHex,
-  TypedData,
-  AbiParameter,
   getAddress,
+  keccak256,
+  parseAbiParameters,
+  toHex,
+  type AbiParameter,
+  type Hex,
+  type TypedData,
 } from 'viem';
 import {
   CAVEAT_ABI_TYPE_COMPONENTS,
-  Caveat,
   getCaveatArrayPacketHash,
+  type Caveat,
 } from './caveat';
 
 import { type Caveats, resolveCaveats } from './caveatBuilder';
