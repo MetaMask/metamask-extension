@@ -5060,9 +5060,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "@metamask/bridge-status-controller@npm:13.1.0"
+"@metamask/bridge-status-controller@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@metamask/bridge-status-controller@npm:14.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.7.0"
@@ -5076,12 +5076,12 @@ __metadata:
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
     "@metamask/assets-controllers": ^58.0.0
-    "@metamask/bridge-controller": ^16.0.0
+    "@metamask/bridge-controller": ^17.0.0
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^11.0.0
     "@metamask/transaction-controller": ^54.0.0
-  checksum: 10/d54b54187ad6a5281947ced515d824fd6acec935ee2e76cf32fba2ad72e5f1914df6b2bd0f989468f3fd604a5315193fb0ccb0b15427af569c78b0ab2c647c8e
+  checksum: 10/7b5ec60dd24dbadb1c67c22b4e4fa270de2752d00bbf5f18e08cdc19e480b21fbf332dbbf07013b54e2ca19554de10a06e073b410022b40d2edc70f3062df0cb
   languageName: node
   linkType: hard
 
@@ -27669,6 +27669,7 @@ __metadata:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
     "@metamask/bridge-controller": "npm:^17.0.0"
+    "@metamask/bridge-status-controller": "npm:^14.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
