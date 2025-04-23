@@ -139,7 +139,7 @@ async function main() {
         }
 
         // Remove the nested attempts from the top-level list
-        const attemptSet = new Set(attempts.flat().map((s) => s));
+        const attemptSet = new Set(attempts.flat());
         testFile.testSuites = testFile.testSuites.filter(
           (suite) => !attemptSet.has(suite),
         );
