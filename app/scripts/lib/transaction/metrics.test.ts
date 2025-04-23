@@ -821,7 +821,7 @@ describe('Transaction metrics', () => {
         transaction_advanced_view: undefined,
         // Add the new properties that our implementation adds
         hd_entropy_index: undefined,
-        rpc_domain: 'unknown',
+        rpc_domain: 'private',
       };
       const sensitiveProperties = {
         ...expectedSensitiveProperties,
