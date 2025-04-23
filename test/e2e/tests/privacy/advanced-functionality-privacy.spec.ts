@@ -44,17 +44,6 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           json: [{ fakedata: true }],
         };
       }),
-    await mockServer
-      .forGet('https://min-api.cryptocompare.com/data/price')
-      .withQuery({ fsym: 'ETH', tsyms: 'USD' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            fakedata: 0,
-          },
-        };
-      }),
   ];
 }
 describe('MetaMask onboarding @no-mmi', function () {
@@ -79,7 +68,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           driver,
         );
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.toggleAdvancedAssetsSettings();
+        await onboardingPrivacySettingsPage.toggleAssetsSettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.check_pageIsLoaded();

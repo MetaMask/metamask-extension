@@ -100,7 +100,6 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
-          .withNetworkControllerOnMainnet()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => mockApis(server, userStorageMockttpController, mockedAccountSyncResponse),
@@ -117,6 +116,7 @@ describe('MetaMask onboarding', function () {
           driver,
         );
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+        await onboardingPrivacySettingsPage.toggleAssetsSettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.check_pageIsLoaded();
@@ -148,7 +148,6 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
-          .withNetworkControllerOnMainnet()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => mockApis(server, userStorageMockttpController, mockedAccountSyncResponse),
