@@ -338,6 +338,7 @@
       "swapsFeatureFlags": {}
     },
     "bridgeFeatureFlags": {
+      "assetExchangeRates": "object",
       "extensionConfig": {
         "maxRefreshCount": "number",
         "refreshRate": "number",
