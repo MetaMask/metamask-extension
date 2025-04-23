@@ -1099,17 +1099,16 @@ async function buildEventFragmentProperties({
     transactionMetricsRequest.getAccountBalance,
   );
 
-  // Get RPC URL from provider
-  let rpcUrl = 'invalid';
-  if (transactionMetricsRequest.getNetworkRpcUrl && transactionMeta.chainId) {
-    rpcUrl = transactionMetricsRequest.getNetworkRpcUrl(
-      transactionMeta.chainId,
-    );
-  }
-  const domain = extractRpcDomain(rpcUrl);
-
-  // Only add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
+  // Only calculate and add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
   if (status === 'submitted' || status === 'confirmed') {
+    // Get RPC URL from provider
+    let rpcUrl = 'invalid';
+    if (transactionMetricsRequest.getNetworkRpcUrl && transactionMeta.chainId) {
+      rpcUrl = transactionMetricsRequest.getNetworkRpcUrl(
+        transactionMeta.chainId,
+      );
+    }
+    const domain = extractRpcDomain(rpcUrl);
     properties.rpc_domain = domain;
   }
 
