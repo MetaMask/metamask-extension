@@ -1,8 +1,8 @@
-import fetchWithCache from './fetch-with-cache';
 import { CHAIN_SPEC_URL } from '../constants/network';
 import { DAY } from '../constants/time';
+import fetchWithCache from './fetch-with-cache';
 
-interface ChainInfo {
+type ChainInfo = {
   name: string;
   shortName?: string;
   chainId: number;
