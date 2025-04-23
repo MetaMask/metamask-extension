@@ -3,14 +3,6 @@
 .prepare-bridge-page {
   flex: 1;
 
-  .multichain-page-content::-webkit-scrollbar {
-    display: none;
-  }
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
   .mm-text-field {
     background-color: inherit;
 
