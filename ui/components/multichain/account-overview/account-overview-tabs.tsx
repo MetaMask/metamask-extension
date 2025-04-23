@@ -91,14 +91,12 @@ export const AccountOverviewTabs = ({
       if (defaultHomeActiveTabName) {
         endTrace({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP
+            defaultHomeActiveTabName
           ],
         });
       }
       trace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-          tabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP
-        ],
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
       });
     },
     [onTabClick],

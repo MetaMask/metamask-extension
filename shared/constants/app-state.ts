@@ -19,6 +19,7 @@ export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: TraceName.AccountOverviewAssetListTab,
   [AccountOverviewTabKey.Nfts]: TraceName.AccountOverviewNftsTab,
   [AccountOverviewTabKey.Activity]: TraceName.AccountOverviewActivityTab,
+  [AccountOverviewTabKey.DeFi]: TraceName.AccountOverviewDeFiTab,
 } as const;
 
 export type CarouselSlide = {
