@@ -3548,6 +3548,12 @@ export default class MetamaskController extends EventEmitter {
         // in the case that the ID is an EVM network client ID.
         return await this.multichainNetworkController.setActiveNetwork(id);
       },
+
+      // active networks by accounts
+      getNetworksWithTransactionActivityByAccounts:
+        this.multichainNetworkController.getNetworksWithTransactionActivityByAccounts.bind(
+          this.multichainNetworkController,
+        ),
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step
       setActiveNetworkConfigurationId: (networkConfigurationId) => {
