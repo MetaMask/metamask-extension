@@ -24,7 +24,9 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
-          await connectSolanaTestDapp(driver, testDapp);
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
 
           // 1. Sign a transfer transaction
           const sendSolTest = await testDapp.getSendSolTest();
