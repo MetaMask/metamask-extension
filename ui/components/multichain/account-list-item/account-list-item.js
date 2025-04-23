@@ -84,7 +84,6 @@ import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 ///: END:ONLY_INCLUDE_IF
-import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -449,7 +448,7 @@ const AccountListItem = ({
         </Box>
         {accountLabels.length > 0 ? (
           <Box flexDirection={FlexDirection.Row}>
-            {accountLabels.map((label) => {
+            {accountLabels.map(({ label, icon }) => {
               return (
                 <Tag
                   data-testid={`account-list-item-tag-${account.id}-${label}`}
@@ -459,12 +458,7 @@ const AccountListItem = ({
                     variant: TextVariant.bodyXs,
                     color: Color.textAlternative,
                   }}
-                  startIconName={
-                    account.metadata.keyring.type === KeyringType.snap &&
-                    !isSnapPreinstalled(account.metadata?.snap?.id)
-                      ? IconName.Snaps
-                      : null
-                  }
+                  startIconName={icon}
                 />
               );
             })}

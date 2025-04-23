@@ -1,3 +1,4 @@
+import { IconName } from '@metamask/snaps-sdk/jsx';
 import { InvisibleCharacter } from '../../components/component-library';
 import {
   GOERLI_DISPLAY_NAME,
@@ -102,47 +103,79 @@ export function getAccountLabels(
         const hdKeyringIndex = hdKeyrings.findIndex((kr) =>
           kr.accounts.includes(account.address),
         );
-        labels.push(toSrpLabel(hdKeyringIndex));
+        labels.push({
+          label: toSrpLabel(hdKeyringIndex),
+          icon: null,
+        });
       }
       break;
     }
     case KeyringType.imported:
-      labels.push(t('imported'));
+      labels.push({
+        label: t('imported'),
+        icon: null,
+      });
       break;
     case KeyringType.qr:
-      labels.push(HardwareKeyringNames.qr);
+      labels.push({
+        label: HardwareKeyringNames.qr,
+        icon: null,
+      });
       break;
     case KeyringType.trezor:
-      labels.push(HardwareKeyringNames.trezor);
+      labels.push({
+        label: HardwareKeyringNames.trezor,
+        icon: null,
+      });
       break;
     case KeyringType.ledger:
-      labels.push(HardwareKeyringNames.ledger);
+      labels.push({
+        label: HardwareKeyringNames.ledger,
+        icon: null,
+      });
       break;
     case KeyringType.oneKey:
-      labels.push(HardwareKeyringNames.oneKey);
+      labels.push({
+        label: HardwareKeyringNames.oneKey,
+        icon: null,
+      });
       break;
     case KeyringType.lattice:
-      labels.push(HardwareKeyringNames.lattice);
+      labels.push({
+        label: HardwareKeyringNames.lattice,
+        icon: null,
+      });
       break;
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap: {
       const { entropySource } = account.options;
-      if (entropySource) {
+      if (entropySource && hdKeyrings.length > 1) {
         const hdKeyringIndex = hdKeyrings.findIndex(
           (kr) => kr.metadata.id === entropySource,
         );
-        labels.push(toSrpLabel(hdKeyringIndex));
+        labels.push({
+          label: toSrpLabel(hdKeyringIndex),
+          icon: null,
+        });
       }
 
-      if (isSnapPreinstalled(account.metadata.snap.id)) {
+      const isPreinstalled = isSnapPreinstalled(account.metadata.snap.id);
+
+      if (isPreinstalled) {
         break;
       }
 
       if (snapName) {
-        labels.push(`${snapName} (${t('beta')})`);
+        labels.push({
+          label: `${snapName} (${t('beta')})`,
+          icon: IconName.Snaps,
+        });
         break;
       }
-      labels.push(`${t('snaps')} (${t('beta')})`);
+      labels.push({
+        label: `${t('snaps')} (${t('beta')})`,
+        icon: IconName.Snaps,
+      });
       break;
     }
     ///: END:ONLY_INCLUDE_IF

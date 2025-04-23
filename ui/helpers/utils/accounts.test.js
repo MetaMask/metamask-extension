@@ -148,35 +148,35 @@ describe('Accounts', () => {
           mockAccount,
           keyringsWithMetadata,
         ),
-      ).toStrictEqual(['Imported']);
+      ).toStrictEqual([{ label: 'Imported', icon: null }]);
     });
 
     it('should return the correct label for QR hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.qr;
       expect(
         getAccountLabels(KeyringType.qr, mockAccount, keyringsWithMetadata),
-      ).toStrictEqual([HardwareKeyringNames.qr]);
+      ).toStrictEqual([{ label: HardwareKeyringNames.qr, icon: null }]);
     });
 
     it('should return the correct label for Trezor hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.trezor;
       expect(
         getAccountLabels(KeyringType.trezor, mockAccount, keyringsWithMetadata),
-      ).toStrictEqual([HardwareKeyringNames.trezor]);
+      ).toStrictEqual([{ label: HardwareKeyringNames.trezor, icon: null }]);
     });
 
     it('should return the correct label for OneKey hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.oneKey;
       expect(
         getAccountLabels(KeyringType.oneKey, mockAccount, keyringsWithMetadata),
-      ).toStrictEqual([HardwareKeyringNames.oneKey]);
+      ).toStrictEqual([{ label: HardwareKeyringNames.oneKey, icon: null }]);
     });
 
     it('should return the correct label for Ledger hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.ledger;
       expect(
         getAccountLabels(KeyringType.ledger, mockAccount, keyringsWithMetadata),
-      ).toStrictEqual([HardwareKeyringNames.ledger]);
+      ).toStrictEqual([{ label: HardwareKeyringNames.ledger, icon: null }]);
     });
 
     it('should return the correct label for Lattice hardware wallet', () => {
@@ -187,7 +187,7 @@ describe('Accounts', () => {
           mockAccount,
           keyringsWithMetadata,
         ),
-      ).toStrictEqual([HardwareKeyringNames.lattice]);
+      ).toStrictEqual([{ label: HardwareKeyringNames.lattice, icon: null }]);
     });
 
     it('should handle unhandled account types', () => {
@@ -284,7 +284,7 @@ describe('Accounts', () => {
           mockAccountWithHdKeyring,
           multipleHdKeyrings,
         ),
-      ).toStrictEqual(['SRP #2']);
+      ).toStrictEqual([{ label: 'SRP #2', icon: null }]);
     });
 
     it('should not show SRP label when there is only one HD keyring', () => {
@@ -335,7 +335,7 @@ describe('Accounts', () => {
           keyringsWithMetadata,
           'Test Snap',
         ),
-      ).toStrictEqual(['SRP #2']);
+      ).toStrictEqual([{ label: 'SRP #2', icon: null }]);
     });
   });
 });
