@@ -475,7 +475,7 @@ const PrepareBridgePage = () => {
 
   return (
     <>
-      <Column className="prepare-bridge-page" gap={6}>
+      <Column className="prepare-bridge-page" gap={8}>
         <BridgeInputGroup
           header={isSwap ? t('swapSwapFrom') : t('bridgeFrom')}
           token={fromToken}
