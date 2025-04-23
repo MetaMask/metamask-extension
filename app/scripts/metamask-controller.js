@@ -300,6 +300,7 @@ import {
   addHexPrefix,
   getMethodDataName,
   previousValueComparator,
+  initializeKnownDomains
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';

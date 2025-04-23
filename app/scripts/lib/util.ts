@@ -24,6 +24,7 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
+import { getSafeChainsList } from '../../../shared/lib/network-utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -481,13 +482,63 @@ export function getConversionRatesForNativeAsset({
   return conversionRateResult;
 }
 
+// Cache for known domains
+let knownDomainsSet: Set<string> | null = null;
+let initPromise: Promise<void> | null = null;
+
 /**
- * Extracts the domain from an RPC endpoint URL
+ * Initialize the set of known domains from the chains list
+ */
+export async function initializeKnownDomains(): Promise<void> {
+  if (initPromise) {
+    return initPromise;
+  }
+
+  initPromise = (async () => {
+    try {
+      const chainsList = await getSafeChainsList();
+      knownDomainsSet = new Set<string>();
+
+      for (const chain of chainsList) {
+        if (chain.rpc && Array.isArray(chain.rpc)) {
+          for (const rpcUrl of chain.rpc) {
+            try {
+              // Handle placeholder variables like ${INFURA_API_KEY}
+              const cleanedUrl = rpcUrl.replace(/\$\{[^}]+\}/gu, 'API_KEY');
+              const url = new URL(cleanedUrl);
+              knownDomainsSet.add(url.hostname);
+            } catch (e) {
+              // Skip invalid URLs
+              continue;
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error initializing known domains:', error);
+      knownDomainsSet = new Set<string>();
+    }
+  })();
+
+  return initPromise;
+}
+
+/**
+ * Check if a domain is in the known domains list
+ *
+ * @param domain - The domain to check
+ */
+export function isKnownDomain(domain: string): boolean {
+  return knownDomainsSet?.has(domain) ?? false;
+}
+
+/**
+ * Extracts the domain from an RPC endpoint URL with privacy considerations
  *
  * @param rpcUrl - The RPC endpoint URL
  * @returns The domain value to track in metrics
  */
-export function extractRpcDomain(rpcUrl: string) {
+export function extractRpcDomain(rpcUrl: string): string {
   if (!rpcUrl) {
     return 'unknown';
   }
@@ -503,33 +554,54 @@ export function extractRpcDomain(rpcUrl: string) {
         try {
           url = new URL(`https://${rpcUrl}`);
         } catch (e2) {
-          return 'invalid_url';
+          return 'invalid';
         }
       } else {
-        return 'invalid_url';
+        return 'invalid';
       }
     }
 
     // Extract hostname
     const { hostname } = url;
 
-    // Handle localhost (including standard localhost IPs)
+    // Handle localhost and loopback addresses
     if (
       hostname === 'localhost' ||
-      hostname === '127.0.0.1' ||
-      hostname.startsWith('192.168.')
+      hostname.startsWith('127.') || // All 127.*.*.* addresses are loopback
+      hostname === '::1' // IPv6 loopback
     ) {
       return 'localhost';
     }
 
-    // Check for private IP addresses using regex
-    const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/u;
-    if (ipRegex.test(hostname)) {
-      return 'private_url';
+    // Check for private network addresses
+    const privateIPv4Patterns = [
+      /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/u, // 10.0.0.0 - 10.255.255.255
+      /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/u, // 172.16.0.0 - 172.31.255.255
+      /^192\.168\.\d{1,3}\.\d{1,3}$/u, // 192.168.0.0 - 192.168.255.255
+    ];
+
+    // Check if it's a standard IPv4 address
+    const ipv4Regex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/u;
+    if (ipv4Regex.test(hostname)) {
+      // Check if it's a private network address
+      if (privateIPv4Patterns.some((pattern) => pattern.test(hostname))) {
+        return 'private_network';
+      }
+      return 'ip_address';
     }
 
-    // Return the domain (hostname) for all other cases
-    return hostname;
+    // Check for IPv6 private addresses
+    if (hostname.startsWith('fd') && hostname.includes(':')) {
+      return 'private_network';
+    }
+
+    // Check if the domain is in our known list
+    if (knownDomainsSet?.has(hostname)) {
+      return hostname; // It's safe to show the actual domain
+    }
+
+    // For all other domains, return 'private' to protect user privacy
+    return 'private';
   } catch (error) {
     console.error('Error extracting RPC domain:', error);
     return 'error';

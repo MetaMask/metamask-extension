@@ -60,7 +60,7 @@ import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { extractRpcDomain } from '../util';
+import { extractRpcDomain, categorizeDomain } from '../util';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
@@ -1108,7 +1108,6 @@ async function buildEventFragmentProperties({
   }
   const domain = extractRpcDomain(rpcUrl);
 
-  // Create a separate copy of properties for test compatibility
   // Only add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
   if (status === 'submitted' || status === 'confirmed') {
     properties.rpc_domain = domain;
