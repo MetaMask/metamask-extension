@@ -4,11 +4,8 @@ import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { formatChainIdToHex } from '@metamask/bridge-controller';
-import {
-  type BridgeHistoryItem,
-  StatusTypes,
-} from '@metamask/bridge-status-controller';
+import { formatChainIdToHex, StatusTypes } from '@metamask/bridge-controller';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
