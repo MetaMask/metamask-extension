@@ -13,6 +13,9 @@ body {
   padding: 0;
   font-size: 16px;
   overflow: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 html {
