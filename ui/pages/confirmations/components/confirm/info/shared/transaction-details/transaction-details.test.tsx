@@ -14,7 +14,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import {
   downgradeAccountConfirmation,
   upgradeAccountConfirmation,
-  upgradeAccountConfirmationWithNoNestedTransactions,
+  upgradeAccountConfirmationOnly,
 } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
@@ -258,7 +258,7 @@ describe('<TransactionDetails />', () => {
 
   it('return null for transaction of type smart account upgrade transaction if there are no nested transactions', () => {
     const state = getMockConfirmStateForTransaction(
-      upgradeAccountConfirmationWithNoNestedTransactions,
+      upgradeAccountConfirmationOnly,
     );
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(

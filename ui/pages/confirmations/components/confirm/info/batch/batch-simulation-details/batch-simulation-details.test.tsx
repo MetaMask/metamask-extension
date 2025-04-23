@@ -16,7 +16,7 @@ import { TokenStandard } from '../../../../../../../../shared/constants/transact
 import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
 import {
   downgradeAccountConfirmation,
-  upgradeAccountConfirmationWithNoNestedTransactions,
+  upgradeAccountConfirmationOnly,
 } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { Confirmation } from '../../../../../types/confirm';
@@ -291,9 +291,7 @@ describe('BatchSimulationDetails', () => {
   });
 
   it('return null for upgrade transaction if there are no nested transactions', () => {
-    const { container } = render(
-      upgradeAccountConfirmationWithNoNestedTransactions,
-    );
+    const { container } = render(upgradeAccountConfirmationOnly);
     expect(container.firstChild).toBeNull();
   });
 });

@@ -171,10 +171,10 @@ export const TransactionDetails = () => {
     () => checkValueAndNativeBalanceMismatch(currentConfirmation),
     [currentConfirmation],
   );
-  const { isUpgradeWithNoNestedTransactions } = useIsUpgradeTransaction();
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
   const isDowngrade = useIsDowngradeTransaction();
 
-  if (isUpgradeWithNoNestedTransactions || isDowngrade) {
+  if (isUpgradeOnly || isDowngrade) {
     return null;
   }
 

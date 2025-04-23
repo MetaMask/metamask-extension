@@ -316,7 +316,7 @@ export const downgradeAccountConfirmation = {
   simulationData: { tokenBalanceChanges: [] },
 };
 
-export const upgradeAccountConfirmationWithNoNestedTransactions = {
+export const upgradeAccountConfirmationOnly = {
   actionId: '1745326968248.2673',
   chainId: '0xaa36a7',
   id: '171998b0-1f7a-11f0-8c59-f7ce445fc54e',

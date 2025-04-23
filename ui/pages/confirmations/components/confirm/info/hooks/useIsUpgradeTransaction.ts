@@ -6,14 +6,16 @@ import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
 export function useIsUpgradeTransaction() {
   const authorizationAddress = useTransactionAuthorizationAddress();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { nestedTransactions } = currentConfirmation ?? {};
+  const {
+    txParams: { data },
+  } = currentConfirmation ?? { txParams: {} };
 
   const isUpgrade =
     Boolean(authorizationAddress) &&
     authorizationAddress !== EIP_7702_REVOKE_ADDRESS;
   return {
     isUpgrade,
-    isUpgradeWithNoNestedTransactions: isUpgrade && !nestedTransactions?.length,
+    isUpgradeOnly: isUpgrade && (!data || data === '0x'),
   };
 }
 
