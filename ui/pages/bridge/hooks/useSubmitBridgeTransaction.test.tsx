@@ -4,17 +4,12 @@ import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import { MemoryRouter, useHistory } from 'react-router-dom';
-import { TransactionController } from '@metamask/transaction-controller';
-import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import * as actions from '../../../store/actions';
-import * as networks from '../../../../shared/modules/selectors/networks';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
-import { setBackgroundConnection } from '../../../store/background-connection';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 jest.mock('react-router-dom', () => {
@@ -148,6 +143,24 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0] as any,
+      );
+
+      // Assert
+      expect(submitTx.mock.calls).toMatchSnapshot();
+    });
+
+    it('executes bridge transaction with no approval', async () => {
+      const submitTx = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
+      const store = makeMockStore();
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      // Execute
+      await result.current.submitBridgeTransaction(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        DummyQuotesNoApproval.OP_0_005_ETH_TO_ARB[0] as any,
       );
 
       // Assert
