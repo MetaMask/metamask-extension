@@ -6,7 +6,8 @@ import {
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
   switchToAccount,
 } from './testHelpers';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { By } from 'selenium-webdriver';
 
 describe('Solana Wallet Standard - Connect', function () {
   this.timeout(300000); // do not remove this line
@@ -190,6 +191,47 @@ describe('Solana Wallet Standard - Connect', function () {
           assert.strictEqual(accountAfterRefresh, '4tE7...Uxer');
         },
       );
+    });
+
+    describe('Given I have connected to Mainnet and Devnet', function () {
+      it.only('Should set the scope to Devnet to protect users', async function () {
+        await withSolanaAccountSnap(
+          {
+            ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+            title: this.test?.fullTitle(),
+            numberOfAccounts: 1,
+          },
+          async (driver) => {
+            const testDapp = new TestDappSolana(driver);
+            await testDapp.openTestDappPage();
+            await connectSolanaTestDapp(driver, testDapp, {
+              includeDevnet: true,
+            });
+
+            // Refresh the page
+            await driver.refresh();
+
+            // Set the endpoint to devnet as it has been reset after the refresh
+            const header = await testDapp.getHeader();
+            await header.setEndpoint('https://solana-devnet.infura.io');
+            await driver.clickElement({ text: 'Update', tag: 'button' });
+
+            await driver.delay(regularDelayMs);
+
+            const signMessageTest = await testDapp.getSignMessageTest();
+            await signMessageTest.setMessage('Hello, world!');
+            await signMessageTest.signMessage();
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+            // Check that devnet appears in the dialog
+            const el = await driver.findElement(
+              By.xpath("//p[text()='Solana Devnet']"),
+            );
+            assert.ok(el);
+          },
+        );
+      });
     });
   });
 });

@@ -35,6 +35,10 @@ export const connectSolanaTestDapp = async (
   } = {},
 ): Promise<void> => {
   const header = await testDapp.getHeader();
+  // Set the endpoint to devnet
+  await header.setEndpoint('https://solana-devnet.infura.io');
+  await driver.clickElement({ text: 'Update', tag: 'button' });
+
   await header.connect();
 
   // wait to display wallet connect modal

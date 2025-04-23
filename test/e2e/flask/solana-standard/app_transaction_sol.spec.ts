@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
+import { By } from 'selenium-webdriver';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
@@ -54,6 +54,38 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           assert.ok(transactionHash);
         },
       );
+    });
+
+    describe('Given I have connected to Mainnet and Devnet', function () {
+      it.only('Should set the scope to Devnet to protect users', async function () {
+        await withSolanaAccountSnap(
+          {
+            ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+            title: this.test?.fullTitle(),
+          },
+          async (driver) => {
+            const testDapp = new TestDappSolana(driver);
+            await testDapp.openTestDappPage();
+            await connectSolanaTestDapp(driver, testDapp, {
+              includeDevnet: false, // Connect to Mainnet only
+            });
+
+            // Send a transaction
+            const sendSolTest = await testDapp.getSendSolTest();
+            await sendSolTest.sendTransaction();
+
+            // Confirm the signature
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+            // Look for the permission to be set to Devnet
+            await driver.clickElement({ text: 'Permissions', tag: 'button' });
+            const permission = await driver.findElement(
+              By.xpath("//span[contains(text(), 'Solana Devnet')]"),
+            );
+            assert.ok(permission);
+          },
+        );
+      });
     });
   });
 });
