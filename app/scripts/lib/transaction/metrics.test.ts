@@ -832,6 +832,10 @@ describe('Transaction metrics', () => {
         status: METRICS_STATUS_FAILED,
       };
 
+      (
+        mockTransactionMetricsRequest.getNetworkRpcUrl as jest.Mock
+      ).mockReturnValue('https://example.com');
+
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMeta,
         actionId: mockActionId,
