@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import { CaipAssetType, type CaipChainId, type Hex } from '@metamask/utils';
 import {
   isSolanaChainId,
   formatChainIdToCaip,
@@ -13,26 +13,19 @@ import {
   type BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { selectERC20TokensByChain } from '../../selectors';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
 import { useAsyncResult } from '../useAsync';
 import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
-import { MINUTE } from '../../../shared/constants/time';
 import {
   type BridgeAppState,
   getTopAssetsFromFeatureFlags,
 } from '../../ducks/bridge/selectors';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
-import type {
-  AssetWithDisplayData,
-  ERC20Asset,
-  NativeAsset,
-} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
+import { getImageForChainId } from '../../selectors/multichain';
 
 type FilterPredicate = (
   symbol: string,
@@ -67,21 +60,11 @@ export const useTokensWithFiltering = (
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances(accountId);
 
-  const cachedTokens = useSelector(selectERC20TokensByChain);
-
   const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
     Record<string, BridgeAsset>
   >(async () => {
     if (chainId) {
-      if (!isSolanaChainId(chainId)) {
-        const hexChainId = formatChainIdToHex(chainId);
-        const timestamp = cachedTokens[hexChainId]?.timestamp;
-        // Use cached token data if updated in the last 10 minutes
-        if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
-          return cachedTokens[hexChainId]?.data;
-        }
-      }
-      // Otherwise fetch new token data
+      // Otherwise fetch dest token data from bridge-api
       return await fetchBridgeTokens(
         chainId,
         BridgeClientId.EXTENSION,
@@ -99,7 +82,7 @@ export const useTokensWithFiltering = (
     }
 
     return {};
-  }, [chainId, cachedTokens]);
+  }, [chainId]);
 
   const { value: topTokens, pending: isTopTokenListLoading } = useAsyncResult<
     { address: string }[]
@@ -117,13 +100,22 @@ export const useTokensWithFiltering = (
     return [];
   }, [chainId, topAssetsFromFeatureFlags]);
 
+  type TokenDisplayData = {
+    symbol: string;
+    chainId: Hex | CaipChainId;
+    tokenFiatAmount?: number | null;
+    type: AssetType;
+    decimals: number;
+    address: string;
+    image: string;
+    balance: string;
+    string: string | undefined;
+    assetId: CaipAssetType;
+  };
   // This transforms the token object from the bridge-api into the format expected by the AssetPicker
   const buildTokenDataFn = (
     token?: BridgeAsset,
-  ):
-    | AssetWithDisplayData<NativeAsset>
-    | AssetWithDisplayData<ERC20Asset>
-    | undefined => {
+  ): TokenDisplayData | undefined => {
     if (!chainId || !token) {
       return undefined;
     }
@@ -133,7 +125,7 @@ export const useTokensWithFiltering = (
       chainId: isSolanaChainId(chainId)
         ? formatChainIdToCaip(chainId)
         : formatChainIdToHex(chainId),
-      assetId: token.assetId,
+      assetId: token.assetId as CaipAssetType,
     };
 
     if (isNativeAddress(token.address)) {
@@ -169,9 +161,7 @@ export const useTokensWithFiltering = (
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
     (filterCondition: FilterPredicate) =>
-      (function* (): Generator<
-        AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
-      > {
+      (function* (): Generator<TokenDisplayData> {
         const shouldAddToken = (
           symbol: string,
           address?: string,
@@ -212,25 +202,22 @@ export const useTokensWithFiltering = (
                 decimals: token.decimals,
                 address: '',
                 type: AssetType.native,
+                assetId:
+                  'assetId' in token
+                    ? token.assetId
+                    : (getNativeAssetForChainId(token.chainId)
+                        .assetId as CaipAssetType),
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
                 image:
-                  CHAIN_ID_TOKEN_IMAGE_MAP[
-                    token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ] ??
-                  MULTICHAIN_TOKEN_IMAGE_MAP[
-                    token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
-                  ] ??
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                  (getNativeAssetForChainId(token.chainId)?.icon ||
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                    getNativeAssetForChainId(token.chainId)?.iconUrl ||
-                    getAssetImageUrl(
-                      token.address,
-                      formatChainIdToCaip(token.chainId),
-                    )),
+                  (isSolanaChainId(token.chainId)
+                    ? getImageForChainId(formatChainIdToCaip(token.chainId))
+                    : getImageForChainId(formatChainIdToHex(token.chainId))) ||
+                  getAssetImageUrl(
+                    token.address,
+                    formatChainIdToCaip(token.chainId),
+                  ) ||
+                  '',
               };
             } else {
               yield {
@@ -239,6 +226,13 @@ export const useTokensWithFiltering = (
                 tokenFiatAmount: token.tokenFiatAmount,
                 decimals: token.decimals,
                 address: token.address,
+                assetId:
+                  'assetId' in token
+                    ? token.assetId
+                    : (toAssetId(
+                        token.address,
+                        formatChainIdToCaip(token.chainId),
+                      ) as CaipAssetType),
                 type: AssetType.token,
                 balance: token.balance ?? '',
                 string: token.string ?? undefined,

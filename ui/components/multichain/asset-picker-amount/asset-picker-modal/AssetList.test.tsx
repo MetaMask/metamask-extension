@@ -21,7 +21,7 @@ import {
   getMultichainCurrentNetwork,
 } from '../../../../selectors/multichain';
 import AssetList from './AssetList';
-import { AssetWithDisplayData, ERC20Asset, NativeAsset } from './types';
+import { AssetWithDisplayData } from './types';
 
 jest.mock('../../../../hooks/useMultichainSelector', () => ({
   useMultichainSelector: jest.fn(),
@@ -58,10 +58,7 @@ describe('AssetList', () => {
   const handleAssetChangeMock = jest.fn();
   const nativeCurrency = 'ETH';
   const balanceValue = '0x121';
-  const tokenList: (
-    | AssetWithDisplayData<ERC20Asset>
-    | AssetWithDisplayData<NativeAsset>
-  )[] = [
+  const tokenList: AssetWithDisplayData[] = [
     {
       address: '0xToken1',
       symbol: 'TOKEN1',
@@ -83,7 +80,7 @@ describe('AssetList', () => {
       chainId: '0x1',
     },
     {
-      address: null,
+      address: '',
       symbol: 'ETH',
       type: AssetType.native,
       image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],

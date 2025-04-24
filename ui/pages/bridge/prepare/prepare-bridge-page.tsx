@@ -20,6 +20,7 @@ import {
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -50,6 +51,7 @@ import {
   getIsToOrFromSolana,
   getQuoteRefreshRate,
   getHardwareWalletName,
+  BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -112,6 +114,7 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
+  getImageForChainId,
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
   getMultichainProviderConfig,
@@ -126,6 +129,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   fetchAssetMetadata,
+  getAssetImageUrl,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { BridgeInputGroup } from './bridge-input-group';
@@ -337,10 +341,13 @@ const PrepareBridgePage = () => {
     return isSolanaChainId(toChain.chainId);
   }, [toChain?.chainId]);
 
+  const toChainId = useSelector(
+    (state: BridgeAppState) => state.bridge?.toChainId,
+  );
   const quoteParams = useMemo(
     () => ({
       srcTokenAddress: fromToken?.address,
-      destTokenAddress: toToken?.address,
+      destTokenAddress: toToken?.address || zeroAddress() || toToken?.assetId,
       srcTokenAmount:
         fromAmount && fromToken?.decimals
           ? calcTokenValue(
@@ -353,7 +360,7 @@ const PrepareBridgePage = () => {
               .split('.')[0]
           : undefined,
       srcChainId: fromChain?.chainId,
-      destChainId: toChain?.chainId,
+      destChainId: toChainId ?? undefined,
       // This override allows quotes to be returned when the rpcUrl is a forked network
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
@@ -365,12 +372,22 @@ const PrepareBridgePage = () => {
       destWalletAddress: selectedDestinationAccount?.address,
     }),
     [
-      fromToken?.address,
-      fromToken?.decimals,
-      toToken?.address,
+      // fromToken?.address,
+      // fromToken?.decimals,
+      // toToken?.address,
+      // toToken?.assetId,
+      // fromAmount,
+      // fromChain?.chainId,
+      // toChain?.chainId,
+      // slippage,
+      // selectedAccount?.address,
+      // selectedDestinationAccount?.address,
+      // providerConfig?.rpcUrl,
+      fromToken,
+      toToken,
       fromAmount,
       fromChain?.chainId,
-      toChain?.chainId,
+      toChainId,
       slippage,
       selectedAccount?.address,
       selectedDestinationAccount?.address,
@@ -387,8 +404,38 @@ const PrepareBridgePage = () => {
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
+    console.log('====quoteParams', {
+      quoteParams,
+      isValidWithAmount: isValidQuoteRequest(quoteRequest, true),
+      isValidNoAmount: isValidQuoteRequest(quoteRequest, false),
+      // isSwitchingTemporarilyDisabled,
+      // c1: isSwitchingTemporarilyDisabled,
+      // c2: !isValidQuoteRequest(quoteRequest, false),
+      // c3: !isSwap && !isNetworkAdded(toChain),
+    });
+    // isSwitchingTemporarilyDisabled ||
+    //   !isValidQuoteRequest(quoteRequest, false) ||
+    //   (!isSwap && !isNetworkAdded(toChain));
     debouncedUpdateQuoteRequestInController(quoteParams);
   }, [quoteParams, debouncedUpdateQuoteRequestInController]);
+
+  useEffect(() => {
+    console.log('====disabled', {
+      quoteParams,
+      quoteRequestForFetch: quoteRequest,
+      toChain,
+      willFetch: isValidQuoteRequest(quoteRequest, true),
+      c1: isSwitchingTemporarilyDisabled,
+      c22: !isValidQuoteRequest(quoteParams, false),
+      c3: !isSwap && !isNetworkAdded(toChain),
+    });
+  }, [
+    isSwitchingTemporarilyDisabled,
+    quoteParams,
+    quoteRequest,
+    toChain,
+    isSwap,
+  ]);
 
   const trackInputEvent = useCallback(
     (
@@ -527,7 +574,8 @@ const PrepareBridgePage = () => {
             dispatch(setFromToken(bridgeToken));
             dispatch(setFromTokenInputValue(null));
             if (token.address === toToken?.address) {
-              dispatch(setToToken(null));
+              console.error('====unsetting dest');
+              dispatch(setToToken(null)); // TODO i think this is unsetting dest
             }
             bridgeToken.address &&
               trackInputEvent({
@@ -635,7 +683,7 @@ const PrepareBridgePage = () => {
               color={IconColor.iconAlternativeSoft}
               disabled={
                 isSwitchingTemporarilyDisabled ||
-                !isValidQuoteRequest(quoteRequest, false) ||
+                !isValidQuoteRequest(quoteParams, false) ||
                 (!isSwap && !isNetworkAdded(toChain))
               }
               onClick={() => {
@@ -707,7 +755,27 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      dispatch(setToToken(null));
+                      const destNativeAsset = getNativeAssetForChainId(
+                        networkConfig.chainId,
+                      );
+                      dispatch(
+                        setToToken({
+                          ...destNativeAsset,
+                          image:
+                            (isSolanaChainId(networkConfig.chainId)
+                              ? getImageForChainId(
+                                  formatChainIdToCaip(networkConfig.chainId),
+                                )
+                              : getImageForChainId(
+                                  formatChainIdToHex(networkConfig.chainId),
+                                )) ||
+                            getAssetImageUrl(
+                              destNativeAsset.assetId,
+                              networkConfig.chainId,
+                            ) ||
+                            '',
+                        }),
+                      );
                     },
                     header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
                     shouldDisableNetwork: ({ chainId }) =>

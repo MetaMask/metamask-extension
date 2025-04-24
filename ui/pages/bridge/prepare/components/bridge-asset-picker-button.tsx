@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   SelectButtonProps,
   SelectButtonSize,
@@ -36,6 +36,9 @@ export const BridgeAssetPickerButton = ({
   Pick<React.ComponentProps<typeof AssetPicker>, 'asset' | 'networkProps'>) => {
   const t = useI18nContext();
 
+  useEffect(() => {
+    console.log('====asset', asset);
+  }, [asset]);
   return (
     <SelectButton
       borderRadius={BorderRadius.pill}

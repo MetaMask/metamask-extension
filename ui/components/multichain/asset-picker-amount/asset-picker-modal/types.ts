@@ -55,10 +55,14 @@ export type NativeAsset = {
 /**
  * ERC20Asset or NativeAsset, plus additional fields for display purposes in the Asset component
  */
-export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
+export type AssetWithDisplayData = {
+  type: AssetType;
+  image: string;
+  chainId: Hex | CaipChainId;
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
-} & Pick<TokenListToken, 'decimals'> & {
+  assetId?: string;
+} & Pick<TokenListToken, 'decimals' | 'address' | 'symbol'> & {
     tokenFiatAmount?: TokenWithFiatAmount['tokenFiatAmount'];
   };
 

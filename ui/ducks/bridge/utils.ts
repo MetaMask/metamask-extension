@@ -209,6 +209,9 @@ export const isNetworkAdded = (
     | AddNetworkFields
     | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId })
     | undefined,
-): v is NetworkConfiguration =>
-  v !== undefined &&
-  'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+): v is NetworkConfiguration => {
+  return (
+    v !== undefined &&
+    'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex]
+  );
+};

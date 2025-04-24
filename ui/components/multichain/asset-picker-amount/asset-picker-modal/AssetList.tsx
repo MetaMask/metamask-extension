@@ -32,20 +32,13 @@ import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
 type AssetListProps = {
-  handleAssetChange: (
-    token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
-  ) => void;
+  handleAssetChange: (token: AssetWithDisplayData) => void;
   asset?:
     | ERC20Asset
     | NativeAsset
     | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>;
-  tokenList: (
-    | AssetWithDisplayData<ERC20Asset>
-    | AssetWithDisplayData<NativeAsset>
-  )[];
-  isTokenDisabled?: (
-    token: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
-  ) => boolean;
+  tokenList: AssetWithDisplayData[];
+  isTokenDisabled?: (token: AssetWithDisplayData) => boolean;
   network?:
     | NetworkConfiguration
     | AddNetworkFields
@@ -108,7 +101,16 @@ export default function AssetList({
           // the native asset can have an undefined, null, '', or zero address so compare symbols
           (token.type === AssetType.native && token.symbol === asset?.symbol) ||
           tokenAddress === asset?.address?.toLowerCase();
-        const isSelected = isMatchingChainId && isMatchingAddress;
+
+        const isAssetIdDefined =
+          asset && 'assetId' in token && 'assetId' in asset;
+        const isMatchingAssetId = Boolean(
+          isAssetIdDefined && token.assetId === asset.assetId,
+        );
+
+        const isSelected = isAssetIdDefined
+          ? isMatchingAssetId
+          : isMatchingChainId && isMatchingAddress;
 
         const isDisabled = isTokenDisabled?.(token) ?? false;
 

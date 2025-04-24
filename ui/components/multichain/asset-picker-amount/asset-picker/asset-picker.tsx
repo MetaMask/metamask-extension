@@ -67,11 +67,7 @@ export type AssetPickerProps = {
   /**
    * Needs to be wrapped in a callback
    */
-  onAssetChange: (
-    newAsset:
-      | AssetWithDisplayData<NativeAsset>
-      | AssetWithDisplayData<ERC20Asset>,
-  ) => void;
+  onAssetChange: (newAsset: AssetWithDisplayData) => void;
   onClick?: () => void;
   isDisabled?: boolean;
   action?: 'send' | 'receive';
@@ -219,17 +215,17 @@ export function AssetPicker({
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
-        onAssetChange={(
-          token:
-            | AssetWithDisplayData<ERC20Asset>
-            | AssetWithDisplayData<NativeAsset>,
-        ) => {
+        onAssetChange={(token: AssetWithDisplayData) => {
           // If isMultiselectEnabled=true, update the network when a token is selected
           if (isMultiselectEnabled && networkProps?.onNetworkChange) {
             const networkFromToken = token.chainId
               ? allNetworks[token.chainId as keyof typeof allNetworks]
               : undefined;
             if (networkFromToken) {
+              console.log('====networkFromToken', {
+                networkFromToken,
+                networkProps,
+              });
               networkProps.onNetworkChange(networkFromToken);
             }
           }

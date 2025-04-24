@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  CaipAssetType,
   parseCaipAssetType,
   type CaipChainId,
   type Hex,
@@ -32,7 +33,7 @@ const useNonEvmAssetsWithBalances = (
       chainId: `${string}:${string}`;
       decimals: number;
       address: string;
-      assetId: `${string}:${string}`;
+      assetId: CaipAssetType;
       string: string;
       balance: string;
       tokenFiatAmount: number;

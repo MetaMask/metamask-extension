@@ -8,7 +8,6 @@ import {
   SortOrder,
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
-  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { getTokenExchangeRate } from './utils';
 
@@ -89,15 +88,14 @@ const bridgeSlice = createSlice({
       }
     },
     setToToken: (state, { payload }: TokenPayload) => {
+      console.log('====setToToken', { payload });
       if (payload) {
         state.toToken = {
           ...payload,
           balance: payload.balance ?? '0',
           string: payload.string ?? '0',
           chainId: payload.chainId,
-          address:
-            payload.address ||
-            getNativeAssetForChainId(payload.chainId).address,
+          address: payload.address,
         };
       } else {
         state.toToken = payload;
