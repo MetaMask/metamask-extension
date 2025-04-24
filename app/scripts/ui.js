@@ -109,9 +109,6 @@ async function start() {
       case METHOD_DISPLAY_STATE_CORRUPTION_ERROR:
         handleDisplayStateCorruptionError(message.data.params);
         break;
-      case 'RELOAD':
-        window.location.reload();
-        break;
       default:
     }
   };

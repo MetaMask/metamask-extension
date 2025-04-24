@@ -19,28 +19,49 @@ import type {
   BaseStore,
   MetaData,
 } from './base-store';
+import { hasProperty, isObject } from '@metamask/utils';
 
 export type Backup = {
-  KeyringController?: KeyringControllerState;
-  OnboardingController?: OnboardingControllerState;
-  PreferencesController?: PreferencesControllerState;
-  AppStateController?: AppStateControllerState;
+  KeyringController?: unknown;
+  OnboardingController?: unknown;
+  PreferencesController?: unknown;
+  AppStateController?: unknown;
 };
 
+/**
+ * Pulls out the relevant state from the MetaMask state object and returns
+ * an object to be backed up.
+ *
+ * We don't back up all properties of the state object, only the ones that are
+ * relevant for restoring the state. This is to avoid unnecessary data
+ * duplication and ensure efficient storage usage.
+ *
+ * @param state The current MetaMask state.
+ * @returns A Backup object containing the state of various controllers.
+ */
 function makeBackup(state?: MetaMaskStateType): Backup {
   return {
     KeyringController: state?.KeyringController,
     OnboardingController: state?.OnboardingController,
     PreferencesController: state?.PreferencesController,
     AppStateController: state?.AppStateController,
-  } as Backup;
+  };
 }
 
+/**
+ * Checks if the state contains a vault. This can be used to determine if the
+ * MetaMask state is in a valid state for backup.
+ *
+ * @param state The current MetaMask state.
+ * @returns
+ */
 function hasVault(state?: MetaMaskStateType): state is MetaMaskStateType {
-  const keyringController = state?.KeyringController as
-    | KeyringControllerState
-    | undefined;
-  return Boolean(keyringController?.vault);
+  const keyringController = state?.KeyringController;
+  return (
+    isObject(keyringController) &&
+    hasProperty(keyringController, 'vault') &&
+    Boolean(keyringController?.vault)
+  );
 }
 
 const STATE_LOCK = 'state-lock';
@@ -159,7 +180,7 @@ export class PersistenceManager {
 
           const backup = makeBackup(state);
           // if we have a vault we can back it up
-          if (backup.KeyringController?.vault) {
+          if (hasVault(backup)) {
             const stringifiedBackup = JSON.stringify(backup);
             // and the backup has changed
             if (this.#backup !== stringifiedBackup) {
