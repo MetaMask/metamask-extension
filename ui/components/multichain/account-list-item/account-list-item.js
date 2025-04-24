@@ -56,6 +56,7 @@ import {
   getShowFiatInTestnets,
   getChainIdsToPoll,
   getSnapsMetadata,
+  getMetaMaskKeyrings,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -69,13 +70,14 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { getAccountLabels } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF
@@ -108,16 +110,24 @@ const AccountListItem = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   const locale = useSelector(getIntlLocale);
   ///: END:ONLY_INCLUDE_IF
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
+
   const snapMetadata = useSelector(getSnapsMetadata);
-  const accountLabel = getAccountLabel(
-    account.metadata.keyring.type,
-    account,
-    account.metadata.keyring.type === KeyringType.snap
-      ? getSnapName(snapMetadata)(account.metadata?.snap.id)
-      : null,
+  const keyrings = useSelector(getMetaMaskKeyrings);
+  const accountLabels = useMemo(
+    () =>
+      getAccountLabels(
+        account.metadata.keyring.type,
+        account,
+        keyrings,
+        account.metadata.keyring.type === KeyringType.snap
+          ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
+          : null,
+      ),
+    [account, keyrings, snapMetadata],
   );
 
   const useBlockie = useSelector(getUseBlockie);
@@ -256,6 +266,7 @@ const AccountListItem = ({
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
         'multichain-account-list-item--clickable': Boolean(onClick),
       })}
+      data-testid="account-item"
       ref={itemRef}
       onClick={() => {
         // Without this check, the account will be selected after
@@ -435,19 +446,23 @@ const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {accountLabel ? (
-          <Tag
-            label={accountLabel}
-            labelProps={{
-              variant: TextVariant.bodyXs,
-              color: Color.textAlternative,
-            }}
-            startIconName={
-              account.metadata.keyring.type === KeyringType.snap
-                ? IconName.Snaps
-                : null
-            }
-          />
+        {accountLabels.length > 0 ? (
+          <Box flexDirection={FlexDirection.Row}>
+            {accountLabels.map(({ label, icon }) => {
+              return (
+                <Tag
+                  data-testid={`account-list-item-tag-${account.id}-${label}`}
+                  key={label}
+                  label={label}
+                  labelProps={{
+                    variant: TextVariant.bodyXs,
+                    color: Color.textAlternative,
+                  }}
+                  startIconName={icon}
+                />
+              );
+            })}
+          </Box>
         ) : null}
       </Box>
 
@@ -465,6 +480,7 @@ const AccountListItem = ({
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: 'Account Options',
+                  hd_entropy_index: hdEntropyIndex,
                 },
               });
             }

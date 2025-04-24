@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import { ErrorObject } from '@open-rpc/meta-schema';
 import { Json, JsonRpcFailure, JsonRpcResponse } from '@metamask/utils';
-import { InternalScopeString } from '@metamask/multichain';
+import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import { Driver } from '../webdriver/driver';
 
-// eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-shadow
 declare let window: any;
 
 type QueueItem = {
@@ -119,7 +119,7 @@ export const createCaip27DriverTransport = (
               type: string;
               data: JsonRpcResponse<Json>;
             }) => {
-              if (type !== 'caip-x') {
+              if (type !== 'caip-348') {
                 return;
               }
               if (data?.id !== g) {
@@ -134,7 +134,7 @@ export const createCaip27DriverTransport = (
 
             extensionPort.onMessage.addListener(listener);
             const msg = {
-              type: 'caip-x',
+              type: 'caip-348',
               data: {
                 jsonrpc: '2.0',
                 method: 'wallet_invokeMethod',
@@ -203,7 +203,7 @@ export const createMultichainDriverTransport = (
               type: string;
               data: JsonRpcResponse<Json>;
             }) => {
-              if (type !== 'caip-x') {
+              if (type !== 'caip-348') {
                 return;
               }
               if (data?.id !== g) {
@@ -218,7 +218,7 @@ export const createMultichainDriverTransport = (
 
             extensionPort.onMessage.addListener(listener);
             const msg = {
-              type: 'caip-x',
+              type: 'caip-348',
               data: {
                 jsonrpc: '2.0',
                 method: m,

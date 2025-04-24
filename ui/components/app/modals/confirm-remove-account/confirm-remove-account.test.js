@@ -46,7 +46,7 @@ const mockNonEvmNetwork = {
   network: {
     chainId: MultichainNetworks.BITCOIN,
     rpcPrefs: {
-      blockExplorerUrl: 'https://blockstream.info',
+      blockExplorerUrl: 'https://mempool.space/',
     },
   },
 };

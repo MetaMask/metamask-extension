@@ -29,6 +29,7 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - SIWE', function (this: Suite) {
   it('initiates and confirms', async function () {
@@ -78,6 +79,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
           ],
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureApproved,
@@ -110,6 +112,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
             'sign_in_with_ethereum',
           ],
           location: 'confirmation',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
         });
@@ -121,7 +124,6 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
 
 async function assertInfoValues(driver: Driver) {
   const confirmation = new PersonalSignConfirmation(driver);
-  await confirmation.clickCollapseSectionButton();
   await confirmation.verifyOrigin();
-  await confirmation.verifySiweMessage();
+  await confirmation.check_siweMessage();
 }

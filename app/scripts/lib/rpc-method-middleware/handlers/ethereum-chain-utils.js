@@ -4,7 +4,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -168,6 +168,7 @@ export function validateAddEthereumChainParams(params) {
  * @param {object} hooks - The hooks object.
  * @param {string} hooks.origin - The origin sending this request.
  * @param {boolean} hooks.isAddFlow - Variable to check if its add flow.
+ * @param {boolean} hooks.isSwitchFlow - Variable to check if its switch flow.
  * @param {boolean} [hooks.autoApprove] - A boolean indicating whether the request should prompt the user or be automatically approved.
  * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
  * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
@@ -188,6 +189,7 @@ export async function switchChain(
   {
     origin,
     isAddFlow,
+    isSwitchFlow,
     autoApprove,
     setActiveNetwork,
     getCaveat,
@@ -210,9 +212,16 @@ export async function switchChain(
       const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
 
       if (!ethChainIds.includes(chainId)) {
+        let metadata;
+        if (isSwitchFlow) {
+          metadata = {
+            isSwitchEthereumChain: true,
+          };
+        }
         await requestPermittedChainsPermissionIncrementalForOrigin({
           chainId,
           autoApprove,
+          metadata,
         });
       } else if (hasApprovalRequestsForOrigin?.() && !isAddFlow) {
         await requestUserApproval({

@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { TransactionType } from '@metamask/transaction-controller';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
@@ -89,7 +90,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
@@ -111,7 +112,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -133,7 +134,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
@@ -152,7 +153,7 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(false)
+          .withUseBasicFunctionalityDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
@@ -169,11 +170,12 @@ describe('Incoming Transactions', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withIncomingTransactionsPreferences(true)
+          .withUseBasicFunctionalityEnabled()
           .withTransactions([
             {
               hash: RESPONSE_STANDARD_MOCK.hash,
               txParams: { from: RESPONSE_STANDARD_MOCK.from },
+              type: TransactionType.incoming,
             },
           ])
           .build(),

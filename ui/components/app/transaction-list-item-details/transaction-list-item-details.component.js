@@ -13,12 +13,6 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { Box } from '../../component-library/box';
-import { Text } from '../../component-library/text';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../component-library/banner-alert';
-import { TextVariant } from '../../../helpers/constants/design-system';
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
@@ -32,9 +26,7 @@ export default class TransactionListItemDetails extends PureComponent {
     trackEvent: PropTypes.func,
   };
 
-  static defaultProps = {
-    recipientEns: null,
-  };
+  static defaultProps = {};
 
   static propTypes = {
     onCancel: PropTypes.func,
@@ -47,17 +39,13 @@ export default class TransactionListItemDetails extends PureComponent {
     transactionGroup: PropTypes.object,
     title: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
-    recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string,
     recipientName: PropTypes.string,
-    recipientMetadataName: PropTypes.string,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
-    recipientNickname: PropTypes.string,
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
-    showErrorBanner: PropTypes.bool,
     history: PropTypes.object,
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
@@ -160,18 +148,14 @@ export default class TransactionListItemDetails extends PureComponent {
       primaryCurrency,
       showSpeedUp,
       showRetry,
-      recipientEns,
       recipientAddress,
       recipientName,
-      recipientMetadataName,
       senderAddress,
       isEarliestNonce,
       senderNickname,
       title,
       onClose,
-      recipientNickname,
       showCancel,
-      showErrorBanner,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
     } = this.props;
@@ -185,17 +169,6 @@ export default class TransactionListItemDetails extends PureComponent {
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
           <div className="transaction-list-item-details__operations">
-            {showErrorBanner && (
-              <BannerAlert severity={BannerAlertSeverity.Warning}>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  as="h6"
-                  data-testid="transaction-list-item-details-banner-error-message"
-                >
-                  {t('transactionFailedBannerMessage')}
-                </Text>
-              </BannerAlert>
-            )}
             <div className="transaction-list-item-details__header-buttons">
               {showSpeedUp && (
                 <Button
@@ -222,7 +195,7 @@ export default class TransactionListItemDetails extends PureComponent {
                     className="transaction-list-item-details__header-button"
                     data-testid="rety-button"
                   >
-                    <i className="fa fa-sync" />
+                    <i className="fa fa-sync"></i>
                   </Button>
                 </Tooltip>
               )}
@@ -234,18 +207,22 @@ export default class TransactionListItemDetails extends PureComponent {
               data-testid="transaction-list-item-details-tx-status"
             >
               <div>{t('status')}</div>
-              <TransactionStatus />
+              <div>
+                <TransactionStatus />
+              </div>
             </div>
             <div className="transaction-list-item-details__tx-hash">
-              <Button
-                type="link"
-                onClick={this.handleBlockExplorerClick}
-                disabled={!hash}
-              >
-                {blockExplorerLinkText.firstPart === 'addBlockExplorer'
-                  ? t('addBlockExplorer')
-                  : t('viewOnBlockExplorer')}
-              </Button>
+              <div>
+                <Button
+                  type="link"
+                  onClick={this.handleBlockExplorerClick}
+                  disabled={!hash}
+                >
+                  {blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                    ? t('addBlockExplorer')
+                    : t('viewOnBlockExplorer')}
+                </Button>
+              </div>
               <div>
                 <Tooltip
                   wrapperClassName="transaction-list-item-details__header-button"
@@ -273,11 +250,8 @@ export default class TransactionListItemDetails extends PureComponent {
                 warnUserOnAccountMismatch={false}
                 variant={DEFAULT_VARIANT}
                 addressOnly
-                recipientEns={recipientEns}
                 recipientAddress={recipientAddress}
-                recipientNickname={recipientNickname}
                 recipientName={recipientName}
-                recipientMetadataName={recipientMetadataName}
                 senderName={senderNickname}
                 senderAddress={senderAddress}
                 chainId={chainId}

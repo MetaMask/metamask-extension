@@ -7,6 +7,7 @@ import {
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
+  getTokenSortConfig,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
@@ -16,9 +17,9 @@ import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 import useMultiChainAssets from '../hooks/useMultichainAssets';
 import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../../selectors/multichain';
+  getSelectedMultichainNetworkConfiguration,
+  getIsEvmMultichainNetworkSelected,
+} from '../../../../selectors/multichain/networks';
 import { getTokenBalancesEvm } from '../../../../selectors/assets';
 
 type TokenListProps = {
@@ -26,11 +27,12 @@ type TokenListProps = {
 };
 
 function TokenList({ onTokenClick }: TokenListProps) {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
-  const currentNetwork = useSelector(getMultichainNetwork);
-  const { tokenSortConfig, privacyMode } = useSelector(getPreferences);
+  const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
+  const { privacyMode } = useSelector(getPreferences);
+  const tokenSortConfig = useSelector(getTokenSortConfig);
   const selectedAccount = useSelector(getSelectedAccount);
   const evmBalances = useSelector((state) =>
     getTokenBalancesEvm(state, selectedAccount.address),
@@ -58,14 +60,16 @@ function TokenList({ onTokenClick }: TokenListProps) {
 
     // sort filtered tokens based on the tokenSortConfig in state
     return sortAssets([...filteredAssets], tokenSortConfig);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    tokenSortConfig,
-    networkFilter,
-    currentNetwork,
-    selectedAccount,
-    newTokensImported,
+    isEvm,
     evmBalances,
     multichainAssets,
+    networkFilter,
+    currentNetwork.chainId,
+    tokenSortConfig,
+    // newTokensImported included in deps, but not in hook's logic
+    newTokensImported,
   ]);
 
   useEffect(() => {

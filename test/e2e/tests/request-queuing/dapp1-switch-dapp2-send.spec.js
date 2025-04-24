@@ -16,7 +16,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
+          .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
@@ -150,22 +150,8 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           tag: 'button',
         });
 
-        // Switch back to the extension
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-
-        // Check for transaction
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        // Wait for the first dapp's connect confirmation to disappear
+        await driver.waitUntilXWindowHandles(3);
       },
     );
   });
@@ -177,7 +163,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
+          .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },

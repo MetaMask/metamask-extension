@@ -37,7 +37,7 @@ const getPermittedChains = async (driver: Driver) => {
 };
 
 describe('Add Ethereum Chain', function () {
-  describe('the dapp is not already permitted to use the chain being added and the dapp is on a different chain from the chain being added', () => {
+  describe('the dapp is not already permitted to use the chain being added and the dapp is on a different chain from the chain being added', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added and no rpc endpoint previously existed for the chain', async function () {
       await withFixtures(
         {
@@ -103,7 +103,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
             {
@@ -166,7 +166,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
             {
@@ -226,7 +226,7 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  describe('the dapp is not already permitted to use the chain being added and the dapp is on the same chain as the chain being added', () => {
+  describe('the dapp is not already permitted to use the chain being added and the dapp is on the same chain as the chain being added', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
@@ -281,7 +281,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .build(),
           title: this.test?.fullTitle(),
         },
@@ -330,13 +330,13 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  describe('the dapp is already permitted to use the chain being added, and the dapp is on a different chain from the chain being added', () => {
+  describe('the dapp is already permitted to use the chain being added, and the dapp is on a different chain from the chain being added', function () {
     it('automatically switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains([
               '0x539',
               '0x53a',
@@ -408,7 +408,7 @@ describe('Add Ethereum Chain', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder()
-            .withNetworkControllerDoubleGanache()
+            .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains([
               '0x539',
               '0x53a',
@@ -470,7 +470,8 @@ describe('Add Ethereum Chain', function () {
       );
     });
   });
-  describe('the dapp is already permitted to use the chain being added, and the dapp is on the same chain as the chain being added, but the rpcEndpoint being proposed does not match any existing rpcEndpoints for the chain', () => {
+
+  describe('the dapp is already permitted to use the chain being added, and the dapp is on the same chain as the chain being added, but the rpcEndpoint being proposed does not match any existing rpcEndpoints for the chain', function () {
     it('prompts to add the rpc endpoint to the chain networkConfiguration and set it as the default', async function () {
       await withFixtures(
         {
@@ -526,6 +527,95 @@ describe('Add Ethereum Chain', function () {
           await driver.findElement({
             text: 'Alternative localhost chain 0x539',
           });
+        },
+      );
+    });
+  });
+
+  describe('There are pending confirmation in the old network', function () {
+    it('alert user about pending confirmations', async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerDoubleNode()
+            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .build(),
+          localNodeOptions: [
+            {
+              type: 'anvil',
+            },
+            {
+              type: 'anvil',
+              options: {
+                port: 8546,
+                chainId: 1338,
+              },
+            },
+          ],
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }: { driver: Driver }) => {
+          await unlockWallet(driver);
+          await openDapp(driver);
+
+          await driver.clickElement('#personalSign');
+
+          const beforePermittedChains = await getPermittedChains(driver);
+          assert.deepEqual(beforePermittedChains, ['0x539']);
+
+          // should start on 1337
+          await driver.findElement({ css: '#chainId', text: '0x539' });
+
+          const switchEthereumChainRequest = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: '0x53a',
+                chainName: 'Localhost 8546 alternative',
+                nativeCurrency: {
+                  name: '',
+                  symbol: 'ETH',
+                  decimals: 18,
+                },
+                // this does not match what already exists in the NetworkController
+                rpcUrls: ['http://127.0.0.1:8546'],
+                blockExplorerUrls: [],
+              },
+            ],
+          });
+
+          await driver.executeScript(
+            `window.ethereum.request(${switchEthereumChainRequest})`,
+          );
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          await driver.clickElement(
+            '[data-testid="confirm-nav__next-confirmation"]',
+          );
+
+          // User reviews pending alerts
+          await driver.clickElement({ text: 'Approve', tag: 'button' });
+          await driver.clickElement(
+            '[data-testid="alert-modal-action-showPendingConfirmation"]',
+          );
+
+          // user confirms add network confirmation
+          await driver.clickElement(
+            '[data-testid="confirm-nav__next-confirmation"]',
+          );
+          await driver.clickElement({ text: 'Approve', tag: 'button' });
+          await driver.clickElement('[data-testid="alert-modal-button"]');
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+          const afterPermittedChains = await getPermittedChains(driver);
+          assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
+
+          // should end on 1338
+          await driver.findElement({ css: '#chainId', text: '0x53a' });
         },
       );
     });

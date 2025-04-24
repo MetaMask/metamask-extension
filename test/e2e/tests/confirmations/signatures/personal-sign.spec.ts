@@ -25,6 +25,7 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - Personal Sign', function (this: Suite) {
   it('initiates and confirms', async function () {
@@ -37,7 +38,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
-        const publicAddress = addresses?.[0] as string;
+        const publicAddress = addresses?.[0].toLowerCase() as string;
         await initializePages(driver);
 
         await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
@@ -63,6 +64,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureApproved,
@@ -93,6 +95,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
           location: 'confirmation',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejected,

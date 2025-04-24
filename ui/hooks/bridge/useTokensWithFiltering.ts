@@ -1,42 +1,38 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { ChainId } from '@metamask/controller-utils';
-import { type CaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
-import { zeroAddress } from 'ethereumjs-util';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
-  getAllDetectedTokensForSelectedAddress,
-  selectERC20TokensByChain,
-} from '../../selectors';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import {
-  AssetWithDisplayData,
-  ERC20Asset,
-  NativeAsset,
-} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { AssetType } from '../../../shared/constants/transaction';
-import {
+  isSolanaChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
+  type BridgeToken,
   isNativeAddress,
-} from '../../../shared/modules/bridge-utils/caip-formatters';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { Token } from '../../components/app/assets/types';
-import { useMultichainBalances } from '../useMultichainBalances';
-import { useAsyncResult } from '../useAsyncResult';
-import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
-import {
   fetchBridgeTokens,
-  fetchNonEvmTokens,
-  getAssetImageUrl,
-  isTokenV3Asset,
-} from '../../../shared/modules/bridge-utils/bridge.util';
+  BridgeClientId,
+  type BridgeAsset,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
+import { selectERC20TokensByChain } from '../../selectors';
+import { AssetType } from '../../../shared/constants/transaction';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
+import { useMultichainBalances } from '../useMultichainBalances';
+import { useAsyncResult } from '../useAsync';
+import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
 import { MINUTE } from '../../../shared/constants/time';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   type BridgeAppState,
   getTopAssetsFromFeatureFlags,
 } from '../../ducks/bridge/selectors';
-import { type BridgeToken } from '../../../shared/types/bridge';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
+import type {
+  AssetWithDisplayData,
+  ERC20Asset,
+  NativeAsset,
+} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 
 type FilterPredicate = (
   symbol: string,
@@ -57,39 +53,51 @@ type FilterPredicate = (
  * @param tokenToExclude.symbol
  * @param tokenToExclude.address
  * @param tokenToExclude.chainId
+ * @param accountId - the accountId to use for the token list
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
   tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
+  accountId?: string,
 ) => {
-  const allDetectedTokens: Record<string, Token[]> = useSelector(
-    getAllDetectedTokensForSelectedAddress,
-  );
   const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>
     getTopAssetsFromFeatureFlags(state, chainId),
   );
 
   const { assetsWithBalance: multichainTokensWithBalance } =
-    useMultichainBalances();
+    useMultichainBalances(accountId);
 
   const cachedTokens = useSelector(selectERC20TokensByChain);
 
   const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
-    Record<string, SwapsTokenObject>
+    Record<string, BridgeAsset>
   >(async () => {
-    if (chainId && chainId !== MultichainNetworks.SOLANA) {
-      const hexChainId = formatChainIdToHex(chainId);
-      const timestamp = cachedTokens[hexChainId]?.timestamp;
-      // Use cached token data if updated in the last 10 minutes
-      if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
-        return cachedTokens[hexChainId]?.data;
+    if (chainId) {
+      if (!isSolanaChainId(chainId)) {
+        const hexChainId = formatChainIdToHex(chainId);
+        const timestamp = cachedTokens[hexChainId]?.timestamp;
+        // Use cached token data if updated in the last 10 minutes
+        if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
+          return cachedTokens[hexChainId]?.data;
+        }
       }
       // Otherwise fetch new token data
-      return await fetchBridgeTokens(hexChainId);
+      return await fetchBridgeTokens(
+        chainId,
+        BridgeClientId.EXTENSION,
+        async (url, options) => {
+          const { headers, ...requestOptions } = options ?? {};
+          return await fetchWithCache({
+            url: url as string,
+            ...requestOptions,
+            fetchOptions: { method: 'GET', headers },
+            functionName: 'fetchBridgeTokens',
+          });
+        },
+        BRIDGE_API_BASE_URL,
+      );
     }
-    if (chainId && formatChainIdToCaip(chainId) === MultichainNetworks.SOLANA) {
-      return await fetchNonEvmTokens(chainId);
-    }
+
     return {};
   }, [chainId, cachedTokens]);
 
@@ -110,25 +118,36 @@ export const useTokensWithFiltering = (
   }, [chainId, topAssetsFromFeatureFlags]);
 
   // This transforms the token object from the bridge-api into the format expected by the AssetPicker
-  const buildTokenData = (
-    token?: SwapsTokenObject,
-  ): AssetWithDisplayData<NativeAsset | ERC20Asset> | undefined => {
-    if (!chainId || !token || !isStrictHexString(chainId)) {
+  const buildTokenDataFn = (
+    token?: BridgeAsset,
+  ):
+    | AssetWithDisplayData<NativeAsset>
+    | AssetWithDisplayData<ERC20Asset>
+    | undefined => {
+    if (!chainId || !token) {
       return undefined;
     }
-    const hexChainId = formatChainIdToHex(chainId);
     // Only tokens on the active chain are processed here here
-    const sharedFields = { ...token, chainId: hexChainId };
+    const sharedFields = {
+      ...token,
+      chainId: isSolanaChainId(chainId)
+        ? formatChainIdToCaip(chainId)
+        : formatChainIdToHex(chainId),
+      assetId: token.assetId,
+    };
 
     if (isNativeAddress(token.address)) {
       return {
         ...sharedFields,
         type: AssetType.native,
-        address: token.address === zeroAddress() ? null : token.address,
+        address: '', // Return empty string to match useMultichainBalances output
         image:
           CHAIN_ID_TOKEN_IMAGE_MAP[
-            chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-          ],
+            sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+          ] ??
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          (token.iconUrl || token.icon || ''),
         // Only unimported native assets are processed here so hardcode balance to 0
         balance: '0',
         string: '0',
@@ -138,13 +157,14 @@ export const useTokensWithFiltering = (
     return {
       ...sharedFields,
       type: AssetType.token,
-      image: token.iconUrl ?? tokenList?.[token.address]?.iconUrl ?? '',
+      image: token.iconUrl ?? token.icon ?? '',
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
-      address: token.address,
     };
   };
+
+  const buildTokenData = useCallback(buildTokenDataFn, [chainId]);
 
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
@@ -184,21 +204,33 @@ export const useTokensWithFiltering = (
               token.chainId,
             )
           ) {
-            // If there's no address, set it to the native address in swaps/bridge
-            if (isNativeAddress(token.address)) {
+            if (isNativeAddress(token.address) || token.isNative) {
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
                 decimals: token.decimals,
-                address: token.address,
+                address: '',
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
                 image:
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ] ?? getAssetImageUrl(token.address),
+                  ] ??
+                  MULTICHAIN_TOKEN_IMAGE_MAP[
+                    token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
+                  ] ??
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  (getNativeAssetForChainId(token.chainId)?.icon ||
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                    getNativeAssetForChainId(token.chainId)?.iconUrl ||
+                    getAssetImageUrl(
+                      token.address,
+                      formatChainIdToCaip(token.chainId),
+                    )),
               };
             } else {
               yield {
@@ -211,66 +243,26 @@ export const useTokensWithFiltering = (
                 balance: token.balance ?? '',
                 string: token.string ?? undefined,
                 image:
-                  tokenList?.[token.address.toLowerCase()]?.iconUrl ??
-                  getAssetImageUrl(token.address),
+                  (token.image ||
+                    tokenList?.[token.address.toLowerCase()]?.iconUrl) ??
+                  getAssetImageUrl(
+                    token.address,
+                    formatChainIdToCaip(token.chainId),
+                  ) ??
+                  '',
               };
             }
           }
         }
 
-        // Yield tokens for solana from TokenApi V3 then return
-        if (chainId === MultichainNetworks.SOLANA) {
-          // Yield topTokens from selected chain
-          for (const { address: tokenAddress } of topTokens) {
-            const assetId = `${chainId}/token:${tokenAddress}`;
-            const matchedToken = tokenList?.[assetId];
-            if (
-              matchedToken &&
-              isTokenV3Asset(matchedToken) &&
-              shouldAddToken(matchedToken.symbol, matchedToken.assetId, chainId)
-            ) {
-              yield {
-                ...matchedToken,
-                type: AssetType.token,
-                image: getAssetImageUrl(assetId),
-                balance: '',
-                string: undefined,
-                address: assetId,
-                chainId,
-              };
-            }
-          }
-
-          // Yield Solana top tokens
-          for (const token_ of Object.values(tokenList)) {
-            if (
-              token_ &&
-              !token_.symbol.includes('$') &&
-              isTokenV3Asset(token_) &&
-              shouldAddToken(token_.symbol, token_.assetId, chainId)
-            ) {
-              yield {
-                ...token_,
-                type: AssetType.token,
-                image: getAssetImageUrl(token_.assetId),
-                balance: '',
-                string: undefined,
-                address: token_.assetId,
-                chainId,
-              };
-            }
-          }
-          return;
-        }
-
-        // Yield topTokens from selected EVM chain
+        // Yield topTokens from selected chain
         for (const token_ of topTokens) {
           const matchedToken = tokenList?.[token_.address];
+          const token = buildTokenData(matchedToken);
           if (
-            matchedToken &&
-            shouldAddToken(matchedToken.symbol, matchedToken.address, chainId)
+            token &&
+            shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            const token = buildTokenData(matchedToken);
             if (token) {
               yield token;
             }
@@ -279,11 +271,12 @@ export const useTokensWithFiltering = (
 
         // Yield other tokens from selected chain
         for (const token_ of Object.values(tokenList)) {
+          const token = buildTokenData(token_);
           if (
-            token_ &&
-            shouldAddToken(token_.symbol, token_.address, chainId)
+            token &&
+            !token.symbol.includes('$') &&
+            shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            const token = buildTokenData(token_);
             if (token) {
               yield token;
             }
@@ -291,11 +284,11 @@ export const useTokensWithFiltering = (
         }
       })(),
     [
+      buildTokenData,
       multichainTokensWithBalance,
       topTokens,
       chainId,
       tokenList,
-      allDetectedTokens,
       tokenToExclude,
     ],
   );

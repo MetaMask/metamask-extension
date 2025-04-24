@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { add0x } from '@metamask/utils';
 import { useConfirmContext } from '../../../../context/confirm';
-import { useAsyncResult } from '../../../../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../../../../hooks/useAsync';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { parseApprovalTransactionData } from '../../../../../../../shared/modules/transaction.utils';
 import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';

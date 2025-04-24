@@ -9,9 +9,7 @@ import {
 import { UserStorageControllerInit } from './user-storage-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/user-storage');
-jest.mock('../../../../shared/modules/mv3.utils', () => ({
-  isManifestV3: true,
-}));
+
 jest.mock('../../../../shared/modules/environment', () => ({
   isProduction: () => false,
 }));
@@ -58,9 +56,6 @@ describe('UserStorageControllerInit', () => {
           onAccountNameUpdated: expect.any(Function),
           onAccountSyncErroneousSituation: expect.any(Function),
         },
-      },
-      env: {
-        isAccountSyncingEnabled: true,
       },
     });
   });

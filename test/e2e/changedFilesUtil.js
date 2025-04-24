@@ -5,23 +5,19 @@ const BASE_PATH = path.resolve(__dirname, '..', '..');
 const CHANGED_FILES_PATH = path.join(
   BASE_PATH,
   'changed-files',
-  'changed-files.txt',
+  'changed-files.json',
 );
 const PR_INFO_PATH = path.join(BASE_PATH, 'changed-files', 'pr-body.txt');
 
 /**
  * Reads the list of changed files from the git diff file with status (A, M, D).
  *
- * @returns {string[]} An array of changed file paths.
+ * @returns {Array<{status: string, filePath: string}>} An array of changed file paths.
  */
 function readChangedAndNewFilesWithStatus() {
   try {
-    const data = fs.readFileSync(CHANGED_FILES_PATH, 'utf8');
-    const changedFiles = data.split('\n').filter(Boolean);
-    return changedFiles.map((line) => {
-      const [status, filePath] = line.split('\t');
-      return { status, filePath };
-    });
+    const file = fs.readFileSync(CHANGED_FILES_PATH, 'utf8');
+    return JSON.parse(file);
   } catch (error) {
     if (error.code !== 'ENOENT') {
       console.error('Error reading from file:', error);
@@ -55,8 +51,8 @@ function filterE2eChangedFiles(changedFilesPaths) {
  */
 function getNewFilesOnly(changedFiles) {
   return changedFiles
-    .filter((file) => file.status === 'A')
-    .map((file) => file.filePath);
+    .filter((file) => file.changeType === 'ADDED')
+    .map((file) => file.path);
 }
 
 /**
@@ -67,8 +63,8 @@ function getNewFilesOnly(changedFiles) {
  */
 function getChangedFilesOnly(changedFiles) {
   return changedFiles
-    .filter((file) => file.status === 'M')
-    .map((file) => file.filePath);
+    .filter((file) => file.changeType === 'MODIFIED')
+    .map((file) => file.path);
 }
 
 /**
@@ -78,7 +74,7 @@ function getChangedFilesOnly(changedFiles) {
  * @returns {string[]} An array of new and modified file paths.
  */
 function getChangedAndNewFiles(changedFiles) {
-  return changedFiles.map((file) => file.filePath);
+  return changedFiles.map((file) => file.path);
 }
 
 /**

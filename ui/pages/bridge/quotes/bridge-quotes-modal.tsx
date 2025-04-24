@@ -3,6 +3,11 @@ import { IconName } from '@metamask/snaps-sdk/jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
+  type QuoteMetadata,
+  type QuoteResponse,
+  SortOrder,
+} from '@metamask/bridge-controller';
+import {
   ButtonLink,
   IconSize,
   Modal,
@@ -25,11 +30,6 @@ import {
 } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
-import {
-  type QuoteMetadata,
-  type QuoteResponse,
-  SortOrder,
-} from '../../../../shared/types/bridge';
 import {
   getBridgeQuotes,
   getBridgeSortOrder,
@@ -207,7 +207,7 @@ export const BridgeQuotesModal = ({
                   <Column>
                     <Text variant={TextVariant.bodyMd}>
                       {cost.valueInCurrency &&
-                        formatCurrencyAmount(cost.valueInCurrency, currency, 0)}
+                        formatCurrencyAmount(cost.valueInCurrency, currency, 2)}
                     </Text>
                     {[
                       totalNetworkFee?.valueInCurrency &&
@@ -218,7 +218,7 @@ export const BridgeQuotesModal = ({
                                 sentAmount.valueInCurrency,
                               ),
                               currency,
-                              0,
+                              2,
                             ),
                           ])
                         : t('quotedTotalCost', [
@@ -232,7 +232,7 @@ export const BridgeQuotesModal = ({
                         formatCurrencyAmount(
                           toTokenAmount.valueInCurrency,
                           currency,
-                          0,
+                          2,
                         ) ??
                           formatTokenAmount(
                             locale,

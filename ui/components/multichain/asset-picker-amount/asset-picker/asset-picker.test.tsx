@@ -27,7 +27,8 @@ jest.mock('react-router-dom', () => ({
 const NATIVE_TICKER = 'NATIVE TICKER';
 const store = (
   nativeTicker = NATIVE_TICKER,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tokenList = {} as any,
   chainId: Hex = CHAIN_IDS.MAINNET,
@@ -268,6 +269,34 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('#123456...3456')).toBeInTheDocument();
+  });
+
+  it('nft: picks first image if nft container more that 1 image', () => {
+    const images = [
+      'ipfs://bafybeidgklvljyifilhtrxzh77brgnhcy6s2wxoxqc2l73zr2nxlwuxfcy',
+      'ipfs://bafybeic26kitpujb3q5h5w7yovmvgmtxl3y4ldsb2pfgual5jq62emsmxq',
+    ];
+    const asset = {
+      type: AssetType.NFT,
+      address: 'token address',
+      tokenId: 1234567890123456,
+      symbol: 'My NFT',
+      image: images,
+    } as NFT;
+
+    const { debug, getByAltText } = render(
+      <Provider store={store()}>
+        <AssetPicker
+          header={'testHeader'}
+          asset={asset}
+          onAssetChange={jest.fn()}
+        />
+      </Provider>,
+    );
+
+    debug();
+    const elem = getByAltText('My NFT logo');
+    expect(elem).toHaveAttribute('src', images[0]);
   });
 
   it('render if disabled', () => {

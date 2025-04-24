@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Account details"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Switch back to regular account"
-  },
   "accountIdenticon": {
     "message": "Account identicon"
   },
@@ -160,6 +157,10 @@
   },
   "addAccount": {
     "message": "Add account"
+  },
+  "addAccountFromNetwork": {
+    "message": "Add $1 account",
+    "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
   "addAccountToMetaMask": {
     "message": "Add account to MetaMask"
@@ -255,8 +256,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "To enable the $1 network, you need to create a $1 account.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "To enable the $1 network, you need to create a $2 account.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Add RPC URL"
@@ -340,10 +341,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
-  "aggregatedBalancePopover": {
-    "message": "This reflects the value of all tokens you own on a given network. If you prefer seeing this value in ETH or other currencies, go to $1.",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "I agree to MetaMask's $1",
     "description": "$1 is the `terms` link"
@@ -359,6 +356,12 @@
   },
   "alert": {
     "message": "Alert"
+  },
+  "alertAccountTypeUpgradeMessage": {
+    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1."
+  },
+  "alertAccountTypeUpgradeTitle": {
+    "message": "Account type"
   },
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
@@ -710,26 +713,23 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfoDescription": {
-    "message": "A third party known for scams has access to this site. If you proceed, you'll lose assets."
+  "blockaidAlertDescriptionBlur": {
+    "message": "If you continue, all the assets you’ve listed on Blur could be at risk."
   },
-  "blockaidAlertInfoDescription2": {
-    "message": "The site may look safe, but a third party might have access to its information. If you sign in, your assets could get stolen."
+  "blockaidAlertDescriptionMalicious": {
+    "message": "You’re interacting with a malicious site. If you continue, you will lose your assets."
   },
-  "blockaidAlertInfoDescription3": {
-    "message": "If you confirm, you could lose all your funds and assets."
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "If you continue, all the assets you’ve listed on OpenSea could be at risk."
   },
-  "blockaidAlertInfoDescription4": {
-    "message": "If you sign in, any or all assets you've listed on OpenSea are at risk."
+  "blockaidAlertDescriptionOthers": {
+    "message": "If you confirm this request, you could lose your assets. We recommend that you cancel this request."
   },
-  "blockaidAlertInfoDescription5": {
-    "message": "If you sign in, any or all assets you've listed on Blur are at risk."
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "You’re sending your assets to a scammer. If you continue, you’ll lose those assets."
   },
-  "blockaidAlertInfoDescription6": {
-    "message": "This site is recognized as a malicious domain. If you sign in, you will lose funds and assets. We strongly suggest you cancel this request."
-  },
-  "blockaidAlertInfoDescription7": {
-    "message": "If you sign in, you could lose all your assets. We recommend you cancel this request."
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "If you confirm this request, you’re allowing a scammer to withdraw and spend your assets. You won’t get them back."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -787,17 +787,27 @@
   "bridgeApprovalWarningForHardware": {
     "message": "You will need to allow access to $1 $2 for bridging, and then approve bridging to $2. This will require two separate confirmations."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Block explorer link copied!"
+  },
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
   },
   "bridgeConfirmTwoTransactions": {
     "message": "You'll need to confirm 2 transactions on your hardware wallet:"
   },
+  "bridgeCreateSolanaAccount": {
+    "message": "Create Solana account"
+  },
   "bridgeCreateSolanaAccountDescription": {
     "message": "To swap to the Solana network, you need an account and receiving address."
   },
   "bridgeCreateSolanaAccountTitle": {
     "message": "You'll need a Solana account first."
+  },
+  "bridgeDetailsTitle": {
+    "message": "Bridge details",
+    "description": "Title for the modal showing details about a bridge transaction."
   },
   "bridgeEnterAmount": {
     "message": "Select amount"
@@ -839,6 +849,21 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Solana account created"
+  },
+  "bridgeStatusComplete": {
+    "message": "Complete",
+    "description": "Status text indicating a bridge transaction has successfully completed."
+  },
+  "bridgeStatusFailed": {
+    "message": "Failed",
+    "description": "Status text indicating a bridge transaction has failed."
+  },
+  "bridgeStatusInProgress": {
+    "message": "In Progress",
+    "description": "Status text indicating a bridge transaction is currently processing."
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$1 received on $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -867,6 +892,15 @@
   },
   "bridgeToChain": {
     "message": "Bridge to $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "If you added this token manually, make sure you are aware of the risks to your funds before you bridge."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "We can't verify this token."
+  },
+  "bridgeTransactionProgress": {
+    "message": "Transaction $1 of 2"
   },
   "bridgeTxDetailsBridging": {
     "message": "Bridging"
@@ -1071,6 +1105,27 @@
   "confirmFieldTooltipPaymaster": {
     "message": "The fee for this transaction will be paid by the paymaster smart contract."
   },
+  "confirmGasFeeTokenBalance": {
+    "message": "Bal:"
+  },
+  "confirmGasFeeTokenInsufficientBalance": {
+    "message": "Insufficient funds"
+  },
+  "confirmGasFeeTokenMetaMaskFee": {
+    "message": "Includes $1 fee"
+  },
+  "confirmGasFeeTokenModalTitle": {
+    "message": "Select a token"
+  },
+  "confirmGasFeeTokenToast": {
+    "message": "You're paying this network fee with $1"
+  },
+  "confirmGasFeeTokenTooltip": {
+    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
+  },
+  "confirmInfoAccountType": {
+    "message": "Account type"
+  },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
   },
@@ -1086,11 +1141,17 @@
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
   },
+  "confirmTitleDelegationRevoke": {
+    "message": "Account update"
+  },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
   },
   "confirmTitleDescApproveTransaction": {
     "message": "This site wants permission to withdraw your NFTs"
+  },
+  "confirmTitleDescDelegationRevoke": {
+    "message": "You're switching back to a standard account (EOA)."
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
@@ -1100,9 +1161,6 @@
   },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
-  },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "This site is requesting to switch back to a standard account."
   },
   "confirmTitleDescSIWESignature": {
     "message": "A site wants you to sign in to prove you own this account."
@@ -1116,9 +1174,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Remove permission"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Reset account"
-  },
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
   },
@@ -1130,21 +1185,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Transaction request"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "If you confirm this request, your account will be updated to a smart account."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Cancel transaction"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Cancel update & transaction"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "If you don't want to update your account, you can cancel it here.\n\nTo finish this transaction without an update, you'll need to make this request again on the site. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Cancel transaction"
   },
   "confirmationAlertDetails": {
     "message": "To protect your assets, we suggest you reject the request."
@@ -1336,9 +1376,6 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
-  },
-  "copyAddressShort": {
-    "message": "Copy address"
   },
   "copyPrivateKey": {
     "message": "Copy private key"
@@ -1616,8 +1653,18 @@
   "destinationAccountPickerNoMatching": {
     "message": "No matching accounts found"
   },
-  "destinationAccountPickerSearchPlaceholder": {
-    "message": "Receiving address or SNS"
+  "destinationAccountPickerReceiveAt": {
+    "message": "Receive at"
+  },
+  "destinationAccountPickerSearchPlaceholderToMainnet": {
+    "message": "Receiving address or ENS"
+  },
+  "destinationAccountPickerSearchPlaceholderToSolana": {
+    "message": "Receiving address"
+  },
+  "destinationTransactionIdLabel": {
+    "message": "Destination Tx ID",
+    "description": "Label for the destination transaction ID field."
   },
   "details": {
     "message": "Details"
@@ -1664,6 +1711,9 @@
     "message": "$1 disconnected from $2",
     "description": "$1 is name of the name and $2 represents the dapp name`"
   },
+  "discover": {
+    "message": "Discover"
+  },
   "discoverSnaps": {
     "message": "Discover Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -1676,6 +1726,12 @@
   },
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
+  },
+  "dismissSmartAccountSuggestionEnabledDescription": {
+    "message": "Turn this on to no longer see the \"Switch to Smart Account\" suggestion on any account. Smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those."
+  },
+  "dismissSmartAccountSuggestionEnabledTitle": {
+    "message": "Dismiss \"Switch to Smart Account\" suggestion"
   },
   "displayNftMedia": {
     "message": "Display NFT media"
@@ -2011,9 +2067,6 @@
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "To view and confirm your most recent request, you'll need to approve or reject existing requests first."
-  },
   "expandView": {
     "message": "Expand view"
   },
@@ -2238,6 +2291,15 @@
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletSubmissionWarningStep1": {
+    "message": "Be sure your $1 is plugged in and to select the Ethereum app."
+  },
+  "hardwareWalletSubmissionWarningStep2": {
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your $1 device."
+  },
+  "hardwareWalletSubmissionWarningTitle": {
+    "message": "Prior to clicking Submit:"
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "click here"
@@ -2471,7 +2533,8 @@
     "message": "Import a wallet or account"
   },
   "importWalletSuccess": {
-    "message": "Wallet successfully imported"
+    "message": "Secret Recovery Phrase $1 imported",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Import $1",
@@ -2486,6 +2549,9 @@
   },
   "included": {
     "message": "included"
+  },
+  "includesXTransactions": {
+    "message": "Includes $1 transactions"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
@@ -2529,11 +2595,17 @@
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },
+  "interactWithSmartContract": {
+    "message": "Smart contract"
+  },
   "interactingWith": {
     "message": "Interacting with"
   },
   "interactingWithTransactionDescription": {
     "message": "This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+  },
+  "interaction": {
+    "message": "Interaction"
   },
   "invalidAddress": {
     "message": "Invalid address"
@@ -2560,6 +2632,9 @@
   },
   "invalidCustomNetworkAlertTitle": {
     "message": "Invalid custom network"
+  },
+  "invalidHexData": {
+    "message": "Invalid hex data"
   },
   "invalidHexNumber": {
     "message": "Invalid hexadecimal number."
@@ -2739,6 +2814,9 @@
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
   },
+  "ledgerMultipleDevicesUnsupportedErrorMessage": {
+    "message": "Multiple Ledger devices cannot be connected at the same time. To connect a new Ledger device, you'll need to first disconnect the previous one."
+  },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
   },
@@ -2835,6 +2913,12 @@
   },
   "manageDefaultSettings": {
     "message": "Manage default privacy settings"
+  },
+  "manageInstitutionalWallets": {
+    "message": "Manage Institutional Wallets"
+  },
+  "manageInstitutionalWalletsDescription": {
+    "message": "Turn this on to enable institutional wallets."
   },
   "managePermissions": {
     "message": "Manage permissions"
@@ -3706,9 +3790,6 @@
     "message": "1Y",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4081,8 +4162,8 @@
   "permitSimulationChange_receive": {
     "message": "You receive"
   },
-  "permitSimulationChange_revoke": {
-    "message": "Spending cap"
+  "permitSimulationChange_revoke2": {
+    "message": "Revoke"
   },
   "permitSimulationChange_transfer": {
     "message": "You send"
@@ -4095,12 +4176,6 @@
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
-  },
-  "petnamesEnabledToggle": {
-    "message": "Allow nicknames"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
   },
   "pinToTop": {
     "message": "Pin to top"
@@ -4344,6 +4419,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
   },
+  "redeposit": {
+    "message": "Redeposit"
+  },
   "refreshList": {
     "message": "Refresh list"
   },
@@ -4488,6 +4566,9 @@
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "Reveal Secret Recovery Phrase"
+  },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
@@ -4545,6 +4626,10 @@
   },
   "revokePermission": {
     "message": "Revoke permission"
+  },
+  "revokePermissionTitle": {
+    "message": "Remove $1 permission",
+    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
@@ -4715,7 +4800,9 @@
   "selectRpcUrl": {
     "message": "Select RPC URL"
   },
-  "selectSecretRecoveryPhrase": { "message": "Select Secret Recovery Phrase" },
+  "selectSecretRecoveryPhrase": {
+    "message": "Select Secret Recovery Phrase"
+  },
   "selectType": {
     "message": "Select Type"
   },
@@ -4830,16 +4917,6 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
-  "showIncomingTransactions": {
-    "message": "Show incoming transactions"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "This relies on different third-party APIs for each network, which expose your Ethereum address and your IP address."
-  },
   "showLess": {
     "message": "Show less"
   },
@@ -4857,6 +4934,9 @@
   },
   "showPrivateKey": {
     "message": "Show private key"
+  },
+  "showSRP": {
+    "message": "Show Secret Recovery Phrase"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
@@ -4990,6 +5070,66 @@
   },
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
+  },
+  "slideMultiSrpDescription": {
+    "message": "Import and use multiple wallets in MetaMask"
+  },
+  "slideMultiSrpTitle": {
+    "message": "Add multiple Secret Recovery Phrases"
+  },
+  "slideRemoteModeDescription": {
+    "message": "Access your hardware wallet without plugging it in"
+  },
+  "slideRemoteModeTitle": {
+    "message": "Remote mode is here!"
+  },
+  "slideSolanaDescription": {
+    "message": "Create a Solana account to get started"
+  },
+  "slideSolanaTitle": {
+    "message": "Solana is now supported"
+  },
+  "slideSweepStakeDescription": {
+    "message": "Mint an NFT now for a chance to win"
+  },
+  "slideSweepStakeTitle": {
+    "message": "Enter the $5000 USDC Giveaway!"
+  },
+  "smartAccountAccept": {
+    "message": "Use smart account"
+  },
+  "smartAccountBetterTransaction": {
+    "message": "Faster transactions, lower fees"
+  },
+  "smartAccountBetterTransactionDescription": {
+    "message": "Save time and money by processing transactions together."
+  },
+  "smartAccountFeaturesDescription": {
+    "message": "Keep the same account address, and you can switch back anytime."
+  },
+  "smartAccountLabel": {
+    "message": "Smart Account"
+  },
+  "smartAccountPayToken": {
+    "message": "Pay with any token, any time"
+  },
+  "smartAccountPayTokenDescription": {
+    "message": "Use the tokens you already have to cover network fees."
+  },
+  "smartAccountReject": {
+    "message": "Don’t use smart account"
+  },
+  "smartAccountRequestFor": {
+    "message": "Request for"
+  },
+  "smartAccountSplashTitle": {
+    "message": "Use smart account?"
+  },
+  "smartAccountUpgradeBannerDescription": {
+    "message": "Same address. Smarter features."
+  },
+  "smartAccountUpgradeBannerTitle": {
+    "message": "Switch to smart account"
   },
   "smartContracts": {
     "message": "Smart contracts"
@@ -5137,6 +5277,9 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
+  "snapUIAssetSelectorTitle": {
+    "message": "Select an asset"
+  },
   "snapUpdateAlertDescription": {
     "message": "Get the latest version of $1",
     "description": "Description used in Snap update alert banner when snap update is available. $1 is the Snap name."
@@ -5196,6 +5339,12 @@
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
+  "solanaAccountRequested": {
+    "message": "This site is requesting a Solana account."
+  },
+  "solanaAccountRequired": {
+    "message": "A Solana account is required to connect to this site."
+  },
   "solanaImportAccounts": {
     "message": "Import Solana accounts"
   },
@@ -5206,7 +5355,7 @@
     "message": "More features coming soon"
   },
   "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Solana dapps, NFTs, ETH-SOL bridging, hardware wallet support, and more coming soon."
+    "message": "Solana dapps, NFTs, hardware wallet support, and more coming soon."
   },
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"
@@ -5325,7 +5474,6 @@
   "srpListSelectionDescription": {
     "message": "The Secret Recovery Phrase your new account will be generated from"
   },
-
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
@@ -5413,6 +5561,9 @@
   "stake": {
     "message": "Stake"
   },
+  "standardAccountLabel": {
+    "message": "Standard Account"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -5447,13 +5598,6 @@
   "step1LedgerWalletMsg": {
     "message": "Download, set up, and enter your password to unlock $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1OneKeyWallet": {
-    "message": "Connect your OneKey"
-  },
-  "step1OneKeyWalletMsg": {
-    "message": "Plug your OneKey directly into your computer and unlock it. Make sure you use the correct passphrase.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Connect your Trezor"
@@ -6147,9 +6291,6 @@
   "transactionErrored": {
     "message": "Transaction encountered an error."
   },
-  "transactionFailedBannerMessage": {
-    "message": "This transaction would have cost you extra fees, so we stopped it. Your money is still in your wallet."
-  },
   "transactionFlowNetwork": {
     "message": "Network"
   },
@@ -6174,6 +6315,13 @@
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
   },
+  "transactionIdLabel": {
+    "message": "Transaction ID",
+    "description": "Label for the source transaction ID field."
+  },
+  "transactionIncludesTypes": {
+    "message": "This transaction includes: $1."
+  },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
@@ -6182,6 +6330,10 @@
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
+  },
+  "transactionTotalGasFee": {
+    "message": "Total gas fee",
+    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactionUpdated": {
     "message": "Transaction updated at $2."
@@ -6512,7 +6664,7 @@
     "description": "Used in the 'permission_rpc' message."
   },
   "welcomeBack": {
-    "message": "Welcome back!"
+    "message": "Welcome back"
   },
   "welcomeExploreDescription": {
     "message": "Store, send, and spend crypto currencies and assets."
@@ -6558,6 +6710,14 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."
+  },
+  "youReceived": {
+    "message": "You received",
+    "description": "Label indicating the amount and asset the user received."
+  },
+  "youSent": {
+    "message": "You sent",
+    "description": "Label indicating the amount and asset the user sent."
   },
   "yourAccounts": {
     "message": "Your accounts"

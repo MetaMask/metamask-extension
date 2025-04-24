@@ -59,9 +59,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -80,9 +81,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
       - name: Update LavaMoat build policy
         run: yarn lavamoat:build:auto
       - name: Cache build policy
@@ -111,9 +113,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: metamask/github-tools/.github/actions/checkout-and-setup@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
       - name: Restore build policy
         uses: actions/cache/restore@v4
         with:

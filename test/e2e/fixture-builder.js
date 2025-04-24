@@ -115,12 +115,6 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
-        showTestNetworks: false,
-        smartTransactionsOptInStatus: true,
-        tokenNetworkFilter: {},
-      },
-      QueuedRequestController: {
-        queuedRequestCount: 0,
       },
       SelectedNetworkController: {
         domains: {},
@@ -139,9 +133,6 @@ function onboardingFixture() {
         allDetectedTokens: {},
         allIgnoredTokens: {},
         allTokens: {},
-        detectedTokens: [],
-        ignoredTokens: [],
-        tokens: [],
       },
       TransactionController: {},
       config: {},
@@ -237,6 +228,12 @@ class FixtureBuilder {
     });
   }
 
+  withUseBasicFunctionalityEnabled() {
+    return this.withPreferencesController({
+      useExternalServices: true,
+    });
+  }
+
   withGasFeeController(data) {
     merge(this.fixture.data.GasFeeController, data);
     return this;
@@ -301,6 +298,12 @@ class FixtureBuilder {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
   }
 
+  withNetworkControllerOnLinea() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'linea-mainnet',
+    });
+  }
+
   withNetworkControllerOnOptimism() {
     return this.withNetworkController({
       networkConfigurations: {
@@ -333,21 +336,21 @@ class FixtureBuilder {
     });
   }
 
-  withNetworkControllerDoubleGanache() {
-    const ganacheNetworks = mockNetworkStateOld({
+  withNetworkControllerDoubleNode() {
+    const secondNode = mockNetworkStateOld({
       id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
       rpcUrl: 'http://localhost:8546',
       chainId: '0x53a',
       ticker: 'ETH',
       nickname: 'Localhost 8546',
     });
-    delete ganacheNetworks.selectedNetworkClientId;
-    return this.withNetworkController(ganacheNetworks);
+    delete secondNode.selectedNetworkClientId;
+    return this.withNetworkController(secondNode);
   }
 
-  withNetworkControllerTripleGanache() {
-    this.withNetworkControllerDoubleGanache();
-    const thirdGanache = mockNetworkStateOld({
+  withNetworkControllerTripleNode() {
+    this.withNetworkControllerDoubleNode();
+    const thirdNode = mockNetworkStateOld({
       rpcUrl: 'http://localhost:7777',
       chainId: '0x3e8',
       ticker: 'ETH',
@@ -355,8 +358,8 @@ class FixtureBuilder {
       blockExplorerUrl: undefined,
     });
 
-    delete thirdGanache.selectedNetworkClientId;
-    merge(this.fixture.data.NetworkController, thirdGanache);
+    delete thirdNode.selectedNetworkClientId;
+    merge(this.fixture.data.NetworkController, thirdNode);
     return this;
   }
 
@@ -394,6 +397,7 @@ class FixtureBuilder {
               image:
                 'ipfs://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
               standard: 'ERC1155',
+              chainId: 1337,
             },
           ],
         },
@@ -428,6 +432,7 @@ class FixtureBuilder {
               name: 'Test Dapp NFTs #1',
               standard: 'ERC721',
               tokenId: '1',
+              chainId: 1337,
             },
           ],
         },
@@ -462,12 +467,10 @@ class FixtureBuilder {
 
   withBridgeControllerDefaultState() {
     this.fixture.data.BridgeController = {
-      bridgeState: {
-        bridgeFeatureFlags: {
-          extensionConfig: {
-            support: false,
-            chains: {},
-          },
+      bridgeFeatureFlags: {
+        extensionConfig: {
+          support: false,
+          chains: {},
         },
       },
     };
@@ -1036,19 +1039,6 @@ class FixtureBuilder {
 
   withTokensControllerERC20({ chainId = 1337 } = {}) {
     merge(this.fixture.data.TokensController, {
-      tokens: [
-        {
-          address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
-          symbol: 'TST',
-          decimals: 4,
-          image:
-            'https://static.cx.metamask.io/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
-          isERC721: false,
-          aggregators: [],
-        },
-      ],
-      ignoredTokens: [],
-      detectedTokens: [],
       allTokens: {
         [toHex(chainId)]: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
@@ -1631,14 +1621,6 @@ class FixtureBuilder {
         },
         selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
       });
-  }
-
-  withIncomingTransactionsPreferences(incomingTransactionsPreferences) {
-    return this.withPreferencesController({
-      featureFlags: {
-        showIncomingTransactions: incomingTransactionsPreferences,
-      },
-    });
   }
 
   withIncomingTransactionsCache(cache) {

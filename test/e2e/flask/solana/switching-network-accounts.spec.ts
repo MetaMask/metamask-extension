@@ -14,7 +14,7 @@ describe('Switching between account from different networks', function (this: Su
         await headerNavbar.check_pageIsLoaded();
         await headerNavbar.check_accountLabel('Solana 1');
         await headerNavbar.check_ifNetworkPickerClickable(true);
-        await headerNavbar.check_currentSelectedNetwork('Solana Mainnet');
+        await headerNavbar.check_currentSelectedNetwork('Solana');
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.selectAccount('Account 1');
@@ -35,9 +35,12 @@ describe('Switching between account from different networks', function (this: Su
         await headerNavbar.check_ifNetworkPickerClickable(true);
         await headerNavbar.check_currentSelectedNetwork('Localhost 8545');
         await headerNavbar.openAccountMenu();
-        await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Solana });
+        await accountListPage.addAccount({
+          accountType: ACCOUNT_TYPE.Solana,
+          accountName: 'Solana Account 2',
+        });
         await headerNavbar.check_ifNetworkPickerClickable(true);
-        await headerNavbar.check_currentSelectedNetwork('Solana Mainnet');
+        await headerNavbar.check_currentSelectedNetwork('Solana');
         await headerNavbar.check_accountLabel('Solana Account 2');
       },
     );
@@ -51,8 +54,8 @@ describe('Switching between account from different networks', function (this: Su
         await headerNavbar.clickSwitchNetworkDropDown();
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.selectNetworkName('Solana Mainnet');
-        await headerNavbar.check_currentSelectedNetwork('Solana Mainnet');
+        await selectNetworkDialog.selectNetworkName('Solana');
+        await headerNavbar.check_currentSelectedNetwork('Solana');
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.addAccount({

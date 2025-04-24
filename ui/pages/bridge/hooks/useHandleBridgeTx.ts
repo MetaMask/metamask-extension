@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useDispatch } from 'react-redux';
+import { FeeType, type QuoteResponse } from '@metamask/bridge-controller';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { FeeType, type QuoteResponse } from '../../../../shared/types/bridge';
 import useHandleTx from './useHandleTx';
 
 export default function useHandleBridgeTx() {

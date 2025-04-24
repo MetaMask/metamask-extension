@@ -13,6 +13,16 @@ class HomePage {
     testId: 'account-overview__activity-tab',
   };
 
+  private readonly backupSecretRecoveryPhraseButton = {
+    text: 'Back up now',
+    css: '.home-notification__accept-button',
+  };
+
+  private readonly backupSecretRecoveryPhraseNotification = {
+    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
+    css: '.home-notification__text',
+  };
+
   protected readonly balance: string =
     '[data-testid="eth-overview__primary-currency"]';
 
@@ -103,6 +113,12 @@ class HomePage {
     await this.driver.clickElement(this.activityTab);
   }
 
+  async goToBackupSRPPage(): Promise<void> {
+    console.log(`Go to backup secret recovery phrase on homepage`);
+    await this.driver.waitForSelector(this.backupSecretRecoveryPhraseNotification);
+    await this.driver.clickElement(this.backupSecretRecoveryPhraseButton);
+  }
+
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
@@ -128,6 +144,10 @@ class HomePage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async startBridgeFlow(): Promise<void> {
+    await this.driver.clickElement(this.bridgeButton);
+  }
+
   async togglePrivacyBalance(): Promise<void> {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
@@ -145,6 +165,11 @@ class HomePage {
       tag: 'h6',
       text: `“${networkName}” was successfully added!`,
     });
+  }
+
+  async check_backupReminderIsNotDisplayed(): Promise<void> {
+    console.log('Check backup reminder is not displayed on homepage');
+    await this.driver.assertElementNotPresent(this.backupSecretRecoveryPhraseNotification);
   }
 
   async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
@@ -206,6 +231,22 @@ class HomePage {
   }
 
   /**
+   * Checks if the expected token balance is displayed on homepage.
+   *
+   * @param expectedTokenBalance - The expected balance to be displayed.
+   * @param symbol - The symbol of the currency or token.
+   */
+  async check_expectedTokenBalanceIsDisplayed(
+    expectedTokenBalance: string,
+    symbol: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: '[data-testid="multichain-token-list-item-value"]',
+      text: `${expectedTokenBalance} ${symbol}`,
+    });
+  }
+
+  /**
    * This function checks if account syncing has been successfully completed at least once.
    */
   async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
@@ -260,6 +301,14 @@ class HomePage {
       expectedBalance = '25';
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
+  }
+
+  async check_newSrpAddedToastIsDisplayed(
+    srpNumber: number = 2,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
   }
 }
 
