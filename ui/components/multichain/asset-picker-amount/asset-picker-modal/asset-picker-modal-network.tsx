@@ -238,14 +238,13 @@ export const AssetPickerModalNetwork = ({
           flexDirection={FlexDirection.Column}
         >
           {testNetworks.length > 0 ? (
-            <Box padding={4}>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
-              >
-                {t('enabledNetworks')}
-              </Text>
-            </Box>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+              padding={4}
+            >
+              {t('enabledNetworks')}
+            </Text>
           ) : null}
           <Box
             display={Display.Flex}
