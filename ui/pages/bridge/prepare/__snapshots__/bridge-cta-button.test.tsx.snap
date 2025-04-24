@@ -46,9 +46,7 @@ exports[`BridgeCTAButton should render the component's initial state 1`] = `
   >
     <p
       class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
-    >
-      Select token
-    </p>
+    />
   </div>
 </div>
 `;
