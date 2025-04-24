@@ -4,15 +4,24 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../../../components/multichain/pages/page';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonVariant,
   ButtonSize,
   Text,
   Icon,
   IconName,
   IconSize,
-  Tag,
 } from '../../../../components/component-library';
 import Tooltip from '../../../../components/ui/tooltip';
 import UnitInput from '../../../../components/ui/unit-input';
@@ -45,9 +54,13 @@ import {
   getSelectedInternalAccount,
   getMetaMaskAccountsOrdered,
 } from '../../../../selectors';
-import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
-import RemoteModeDailyAllowanceCard from '../daily-allowance-card';
-import StepIndicator from '../step-indicator/step-indicator.component';
+import {
+  RemoteModeHardwareWalletConfirm,
+  RemoteModeDailyAllowanceCard,
+  StepIndicator,
+  SmartAccountUpdateInformation,
+} from '../../components';
+import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 
 const TOTAL_STEPS = 3;
 
@@ -72,6 +85,7 @@ export default function RemoteModeSetupDailyAllowance() {
     useState<boolean>(false);
   const [selectedAccount, setSelectedAccount] =
     useState<InternalAccount | null>(null);
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -81,6 +95,10 @@ export default function RemoteModeSetupDailyAllowance() {
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  useEffect(() => {
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+  }, [selectedHardwareAccount]);
 
   useEffect(() => {
     if (authorizedAccounts.length > 0) {
@@ -139,11 +157,25 @@ export default function RemoteModeSetupDailyAllowance() {
   };
 
   const handleShowConfirmation = async () => {
+    // todo: replace with delegation controller integration
+    const remoteMode = localStorage.getItem('remoteMode');
+    const parsedRemoteMode = remoteMode ? JSON.parse(remoteMode) : null;
+    const updatedRemoteMode = {
+      ...parsedRemoteMode,
+      dailyAllowance: {
+        allowances: dailyAllowance,
+      },
+    };
+    localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
     setIsConfirmModalOpen(true);
   };
 
   const handleConfigureRemoteSwaps = () => {
     history.replace(REMOTE_ROUTE);
+  };
+
+  const onCancel = () => {
+    history.goBack();
   };
 
   const renderStepContent = () => {
@@ -278,53 +310,9 @@ export default function RemoteModeSetupDailyAllowance() {
       case 2:
         return (
           <>
-            <Box
-              marginTop={2}
-              marginBottom={2}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.center}
-              gap={2}
-            >
-              <Tag
-                label="Includes 2 transactions"
-                style={{ padding: '0 1rem' }}
-              />
-            </Box>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>
-                  Account type <Icon name={IconName.Info} size={IconSize.Sm} />
-                </Text>
-                <Text>Smart account</Text>
-              </Box>
-            </Card>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box>
-                <Text>Estimated changes</Text>
-                <Text>
-                  Authorize {selectedAccount?.metadata.name} to swap from your{' '}
-                  {selectedHardwareAccount.metadata.name} balance.
-                </Text>
-              </Box>
-            </Card>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>Request from</Text>
-                <Text>MetaMask</Text>
-              </Box>
-            </Card>
+            <SmartAccountUpdateInformation
+              selectedHardwareAccount={selectedHardwareAccount}
+            />
 
             <Card backgroundColor={BackgroundColor.backgroundMuted}>
               <Box
@@ -471,50 +459,53 @@ export default function RemoteModeSetupDailyAllowance() {
   };
 
   return (
-    <div className="main-container" data-testid="remote-mode-setup-swaps">
-      <Box
+    <Page className="main-container" data-testid="remote-mode-setup-swaps">
+      <Header
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Sm}
+            ariaLabel={'back'}
+            iconName={IconName.ArrowLeft}
+            onClick={onCancel}
+          />
+        }
+      >
+        Remote mode
+      </Header>
+      <Content
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         gap={2}
-        padding={2}
+        paddingLeft={4}
+        paddingRight={4}
         width={BlockSize.Full}
       >
+        {!isHardwareAccount && (
+          <BannerAlert severity={BannerAlertSeverity.Warning} marginBottom={2}>
+            <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
+              Select a hardware wallet
+            </Text>
+            <Text variant={TextVariant.bodyMd}>
+              To continue, select your hardware wallet from the account menu.
+            </Text>
+          </BannerAlert>
+        )}
         <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
-
         <Text
           textAlign={TextAlign.Center}
           variant={TextVariant.headingMd}
           fontWeight={FontWeight.Bold}
         >
-          {currentStep === 1 && 'Enable Daily Allowances'}
-          {currentStep === 2 && 'Transaction Request'}
+          {currentStep === 1 && 'Set a withdrawl limit'}
+          {currentStep === 2 && 'Update to a smart account'}
           {currentStep === 3 && 'Review changes'}
         </Text>
 
         {renderStepContent()}
 
-        <Box
-          paddingTop={2}
-          display={Display.Flex}
-          gap={6}
-          justifyContent={JustifyContent.center}
-        >
-          <Button
-            onClick={handleBack}
-            variant={ButtonVariant.Secondary}
-            width={BlockSize.Half}
-            size={ButtonSize.Lg}
-          >
-            {currentStep === 1 ? 'Cancel' : 'Back'}
-          </Button>
-          <Button
-            onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
-            width={BlockSize.Half}
-            size={ButtonSize.Lg}
-          >
-            {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
-          </Button>
-        </Box>
         <RemoteModeHardwareWalletConfirm
           visible={isConfirmModalOpen}
           onConfirm={handleConfigureRemoteSwaps}
@@ -522,7 +513,26 @@ export default function RemoteModeSetupDailyAllowance() {
             setIsConfirmModalOpen(false);
           }}
         />
-      </Box>
-    </div>
+      </Content>
+
+      <Footer>
+        <Button
+          onClick={handleBack}
+          variant={ButtonVariant.Secondary}
+          width={BlockSize.Half}
+          size={ButtonSize.Lg}
+        >
+          {currentStep === 1 ? 'Cancel' : 'Back'}
+        </Button>
+        <Button
+          onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
+          width={BlockSize.Half}
+          size={ButtonSize.Lg}
+          disabled={!isHardwareAccount || dailyAllowance.length === 0}
+        >
+          {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
+        </Button>
+      </Footer>
+    </Page>
   );
 }

@@ -14,15 +14,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import {
-  debounce,
-  throttle,
-  memoize,
-  wrap,
-  pick,
-  cloneDeep,
-  uniq,
-} from 'lodash';
+import { debounce, throttle, memoize, wrap, pick, uniq } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -92,6 +84,7 @@ import {
   ERC20,
   ERC721,
   BlockExplorerUrl,
+  ChainId,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -189,8 +182,6 @@ import {
   CHAIN_SPEC_URL,
   NETWORK_TYPES,
   NetworkStatus,
-  MAINNET_DISPLAY_NAME,
-  DEFAULT_CUSTOM_TESTNET_MAP,
   UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
@@ -254,6 +245,7 @@ import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { BridgeStatusAction } from '../../shared/types/bridge-status';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { addDiscoveredSolanaAccounts } from '../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -581,22 +573,10 @@ export default class MetamaskController extends EventEmitter {
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
 
-      // Note: Consider changing `getDefaultNetworkControllerState`
-      // on the controller side to include some of these tweaks.
-      networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
-      delete networks[CHAIN_IDS.GOERLI];
-      delete networks[CHAIN_IDS.LINEA_GOERLI];
-
-      // Due to the MegaETH Testnet not being included in getDefaultNetworkControllerState().
-      // and it is not using Infura as a provider, we need to add it manually.
-      networks[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(
-        DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
-      );
-
+      // TODO: It should be done on NetworkController level
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
         // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
-        // Note: The MegaETH Testnet is currently the only network that is not included.
         if (hasProperty(BlockExplorerUrl, id)) {
           network.blockExplorerUrls = [BlockExplorerUrl[id]];
         }
@@ -641,6 +621,7 @@ export default class MetamaskController extends EventEmitter {
         fetch: globalThis.fetch.bind(globalThis),
         btoa: globalThis.btoa.bind(globalThis),
       }),
+      additionalDefaultNetworks: [ChainId['megaeth-testnet']],
     });
     this.networkController.initializeProvider();
 
@@ -1194,6 +1175,16 @@ export default class MetamaskController extends EventEmitter {
       subjectCacheLimit: 100,
     });
 
+    // @TODO(snaps): This fixes an issue where `withKeyring` would lock the `KeyringController` mutex.
+    // That meant that if a snap requested a keyring operation (like requesting entropy) while the `KeyringController` was locked,
+    // it would cause a deadlock.
+    // This is a temporary fix until we can refactor how we handle requests to the Snaps Keyring.
+    const withSnapKeyring = async (operation) => {
+      const keyring = await this.getSnapKeyring();
+
+      return operation({ keyring });
+    };
+
     const multichainRouterMessenger = this.controllerMessenger.getRestricted({
       name: 'MultichainRouter',
       allowedActions: [
@@ -1207,13 +1198,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.multichainRouter = new MultichainRouter({
       messenger: multichainRouterMessenger,
-      // Binding the call to provide the selector only giving the controller the option to pass the operation
-      withSnapKeyring: this.keyringController.withKeyring.bind(
-        this.keyringController,
-        {
-          type: 'Snap Keyring',
-        },
-      ),
+      withSnapKeyring,
     });
 
     // account tracker watches balances, nonces, and any code at their address
@@ -1264,6 +1249,9 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
+          ///: BEGIN:ONLY_INCLUDE_IF(solana)
+          await this._addSolanaAccount();
+          ///: END:ONLY_INCLUDE_IF
           await this._addAccountsWithBalance();
 
           this.postOnboardingInitialization();
@@ -3560,6 +3548,12 @@ export default class MetamaskController extends EventEmitter {
         // in the case that the ID is an EVM network client ID.
         return await this.multichainNetworkController.setActiveNetwork(id);
       },
+
+      // active networks by accounts
+      getNetworksWithTransactionActivityByAccounts:
+        this.multichainNetworkController.getNetworksWithTransactionActivityByAccounts.bind(
+          this.multichainNetworkController,
+        ),
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step
       setActiveNetworkConfigurationId: (networkConfigurationId) => {
@@ -4228,6 +4222,12 @@ export default class MetamaskController extends EventEmitter {
         tokenDetectionController,
       ),
 
+      // MultichainAssetsRatesController
+      fetchHistoricalPricesForAsset: (...args) =>
+        this.multichainAssetsRatesController.fetchHistoricalPricesForAsset(
+          ...args,
+        ),
+
       // DetectCollectibleController
       detectNfts: nftDetectionController.detectNfts.bind(
         nftDetectionController,
@@ -4726,6 +4726,9 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
+      ///: BEGIN:ONLY_INCLUDE_IF(solana)
+      await this._addSolanaAccount(id);
+      ///: END:ONLY_INCLUDE_IF
       await this._addAccountsWithBalance(id);
 
       return newAccountAddress;
@@ -4808,6 +4811,9 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (completedOnboarding) {
+        ///: BEGIN:ONLY_INCLUDE_IF(solana)
+        await this._addSolanaAccount();
+        ///: END:ONLY_INCLUDE_IF
         await this._addAccountsWithBalance();
 
         // This must be set as soon as possible to communicate to the
@@ -4909,6 +4915,40 @@ export default class MetamaskController extends EventEmitter {
       );
     }
   }
+
+  /**
+   * Adds Solana account to the keyring.
+   *
+   * @param {string} keyringId - The ID of the keyring to add the account to.
+   */
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  async _addSolanaAccount(keyringId) {
+    const snapId = SOLANA_WALLET_SNAP_ID;
+    let entropySource = keyringId;
+    if (!entropySource) {
+      // Get the entropy source from the first HD keyring
+      const id = await this.keyringController.withKeyring(
+        { type: KeyringTypes.hd },
+        async ({ metadata }) => {
+          return metadata.id;
+        },
+      );
+      entropySource = id;
+    }
+
+    const keyring = await this.getSnapKeyring();
+
+    return await keyring.createAccount(
+      snapId,
+      { entropySource },
+      {
+        displayConfirmation: false,
+        displayAccountNameSuggestion: false,
+        setSelectedAccount: false,
+      },
+    );
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
@@ -7059,6 +7099,25 @@ export default class MetamaskController extends EventEmitter {
       }
       return next();
     });
+
+    engine.push(
+      createRPCMethodTrackingMiddleware({
+        getAccountType: this.getAccountType.bind(this),
+        getDeviceModel: this.getDeviceModel.bind(this),
+        getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
+        getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
+        snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
+          name: 'SnapAndHardwareMessenger',
+          allowedActions: [
+            'KeyringController:getKeyringForAccount',
+            'SnapController:get',
+            'AccountsController:getSelectedAccount',
+          ],
+        }),
+        appStateController: this.appStateController,
+        metaMetricsController: this.metaMetricsController,
+      }),
+    );
 
     engine.push(multichainMethodCallValidatorMiddleware);
     const middlewareMaker = makeMethodMiddlewareMaker([
