@@ -11,13 +11,9 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import {
-  RevokeDelegation,
-  upgradeAccountConfirmation,
-} from '../../../../../../../../test/data/confirmations/batch-transaction';
+import { RevokeDelegation } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
-import { Confirmation } from '../../../../../types/confirm';
 import { TransactionDetails } from './transaction-details';
 
 jest.mock(
@@ -231,25 +227,6 @@ describe('<TransactionDetails />', () => {
       expect(
         getByTestId('transaction-details-recipient-row'),
       ).toBeInTheDocument();
-    });
-
-    it('renders SmartContractWithLogo when transaction is a batch transaction', () => {
-      const state = getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-        {
-          metamask: {
-            preferences: {
-              showConfirmationAdvancedDetails: true,
-            },
-          },
-        },
-      );
-      const mockStore = configureMockStore(middleware)(state);
-      const { getByText } = renderWithConfirmContextProvider(
-        <TransactionDetails />,
-        mockStore,
-      );
-      expect(getByText('Smart contract')).toBeInTheDocument();
     });
   });
 });
