@@ -39098,8 +39098,8 @@ __metadata:
 
 "yjs@file:../../work/yjs::locator=metamask-crx%40workspace%3A.":
   version: 13.6.24
-  resolution: "yjs@file:../../work/yjs#../../work/yjs::hash=fc66ac&locator=metamask-crx%40workspace%3A."
-  checksum: 10/a8b980ec3ba890fe6b77475e68a92ada79ef322d163d952e22126de6278854c4d6e142aba3af782dcb53de2423e0eb446cbd9ec1e39d914489a15723aa9ec0e3
+  resolution: "yjs@file:../../work/yjs#../../work/yjs::hash=a5780c&locator=metamask-crx%40workspace%3A."
+  checksum: 10/75a40cd94d7c30fe2b64739a8f70d0c68bcfe755392540d33c0e59ec42b6485b37b799511ecf7da7c2f7838cebf4e04e344a8ead2d3d25e698223b82e2b81d30
   languageName: node
   linkType: hard
 

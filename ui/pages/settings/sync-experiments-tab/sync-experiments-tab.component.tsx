@@ -26,6 +26,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { userStorageGetAllItems } from '../../../store/actions';
 import { YjsProvider } from './yjs.provider';
+import { YjsIndexedDBProvider } from './yjs.indexeddb.provider';
 
 const EXPERIMENTAL_KEY = 'test-items-116';
 
@@ -42,12 +43,17 @@ export const SyncExperimentsTab: React.FC = () => {
   const [editItemId, setEditItemId] = React.useState<string | null>(null);
   const [editItemValue, setEditItemValue] = React.useState<string>('');
 
-  // Create the doc and provider directly
+  // Create the doc and providers directly
   const doc = React.useMemo<Doc>(() => new Doc(), []);
 
-  // Create the provider ref to avoid recreating it on every render
-  const provider = React.useMemo<YjsProvider>(
+  const remoteProvider = React.useMemo<YjsProvider>(
     () => new YjsProvider(doc, EXPERIMENTAL_KEY),
+    [doc],
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const localProvider = React.useMemo<YjsIndexedDBProvider>(
+    () => new YjsIndexedDBProvider(doc, EXPERIMENTAL_KEY),
     [doc],
   );
 
@@ -80,25 +86,25 @@ export const SyncExperimentsTab: React.FC = () => {
   const handlePull = useCallback(async () => {
     setLoading(true);
     try {
-      const updates = await provider.handlePull();
+      const updates = await remoteProvider.handlePull();
       setRawItems(updates);
     } catch (e) {
       console.error('Error fetching items:', e);
     } finally {
       setLoading(false);
     }
-  }, [provider]);
+  }, [remoteProvider]);
 
   const handlePush = useCallback(async () => {
     setLoading(true);
     try {
-      await provider.handlePush();
+      await remoteProvider.handlePush();
     } catch (e) {
       console.error('Error pushing items:', e);
     } finally {
       setLoading(false);
     }
-  }, [provider]);
+  }, [remoteProvider]);
 
   const fetchAllEntries = useCallback(async () => {
     setLoading(true);
