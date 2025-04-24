@@ -133,7 +133,7 @@ export class SwapSendPage {
         assert.equal(v, expectedInputValues[index]);
         if (index > 0) {
           const isDisabled = await i.getAttribute('disabled');
-          assert.equal(isDisabled, true);
+          assert.equal(isDisabled, 'true');
         }
       }),
     );
