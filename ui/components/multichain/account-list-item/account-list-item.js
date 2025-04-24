@@ -65,7 +65,9 @@ import {
   getMultichainNetwork,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
+///: END:ONLY_INCLUDE_IF
 import { ConnectedStatus } from '../connected-status';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 // TODO: Remove restricted import
@@ -147,8 +149,10 @@ const AccountListItem = ({
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
+  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const multichainAggregatedBalance = useSelector((state) =>
