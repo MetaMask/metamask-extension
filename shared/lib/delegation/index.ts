@@ -1,4 +1,7 @@
-export * from './environment';
+export {
+  getDeleGatorEnvironment,
+  type DeleGatorEnvironment,
+} from './environment';
 export {
   ANY_BENEFICIARY,
   DELEGATION_ABI_TYPE_COMPONENTS,

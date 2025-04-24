@@ -1,4 +1,5 @@
-import { type Hex, concat, isHex, toHex } from 'viem';
+import type { Hex } from 'viem';
+import { concat, isHex, toHex } from 'viem/utils';
 import type { Caveat, DeleGatorEnvironment } from '..';
 
 export const allowedCalldata = 'allowedCalldata';

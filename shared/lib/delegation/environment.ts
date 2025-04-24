@@ -1,3 +1,4 @@
+import type { Hex } from 'viem';
 import { DELEGATOR_CONTRACTS } from '@metamask/delegation-deployments';
 
 /**

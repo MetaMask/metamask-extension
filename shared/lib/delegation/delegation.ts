@@ -1,20 +1,17 @@
+import type { AbiParameter, Hex, TypedData } from 'viem';
 import {
   encodeAbiParameters,
   getAddress,
   keccak256,
   parseAbiParameters,
   toHex,
-  type AbiParameter,
-  type Hex,
-  type TypedData,
-} from 'viem';
+} from 'viem/utils';
 import {
   CAVEAT_ABI_TYPE_COMPONENTS,
   getCaveatArrayPacketHash,
   type Caveat,
 } from './caveat';
-
-import { type Caveats, resolveCaveats } from './caveatBuilder';
+import { resolveCaveats, type Caveats } from './caveatBuilder';
 
 /**
  * The ABI type components of a Delegation.

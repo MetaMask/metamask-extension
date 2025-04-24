@@ -1,4 +1,5 @@
-import { concat, isAddress, type Address } from 'viem';
+import type { Address } from 'viem';
+import { concat, isAddress } from 'viem/utils';
 import type { Caveat, DeleGatorEnvironment } from '..';
 
 export const allowedTargets = 'allowedTargets';

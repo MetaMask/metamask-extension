@@ -1,4 +1,5 @@
-import { type Hex, isHex, concat, toFunctionSelector, AbiFunction } from 'viem';
+import type { AbiFunction, Hex } from 'viem';
+import { concat, isHex, toFunctionSelector } from 'viem/utils';
 import type { Caveat, DeleGatorEnvironment } from '..';
 
 export const allowedMethods = 'allowedMethods';

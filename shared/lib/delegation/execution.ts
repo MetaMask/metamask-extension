@@ -1,4 +1,7 @@
-import { type Hex, encodeAbiParameters, encodePacked, zeroAddress } from 'viem';
+import type { Hex } from 'viem';
+import { encodeAbiParameters, encodePacked } from 'viem/utils';
+
+const zeroAddress = '0x0000000000000000000000000000000000000000' as const;
 
 export type ExecutionStruct = {
   target: Hex;

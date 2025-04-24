@@ -1,11 +1,11 @@
+import type { Hex } from 'viem';
 import {
-  type Hex,
-  encodePacked,
   encodeAbiParameters,
-  parseAbiParameters,
+  encodePacked,
   keccak256,
+  parseAbiParameters,
   toHex,
-} from 'viem';
+} from 'viem/utils';
 
 export const CAVEAT_ABI_TYPE_COMPONENTS = [
   { type: 'address', name: 'enforcer' },
