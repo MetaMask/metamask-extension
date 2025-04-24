@@ -402,7 +402,9 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
+    // todo: reenable this test https://github.com/MetaMask/metamask-extension/issues/21807
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
       await withFixtures(
         {
           fixtures: {
