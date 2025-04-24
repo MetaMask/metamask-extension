@@ -1737,10 +1737,14 @@
       }
     },
     "@metamask/multichain-network-controller": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/network-controller": true,
+        "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/multichain-network-controller>@solana/addresses": true
       }
@@ -3691,6 +3695,12 @@
     "@material-ui/core>react-transition-group>dom-helpers": {
       "packages": {
         "@babel/runtime": true
+      }
+    },
+    "dompurify": {
+      "globals": {
+        "console.warn": true,
+        "define": true
       }
     },
     "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": {
