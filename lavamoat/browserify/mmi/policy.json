@@ -1309,7 +1309,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/polling-controller": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils>@metamask/supegrstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
