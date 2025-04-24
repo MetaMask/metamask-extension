@@ -5589,10 +5589,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/institutional-wallet-snap@npm:1.3.0":
-  version: 1.3.0
-  resolution: "@metamask/institutional-wallet-snap@npm:1.3.0"
-  checksum: 10/089b3642cba409c97b5480275e1b3b35c7298656b85450439761a0d0faeb4b05c278f2fcd2afeb75c8c784c7ebd0755008762ac51c4dfd0010c40fb145eaf206
+"@metamask/institutional-wallet-snap@npm:1.3.1":
+  version: 1.3.1
+  resolution: "@metamask/institutional-wallet-snap@npm:1.3.1"
+  checksum: 10/4f28bc4344976632263ad0a8dc81dc967c45d920b64b298386577ad4c1e32c401c2da6244777aff7a130c76a849a8c38af19564102d887f7e2d643cae297cae4
   languageName: node
   linkType: hard
 
@@ -5777,10 +5777,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-client@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/multichain-api-client@npm:0.2.0"
-  checksum: 10/39509819e8304e5adee96d242c4fe73f39fe92f07102faf373c902fded2617bd023ea7423e84dcea47980c752d5233742d05ca45ff040db664ea883db128cc7c
+"@metamask/multichain-api-client@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/multichain-api-client@npm:0.3.0"
+  checksum: 10/3a82a36dbdad88f16464e7655d77a5562d636a387b93d69438421c1fd25f4767eb28ed4c423647b6b06fb0c85cf7dcbe7e4bca474cddd022c78652d631de23fe
   languageName: node
   linkType: hard
 
@@ -5817,18 +5817,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/multichain-network-controller@npm:0.4.0"
+"@metamask/multichain-network-controller@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "@metamask/multichain-network-controller@npm:0.5.1"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.7.0"
     "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/keyring-internal-api": "npm:^6.0.1"
+    "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.2.0"
     "@solana/addresses": "npm:^2.0.0"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
     "@metamask/network-controller": ^23.0.0
-  checksum: 10/3f5a04af616a24d2b2609204fdecd38062d7f15577e86ee00877a10bbd9cdcf3656b7d2b6e7010c847aca15c33e3c78f8adf5c2d0214ae75a1cf6f6eaf4f1f8b
+  checksum: 10/ebfcf3219d7abb6f826fbd1f0eaa6af7c667dfa89a671cec2eaf2b039602e038c5cb6f63681a5e5255165d13aaee736c72750348647f0c97c7e5fcb85932f7c8
   languageName: node
   linkType: hard
 
@@ -6154,27 +6157,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@metamask/providers@npm:20.0.0"
-  dependencies:
-    "@metamask/json-rpc-engine": "npm:^10.0.2"
-    "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
-    "@metamask/object-multiplex": "npm:^2.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/safe-event-emitter": "npm:^3.1.1"
-    "@metamask/utils": "npm:^11.0.1"
-    detect-browser: "npm:^5.2.0"
-    extension-port-stream: "npm:^4.1.0"
-    fast-deep-equal: "npm:^3.1.3"
-    is-stream: "npm:^2.0.0"
-    readable-stream: "npm:^3.6.2"
-  peerDependencies:
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/b958d03a9380d86e605db239109a3debcc1ffde90371abe5beb82a5bed46c7718303a2bb92ec269eae16eff145b9ebbfcb3445a2b6bad4f297a590ee725a5bad
-  languageName: node
-  linkType: hard
-
 "@metamask/providers@npm:^21.0.0":
   version: 21.0.0
   resolution: "@metamask/providers@npm:21.0.0"
@@ -6193,6 +6175,27 @@ __metadata:
   peerDependencies:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/4bd649cf2541b6da9257583496b906c00eef316df64db38008a864b1d27beeb9f579ed9b8f5a1ba11c0403d88b32a93c674d622dc24dc2b026d68a49692a1b73
+  languageName: node
+  linkType: hard
+
+"@metamask/providers@npm:^22.0.1":
+  version: 22.0.1
+  resolution: "@metamask/providers@npm:22.0.1"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
+    "@metamask/object-multiplex": "npm:^2.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/safe-event-emitter": "npm:^3.1.1"
+    "@metamask/utils": "npm:^11.0.1"
+    detect-browser: "npm:^5.2.0"
+    extension-port-stream: "npm:^4.1.0"
+    fast-deep-equal: "npm:^3.1.3"
+    is-stream: "npm:^2.0.0"
+    readable-stream: "npm:^3.6.2"
+  peerDependencies:
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/c4966023b69ba603ff1e62e57adf9968ebfd548f8e018b4e4181810131a554d71168fbd0056127a425b204e76ebb426620db0e192895bd4379a970b41ab1b9d0
   languageName: node
   linkType: hard
 
@@ -6317,9 +6320,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^11.2.1":
-  version: 11.2.1
-  resolution: "@metamask/snaps-controllers@npm:11.2.1"
+"@metamask/snaps-controllers@npm:^11.2.2":
+  version: 11.2.2
+  resolution: "@metamask/snaps-controllers@npm:11.2.2"
   dependencies:
     "@metamask/approval-controller": "npm:^7.1.3"
     "@metamask/base-controller": "npm:^8.0.0"
@@ -6335,7 +6338,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^12.1.0"
     "@metamask/snaps-sdk": "npm:^6.22.0"
     "@metamask/snaps-utils": "npm:^9.2.0"
-    "@metamask/utils": "npm:^11.2.0"
+    "@metamask/utils": "npm:^11.4.0"
     "@xstate/fsm": "npm:^2.0.0"
     async-mutex: "npm:^0.5.0"
     browserify-zlib: "npm:^0.2.0"
@@ -6354,7 +6357,7 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/8431172c323e9f6eca7c3a58d113a976b8be35532c377f8ca3418b04c9156f399fe4b1230edacb6fbc36614c8f71e5de8c62e43e1f8559035316dfffc73d20d1
+  checksum: 10/a7f7ce2e276baaa4f1cb70fed9c40cc21f789449fbbd6abe3a66f0105f417bb68dbe4168ccce633607691ce9873fe345239abbd7eb465800b5459a9dd6c42dba
   languageName: node
   linkType: hard
 
@@ -6482,10 +6485,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.22.0":
-  version: 1.22.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.22.0"
-  checksum: 10/554fafa1c6c1d207b70911cb3caa282a3309ea903d3f9fe60621f8bb6b6fd96ed70b3000f45bc4ceb5ff39daea6497af472648d788ede3894f562437858e3301
+"@metamask/solana-wallet-snap@npm:^1.24.0":
+  version: 1.24.0
+  resolution: "@metamask/solana-wallet-snap@npm:1.24.0"
+  checksum: 10/39ccfa2f1697282d483a5dca9acb48d22abb30be3cb0aed531aa8f4a752a54bd1b83c4b4e35e6c14b677f141eceb6c26d3fd3e4a9c50b145f43d628f2b511865
   languageName: node
   linkType: hard
 
@@ -6540,10 +6543,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp-multichain@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/test-dapp-multichain@npm:0.9.0"
-  checksum: 10/6d317402bc59165559fad9b1e681ea1437858158f102cced86b7c52da115c7a991e7012906f6bad06f7f55ffa36a30ffe4651b29375d769989eba5611540f530
+"@metamask/test-dapp-multichain@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@metamask/test-dapp-multichain@npm:0.10.0"
+  checksum: 10/9840f9dbbfe289de159dc9d950aea923a4154980e5e31fd68a67bc21437f23c35d85ce8a4fc36e7f51234353a5d2ec83af04e56ad95ded93f624ee63050e55bb
   languageName: node
   linkType: hard
 
@@ -6633,9 +6636,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0":
-  version: 11.2.0
-  resolution: "@metamask/utils@npm:11.2.0"
+"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0":
+  version: 11.4.0
+  resolution: "@metamask/utils@npm:11.4.0"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -6646,7 +6649,7 @@ __metadata:
     pony-cause: "npm:^2.1.10"
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
-  checksum: 10/9cc2cb6af4627085e72a310ba9b8921c69757d94e2992d4664627e5a0d99b1f2f7f8069c6f22262515135e1172bd66b82d00512d90ea2ec6da4e768f3d7d4ae2
+  checksum: 10/7c976268e944b542b5e936bae89f58a50eef58501bd3512944995c6d416cb1a7dd3f712aec8c7ca0969dcee889ab963b815fbc3e863dc80ccf16e9258eaec3ff
   languageName: node
   linkType: hard
 
@@ -12212,10 +12215,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/trusted-types@npm:^2.0.2":
-  version: 2.0.5
-  resolution: "@types/trusted-types@npm:2.0.5"
-  checksum: 10/e138a70a702e31b49ac73cc33852d892367224be6e096c445194d76327cb46f54f971ae311e34371f649a2d5ac9204afee345bb22f32cfc515eb21c3f12f66b7
+"@types/trusted-types@npm:^2.0.2, @types/trusted-types@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@types/trusted-types@npm:2.0.7"
+  checksum: 10/8e4202766a65877efcf5d5a41b7dd458480b36195e580a3b1085ad21e948bc417d55d6f8af1fd2a7ad008015d4117d5fdfe432731157da3c68678487174e4ba3
   languageName: node
   linkType: hard
 
@@ -15717,9 +15720,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001599, caniuse-lite@npm:^1.0.30001669":
-  version: 1.0.30001669
-  resolution: "caniuse-lite@npm:1.0.30001669"
-  checksum: 10/cd0b481bb997703cb7651e55666b4aa4e7b4ecf9784796e2393179a15e55c71a6abc6ff865c922bbd3bbfa4a4bf0530d8da13989b97ff8c7850c8a5bd4e00491
+  version: 1.0.30001707
+  resolution: "caniuse-lite@npm:1.0.30001707"
+  checksum: 10/5c5f9aad651f4d957cc59c8b4ac22bb7ac3a1c86c26ee7d5c59b00062bdc1c421980513179da1f5e20cade2da8d7f3c41d482ce7d4a8d9f411e4a827fe092d29
   languageName: node
   linkType: hard
 
@@ -18369,6 +18372,30 @@ __metadata:
   dependencies:
     domelementtype: "npm:^2.3.0"
   checksum: 10/809b805a50a9c6884a29f38aec0a4e1b4537f40e1c861950ed47d10b049febe6b79ab72adaeeebb3cc8fc1cd33f34e97048a72a9265103426d93efafa78d3e96
+  languageName: node
+  linkType: hard
+
+"dompurify@npm:3.2.5":
+  version: 3.2.5
+  resolution: "dompurify@npm:3.2.5"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.7"
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 10/03974f18851fb4e447d26adc0ebf7a64b6c5b4a11caebebec3e04de8fcaa19cdb67bf3575a2335727123d0fc1c2febc1bc992a84f327a8ce65a0bfd11e3afc50
+  languageName: node
+  linkType: hard
+
+"dompurify@patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch":
+  version: 3.2.5
+  resolution: "dompurify@patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch::version=3.2.5&hash=ea78bd"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.7"
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 10/40dafddc09171ee92af898c6d7df81f3486f2ab15275592427fe105f7afa230b92973891ee41935fb5565cca6b50b67d86b85e4a3dd0486e1738736efaf3d77c
   languageName: node
   linkType: hard
 
@@ -27637,7 +27664,7 @@ __metadata:
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^23.0.0"
-    "@metamask/institutional-wallet-snap": "npm:1.3.0"
+    "@metamask/institutional-wallet-snap": "npm:1.3.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.4"
@@ -27651,9 +27678,9 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:^1.1.1"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-api-client": "npm:^0.2.0"
+    "@metamask/multichain-api-client": "npm:^0.3.0"
     "@metamask/multichain-api-middleware": "npm:^0.1.1"
-    "@metamask/multichain-network-controller": "npm:^0.4.0"
+    "@metamask/multichain-network-controller": "npm:^0.5.1"
     "@metamask/multichain-transactions-controller": "npm:^0.9.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.2.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch"
@@ -27670,7 +27697,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
     "@metamask/profile-sync-controller": "npm:^12.0.0"
-    "@metamask/providers": "npm:^20.0.0"
+    "@metamask/providers": "npm:^22.0.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
@@ -27679,16 +27706,16 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^19.0.0"
     "@metamask/signature-controller": "npm:^27.1.0"
     "@metamask/smart-transactions-controller": "npm:^16.3.1"
-    "@metamask/snaps-controllers": "npm:^11.2.1"
+    "@metamask/snaps-controllers": "npm:^11.2.2"
     "@metamask/snaps-execution-environments": "npm:^7.2.1"
     "@metamask/snaps-rpc-methods": "npm:^12.1.0"
     "@metamask/snaps-sdk": "npm:^6.22.0"
     "@metamask/snaps-utils": "npm:^9.2.0"
-    "@metamask/solana-wallet-snap": "npm:^1.22.0"
+    "@metamask/solana-wallet-snap": "npm:^1.24.0"
     "@metamask/solana-wallet-standard": "npm:^0.1.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
-    "@metamask/test-dapp-multichain": "npm:^0.9.0"
+    "@metamask/test-dapp-multichain": "npm:^0.10.0"
     "@metamask/transaction-controller": "npm:^54.1.0"
     "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
@@ -27816,6 +27843,7 @@ __metadata:
     del: "npm:^6.1.1"
     depcheck: "npm:^1.4.3"
     detect-port: "npm:^1.5.1"
+    dompurify: "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch"
     dotenv: "npm:^16.4.5"
     duplexify: "npm:^4.1.1"
     eslint: "patch:eslint@npm%3A8.57.0#~/.yarn/patches/eslint-npm-8.57.0-4286e12a3a.patch"

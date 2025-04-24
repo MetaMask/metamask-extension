@@ -2217,6 +2217,7 @@ export function addNftVerifyOwnership(
 export function removeAndIgnoreNft(
   address: string,
   tokenID: string,
+  networkClientId: string,
   shouldShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -2230,7 +2231,11 @@ export function removeAndIgnoreNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreNft', [address, tokenID]);
+      await submitRequestToBackground('removeAndIgnoreNft', [
+        address,
+        tokenID,
+        { networkClientId },
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -2646,6 +2651,27 @@ export function setActiveNetworkWithError(
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
       throw new Error('Had a problem changing networks!');
+    }
+  };
+}
+
+export function getNetworksWithTransactionActivityByAccounts(): ThunkAction<
+  Promise<NetworkConfiguration[]>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    log.debug('background.getNetworksWithTransactionActivityByAccounts');
+    try {
+      return await submitRequestToBackground(
+        'getNetworksWithTransactionActivityByAccounts',
+      );
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw new Error(
+        'Had a problem getting networks with activity by accounts!',
+      );
     }
   };
 }

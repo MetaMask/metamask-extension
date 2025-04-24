@@ -36,6 +36,7 @@ import {
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../../../../../components/component-library';
+import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -179,13 +180,19 @@ export const TransactionDetails = () => {
   if (currentConfirmation?.type === TransactionType.revokeDelegation) {
     return null;
   }
+  const { nestedTransactions, txParams } = currentConfirmation ?? {};
+  const { from, to } = txParams ?? {};
+
+  const isBatch =
+    isBatchTransaction(nestedTransactions) &&
+    to?.toLowerCase() === from.toLowerCase();
 
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
         <NetworkRow isShownWithAlertsOnly />
         <OriginRow />
-        <RecipientRow />
+        {!isBatch && <RecipientRow />}
         {showAdvancedDetails && <MethodDataRow />}
         <SigningInWithRow />
       </ConfirmInfoSection>
