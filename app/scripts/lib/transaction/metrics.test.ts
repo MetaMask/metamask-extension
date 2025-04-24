@@ -109,6 +109,7 @@ const mockTransactionMetricsRequest = {
   getMethodData: jest.fn(),
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
   getHDEntropyIndex: jest.fn(),
+  getNetworkRpcUrl: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
