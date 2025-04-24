@@ -53,7 +53,7 @@ exports[`ConnectPage should render correctly 1`] = `
               github.io
             </h2>
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--justify-content-center"
+              class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -422,7 +422,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
               github.io
             </h2>
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--justify-content-center"
+              class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
