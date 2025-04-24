@@ -102,6 +102,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           {
             ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
+            mockCalls: true,
           },
           async (driver) => {
             const testDapp = new TestDappSolana(driver);

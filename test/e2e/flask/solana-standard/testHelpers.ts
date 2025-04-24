@@ -2,7 +2,10 @@ import * as path from 'path';
 import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { withSolanaAccountSnap } from '../solana/common-solana';
+import {
+  SOLANA_DEVNET_URL,
+  withSolanaAccountSnap,
+} from '../solana/common-solana';
 import { By } from 'selenium-webdriver';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
@@ -36,7 +39,7 @@ export const connectSolanaTestDapp = async (
 ): Promise<void> => {
   const header = await testDapp.getHeader();
   // Set the endpoint to devnet
-  await header.setEndpoint('https://solana-devnet.infura.io');
+  await header.setEndpoint(SOLANA_DEVNET_URL);
   await driver.clickElement({ text: 'Update', tag: 'button' });
 
   await header.connect();

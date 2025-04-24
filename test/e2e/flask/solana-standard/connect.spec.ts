@@ -1,5 +1,8 @@
 import { strict as assert } from 'assert';
-import { withSolanaAccountSnap } from '../solana/common-solana';
+import {
+  SOLANA_DEVNET_URL,
+  withSolanaAccountSnap,
+} from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   connectSolanaTestDapp,
@@ -270,7 +273,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
             // Set the endpoint to devnet as it has been reset after the refresh
             const header = await testDapp.getHeader();
-            await header.setEndpoint('https://solana-devnet.infura.io');
+            await header.setEndpoint(SOLANA_DEVNET_URL);
             await driver.clickElement({ text: 'Update', tag: 'button' });
 
             await driver.delay(regularDelayMs);
