@@ -1100,7 +1100,7 @@ async function buildEventFragmentProperties({
   );
 
   // Only calculate and add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
-  if (status === 'submitted' || status === 'confirmed') {
+  if (TransactionStatus.submitted || TransactionStatus.confirmed) {
     // Get RPC URL from provider
     let rpcUrl = 'invalid';
     if (transactionMetricsRequest.getNetworkRpcUrl && transactionMeta.chainId) {
