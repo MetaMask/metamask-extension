@@ -25,6 +25,18 @@ type SwapOptions = {
 
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
   await driver.clickElement('[data-testid="token-overview-button-swap"]');
+  await driver.fill(
+    'input[data-testid="prepare-swap-page-from-token-amount"]',
+    options.amount.toString(),
+  );
+
+  if (options.swapTo) {
+    await driver.waitForSelector({
+      tag: 'h6',
+      text: 'Estimated gas fee',
+    });
+  };
+
   await driver.clickElement('[data-testid="prepare-swap-page-swap-to"]');
   await driver.waitForSelector('[id="list-with-search__text-search"]');
 
@@ -51,12 +63,8 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
       '[data-testid="searchable-item-list-import-button"]',
     );
   }
-  await driver.clickElementAndWaitToDisappear(
+  await driver.clickElement(
     '[data-testid="searchable-item-list-primary-label"]',
-  );
-  await driver.fill(
-    'input[data-testid="prepare-swap-page-from-token-amount"]',
-    options.amount.toString(),
   );
 };
 
