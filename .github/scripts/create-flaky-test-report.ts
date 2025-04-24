@@ -16,7 +16,6 @@ async function main() {
     TO_DATE: process.env.TO_DATE || new Date().toISOString(), // default: today
     SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL || '',
     GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
-    GITHUB_ACTIONS: process.env.GITHUB_ACTIONS === 'true',
   };
 
   const github = new Octokit({ auth: env.GITHUB_TOKEN });
