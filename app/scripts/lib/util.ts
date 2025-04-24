@@ -504,7 +504,7 @@ export async function initializeRpcProviderDomains(): Promise<void> {
           for (const rpcUrl of chain.rpc) {
             try {
               const url = new URL(rpcUrl);
-              knownDomainsSet.add(url.hostname.toLowerCase());
+              knownDomainsSet.add(url.hostname);
             } catch (e) {
               // Skip invalid URLs
               continue;
