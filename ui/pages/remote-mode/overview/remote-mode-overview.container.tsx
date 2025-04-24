@@ -50,19 +50,30 @@ export default function RemoteModeIntroducing() {
   );
   const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
 
-  const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const history = useHistory();
-  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
-  useEffect(() => {
-    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
-  }, [selectedHardwareAccount]);
+  const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
+  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+  const remoteModeConfig = localStorage.getItem('remoteMode'); // todo: grab this from state
+  const parsedRemoteConfig = remoteModeConfig
+    ? JSON.parse(remoteModeConfig)
+    : null;
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
       history.push(DEFAULT_ROUTE);
     }
   }, [isRemoteModeEnabled, history]);
+
+  useEffect(() => {
+    if (remoteModeConfig) {
+      setCurrentScreen(RemoteScreen.PERMISSIONS);
+    }
+  }, [remoteModeConfig]);
+
+  useEffect(() => {
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+  }, [selectedHardwareAccount]);
 
   const renderScreen = () => {
     switch (currentScreen) {
@@ -85,6 +96,7 @@ export default function RemoteModeIntroducing() {
         return (
           <Content padding={6}>
             <RemoteModePermissions
+              remoteModeConfig={parsedRemoteConfig}
               setStartEnableRemoteSwap={() => {
                 history.push(REMOTE_ROUTE_SETUP_SWAPS);
               }}
