@@ -45,7 +45,7 @@ class TestDappIndividualRequest {
     await this.driver.openNewPage(dappUrl);
   }
 
-  async request(method: string, params: JsonRpcParams[]) {
+  async request(method: string, params: JsonRpcParams) {
     await this.openTestDappIndividualPage({
       url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
         params,

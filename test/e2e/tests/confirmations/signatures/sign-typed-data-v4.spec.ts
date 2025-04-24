@@ -175,9 +175,10 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         await unlockWallet(driver);
         const testDappIndividualRequest = new TestDappIndividualRequest(driver);
 
-        await testDappIndividualRequest.request('eth_signTypedData_v4', [
+        await testDappIndividualRequest.request(
+          'eth_signTypedData_v4',
           signatureMessageWithoutVerifyingContract,
-        ]);
+        );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await assertInfoValues({ driver, verifyingContract: false });
         await scrollAndConfirmAndAssertConfirm(driver);

@@ -39,7 +39,7 @@ class PreinstalledExampleSettings {
     await this.driver.clickElement(this.toggleButton);
   }
 
-  async selectRadioOption(option:string): Promise<void> {
+  async selectRadioOption(option: string): Promise<void> {
     console.log(`Selecting option: ${option} radio button`);
     await this.driver.clickElement({ text: option, tag: `label` });
   }
@@ -52,7 +52,7 @@ class PreinstalledExampleSettings {
 
   async check_isToggleOn(): Promise<void> {
     console.log('Checking if the toggle is on');
-    await this.driver.waitForSelector(this.toggleButton + '--on');
+    await this.driver.waitForSelector(`${this.toggleButton}--on`);
   }
 
   async check_selectedRadioOption(option: string): Promise<boolean> {
@@ -60,7 +60,7 @@ class PreinstalledExampleSettings {
     const radioOption = await this.driver.findElement(
       `input[type="radio"][id="${option}"]`,
     );
-    const isChecked = await radioOption.getAttribute('checked') === 'true';
+    const isChecked = (await radioOption.getAttribute('checked')) === 'true';
     return isChecked;
   }
 
@@ -71,7 +71,6 @@ class PreinstalledExampleSettings {
       text: option,
     });
   }
-
 }
 
 export default PreinstalledExampleSettings;

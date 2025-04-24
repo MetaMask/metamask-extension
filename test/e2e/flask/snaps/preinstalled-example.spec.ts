@@ -45,8 +45,8 @@ describe('Pre-install example', function () {
           'rpcResultSpan',
           jsonTextValidation,
         );
-      }
-  );
+      },
+    );
   });
 });
 
