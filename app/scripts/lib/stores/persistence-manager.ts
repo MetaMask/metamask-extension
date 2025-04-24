@@ -7,11 +7,8 @@ import 'navigator.locks';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
-import { KeyringControllerState } from '@metamask/keyring-controller';
+import { hasProperty, isObject } from '@metamask/utils';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
-import { OnboardingControllerState } from '../../controllers/onboarding';
-import { PreferencesControllerState } from '../../controllers/preferences-controller';
-import { AppStateControllerState } from '../../controllers/app-state-controller';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -19,7 +16,6 @@ import type {
   BaseStore,
   MetaData,
 } from './base-store';
-import { hasProperty, isObject } from '@metamask/utils';
 
 export type Backup = {
   KeyringController?: unknown;
@@ -36,7 +32,7 @@ export type Backup = {
  * relevant for restoring the state. This is to avoid unnecessary data
  * duplication and ensure efficient storage usage.
  *
- * @param state The current MetaMask state.
+ * @param state - The current MetaMask state.
  * @returns A Backup object containing the state of various controllers.
  */
 function makeBackup(state?: MetaMaskStateType): Backup {
@@ -52,7 +48,7 @@ function makeBackup(state?: MetaMaskStateType): Backup {
  * Checks if the state contains a vault. This can be used to determine if the
  * MetaMask state is in a valid state for backup.
  *
- * @param state The current MetaMask state.
+ * @param state - The current MetaMask state.
  * @returns
  */
 function hasVault(state?: MetaMaskStateType): state is MetaMaskStateType {
