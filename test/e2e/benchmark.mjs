@@ -108,6 +108,8 @@ async function profilePageLoad(pages, browserLoads, pageLoads, retries) {
       );
     }
 
+    console.info(JSON.stringify(runResults, null, 2));
+
     const result = {};
 
     for (const [key, path] of Object.entries(ALL_TRACES)) {
