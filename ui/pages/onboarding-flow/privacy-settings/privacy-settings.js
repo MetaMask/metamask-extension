@@ -21,6 +21,7 @@ import {
   PRIVACY_POLICY_LINK,
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import Button from '../../../components/ui/button';
 
 import {
@@ -461,6 +462,14 @@ export default function PrivacySettings() {
                         {t('onboardingAdvancedPrivacyNetworkDescription', [
                           <a
                             href="https://consensys.io/privacy-policy/"
+                            key="link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            ,{t('privacyMsg')}
+                          </a>,
+                          <a
+                            href={ZENDESK_URLS.ADD_SOLANA_ACCOUNTS}
                             key="link"
                             target="_blank"
                             rel="noopener noreferrer"

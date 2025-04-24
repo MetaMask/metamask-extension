@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
+- Update security and privacy policy description to reflect Solana account handling ([#32229](https://github.com/MetaMask/metamask-extension/pull/32208))
 
 ### Fixed
 - Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
