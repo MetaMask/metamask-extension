@@ -58,7 +58,6 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
     'input[data-testid="prepare-swap-page-from-token-amount"]',
     options.amount.toString(),
   );
-  await driver.delay(veryLargeDelayMs); // Need an extra delay after typing an amount.
 };
 
 export const reviewQuote = async (
