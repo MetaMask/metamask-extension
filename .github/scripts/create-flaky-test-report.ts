@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import type { TestRun } from './create-e2e-test-report';
+import type { TestRun } from './shared/test-reports';
 import { IncomingWebhook } from '@slack/webhook';
 
 async function main() {
@@ -83,10 +83,12 @@ async function main() {
   ).flat();
 
   const failedTests = testRuns.flatMap((testRun) =>
-    testRun.testSuites.flatMap((testSuite) =>
-      testSuite.testCases
-        .filter((testCase) => testCase.status === 'failed')
-        .map((testCase) => ({ ...testCase, path: testSuite.path })),
+    testRun.testFiles.flatMap((testFile) =>
+      testFile.testSuites.flatMap((testSuite) =>
+        testSuite.testCases
+          .filter((testCase) => testCase.status === 'failed')
+          .map((testCase) => ({ ...testCase, path: testFile.path })),
+      ),
     ),
   );
 
