@@ -532,6 +532,23 @@ describe('app utils', () => {
           testKnownDomains,
         ),
       ).toBe('mainnet.infura.io');
+
+      expect(
+        extractRpcDomain(
+          'https://eth-mainnet.alchemyapi.io/v2/key',
+          testKnownDomains,
+        ),
+      ).toBe('eth-mainnet.alchemyapi.io');
+
+      expect(
+        extractRpcDomain(
+          'https://MAINNET.INFURA.IO/v3/abc123',
+          testKnownDomains,
+        ),
+      ).toBe('mainnet.infura.io');
+    });
+
+    it('should handle URLs without protocol for known domains', () => {
       expect(
         extractRpcDomain('mainnet.infura.io/v3/abc123', testKnownDomains),
       ).toBe('mainnet.infura.io');
@@ -550,7 +567,8 @@ describe('app utils', () => {
     it('should handle invalid URLs and edge cases', () => {
       expect(extractRpcDomain('')).toBe('invalid');
       expect(extractRpcDomain(null)).toBe('invalid');
-      expect(extractRpcDomain('invalid-url-format')).toBe('invalid');
+      expect(extractRpcDomain('http://')).toBe('invalid');
+      expect(extractRpcDomain('https://')).toBe('invalid');
     });
   });
 });

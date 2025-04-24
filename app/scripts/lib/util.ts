@@ -534,7 +534,7 @@ export function isKnownDomain(domain: string): boolean {
  * Extracts the domain from an RPC endpoint URL with privacy considerations
  *
  * @param rpcUrl - The RPC endpoint URL
- * @param knownDomainsForTesting - Optional set of known domains for testing purposes
+ * @param knownDomainsForTesting - Optional Set of known domains for testing purposes
  * @returns The domain for known providers, 'private' for private/custom networks, or 'invalid' for invalid URLs
  */
 export function extractRpcDomain(
@@ -546,18 +546,30 @@ export function extractRpcDomain(
   }
 
   try {
-    // Add protocol if missing
-    const urlString =
-      rpcUrl.startsWith('http://') || rpcUrl.startsWith('https://')
-        ? rpcUrl
-        : `https://${rpcUrl}`;
+    // Try to parse the URL directly
+    let url;
+    try {
+      url = new URL(rpcUrl);
+    } catch (e) {
+      // If parsing fails, check if it looks like a domain without protocol
+      if (rpcUrl.includes('://')) {
+        return 'invalid';
+      }
 
-    const url = new URL(urlString);
+      // Try adding https:// prefix for domain-like strings
+      try {
+        url = new URL(`https://${rpcUrl}`);
+      } catch (e2) {
+        return 'invalid';
+      }
+    }
 
-    if (
-      knownDomainsForTesting?.has(url.hostname.toLowerCase()) ||
-      isKnownDomain(url.hostname)
-    ) {
+    // Use the provided test domains if available, otherwise use isKnownDomain
+    if (knownDomainsForTesting) {
+      if (knownDomainsForTesting.has(url.hostname.toLowerCase())) {
+        return url.hostname.toLowerCase();
+      }
+    } else if (isKnownDomain(url.hostname)) {
       return url.hostname.toLowerCase();
     }
 
