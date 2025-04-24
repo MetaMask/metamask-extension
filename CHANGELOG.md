@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix exchange rate lookups on Solana Swap page to prevent crashing when values are undefined ([#32114](https://github.com/MetaMask/metamask-extension/pull/32114))
 - updates display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
 - Add Multichain API analytics support ([#32013](https://github.com/MetaMask/metamask-extension/pull/32013))
+- Updated institutional snap to version which includes a fix for dev mode to prevent unwanted logging and state reads ([#32208](https://github.com/MetaMask/metamask-extension/pull/32208))
 
 ## [12.15.2]
 ### Added
