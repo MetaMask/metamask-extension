@@ -4,7 +4,6 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import { isAccountConnectedToCurrentTab } from '../../../selectors';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -12,13 +11,19 @@ import {
 } from '../../../helpers/constants/connected-sites';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
+import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import {
+  getAllPermittedAccountsForCurrentTab,
+  getInternalAccountByAddress,
+} from '../../../selectors';
 
 export type ConnectedStatusProps = {
   address: string;
   isActive?: boolean;
 };
+
 export type AddressConnectedSubjectMap = {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [address: string]: any;
 };
@@ -29,11 +34,14 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
 }): JSX.Element => {
   const t = useI18nContext();
 
-  const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (isAccountConnectedToCurrentTab as any)(state, address),
+  // Get the permitted accounts and the internal account for the address
+  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+  const internalAccount = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
   );
+
+  const currentTabIsConnectedToSelectedAddress =
+    isInternalAccountInPermittedAccountIds(internalAccount, permittedAccounts);
 
   let status = STATUS_NOT_CONNECTED;
   if (isActive) {

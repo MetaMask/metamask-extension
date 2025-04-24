@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Mga detalye ng account"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Bumalik sa regular na account"
-  },
   "accountIdenticon": {
     "message": "Identicon ng Account"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Para i-enable ang $1 network, kailangan mong gumawa ng $1 account.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Para i-enable ang $1 network, kailangan mong gumawa ng $2 account.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Magdagdag ng RPC URL"
@@ -1097,9 +1094,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Ang site na ito ay nais ng permiso para gamitin ang iyong mga token."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Humihiling ang site na ito na bumalik sa standard account."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Nais ng site na mag-sign in ka upang patunayan na pag-aari mo ang account na ito."
   },
@@ -1112,9 +1106,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Alisin ang pahintulot"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "I-reset ang account"
-  },
   "confirmTitleSIWESignature": {
     "message": "Kahilingan sa pag-sign in"
   },
@@ -1126,21 +1117,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Hiling na Transaksyon"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Kung kukumpirmahin mo ang kahilingang ito, magiging smart account ang account mo."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Kanselahin ang transaksyon"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Kanselahin ang pag-update at transaksyon"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Kung ayaw mong i-update ang account mo, puwede mo itong kanselahin dito. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Kanselahin ang transaksyon"
   },
   "confirmationAlertDetails": {
     "message": "Para protektahan ang iyong mga asset, iminumungkahi namin na tanggihan mo ang kahilingan."
@@ -1332,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
-  },
-  "copyAddressShort": {
-    "message": "Kopyahin ang address"
   },
   "copyPrivateKey": {
     "message": "Kopyahin ang pribadong key"
@@ -2015,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "Ang impormasyon na iyong inilagay ay nauugnay sa isang umiiral na ID ng chain."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Para tingnan at kumpirmahin ang iyong pinakabagong hiling, kailangan mo munang aprubahan o tanggihan ang mga umiiral na hiling."
   },
   "expandView": {
     "message": "I-expand ang view"

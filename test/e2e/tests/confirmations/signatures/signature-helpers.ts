@@ -44,6 +44,7 @@ type AssertSignatureMetricsOptions = {
   decodingChangeTypes?: string[];
   decodingResponse?: string;
   decodingDescription?: string | null;
+  requestedThrough?: string;
 };
 
 type SignatureEventProperty = {
@@ -63,6 +64,7 @@ type SignatureEventProperty = {
   ui_customizations?: string[];
   location?: string;
   hd_entropy_index?: number;
+  requested_through?: string;
 };
 
 const signatureAnonProperties = {
@@ -102,6 +104,7 @@ function getSignatureEventProperty(
   decodingChangeTypes?: string[],
   decodingResponse?: string,
   decodingDescription?: string | null,
+  requestedThrough?: string,
 ): SignatureEventProperty {
   const signatureEventProperty: SignatureEventProperty = {
     account_type: 'MetaMask',
@@ -115,6 +118,7 @@ function getSignatureEventProperty(
     security_alert_source: securityAlertSource,
     ui_customizations: uiCustomizations,
     hd_entropy_index: 0,
+    requested_through: requestedThrough,
   };
 
   if (primaryType !== '') {
@@ -131,7 +135,7 @@ function getSignatureEventProperty(
 }
 
 function assertSignatureRequestedMetrics(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   events: any[],
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
@@ -163,6 +167,7 @@ export async function assertSignatureConfirmedMetrics({
   decodingChangeTypes,
   decodingResponse,
   decodingDescription,
+  requestedThrough,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -175,6 +180,7 @@ export async function assertSignatureConfirmedMetrics({
     decodingChangeTypes,
     decodingResponse,
     decodingDescription,
+    requestedThrough,
   );
 
   assertSignatureRequestedMetrics(
@@ -212,6 +218,7 @@ export async function assertSignatureRejectedMetrics({
   decodingChangeTypes,
   decodingResponse,
   decodingDescription,
+  requestedThrough,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -224,6 +231,7 @@ export async function assertSignatureRejectedMetrics({
     decodingChangeTypes,
     decodingResponse,
     decodingDescription,
+    requestedThrough,
   );
 
   assertSignatureRequestedMetrics(
@@ -267,7 +275,7 @@ export async function assertAccountDetailsMetrics(
 }
 
 function assertEventPropertiesMatch(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   events: any[],
   eventName: string,
   expectedProperties: object,

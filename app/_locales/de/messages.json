@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Kontodetails"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Zum regulären Konto zurückwechseln"
-  },
   "accountIdenticon": {
     "message": "Konto-Identicon"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Um das $1-Netzwerk zu aktivieren, müssen Sie ein $1-Konto erstellen.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Um das $1-Netzwerk zu aktivieren, müssen Sie ein $2-Konto erstellen.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "RPC-URL hinzufügen"
@@ -1097,9 +1094,6 @@
   "confirmTitleDescPermitSignature": {
     "message": "Diese Website möchte die Genehmigung, Ihre Tokens auszugeben."
   },
-  "confirmTitleDescRevokeDelegation": {
-    "message": "Diese Website ersucht darum, zu einem Standardkonto zurückzuwechseln."
-  },
   "confirmTitleDescSIWESignature": {
     "message": "Eine Website möchte, dass Sie sich anmelden, um zu beweisen, dass Sie dieses Konto besitzen."
   },
@@ -1112,9 +1106,6 @@
   "confirmTitleRevokeApproveTransaction": {
     "message": "Genehmigung entfernen"
   },
-  "confirmTitleRevokeDelegation": {
-    "message": "Konto zurücksetzen"
-  },
   "confirmTitleSIWESignature": {
     "message": "Anmeldeanfrage"
   },
@@ -1126,21 +1117,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Transaktionsanfrage"
-  },
-  "confirmUpgradeAcknowledge": {
-    "message": "Wenn Sie diese Anfrage bestätigen, wird Ihr Konto zu einem Smart-Konto aktualisiert."
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Transaktion stornieren"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Aktualisierung abbrechen und Transaktion stornieren"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Wenn Sie Ihr Konto nicht aktualisieren möchten, können Sie es hier stornieren.\n\nUm diese Transaktion ohne Aktualisierung abzuschließen, müssen Sie diese Anfrage erneut auf der Website stellen. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Transaktion stornieren"
   },
   "confirmationAlertDetails": {
     "message": "Um Ihre Assets zu schützen, empfehlen wir die Ablehnung der Anfrage."
@@ -1332,9 +1308,6 @@
   },
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
-  },
-  "copyAddressShort": {
-    "message": "Adresse kopieren"
   },
   "copyPrivateKey": {
     "message": "Privaten Schlüssel kopieren"
@@ -2015,9 +1988,6 @@
   },
   "existingChainId": {
     "message": "Die von Ihnen eingegebenen Informationen sind mit einer bestehenden Chain-ID verknüpft."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Um sich Ihre jüngste Anfrage anzeigen zu lassen und diese zu bestätigen, müssen Sie zunächst bestehende Anfragen genehmigen oder ablehnen."
   },
   "expandView": {
     "message": "Ansicht erweitern"

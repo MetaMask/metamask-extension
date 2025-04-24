@@ -11,6 +11,7 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { RevokeDelegation } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
 import { TransactionDetails } from './transaction-details';
@@ -174,5 +175,58 @@ describe('<TransactionDetails />', () => {
     );
     expect(getByText('Network')).toBeInTheDocument();
     expect(getByText('Goerli')).toBeInTheDocument();
+  });
+
+  it('return null for transaction of type revokeDelegation', () => {
+    const state = getMockConfirmStateForTransaction(RevokeDelegation);
+    const mockStore = configureMockStore([])(state);
+    const { container } = renderWithConfirmContextProvider(
+      <TransactionDetails />,
+      mockStore,
+    );
+    expect(container.firstChild).toBeNull();
+  });
+
+  describe('RecipientRow', () => {
+    it('renders when address is valid', () => {
+      const contractInteraction =
+        genUnapprovedContractInteractionConfirmation();
+      const state = getMockConfirmStateForTransaction(contractInteraction, {
+        metamask: {
+          preferences: {
+            showConfirmationAdvancedDetails: true,
+          },
+        },
+      });
+      const mockStore = configureMockStore(middleware)(state);
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <TransactionDetails />,
+        mockStore,
+      );
+      expect(
+        getByTestId('transaction-details-recipient-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not render when address is invalid', () => {
+      const contractInteraction = genUnapprovedContractInteractionConfirmation({
+        address: '0xinvalid_address',
+      });
+      const state = getMockConfirmStateForTransaction(contractInteraction, {
+        metamask: {
+          preferences: {
+            showConfirmationAdvancedDetails: true,
+          },
+        },
+      });
+      const mockStore = configureMockStore(middleware)(state);
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <TransactionDetails />,
+        mockStore,
+      );
+      expect(
+        getByTestId('transaction-details-recipient-row'),
+      ).toBeInTheDocument();
+    });
   });
 });
