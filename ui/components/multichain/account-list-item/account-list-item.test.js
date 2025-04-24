@@ -297,9 +297,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
         const avatarGroup = container.querySelector(
           '[data-testid="avatar-group"]',
         );
@@ -311,7 +308,6 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('ETH');
-        expect(secondCurrencyDisplay.textContent).toContain('');
         expect(avatarGroup).not.toBeInTheDocument();
       });
 
@@ -332,9 +328,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
         const avatarGroup = container.querySelector(
           '[data-testid="avatar-group"]',
         );
@@ -346,7 +339,6 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('BTC');
         expect(avatarGroup).not.toBeInTheDocument();
       });
 
@@ -372,9 +364,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
         const avatarGroup = container.querySelector(
           '[data-testid="avatar-group"]',
         );
@@ -386,7 +375,6 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('');
         expect(avatarGroup).not.toBeInTheDocument();
       });
 
@@ -407,9 +395,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
         const avatarGroup = container.querySelector(
           '[data-testid="avatar-group"]',
         );
@@ -421,7 +406,6 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('1BTC');
         expect(avatarGroup).not.toBeInTheDocument();
       });
     });
