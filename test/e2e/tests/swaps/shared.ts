@@ -51,7 +51,7 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
       '[data-testid="searchable-item-list-import-button"]',
     );
   }
-  await driver.clickElement(
+  await driver.clickElementAndWaitToDisappear(
     '[data-testid="searchable-item-list-primary-label"]',
   );
   await driver.fill(
