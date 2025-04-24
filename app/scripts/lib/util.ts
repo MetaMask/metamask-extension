@@ -506,7 +506,7 @@ export async function initializeRpcProviderDomains(): Promise<void> {
               // Removed cleaning step - will fail for URLs like:
               // https://${INFURA_API_KEY}.infura.io/v3/
               const url = new URL(rpcUrl);
-              knownDomainsSet.add(url.hostname);
+              knownDomainsSet.add(url.hostname.toLowerCase());
             } catch (e) {
               // Skip invalid URLs
               continue;
@@ -529,7 +529,7 @@ export async function initializeRpcProviderDomains(): Promise<void> {
  * @param domain - The domain to check
  */
 export function isKnownDomain(domain: string): boolean {
-  return knownDomainsSet?.has(domain) ?? false;
+  return knownDomainsSet?.has(domain?.toLowerCase()) ?? false;
 }
 
 /**
