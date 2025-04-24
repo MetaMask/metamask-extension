@@ -88,6 +88,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changes in account modal to switch to smart account type ([#31899](https://github.com/MetaMask/metamask-extension/pull/31899))
 - Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
 - Support for Solana on Firefox ([#32104](https://github.com/MetaMask/metamask-extension/pull/32104))
+- updates display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
+- Add Multichain API analytics support ([#32013](https://github.com/MetaMask/metamask-extension/pull/32013))
+- Updated institutional snap to version which includes a fix for dev mode to prevent unwanted logging and state reads ([#32208](https://github.com/MetaMask/metamask-extension/pull/32208))
 
 ## [12.15.2]
 ### Added
