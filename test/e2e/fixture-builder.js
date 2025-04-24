@@ -303,6 +303,21 @@ class FixtureBuilder {
       selectedNetworkClientId: 'linea-mainnet',
     });
   }
+  withNetworkControllerOnLineaLocahost() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
 
   withNetworkControllerOnOptimism() {
     return this.withNetworkController({
