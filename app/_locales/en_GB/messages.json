@@ -1084,12 +1084,6 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmAccountCurrentType": {
-    "message": "Curent Type"
-  },
-  "confirmAccountNewType": {
-    "message": "New Type"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "Smart account"
   },
@@ -1128,6 +1122,12 @@
   },
   "confirmInfoAccountType": {
     "message": "Account type"
+  },
+  "confirmInfoAccountCurrentType": {
+    "message": "Current Type"
+  },
+  "confirmInfoAccountNewType": {
+    "message": "New Type"
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"

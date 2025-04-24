@@ -39,25 +39,32 @@ export function TransactionAccountDetails() {
         </ConfirmInfoRow>
       )}
       {isUpgrade && (
-        <ConfirmInfoAlertRow
-          alertKey={RowAlertKey.AccountTypeUpgrade}
-          label={
-            isBatch ? t('confirmInfoAccountType') : t('confirmAccountType')
-          }
-          ownerId={id}
-        >
-          <ConfirmInfoRowText
-            text={t('confirmAccountTypeSmartContract')}
-            data-testid="tx-type"
-          />
-        </ConfirmInfoAlertRow>
+        <>
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.AccountTypeUpgrade}
+            label={
+              isBatch
+                ? t('confirmInfoAccountType')
+                : t('confirmInfoAccountCurrentType')
+            }
+            ownerId={id}
+          >
+            <ConfirmInfoRowText
+              text={t('confirmAccountTypeSmartContract')}
+              data-testid="tx-type"
+            />
+          </ConfirmInfoAlertRow>
+          <ConfirmInfoRow label={t('confirmInfoAccountNewType')}>
+            <ConfirmInfoRowText text={t('confirmAccountTypeStandard')} />
+          </ConfirmInfoRow>
+        </>
       )}
       {isDowngrade && (
         <>
-          <ConfirmInfoRow label="Current Type">
+          <ConfirmInfoRow label={t('confirmInfoAccountCurrentType')}>
             <ConfirmInfoRowText text={t('confirmAccountTypeSmartContract')} />
           </ConfirmInfoRow>
-          <ConfirmInfoRow label="New Type">
+          <ConfirmInfoRow label={t('confirmInfoAccountNewType')}>
             <ConfirmInfoRowText text={t('confirmAccountTypeStandard')} />
           </ConfirmInfoRow>
         </>

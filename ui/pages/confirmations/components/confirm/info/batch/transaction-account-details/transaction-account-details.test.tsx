@@ -57,8 +57,8 @@ describe('TransactionAccountDetails', () => {
     });
 
     expect(getByText('Smart account')).toBeInTheDocument();
-    expect(getByText('Type')).toBeInTheDocument();
-    expect(queryByText('Account type')).toBeNull();
+    expect(getByText('Current Type')).toBeInTheDocument();
+    expect(queryByText('New type')).toBeNull();
   });
 
   it('does not render if no authorization list', () => {

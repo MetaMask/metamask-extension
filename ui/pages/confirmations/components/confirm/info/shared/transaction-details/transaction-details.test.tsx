@@ -13,7 +13,6 @@ import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import {
   downgradeAccountConfirmation,
-  upgradeAccountConfirmation,
   upgradeAccountConfirmationOnly,
 } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
