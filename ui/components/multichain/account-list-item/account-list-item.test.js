@@ -252,7 +252,7 @@ describe('AccountListItem', () => {
           metadata: {
             ...mockAccount.metadata,
             snap: {
-              id: mockSnap.id,
+              id: 'npm:@metamask/solana-wallet-snap',
             },
             keyring: {
               type: 'Snap Keyring',
