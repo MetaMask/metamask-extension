@@ -10,6 +10,10 @@ function transactionPromise(tx: IDBTransaction): Promise<void> {
   });
 }
 
+/**
+ * Store for managing IndexedDB operations in an objectStore named `store`.
+ * Used for storing backups of the critical parts of the extension state.
+ */
 export class IndexedDBStore {
   #db: IDBDatabase | null = null;
 
@@ -115,6 +119,9 @@ export class IndexedDBStore {
     await transactionPromise(tx);
   }
 
+  /**
+   * Closes the database connection.
+   */
   close() {
     if (this.#db) {
       this.#db.close();
