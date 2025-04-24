@@ -545,12 +545,12 @@ describe('app utils', () => {
       expect(extractRpcDomain('https://rpc.ankr.com/eth_goerli')).toBe(
         'private',
       );
-      expect(extractRpcDomain('invalid-url-format')).toBe('invalid');
     });
 
     it('should handle invalid URLs and edge cases', () => {
       expect(extractRpcDomain('')).toBe('invalid');
       expect(extractRpcDomain(null)).toBe('invalid');
+      expect(extractRpcDomain('invalid-url-format')).toBe('invalid');
     });
   });
 });
