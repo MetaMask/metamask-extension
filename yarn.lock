@@ -6781,12 +6781,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.8.1, @noble/curves@npm:^1.2.0, @noble/curves@npm:^1.6.0, @noble/curves@npm:^1.8.1, @noble/curves@npm:~1.8.1":
+"@noble/curves@npm:1.8.2, @noble/curves@npm:~1.8.1":
+  version: 1.8.2
+  resolution: "@noble/curves@npm:1.8.2"
+  dependencies:
+    "@noble/hashes": "npm:1.7.2"
+  checksum: 10/540e7b7a8fe92ecd5cef846f84d07180662eb7fd7d8e9172b8960c31827e74f148fe4630da962138a6be093ae9f8992d14ab23d3682a2cc32be839aa57c03a46
+  languageName: node
+  linkType: hard
+
+"@noble/curves@npm:^1.2.0, @noble/curves@npm:^1.8.1":
   version: 1.8.1
   resolution: "@noble/curves@npm:1.8.1"
   dependencies:
     "@noble/hashes": "npm:1.7.1"
   checksum: 10/e861db372cc0734b02a4c61c0f5a6688d4a7555edca3d8a9e7c846c9aa103ca52d3c3818e8bc333a1a95b5be7f370ff344668d5d759471b11c2d14c7f24b3984
+  languageName: node
+  linkType: hard
+
+"@noble/curves@npm:^1.6.0, @noble/curves@npm:~1.9.0":
+  version: 1.9.0
+  resolution: "@noble/curves@npm:1.9.0"
+  dependencies:
+    "@noble/hashes": "npm:1.8.0"
+  checksum: 10/f2c5946310722fee23e04ed747f21ce72e0436e38e1fa620d226a8c613262e7d0dbab5341f14caf92936089d01d9e9231964c409cd1ac2a73a075f3cdb1acc41
   languageName: node
   linkType: hard
 
@@ -6811,10 +6829,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:^1.7.1, @noble/hashes@npm:~1.7.1":
+"@noble/hashes@npm:1.7.2, @noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:^1.7.1, @noble/hashes@npm:~1.7.1":
   version: 1.7.2
   resolution: "@noble/hashes@npm:1.7.2"
   checksum: 10/b5af9e4b91543dcc46a811b5b2c57bfdeb41728361979a19d6110a743e2cb0459872553f68d3a46326d21959964db2776b8c8b4db85ac1d9f63ebcaddf7d59b6
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:~1.8.0":
+  version: 1.8.0
+  resolution: "@noble/hashes@npm:1.8.0"
+  checksum: 10/474b7f56bc6fb2d5b3a42132561e221b0ea4f91e590f4655312ca13667840896b34195e2b53b7f097ec080a1fdd3b58d902c2a8d0fbdf51d2e238b53808a177e
   languageName: node
   linkType: hard
 
@@ -8245,7 +8270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:^1.1.3, @scure/base@npm:~1.2.2, @scure/base@npm:~1.2.4":
+"@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:^1.1.3":
   version: 1.2.4
   resolution: "@scure/base@npm:1.2.4"
   checksum: 10/4b61679209af40143b49ce7b7570e1d9157c19df311ea6f57cd212d764b0b82222dbe3707334f08bec181caf1f047aca31aa91193c678d6548312cb3f9c82ab1
@@ -8256,6 +8281,13 @@ __metadata:
   version: 1.1.9
   resolution: "@scure/base@npm:1.1.9"
   checksum: 10/f0ab7f687bbcdee2a01377fe3cd808bf63977999672751295b6a92625d5322f4754a96d40f6bd579bc367aad48ecf8a4e6d0390e70296e6ded1076f52adb16bb
+  languageName: node
+  linkType: hard
+
+"@scure/base@npm:~1.2.2, @scure/base@npm:~1.2.4, @scure/base@npm:~1.2.5":
+  version: 1.2.5
+  resolution: "@scure/base@npm:1.2.5"
+  checksum: 10/9a963a27424a373b62760c9ae7099ae496be67eb5b31205639f529f0dbcb2228a827222a36d22842cc2acda78e300a3430d46d84de5d8d4b791208955360853e
   languageName: node
   linkType: hard
 
@@ -8270,7 +8302,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip32@npm:1.6.2, @scure/bip32@npm:^1.5.0":
+"@scure/bip32@npm:1.6.2":
   version: 1.6.2
   resolution: "@scure/bip32@npm:1.6.2"
   dependencies:
@@ -8278,6 +8310,17 @@ __metadata:
     "@noble/hashes": "npm:~1.7.1"
     "@scure/base": "npm:~1.2.2"
   checksum: 10/474ee315a8631aa1a7d378b0521b4494e09a231519ec53d879088cb88c8ff644a89b27a02a8bf0b5a9b1c4c0417acc70636ccdb121b800c34594ae53c723f8d7
+  languageName: node
+  linkType: hard
+
+"@scure/bip32@npm:^1.5.0":
+  version: 1.7.0
+  resolution: "@scure/bip32@npm:1.7.0"
+  dependencies:
+    "@noble/curves": "npm:~1.9.0"
+    "@noble/hashes": "npm:~1.8.0"
+    "@scure/base": "npm:~1.2.5"
+  checksum: 10/f90e0c23ab6a31a164856ae9cb9a8cae2886df608c74a6c0c4875095b017e30ffd92f28f73b8c52890d9a89fca86d19f6d60bb1ea7cad64c7987f92ae83509ad
   languageName: node
   linkType: hard
 
@@ -8291,13 +8334,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:1.5.4, @scure/bip39@npm:^1.4.0":
+"@scure/bip39@npm:1.5.4":
   version: 1.5.4
   resolution: "@scure/bip39@npm:1.5.4"
   dependencies:
     "@noble/hashes": "npm:~1.7.1"
     "@scure/base": "npm:~1.2.4"
   checksum: 10/9f08b433511d7637bc48c51aa411457d5f33da5a85bd03370bf394822b0ea8c007ceb17247a3790c28237303d8fc20c4e7725765940cd47e1365a88319ad0d5c
+  languageName: node
+  linkType: hard
+
+"@scure/bip39@npm:^1.4.0":
+  version: 1.6.0
+  resolution: "@scure/bip39@npm:1.6.0"
+  dependencies:
+    "@noble/hashes": "npm:~1.8.0"
+    "@scure/base": "npm:~1.2.5"
+  checksum: 10/63e60c40fa1bda2c1b50351546fee6d7b0947cc814aa7a4209dcedd3693b5053302c8fca28292f5f50735e11c613265359acdc019127393dbab17e53489fc449
   languageName: node
   linkType: hard
 
@@ -13146,7 +13199,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"abitype@npm:1.0.8, abitype@npm:^1.0.6":
+"abitype@npm:1.0.8, abitype@npm:^1.0.6, abitype@npm:^1.0.8":
   version: 1.0.8
   resolution: "abitype@npm:1.0.8"
   peerDependencies:
@@ -27846,6 +27899,7 @@ __metadata:
     "@whitespace/storybook-addon-html": "npm:^5.1.6"
     "@zxing/browser": "npm:^0.1.5"
     "@zxing/library": "npm:0.21.3"
+    abitype: "npm:^1.0.8"
     addons-linter: "npm:^6.28.0"
     autoprefixer: "npm:^10.4.19"
     await-semaphore: "npm:^0.1.3"
@@ -28046,7 +28100,7 @@ __metadata:
     unzipper: "npm:^0.12.3"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-    viem: "npm:^2.26.5"
+    viem: "npm:^2.21.8"
     vinyl: "npm:^2.2.1"
     vinyl-buffer: "npm:^1.0.1"
     vinyl-source-stream: "npm:^2.0.0"
@@ -38237,12 +38291,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.26.5":
-  version: 2.26.5
-  resolution: "viem@npm:2.26.5"
+"viem@npm:^2.21.8":
+  version: 2.28.0
+  resolution: "viem@npm:2.28.0"
   dependencies:
-    "@noble/curves": "npm:1.8.1"
-    "@noble/hashes": "npm:1.7.1"
+    "@noble/curves": "npm:1.8.2"
+    "@noble/hashes": "npm:1.7.2"
     "@scure/bip32": "npm:1.6.2"
     "@scure/bip39": "npm:1.5.4"
     abitype: "npm:1.0.8"
@@ -38254,7 +38308,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/29a112e8fc2dea1eec80350727bf0f503c65ea761f317ab4b25f9fd1ba42c6c0ef3798f13714be5aa9a30860ff997b2be3ad4539776a4f5d219cbc9a71b8d4a8
+  checksum: 10/fbdf2ce3020b0ee37457726375cb2479cf716e5ef021470a79f2713c5def1ae53c881458cc3853d1cab8ba655385280aeebbdc155e81b8cb54c6387758e59435
   languageName: node
   linkType: hard
 

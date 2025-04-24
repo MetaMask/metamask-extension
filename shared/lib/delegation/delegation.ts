@@ -1,11 +1,11 @@
-import type { AbiParameter, Hex, TypedData } from 'viem';
+import type { AbiParameter, Hex, TypedData } from './viem';
 import {
   encodeAbiParameters,
   getAddress,
   keccak256,
   parseAbiParameters,
   toHex,
-} from 'viem/utils';
+} from './viem';
 import {
   CAVEAT_ABI_TYPE_COMPONENTS,
   getCaveatArrayPacketHash,

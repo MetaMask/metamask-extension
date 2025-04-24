@@ -1772,7 +1772,7 @@
       "packages": {
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
-        "viem>@noble/curves": true,
+        "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
@@ -2286,7 +2286,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "viem>@noble/curves": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": true,
         "@noble/hashes": true
       }
     },
@@ -2552,20 +2552,28 @@
         "crypto": true
       }
     },
+    "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves>@noble/hashes": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves>@noble/hashes": true
+      }
+    },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "viem>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "viem>@noble/curves>@noble/hashes": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2580,19 +2588,31 @@
         "crypto": true
       }
     },
-    "viem>@noble/curves>@noble/hashes": {
+    "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "viem>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2753,7 +2773,7 @@
     "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": true,
         "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
@@ -4452,11 +4472,6 @@
         "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
       }
     },
-    "viem>isows": {
-      "globals": {
-        "WebSocket": true
-      }
-    },
     "@ensdomains/content-hash>js-base64": {
       "globals": {
         "Base64": "write",
@@ -4844,18 +4859,6 @@
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
-      }
-    },
-    "viem>ox": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "crypto.getRandomValues": true
-      },
-      "packages": {
-        "viem>@noble/curves": true,
-        "@noble/hashes": true,
-        "viem>abitype": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1": {
@@ -5903,30 +5906,6 @@
         "process": true,
         "react-markdown>vfile>replace-ext": true,
         "react-markdown>vfile>vfile-message": true
-      }
-    },
-    "viem": {
-      "globals": {
-        "AbortController": true,
-        "Image": true,
-        "Request": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "atob": true,
-        "btoa": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "viem>@noble/curves": true,
-        "viem>@noble/hashes": true,
-        "viem>abitype": true,
-        "viem>isows": true,
-        "viem>ox": true
       }
     },
     "browserify>vm-browserify": {

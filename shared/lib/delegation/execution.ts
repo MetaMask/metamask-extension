@@ -1,5 +1,5 @@
-import type { Hex } from 'viem';
-import { encodeAbiParameters, encodePacked } from 'viem/utils';
+import type { Hex } from './viem';
+import { encodeAbiParameters, encodePacked } from './viem';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000' as const;
 
