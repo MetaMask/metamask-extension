@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add XRPL EVM Testnet network ([#31533](https://github.com/MetaMask/metamask-extension/pull/31533))
 - Update color of values to text-default ([#30886](https://github.com/MetaMask/metamask-extension/pull/30886))
 - Update tabs color hover and animations ([#30907](https://github.com/MetaMask/metamask-extension/pull/30907))
+- Updated institutional snap to version which includes a fix for dev mode to prevent unwanted logging and state reads ([#32208](https://github.com/MetaMask/metamask-extension/pull/32208))
 
 ### Fixed
 - Fix `wallet_getCapabilities` with missing networks ([#32237](https://github.com/MetaMask/metamask-extension/pull/32237))
