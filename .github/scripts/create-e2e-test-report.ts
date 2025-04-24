@@ -43,7 +43,7 @@ function consoleBold(str: string): string {
     .replaceAll('</strong>', '\x1b[0m');
 }
 
-export interface TestRun {
+interface TestRun {
   name: string;
   testSuites: TestSuite[];
 }
