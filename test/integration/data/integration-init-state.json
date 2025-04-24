@@ -798,21 +798,8 @@
   "openSeaEnabled": false,
   "orderedNetworkList": [],
   "participateInMetaMetrics": false,
-  "pendingApprovalCount": 1,
-  "pendingApprovals": {
-    "testApprovalId": {
-      "id": "testApprovalId",
-      "time": 1528133319641,
-      "origin": "metamask",
-      "type": "transaction",
-      "requestData": {
-        "txId": "testTransactionId"
-      },
-      "requestState": {
-        "test": "value"
-      }
-    }
-  },
+  "pendingApprovalCount": 0,
+  "pendingApprovals": {},
   "permissionHistory": {
     "https://metamask.github.io": {
       "eth_accounts": {
