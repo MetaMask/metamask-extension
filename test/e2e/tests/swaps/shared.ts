@@ -21,6 +21,7 @@ type SwapOptions = {
   amount: number;
   swapTo?: string;
   swapToContractAddress?: string;
+  mainnet?: boolean;
 };
 
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
@@ -30,7 +31,7 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
     options.amount.toString(),
   );
 
-  if (options.swapTo) {
+  if (options.swapTo && options.mainnet) {
     await driver.waitForSelector({
       tag: 'h6',
       text: 'Estimated gas fee',
