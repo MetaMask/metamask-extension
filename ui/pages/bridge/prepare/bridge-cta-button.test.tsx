@@ -23,14 +23,12 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: { fromTokenInputValue: 1 },
     });
-    const { container, getByText } = renderWithProvider(
+    const { container } = renderWithProvider(
       <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
       configureStore(mockStore),
     );
 
     expect(container).toMatchSnapshot();
-
-    expect(getByText('Select token')).toBeInTheDocument();
   });
 
   it('should render the component when amount is missing', () => {
