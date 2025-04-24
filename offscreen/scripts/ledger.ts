@@ -1,6 +1,6 @@
 import { browser } from 'webextension-polyfill';
 import {
-  type LedgerAction,
+  LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
   KnownOrigins,
@@ -17,7 +17,11 @@ const LEDGER_KEYRING_IFRAME_CONNECTED_EVENT = 'ledger-connection-event';
 
 const callbackProcessor = new CallbackProcessor();
 
-function setupMessageListeners(browserTab: Window) {
+const BROWSER_TAB_URL = 'http://localhost:5173/';
+
+let browserTab: Window | null = null;
+
+function setupMessageListeners() {
   // This listener receives action responses from the live ledger iframe
   // Then forwards the response to the offscreen bridge
   window.addEventListener('message', (msg) => {
@@ -34,6 +38,15 @@ function setupMessageListeners(browserTab: Window) {
           action: OffscreenCommunicationEvents.ledgerDeviceConnect,
           payload: data.payload.connected,
         });
+
+        return;
+      }
+
+      if (data.action === LedgerAction.ledgerBridgeClose) {
+        // Dapp close, we need to reset the callback processor
+        console.log('ledger-bridge-close', data);
+        browserTab = null;
+        callbackProcessor.resetCurrentMessageId();
 
         return;
       }
@@ -65,15 +78,30 @@ function setupMessageListeners(browserTab: Window) {
         return;
       }
 
+      switch (msg.action) {
+        case LedgerAction.makeApp:
+          sendResponse({
+            success: true,
+            payload: {
+              result: true,
+            },
+          });
+          return;
+        case LedgerAction.updateTransport:
+          sendResponse({
+            success: true,
+            payload: {
+              result: true,
+            },
+          });
+          return;
+        // For all other actions, forward to the iframe
+        default:
+          break;
+      }
+
       if (!browserTab) {
-        const error = new Error('Ledger tab not present');
-        sendResponse({
-          success: false,
-          payload: {
-            error,
-          },
-        });
-        return;
+        openConnectorTab(BROWSER_TAB_URL);
       }
 
       const messageId = callbackProcessor.registerCallback(sendResponse);
@@ -88,7 +116,13 @@ function setupMessageListeners(browserTab: Window) {
         messageId,
       };
 
-      browserTab.postMessage(iframeMsg, KnownOrigins.ledger);
+      if (browserTab) {
+        // This line ensures the tab is focused, but will not be 100% reliable due to browser security policies
+        browserTab.focus();
+      }
+      setTimeout(() => {
+        browserTab?.postMessage(iframeMsg, KnownOrigins.ledger);
+      }, 500);
 
       // This keeps sendResponse function valid after return
       // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
@@ -100,27 +134,14 @@ function setupMessageListeners(browserTab: Window) {
 
 export default async function init() {
   return new Promise<void>((resolve) => {
-    // const iframe = document.createElement('iframe');
-    // iframe.src = 'https://metamask.github.io/ledger-iframe-bridge/8.0.3/';
-    // iframe.allow = 'hid';
-    // iframe.onload = () => {
-    //   setupMessageListeners(iframe);
-    //   resolve();
-    // };
-    // document.body.appendChild(iframe);
-
-    openConnectorTab('http://localhost:5173/').then((browserTab) => {
-      setupMessageListeners(browserTab);
-      resolve();
-    });
+    setupMessageListeners();
+    resolve();
   });
 }
 
-async function openConnectorTab(url: string) {
-  const browserTab = window.open(url);
+function openConnectorTab(url: string) {
+  browserTab = window.open(url);
   if (!browserTab) {
     throw new Error('Failed to open Lattice connector.');
   }
-
-  return browserTab;
 }

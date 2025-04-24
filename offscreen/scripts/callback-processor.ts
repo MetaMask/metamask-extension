@@ -41,6 +41,10 @@ export class CallbackProcessor {
   }
 
   resetCurrentMessageId() {
-    this.currentMessageId = 0;
+    if (this.messageCallbacks.size > 0 && this.currentMessageId > 0) {
+      // remove records from messageCallbacks with currentMessageId
+      this.messageCallbacks.delete(this.currentMessageId);
+      this.currentMessageId = 0;
+    }
   }
 }
