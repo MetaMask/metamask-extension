@@ -1,9 +1,8 @@
-import { Doc, encodeStateAsUpdate, applyUpdate, transact } from 'yjs';
+import { Doc, applyUpdate, transact } from 'yjs';
 import { uuid4 } from '@sentry/utils';
 
 // Constants for IndexedDB
 const UPDATES_STORE_NAME = 'updates';
-const PREFERRED_TRIM_SIZE = 500;
 
 /**
  * IndexedDB provider for YJS that syncs a YDoc with IndexedDB
@@ -20,10 +19,6 @@ export class YjsIndexedDBProvider {
   _dbsize = 0;
 
   _destroyed = false;
-
-  _storeTimeout = 1000;
-
-  _storeTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   private readonly providerID: string;
 
@@ -180,61 +175,11 @@ export class YjsIndexedDBProvider {
   }
 
   /**
-   * Store the current state of the document in the database
-   *
-   * @param forceStore
-   */
-  private async _storeState(forceStore = true): Promise<void> {
-    if (!this.db || this._destroyed) {
-      return;
-    }
-
-    if (forceStore || this._dbsize >= PREFERRED_TRIM_SIZE) {
-      try {
-        const transaction = this.db.transaction(
-          [UPDATES_STORE_NAME],
-          'readwrite',
-        );
-        const store = transaction.objectStore(UPDATES_STORE_NAME);
-
-        // Store the full document state
-        const fullUpdate = encodeStateAsUpdate(this.doc);
-        const addRequest = store.add(fullUpdate);
-
-        addRequest.onsuccess = () => {
-          // Delete old updates
-          const range = IDBKeyRange.upperBound(this._dbref, true);
-          store.delete(range);
-
-          // Update count
-          const countRequest = store.count();
-          countRequest.onsuccess = () => {
-            this._dbsize = countRequest.result;
-          };
-        };
-      } catch (err) {
-        console.error('Error storing state:', err);
-      }
-    }
-  }
-
-  /**
-   * Manually trigger a state storage
-   */
-  async storeState(): Promise<void> {
-    return this._storeState(true);
-  }
-
-  /**
    * Destroy this provider and clean up resources
    */
   async destroy(): Promise<void> {
     if (this._destroyed) {
       return;
-    }
-
-    if (this._storeTimeoutId) {
-      clearTimeout(this._storeTimeoutId);
     }
 
     this.doc.off('update', this.updateHandler);
