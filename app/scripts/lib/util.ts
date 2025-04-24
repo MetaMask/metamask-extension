@@ -503,8 +503,6 @@ export async function initializeRpcProviderDomains(): Promise<void> {
         if (chain.rpc && Array.isArray(chain.rpc)) {
           for (const rpcUrl of chain.rpc) {
             try {
-              // Removed cleaning step - will fail for URLs like:
-              // https://${INFURA_API_KEY}.infura.io/v3/
               const url = new URL(rpcUrl);
               knownDomainsSet.add(url.hostname.toLowerCase());
             } catch (e) {
@@ -536,42 +534,23 @@ export function isKnownDomain(domain: string): boolean {
  * Extracts the domain from an RPC endpoint URL with privacy considerations
  *
  * @param rpcUrl - The RPC endpoint URL
- * @param knownDomainsForTesting - Optional Set of known domains for testing purposes
  * @returns The domain for known providers, 'private' for private/custom networks, or 'invalid' for invalid URLs
  */
-export function extractRpcDomain(
-  rpcUrl: string,
-  knownDomainsForTesting?: Set<string>,
-): string {
+export function extractRpcDomain(rpcUrl: string): string {
   if (!rpcUrl) {
     return 'invalid';
   }
 
   try {
-    let url;
-    try {
-      url = new URL(rpcUrl);
-    } catch (e) {
-      if (!rpcUrl.startsWith('http://') && !rpcUrl.startsWith('https://')) {
-        try {
-          url = new URL(`https://${rpcUrl}`);
-        } catch (e2) {
-          return 'invalid';
-        }
-      } else {
-        return 'invalid';
-      }
-    }
+    const url = new URL(rpcUrl);
 
-    const domainsToCheck = knownDomainsForTesting || knownDomainsSet;
-
-    if (domainsToCheck?.has(url.hostname)) {
-      return url.hostname;
+    if (isKnownDomain(url.hostname)) {
+      return url.hostname.toLowerCase();
     }
 
     return 'private';
   } catch (error) {
-    console.error('Error extracting RPC domain:', error);
+    // If we can't parse it as a URL, it's invalid
     return 'invalid';
   }
 }
