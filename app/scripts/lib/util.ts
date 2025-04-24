@@ -534,23 +534,35 @@ export function isKnownDomain(domain: string): boolean {
  * Extracts the domain from an RPC endpoint URL with privacy considerations
  *
  * @param rpcUrl - The RPC endpoint URL
+ * @param knownDomainsForTesting - Optional set of known domains for testing purposes
  * @returns The domain for known providers, 'private' for private/custom networks, or 'invalid' for invalid URLs
  */
-export function extractRpcDomain(rpcUrl: string): string {
+export function extractRpcDomain(
+  rpcUrl: string,
+  knownDomainsForTesting?: Set<string>,
+): string {
   if (!rpcUrl) {
     return 'invalid';
   }
 
   try {
-    const url = new URL(rpcUrl);
+    // Add protocol if missing
+    const urlString =
+      rpcUrl.startsWith('http://') || rpcUrl.startsWith('https://')
+        ? rpcUrl
+        : `https://${rpcUrl}`;
 
-    if (isKnownDomain(url.hostname)) {
+    const url = new URL(urlString);
+
+    if (
+      knownDomainsForTesting?.has(url.hostname.toLowerCase()) ||
+      isKnownDomain(url.hostname)
+    ) {
       return url.hostname.toLowerCase();
     }
 
     return 'private';
   } catch (error) {
-    // If we can't parse it as a URL, it's invalid
     return 'invalid';
   }
 }
