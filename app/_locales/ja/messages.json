@@ -1025,9 +1025,6 @@
   "confirm": {
     "message": "確認"
   },
-  "confirmAccountType": {
-    "message": "タイプ"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "スマートアカウント"
   },
