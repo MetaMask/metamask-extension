@@ -357,6 +357,12 @@
   "alert": {
     "message": "Alert"
   },
+  "alertAccountTypeUpgradeMessage": {
+    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1."
+  },
+  "alertAccountTypeUpgradeTitle": {
+    "message": "Account type"
+  },
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
   },
@@ -1116,6 +1122,9 @@
   },
   "confirmGasFeeTokenTooltip": {
     "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
+  },
+  "confirmInfoAccountType": {
+    "message": "Account type"
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
