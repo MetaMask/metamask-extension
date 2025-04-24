@@ -21,7 +21,7 @@ import { RecipientRow } from '../../shared/transaction-details/transaction-detai
 export function TransactionAccountDetails() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { isUpgrade } = useIsUpgradeTransaction();
+  const { isUpgrade, isUpgradeOnly } = useIsUpgradeTransaction();
   const isDowngrade = useIsDowngradeTransaction();
   const { chainId, nestedTransactions, txParams, id } = currentConfirmation;
   const { from } = txParams;
@@ -33,7 +33,7 @@ export function TransactionAccountDetails() {
 
   return (
     <ConfirmInfoSection>
-      {!isBatch && (
+      {(isUpgradeOnly || isDowngrade) && (
         <ConfirmInfoRow label={t('account')}>
           <ConfirmInfoRowAddress chainId={chainId} address={from} />
         </ConfirmInfoRow>
@@ -69,7 +69,7 @@ export function TransactionAccountDetails() {
           </ConfirmInfoRow>
         </>
       )}
-      {isBatch && <RecipientRow />}
+      {(isBatch || isUpgrade) && <RecipientRow />}
     </ConfirmInfoSection>
   );
 }
