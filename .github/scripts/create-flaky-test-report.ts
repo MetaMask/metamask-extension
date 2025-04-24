@@ -115,26 +115,31 @@ async function main() {
     `\n\n:x: Failed tests on the <https://github.com/${env.OWNER}/${env.REPOSITORY}|${env.REPOSITORY}> repository <https://github.com/${env.OWNER}/${env.REPOSITORY}/tree/${env.BRANCH}|${env.BRANCH}> branch from ${fromDateString} to ${toDateString}`,
   ];
 
-  for (const test of summarizedFailedTests) {
-    const issue = {
-      template: 'general-issue.yml',
-      labels: ['type-bug', 'Sev2-normal', 'flaky tests'].toString(),
-      title: `Flaky test: \`${test.name}\``,
-      description: `\`\`\`js\n${test.error}\n\`\`\``,
-    };
-    const params = new URLSearchParams(issue);
-    console.error(
-      `• ${test.name} failed ${test.count} time${test.count > 1 ? 's' : ''}`,
-    );
-    lines.push(
-      `\n• <https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${
-        env.BRANCH
-      }/${test.path}|${test.name}> failed ${test.count} time${
-        test.count > 1 ? 's' : ''
-      } :arrow_right: <https://github.com/${env.OWNER}/${
-        env.REPOSITORY
-      }/issues/new?${params.toString()}|Create an issue>`,
-    );
+  if (!summarizedFailedTests.length) {
+    console.log('No failed tests found, good job!');
+    lines.push('\n No failed tests found, good job!');
+  } else {
+    for (const test of summarizedFailedTests) {
+      const issue = {
+        template: 'general-issue.yml',
+        labels: ['type-bug', 'Sev2-normal', 'flaky tests'].toString(),
+        title: `Flaky test: \`${test.name}\``,
+        description: `\`\`\`js\n${test.error}\n\`\`\``,
+      };
+      const params = new URLSearchParams(issue);
+      console.error(
+        `• ${test.name} failed ${test.count} time${test.count > 1 ? 's' : ''}`,
+      );
+      lines.push(
+        `\n• <https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${
+          env.BRANCH
+        }/${test.path}|${test.name}> failed ${test.count} time${
+          test.count > 1 ? 's' : ''
+        } :arrow_right: <https://github.com/${env.OWNER}/${
+          env.REPOSITORY
+        }/issues/new?${params.toString()}|Create an issue>`,
+      );
+    }
   }
 
   if (env.SLACK_WEBHOOK_URL) await webhook.send({ text: lines.join('\n') });
