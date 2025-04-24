@@ -3580,8 +3580,8 @@ export default class MetamaskController extends EventEmitter {
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
-      removeNetwork: this.networkController.removeNetwork.bind(
-        this.networkController,
+      removeNetwork: this.multichainNetworkController.removeNetwork.bind(
+        this.multichainNetworkController,
       ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
