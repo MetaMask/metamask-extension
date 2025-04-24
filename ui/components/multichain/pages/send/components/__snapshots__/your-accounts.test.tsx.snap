@@ -649,13 +649,18 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+          class="mm-box mm-box--flex-direction-row"
         >
-          <p
-            class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
+          <div
+            class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+            data-testid="account-list-item-tag-15e69915-2a1a-4019-93b3-916e11fd432f-Ledger"
           >
-            Ledger
-          </p>
+            <p
+              class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
+            >
+              Ledger
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -1086,17 +1091,22 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+          class="mm-box mm-box--flex-direction-row"
         >
-          <span
-            class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/snaps.svg');"
-          />
-          <p
-            class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
+          <div
+            class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+            data-testid="account-list-item-tag-c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3-mock snap name (Beta)"
           >
-            mock snap name (Beta)
-          </p>
+            <span
+              class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/snaps.svg');"
+            />
+            <p
+              class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
+            >
+              mock snap name (Beta)
+            </p>
+          </div>
         </div>
       </div>
     </div>
