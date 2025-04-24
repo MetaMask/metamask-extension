@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import { Array as YArray, Doc } from 'yjs';
+import { Map as YMap, Doc } from 'yjs';
 import {
   Box,
   Button,
@@ -57,30 +57,33 @@ export const SyncExperimentsTab: React.FC = () => {
     [doc],
   );
 
-  // Get the shared array from the document (only once during initialization)
-  const itemsArray = React.useMemo<YArray<SyncItem>>(
-    () => doc.getArray<SyncItem>(EXPERIMENTAL_KEY),
+  // Get the shared map from the document (only once during initialization)
+  const itemsMap = React.useMemo<YMap<SyncItem>>(
+    () => doc.getMap<SyncItem>(EXPERIMENTAL_KEY),
     [doc],
   );
 
   // Use memoized handler to avoid recreating it on every render
   const handleItemsChange = useCallback(() => {
-    const newItems = itemsArray.toArray();
+    const newItems: SyncItem[] = [];
+    itemsMap.forEach((value) => {
+      newItems.push(value);
+    });
     setListItems(newItems);
-  }, [itemsArray]);
+  }, [itemsMap]);
 
-  // Update items when the YJS array changes
+  // Update items when the YJS map changes
   useEffect(() => {
     // Initialize with current values
     handleItemsChange();
 
     // Use a single observer to reduce event handling
-    itemsArray.observe(handleItemsChange);
+    itemsMap.observe(handleItemsChange);
 
     return () => {
-      itemsArray.unobserve(handleItemsChange);
+      itemsMap.unobserve(handleItemsChange);
     };
-  }, [itemsArray, handleItemsChange]);
+  }, [itemsMap, handleItemsChange]);
 
   // Memoize handlers to prevent unnecessary recreations
   const handlePull = useCallback(async () => {
@@ -119,29 +122,25 @@ export const SyncExperimentsTab: React.FC = () => {
   }, []);
 
   const handleAddItem = useCallback(() => {
+    const id = Date.now().toString();
     const newItem: SyncItem = {
-      id: Date.now().toString(),
+      id,
       name: `Item ${listItems.length + 1}`,
     };
 
     // Use a single transaction for all changes
     doc.transact(() => {
-      itemsArray.push([newItem]);
+      itemsMap.set(id, newItem);
     }, 'local');
-  }, [doc, itemsArray, listItems.length]);
+  }, [doc, itemsMap, listItems.length]);
 
   const handleDeleteItem = useCallback(
     (id: string) => {
       doc.transact(() => {
-        const index = itemsArray
-          .toArray()
-          .findIndex((item: SyncItem) => item.id === id);
-        if (index !== -1) {
-          itemsArray.delete(index, 1);
-        }
+        itemsMap.delete(id);
       }, 'local');
     },
-    [doc, itemsArray],
+    [doc, itemsMap],
   );
 
   const handleEditItem = useCallback((id: string, currentValue: string) => {
@@ -155,19 +154,16 @@ export const SyncExperimentsTab: React.FC = () => {
     }
 
     doc.transact(() => {
-      const index = itemsArray
-        .toArray()
-        .findIndex((item: SyncItem) => item.id === editItemId);
-      if (index !== -1) {
-        const updatedItem = { ...itemsArray.get(index), name: editItemValue };
-        itemsArray.delete(index, 1);
-        itemsArray.insert(index, [updatedItem]);
+      const currentItem = itemsMap.get(editItemId);
+      if (currentItem) {
+        const updatedItem = { ...currentItem, name: editItemValue };
+        itemsMap.set(editItemId, updatedItem);
       }
     }, 'local');
 
     setEditItemId(null);
     setEditItemValue('');
-  }, [doc, itemsArray, editItemId, editItemValue]);
+  }, [doc, itemsMap, editItemId, editItemValue]);
 
   const handleCancelEdit = useCallback(() => {
     setEditItemId(null);
