@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import { Map as YMap, Doc } from 'yjs';
+import { Map as YMap, Doc, YMapEvent } from 'yjs';
 import {
   Box,
   Button,
@@ -28,8 +28,6 @@ import { userStorageGetAllItems } from '../../../store/actions';
 import { YjsProvider } from './yjs.provider';
 import { YjsIndexedDBProvider } from './yjs.indexeddb.provider';
 
-const EXPERIMENTAL_KEY = 'test-items-116';
-
 // Define the item type
 type SyncItem = {
   id: string;
@@ -42,48 +40,82 @@ export const SyncExperimentsTab: React.FC = () => {
   const [listItems, setListItems] = React.useState<SyncItem[]>([]);
   const [editItemId, setEditItemId] = React.useState<string | null>(null);
   const [editItemValue, setEditItemValue] = React.useState<string>('');
+  const [experimentalKey, setExperimentalKey] =
+    React.useState<string>('test-items-120');
+  const [isEditingKey, setIsEditingKey] = React.useState<boolean>(false);
+  const [tempExperimentalKey, setTempExperimentalKey] =
+    React.useState<string>('test-items-120');
 
   // Create the doc and providers directly
   const doc = React.useMemo<Doc>(() => new Doc(), []);
 
   const remoteProvider = React.useMemo<YjsProvider>(
-    () => new YjsProvider(doc, EXPERIMENTAL_KEY),
-    [doc],
+    () => new YjsProvider(doc, experimentalKey),
+    [doc, experimentalKey],
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const localProvider = React.useMemo<YjsIndexedDBProvider>(
-    () => new YjsIndexedDBProvider(doc, EXPERIMENTAL_KEY),
-    [doc],
+    () => new YjsIndexedDBProvider(doc, experimentalKey),
+    [doc, experimentalKey],
   );
 
   // Get the shared map from the document (only once during initialization)
   const itemsMap = React.useMemo<YMap<SyncItem>>(
-    () => doc.getMap<SyncItem>(EXPERIMENTAL_KEY),
-    [doc],
+    () => doc.getMap<SyncItem>(experimentalKey),
+    [doc, experimentalKey],
   );
 
-  // Use memoized handler to avoid recreating it on every render
-  const handleItemsChange = useCallback(() => {
-    const newItems: SyncItem[] = [];
-    itemsMap.forEach((value) => {
-      newItems.push(value);
-    });
-    setListItems(newItems);
-  }, [itemsMap]);
+  const handleItemsChange = useCallback(
+    (event?: YMapEvent<SyncItem>) => {
+      event?.changes.keys.forEach((change, key) => {
+        const ymap = event.target as YMap<SyncItem>;
+        if (change.action === 'add') {
+          console.log(
+            `GIGEL Property "${key}" was added. Initial value: "${
+              ymap.get(key)?.name
+            }".`,
+          );
+        } else if (change.action === 'update') {
+          console.log(
+            `GIGEL Property "${key}" was updated. New value: "${
+              ymap.get(key)?.name
+            }". Previous value: "${change.oldValue?.name}".`,
+          );
+        } else if (change.action === 'delete') {
+          console.log(
+            `GIGEL Property "${key}" was deleted. Previous value: "${change.oldValue?.name}".`,
+          );
+        }
+      });
+
+      const newItems: SyncItem[] = [];
+      itemsMap.forEach((value) => {
+        newItems.push(value);
+      });
+      setListItems(newItems);
+    },
+    [itemsMap],
+  );
 
   // Update items when the YJS map changes
   useEffect(() => {
-    // Initialize with current values
-    handleItemsChange();
-
-    // Use a single observer to reduce event handling
     itemsMap.observe(handleItemsChange);
-
     return () => {
       itemsMap.unobserve(handleItemsChange);
     };
   }, [itemsMap, handleItemsChange]);
+
+  // Reset UI state when experimental key changes
+  useEffect(() => {
+    setListItems([]);
+    setRawItems([]);
+    setEditItemId(null);
+    setEditItemValue('');
+
+    // Trigger initial load of items from the map
+    handleItemsChange();
+  }, [experimentalKey, handleItemsChange]);
 
   // Memoize handlers to prevent unnecessary recreations
   const handlePull = useCallback(async () => {
@@ -112,14 +144,14 @@ export const SyncExperimentsTab: React.FC = () => {
   const fetchAllEntries = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await userStorageGetAllItems(EXPERIMENTAL_KEY);
+      const result = await userStorageGetAllItems(experimentalKey);
       setRawItems(result);
     } catch (e) {
       console.error('Error fetching items:', e);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [experimentalKey]);
 
   const handleAddItem = useCallback(() => {
     const id = Date.now().toString();
@@ -170,6 +202,21 @@ export const SyncExperimentsTab: React.FC = () => {
     setEditItemValue('');
   }, []);
 
+  const handleStartEditingKey = useCallback(() => {
+    setTempExperimentalKey(experimentalKey);
+    setIsEditingKey(true);
+  }, [experimentalKey]);
+
+  const handleSaveKey = useCallback(() => {
+    setExperimentalKey(tempExperimentalKey);
+    setIsEditingKey(false);
+  }, [tempExperimentalKey]);
+
+  const handleCancelEditKey = useCallback(() => {
+    setTempExperimentalKey(experimentalKey);
+    setIsEditingKey(false);
+  }, [experimentalKey]);
+
   return (
     <Box padding={4}>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
@@ -177,6 +224,73 @@ export const SyncExperimentsTab: React.FC = () => {
           <Text variant={TextVariant.headingLg}>Sync Debug Page</Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             This is a debugging page for sync functionality.
+          </Text>
+        </Box>
+
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={2}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          padding={4}
+          borderRadius={BorderRadius.MD}
+        >
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+              User-storage feature name:
+            </Text>
+            {isEditingKey ? (
+              <Box display={Display.Flex} gap={2}>
+                <Button
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Sm}
+                  onClick={handleSaveKey}
+                >
+                  Save
+                </Button>
+                <Button
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Sm}
+                  onClick={handleCancelEditKey}
+                >
+                  Cancel
+                </Button>
+              </Box>
+            ) : (
+              <Button
+                variant={ButtonVariant.Secondary}
+                size={ButtonSize.Sm}
+                onClick={handleStartEditingKey}
+              >
+                Edit
+              </Button>
+            )}
+          </Box>
+
+          {isEditingKey ? (
+            <TextField
+              value={tempExperimentalKey}
+              onChange={(e) => setTempExperimentalKey(e.target.value)}
+              size={TextFieldSize.Md}
+              autoFocus
+              placeholder="Enter namespace key"
+            />
+          ) : (
+            <Box
+              backgroundColor={BackgroundColor.backgroundDefault}
+              padding={2}
+              borderRadius={BorderRadius.SM}
+            >
+              <Text variant={TextVariant.bodyMd}>{experimentalKey}</Text>
+            </Box>
+          )}
+
+          <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
+            Note: Changing the key will load a different shared document.
           </Text>
         </Box>
 
@@ -266,7 +380,7 @@ export const SyncExperimentsTab: React.FC = () => {
           </Box>
         </Box>
 
-        <Box display={Display.Flex}>
+        <Box display={Display.Flex} gap={2}>
           <Button
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Md}
@@ -287,6 +401,18 @@ export const SyncExperimentsTab: React.FC = () => {
             onClick={handlePush}
           >
             Push
+          </Button>
+          <Button
+            variant={ButtonVariant.Secondary}
+            danger
+            size={ButtonSize.Md}
+            onClick={() => {
+              doc.transact(() => {
+                itemsMap.clear();
+              }, 'local');
+            }}
+          >
+            Clear All Items
           </Button>
         </Box>
 
