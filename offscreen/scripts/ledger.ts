@@ -120,9 +120,10 @@ function setupMessageListeners() {
         // This line ensures the tab is focused, but will not be 100% reliable due to browser security policies
         browserTab.focus();
       }
+
       setTimeout(() => {
         browserTab?.postMessage(iframeMsg, KnownOrigins.ledger);
-      }, 500);
+      }, 1000);
 
       // This keeps sendResponse function valid after return
       // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
