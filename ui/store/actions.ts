@@ -2197,7 +2197,7 @@ export function addNftVerifyOwnership(
       await submitRequestToBackground('addNftVerifyOwnership', [
         address,
         tokenID,
-        networkClientId,
+        { networkClientId },
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
