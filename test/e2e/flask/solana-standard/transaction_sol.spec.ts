@@ -57,7 +57,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
     });
 
     describe('Given I have connected to Mainnet and Devnet', function () {
-      it.only('Should set the scope to Devnet to protect users', async function () {
+      it('Should set the scope to Devnet to protect users', async function () {
         await withSolanaAccountSnap(
           {
             ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
