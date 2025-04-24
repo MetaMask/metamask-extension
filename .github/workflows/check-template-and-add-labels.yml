@@ -14,18 +14,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1 # This retrieves only the latest commit.
-
+      - name: 'Setup Environment'
+        uses: owner/repo-name/.github/actions/setup-environment@branch
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-
       - name: Install dependencies
         run: yarn --immutable
-
       - name: Check template and add labels
         id: check-template-and-add-labels
         env:
           LABEL_TOKEN: ${{ secrets.LABEL_TOKEN }}
         run: npm run check-template-and-add-labels
+
+ 
