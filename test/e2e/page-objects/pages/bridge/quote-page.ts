@@ -12,12 +12,12 @@ export type BridgeQuote = {
 class BridgeQuotePage {
   protected driver: Driver;
 
-  private sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
+  public sourceAssetPickerButton = '[data-testid="bridge-source-button"]';
 
   private destinationAssetPickerButton =
     '[data-testid="bridge-destination-button"]';
 
-  private assetPrickerSearchInput =
+  public assetPrickerSearchInput =
     '[data-testid="asset-picker-modal-search-input"]';
 
   private sourceAmount = '[data-testid="from-amount"]';
@@ -26,7 +26,7 @@ class BridgeQuotePage {
 
   private lineaNetwork = '[data-testid="Linea"]';
 
-  private tokenButton = '[data-testid="multichain-token-list-button"]';
+  public tokenButton = '[data-testid="multichain-token-list-button"]';
 
   private submitButton = { text: 'Submit', tag: 'button' };
 

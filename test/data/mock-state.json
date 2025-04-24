@@ -682,15 +682,25 @@
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "bip122:000000000019d6689c085ae165831e93",
-        "name": "Bitcoin Mainnet",
+        "name": "Bitcoin",
         "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0",
         "isEvm": false
       },
       "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
         "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-        "name": "Solana Mainnet",
+        "name": "Solana",
         "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
         "isEvm": false
+      }
+    },
+    "networksWithTransactionActivity": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "namespace": "eip155",
+        "activeChain": ["0x5"]
+      },
+      "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+        "namespace": "solana",
+        "activeChain": []
       }
     },
     "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
