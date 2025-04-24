@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add remote-mode feature slide ([#31463](https://github.com/MetaMask/metamask-extension/pull/31463))
 - Implement the publishBatch hook for smart transactions ([#31267](https://github.com/MetaMask/metamask-extension/pull/31267))
 - [Beta] Create Solana account automatically on wallet creation or SRP import ([#32038](https://github.com/MetaMask/metamask-extension/pull/32038))
+- Prioritize available chainId / networkClientId over selected chainId when available in transaction ([#31776](https://github.com/MetaMask/metamask-extension/pull/31776))
 
 ### Changed
 - Bump transaction controller version ([#31440](https://github.com/MetaMask/metamask-extension/pull/31440))
