@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace `caip-x` with `caip-348` in Multichain API over externally_connectable ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
 
 ### Changed
-- Updated institutional snap ([#32208](https://github.com/MetaMask/metamask-extension/pull/32208))
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
 
 ### Fixed
