@@ -23,6 +23,7 @@ export const buttonLocator = {
   connectImagesButton: '#connectimages',
   connectLifeCycleButton: '#connectlifecycle-hooks',
   connectNameLookUpButton: '#connectname-lookup',
+  connectPreinstalledButton: '#connectpreinstalled-snap',
   connectTransactionInsightButton: '#connecttransaction-insights',
   connectUpdateButton: '#connectUpdate',
   connectUpdateNewButton: '#connectUpdateNew',
@@ -34,6 +35,7 @@ export const buttonLocator = {
   getAccountButton: '#getAccounts',
   getBip32CompressedPublicKeyButton: '#bip32GetCompressedPublic',
   getBip32PublicKeyButton: '#bip32GetPublic',
+  getSettingsStateButton: '#settings-state',
   publicKeyBip44Button: '#sendBip44Test',
   sendErrorButton: '#sendError',
   sendExpandedViewNotificationButton: '#sendExpandedViewNotification',
@@ -65,6 +67,7 @@ const spanLocator = {
   installedSnapResultSpan: '#installedSnapsResult',
   interactiveUIResultSpan: '#interactiveUIResult',
   messageResultEd25519SBip32Span: '#bip32MessageResult-ed25519Bip32',
+  rpcResultSpan: '#rpcResult',
   updateVersionSpan: '#updateSnapVersion',
   wasmResultSpan: '#wasmResult',
 } satisfies Record<string, string>;
