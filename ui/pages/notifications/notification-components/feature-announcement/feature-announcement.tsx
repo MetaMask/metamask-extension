@@ -1,5 +1,7 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+// eslint-disable-next-line import/no-named-as-default
+import DOMPurify from 'dompurify';
 import { isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
@@ -95,8 +97,9 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             <Text
               variant={TextVariant.bodyMd}
               as="div"
+              // TODO - we can replace the raw HTML string injection with react components
               dangerouslySetInnerHTML={{
-                __html: notification.data.longDescription,
+                __html: DOMPurify.sanitize(notification.data.longDescription),
               }}
             />
           </Box>
