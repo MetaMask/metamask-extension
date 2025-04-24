@@ -53,7 +53,8 @@ export const WithCloseButton: Story = {
   ...Template,
   args: {
     ...DefaultStory.args,
-    onClose: (id: string) => console.log(`Closing slide with id: ${id}`),
+    onClose: (isLastSlide: boolean, id: string) =>
+      console.log(`Closing slide with id: ${id}`),
   },
 };
 

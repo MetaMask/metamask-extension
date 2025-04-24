@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { fetchCarouselSlidesFromContentful } from '../../../hooks/useCarouselManagement/fetchCarouselSlidesFromContentful';
 import { Carousel } from './carousel';
-import { MARGIN_VALUES, WIDTH_VALUES } from './constants';
+import { MARGIN_VALUES, MAX_SLIDES, WIDTH_VALUES } from './constants';
 
 jest.mock('react-responsive-carousel', () => ({
   Carousel: ({
@@ -20,6 +21,11 @@ jest.mock('react-responsive-carousel', () => ({
     </div>
   ),
 }));
+
+jest.mock(
+  '../../../hooks/useCarouselManagement/fetchCarouselSlidesFromContentful',
+);
+jest.mocked(fetchCarouselSlidesFromContentful).mockResolvedValue([]);
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -228,37 +234,20 @@ describe('Carousel', () => {
   });
 
   it('should limit the number of slides to MAX_SLIDES', () => {
-    const manySlides = [
-      ...mockSlides,
-      {
-        id: '3',
-        title: 'Slide 3',
-        description: 'Description 3',
-        image: 'image3.jpg',
-      },
-      {
-        id: '4',
-        title: 'Slide 4',
-        description: 'Description 4',
-        image: 'image4.jpg',
-      },
-      {
-        id: '5',
-        title: 'Slide 5',
-        description: 'Description 5',
-        image: 'image5.jpg',
-      },
-      {
-        id: '6',
-        title: 'Slide 6',
-        description: 'Description 6',
-        image: 'image6.jpg',
-      },
-    ];
+    const createSlide = (id: string) => ({
+      id,
+      title: `Slide ${id}`,
+      description: `Description ${id}`,
+      image: `imagejpg`,
+    });
+    const slides = [...Array(MAX_SLIDES)].map((_, i) => createSlide(`${i}`));
+    slides.push(createSlide('1 more than max!'));
+    slides.push(createSlide('2 more than max!'));
+    slides.push(createSlide('3 more than max!'));
 
-    const { container } = render(<Carousel slides={manySlides} />);
+    const { container } = render(<Carousel slides={slides} />);
 
     const visibleSlides = container.querySelectorAll('.mm-carousel-slide');
-    expect(visibleSlides).toHaveLength(5);
+    expect(visibleSlides).toHaveLength(MAX_SLIDES);
   });
 });
