@@ -3,6 +3,7 @@ import { By } from 'selenium-webdriver';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
+  clickCancelButton,
   clickConfirmButton,
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -42,6 +43,45 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           assert.ok(signedTransaction[0]);
 
           // 2. Send the transaction
+          await sendSolTest.sendTransaction();
+
+          // Confirm the transaction
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await clickConfirmButton(driver);
+          await testDapp.switchTo();
+
+          // Assert that a transaction hash is received
+          const transactionHash = await sendSolTest.getTransactionHash();
+          assert.ok(transactionHash);
+        },
+      );
+    });
+
+    it('Should be able to cancel a transaction and send another one', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          mockCalls: true,
+          simulateTransaction: false,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // 1. Start a transaction and cancel it
+          const sendSolTest = await testDapp.getSendSolTest();
+          await sendSolTest.signTransaction();
+
+          // Cancel the signature
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await clickCancelButton(driver);
+          await testDapp.switchTo();
+
+          // 2. Send another transaction
           await sendSolTest.sendTransaction();
 
           // Confirm the transaction

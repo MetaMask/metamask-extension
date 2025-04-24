@@ -42,6 +42,63 @@ describe('Solana Wallet Standard - Connect', function () {
         },
       );
     });
+
+    it('Should be able to cancel connection and connect again', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // 1. Start connection and cancel it
+          const header = await testDapp.getHeader();
+          await header.connect();
+
+          // wait to display wallet connect modal
+          await driver.delay(regularDelayMs);
+
+          const modal = await testDapp.getWalletModal();
+          await modal.connectToMetaMaskWallet();
+
+          await driver.delay(regularDelayMs);
+
+          // Cancel the connection
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.clickElement({ text: 'Cancel', tag: 'button' });
+          await testDapp.switchTo();
+
+          // Verify we're not connected
+          const connectionStatus = await header.getConnectionStatus();
+          assert.strictEqual(
+            connectionStatus,
+            'Not connected',
+            'Connection status should be "Not connected" after cancellation',
+          );
+
+          // 2. Connect again
+          await connectSolanaTestDapp(driver, testDapp);
+
+          // Verify successful connection
+          const connectionStatusAfterConnect =
+            await header.getConnectionStatus();
+          assert.strictEqual(
+            connectionStatusAfterConnect,
+            'Connected',
+            'Connection status should be "Connected" after reconnecting',
+          );
+
+          const account = await header.getAccount();
+          assert.strictEqual(
+            account,
+            '4tE7...Uxer',
+            'Account should be "4tE7...Uxer"',
+          );
+        },
+      );
+    });
   });
 
   describe('Disconnect the dapp', function () {

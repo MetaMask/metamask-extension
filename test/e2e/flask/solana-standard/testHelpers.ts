@@ -65,7 +65,8 @@ export const connectSolanaTestDapp = async (
 };
 
 /**
- * Waits for the Confirm button in the footer to be clickable then clicks it
+ * Waits for the Confirm button in the footer of a Solana-specific modal to be clickable then clicks it.
+ * Note: This function does not work for general purpose modals like connect/disconnect.
  */
 export const clickConfirmButton = async (driver: Driver): Promise<void> => {
   const footerButtons = await driver.findClickableElements(
@@ -73,6 +74,18 @@ export const clickConfirmButton = async (driver: Driver): Promise<void> => {
   );
   const confirmButton = footerButtons[1];
   await confirmButton.click();
+};
+
+/**
+ * Clicks the Cancel button in the footer in a Solana-specific modal.
+ * Note: This function does not work for general purpose modals like connect/disconnect.
+ */
+export const clickCancelButton = async (driver: Driver): Promise<void> => {
+  const footerButtons = await driver.findClickableElements(
+    By.css('button.snap-ui-renderer__footer-button'),
+  );
+  const cancelButton = footerButtons[0];
+  await cancelButton.click();
 };
 
 /**
