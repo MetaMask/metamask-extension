@@ -50,12 +50,12 @@ export function TransactionAccountDetails() {
             ownerId={id}
           >
             <ConfirmInfoRowText
-              text={t('confirmAccountTypeSmartContract')}
+              text={t('confirmAccountTypeStandard')}
               data-testid="tx-type"
             />
           </ConfirmInfoAlertRow>
           <ConfirmInfoRow label={t('confirmInfoAccountNewType')}>
-            <ConfirmInfoRowText text={t('confirmAccountTypeStandard')} />
+            <ConfirmInfoRowText text={t('confirmAccountTypeSmartContract')} />
           </ConfirmInfoRow>
         </>
       )}
