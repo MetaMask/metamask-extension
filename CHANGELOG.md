@@ -101,6 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Revert "feat(14507): improve error message for failed txn in activity… ([#31137](https://github.com/MetaMask/metamask-extension/pull/31137))
 - Fix should not auto-close notification window if loaded in a tab ([#30970](https://github.com/MetaMask/metamask-extension/pull/30970))
 - Fix solana account discovery ([#32198](https://github.com/MetaMask/metamask-extension/pull/32198))
+- Fixed app crash that occurred when searching for non-existent tokens in the import dialog on mainnet ([#32213](https://github.com/MetaMask/metamask-extension/pull/32213)
 
 ## [12.16.1]
 ### Added
