@@ -47,7 +47,7 @@ describe('Solana Wallet Standard - Send Versioned transaction', function () {
           await testDapp.switchTo();
 
           const transactionHash =
-            await sendSolVersionedTest.getSolscanShortContent();
+            await sendSolVersionedTest.getTransactionHash();
           assert.ok(transactionHash);
         },
       );

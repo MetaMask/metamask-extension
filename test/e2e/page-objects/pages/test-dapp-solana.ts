@@ -142,7 +142,7 @@ export class TestDappSolana {
         await this.getSignedMessages(
           dataTestIds.testPage.sendSol.signedTransaction,
         ),
-      getSolscanShortContent: async () =>
+      getTransactionHash: async () =>
         await this.getSolscanShortContent(
           dataTestIds.testPage.sendSol.transactionHash,
         ),
@@ -175,7 +175,7 @@ export class TestDappSolana {
         await this.getSignedMessages(
           dataTestIds.testPage.sendSolVersioned.signedTransaction,
         ),
-      getSolscanShortContent: async () =>
+      getTransactionHash: async () =>
         await this.getSolscanShortContent(
           dataTestIds.testPage.sendSolVersioned.transactionHash,
         ),
@@ -201,7 +201,7 @@ export class TestDappSolana {
         await this.getSignedMessages(
           dataTestIds.testPage.sendMemo.signedTransaction,
         ),
-      getSolscanShortContent: async () =>
+      getTransactionHash: async () =>
         await this.getSolscanShortContent(
           dataTestIds.testPage.sendMemo.transactionHash,
         ),
@@ -237,7 +237,7 @@ export class TestDappSolana {
         await this.getSignedMessages(
           dataTestIds.testPage.sendWSol.signedTransactions,
         ),
-      getSolscanShortContents: async () =>
+      getTransactionHashs: async () =>
         await this.getSolscanShortContents(
           dataTestIds.testPage.sendWSol.transactionHashs,
         ),

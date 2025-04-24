@@ -44,7 +44,7 @@ describe('Solana Wallet Standard - Send Memo', function () {
 
           await testDapp.switchTo();
 
-          const transactionHash = await sendMemoTest.getSolscanShortContent();
+          const transactionHash = await sendMemoTest.getTransactionHash();
           assert.ok(transactionHash);
         },
       );

@@ -50,7 +50,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await testDapp.switchTo();
 
           // Assert that a transaction hash is received
-          const transactionHash = await sendSolTest.getSolscanShortContent();
+          const transactionHash = await sendSolTest.getTransactionHash();
           assert.ok(transactionHash);
         },
       );
