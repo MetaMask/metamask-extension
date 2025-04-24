@@ -762,6 +762,16 @@
       "status": "available"
     }
   },
+  "networksWithTransactionActivity": {
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "namespace": "eip155",
+      "activeChain": ["0x5"]
+    },
+    "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+      "namespace": "solana",
+      "activeChain": []
+    }
+  },
   "nftsDropdownState": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
       "0xaa36a7": {
@@ -788,21 +798,8 @@
   "openSeaEnabled": false,
   "orderedNetworkList": [],
   "participateInMetaMetrics": false,
-  "pendingApprovalCount": 1,
-  "pendingApprovals": {
-    "testApprovalId": {
-      "id": "testApprovalId",
-      "time": 1528133319641,
-      "origin": "metamask",
-      "type": "transaction",
-      "requestData": {
-        "txId": "testTransactionId"
-      },
-      "requestState": {
-        "test": "value"
-      }
-    }
-  },
+  "pendingApprovalCount": 0,
+  "pendingApprovals": {},
   "permissionHistory": {
     "https://metamask.github.io": {
       "eth_accounts": {
