@@ -916,20 +916,6 @@ const PrepareBridgePage = () => {
                 onClose={() => setIsCannotVerifyTokenBannerOpen(false)}
               />
             )}
-          {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
-            <BannerAlert
-              ref={insufficientBalanceBannerRef}
-              marginInline={4}
-              marginBottom={3}
-              title={t('lowEstimatedReturnTooltipTitle')}
-              severity={BannerAlertSeverity.Warning}
-              description={t('lowEstimatedReturnTooltipMessage', [
-                BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE * 100,
-              ])}
-              textAlign={TextAlign.Left}
-              onClose={() => setIsLowReturnBannerOpen(false)}
-            />
-          )}
           {tokenAlert && isTokenAlertBannerOpen && (
             <BannerAlert
               ref={tokenAlertBannerRef}
@@ -962,7 +948,7 @@ const PrepareBridgePage = () => {
                 textAlign={TextAlign.Left}
               />
             )}
-          {isEstimatedReturnLow && isLowReturnBannerOpen && (
+          {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
             <BannerAlert
               ref={insufficientBalanceBannerRef}
               marginInline={4}
