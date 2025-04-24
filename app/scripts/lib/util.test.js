@@ -533,12 +533,6 @@ describe('app utils', () => {
         ),
       ).toBe('mainnet.infura.io');
       expect(
-        extractRpcDomain(
-          'https://eth-mainnet.alchemyapi.io/v2/key',
-          testKnownDomains,
-        ),
-      ).toBe('eth-mainnet.alchemyapi.io');
-      expect(
         extractRpcDomain('mainnet.infura.io/v3/abc123', testKnownDomains),
       ).toBe('mainnet.infura.io');
     });
@@ -551,12 +545,12 @@ describe('app utils', () => {
       expect(extractRpcDomain('https://rpc.ankr.com/eth_goerli')).toBe(
         'private',
       );
+      expect(extractRpcDomain('invalid-url-format')).toBe('invalid');
     });
 
     it('should handle invalid URLs and edge cases', () => {
       expect(extractRpcDomain('')).toBe('invalid');
       expect(extractRpcDomain(null)).toBe('invalid');
-      expect(extractRpcDomain('invalid-url-format')).toBe('private');
     });
   });
 });

@@ -1105,12 +1105,9 @@ async function buildEventFragmentProperties({
     status === TransactionStatus.confirmed
   ) {
     // Get RPC URL from provider
-    let rpcUrl = 'invalid';
-    if (transactionMetricsRequest.getNetworkRpcUrl && transactionMeta.chainId) {
-      rpcUrl = transactionMetricsRequest.getNetworkRpcUrl(
-        transactionMeta.chainId,
-      );
-    }
+    const rpcUrl = transactionMetricsRequest.getNetworkRpcUrl(
+      transactionMeta.chainId,
+    );
     const domain = extractRpcDomain(rpcUrl);
     properties.rpc_domain = domain;
   }
