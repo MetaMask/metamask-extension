@@ -111,10 +111,10 @@ index 21c0af4e0d88942c47d22b74b5ac07377751bb6a..bfb1144959d3f356eba690384b87cccf
  export const ABI_SIMULATION_ERC20_WRAPPED = [
      {
 diff --git a/dist/utils/batch.cjs b/dist/utils/batch.cjs
-index ad23a77dd88efcabc15649fb31982d265ec9a405..62517fc9b7dc5adfba2dc01570be82ce6be427fe 100644
+index ad23a77dd88efcabc15649fb31982d265ec9a405..e06922cfc070dbbffb0439adb28c0746df9afce2 100644
 --- a/dist/utils/batch.cjs
 +++ b/dist/utils/batch.cjs
-@@ -111,21 +111,18 @@ async function isAtomicBatchSupported(request) {
+@@ -111,21 +111,25 @@ async function isAtomicBatchSupported(request) {
          throw rpc_errors_1.rpcErrors.internal('EIP-7702 public key not specified');
      }
      const chainIds7702 = (0, feature_flags_1.getEIP7702SupportedChains)(messenger);
@@ -122,30 +122,43 @@ index ad23a77dd88efcabc15649fb31982d265ec9a405..62517fc9b7dc5adfba2dc01570be82ce
 -    for (const chainId of chainIds7702) {
 -        if (chainIds && !chainIds.includes(chainId)) {
 -            continue;
--        }
 +    const filteredChainIds = chainIds7702.filter((chainId) => !chainIds || chainIds.includes(chainId));
-+    const results = await Promise.all(filteredChainIds.map(async (chainId) => {
-         const ethQuery = getEthQuery(chainId);
-         const { isSupported, delegationAddress } = await (0, eip7702_1.isAccountUpgradedToEIP7702)(address, chainId, publicKey, messenger, ethQuery);
-         const upgradeContractAddress = (0, feature_flags_1.getEIP7702UpgradeContractAddress)(chainId, messenger, publicKey);
++    const resultsRaw = await Promise.all(filteredChainIds.map(async (chainId) => {
++        try {
++            const ethQuery = getEthQuery(chainId);
++            const { isSupported, delegationAddress } = await (0, eip7702_1.isAccountUpgradedToEIP7702)(address, chainId, publicKey, messenger, ethQuery);
++            const upgradeContractAddress = (0, feature_flags_1.getEIP7702UpgradeContractAddress)(chainId, messenger, publicKey);
++            return {
++                chainId,
++                delegationAddress,
++                isSupported,
++                upgradeContractAddress,
++            };
+         }
+-        const ethQuery = getEthQuery(chainId);
+-        const { isSupported, delegationAddress } = await (0, eip7702_1.isAccountUpgradedToEIP7702)(address, chainId, publicKey, messenger, ethQuery);
+-        const upgradeContractAddress = (0, feature_flags_1.getEIP7702UpgradeContractAddress)(chainId, messenger, publicKey);
 -        results.push({
-+        return {
-             chainId,
-             delegationAddress,
-             isSupported,
-             upgradeContractAddress,
+-            chainId,
+-            delegationAddress,
+-            isSupported,
+-            upgradeContractAddress,
 -        });
 -    }
-+        };
++        catch (error) {
++            log('Error checking atomic batch support', chainId, error);
++            return undefined;
++        }
 +    }));
++    const results = resultsRaw.filter((result) => Boolean(result));
      log('Atomic batch supported results', results);
      return results;
  }
 diff --git a/dist/utils/batch.mjs b/dist/utils/batch.mjs
-index 9db6e45c8b31e3e7fb56b36a9b004d0f58045ce1..a9f89642bb761903d8510b256b4bfc83b060ab2a 100644
+index 9db6e45c8b31e3e7fb56b36a9b004d0f58045ce1..387e4886a0e938411efd2997caeba92052e866b1 100644
 --- a/dist/utils/batch.mjs
 +++ b/dist/utils/batch.mjs
-@@ -107,21 +107,18 @@ export async function isAtomicBatchSupported(request) {
+@@ -107,21 +107,25 @@ export async function isAtomicBatchSupported(request) {
          throw rpcErrors.internal('EIP-7702 public key not specified');
      }
      const chainIds7702 = getEIP7702SupportedChains(messenger);
@@ -153,22 +166,35 @@ index 9db6e45c8b31e3e7fb56b36a9b004d0f58045ce1..a9f89642bb761903d8510b256b4bfc83
 -    for (const chainId of chainIds7702) {
 -        if (chainIds && !chainIds.includes(chainId)) {
 -            continue;
--        }
 +    const filteredChainIds = chainIds7702.filter((chainId) => !chainIds || chainIds.includes(chainId));
-+    const results = await Promise.all(filteredChainIds.map(async (chainId) => {
-         const ethQuery = getEthQuery(chainId);
-         const { isSupported, delegationAddress } = await isAccountUpgradedToEIP7702(address, chainId, publicKey, messenger, ethQuery);
-         const upgradeContractAddress = getEIP7702UpgradeContractAddress(chainId, messenger, publicKey);
++    const resultsRaw = await Promise.all(filteredChainIds.map(async (chainId) => {
++        try {
++            const ethQuery = getEthQuery(chainId);
++            const { isSupported, delegationAddress } = await isAccountUpgradedToEIP7702(address, chainId, publicKey, messenger, ethQuery);
++            const upgradeContractAddress = getEIP7702UpgradeContractAddress(chainId, messenger, publicKey);
++            return {
++                chainId,
++                delegationAddress,
++                isSupported,
++                upgradeContractAddress,
++            };
+         }
+-        const ethQuery = getEthQuery(chainId);
+-        const { isSupported, delegationAddress } = await isAccountUpgradedToEIP7702(address, chainId, publicKey, messenger, ethQuery);
+-        const upgradeContractAddress = getEIP7702UpgradeContractAddress(chainId, messenger, publicKey);
 -        results.push({
-+        return {
-             chainId,
-             delegationAddress,
-             isSupported,
-             upgradeContractAddress,
+-            chainId,
+-            delegationAddress,
+-            isSupported,
+-            upgradeContractAddress,
 -        });
 -    }
-+        };
++        catch (error) {
++            log('Error checking atomic batch support', chainId, error);
++            return undefined;
++        }
 +    }));
++    const results = resultsRaw.filter((result) => Boolean(result));
      log('Atomic batch supported results', results);
      return results;
  }
