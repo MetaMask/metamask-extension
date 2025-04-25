@@ -2811,6 +2811,9 @@
   "manageDefaultSettings": {
     "message": "Standard-Datenschutzeinstellungen verwalten"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "managePermissions": {
     "message": "Genehmigungen verwalten"
   },
@@ -3076,9 +3079,6 @@
   },
   "networkMenuHeading": {
     "message": "Netzwerk wählen"
-  },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
   },
   "networkName": {
     "message": "Netzwerkname"

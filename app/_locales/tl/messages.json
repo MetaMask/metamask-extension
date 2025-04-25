@@ -2811,6 +2811,9 @@
   "manageDefaultSettings": {
     "message": "Pamahalaan ang mga default na setting sa pagkapribado"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "managePermissions": {
     "message": "Pamahalaan ang mga pahintulot"
   },
@@ -3076,9 +3079,6 @@
   },
   "networkMenuHeading": {
     "message": "Pumili ng network"
-  },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
   },
   "networkName": {
     "message": "Pangalan ng Network"

@@ -2811,6 +2811,9 @@
   "manageDefaultSettings": {
     "message": "डिफॉल्ट गोपनीयता सेटिंग्स मैनेज करें"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "managePermissions": {
     "message": "अनुमतियाँ प्रबंधित करें"
   },
@@ -3076,9 +3079,6 @@
   },
   "networkMenuHeading": {
     "message": "एक नेटवर्क को चुनें"
-  },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
   },
   "networkName": {
     "message": "नेटवर्क का नाम"

@@ -2811,6 +2811,9 @@
   "manageDefaultSettings": {
     "message": "Διαχείριση προεπιλεγμένων ρυθμίσεων απορρήτου"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "managePermissions": {
     "message": "Διαχείριση αδειών"
   },
@@ -3076,9 +3079,6 @@
   },
   "networkMenuHeading": {
     "message": "Επιλέξτε ένα δίκτυο"
-  },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
   },
   "networkName": {
     "message": "Όνομα δικτύου"

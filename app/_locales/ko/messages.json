@@ -2811,6 +2811,9 @@
   "manageDefaultSettings": {
     "message": "기본 개인정보 보호 설정 관리"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "managePermissions": {
     "message": "권한 관리"
   },
@@ -3076,9 +3079,6 @@
   },
   "networkMenuHeading": {
     "message": "네트워크 선택"
-  },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
   },
   "networkName": {
     "message": "네트워크 이름"

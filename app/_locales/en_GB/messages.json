@@ -2941,6 +2941,9 @@
   "manageInstitutionalWalletsDescription": {
     "message": "Turn this on to enable institutional wallets."
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "managePermissions": {
     "message": "Manage permissions"
   },
@@ -3206,9 +3209,6 @@
   },
   "networkMenuHeading": {
     "message": "Select a network"
-  },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
   },
   "networkName": {
     "message": "Network name"

@@ -2811,6 +2811,9 @@
   "manageDefaultSettings": {
     "message": "Varsayılan gizlilik ayarlarını yönet"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "managePermissions": {
     "message": "İzinleri yönet"
   },
@@ -3076,9 +3079,6 @@
   },
   "networkMenuHeading": {
     "message": "Ağ seç"
-  },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
   },
   "networkName": {
     "message": "Ağ adı"

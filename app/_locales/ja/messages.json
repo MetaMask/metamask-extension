@@ -2811,6 +2811,9 @@
   "manageDefaultSettings": {
     "message": "デフォルトのプライバシー設定の管理"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "managePermissions": {
     "message": "アクセス許可の管理"
   },
@@ -3076,9 +3079,6 @@
   },
   "networkMenuHeading": {
     "message": "ネットワークを選択"
-  },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
   },
   "networkName": {
     "message": "ネットワーク名"

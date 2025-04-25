@@ -2811,6 +2811,9 @@
   "manageDefaultSettings": {
     "message": "Gestionar la configuración de privacidad por defecto"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "managePermissions": {
     "message": "Administrar permisos"
   },
@@ -3076,9 +3079,6 @@
   },
   "networkMenuHeading": {
     "message": "Seleccionar una red"
-  },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
   },
   "networkName": {
     "message": "Nombre de la red"
