@@ -345,7 +345,6 @@
     "@trezor/connect-web": "~9.4.7",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "0.21.3",
-    "abitype": "^1.0.8",
     "await-semaphore": "^0.1.3",
     "base32-encode": "^1.2.0",
     "base64-js": "^1.5.1",
