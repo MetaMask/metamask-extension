@@ -3149,7 +3149,7 @@ export const getUpdatedAndSortedAccountsWithCaipAccountId =
  * Gets a boolean indicating whether the external source for well-known
  * chains list usage is permitted.
  *
- * @param {*} state
+ * @param {object} state
  * @returns {boolean} True if the external source is permitted, false otherwise.
  */
 export const useExternalWellKnownChainsValidationSelector = (state) => {
