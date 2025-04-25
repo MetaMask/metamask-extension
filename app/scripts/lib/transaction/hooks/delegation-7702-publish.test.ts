@@ -183,9 +183,8 @@ describe('Delegation 7702 Publish Hook', () => {
 
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
     expect(submitRelayTransactionMock).toHaveBeenCalledWith({
+      chainId: TRANSACTION_META_MOCK.chainId,
       data: expect.any(String),
-      maxFeePerGas: TRANSACTION_META_MOCK.txParams.maxFeePerGas,
-      maxPriorityFeePerGas: TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
       to: process.env.DELEGATION_MANAGER_ADDRESS,
     });
   });

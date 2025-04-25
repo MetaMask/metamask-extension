@@ -47,7 +47,7 @@ describe('useIsGaslessSupported', () => {
     expect(result).toBe(true);
   });
 
-  it('returns true if chain supports EIP-7702 and account is not upgraded', async () => {
+  it('returns false if chain supports EIP-7702 but account is not upgraded', async () => {
     getIsSmartTransactionMock.mockReturnValue(false);
     isAtomicBatchSupportedMock.mockResolvedValue([
       {
@@ -59,7 +59,7 @@ describe('useIsGaslessSupported', () => {
 
     const result = await runHook();
 
-    expect(result).toBe(true);
+    expect(result).toBe(false);
   });
 
   it('returns true if chain supports EIP-7702 and account is upgraded and supported', async () => {

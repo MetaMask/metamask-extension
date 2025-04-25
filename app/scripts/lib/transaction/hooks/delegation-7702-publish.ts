@@ -79,7 +79,7 @@ export class Delegation7702PublishHook {
     const { chainId, gasFeeTokens, selectedGasFeeToken, txParams } =
       transactionMeta;
 
-    const { from, maxFeePerGas, maxPriorityFeePerGas } = txParams;
+    const { from } = txParams;
 
     const atomicBatchSupport = await this.#isAtomicBatchSupported({
       address: from as Hex,
@@ -131,9 +131,8 @@ export class Delegation7702PublishHook {
     );
 
     const relayRequest: RelaySubmitRequest = {
+      chainId,
       data: transactionData,
-      maxFeePerGas: maxFeePerGas as Hex,
-      maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
       to: process.env.DELEGATION_MANAGER_ADDRESS as Hex,
     };
 

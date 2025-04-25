@@ -20,28 +20,29 @@ export function useIsGaslessSupported() {
     getIsSmartTransaction(state, chainId),
   );
 
-  const { value: atomicBatchSupportResult } = useAsyncResult(
-    async () =>
-      isAtomicBatchSupported({
-        address: from as Hex,
-        chainIds: [chainId],
-      }),
-    [chainId, from],
-  );
+  const { value: atomicBatchSupportResult } = useAsyncResult(async () => {
+    if (isSmartTransaction) {
+      return undefined;
+    }
+
+    return isAtomicBatchSupported({
+      address: from as Hex,
+      chainIds: [chainId],
+    });
+  }, [chainId, from, isSmartTransaction]);
+
+  if (isSmartTransaction) {
+    return true;
+  }
 
   const atomicBatchChainSupport = atomicBatchSupportResult?.find(
     (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
   );
 
-  const supportsGaslessBundle = isSmartTransaction;
+  if (!atomicBatchChainSupport) {
+    return false;
+  }
 
-  const supportsGasless7702 =
-    process.env.TRANSACTION_RELAY_API_URL &&
-    Boolean(atomicBatchChainSupport) &&
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    (atomicBatchChainSupport?.isSupported ||
-      !atomicBatchChainSupport?.delegationAddress);
-
-  return supportsGaslessBundle || supportsGasless7702;
+  // Currently requires upgraded account, can also support no `delegationAddress` in future.
+  return atomicBatchChainSupport.isSupported;
 }

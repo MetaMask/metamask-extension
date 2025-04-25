@@ -1,31 +1,30 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
 import {
+  RELAY_RPC_METHOD,
   RelaySubmitRequest,
   submitRelayTransaction,
 } from './transaction-relay';
 
-const URL_MOCK = 'test.com/test';
+jest.mock('../../../../shared/modules/rpc.utils');
+
 const TRANSACTION_HASH_MOCK = '0x123';
-const ERROR_STATUS_MOCK = 500;
 const ERROR_BODY_MOCK = 'test error';
 
 const SUBMIT_REQUEST_MOCK: RelaySubmitRequest = {
+  chainId: CHAIN_IDS.MAINNET,
   data: '0x1',
-  maxFeePerGas: '0x2',
-  maxPriorityFeePerGas: '0x3',
   to: '0x4',
 };
 
 describe('Transaction Relay Utils', () => {
-  let fetchMock: jest.Mock;
+  const jsonRpcRequestMock = jest.mocked(jsonRpcRequest);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    process.env.TRANSACTION_RELAY_API_URL = URL_MOCK;
-
-    fetchMock = jest.spyOn(global, 'fetch').mockReturnValue({
-      json: () => Promise.resolve({ transactionHash: TRANSACTION_HASH_MOCK }),
-      ok: true,
+    jsonRpcRequestMock.mockResolvedValue({
+      transactionHash: TRANSACTION_HASH_MOCK,
     });
   });
 
@@ -33,11 +32,10 @@ describe('Transaction Relay Utils', () => {
     it('submits request to API', async () => {
       await submitRelayTransaction(SUBMIT_REQUEST_MOCK);
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        URL_MOCK,
-        expect.objectContaining({
-          body: JSON.stringify(SUBMIT_REQUEST_MOCK),
-        }),
+      expect(jsonRpcRequestMock).toHaveBeenCalledWith(
+        expect.any(String),
+        RELAY_RPC_METHOD,
+        [SUBMIT_REQUEST_MOCK],
       );
     });
 
@@ -49,16 +47,14 @@ describe('Transaction Relay Utils', () => {
       });
     });
 
-    it('throws if response status it not successful', async () => {
-      fetchMock.mockReturnValueOnce({
-        ok: false,
-        status: ERROR_STATUS_MOCK,
-        text: () => Promise.resolve(ERROR_BODY_MOCK),
+    it('throws if chain not supported', async () => {
+      jsonRpcRequestMock.mockResolvedValueOnce({
+        error: ERROR_BODY_MOCK,
       });
 
-      await expect(submitRelayTransaction(SUBMIT_REQUEST_MOCK)).rejects.toThrow(
-        `Transaction relay submit failed with status: ${ERROR_STATUS_MOCK} - ${ERROR_BODY_MOCK}`,
-      );
+      await expect(
+        submitRelayTransaction({ ...SUBMIT_REQUEST_MOCK, chainId: '0x123' }),
+      ).rejects.toThrow(`Chain not supported by transaction relay - 0x123`);
     });
   });
 });
