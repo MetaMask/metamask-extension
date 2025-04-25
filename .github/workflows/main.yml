@@ -82,7 +82,7 @@ jobs:
       - prep-deps
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
-  prep-build-test-browserify:
+  prep-build-test-browserify-chrome:
     needs:
       - prep-deps
     runs-on: ubuntu-latest
@@ -100,6 +100,19 @@ jobs:
         with:
           name: prep-build-test-browserify-chrome
           path: ./dist/**/chrome # it's really in dist/chrome, but the ** is there so that it's uploaded relative to `dist`
+
+  prep-build-test-browserify-firefox:
+    needs:
+      - prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - run: yarn build:test:mv2
 
       - name: Upload artifact prep-build-test-browserify-firefox
         uses: actions/upload-artifact@v4
@@ -132,7 +145,7 @@ jobs:
           name: prep-build-test-webpack-firefox
           path: ./dist/**/firefox # it's really in dist/firefox, but the ** is there so that it's uploaded relative to `dist`
 
-  prep-build-dist-browserify:
+  prep-build-dist-browserify-chrome:
     needs:
       - prep-deps
     runs-on: ubuntu-latest
@@ -154,6 +167,26 @@ jobs:
           name: prep-build-dist-browserify-chrome
           path: ./dist/**/chrome # it's really in dist/chrome, but the ** is there so that it's uploaded relative to `dist`
 
+  prep-build-dist-browserify-firefox:
+    needs:
+      - prep-deps
+    runs-on: ubuntu-latest
+    env:
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      # GHA does not allow the : ? ternary operator, you must write && ||
+      - run: ${{ env.BRANCH == 'master' && 'ENABLE_MV3=false yarn build prod' || 'yarn dist:mv2' }}
+        env:
+          INFURA_PROJECT_ID: 'FAKE'
+
       - name: Upload artifact prep-build-dist-browserify-firefox
         uses: actions/upload-artifact@v4
         with:
@@ -163,7 +196,7 @@ jobs:
   run-benchmarks:
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
-      - prep-build-test-browserify
+      - prep-build-test-browserify-chrome
       - prep-build-test-webpack
     permissions:
       contents: read
@@ -178,7 +211,7 @@ jobs:
 
   bundle-size:
     needs:
-      - prep-build-dist-browserify
+      - prep-build-dist-browserify-chrome
     runs-on: ubuntu-latest
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
@@ -225,15 +258,17 @@ jobs:
   e2e-chrome:
     needs:
       - needs-e2e
-      - prep-build-test-browserify
+      - prep-build-test-browserify-chrome
       - prep-build-test-webpack
-      - prep-build-dist-browserify
+      - prep-build-dist-browserify-chrome
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
 
   e2e-firefox:
     needs:
       - needs-e2e
+      - prep-build-test-browserify-firefox
+      - prep-build-dist-browserify-firefox
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
 
@@ -296,7 +331,8 @@ jobs:
       - test-storybook
       - validate-lavamoat-policy-build
       - validate-lavamoat-policy-webapp
-      - prep-build-test-browserify
+      - prep-build-test-browserify-chrome
+      - prep-build-test-browserify-firefox
       - prep-build-test-webpack
       - run-tests
       - needs-e2e

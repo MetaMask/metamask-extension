@@ -182,6 +182,10 @@ async function main() {
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
           })
+          .option('dist', {
+            description: `run e2e tests for production-like builds`,
+            type: 'boolean',
+          })
           .option('rpc', {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
@@ -219,6 +223,7 @@ async function main() {
   const {
     browser,
     debug,
+    dist,
     retries,
     rpc,
     buildType,
@@ -243,6 +248,9 @@ async function main() {
       ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
       ...featureTestsOnMain,
     ];
+  } else if (dist) {
+    const testDir = path.join(__dirname, 'dist');
+    testPaths = await getTestPathsForTestDir(testDir);
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
