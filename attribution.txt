@@ -18696,7 +18696,7 @@ SOFTWARE.
 ******************************
 
 @metamask/institutional-wallet-snap
-1.3.0 <https://github.com/MetaMask/snap-institutional-wallet>
+1.3.1 <https://github.com/MetaMask/snap-institutional-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
@@ -19959,7 +19959,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-controllers
-11.2.0 <https://github.com/MetaMask/snaps>
+11.2.1 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2021. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -19983,7 +19983,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-execution-environments
-7.2.0 <https://github.com/MetaMask/snaps>
+7.2.1 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2022. All rights reserved.
 
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -20426,7 +20426,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/utils
-11.2.0 <https://github.com/MetaMask/utils>
+11.4.0 <https://github.com/MetaMask/utils>
 ISC License
 
 Copyright (c) 2022 MetaMask
