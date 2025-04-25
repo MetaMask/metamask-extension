@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTokenDisplayInfo } from '../hooks';
@@ -20,11 +20,6 @@ import {
 } from '../../../component-library';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../../store/actions';
@@ -45,8 +40,10 @@ import { useExternalWellKnownChainsValidationSelector } from '../../../../select
 export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
-  onClick?: (chainId: string, address: string) => void;
   disableHover?: boolean;
+  onClick?: () => void;
+  TokenCellPrimaryDisplayOverride?: React.ComponentType;
+  fixCurrencyToUSD?: boolean;
 };
 
 export default function TokenCell({
@@ -54,16 +51,15 @@ export default function TokenCell({
   privacyMode = false,
   onClick,
   disableHover = false,
+  TokenCellPrimaryDisplayOverride,
+  fixCurrencyToUSD = false,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const trackEvent = useContext(MetaMetricsContext);
-  const useWellKnownChainsValidation = useSelector(
-    useExternalWellKnownChainsValidationSelector,
-  );
-  const { wellKnownChains } = useWellKnownChains(useWellKnownChainsValidation);
+  const { wellKnownChains } = useWellKnownChains();
+
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -79,38 +75,8 @@ export default function TokenCell({
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
+    fixCurrencyToUSD,
   });
-
-  const handleClick = useCallback(
-    (e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e?.preventDefault();
-
-      // If the scam warning modal is open, do nothing
-      if (showScamWarningModal) {
-        return;
-      }
-
-      // Ensure token has a valid chainId before proceeding
-      if (!onClick || !token.chainId) {
-        return;
-      }
-
-      // Call the onClick handler with chainId and address if needed
-      onClick(token.chainId, token.address);
-
-      // Track the event
-      trackEvent({
-        category: MetaMetricsEventCategory.Tokens,
-        event: MetaMetricsEventName.TokenDetailsOpened,
-        properties: {
-          location: 'Home',
-          chain_id: token.chainId, // FIXME: Ensure this is a number for EVM accounts
-          token_symbol: token.symbol,
-        },
-      });
-    },
-    [onClick, token, showScamWarningModal, trackEvent],
-  );
 
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
@@ -119,6 +85,16 @@ export default function TokenCell({
   if (!token.chainId) {
     return null;
   }
+
+  const PrimaryDisplay = () =>
+    TokenCellPrimaryDisplayOverride ? (
+      <TokenCellPrimaryDisplayOverride />
+    ) : (
+      <TokenCellPrimaryDisplay
+        token={{ ...token, ...tokenDisplayInfo }}
+        privacyMode={privacyMode}
+      />
+    );
 
   return (
     <Box
@@ -130,7 +106,15 @@ export default function TokenCell({
     >
       <Box
         as="a"
-        onClick={handleClick}
+        onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+          e?.preventDefault();
+
+          if (!onClick || showScamWarningModal) {
+            return;
+          }
+
+          onClick();
+        }}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         paddingTop={2}
@@ -178,10 +162,7 @@ export default function TokenCell({
             justifyContent={JustifyContent.spaceBetween}
           >
             <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
-            <TokenCellPrimaryDisplay
-              token={{ ...token, ...tokenDisplayInfo }}
-              privacyMode={privacyMode}
-            />
+            <PrimaryDisplay />
           </Box>
         </Box>
       </Box>
