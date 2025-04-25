@@ -2,19 +2,13 @@ import { encode } from '@metamask/abi-utils';
 import type { Hex } from './utils';
 import { keccak256, toHex } from './utils';
 
-export const CAVEAT_ABI_TYPE_COMPONENTS = [
-  { type: 'address', name: 'enforcer' },
-  { type: 'bytes', name: 'terms' },
-  { type: 'bytes', name: 'args' },
-];
-
 export type Caveat = {
   enforcer: Hex;
   terms: Hex;
   args: Hex;
 };
 
-export const CAVEAT_TYPEHASH: Hex = keccak256(
+const CAVEAT_TYPEHASH: Hex = keccak256(
   toHex('Caveat(address enforcer,bytes terms)'),
 );
 
@@ -24,7 +18,7 @@ export const CAVEAT_TYPEHASH: Hex = keccak256(
  * @param input - The Caveat data.
  * @returns The keccak256 hash of the encoded Caveat packet.
  */
-export const getCaveatPacketHash = (input: Caveat): Hex => {
+const getCaveatPacketHash = (input: Caveat): Hex => {
   const encoded: Hex = toHex(
     encode(
       ['bytes32', 'address', 'bytes32'],
