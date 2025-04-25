@@ -221,38 +221,30 @@ describe('Solana Wallet Standard - Connect', function () {
           {
             ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            numberOfAccounts: 2,
+            numberOfAccounts: 2, // we create two account
           },
           async (driver) => {
             const testDapp = new TestDappSolana(driver);
             await testDapp.openTestDappPage();
+
+            // We connect only the first account (by default)
             await connectSolanaTestDapp(driver, testDapp, {
               selectAllAccounts: false,
             });
 
-            // Check that we're connected to the last selected account
+            // Check that we're connected to the selected account
             const header = await testDapp.getHeader();
             let account = await header.getAccount();
             assertConnected(account, 'ExTE...GNtt');
 
-            // Switch to the first account
-            await driver.switchToWindowWithTitle(
-              WINDOW_TITLES.ExtensionInFullScreenView,
-            );
-            await switchToAccount(driver, 'Solana 1');
-            await testDapp.switchTo();
-
-            // Check that we're connected to the first account
-            account = await header.getAccount();
-            assertConnected(account, 'ExTE...GNtt');
-
+            // Now switch to the second account
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.ExtensionInFullScreenView,
             );
             await switchToAccount(driver, 'Solana 2');
             await testDapp.switchTo();
 
-            // Check that we're connected to the first account
+            // Check that we're still connected to the first account
             account = await header.getAccount();
             assertConnected(account, 'ExTE...GNtt');
           },
