@@ -5031,9 +5031,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/bridge-controller@npm:11.0.0"
+"@metamask/bridge-controller@npm:^17.0.0":
+  version: 17.0.0
+  resolution: "@metamask/bridge-controller@npm:17.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5041,19 +5041,22 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.6.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/gas-fee-controller": "npm:^23.0.0"
+    "@metamask/keyring-api": "npm:^17.4.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-network-controller": "npm:^0.3.0"
+    "@metamask/multichain-network-controller": "npm:^0.5.1"
     "@metamask/polling-controller": "npm:^13.0.0"
-    "@metamask/snaps-utils": "npm:^8.10.0"
     "@metamask/utils": "npm:^11.2.0"
+    bignumber.js: "npm:^9.1.2"
+    reselect: "npm:^5.1.1"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
+    "@metamask/assets-controllers": ^58.0.0
     "@metamask/network-controller": ^23.0.0
-    "@metamask/snaps-controllers": ^9.19.0
-    "@metamask/transaction-controller": ^52.0.0
-  checksum: 10/e8312b568d893046e7d0b0db02a174e53e6908640d7ac0df7f7c21cdc042e59fab74af6364ea9e58cdfb73b326e43cbd4d837aa3f21deee0aea95e18015e4746
+    "@metamask/snaps-controllers": ^11.0.0
+    "@metamask/transaction-controller": ^54.0.0
+  checksum: 10/55ed5090fff9a91d75279d008c334e0cd14d5088111ee520e45b1ab7777c3779d6022aff501109a7d5ffcfe9a3b2a904c10fa7047efdaef6c6417fe9cf8eb561
   languageName: node
   linkType: hard
 
@@ -5345,9 +5348,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^11.0.2":
-  version: 11.0.2
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:11.0.2"
+"@metamask/eth-ledger-bridge-keyring@npm:^11.0.3":
+  version: 11.0.3
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:11.0.3"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -5355,7 +5358,7 @@ __metadata:
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/a6b655367a342c4b2f2052fce25157665404ff4f20084e299325fb215b6f0d4574541230bba459a2c38a48e4264318cebb4afb431e16cc531229ca4c5260b0e3
+  checksum: 10/0a0f3a6a95e849c3cd8350f96eff27cbfec2e595223858f65c842e805cced382d3d7a06fce5d00aa1d97d071d8b71cb255185716573345f0670a9c0c8f941639
   languageName: node
   linkType: hard
 
@@ -5799,21 +5802,6 @@ __metadata:
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
   checksum: 10/f4f18243c2133f7eb5827a80583f378727c460255f95f723d88b664705b8b0e8f12428b6bf16975cc2cbfec35c21797c84ab96a09317412c37135f4afd697f2f
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-network-controller@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/multichain-network-controller@npm:0.3.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/keyring-api": "npm:^17.2.0"
-    "@metamask/utils": "npm:^11.2.0"
-    "@solana/addresses": "npm:^2.0.0"
-  peerDependencies:
-    "@metamask/accounts-controller": ^27.0.0
-    "@metamask/network-controller": ^23.0.0
-  checksum: 10/eed3a230271bfe610027b6739d383151a573fe10db66f407ec8c673cceaab3c2b50a5fcc3fb2cc0dcfa4fbb9748d63f615799bd27bb5b4303260321ec9d07757
   languageName: node
   linkType: hard
 
@@ -6557,9 +6545,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^54.1.0":
-  version: 54.1.0
-  resolution: "@metamask/transaction-controller@npm:54.1.0"
+"@metamask/transaction-controller@npm:^54.2.0":
+  version: 54.2.0
+  resolution: "@metamask/transaction-controller@npm:54.2.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6589,7 +6577,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/90030f6a06d7739e359bd869e11cb44159f1e273c16ef3ac71821ffba1a630e00949f5edc7e1d00c077b4d4becc386915dabfe4e3e729c175416d7964c9a6b36
+  checksum: 10/86f27c83c19328e16b898600a9d38884bd36780187134a7a597a1a228c89f59bedc56b3f34399abecb09ff152eb1bbea9e3b82b118419b5a3d3135984ae0b708
   languageName: node
   linkType: hard
 
@@ -27638,7 +27626,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
-    "@metamask/bridge-controller": "npm:^11.0.0"
+    "@metamask/bridge-controller": "npm:^17.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
@@ -27656,7 +27644,7 @@ __metadata:
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^17.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^11.0.2"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^11.0.3"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-snap-keyring": "npm:^12.1.1"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
@@ -27716,7 +27704,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.10.0"
-    "@metamask/transaction-controller": "npm:^54.1.0"
+    "@metamask/transaction-controller": "npm:^54.2.0"
     "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"

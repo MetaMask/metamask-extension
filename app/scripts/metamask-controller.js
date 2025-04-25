@@ -401,6 +401,7 @@ import {
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
+import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
 import {
   getCallsStatus,
   getCapabilities,
@@ -611,6 +612,31 @@ export default class MetamaskController extends EventEmitter {
 
       initialNetworkControllerState.selectedNetworkClientId =
         network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
+    }
+
+    // Fix the network controller state (selectedNetworkClientId) if it is invalid and report the error
+    if (
+      initialNetworkControllerState.networkConfigurationsByChainId &&
+      !Object.values(
+        initialNetworkControllerState.networkConfigurationsByChainId,
+      )
+        .flatMap((networkConfiguration) =>
+          networkConfiguration.rpcEndpoints.map(
+            (rpcEndpoint) => rpcEndpoint.networkClientId,
+          ),
+        )
+        .includes(initialNetworkControllerState.selectedNetworkClientId)
+    ) {
+      captureException(
+        new Error(
+          `NetworkController state is invalid: \`selectedNetworkClientId\` '${initialNetworkControllerState.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`,
+        ),
+      );
+
+      initialNetworkControllerState.selectedNetworkClientId =
+        initialNetworkControllerState.networkConfigurationsByChainId[
+          CHAIN_IDS.MAINNET
+        ].rpcEndpoints[0].networkClientId;
     }
 
     this.networkController = new NetworkController({
@@ -1568,6 +1594,9 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',
         'NetworkController:findNetworkClientIdByChainId',
+        'TokenRatesController:getState',
+        'MultichainAssetsRatesController:getState',
+        'CurrencyRateController:getState',
       ],
       allowedEvents: [],
     });
@@ -1582,6 +1611,10 @@ export default class MetamaskController extends EventEmitter {
           fetchOptions: { method: 'GET', headers, signal },
           ...requestOptions,
         }),
+      // eslint-disable-next-line no-empty-function
+      trackMetaMetricsFn: () => {
+        // TODO implement these when ready to start tracking new unified swap events
+      },
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
@@ -1816,6 +1849,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
+      DeFiPositionsController: DeFiPositionsControllerInit,
     };
 
     const {
@@ -1865,6 +1899,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.NotificationServicesController;
     this.notificationServicesPushController =
       controllersByName.NotificationServicesPushController;
+    this.deFiPositionsController = controllersByName.DeFiPositionsController;
 
     this.notificationServicesController.init();
 
@@ -2101,6 +2136,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
+      DeFiPositionsController: this.deFiPositionsController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -2163,6 +2199,7 @@ export default class MetamaskController extends EventEmitter {
         NotificationServicesPushController:
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
+        DeFiPositionsController: this.deFiPositionsController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -3573,8 +3610,8 @@ export default class MetamaskController extends EventEmitter {
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
-      removeNetwork: this.networkController.removeNetwork.bind(
-        this.networkController,
+      removeNetwork: this.multichainNetworkController.removeNetwork.bind(
+        this.multichainNetworkController,
       ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(

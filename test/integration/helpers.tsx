@@ -92,6 +92,12 @@ export const waitForElementByTextToNotBePresent = async (text: string) => {
   });
 };
 
+/**
+ * Clicks on an element identified by the given text.
+ *
+ * @param text - The text content of the element to be clicked.
+ * @returns A promise that resolves when the click action is completed.
+ */
 export const clickElementByText = async (text: string) => {
   await act(async () => {
     fireEvent.click(await screen.findByText(text));
