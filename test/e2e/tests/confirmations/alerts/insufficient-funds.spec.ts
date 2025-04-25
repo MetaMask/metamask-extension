@@ -6,9 +6,9 @@ import {
   openDAppWithContract,
 } from '../transactions/shared';
 import { Driver } from '../../../webdriver/driver';
-import TestDapp from '../../../page-objects/pages/test-dapp';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import AlertModal from '../../../page-objects/pages/confirmations/redesign/alert-modal';
+import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 
 describe('Alert for insufficient funds', function () {
   it('Shows an alert when the user tries to send a transaction with insufficient funds', async function () {
@@ -16,7 +16,6 @@ describe('Alert for insufficient funds', function () {
     const localNodeOptions = {
       mnemonic: 'test test test test test test test test test test test junk',
     };
-
     await withFixtures(
       {
         dapp: true,
@@ -34,15 +33,14 @@ describe('Alert for insufficient funds', function () {
 
         await openDAppWithContract(driver, contractRegistry, nftSmartContract);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.check_pageIsLoaded();
         await testDapp.clickERC721MintButton();
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.clickInlineAlert();
-        await alertModal.check_messageForInsufficientBalance();
+        await alertModal.check_insufficientBalanceMessageIsDisplayed();
         await alertModal.clickConfirmButton();
       },
     );
   });
 });
-
-
