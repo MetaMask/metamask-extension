@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  isSolanaChainId,
+  BRIDGE_MM_FEE_RATE,
+  formatChainIdToHex,
+  formatEtaInMinutes,
+} from '@metamask/bridge-controller';
+import type { ChainId } from '@metamask/bridge-controller';
+import {
   Text,
   PopoverPosition,
   IconName,
@@ -14,56 +21,36 @@ import {
   getBridgeQuotes,
   getFromChain,
   getToChain,
-  getValidationErrors,
+  getIsBridgeTx,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  formatEtaInMinutes,
-} from '../utils/quote';
-import {
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
 import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
-  AlignItems,
   BackgroundColor,
-  BlockSize,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import {
-  BRIDGE_MM_FEE_RATE,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
+import {
+  MULTICHAIN_TOKEN_IMAGE_MAP,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { shortenString } from '../../../helpers/utils/util';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
-type MultichainBridgeQuoteCardProps = {
-  destinationAddress?: string;
-};
-
-export const MultichainBridgeQuoteCard = ({
-  destinationAddress,
-}: MultichainBridgeQuoteCardProps) => {
+export const MultichainBridgeQuoteCard = () => {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
-  const ticker = useSelector(getNativeCurrency);
-  const { isEstimatedReturnLow } = useSelector(getValidationErrors);
 
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
@@ -73,10 +60,31 @@ export const MultichainBridgeQuoteCard = ({
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
   const locale = useSelector(getIntlLocale);
+  const isBridgeTx = useSelector(getIsBridgeTx);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
-  const [shouldShowNetworkFeesInGasToken, setShouldShowNetworkFeesInGasToken] =
-    useState(false);
+
+  const getNetworkImage = (chainId: ChainId) => {
+    if (isSolanaChainId(chainId)) {
+      return MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA];
+    }
+    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+      formatChainIdToHex(
+        chainId,
+      ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+    ];
+  };
+
+  const getNetworkName = (chainId: ChainId) => {
+    if (isSolanaChainId(chainId)) {
+      return NETWORK_TO_SHORT_NETWORK_NAME_MAP[MultichainNetworks.SOLANA];
+    }
+    return NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      formatChainIdToHex(
+        chainId,
+      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+    ];
+  };
 
   return (
     <>
@@ -86,27 +94,106 @@ export const MultichainBridgeQuoteCard = ({
       />
       {activeQuote ? (
         <Column gap={3}>
-          <Row justifyContent={JustifyContent.spaceBetween}>
-            <Row
-              gap={1}
-              justifyContent={JustifyContent.flexStart}
-              style={{ whiteSpace: 'nowrap' }}
-            >
-              <Text variant={TextVariant.bodyLgMedium}>{t('bestPrice')}</Text>
-              <Tooltip
-                title={t('howQuotesWork')}
-                position={PopoverPosition.TopStart}
-                offset={[-16, 16]}
-                iconName={IconName.Question}
-              >
-                {t('howQuotesWorkExplanation', [BRIDGE_MM_FEE_RATE])}
-              </Tooltip>
+          <Column gap={2}>
+            {/* Quote */}
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Row gap={1}>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                >
+                  {t('multichainQuoteCardQuoteLabel')}
+                </Text>
+                <Tooltip
+                  title={t('howQuotesWork')}
+                  position={PopoverPosition.TopStart}
+                  offset={[-16, 16]}
+                  iconName={IconName.Question}
+                >
+                  {t('howQuotesWorkExplanation', [BRIDGE_MM_FEE_RATE])}
+                </Tooltip>
+              </Row>
+              <Text>
+                {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
+                  locale,
+                  activeQuote.swapRate,
+                )} ${activeQuote.quote.destAsset.symbol}`}
+              </Text>
             </Row>
-            <Column height={BlockSize.Full} alignItems={AlignItems.flexEnd}>
+
+            {/* Bridging - Only show when it's a bridge transaction */}
+            {isBridgeTx && (
+              <Row justifyContent={JustifyContent.spaceBetween}>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                >
+                  {t('multichainQuoteCardBridgingLabel')}
+                </Text>
+                <Row gap={1}>
+                  <AvatarNetwork
+                    name={fromChain?.name ?? ''}
+                    src={getNetworkImage(activeQuote.quote.srcChainId)}
+                    size={AvatarNetworkSize.Xs}
+                    backgroundColor={BackgroundColor.transparent}
+                  />
+                  <Text>{getNetworkName(activeQuote.quote.srcChainId)}</Text>
+                  <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
+                  <AvatarNetwork
+                    name={toChain?.name ?? ''}
+                    src={getNetworkImage(activeQuote.quote.destChainId)}
+                    size={AvatarNetworkSize.Xs}
+                    backgroundColor={BackgroundColor.transparent}
+                  />
+                  <Text>{getNetworkName(activeQuote.quote.destChainId)}</Text>
+                </Row>
+              </Row>
+            )}
+
+            {/* Network Fee */}
+            <Row justifyContent={JustifyContent.spaceBetween}>
               <Text
-                as={'a'}
                 variant={TextVariant.bodyMd}
-                color={TextColor.primaryDefault}
+                color={TextColor.textAlternative}
+              >
+                {t('networkFee')}
+              </Text>
+              <Text>
+                {formatCurrencyAmount(
+                  activeQuote.totalNetworkFee?.valueInCurrency,
+                  currency,
+                  2,
+                )}
+              </Text>
+            </Row>
+
+            {/* Time */}
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+              >
+                {t('multichainQuoteCardTimeLabel')}
+              </Text>
+              <Text>
+                {t('bridgeTimingMinutes', [
+                  formatEtaInMinutes(
+                    activeQuote.estimatedProcessingTimeInSeconds,
+                  ),
+                ])}
+              </Text>
+            </Row>
+
+            {/* Footer */}
+            <Row
+              justifyContent={JustifyContent.spaceBetween}
+              color={TextColor.textAlternative}
+            >
+              <Text variant={TextVariant.bodyMd}>
+                {t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])}
+              </Text>
+              <ButtonLink
+                variant={TextVariant.bodyMd}
                 onClick={() => {
                   quoteRequestProperties &&
                     requestMetadataProperties &&
@@ -123,185 +210,6 @@ export const MultichainBridgeQuoteCard = ({
                 }}
               >
                 {t('moreQuotes')}
-              </Text>
-            </Column>
-          </Row>
-          <Column gap={1}>
-            <Row justifyContent={JustifyContent.flexStart} gap={1}>
-              <Row gap={1}>
-                <AvatarNetwork
-                  name={fromChain?.name ?? ''}
-                  src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      `0x${decimalToHex(
-                        activeQuote.quote.srcChainId,
-                      )}` as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
-                  }
-                  size={AvatarNetworkSize.Xs}
-                  backgroundColor={BackgroundColor.transparent}
-                />
-                <Text style={{ whiteSpace: 'nowrap' }}>
-                  {
-                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      `0x${decimalToHex(
-                        activeQuote.quote.srcChainId,
-                      )}` as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ]
-                  }
-                </Text>
-                <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
-                <AvatarNetwork
-                  name={toChain?.name ?? ''}
-                  src={
-                    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                      `0x${decimalToHex(
-                        activeQuote.quote.destChainId,
-                      )}` as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                    ]
-                  }
-                  size={AvatarNetworkSize.Xs}
-                  backgroundColor={BackgroundColor.transparent}
-                />
-                <Text style={{ whiteSpace: 'nowrap' }}>
-                  {
-                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      `0x${decimalToHex(
-                        activeQuote.quote.destChainId,
-                      )}` as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ]
-                  }
-                </Text>
-              </Row>
-              {destinationAddress && (
-                <Text
-                  style={{ whiteSpace: 'nowrap' }}
-                  color={TextColor.textAlternative}
-                >
-                  {shortenString(destinationAddress)}
-                </Text>
-              )}
-            </Row>
-
-            <Row gap={2} style={{ display: 'flex', justifyContent: 'start' }}>
-              <Row
-                className="row-with-warning"
-                backgroundColor={
-                  isEstimatedReturnLow
-                    ? BackgroundColor.warningMuted
-                    : undefined
-                }
-                gap={1}
-                style={{
-                  width: 'auto',
-                }}
-              >
-                <Icon
-                  name={IconName.Gas}
-                  size={IconSize.Sm}
-                  color={
-                    isEstimatedReturnLow
-                      ? IconColor.warningDefault
-                      : IconColor.iconAlternative
-                  }
-                />
-                <Text
-                  style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'visible',
-                  }}
-                  color={
-                    isEstimatedReturnLow ? TextColor.warningDefault : undefined
-                  }
-                >
-                  {shouldShowNetworkFeesInGasToken
-                    ? `${
-                        activeQuote.totalNetworkFee?.valueInCurrency
-                          ? formatTokenAmount(
-                              locale,
-                              activeQuote.totalNetworkFee?.amount,
-                            )
-                          : undefined
-                      } - ${
-                        activeQuote.totalMaxNetworkFee?.valueInCurrency
-                          ? formatTokenAmount(
-                              locale,
-                              activeQuote.totalMaxNetworkFee?.amount,
-                              ticker,
-                            )
-                          : undefined
-                      }`
-                    : `${
-                        formatCurrencyAmount(
-                          activeQuote.totalNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ??
-                        formatTokenAmount(
-                          locale,
-                          activeQuote.totalNetworkFee?.amount,
-                        )
-                      } - ${
-                        formatCurrencyAmount(
-                          activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                          currency,
-                          2,
-                        ) ??
-                        formatTokenAmount(
-                          locale,
-                          activeQuote.totalMaxNetworkFee?.amount,
-                          ticker,
-                        )
-                      }`}
-                </Text>
-                <Icon
-                  style={{ cursor: 'pointer' }}
-                  color={
-                    isEstimatedReturnLow
-                      ? IconColor.warningDefault
-                      : IconColor.iconAlternativeSoft
-                  }
-                  name={IconName.SwapVertical}
-                  size={IconSize.Md}
-                  onClick={() =>
-                    setShouldShowNetworkFeesInGasToken(
-                      !shouldShowNetworkFeesInGasToken,
-                    )
-                  }
-                />
-              </Row>
-
-              <Row gap={1}>
-                <Icon
-                  name={IconName.Clock}
-                  size={IconSize.Sm}
-                  color={IconColor.iconAlternative}
-                />
-                <Text>
-                  {t('bridgeTimingMinutes', [
-                    formatEtaInMinutes(
-                      activeQuote.estimatedProcessingTimeInSeconds,
-                    ),
-                  ])}
-                </Text>
-              </Row>
-            </Row>
-
-            <Row justifyContent={JustifyContent.flexStart} gap={2}>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternativeSoft}
-              >
-                {t('rateIncludesMMFee', [BRIDGE_MM_FEE_RATE])}
-              </Text>
-              <ButtonLink
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternativeSoft}
-                href={TERMS_OF_USE_LINK}
-                externalLink
-                style={{ textDecoration: 'underline' }}
-              >
-                {t('bridgeTerms')}
               </ButtonLink>
             </Row>
           </Column>

@@ -1,17 +1,18 @@
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
-import TokenList from '../token-list';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import DetectedToken from '../../detected-token/detected-token';
 import {
   useAssetListTokenDetection,
   usePrimaryCurrencyProperties,
 } from '../hooks';
+import TokenList from '../token-list';
+import { trace, TraceName } from '../../../../../shared/lib/trace';
 import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
 
@@ -27,6 +28,7 @@ const TokenListContainer = React.memo(
 
     const onTokenClick = useCallback(
       (chainId: string, tokenAddress: string) => {
+        trace({ name: TraceName.AssetDetails });
         onClickAsset(chainId, tokenAddress);
         trackEvent({
           event: MetaMetricsEventName.TokenScreenOpened,

@@ -8,6 +8,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
+  MetaMetricsRequestedThrough,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -110,6 +111,7 @@ const createHandler = (opts) =>
     globalRateLimitMaxAmount: 0,
     appStateController,
     metaMetricsController,
+    getHDEntropyIndex: jest.fn(),
     ...opts,
   });
 
@@ -238,6 +240,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
@@ -313,11 +316,13 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
+          hd_entropy_index: undefined,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
           ui_customizations: [
             MetaMetricsEventUiCustomization.RedesignedConfirmation,
           ],
@@ -348,6 +353,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
         },
         sensitiveProperties: {
           eip712_verifyingContract:
@@ -382,6 +388,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRejected,
         properties: {
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         },
         sensitiveProperties: {
@@ -416,6 +423,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRejected,
         properties: {
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           location: 'some_location',
         },
@@ -439,7 +447,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.PermissionsApproved,
-        properties: { method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS },
+        properties: {
+          method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS,
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
+        },
         referrer: { url: 'some.dapp' },
       });
     });
@@ -674,6 +685,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
         },
         referrer: { url: 'some.dapp' },
       });
@@ -759,6 +771,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           ui_customizations: [
             MetaMetricsEventUiCustomization.RedesignedConfirmation,
@@ -793,6 +806,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           eip712_primary_type: 'Unknown',
           ui_customizations: [
@@ -824,6 +838,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           category: MetaMetricsEventCategory.InpageProvider,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
+            requested_through: MetaMetricsRequestedThrough.EthereumProvider,
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           },
           sensitiveProperties: {
@@ -936,5 +951,230 @@ describe('createRPCMethodTrackingMiddleware', () => {
         );
       },
     );
+
+    it.each([
+      [
+        MetaMetricsEventName.Wallet5792Called,
+        MESSAGE_TYPE.WALLET_SEND_CALLS,
+        [
+          {
+            calls: [
+              {
+                from: '0x1',
+                to: '0x2',
+              },
+              {
+                from: '0x2',
+                to: '0x3',
+              },
+            ],
+          },
+        ],
+        {
+          batch_transaction_count: 2,
+          method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
+        },
+      ],
+      [
+        MetaMetricsEventName.Wallet5792Called,
+        MESSAGE_TYPE.WALLET_GET_CALLS_STATUS,
+        ['0x123'],
+        {
+          method: MESSAGE_TYPE.WALLET_GET_CALLS_STATUS,
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
+        },
+      ],
+      [
+        MetaMetricsEventName.Wallet5792Called,
+        MESSAGE_TYPE.WALLET_GET_CAPABILITIES,
+        ['0x123'],
+        {
+          method: MESSAGE_TYPE.WALLET_GET_CAPABILITIES,
+          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
+        },
+      ],
+    ])(
+      `should generate %s event from %s method`,
+      async (event, method, params, properties) => {
+        const req = {
+          id: MOCK_ID,
+          method,
+          origin: 'some.dapp',
+          params,
+        };
+
+        const res = {
+          error: null,
+        };
+
+        const { next } = getNext();
+        const handler = createHandler();
+
+        await handler(req, res, next);
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0].event).toBe(event);
+        expect(trackEventSpy.mock.calls[0][0].properties).toStrictEqual(
+          properties,
+        );
+      },
+    );
+    describe('Multichain API requests', () => {
+      beforeEach(() => {
+        metaMetricsController.setParticipateInMetaMetrics(true);
+      });
+
+      it('should track `wallet_createSession` events with multichain category and properties', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+          origin: 'multichain.dapp',
+          params: {
+            requiredScopes: {
+              'eip155:1': { eth_accounts: {} },
+              'eip155:137': { eth_accounts: {} },
+            },
+            optionalScopes: {
+              'eip155:56': { eth_accounts: {} },
+            },
+          },
+        };
+
+        const res = {
+          result: {
+            sessionScopes: {
+              'eip155:1': {},
+              'eip155:137': {},
+            },
+          },
+        };
+        const { next, executeMiddlewareStack } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+
+        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+          category: MetaMetricsEventCategory.MultichainApi,
+          event: MetaMetricsEventName.PermissionsRequested,
+          properties: {
+            method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+            requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            chain_id_list: expect.arrayContaining([
+              'eip155:1',
+              'eip155:137',
+              'eip155:56',
+            ]),
+          },
+          referrer: { url: 'multichain.dapp' },
+        });
+        await executeMiddlewareStack();
+        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+
+        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+          category: MetaMetricsEventCategory.MultichainApi,
+          event: MetaMetricsEventName.PermissionsApproved,
+          properties: {
+            method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+            requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            chain_id_list: expect.arrayContaining(['eip155:1', 'eip155:137']),
+          },
+          referrer: { url: 'multichain.dapp' },
+        });
+      });
+
+      it('should track wallet_invokeMethod events with multichain_api category, requested_through, and multichain_api_request_scope properties', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
+          origin: 'multichain.dapp',
+          params: {
+            request: {
+              method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+              params: [],
+            },
+            scope: 'eip155:10',
+          },
+        };
+
+        const res = {};
+        const { next, executeMiddlewareStack } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+        await executeMiddlewareStack();
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+          category: MetaMetricsEventCategory.MultichainApi,
+          event: MetaMetricsEventName.SignatureRequested,
+          properties: {
+            signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            multichain_api_request_scope: 'eip155:10',
+          },
+          referrer: { url: 'multichain.dapp' },
+        });
+
+        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+          category: MetaMetricsEventCategory.MultichainApi,
+          event: MetaMetricsEventName.SignatureApproved,
+          properties: {
+            signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            multichain_api_request_scope: 'eip155:10',
+          },
+          referrer: { url: 'multichain.dapp' },
+        });
+      });
+
+      it('should track wallet_invokeMethod rejections with multichain_api category, requested_through, and multichain_api_request_scope properties', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
+          origin: 'multichain.dapp',
+          params: {
+            request: {
+              method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+              params: [],
+            },
+            scope: 'eip155:137',
+          },
+        };
+
+        const res = {
+          error: {
+            code: errorCodes.provider.userRejectedRequest,
+          },
+        };
+
+        const { next, executeMiddlewareStack } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+        await executeMiddlewareStack();
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+          category: MetaMetricsEventCategory.MultichainApi,
+          event: MetaMetricsEventName.SignatureRequested,
+          properties: {
+            signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            multichain_api_request_scope: 'eip155:137',
+          },
+          referrer: { url: 'multichain.dapp' },
+        });
+
+        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+          category: MetaMetricsEventCategory.MultichainApi,
+          event: MetaMetricsEventName.SignatureRejected,
+          properties: {
+            signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            requested_through: MetaMetricsRequestedThrough.MultichainApi,
+            multichain_api_request_scope: 'eip155:137',
+          },
+          referrer: { url: 'multichain.dapp' },
+        });
+      });
+    });
   });
 });

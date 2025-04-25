@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -13,8 +14,9 @@ import {
   getToToken,
   getBridgeQuotes,
   getValidationErrors,
-  getBridgeQuotesConfig,
   getWasTxDeclined,
+  getIsQuoteExpired,
+  BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -33,15 +35,14 @@ import { useRequestProperties } from '../../../hooks/bridge/events/useRequestPro
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { Row } from '../layout';
-import { isQuoteExpired as isQuoteExpiredUtil } from '../utils/quote';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
+  needsDestinationAddress = false,
 }: {
   onFetchNewQuotes: () => void;
+  needsDestinationAddress?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -52,15 +53,11 @@ export const BridgeCTAButton = ({
 
   const fromAmount = useSelector(getFromAmount);
 
-  const { isLoading, activeQuote, isQuoteGoingToRefresh, quotesLastFetchedMs } =
-    useSelector(getBridgeQuotes);
-  const { refreshRate } = useSelector(getBridgeQuotesConfig);
-  const isQuoteExpired = isQuoteExpiredUtil(
-    isQuoteGoingToRefresh,
-    refreshRate,
-    quotesLastFetchedMs,
-  );
+  const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
+  const isQuoteExpired = useSelector((state) =>
+    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  );
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -73,23 +70,19 @@ export const BridgeCTAButton = ({
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const { balanceAmount } = useLatestBalance(fromToken, fromChain?.chainId);
-  const { balanceAmount: nativeAssetBalance } = useLatestBalance(
-    fromChain?.chainId
-      ? SWAPS_CHAINID_DEFAULT_TOKEN_MAP[
-          fromChain.chainId as keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP
-        ]
-      : null,
-    fromChain?.chainId,
+  const balanceAmount = useLatestBalance(fromToken);
+  const nativeAsset = useMemo(
+    () =>
+      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
+    [fromChain?.chainId],
   );
+  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   const isTxSubmittable = useIsTxSubmittable();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
   const tradeProperties = useTradeProperties();
-
-  const ticker = useSelector(getNativeCurrency);
 
   const isInsufficientBalance = isInsufficientBalance_(balanceAmount);
 
@@ -100,56 +93,64 @@ export const BridgeCTAButton = ({
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
-      return t('youDeclinedTheTransaction');
+      return 'youDeclinedTheTransaction';
     }
 
     if (isQuoteExpired) {
-      return t('bridgeQuoteExpired');
+      return 'bridgeQuoteExpired';
     }
 
     if (isLoading && !isTxSubmittable && !activeQuote) {
-      return '';
+      return undefined;
     }
 
     if (isInsufficientGasBalance || isNoQuotesAvailable) {
-      return '';
+      return undefined;
     }
 
     if (isInsufficientBalance || isInsufficientGasForQuote) {
-      return t('alertReasonInsufficientBalance');
+      return 'alertReasonInsufficientBalance';
     }
 
     if (!fromAmount) {
       if (!toToken) {
-        return t('bridgeSelectTokenAndAmount');
+        return needsDestinationAddress
+          ? 'bridgeSelectTokenAmountAndAccount'
+          : 'bridgeSelectTokenAndAmount';
       }
-      return t('bridgeEnterAmount');
+      return needsDestinationAddress
+        ? 'bridgeEnterAmountAndSelectAccount'
+        : 'bridgeEnterAmount';
+    }
+
+    if (needsDestinationAddress) {
+      return 'bridgeSelectDestinationAccount';
     }
 
     if (isTxSubmittable) {
-      return t('submit');
+      return 'submit';
     }
 
-    return t('swapSelectToken');
+    return 'swapSelectToken';
   }, [
     isLoading,
     fromAmount,
     toToken,
-    ticker,
     isTxSubmittable,
-    balanceAmount,
     isInsufficientBalance,
-    isQuoteExpired,
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     wasTxDeclined,
     isQuoteExpired,
+    needsDestinationAddress,
+    activeQuote,
+    isNoQuotesAvailable,
   ]);
 
   // Label for the secondary button that re-starts quote fetching
   const secondaryButtonLabel = useMemo(() => {
     if (wasTxDeclined || isQuoteExpired) {
-      return t('bridgeFetchNewQuotes');
+      return 'bridgeFetchNewQuotes';
     }
     return undefined;
   }, [wasTxDeclined, isQuoteExpired]);
@@ -186,9 +187,14 @@ export const BridgeCTAButton = ({
         }
       }}
       loading={isSubmitting}
-      disabled={!isTxSubmittable || isQuoteExpired || isSubmitting}
+      disabled={
+        !isTxSubmittable ||
+        isQuoteExpired ||
+        isSubmitting ||
+        needsDestinationAddress
+      }
     >
-      {label}
+      {label ? t(label) : ''}
     </ButtonPrimary>
   ) : (
     <Row
@@ -201,7 +207,7 @@ export const BridgeCTAButton = ({
         textAlign={TextAlign.Center}
         color={TextColor.textAlternativeSoft}
       >
-        {label}
+        {label ? t(label) : ''}
       </Text>
       {secondaryButtonLabel && (
         <ButtonLink
@@ -210,7 +216,7 @@ export const BridgeCTAButton = ({
           style={{ whiteSpace: 'nowrap' }}
           onClick={onFetchNewQuotes}
         >
-          {secondaryButtonLabel}
+          {t(secondaryButtonLabel)}
         </ButtonLink>
       )}
     </Row>

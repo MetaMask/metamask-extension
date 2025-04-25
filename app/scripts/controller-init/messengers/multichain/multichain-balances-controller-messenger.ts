@@ -10,11 +10,13 @@ import {
   MultichainAssetsControllerGetStateAction,
   MultichainAssetsControllerStateChangeEvent,
 } from '@metamask/assets-controllers';
+import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction
   | HandleSnapRequest
-  | MultichainAssetsControllerGetStateAction;
+  | MultichainAssetsControllerGetStateAction
+  | KeyringControllerGetStateAction;
 
 type Events =
   | AccountsControllerAccountAddedEvent
@@ -48,6 +50,7 @@ export function getMultichainBalancesControllerMessenger(
       'AccountsController:listMultichainAccounts',
       'SnapController:handleRequest',
       'MultichainAssetsController:getState',
+      'KeyringController:getState',
     ],
   });
 }

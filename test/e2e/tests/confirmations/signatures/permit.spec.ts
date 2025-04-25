@@ -3,7 +3,6 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockPermitDecoding,
@@ -29,6 +28,7 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
@@ -37,10 +37,10 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
         await initializePages(driver);
 
@@ -72,6 +72,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
         await assertVerifiedResults(driver, publicAddress);
@@ -111,6 +112,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejectedWithDecoding,

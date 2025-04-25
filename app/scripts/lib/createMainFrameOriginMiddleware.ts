@@ -1,5 +1,4 @@
 // Request and responses are currently untyped.
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
  * Returns a middleware that appends the mainFrameOrigin to request
@@ -14,7 +13,11 @@ export default function createMainFrameOriginMiddleware({
   mainFrameOrigin: string;
 }) {
   return function mainFrameOriginMiddleware(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     req: any,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _res: any,
     next: () => void,
   ) {

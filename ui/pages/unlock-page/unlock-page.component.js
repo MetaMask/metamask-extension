@@ -2,7 +2,11 @@ import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Text } from '../../components/component-library';
-import { TextVariant, TextColor } from '../../helpers/constants/design-system';
+import {
+  FontWeight,
+  TextVariant,
+  TextColor,
+} from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
@@ -13,7 +17,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-import { isBeta } from '../../helpers/utils/build-types';
+import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { getCaretCoordinates } from './unlock-page.util';
 
 export default class UnlockPage extends Component {
@@ -131,8 +135,8 @@ export default class UnlockPage extends Component {
       backgroundColor: 'var(--color-primary-default)',
       color: 'var(--color-primary-inverse)',
       marginTop: '20px',
-      height: '60px',
-      fontWeight: '400',
+      height: '56px',
+      fontWeight: '500',
       boxShadow: 'none',
       borderRadius: '100px',
     };
@@ -152,6 +156,26 @@ export default class UnlockPage extends Component {
     );
   }
 
+  renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+      );
+    }
+    if (isBeta()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={this.animationEventEmitter}
+        width="120"
+        height="120"
+      />
+    );
+  };
+
   render() {
     const { password, error } = this.state;
     const { t } = this.context;
@@ -163,11 +187,7 @@ export default class UnlockPage extends Component {
       <div className="unlock-page__container">
         <div className="unlock-page" data-testid="unlock-page">
           <div className="unlock-page__mascot-container">
-            <Mascot
-              animationEventEmitter={this.animationEventEmitter}
-              width="120"
-              height="120"
-            />
+            {this.renderMascot()}
             {isBeta() ? (
               <div className="unlock-page__mascot-container__beta">
                 {t('beta')}
@@ -177,13 +197,16 @@ export default class UnlockPage extends Component {
           <Text
             data-testid="unlock-page-title"
             as="h1"
-            variant={TextVariant.headingLg}
+            variant={TextVariant.displayMd}
+            fontWeight={FontWeight.Medium}
             marginTop={1}
-            color={TextColor.textAlternative}
+            marginBottom={1}
+            color={TextColor.textDefault}
           >
             {t('welcomeBack')}
           </Text>
-          <div>{t('unlockMessage')}</div>
+
+          <Text color={TextColor.textAlternative}>{t('unlockMessage')}</Text>
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"

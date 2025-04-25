@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import {
   getIsTestnet,
@@ -17,7 +16,6 @@ import {
 } from '../../../../selectors/multichain';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
@@ -52,7 +50,9 @@ export const useTokenDisplayInfo = ({
 
   // Format for fiat balance with currency style
   const secondary =
-    shouldShowFiat && token.tokenFiatAmount
+    shouldShowFiat &&
+    token.tokenFiatAmount !== null &&
+    token.tokenFiatAmount !== undefined
       ? formatWithThreshold(
           Number(token.tokenFiatAmount),
           secondaryThreshold,
@@ -64,9 +64,14 @@ export const useTokenDisplayInfo = ({
         )
       : undefined;
 
-  const primary = formatAmount(
+  const formattedPrimary = formatWithThreshold(
+    Number(isEvm ? token.string : token.primary),
+    0.00001,
     locale,
-    new BigNumber(Number(token.string) || '0', 10),
+    {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 5,
+    },
   );
 
   const isEvmMainnet =
@@ -101,7 +106,9 @@ export const useTokenDisplayInfo = ({
     return {
       title,
       tokenImage,
-      primary,
+      primary: formattedPrimary,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       secondary,
       isStakeable,
       tokenChainImage: tokenChainImage as string,
@@ -109,9 +116,9 @@ export const useTokenDisplayInfo = ({
   }
   // TODO non-evm assets. this is only the native token
   return {
-    title: token.symbol,
+    title: token.title,
     tokenImage: token.image,
-    primary: '',
+    primary: formattedPrimary,
     secondary: token.secondary,
     isStakeable: false,
     tokenChainImage: token.image as string,

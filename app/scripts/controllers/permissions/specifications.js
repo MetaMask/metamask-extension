@@ -7,7 +7,7 @@ import {
   Caip25CaveatType,
   caip25EndowmentBuilder,
   caip25CaveatBuilder,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   EndowmentTypes,
   RestrictedMethods,
@@ -45,16 +45,24 @@ export const CaveatFactories = Object.freeze({
  * `AccountsController` internalAccount objects for all evm accounts.
  * @param options.findNetworkClientIdByChainId - A function that
  * returns the networkClientId given a chainId.
+ * @param options.isNonEvmScopeSupported - A function that returns true if
+ * a non-evm scope is supported.
+ * @param options.getNonEvmAccountAddresses - A function that returns the
+ * supported CAIP-10 account addresses for a non-evm scope.
  * @returns the caveat specifications to construct the PermissionController.
  */
 export const getCaveatSpecifications = ({
   listAccounts,
   findNetworkClientIdByChainId,
+  isNonEvmScopeSupported,
+  getNonEvmAccountAddresses,
 }) => {
   return {
     [Caip25CaveatType]: caip25CaveatBuilder({
       listAccounts,
       findNetworkClientIdByChainId,
+      isNonEvmScopeSupported,
+      getNonEvmAccountAddresses,
     }),
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,
@@ -153,10 +161,13 @@ export const unrestrictedMethods = Object.freeze([
   'personal_ecRecover',
   'personal_sign',
   'wallet_addEthereumChain',
+  'wallet_getCallsStatus',
+  'wallet_getCapabilities',
   'wallet_getPermissions',
   'wallet_requestPermissions',
   'wallet_revokePermissions',
   'wallet_registerOnboarding',
+  'wallet_sendCalls',
   'wallet_switchEthereumChain',
   'wallet_watchAsset',
   'web3_clientVersion',
@@ -171,6 +182,7 @@ export const unrestrictedMethods = Object.freeze([
   'snap_clearState',
   'snap_getFile',
   'snap_getState',
+  'snap_listEntropySources',
   'snap_createInterface',
   'snap_updateInterface',
   'snap_getInterfaceState',
@@ -180,6 +192,7 @@ export const unrestrictedMethods = Object.freeze([
   'snap_scheduleBackgroundEvent',
   'snap_cancelBackgroundEvent',
   'snap_getBackgroundEvents',
+  'snap_experimentalProviderRequest',
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   'metamaskinstitutional_authenticate',
   'metamaskinstitutional_reauthenticate',
@@ -192,72 +205,3 @@ export const unrestrictedMethods = Object.freeze([
   'metamaskinstitutional_openAddHardwareWallet',
   ///: END:ONLY_INCLUDE_IF
 ]);
-
-/**
- * Validates the accounts associated with a caveat. In essence, ensures that
- * the accounts value is an array of non-empty strings, and that each string
- * corresponds to a PreferencesController identity.
- *
- * @param {string[]} accounts - The accounts associated with the caveat.
- * @param {() => Record<string, import('@metamask/keyring-internal-api').InternalAccount>} getInternalAccounts -
- * Gets all AccountsController InternalAccounts.
- * TODO: Remove this function once the CAIP-25 permission refactor/factory differ work is merged into main
- */
-export function validateCaveatAccounts(accounts, getInternalAccounts) {
-  if (!Array.isArray(accounts) || accounts.length === 0) {
-    throw new Error(
-      `${PermissionNames.eth_accounts} error: Expected non-empty array of Ethereum addresses.`,
-    );
-  }
-
-  const internalAccounts = getInternalAccounts();
-  accounts.forEach((address) => {
-    if (!address || typeof address !== 'string') {
-      throw new Error(
-        `${PermissionNames.eth_accounts} error: Expected an array of Ethereum addresses. Received: "${address}".`,
-      );
-    }
-
-    if (
-      !internalAccounts.some(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === address.toLowerCase(),
-      )
-    ) {
-      throw new Error(
-        `${PermissionNames.eth_accounts} error: Received unrecognized address: "${address}".`,
-      );
-    }
-  });
-}
-
-/**
- * Validates the networks associated with a caveat. Ensures that
- * the networks value is an array of valid chain IDs.
- *
- * @param {string[]} chainIdsForCaveat - The list of chain IDs to validate.
- * @param {function(string): string} findNetworkClientIdByChainId - Function to find network client ID by chain ID.
- * @throws {Error} If the chainIdsForCaveat is not a non-empty array of valid chain IDs.
- * TODO: Remove this function once the CAIP-25 permission refactor/factory differ work is merged into main
- */
-export function validateCaveatNetworks(
-  chainIdsForCaveat,
-  findNetworkClientIdByChainId,
-) {
-  if (!Array.isArray(chainIdsForCaveat) || chainIdsForCaveat.length === 0) {
-    throw new Error(
-      `${PermissionNames.permittedChains} error: Expected non-empty array of chainIds.`,
-    );
-  }
-
-  chainIdsForCaveat.forEach((chainId) => {
-    try {
-      findNetworkClientIdByChainId(chainId);
-    } catch (e) {
-      console.error(e);
-      throw new Error(
-        `${PermissionNames.permittedChains} error: Received unrecognized chainId: "${chainId}". Please try adding the network first via wallet_addEthereumChain.`,
-      );
-    }
-  });
-}

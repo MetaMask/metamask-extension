@@ -137,6 +137,7 @@ describe('ERC20 Approve Confirmation', () => {
       chainId: '0xaa36a7',
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     global.ethereumProvider = provider as any;
   });
@@ -152,6 +153,7 @@ describe('ERC20 Approve Confirmation', () => {
     const APPROVE_ERC20_TEXT_SIG = 'approve(address,uint256)';
     mock4byte(APPROVE_ERC20_HEX_SIG, APPROVE_ERC20_TEXT_SIG);
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -162,6 +164,7 @@ describe('ERC20 Approve Confirmation', () => {
   });
 
   afterAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (global as any).ethereumProvider;
   });
@@ -268,46 +271,6 @@ describe('ERC20 Approve Confirmation', () => {
     await testUser.hover(approveDetailsRequestFromTooltip);
     const requestFromTooltipContent = await screen.findByText(
       tEn('requestFromTransactionDescription') as string,
-    );
-    expect(requestFromTooltipContent).toBeInTheDocument();
-  });
-
-  it('displays spending cap section with correct data', async () => {
-    const testUser = userEvent.setup();
-
-    const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction();
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    const spendingCapSection = await screen.findByTestId(
-      'confirmation__approve-spending-cap-section',
-    );
-    expect(spendingCapSection).toBeInTheDocument();
-
-    expect(spendingCapSection).toHaveTextContent(
-      tEn('accountBalance') as string,
-    );
-    expect(spendingCapSection).toHaveTextContent('0');
-    const spendingCapGroup = await screen.findByTestId(
-      'confirmation__approve-spending-cap-group',
-    );
-    expect(spendingCapSection).toContainElement(spendingCapGroup);
-    expect(spendingCapGroup).toHaveTextContent(tEn('spendingCap') as string);
-    expect(spendingCapGroup).toHaveTextContent('1');
-
-    const spendingCapGroupTooltip = await screen.findByTestId(
-      'confirmation__approve-spending-cap-group-tooltip',
-    );
-    expect(spendingCapGroup).toContainElement(spendingCapGroupTooltip);
-    await testUser.hover(spendingCapGroupTooltip);
-    const requestFromTooltipContent = await screen.findByText(
-      tEn('spendingCapTooltipDesc') as string,
     );
     expect(requestFromTooltipContent).toBeInTheDocument();
   });

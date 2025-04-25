@@ -7,6 +7,8 @@ import { Driver } from '../../../webdriver/driver';
 class PermissionListPage {
   private driver: Driver;
 
+  private readonly connectionListItem = '[data-testid="connection-list-item"]';
+
   private readonly permissionsPage = '[data-testid="permissions-page"]';
 
   constructor(driver: Driver) {
@@ -44,6 +46,26 @@ class PermissionListPage {
   async check_connectedToSite(site: string): Promise<void> {
     console.log('Check if account is connected to site', site);
     await this.driver.waitForSelector({ text: site, tag: 'p' });
+  }
+
+  /**
+   * Check the number of connected sites
+   *
+   * @param expectedNumberOfConnectedSites - The expected number of connected sites, default to 1
+   */
+  async check_numberOfConnectedSites(
+    expectedNumberOfConnectedSites: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Verify the number of connected sites is: ${expectedNumberOfConnectedSites}`,
+    );
+    await this.driver.waitForSelector(this.connectionListItem);
+    await this.driver.wait(async () => {
+      const connectedSites = await this.driver.findElements(
+        this.connectionListItem,
+      );
+      return connectedSites.length === expectedNumberOfConnectedSites;
+    });
   }
 }
 

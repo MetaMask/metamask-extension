@@ -313,9 +313,6 @@
     "message": "Tuo",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Tuo tili"
-  },
   "importAccountMsg": {
     "message": "Tuotuja tilejä ei liitetä alkuperäisen MetaMask-tilisi siemenlauseeseen. Lue lisää tuoduista tileistä"
   },

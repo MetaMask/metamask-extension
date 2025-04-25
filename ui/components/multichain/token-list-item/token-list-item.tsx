@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import { type Hex, isStrictHexString } from '@metamask/utils';
 import {
   BackgroundColor,
   BlockSize,
@@ -108,9 +108,9 @@ export const TokenListItemComponent = ({
   const { safeChains } = useSafeChains();
   const currencyRates = useSelector(getCurrencyRates);
 
-  const decimalChainId = isEvm && parseInt(hexToDecimal(chainId), 10);
-
   const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
+    const decimalChainId =
+      isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
     if (typeof decimalChainId === 'number') {
       return chain.chainId === decimalChainId.toString();
     }
@@ -167,6 +167,8 @@ export const TokenListItemComponent = ({
 
   return (
     <Box
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       className={classnames('multichain-token-list-item', className || {})}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -219,6 +221,8 @@ export const TokenListItemComponent = ({
             <AvatarNetwork
               size={AvatarNetworkSize.Xs}
               name={allNetworks?.[chainId as Hex]?.name}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               src={tokenChainImage || undefined}
               backgroundColor={BackgroundColor.backgroundDefault}
               borderWidth={2}
@@ -289,7 +293,7 @@ export const TokenListItemComponent = ({
                 size={ButtonIconSize.Md}
                 backgroundColor={BackgroundColor.transparent}
                 data-testid="scam-warning"
-                ariaLabel={''}
+                ariaLabel=""
               />
             ) : (
               <SensitiveText
@@ -373,6 +377,8 @@ export const TokenListItemComponent = ({
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
                 tokenSymbol,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 safeChainDetails?.nativeCurrency?.symbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}

@@ -371,6 +371,7 @@ describe('AppStateController', () => {
           id: '123',
           chainId: '0x1',
           timestamp: new Date().getTime(),
+          origin: 'https://example.com',
         };
 
         controller.setLastInteractedConfirmationInfo(
@@ -659,6 +660,8 @@ async function withController<ReturnValue>(
   );
   controllerMessenger.registerActionHandler(
     'ApprovalController:addRequest',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     addRequestMock || jest.fn().mockResolvedValue(undefined),
   );
 

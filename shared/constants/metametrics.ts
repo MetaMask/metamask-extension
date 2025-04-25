@@ -423,6 +423,10 @@ export type MetaMetricsUserTraits = {
    */
   number_of_tokens?: number;
   /**
+   * The number of HD Entropies the user has.
+   */
+  number_of_hd_entropies?: number;
+  /**
    * Does the user have the OpenSea API enabled?
    */
   opensea_api_enabled?: boolean;
@@ -490,6 +494,10 @@ export type MetaMetricsUserTraits = {
    * The number of petname addresses
    */
   petname_addresses_count?: number;
+  /**
+   * The profile ID of the user if they have been signed in
+   */
+  profile_id?: string;
 };
 
 export enum MetaMetricsUserTrait {
@@ -541,6 +549,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the number of tokens change.
    */
   NumberOfTokens = 'number_of_tokens',
+  /**
+   * Identified when the user has HD Entropies.
+   */
+  NumberOfHDEntropies = 'number_of_hd_entropies',
   /**
    * Identified when the OpenSea API is enabled.
    */
@@ -598,6 +610,14 @@ export enum MetaMetricsUserTrait {
    * Identified when the user prefers to see all tokens or current network tokens in wallet list
    */
   NetworkFilterPreference = 'selected_network_filter',
+  /**
+   * Identified when the user signs in
+   */
+  ProfileId = 'profile_id',
+  /**
+   * Identified when the user adds or removes configured chains (evm or non-evm)
+   */
+  ChainIdList = 'chain_id_list',
 }
 
 /**
@@ -629,6 +649,7 @@ export enum MetaMetricsEventName {
   AccountAdded = 'Account Added',
   AccountAddSelected = 'Account Add Selected',
   AccountAddFailed = 'Account Add Failed',
+  AccountImportFailed = 'Account Import Failed',
   AccountDetailsOpened = 'Account Details Opened',
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
@@ -648,10 +669,10 @@ export enum MetaMetricsEventName {
   BannerDisplay = 'Banner Display',
   BannerCloseAll = 'Banner Close All',
   BannerSelect = 'Banner Select',
+  BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
-  SolanaSupportToggled = 'Solana Support Toggled',
   CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
@@ -671,6 +692,7 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyRequested = 'Encryption Requested',
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
+  ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -735,6 +757,9 @@ export enum MetaMetricsEventName {
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
+  SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
+  SecretRecoveryPhrasePickerDetailsClicked = 'Secret Recovery Phrase Details Clicked',
+  SecretRecoveryPhrasePickerSelected = 'Secret Recovery Phrase Picker Selected',
   SettingsUpdated = 'Settings Updated',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
@@ -827,7 +852,9 @@ export enum MetaMetricsEventName {
   TransactionFinalized = 'Transaction Finalized',
   ConfirmationQueued = 'Confirmation Queued',
   ExitedSwaps = 'Exited Swaps',
+  MakeAnotherSwap = 'Make Another Swap',
   SwapError = 'Swap Error',
+  SwapFailed = 'Swap Failed',
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
   SnapInstallRejected = 'Snap Install Rejected',
@@ -888,6 +915,7 @@ export enum MetaMetricsEventName {
   QuoteSelected = 'Quote Selected',
   CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
   CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
+  Wallet5792Called = 'EIP-5792 API Called',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -901,7 +929,6 @@ export enum MetaMetricsEventAccountType {
 
 export enum QueueType {
   NavigationHeader = 'navigation_header',
-  QueueController = 'queue_controller',
 }
 
 export enum MetaMetricsEventAccountImportType {
@@ -923,6 +950,7 @@ export enum MetaMetricsEventCategory {
   Footer = 'Footer',
   Home = 'Home',
   InpageProvider = 'inpage_provider',
+  MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
   Navigation = 'Navigation',
@@ -994,6 +1022,11 @@ export enum MetaMetricsTokenEventSource {
 export enum MetaMetricsTransactionEventSource {
   Dapp = 'dapp',
   User = 'user',
+}
+
+export enum MetaMetricsRequestedThrough {
+  EthereumProvider = 'ethereum_provider',
+  MultichainApi = 'multichain_api',
 }
 
 export enum MetaMetricsEventLocation {

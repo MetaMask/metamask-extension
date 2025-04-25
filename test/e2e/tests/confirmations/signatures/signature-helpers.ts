@@ -14,6 +14,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
@@ -43,6 +44,7 @@ type AssertSignatureMetricsOptions = {
   decodingChangeTypes?: string[];
   decodingResponse?: string;
   decodingDescription?: string | null;
+  requestedThrough?: string;
 };
 
 type SignatureEventProperty = {
@@ -61,6 +63,8 @@ type SignatureEventProperty = {
   decoding_description?: string | null;
   ui_customizations?: string[];
   location?: string;
+  hd_entropy_index?: number;
+  requested_through?: string;
 };
 
 const signatureAnonProperties = {
@@ -100,6 +104,7 @@ function getSignatureEventProperty(
   decodingChangeTypes?: string[],
   decodingResponse?: string,
   decodingDescription?: string | null,
+  requestedThrough?: string,
 ): SignatureEventProperty {
   const signatureEventProperty: SignatureEventProperty = {
     account_type: 'MetaMask',
@@ -112,6 +117,8 @@ function getSignatureEventProperty(
     security_alert_response: securityAlertResponse,
     security_alert_source: securityAlertSource,
     ui_customizations: uiCustomizations,
+    hd_entropy_index: 0,
+    requested_through: requestedThrough,
   };
 
   if (primaryType !== '') {
@@ -128,7 +135,7 @@ function getSignatureEventProperty(
 }
 
 function assertSignatureRequestedMetrics(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   events: any[],
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
@@ -160,6 +167,7 @@ export async function assertSignatureConfirmedMetrics({
   decodingChangeTypes,
   decodingResponse,
   decodingDescription,
+  requestedThrough,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -172,6 +180,7 @@ export async function assertSignatureConfirmedMetrics({
     decodingChangeTypes,
     decodingResponse,
     decodingDescription,
+    requestedThrough,
   );
 
   assertSignatureRequestedMetrics(
@@ -209,6 +218,7 @@ export async function assertSignatureRejectedMetrics({
   decodingChangeTypes,
   decodingResponse,
   decodingDescription,
+  requestedThrough,
 }: AssertSignatureMetricsOptions) {
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
@@ -221,6 +231,7 @@ export async function assertSignatureRejectedMetrics({
     decodingChangeTypes,
     decodingResponse,
     decodingDescription,
+    requestedThrough,
   );
 
   assertSignatureRequestedMetrics(
@@ -232,6 +243,7 @@ export async function assertSignatureRejectedMetrics({
   assertEventPropertiesMatch(events, 'Signature Rejected', {
     ...signatureEventProperty,
     location,
+    hd_entropy_index: 0,
     ...expectedProps,
   });
 
@@ -258,11 +270,12 @@ export async function assertAccountDetailsMetrics(
     locale: 'en',
     chain_id: '0x539',
     environment_type: 'notification',
+    hd_entropy_index: 0,
   });
 }
 
 function assertEventPropertiesMatch(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   events: any[],
   eventName: string,
   expectedProperties: object,
@@ -393,8 +406,9 @@ export async function openDappAndTriggerSignature(
   driver: Driver,
   type: string,
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
+  await testDapp.check_pageIsLoaded();
   await triggerSignature(type);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 }

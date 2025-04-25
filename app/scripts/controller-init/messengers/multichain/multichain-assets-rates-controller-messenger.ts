@@ -1,6 +1,7 @@
 import { Messenger } from '@metamask/base-controller';
 import {
   AccountsControllerAccountAddedEvent,
+  AccountsControllerGetSelectedMultichainAccountAction,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
 import {
@@ -19,7 +20,8 @@ type Actions =
   | HandleSnapRequest
   | AccountsControllerListMultichainAccountsAction
   | GetCurrencyRateState
-  | MultichainAssetsControllerGetStateAction;
+  | MultichainAssetsControllerGetStateAction
+  | AccountsControllerGetSelectedMultichainAccountAction;
 
 type Events =
   | KeyringControllerLockEvent
@@ -28,8 +30,8 @@ type Events =
   | CurrencyRateStateChange
   | MultichainAssetsControllerStateChangeEvent;
 
-export type MultiChainAssetsRatesControllerMessenger = ReturnType<
-  typeof getMultiChainAssetsRatesControllerMessenger
+export type MultichainAssetsRatesControllerMessenger = ReturnType<
+  typeof getMultichainAssetsRatesControllerMessenger
 >;
 
 /**
@@ -39,11 +41,11 @@ export type MultiChainAssetsRatesControllerMessenger = ReturnType<
  * @param messenger - The controller messenger to restrict.
  * @returns The restricted controller messenger.
  */
-export function getMultiChainAssetsRatesControllerMessenger(
+export function getMultichainAssetsRatesControllerMessenger(
   messenger: Messenger<Actions, Events>,
 ) {
   return messenger.getRestricted({
-    name: 'MultiChainAssetsRatesController',
+    name: 'MultichainAssetsRatesController',
     allowedEvents: [
       'AccountsController:accountAdded',
       'KeyringController:lock',
@@ -56,6 +58,7 @@ export function getMultiChainAssetsRatesControllerMessenger(
       'SnapController:handleRequest',
       'CurrencyRateController:getState',
       'MultichainAssetsController:getState',
+      'AccountsController:getSelectedMultichainAccount',
     ],
   });
 }

@@ -1,12 +1,14 @@
-import { BigNumber } from 'bignumber.js';
-import { QuoteMetadata, QuoteResponse } from '../../types/bridge';
+import {
+  type QuoteMetadata,
+  type QuoteResponse,
+} from '@metamask/bridge-controller';
 
 export const getConvertedUsdAmounts = ({
   activeQuote,
   fromAmountInputValueInUsd,
 }: {
   activeQuote: (QuoteResponse & QuoteMetadata) | undefined;
-  fromAmountInputValueInUsd: BigNumber;
+  fromAmountInputValueInUsd: string;
 }) => {
   // If a quote is passed in, derive the usd amount source from the quote
   // otherwise use input field values
@@ -15,8 +17,8 @@ export const getConvertedUsdAmounts = ({
     activeQuote?.sentAmount?.usd ?? fromAmountInputValueInUsd;
 
   return {
-    usd_amount_source: fromAmountInUsd.toNumber(),
-    usd_quoted_gas: activeQuote?.gasFee.usd?.toNumber() ?? 0,
-    usd_quoted_return: activeQuote?.toTokenAmount?.usd?.toNumber() ?? 0,
+    usd_amount_source: Number(fromAmountInUsd),
+    usd_quoted_gas: Number(activeQuote?.gasFee.usd ?? 0),
+    usd_quoted_return: Number(activeQuote?.toTokenAmount?.usd ?? 0),
   };
 };

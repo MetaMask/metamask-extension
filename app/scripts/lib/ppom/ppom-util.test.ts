@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PPOMController } from '@metamask/ppom-validator';
 import { PPOM } from '@blockaid/ppom_release';
 import {
@@ -139,6 +138,8 @@ describe('PPOM Utils', () => {
       ppom.validateJsonRpc.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
       ppomController.usePPOM.mockImplementation(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (callback) => callback(ppom as any) as any,
       );
 
@@ -182,6 +183,7 @@ describe('PPOM Utils', () => {
 
       ppomController.usePPOM.mockImplementation(
         (callback) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           callback(ppom as any) as any,
       );
@@ -231,6 +233,7 @@ describe('PPOM Utils', () => {
 
       ppomController.usePPOM.mockImplementation(
         (callback) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           callback(ppom as any) as any,
       );
@@ -261,7 +264,6 @@ describe('PPOM Utils', () => {
       );
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([METHOD_SIGN_TYPED_DATA_V3, METHOD_SIGN_TYPED_DATA_V4])(
       'sanitizes request params if method is %s',
       async (method: string) => {
@@ -270,6 +272,7 @@ describe('PPOM Utils', () => {
 
         ppomController.usePPOM.mockImplementation(
           (callback) =>
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             callback(ppom as any) as any,
         );
@@ -358,10 +361,14 @@ describe('PPOM Utils', () => {
       } as unknown as TransactionController['state']);
 
       await updateSecurityAlertResponse({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         appStateController: {} as any,
         method: 'eth_sendTransaction',
         securityAlertId: SECURITY_ALERT_ID_MOCK,
         securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         signatureController: {} as any,
         transactionController,
       });

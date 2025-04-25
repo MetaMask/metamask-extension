@@ -1,32 +1,32 @@
-import { MultiChainAssetsRatesController } from '@metamask/assets-controllers';
+import { MultichainAssetsRatesController } from '@metamask/assets-controllers';
 import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
-  getMultiChainAssetsRatesControllerMessenger,
-  MultiChainAssetsRatesControllerMessenger,
+  getMultichainAssetsRatesControllerMessenger,
+  MultichainAssetsRatesControllerMessenger,
 } from '../messengers/multichain';
-import { MultiChainAssetsRatesControllerInit } from './multichain-rates-assets-controller-init';
+import { MultichainAssetsRatesControllerInit } from './multichain-rates-assets-controller-init';
 
 jest.mock('@metamask/assets-controllers');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<MultiChainAssetsRatesControllerMessenger>
+  ControllerInitRequest<MultichainAssetsRatesControllerMessenger>
 > {
   const baseControllerMessenger = new Messenger();
 
   return {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getMultiChainAssetsRatesControllerMessenger(
+    controllerMessenger: getMultichainAssetsRatesControllerMessenger(
       baseControllerMessenger,
     ),
     initMessenger: undefined,
   };
 }
 
-describe('MultiChainAssetsRatesControllerInit', () => {
-  const multiChainAssetsRatesControllerClassMock = jest.mocked(
-    MultiChainAssetsRatesController,
+describe('MultichainAssetsRatesControllerInit', () => {
+  const multichainAssetsRatesControllerClassMock = jest.mocked(
+    MultichainAssetsRatesController,
   );
 
   beforeEach(() => {
@@ -36,17 +36,17 @@ describe('MultiChainAssetsRatesControllerInit', () => {
   it('returns controller instance', () => {
     const requestMock = buildInitRequestMock();
     expect(
-      MultiChainAssetsRatesControllerInit(requestMock).controller,
-    ).toBeInstanceOf(MultiChainAssetsRatesController);
+      MultichainAssetsRatesControllerInit(requestMock).controller,
+    ).toBeInstanceOf(MultichainAssetsRatesController);
   });
 
   it('initializes with correct messenger and state', () => {
     const requestMock = buildInitRequestMock();
-    MultiChainAssetsRatesControllerInit(requestMock);
+    MultichainAssetsRatesControllerInit(requestMock);
 
-    expect(multiChainAssetsRatesControllerClassMock).toHaveBeenCalledWith({
+    expect(multichainAssetsRatesControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      state: requestMock.persistedState.MultiChainAssetsRatesController,
+      state: requestMock.persistedState.MultichainAssetsRatesController,
     });
   });
 });

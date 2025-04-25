@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import {
@@ -8,6 +7,7 @@ import {
 import {
   getCurrentCurrency,
   getCurrencyRates,
+  getTokenBalances,
 } from '../ducks/metamask/metamask';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import {
@@ -26,6 +26,7 @@ jest.mock('../selectors', () => ({
 jest.mock('../ducks/metamask/metamask', () => ({
   getCurrentCurrency: jest.fn(),
   getCurrencyRates: jest.fn(),
+  getTokenBalances: jest.fn(),
 }));
 jest.mock('../../shared/modules/selectors/networks', () => ({
   getSelectedNetworkClientId: jest.fn(),
@@ -34,6 +35,7 @@ jest.mock('../../shared/modules/selectors/networks', () => ({
 }));
 
 const mockGetCurrencyRates = getCurrencyRates as jest.Mock;
+const mockGetTokenBalances = getTokenBalances as jest.Mock;
 const mockGetCurrentCurrency = getCurrentCurrency as jest.Mock;
 const mockGetNetworkConfigurationsByChainId =
   getNetworkConfigurationsByChainId as unknown as jest.Mock;
@@ -129,6 +131,7 @@ const mockCachedBalances = {
 describe('useAccountTotalCrossChainFiatBalance', () => {
   beforeEach(() => {
     mockGetCurrencyRates.mockReturnValue(mockCurrencyRates);
+    mockGetTokenBalances.mockReturnValue({});
     mockGetCurrentCurrency.mockReturnValue('usd');
     mockGetNetworkConfigurationsByChainId.mockReturnValue(mockNetworkConfigs);
     mockGetCrossChainTokenExchangeRates.mockReturnValue(
@@ -163,6 +166,8 @@ describe('useAccountTotalCrossChainFiatBalance', () => {
             balance: '3086566',
             string: '3.08656',
             image: '',
+            primary: '3.08656',
+            secondary: 3.08,
           },
           {
             address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -171,6 +176,8 @@ describe('useAccountTotalCrossChainFiatBalance', () => {
             balance: '4002288959235586608',
             string: '4.00228',
             image: '',
+            primary: '4.00228',
+            secondary: 4.0,
           },
         ],
       },
@@ -194,6 +201,8 @@ describe('useAccountTotalCrossChainFiatBalance', () => {
               image: '',
               string: '3.08656',
               symbol: 'USDC',
+              primary: '3.08656',
+              secondary: 3.08,
             },
             {
               address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -202,6 +211,8 @@ describe('useAccountTotalCrossChainFiatBalance', () => {
               image: '',
               string: '4.00228',
               symbol: 'DAI',
+              primary: '4.00228',
+              secondary: 4.0,
             },
           ],
         },
@@ -225,6 +236,8 @@ describe('useAccountTotalCrossChainFiatBalance', () => {
       );
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((result as unknown as Record<string, any>).result.current).toEqual(
       expectedResult,
     );

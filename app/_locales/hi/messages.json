@@ -44,6 +44,20 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave ज़ीरो"
   },
+  "SrpListHideAccounts": {
+    "message": "$1 एकाउंट्स छिपाएं",
+    "description": "$1 is the number of accounts"
+  },
+  "SrpListHideSingleAccount": {
+    "message": "1 अकाउंट छिपाएं"
+  },
+  "SrpListShowAccounts": {
+    "message": "$1 एकाउंट्स दिखाएं",
+    "description": "$1 is the number of accounts"
+  },
+  "SrpListShowSingleAccount": {
+    "message": "1 अकाउंट दिखाएं"
+  },
   "about": {
     "message": "इसके बारे में"
   },
@@ -72,9 +86,6 @@
   },
   "accountActivityText": {
     "message": "वे अकाउंट चुनें जिनके बारे में आप सूचित होना चाहते हैं:"
-  },
-  "accountBalance": {
-    "message": "अकाउंट बैलेंस"
   },
   "accountDetails": {
     "message": "अकाउंट की जानकारी"
@@ -156,6 +167,12 @@
   "addAlias": {
     "message": "उपनाम जोड़ें"
   },
+  "addBitcoinAccountLabel": {
+    "message": "Bitcoin अकाउंट (बीटा)"
+  },
+  "addBitcoinTestnetAccountLabel": {
+    "message": "Bitcoin अकाउंट (टैस्टनेट (testnet))"
+  },
   "addBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर जोड़ें"
   },
@@ -196,8 +213,8 @@
   "addFriendsAndAddresses": {
     "message": "उन मित्रों और पतों को जोड़ें, जिन पर आप भरोसा करते हैं"
   },
-  "addHardwareWallet": {
-    "message": "hardware wallet जोड़ें"
+  "addHardwareWalletLabel": {
+    "message": "हार्डवेयर वॉलेट"
   },
   "addIPFSGateway": {
     "message": "अपना पसंदीदा IPFS गेटवे जोड़ें"
@@ -218,20 +235,25 @@
   "addNewAccount": {
     "message": "एक नया Ethereum अकाउंट जोड़ें"
   },
-  "addNewBitcoinAccount": {
-    "message": "एक नया Bitcoin अकाउंट जोड़ें (बीटा)"
+  "addNewEthereumAccountLabel": {
+    "message": "Ethereum अकाउंट"
   },
-  "addNewBitcoinTestnetAccount": {
-    "message": "एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))"
-  },
-  "addNewSolanaAccount": {
-    "message": "एक नया Solana अकाउंट जोड़ें (बीटा)"
+  "addNewSolanaAccountLabel": {
+    "message": "Solana अकाउंट"
   },
   "addNft": {
     "message": "NFT जोड़ें"
   },
   "addNfts": {
     "message": "NFTs जोड़ें"
+  },
+  "addNonEvmAccount": {
+    "message": "$1 अकाउंट जोड़ें",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+  },
+  "addNonEvmAccountFromNetworkPicker": {
+    "message": "$1 नेटवर्क को चालू करने के लिए, आपको $2 अकाउंट बनाना होगा।",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "RPC URL जोड़ें"
@@ -315,19 +337,24 @@
   "advancedPriorityFeeToolTip": {
     "message": "प्रायोरिटी फ़ीस (उर्फ \"माइनर टिप\") सीधे माइनरों के पास जाती है और उन्हें आपके ट्रांसेक्शन को प्राथमिकता देने के लिए प्रोत्साहित करती है।"
   },
-  "aggregatedBalancePopover": {
-    "message": "यह किसी दिए गए नेटवर्क पर आपके स्वामित्व वाले सभी टोकन के मूल्य को दर्शाता है। यदि आप इस मूल्य को ETH या अन्य मुद्राओं में देखना पसंद करते हैं, तो $1 पर जाएं।",
-    "description": "$1 represents the settings page"
-  },
   "agreeTermsOfUse": {
     "message": "मैं MetaMask के $1 से सहमत हूं",
     "description": "$1 is the `terms` link"
+  },
+  "airDropPatternDescription": {
+    "message": "टोकन के ऑन-चेन इतिहास से संदिग्ध एयरड्रॉप गतिविधियों के पूर्व उदाहरणों का पता चलता है।"
+  },
+  "airDropPatternTitle": {
+    "message": "एयरड्रॉप पैटर्न"
   },
   "airgapVault": {
     "message": "AirGap Vault"
   },
   "alert": {
     "message": "एलर्ट"
+  },
+  "alertActionBuyWithNativeCurrency": {
+    "message": "$1 खरीदें"
   },
   "alertActionUpdateGas": {
     "message": "गैस लिमिट को अपग्रेड करें"
@@ -347,6 +374,9 @@
   "alertMessageChangeInSimulationResults": {
     "message": "इस ट्रांसेक्शन के लिए अनुमानित परिवर्तन अपडेट कर दिए गए हैं। आगे बढ़ने से पहले उनकी बारीकी से समीक्षा करें।"
   },
+  "alertMessageFirstTimeInteraction": {
+    "message": "आप पहली बार इस एड्रेस के साथ इंटरैक्ट कर रहे हैं। जारी रखने से पहले सुनिश्चित करें कि यह सही है।"
+  },
   "alertMessageGasEstimateFailed": {
     "message": "हम सटीक शुल्क प्रदान करने में असमर्थ हैं और यह अनुमान अधिक हो सकता है। हम आपको एक कस्टम गैस लिमिट दर्ज करने का सुझाव देते हैं, लेकिन जोखिम है कि ट्रांसेक्शन अभी भी विफल हो जाएगा।"
   },
@@ -355,6 +385,9 @@
   },
   "alertMessageGasTooLow": {
     "message": "इस ट्रांसेक्शन को जारी रखने के लिए, आपको गैस लिमिट को 21000 या अधिक तक बढ़ाना होगा।"
+  },
+  "alertMessageInsufficientBalanceWithNativeCurrency": {
+    "message": "नेटवर्क फीस का भुगतान करने के लिए आपके अकाउंट में पर्याप्त $1 नहीं है।"
   },
   "alertMessageNetworkBusy": {
     "message": "गैस प्राइसें अधिक हैं और अनुमान कम सटीक हैं।"
@@ -379,6 +412,9 @@
   },
   "alertReasonChangeInSimulationResults": {
     "message": "परिणाम बदल गए हैं"
+  },
+  "alertReasonFirstTimeInteraction": {
+    "message": "पहला इंटरैक्शन"
   },
   "alertReasonGasEstimateFailed": {
     "message": "गलत शुल्क"
@@ -407,11 +443,17 @@
   "alertReasonWrongAccount": {
     "message": "गलत अकाउंट"
   },
+  "alertSelectedAccountWarning": {
+    "message": "यह अनुरोध आपके वॉलेट में चयनित खाते से भिन्न खाते के लिए है। किसी अन्य खाते का उपयोग करने के लिए, उसे साइट से कनेक्ट करें।"
+  },
   "alerts": {
     "message": "चेतावनियां"
   },
   "all": {
     "message": "सभी"
+  },
+  "allNetworks": {
+    "message": "सभी नेटवर्क"
   },
   "allPermissions": {
     "message": "सभी अनुमतियां"
@@ -466,6 +508,9 @@
     "message": "MetaMask Institutional",
     "description": "The name of the application (MMI)"
   },
+  "apply": {
+    "message": "लागू करें"
+  },
   "approve": {
     "message": "खर्च करने की लिमिट को एप्रूव करें"
   },
@@ -497,8 +542,14 @@
   "asset": {
     "message": "एसेट"
   },
+  "assetMultipleNFTsBalance": {
+    "message": "$1 NFTs"
+  },
   "assetOptions": {
     "message": "एसेट के विकल्प"
+  },
+  "assetSingleNFTBalance": {
+    "message": "$1 NFT"
   },
   "assets": {
     "message": "एसेट्स"
@@ -592,12 +643,14 @@
   "basicConfigurationModalHeadingOn": {
     "message": "बेसिक फंक्शनलिटी को चालू करें"
   },
+  "bestPrice": {
+    "message": "सबसे अच्छी कीमत"
+  },
   "beta": {
     "message": "बीटा"
   },
   "betaHeaderText": {
-    "message": "यह बीटा वर्शन है। कृपया बग रिपोर्ट करें $1",
-    "description": "$1 represents the word 'here' in a hyperlink"
+    "message": "यह बीटा वर्शन है। कृपया बग रिपोर्ट करें $1"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask बीटा वर्शन"
@@ -650,9 +703,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertInfo": {
-    "message": "हम इस अनुरोध के साथ आगे बढ़ने का सुझाव नहीं देते।"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "यदि आप इस रिक्वेस्ट को स्वीकार करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा सकती है।"
   },
@@ -695,23 +745,150 @@
   "bridge": {
     "message": "ब्रिज"
   },
+  "bridgeAllowSwappingOf": {
+    "message": "ब्रिजिंग के लिए $3 पर $1 $2 तक सटीक पहुंच की अनुमति दें",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
+  "bridgeApproval": {
+    "message": "ब्रिज के लिए $1 एप्रूव करें",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
+  "bridgeApprovalWarning": {
+    "message": "आप निर्दिष्ट राशि, $1 $2 तक पहुंच की अनुमति दे रहे हैं। इस कॉन्ट्रैक्ट को किसी भी अतिरिक्त फंड तक पहुंच नहीं होगी।"
+  },
+  "bridgeApprovalWarningForHardware": {
+    "message": "आपको ब्रिजिंग के लिए $1 $2 तक पहुंच की अनुमति देनी होगी, और फिर $2 तक ब्रिजिंग को एप्रूव करनी होगी। इसके लिए दो अलग-अलग कन्फर्मेशन की आवश्यकता होगी।"
+  },
   "bridgeCalculatingAmount": {
     "message": "कैलकुलेट किया जा रहा है..."
+  },
+  "bridgeConfirmTwoTransactions": {
+    "message": "आपको अपने हार्डवेयर वॉलेट पर 2 ट्रांसेक्शन कन्फर्म करनी होगी:"
+  },
+  "bridgeCreateSolanaAccount": {
+    "message": "Solana अकाउंट बनाएं"
+  },
+  "bridgeCreateSolanaAccountDescription": {
+    "message": "Solana नेटवर्क पर स्वैप करने के लिए, आपको एक अकाउंट और प्राप्त करने वाली एड्रेस की आवश्यकता होगी।"
+  },
+  "bridgeCreateSolanaAccountTitle": {
+    "message": "सबसे पहले आपको Solana अकाउंट की आवश्यकता होगी।"
   },
   "bridgeEnterAmount": {
     "message": "रकम डालें"
   },
+  "bridgeEnterAmountAndSelectAccount": {
+    "message": "राशि दर्ज करें और गंतव्य अकाउंट चुनें"
+  },
+  "bridgeExplorerLinkViewOn": {
+    "message": "$1 पर देखें"
+  },
+  "bridgeFetchNewQuotes": {
+    "message": "एक नया लाएं?"
+  },
   "bridgeFrom": {
     "message": "इससे ब्रिज करें"
+  },
+  "bridgeFromTo": {
+    "message": "$1 $2 को $3 से ब्रिज करें",
+    "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
+  },
+  "bridgeGasFeesSplit": {
+    "message": "पिछली स्क्रीन पर कोट किए गए किसी भी नेटवर्क शुल्क में दोनों ट्रांसेक्शन शामिल हैं और इसे विभाजित किया जाएगा।"
+  },
+  "bridgeNetCost": {
+    "message": "नेट लागत"
+  },
+  "bridgeQuoteExpired": {
+    "message": "आपका कोट करने का समय समाप्त हो गया है"
+  },
+  "bridgeSelectDestinationAccount": {
+    "message": "गंतव्य अकाउंट चुनें"
   },
   "bridgeSelectNetwork": {
     "message": "नेटवर्क को चुनें"
   },
+  "bridgeSelectTokenAmountAndAccount": {
+    "message": "टोकन, राशि और गंतव्य अकाउंट चुनें"
+  },
   "bridgeSelectTokenAndAmount": {
     "message": "टोकन और रकम का चयन करें"
   },
+  "bridgeStepActionBridgeComplete": {
+    "message": "$2 पर $1 प्राप्त हुआ",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionBridgePending": {
+    "message": "$2 पर $1 प्राप्त हो रहा है",
+    "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
+  },
+  "bridgeStepActionSwapComplete": {
+    "message": "$1 को $2 से स्वैप किया गया",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeStepActionSwapPending": {
+    "message": "$1 को $2 से स्वैप किया जा रहा है",
+    "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeTerms": {
+    "message": "नियम"
+  },
+  "bridgeTimingMinutes": {
+    "message": "$1 न्यूनतम",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
+  },
+  "bridgeToChain": {
+    "message": "$1 पर ब्रिज करें"
+  },
+  "bridgeTxDetailsBridging": {
+    "message": "ब्रिज किया जा रहा है"
+  },
+  "bridgeTxDetailsDelayedDescription": {
+    "message": "MetaMask सपोर्ट से"
+  },
+  "bridgeTxDetailsDelayedDescriptionSupport": {
+    "message": "संपर्क करें"
+  },
+  "bridgeTxDetailsDelayedTitle": {
+    "message": "क्या 3 घंटे से अधिक समय हो गया है?"
+  },
+  "bridgeTxDetailsNonce": {
+    "message": "Nonce"
+  },
+  "bridgeTxDetailsStatus": {
+    "message": "स्टेटस"
+  },
+  "bridgeTxDetailsTimestamp": {
+    "message": "टाइम स्टैम्प"
+  },
+  "bridgeTxDetailsTimestampValue": {
+    "message": "$2 पर $1",
+    "description": "$1 is the date, $2 is the time"
+  },
+  "bridgeTxDetailsTokenAmountOnChain": {
+    "message": "पर $1 $2",
+    "description": "$1 is the amount of the token, $2 is the ticker symbol of the token"
+  },
+  "bridgeTxDetailsTotalGasFee": {
+    "message": "कुल गैस फीस"
+  },
+  "bridgeTxDetailsYouReceived": {
+    "message": "आपको प्राप्त हुआ"
+  },
+  "bridgeTxDetailsYouSent": {
+    "message": "आपने भेजा"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "इस ब्रिज के लिए गैस फीस का भुगतान करने के लिए आपके पास पर्याप्त $1 नहीं है। कम राशि दर्ज करें या अधिक $1 खरीदें।"
+  },
+  "bridgeValidationInsufficientGasTitle": {
+    "message": "गैस के लिए अधिक $1 की आवश्यकता है"
+  },
+  "bridging": {
+    "message": "ब्रिज किया जा रहा है"
   },
   "browserNotSupported": {
     "message": "आपका ब्राउज़र सपोर्टेड नहीं है..."
@@ -721,6 +898,9 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask दुनिया भर में डिज़ाइन किया और बनाया गया है।"
+  },
+  "bulletpoint": {
+    "message": "·"
   },
   "busy": {
     "message": "बिज़ी"
@@ -821,6 +1001,12 @@
     "message": "कोई विकल्प नहीं मिला",
     "description": "Default text shown in the combo field dropdown if no options."
   },
+  "concentratedSupplyDistributionDescription": {
+    "message": "टोकन की अधिकांश आपूर्ति शीर्ष टोकन धारकों के पास होती है, जिससे सेंट्रलाइज्ड मूल्य संबंधी हेरफेर का जोखिम पैदा होता है"
+  },
+  "concentratedSupplyDistributionTitle": {
+    "message": "संकेन्द्रित आपूर्ति वितरण"
+  },
   "configureSnapPopupDescription": {
     "message": "अब आप इस Snap को कॉन्फिगर करने के लिए MetaMask से बाहर जा रहे हैं।"
   },
@@ -839,6 +1025,12 @@
   "confirm": {
     "message": "कन्फर्म करें"
   },
+  "confirmAccountTypeSmartContract": {
+    "message": "स्मार्ट अकाउंट"
+  },
+  "confirmAccountTypeStandard": {
+    "message": "मानक अकाउंट"
+  },
   "confirmAlertModalAcknowledgeMultiple": {
     "message": "मैंने एलर्ट को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता/चाहती हूं"
   },
@@ -851,11 +1043,38 @@
   "confirmFieldTooltipPaymaster": {
     "message": "इस ट्रांसेक्शन के लिए शुल्क का भुगतान पेमास्टर स्मार्ट कॉन्ट्रैक्ट द्वारा किया जाएगा।"
   },
+  "confirmGasFeeTokenBalance": {
+    "message": "बैल:"
+  },
+  "confirmGasFeeTokenInsufficientBalance": {
+    "message": "अपर्याप्त फंड"
+  },
+  "confirmGasFeeTokenMetaMaskFee": {
+    "message": "इसमें $1 शुल्क शामिल है"
+  },
+  "confirmGasFeeTokenModalTitle": {
+    "message": "एक टोकन चुनें"
+  },
+  "confirmGasFeeTokenToast": {
+    "message": "आप इस नेटवर्क शुल्क का भुगतान $1 से कर रहे हैं"
+  },
+  "confirmGasFeeTokenTooltip": {
+    "message": "यह आपके ट्रांसेक्शन को प्रोसेस करने के लिए नेटवर्क को भुगतान किया जाता है। इसमें गैर-ETH टोकन के लिए $1 MetaMask शुल्क शामिल है।"
+  },
+  "confirmNestedTransactionTitle": {
+    "message": "ट्रांसेक्शन $1"
+  },
   "confirmPassword": {
     "message": "पासवर्ड कन्फर्म करें"
   },
   "confirmRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज कन्फर्म करें"
+  },
+  "confirmSimulationApprove": {
+    "message": "आप एप्रूव करते हैं"
+  },
+  "confirmTitleApproveTransactionNFT": {
+    "message": "विदड्रॉवल का अनुरोध"
   },
   "confirmTitleDeployContract": {
     "message": "एक कॉन्ट्रैक्ट करें"
@@ -896,8 +1115,11 @@
   "confirmTitleTransaction": {
     "message": "ट्रांसेक्शन अनुरोध"
   },
-  "confirmationAlertModalTitle": {
-    "message": "यह अनुरोध संदिग्ध है"
+  "confirmationAlertDetails": {
+    "message": "आपकी एसेट्स की सुरक्षा के लिए, हम आपको अनुरोध को रिजेक्ट करने का सुझाव देते हैं।"
+  },
+  "confirmationAlertModalTitleDescription": {
+    "message": "आपके एसेट खतरे में हो सकते हैं"
   },
   "confirmed": {
     "message": "कन्फर्म किया गया"
@@ -925,6 +1147,9 @@
   },
   "connectAccounts": {
     "message": "एकाउंट्स को कनेक्ट करें"
+  },
+  "connectAnAccountHeader": {
+    "message": "किसी अकाउंट को कनेक्ट करें"
   },
   "connectManually": {
     "message": "वर्तमान साइट से मैन्युअल रूप से कनेक्ट करें"
@@ -1032,6 +1257,9 @@
     "message": "$1 को लाना नहीं हो पाया, अपना नेटवर्क जांचें और दोबारा कोशिश करें।",
     "description": "$1 is the name of the snap being fetched."
   },
+  "connectionPopoverDescription": {
+    "message": "किसी साइट से कनेक्ट करने के लिए, कनेक्ट बटन का चयन करें। MetaMask केवल Web3 साइटों से कनेक्ट हो सकता है।"
+  },
   "connectionRequest": {
     "message": "कनेक्शन अनुरोध"
   },
@@ -1078,9 +1306,6 @@
   "copyAddress": {
     "message": "क्लिपबोर्ड पर एड्रेस कॉपी करें"
   },
-  "copyAddressShort": {
-    "message": "एड्रेस कॉपी करें"
-  },
   "copyPrivateKey": {
     "message": "प्राइवेट की (key) को कॉपी करें"
   },
@@ -1092,6 +1317,9 @@
   },
   "create": {
     "message": "बनाएं"
+  },
+  "createNewAccountHeader": {
+    "message": "एक नया अकाउंट बनाएं"
   },
   "createNewWallet": {
     "message": "एक नया वॉलेट बनाएं"
@@ -1105,11 +1333,21 @@
   "createSnapAccountTitle": {
     "message": "अकाउंट बनाएं"
   },
+  "createSolanaAccount": {
+    "message": "Solana अकाउंट बनाएं"
+  },
   "creatorAddress": {
     "message": "निर्माता का एड्रेस"
   },
+  "crossChainAggregatedBalancePopover": {
+    "message": "यह सभी नेटवर्क पर आपके स्वामित्व वाले सभी टोकन के मूल्य को दर्शाता है। यदि आप इस मूल्य को ETH या अन्य मुद्राओं में देखना पसंद करते हैं, तो $1 पर जाएं।",
+    "description": "$1 represents the settings page"
+  },
   "crossChainSwapsLink": {
     "message": "MetaMask पोर्टफोलियो के साथ पूरे नेटवर्क में कहीं भी स्वैप करें"
+  },
+  "crossChainSwapsLinkNative": {
+    "message": "ब्रिज के साथ पूरे नेटवर्क में कहीं भी स्वैप करें"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1139,6 +1377,10 @@
   "currentLanguage": {
     "message": "वर्तमान भाषा"
   },
+  "currentNetwork": {
+    "message": "वर्तमान नेटवर्क",
+    "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
+  },
   "currentRpcUrlDeprecated": {
     "message": "इस नेटवर्क के लिए वर्तमान rpc url को हटा दिया गया है।"
   },
@@ -1163,6 +1405,9 @@
   "customGasSettingToolTipMessage": {
     "message": "गैस प्राइस को कस्टमाइज़ करने के लिए $1 का इस्तेमाल करें। यदि आपको इसकी जानकारी नहीं हैं तो ये कंफ्यूज़ करने वाला हो सकता है। अपनी ज़िम्मेदारी पर इंटरैक्ट करें।",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
+  },
+  "customSlippage": {
+    "message": "कस्टम"
   },
   "customSpendLimit": {
     "message": "खर्च की कस्टम लिमिट"
@@ -1331,6 +1576,21 @@
     "message": "$1 से जानकारी",
     "description": "$1 represents the name of the snap"
   },
+  "destinationAccountPickerNoEligible": {
+    "message": "कोई योग्य अकाउंट नहीं मिला"
+  },
+  "destinationAccountPickerNoMatching": {
+    "message": "कोई मैचिंग अकाउंट नहीं मिला"
+  },
+  "destinationAccountPickerReceiveAt": {
+    "message": "पर प्राप्त करें"
+  },
+  "destinationAccountPickerSearchPlaceholderToMainnet": {
+    "message": "प्राप्ति एड्रेस या ENS"
+  },
+  "destinationAccountPickerSearchPlaceholderToSolana": {
+    "message": "प्राप्ति एड्रेस"
+  },
   "details": {
     "message": "विस्तृत जानकारी"
   },
@@ -1375,6 +1635,9 @@
   "disconnectedSingleAccountToast": {
     "message": "$1, $2 से डिसकनेक्ट हो गया",
     "description": "$1 is name of the name and $2 represents the dapp name`"
+  },
+  "discover": {
+    "message": "खोजें"
   },
   "discoverSnaps": {
     "message": "Snaps के बारे में और जानें",
@@ -1424,6 +1687,12 @@
   },
   "dropped": {
     "message": "ड्रॉप किया गया"
+  },
+  "duplicateContactTooltip": {
+    "message": "यह कॉन्टेक्ट नाम किसी मौजूदा खाते या कॉन्टेक्ट से टकराता है"
+  },
+  "duplicateContactWarning": {
+    "message": "आपके पास डुप्लिकेट कॉन्टेक्ट्स हैं"
   },
   "edit": {
     "message": "बदलें"
@@ -1506,6 +1775,9 @@
   },
   "editGasTooLow": {
     "message": "अनजाना प्रोसेसिंग टाइम"
+  },
+  "editInPortfolio": {
+    "message": "Portfolio में बदलें"
   },
   "editNetworkLink": {
     "message": "मूल नेटवर्क को संपादित करें"
@@ -1714,14 +1986,14 @@
   "existingChainId": {
     "message": "आपके द्वारा दर्ज की गई जानकारी मौजूदा चेन ID से जुड़ी है।"
   },
-  "existingRequestsBannerAlertDesc": {
-    "message": "अपने सबसे हालिया अनुरोध को देखने और कन्फर्म करने के लिए, आपको पहले मौजूदा अनुरोधों को एप्रूव या रिजेक्ट करना होगा।"
-  },
   "expandView": {
     "message": "व्यू को बड़ा करें"
   },
   "experimental": {
     "message": "एक्सपेरिमेंटल"
+  },
+  "exploreweb3": {
+    "message": "Web3 एक्सप्लोर करें"
   },
   "exportYourData": {
     "message": "अपना डेटा एक्सपोर्ट करें"
@@ -1735,6 +2007,9 @@
   "extendWalletWithSnaps": {
     "message": "अपने Web3 एक्सपीरियंस को कस्टमाइज़ करने के लिए कम्युनिटी-बिल्ट Snaps को एक्सप्लोर करें।",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
+  },
+  "externalAccount": {
+    "message": "एक्स्टर्नल अकाउंट"
   },
   "externalExtension": {
     "message": "बाहरी एक्स्टेन्शन"
@@ -1920,6 +2195,9 @@
   "gotIt": {
     "message": "समझ आ गया!"
   },
+  "grantExactAccess": {
+    "message": "सटीक पहुंच प्रदान करें"
+  },
   "gwei": {
     "message": "GWEI"
   },
@@ -1960,6 +2238,9 @@
   },
   "hideAccount": {
     "message": "अकाउंट छिपाएं"
+  },
+  "hideAdvancedDetails": {
+    "message": "एडवांस्ड विवरण छिपाएं"
   },
   "hideSeedPhrase": {
     "message": "सीड फ्रेज़ छुपा दें"
@@ -2042,6 +2323,21 @@
   "holdToRevealUnlockedLabel": {
     "message": "लॉक किए गए सर्कल को दिखाने के लिए होल्ड करें"
   },
+  "honeypotDescription": {
+    "message": "यह टोकन हनीपोट जोखिम पैदा कर सकता है। किसी भी संभावित वित्तीय नुकसान को रोकने के लिए इंटरैक्ट करने से पहले पूरी जांच-पड़ताल करने की सलाह दी जाती है।"
+  },
+  "honeypotTitle": {
+    "message": "हनी पॉट"
+  },
+  "howNetworkFeesWorkExplanation": {
+    "message": "ट्रांसेक्शन को प्रोसेस करने के लिए आवश्यक अनुमानित शुल्क। अधिकतम शुल्क $1 है।"
+  },
+  "howQuotesWork": {
+    "message": "कोट्स कैसे काम करते हैं"
+  },
+  "howQuotesWorkExplanation": {
+    "message": "इस कोट में हमारे द्वारा ढूंढे गए कोट्स की तुलना में सबसे अच्छा रिटर्न है। यह स्वैप रेट पर आधारित है, जिसमें ब्रिजिंग शुल्क और $1% MetaMask शुल्क, गैस फीस घटाकर शामिल है। गैस फीस इस बात पर निर्भर करता है कि नेटवर्क कितना व्यस्त है और ट्रांसेक्शन कितना जटिल है।"
+  },
   "id": {
     "message": "ID"
   },
@@ -2061,9 +2357,6 @@
   "import": {
     "message": "इम्पोर्ट करें",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "अकाउंट इम्पोर्ट करें"
   },
   "importAccountError": {
     "message": "अकाउंट इम्पोर्ट करने में गड़बड़ी।"
@@ -2101,6 +2394,30 @@
   "importNFTTokenIdToolTip": {
     "message": "किसी NFT की ID एक विशिष्ट पहचानकर्ता है क्योंकि कोई भी दो NFT एक जैसे नहीं होते हैं। फिर से, OpenSea पर यह संख्या 'डिटेल्स' के नीचे होगी। इसे नोट कर लें या अपने क्लिपबोर्ड पर कॉपी कर लें।"
   },
+  "importNWordSRP": {
+    "message": "मेरे पास $1 शब्द का रिकवरी फ्रेज़ है",
+    "description": "$1 is the number of words in the recovery phrase"
+  },
+  "importPrivateKey": {
+    "message": "प्राइवेट की (key)"
+  },
+  "importSRPDescription": {
+    "message": "अपने 12 या 24-शब्द सीक्रेट रिकवरी फ्रेज़ के साथ एक मौजूदा वॉलेट इंपोर्ट करें।"
+  },
+  "importSRPNumberOfWordsError": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ में 12, या 24 शब्द होते हैं"
+  },
+  "importSRPWordError": {
+    "message": "शब्द $1 गलत है या इसकी स्पेलिंग गलत है।",
+    "description": "$1 is the word that is incorrect or misspelled"
+  },
+  "importSRPWordErrorAlternative": {
+    "message": "शब्द $1 और $2 गलत है या इसकी स्पेलिंग गलत है।",
+    "description": "$1 and $2 are multiple words that are mispelled."
+  },
+  "importSecretRecoveryPhrase": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ इंपोर्ट करें"
+  },
   "importSelectedTokens": {
     "message": "चुना गया टोकन इम्पोर्ट करें?"
   },
@@ -2118,6 +2435,12 @@
   },
   "importTokensError": {
     "message": "हम टोकनों को इंपोर्ट नहीं कर सके। कृपया बाद में फिर से कोशिश करें।"
+  },
+  "importWallet": {
+    "message": "वॉलेट इंपोर्ट करें"
+  },
+  "importWalletOrAccountHeader": {
+    "message": "वॉलेट या अकाउंट इंपोर्ट करें"
   },
   "importWithCount": {
     "message": "$1 इम्पोर्ट करें",
@@ -2166,6 +2489,12 @@
   "insufficientFundsForGas": {
     "message": "गैस के लिए कम फंड"
   },
+  "insufficientLockedLiquidityDescription": {
+    "message": "पर्याप्त रूप से लॉक या बर्न की गई लिक्विडिटी की कमी के कारण टोकन अचानक लिक्विडिटी विदड्रॉवल के प्रति संवेदनशील हो जाता है, जिससे संभावित रूप से बाजार में अस्थिरता पैदा हो सकती है।"
+  },
+  "insufficientLockedLiquidityTitle": {
+    "message": "अपर्याप्त लॉक्ड लिक्विडिटी"
+  },
   "insufficientTokens": {
     "message": "कम टोकन।"
   },
@@ -2200,6 +2529,9 @@
   },
   "invalidCustomNetworkAlertTitle": {
     "message": "ग़लत कस्टम नेटवर्क"
+  },
+  "invalidHexData": {
+    "message": "ग़लत हेक्स डेटा"
   },
   "invalidHexNumber": {
     "message": "ग़लत हेक्साडेसिमल संख्या।"
@@ -2379,6 +2711,9 @@
   "ledgerLocked": {
     "message": "Ledger डिवाइस से कनेक्ट नहीं हो सकता। कृपया पक्का करें कि आपका डिवाइस अनलॉक है और Ethereum ऐप खुला है।"
   },
+  "ledgerMultipleDevicesUnsupportedErrorMessage": {
+    "message": "एक ही समय में कई Ledger डिवाइस कनेक्ट नहीं किए जा सकते। एक नया Ledger डिवाइस कनेक्ट करने के लिए, आपको पहले पिछले डिवाइस को डिस्कनेक्ट करना होगा।"
+  },
   "ledgerTimeout": {
     "message": "Ledger Live जवाब देने में बहुत अधिक समय ले रहा है या कनेक्शन टाइमआउट हो गया है। पक्का करें कि Ledger Live ऐप खुला है और आपका डिवाइस अनलॉक है।"
   },
@@ -2425,6 +2760,9 @@
   "loadingScreenSnapMessage": {
     "message": "कृपया Snap पर ट्रांजेक्शन पूरा करें।"
   },
+  "loadingTokenList": {
+    "message": "टोकन लिस्ट लोड हो रहा है"
+  },
   "localhost": {
     "message": "लोकलहोस्ट 8545"
   },
@@ -2443,6 +2781,12 @@
   },
   "low": {
     "message": "निम्न"
+  },
+  "lowEstimatedReturnTooltipMessage": {
+    "message": "आप फीस के रूप में अपनी शुरुआती राशि का $1% से अधिक का भुगतान करेंगे। अपनी प्राप्त हो रही राशि और नेटवर्क शुल्क की जाँच करें।"
+  },
+  "lowEstimatedReturnTooltipTitle": {
+    "message": "ऊंची लागत"
   },
   "lowGasSettingToolTipMessage": {
     "message": "एक सस्ती कीमत की प्रतीक्षा के लिए $1 का इस्तेमाल करें। समय का अनुमान बहुत कम सही होता है क्योंकि कीमतें कुछ हद तक अप्रत्याशित होती हैं।",
@@ -2466,6 +2810,9 @@
   },
   "manageDefaultSettings": {
     "message": "डिफॉल्ट गोपनीयता सेटिंग्स मैनेज करें"
+  },
+  "managePermissions": {
+    "message": "अनुमतियाँ प्रबंधित करें"
   },
   "marketCap": {
     "message": "मार्केट कैप"
@@ -2579,8 +2926,20 @@
     "message": "+ $1 और नेटवर्क",
     "description": "$1 is the number of networks"
   },
+  "moreQuotes": {
+    "message": "अधिक कोट्स"
+  },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "आप इस नेटवर्क को MetaMask में जोड़ रहे हैं और इस साइट को इसका उपयोग करने की अनुमति दे रहे हैं।"
+  },
+  "multichainQuoteCardBridgingLabel": {
+    "message": "ब्रिज किया जा रहा है"
+  },
+  "multichainQuoteCardQuoteLabel": {
+    "message": "कोटेशन"
+  },
+  "multichainQuoteCardTimeLabel": {
+    "message": "समय"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
@@ -2595,6 +2954,9 @@
   "nameAddressLabel": {
     "message": "एड्रेस",
     "description": "Label above address field in name component modal."
+  },
+  "nameAlreadyInUse": {
+    "message": "नाम पहले से ही प्रयोग में है"
   },
   "nameInstructionsNew": {
     "message": "यदि आप इस एड्रेस को जानते हैं, तो भविष्य में इसे पहचानने के लिए इसे एक उपनाम दें।",
@@ -2693,6 +3055,13 @@
   "network": {
     "message": "नेटवर्क:"
   },
+  "networkChanged": {
+    "message": "नेटवर्क बदला गया"
+  },
+  "networkChangedMessage": {
+    "message": "अब आप $1 पर लेन-देन कर रहे हैं।",
+    "description": "$1 is the name of the network"
+  },
   "networkDetails": {
     "message": "नेटवर्क विवरण"
   },
@@ -2744,6 +3113,9 @@
   "networkNamePolygon": {
     "message": "बहुभुज"
   },
+  "networkNameSolana": {
+    "message": "सोलाना"
+  },
   "networkNameTestnet": {
     "message": "Testnet"
   },
@@ -2775,10 +3147,6 @@
   },
   "networkSwitchConnectionError": {
     "message": "हम $1 से कनेक्ट नहीं कर सकते",
-    "description": "$1 represents the network name"
-  },
-  "networkSwitchMessage": {
-    "message": "नेटवर्क $1 पर स्विच किया गया",
     "description": "$1 represents the network name"
   },
   "networkURL": {
@@ -2926,17 +3294,29 @@
   "noNetworksFound": {
     "message": "दी गई सर्च क्वेरी के लिए कोई नेटवर्क नहीं मिले"
   },
+  "noOptionsAvailableMessage": {
+    "message": "यह ट्रेड रूट अभी उपलब्ध नहीं है। राशि, नेटवर्क या टोकन बदलने का प्रयास करें और हम सबसे अच्छा विकल्प ढूंढ लेंगे।"
+  },
   "noSnaps": {
     "message": "आपके पास इंस्टाल किए गए Snap नहीं हैं।"
   },
   "noThanks": {
     "message": "जी नहीं, धन्यवाद"
   },
+  "noTransactions": {
+    "message": "आपके पास कोई ट्रांसेक्शन नहीं है"
+  },
   "noWebcamFound": {
     "message": "आपके कंप्यूटर का वेबकैम नहीं मिला। कृपया फिर से कोशिश करें।"
   },
   "noWebcamFoundTitle": {
     "message": "वेबकैम नहीं मिला"
+  },
+  "nonContractAddressAlertDesc": {
+    "message": "आप कॉल डेटा ऐसे एड्रेस पर भेज रहे हैं जो कॉन्ट्रैक्ट नहीं है। इससे आप फंड खो सकते हैं। जारी रखने से पहले सुनिश्चित करें कि आप सही एड्रेस और नेटवर्क का उपयोग कर रहे हैं।"
+  },
+  "nonContractAddressAlertTitle": {
+    "message": "संभावित गलती"
   },
   "nonce": {
     "message": "Nonce"
@@ -2955,6 +3335,9 @@
   },
   "notEnoughGas": {
     "message": "गैस कम है"
+  },
+  "notNow": {
+    "message": "अभी नहीं"
   },
   "notificationDetail": {
     "message": "विवरण"
@@ -3087,14 +3470,6 @@
   },
   "notifications": {
     "message": "सूचनाएं"
-  },
-  "notificationsDropLedgerFirefoxDescription": {
-    "message": "Firefox अब U2F का सपोर्ट नहीं करता है, इसलिए Firefox पर MetaMask के साथ Ledger काम नहीं करेगा। इसके बजाय, Google Chrome पर MetaMask इस्तेमाल करके देखें।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
-  },
-  "notificationsDropLedgerFirefoxTitle": {
-    "message": "Firefox के लिए Ledger को मिलने वाला सपोर्ट खत्म किया जा रहा है",
-    "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
   "notificationsFeatureToggle": {
     "message": "वॉलेट नोटिफिकेशन को चालू करें",
@@ -3306,9 +3681,6 @@
     "message": "1Y",
     "description": "Shortened form of '1 year'"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं। $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3328,6 +3700,13 @@
   },
   "origin": {
     "message": "ओरिजिन"
+  },
+  "originChanged": {
+    "message": "साइट बदला गया"
+  },
+  "originChangedMessage": {
+    "message": "आप अभी $1 के अनुरोध की समीक्षा कर रहे हैं।",
+    "description": "$1 is the name of the origin"
   },
   "osTheme": {
     "message": "सिस्टम"
@@ -3383,6 +3762,22 @@
   "pending": {
     "message": "लंबित"
   },
+  "pendingConfirmationAddNetworkAlertMessage": {
+    "message": "नेटवर्क अपडेट करने से इस साइट से अभी पूरा नहीं हुआ $1 का ट्रांसेक्शन कैंसिल हो जाएगा।",
+    "description": "Number of transactions."
+  },
+  "pendingConfirmationSwitchNetworkAlertMessage": {
+    "message": "नेटवर्क स्विच करने से इस साइट से अभी पूरा नहीं हुआ $1 का ट्रांसेक्शन कैंसिल हो जाएगा।",
+    "description": "Number of transactions."
+  },
+  "pendingTransactionAlertMessage": {
+    "message": "यह ट्रांसेक्शन तब तक नहीं होगा जब तक पिछला ट्रांसेक्शन पूरा न हो जाए। $1",
+    "description": "$1 represents the words 'how to cancel or speed up a transaction' in a hyperlink"
+  },
+  "pendingTransactionAlertMessageHyperlink": {
+    "message": "किसी ट्रांसेक्शन को कैंसिल करने या जल्दी पूरा करने का तरीका जानें।",
+    "description": "The text for the hyperlink in the pending transaction alert message"
+  },
   "permissionDetails": {
     "message": "अनुमति का ब्यौरा"
   },
@@ -3425,6 +3820,14 @@
   "permission_accessSnapDescription": {
     "message": "$1 के साथ इंटरैक्ट करने के लिए वेबसाइट या Snap को अनुमति दें।",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+  },
+  "permission_assets": {
+    "message": "MetaMask में अकाउंट एसेट्स दिखाएं।",
+    "description": "The description for the `endowment:assets` permission."
+  },
+  "permission_assetsDescription": {
+    "message": "MetaMask क्लाइंट को एसेट की जानकारी प्रदान करने के लिए $1 को अनुमति दें। एसेट्स ऑनचेन या ऑफचेन हो सकती हैं।",
+    "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
     "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",
@@ -3546,6 +3949,14 @@
     "message": "$1 को MetaMask के भीतर नोटिफिकेशन दिखाने की अनुमति दें। Snap के माध्यम से एक्शनेबल या टाइम-सेंसिटिव जानकारी के लिए एक शॉर्ट नोटिफिकेशन टेक्स्ट को ट्रिगर किया जा सकता है।",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
+  "permission_protocol": {
+    "message": "एक या अधिक चेन के लिए प्रोटोकॉल डेटा प्रदान करें।",
+    "description": "The description for the `endowment:protocol` permission."
+  },
+  "permission_protocolDescription": {
+    "message": "$1 को MetaMask को गैस अनुमान या टोकन जानकारी जैसे प्रोटोकॉल डेटा प्रदान करने की अनुमति दें।",
+    "description": "An extended description for the `endowment:protocol` permission. $1 is the name of the Snap."
+  },
   "permission_rpc": {
     "message": "$1 को $2 से सीधे कम्यूनिकेट करने की अनुमति दें।",
     "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites', $2 is the snap name."
@@ -3627,6 +4038,27 @@
   "permissionsPageEmptySubContent": {
     "message": "यहां पर आप इंस्टॉल किए गए Snaps या कनेक्टेड साइटों को दी गई अनुमतियां देख सकते हैं।"
   },
+  "permitSimulationChange_approve": {
+    "message": "खर्च करने की लिमिट"
+  },
+  "permitSimulationChange_bidding": {
+    "message": "आप बिड करते हैं"
+  },
+  "permitSimulationChange_listing": {
+    "message": "आप लिस्ट करते हैं"
+  },
+  "permitSimulationChange_nft_listing": {
+    "message": "लिस्टिंग प्राइस"
+  },
+  "permitSimulationChange_receive": {
+    "message": "आप प्राप्त करते हैं"
+  },
+  "permitSimulationChange_revoke2": {
+    "message": "रद्द करें"
+  },
+  "permitSimulationChange_transfer": {
+    "message": "आप भेजते हैं"
+  },
   "permitSimulationDetailInfo": {
     "message": "आप खर्च करने वाले को अपने अकाउंट से इतने सारे टोकन खर्च करने की अनुमति दे रहे हैं।"
   },
@@ -3635,12 +4067,6 @@
   },
   "personalAddressDetected": {
     "message": "व्यक्तिगत एड्रेस का एड्रेस चला। टोकन कॉन्ट्रैक्ट एड्रेस डालें।"
-  },
-  "petnamesEnabledToggle": {
-    "message": "उपनामों की अनुमति दें"
-  },
-  "petnamesEnabledToggleDescription": {
-    "message": "यह आपको किसी भी एड्रेस पर एक उपनाम देने की सुविधा देता है। जब भी संभव होगा हम उन एड्रेसों के लिए नाम सुझाएंगे जिनसे आप इंटरैक्ट करते हैं।"
   },
   "pinToTop": {
     "message": "सबसे ऊपर ले जाएं"
@@ -3659,6 +4085,9 @@
   "popularNetworkAddToolTip": {
     "message": "इनमें से कुछ नेटवर्क थर्ड पार्टीज़ पर निर्भर हैं। कनेक्शन कम विश्वसनीय हो सकते हैं या गतिविधि को ट्रैक करने के लिए थर्ड पार्टीज़ को चालू कर सकते हैं। $1",
     "description": "$1 is Learn more link"
+  },
+  "popularNetworks": {
+    "message": "पॉपुलर नेटवर्क्स"
   },
   "portfolio": {
     "message": "पोर्टफोलियो"
@@ -3821,8 +4250,17 @@
   "quoteRate": {
     "message": "उद्धरण का दर"
   },
+  "quotedReceiveAmount": {
+    "message": "$1 राशि प्राप्त करें"
+  },
+  "quotedTotalCost": {
+    "message": "$1 कुल लागत"
+  },
   "rank": {
     "message": "रैंक"
+  },
+  "rateIncludesMMFee": {
+    "message": "रेट में $1% शुल्क शामिल है"
   },
   "reAddAccounts": {
     "message": "किसी अन्य अकाउंट को फिर से जोड़ें"
@@ -4013,6 +4451,9 @@
   "reusedTokenNameWarning": {
     "message": "यहां पर एक टोकन आपके द्वारा देखे जाने वाले दूसरे टोकन से प्रतीक का पुनः इस्तेमाल करता है, यह भ्रामक या धोखाधड़ी वाला हो सकता है।"
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
+  },
   "revealSeedWords": {
     "message": "सीक्रेट रिकवरी फ्रेज प्रकट करें"
   },
@@ -4062,11 +4503,18 @@
   "reviewAlerts": {
     "message": "एलर्ट की समीक्षा करें"
   },
+  "reviewPendingTransactions": {
+    "message": "अभी पूरे नहीं हुए ट्रांसेक्शन की समीक्षा करें"
+  },
   "reviewPermissions": {
     "message": "अनुमतियों की समीक्षा करें"
   },
   "revokePermission": {
     "message": "अनुमति कैंसिल करने की"
+  },
+  "revokePermissionTitle": {
+    "message": "$1 अनुमति हटाएं",
+    "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
     "message": "आप किसी अन्य को आपके अकाउंट से टोकन ख़र्च करने के लिए दी गई अनुमति हटा रहे हैं।"
@@ -4104,8 +4552,15 @@
   "searchTokens": {
     "message": "टोकनों को ढूंढें"
   },
+  "searchTokensByNameOrAddress": {
+    "message": "नाम या एड्रेस से टोकन ढूंढें"
+  },
   "secretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज"
+  },
+  "secretRecoveryPhrasePlusNumber": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ $1",
+    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "सुरक्षित वॉलेट"
@@ -4185,9 +4640,6 @@
   "seedPhraseIntroTitle": {
     "message": "अपने वॉलेट को सुरक्षित करें"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "शुरुआत करने से पहले, अपने सीक्रेट रिकवरी फ्रेज और अपने वॉलेट को सुरक्षित रखने के तरीके के बारे में जानने के लिए यह छोटा-सा वीडियो देखें।"
-  },
   "seedPhraseReq": {
     "message": "सीक्रेट रिकवरी फ्रेज में 12, 15, 18, 21 या 24 शब्द होते हैं"
   },
@@ -4199,6 +4651,9 @@
   },
   "select": {
     "message": "चयन करें"
+  },
+  "selectAccountToConnect": {
+    "message": "कनेक्ट करने के लिए एक अकाउंट चुनें"
   },
   "selectAccounts": {
     "message": "इस साइट पर इस्तेमाल करने के लिए अकाउंट (एकाउंट्स) को चुनें"
@@ -4230,8 +4685,14 @@
   "selectRpcUrl": {
     "message": "RPC URL को चुनें"
   },
+  "selectSecretRecoveryPhrase": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ चुनें"
+  },
   "selectType": {
     "message": "प्रकार को चुनें"
+  },
+  "selectedAccountMismatch": {
+    "message": "अलग खाता चुना गया"
   },
   "selectingAllWillAllow": {
     "message": "सभी को चुनने से यह साइट आपके सभी चालू एकाउंट्स को देखने की अनुमति देगी। पक्का करें कि आप इस साइट पर भरोसा करते हैं।"
@@ -4317,6 +4778,9 @@
   "showAccount": {
     "message": "अकाउंट दिखाएं"
   },
+  "showAdvancedDetails": {
+    "message": "एडवांस्ड विवरण दिखाएं"
+  },
   "showExtensionInFullSizeView": {
     "message": "एक्सटेंशन को पूर्ण आकार दृश्य में दिखाएं"
   },
@@ -4334,16 +4798,6 @@
   },
   "showHexDataDescription": {
     "message": "भेजने की स्क्रीन पर हेक्स डेटा फील्ड दिखाने के लिए इसको चुनें"
-  },
-  "showIncomingTransactions": {
-    "message": "आने वाले ट्रांसेक्शन दिखाएं"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "लेनदेन सूची में आने वाले लेनदेन को दिखाने के लिए Etherscan का उपयोग करने के लिए इसका चयन करें",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "showIncomingTransactionsExplainer": {
-    "message": "यह हरेक नेटवर्क के लिए अलग-अलग थर्ड-पार्टी API पर निर्भर करता है, जो आपके Ethereum एड्रेस और आपके आईपी ​​एड्रेस को एक्स्पोज़ करता है।"
   },
   "showLess": {
     "message": "कम दिखाएं"
@@ -4363,6 +4817,9 @@
   "showPrivateKey": {
     "message": "प्राइवेट की (key) दिखाएं"
   },
+  "showSRP": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
+  },
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"
   },
@@ -4375,6 +4832,12 @@
   "signatureRequest": {
     "message": "हस्ताक्षर का अनुरोध"
   },
+  "signature_decoding_bid_nft_tooltip": {
+    "message": "बिड स्वीकार होने पर NFT आपके वॉलेट में दिखाई देगा।"
+  },
+  "signature_decoding_list_nft_tooltip": {
+    "message": "बदलाव की उम्मीद तभी करें जब कोई आपके NFTs खरीद ले।"
+  },
   "signed": {
     "message": "हस्ताक्षर किया गया"
   },
@@ -4383,6 +4846,9 @@
   },
   "signingInWith": {
     "message": "के साथ साइन इन करना"
+  },
+  "signingWith": {
+    "message": "के साथ साइन किया जा रहा है"
   },
   "simulationApproveHeading": {
     "message": "निकालें"
@@ -4430,8 +4896,14 @@
   "simulationErrorMessageV2": {
     "message": "हम गैस का अनुमान नहीं लगा पाए। कॉन्ट्रैक्ट में कोई गड़बड़ी हो सकती है और यह ट्रांसेक्शन विफल हो सकता है।"
   },
+  "simulationsSettingDescription": {
+    "message": "ट्रांसेक्शन और सिग्नेचर्स को कन्फर्म करने से पहले उनके बैलेंस में बदलाव का अनुमान लगाने के लिए इसे चालू करें। यह उनके अंतिम परिणाम की गारंटी नहीं देता। $1"
+  },
   "simulationsSettingSubHeader": {
     "message": "बैलेंस अमाउंट में बदलावों का अनुमान लगाएं"
+  },
+  "singleNetwork": {
+    "message": "1 नेटवर्क"
   },
   "siweIssued": {
     "message": "जारी किया गया"
@@ -4456,6 +4928,36 @@
   },
   "skipAccountSecurityDetails": {
     "message": "मैं समझता हूं कि जब तक मैं अपने सीक्रेट रिकवरी फ्रेज का बैकअप नहीं लेता, मैं अपने अकाउंट और उनकी सभी संपत्ति खो सकता हूं।"
+  },
+  "slideBridgeDescription": {
+    "message": "अपने वॉलेट के भीतर, सभी 9 चेंस में एक-दूसरे में मूव करें"
+  },
+  "slideBridgeTitle": {
+    "message": "ब्रिज करने के लिए तैयार हैं?"
+  },
+  "slideCashOutDescription": {
+    "message": "कैश के लिए अपना क्रिप्टो बेचें"
+  },
+  "slideCashOutTitle": {
+    "message": "MetaMask के साथ कैश आउट करें"
+  },
+  "slideDebitCardDescription": {
+    "message": "चयनित क्षेत्रों में उपलब्ध है"
+  },
+  "slideDebitCardTitle": {
+    "message": "MetaMask डेबिट कार्ड"
+  },
+  "slideFundWalletDescription": {
+    "message": "शुरू करने के लिए टोकन जोड़ें या स्थानांतरित करें"
+  },
+  "slideFundWalletTitle": {
+    "message": "अपने वॉलेट और एमईवी सुरक्षा को फंड करें।"
+  },
+  "slideSweepStakeDescription": {
+    "message": "जीतने का मौका पाने के लिए अभी NFT मिंट करें"
+  },
+  "slideSweepStakeTitle": {
+    "message": "$5000 USDC गिवअवे में प्रवेश करें!"
   },
   "smartContracts": {
     "message": "स्मार्ट कॉन्ट्रैक्ट्स"
@@ -4486,6 +4988,15 @@
   },
   "smartTransactions": {
     "message": "स्मार्ट ट्रांसेक्शन"
+  },
+  "smartTransactionsEnabledDescription": {
+    "message": " अब डिफ़ॉल्ट रूप से चालू है।"
+  },
+  "smartTransactionsEnabledLink": {
+    "message": "उच्च सफलता दर"
+  },
+  "smartTransactionsEnabledTitle": {
+    "message": "ट्रांसेक्शन अब और स्मार्ट हो गया है"
   },
   "snapAccountCreated": {
     "message": "अकाउंट बनाया गया"
@@ -4594,6 +5105,9 @@
   "snapResultSuccessDescription": {
     "message": "$1 इस्तेमाल के लिए तैयार है"
   },
+  "snapUIAssetSelectorTitle": {
+    "message": "किसी एसेट को चुनें"
+  },
   "snapUpdateAlertDescription": {
     "message": "$1 का लेटेस्ट वर्ज़न पाएं",
     "description": "Description used in Snap update alert banner when snap update is available. $1 is the Snap name."
@@ -4653,14 +5167,29 @@
     "message": "अधिक सहायता के लिए $1 के निर्माताओं से कॉन्टेक्ट करें।",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "सोलाना"
+  "solanaImportAccounts": {
+    "message": "Solana एकाउंट्स इंपोर्ट करें"
   },
-  "solanaSupportToggleDescription": {
-    "message": "इस फीचर को चालू करने से आपको अपने मौजूदा सीक्रेट रिकवरी फ्रेज़ से प्राप्त MetaMask एक्सटेंशन में एक सोलाना अकाउंट जोड़ने का विकल्प मिलेगा। यह एक प्रायोगिक बीटा फीचर है, इसलिए आपको इसका उपयोग अपने जोखिम पर करना होगा।"
+  "solanaImportAccountsDescription": {
+    "message": "अपने Solana अकाउंट को किसी अन्य वॉलेट से स्थानांतरित करने के लिए एक सीक्रेट रिकवरी फ्रेज़ इंपोर्ट करें।"
   },
-  "solanaSupportToggleTitle": {
-    "message": "\"एक नया सोलाना अकाउंट जोड़ें (बीटा)\" को चालू करें"
+  "solanaMoreFeaturesComingSoon": {
+    "message": "जल्द ही और फीचर्स उपलब्ध होंगे"
+  },
+  "solanaMoreFeaturesComingSoonDescription": {
+    "message": "Solana डैप्स, NFTs, हार्डवेयर वॉलेट सपोर्ट और बहुत कुछ जल्द ही आ रहा है।"
+  },
+  "solanaOnMetaMask": {
+    "message": "MetaMask पर Solana"
+  },
+  "solanaSendReceiveSwapTokens": {
+    "message": "टोकन भेजें, प्राप्त करें और स्वैप करें"
+  },
+  "solanaSendReceiveSwapTokensDescription": {
+    "message": "SOL, USDC आदि जैसे टोकन के साथ ट्रांसफर और लेनदेन करें।"
+  },
+  "someNetworks": {
+    "message": "$1 नेटवर्क"
   },
   "somethingDoesntLookRight": {
     "message": "कुछ तो गड़बड़ है? $1",
@@ -4684,6 +5213,21 @@
   },
   "source": {
     "message": "स्त्रोत"
+  },
+  "spamModalBlockedDescription": {
+    "message": "यह साइट 1 मिनट के लिए ब्लॉक रहेगी।"
+  },
+  "spamModalBlockedTitle": {
+    "message": "आपने इस साइट को अस्थायी रूप से ब्लॉक कर दिया है"
+  },
+  "spamModalDescription": {
+    "message": "यदि आपको अनेक अनुरोधों के साथ स्पैम प्राप्त हो रहा है, तो आप साइट को अस्थायी रूप से ब्लॉक कर सकते हैं।"
+  },
+  "spamModalTemporaryBlockButton": {
+    "message": "इस साइट को अस्थायी रूप से ब्लॉक करें"
+  },
+  "spamModalTitle": {
+    "message": "हमने कई अनुरोध नोटिस किए हैं"
   },
   "speed": {
     "message": "गति"
@@ -4734,12 +5278,27 @@
   "spendingCap": {
     "message": "खर्च करने की लिमिट"
   },
-  "spendingCapTooltipDesc": {
-    "message": "यह टोकन की वह राशि है जिसे खर्च करने वाला आपकी ओर से प्राप्त कर सकेगा।"
+  "spendingCaps": {
+    "message": "खर्च करने की लिमिट"
   },
   "srpInputNumberOfWords": {
     "message": "मेरे पास एक $1-शब्द का फ़्रेज़ है",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
+  },
+  "srpListName": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ $1",
+    "description": "$1 is the order of the Secret Recovery Phrase"
+  },
+  "srpListNumberOfAccounts": {
+    "message": "$1 एकाउंट्स",
+    "description": "$1 is the number of accounts in the list"
+  },
+  "srpListSelectionDescription": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ जिससे आपका नया अकाउंट जनरेट होगा"
+  },
+  "srpListSingleOrZero": {
+    "message": "$1 अकाउंट",
+    "description": "$1 is the number of accounts in the list, it is either 1 or 0"
   },
   "srpPasteFailedTooManyWords": {
     "message": "पेस्ट नहीं हो पाया क्योंकि उसमें 24 से ज़्यादा शब्द हैं। सीक्रेट रिकवरी फ़्रेज़ में अधिकतम 24 शब्द हो सकते हैं।",
@@ -4894,6 +5453,9 @@
   "stxFailureDescription": {
     "message": "मार्केट के आकस्मिक बदलावों के कारण विफलताएं हो सकती हैं। अगर समस्या जारी रहती है, तो कृपया $1 से कॉन्टेक्ट करें।",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInSupportedNetworksDescription": {
+    "message": "समर्थित नेटवर्क पर अधिक विश्वसनीय और सुरक्षित ट्रांसेक्शन के लिए स्मार्ट ट्रांसेक्शन चालू करें। $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "आपका स्वैप निजी रूप से सबमिट किया जा रहा है..."
@@ -5369,6 +5931,10 @@
     "message": "$1 अब $2 पर एक्टिव है",
     "description": "$1 represents the account name, $2 represents the network name"
   },
+  "switchedNetworkToastMessageNoOrigin": {
+    "message": "आप अब $1 इस्तेमाल कर रहे हैं",
+    "description": "$1 represents the network name"
+  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "नेटवर्क स्विच करने से सभी लंबित कन्फर्मेशन कैंसिल हो जाएंगे"
   },
@@ -5431,6 +5997,9 @@
   "toAddress": {
     "message": "प्रति: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleDecodeDescription": {
+    "message": "हम अधिक पठनीय ट्रांसेक्शन डेटा को डिकोड करने और प्रदर्शित करने के लिए 4byte.directory और Sourcify सेवाओं का उपयोग करते हैं। इससे आपको लंबित और पिछले ट्रांसेक्शन के परिणाम को समझने में मदद मिलती है, लेकिन इसके परिणामस्वरूप आपका आईपी ​​एड्रेस साझा किया जा सकता है।"
   },
   "token": {
     "message": "टोकन"
@@ -5664,9 +6233,6 @@
   "twelveHrTitle": {
     "message": "12 घंटे:"
   },
-  "typeYourSRP": {
-    "message": "अपना गुप्त रिकवरी वाक्यांश लिखें"
-  },
   "u2f": {
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
@@ -5709,6 +6275,12 @@
   "unsendableAsset": {
     "message": "वर्तमान में NFT (ERC-721) टोकन भेजना समर्थित नहीं है",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
+  },
+  "unstableTokenPriceDescription": {
+    "message": "अमेरिकी डॉलर में इस टोकन की कीमत अत्यधिक अस्थिर है, जो इसके साथ इंटरैक्ट करके महत्वपूर्ण मूल्य खोने के उच्च जोखिम को दर्शाता है।"
+  },
+  "unstableTokenPriceTitle": {
+    "message": "अस्थिर टोकन की कीमत"
   },
   "upArrow": {
     "message": "अप ऐरो"
@@ -5799,6 +6371,9 @@
   "viewContact": {
     "message": "कॉन्टेक्ट देखें"
   },
+  "viewDetails": {
+    "message": "विवरण देखें"
+  },
   "viewMore": {
     "message": "और देखें"
   },
@@ -5828,6 +6403,18 @@
   },
   "visitSite": {
     "message": "साइट पर जाएं"
+  },
+  "visitSupportDataConsentModalAccept": {
+    "message": "कन्फर्म करें"
+  },
+  "visitSupportDataConsentModalDescription": {
+    "message": "क्या आप अपना MetaMask पहचानकर्ता और ऐप संस्करण हमारे सपोर्ट सेंटर के साथ साझा करना चाहते हैं? इससे हमें आपकी समस्या को बेहतर ढंग से हल करने में मदद मिल सकती है, लेकिन यह वैकल्पिक है।"
+  },
+  "visitSupportDataConsentModalReject": {
+    "message": "साझा न करें"
+  },
+  "visitSupportDataConsentModalTitle": {
+    "message": "सपोर्ट के साथ डिवाइस विवरण साझा करें"
   },
   "visitWebSite": {
     "message": "हमारी वेबसाइट पर जाएं"
@@ -5905,12 +6492,14 @@
   "welcomeToMetaMaskIntro": {
     "message": "लाखों लोगों का भरोसेमंद, MetaMask एक सुरक्षित वॉलेट है जो वेब3 की दुनिया को सबके लिए सुलभ बनाता है।"
   },
-  "whatsNew": {
-    "message": "नया क्या है",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
-  },
   "whatsThis": {
     "message": "यह क्या है?"
+  },
+  "willApproveAmountForBridging": {
+    "message": "यह ब्रिजिंग के लिए $1 एप्रूव करेगा।"
+  },
+  "willApproveAmountForBridgingHardware": {
+    "message": "आपको अपने हार्डवेयर वॉलेट पर दो ट्रांसेक्शन कन्फर्म करनी होगी:"
   },
   "withdrawing": {
     "message": "निकाला जा रहा है"
@@ -5923,6 +6512,9 @@
   },
   "you": {
     "message": "आप"
+  },
+  "youDeclinedTheTransaction": {
+    "message": "आपने ट्रांसेक्शन अस्वीकार कर दिया।"
   },
   "youNeedToAllowCameraAccess": {
     "message": "आपको इस सुविधा का इस्तेमाल करने के लिए कैमरे तक पहुंच की अनुमति देने की आवश्यकता है।"
@@ -5941,6 +6533,9 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "आपका NFT खतरे में हो सकता है"
+  },
+  "yourNetworks": {
+    "message": "आपके नेटवर्क"
   },
   "yourPrivateSeedPhrase": {
     "message": "आपका सीक्रेट रिकवरी फ्रेज"

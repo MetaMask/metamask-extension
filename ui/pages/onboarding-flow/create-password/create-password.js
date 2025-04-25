@@ -291,10 +291,10 @@ export default function CreatePassword({
                   setShowPassword(!showPassword);
                 }}
                 marginBottom={1}
-                // This type="button" prop is needed for <button> to prevent the implicit submit
-                // behavior. Without this and within this form, entering the "Enter" key while
-                // one of the inputs is focused will trigger this button.
-                type="button"
+                // This type="a" prop is needed so that the button doesn't submit the form
+                // or keep the "Show/Hide" alive when clicked outside of the button
+                type="a"
+                href="#"
               >
                 {showPassword ? t('hide') : t('show')}
               </ButtonLink>

@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  BRIDGE_MM_FEE_RATE,
+  formatEtaInMinutes,
+} from '@metamask/bridge-controller';
+import {
   Text,
   PopoverPosition,
   IconName,
@@ -17,11 +21,7 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  formatEtaInMinutes,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import {
   getCurrentCurrency,
   getNativeCurrency,
@@ -41,11 +41,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import {
-  BRIDGE_MM_FEE_RATE,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
-import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getImageForChainId } from '../../../selectors/multichain';
@@ -97,7 +93,7 @@ export const BridgeQuoteCard = () => {
             </Row>
             <Column height={BlockSize.Full} alignItems={AlignItems.flexEnd}>
               <Text
-                as={'a'}
+                as="a"
                 variant={TextVariant.bodyMd}
                 color={TextColor.primaryDefault}
                 onClick={() => {
@@ -130,38 +126,38 @@ export const BridgeQuoteCard = () => {
               <Row gap={1}>
                 <AvatarNetwork
                   name={fromChain?.name ?? ''}
-                  src={getImageForChainId(
-                    decimalToPrefixedHex(activeQuote.quote.srcChainId),
-                  )}
+                  src={
+                    fromChain?.chainId
+                      ? getImageForChainId(fromChain.chainId)
+                      : undefined
+                  }
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
                 <Text style={{ whiteSpace: 'nowrap' }}>
-                  {
-                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      decimalToPrefixedHex(
-                        activeQuote.quote.srcChainId,
-                      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ]
-                  }
+                  {fromChain?.chainId
+                    ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                        fromChain.chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+                      ]
+                    : fromChain?.name}
                 </Text>
                 <Icon name={IconName.Arrow2Right} size={IconSize.Xs} />
                 <AvatarNetwork
                   name={toChain?.name ?? ''}
-                  src={getImageForChainId(
-                    decimalToPrefixedHex(activeQuote.quote.destChainId),
-                  )}
+                  src={
+                    toChain?.chainId
+                      ? getImageForChainId(toChain.chainId)
+                      : undefined
+                  }
                   size={AvatarNetworkSize.Xs}
                   backgroundColor={BackgroundColor.transparent}
                 />
                 <Text style={{ whiteSpace: 'nowrap' }}>
-                  {
-                    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                      decimalToPrefixedHex(
-                        activeQuote.quote.destChainId,
-                      ) as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                    ]
-                  }
+                  {toChain?.chainId
+                    ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                        toChain.chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+                      ]
+                    : toChain?.name}
                 </Text>
               </Row>
             </Row>

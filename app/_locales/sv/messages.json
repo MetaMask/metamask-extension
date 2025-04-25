@@ -307,9 +307,6 @@
     "message": "Importera",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importera konto"
-  },
   "importAccountMsg": {
     "message": "Importerade konton kommer inte att kopplas till din ursprungligen skapade seedphrase för ditt MetaMask-konto. Läs mer om importerade konton"
   },

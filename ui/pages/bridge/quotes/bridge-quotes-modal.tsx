@@ -3,6 +3,13 @@ import { IconName } from '@metamask/snaps-sdk/jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { startCase } from 'lodash';
 import {
+  type QuoteMetadata,
+  type QuoteResponse,
+  SortOrder,
+  formatEtaInMinutes,
+} from '@metamask/bridge-controller';
+import { BigNumber } from 'bignumber.js';
+import {
   ButtonLink,
   IconSize,
   Modal,
@@ -18,27 +25,15 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  formatEtaInMinutes,
-  formatCurrencyAmount,
-  formatTokenAmount,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
-import {
-  type QuoteMetadata,
-  type QuoteResponse,
-  SortOrder,
-} from '../../../../shared/types/bridge';
 import {
   getBridgeQuotes,
   getBridgeSortOrder,
 } from '../../../ducks/bridge/selectors';
 import { Column, Row } from '../layout';
-import {
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useQuoteProperties } from '../../../hooks/bridge/events/useQuoteProperties';
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
@@ -46,6 +41,8 @@ import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossCh
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getMultichainNativeCurrency } from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -58,7 +55,7 @@ export const BridgeQuotesModal = ({
     useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
   const currency = useSelector(getCurrentCurrency);
-  const nativeCurrency = useSelector(getNativeCurrency);
+  const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
   const locale = useSelector(getIntlLocale);
 
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -208,18 +205,18 @@ export const BridgeQuotesModal = ({
                   <Column>
                     <Text variant={TextVariant.bodyMd}>
                       {cost.valueInCurrency &&
-                        formatCurrencyAmount(cost.valueInCurrency, currency, 0)}
+                        formatCurrencyAmount(cost.valueInCurrency, currency, 2)}
                     </Text>
                     {[
                       totalNetworkFee?.valueInCurrency &&
                       sentAmount?.valueInCurrency
                         ? t('quotedTotalCost', [
                             formatCurrencyAmount(
-                              totalNetworkFee.valueInCurrency.plus(
-                                sentAmount.valueInCurrency,
-                              ),
+                              new BigNumber(totalNetworkFee.valueInCurrency)
+                                .plus(sentAmount.valueInCurrency)
+                                .toString(),
                               currency,
-                              0,
+                              2,
                             ),
                           ])
                         : t('quotedTotalCost', [
@@ -233,7 +230,7 @@ export const BridgeQuotesModal = ({
                         formatCurrencyAmount(
                           toTokenAmount.valueInCurrency,
                           currency,
-                          0,
+                          2,
                         ) ??
                           formatTokenAmount(
                             locale,

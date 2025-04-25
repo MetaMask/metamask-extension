@@ -298,6 +298,57 @@ export const permitBatchSignatureMsg = {
   },
 } as SignatureRequestType;
 
+export const signatureMsgPermitRevokeDAI = {
+  id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
+  chainId: CHAIN_IDS.GOERLI,
+  securityAlertResponse: {
+    reason: 'loading',
+    result_type: 'validation_in_progress',
+    securityAlertId: 'ab21395f-2190-472f-8cfa-3d224e7529d8',
+  },
+  status: 'unapproved',
+  time: 1716826404122,
+  type: TransactionType.signTypedData,
+  msgParams: {
+    data: JSON.stringify({
+      domain: {
+        name: 'Dai Stablecoin',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      },
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Permit: [
+          { name: 'holder', type: 'address' },
+          { name: 'spender', type: 'address' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'expiry', type: 'uint256' },
+          { name: 'allowed', type: 'bool' },
+        ],
+      },
+      primaryType: 'Permit',
+      message: {
+        spender: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4',
+        tokenId: '3606393',
+        nonce: 0,
+        expiry: 0,
+        allowed: false,
+      },
+    }),
+    from: '0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad',
+    version: 'V4',
+    requestId: 15,
+    signatureMethod: 'eth_signTypedData_v4',
+    origin: 'https://metamask.github.io',
+  },
+} as SignatureRequestType;
+
 export const permitSingleSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
   chainId: CHAIN_IDS.GOERLI,

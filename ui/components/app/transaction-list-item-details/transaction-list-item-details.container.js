@@ -1,35 +1,23 @@
 import { connect } from 'react-redux';
-import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { tryReverseResolveAddress } from '../../../store/actions';
-
+import { compose } from 'redux';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import {
+  getAccountName,
   getAddressBook,
   getBlockExplorerLinkText,
+  getInternalAccounts,
   getIsCustomNetwork,
   getRpcPrefsForCurrentProvider,
-  getEnsResolutionByAddress,
-  getAccountName,
-  getMetadataContractName,
-  getInternalAccounts,
 } from '../../../selectors';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { tryReverseResolveAddress } from '../../../store/actions';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 const mapStateToProps = (state, ownProps) => {
   const { recipientAddress, senderAddress } = ownProps;
-  let recipientEns;
-  if (recipientAddress) {
-    const address = toChecksumHexAddress(recipientAddress);
-    recipientEns = getEnsResolutionByAddress(state, address);
-  }
   const addressBook = getAddressBook(state);
   const accounts = getInternalAccounts(state);
   const recipientName = getAccountName(accounts, recipientAddress);
-  const recipientMetadataName = getMetadataContractName(
-    state,
-    recipientAddress,
-  );
 
   const getNickName = (address) => {
     const entry = addressBook.find((contact) => {
@@ -39,17 +27,16 @@ const mapStateToProps = (state, ownProps) => {
   };
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
 
+  const networkConfiguration = getNetworkConfigurationsByChainId(state);
   const isCustomNetwork = getIsCustomNetwork(state);
 
   return {
     rpcPrefs,
-    recipientEns,
+    networkConfiguration,
     senderNickname: getNickName(senderAddress),
-    recipientNickname: recipientAddress ? getNickName(recipientAddress) : null,
     isCustomNetwork,
     blockExplorerLinkText: getBlockExplorerLinkText(state),
     recipientName,
-    recipientMetadataName,
   };
 };
 

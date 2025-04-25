@@ -11,6 +11,7 @@ import {
 } from '../../helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import FixtureBuilder from '../../fixture-builder';
+import { MOCK_META_METRICS_ID } from '../../constants';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
@@ -54,7 +55,7 @@ describe('Marketing cookieId', function (this: Suite) {
         dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
             dataCollectionForMarketing: true,
           })
@@ -97,7 +98,7 @@ describe('Marketing cookieId', function (this: Suite) {
         dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -174,7 +175,7 @@ describe('Marketing cookieId', function (this: Suite) {
         dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
             dataCollectionForMarketing: true,
           })

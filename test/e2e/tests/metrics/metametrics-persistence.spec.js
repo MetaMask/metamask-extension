@@ -2,17 +2,12 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
-  generateGanacheOptions,
-  defaultGanacheOptions,
   unlockWallet,
-  genRandInitBal,
   getCleanAppState,
 } = require('../../helpers');
 
 describe('MetaMetrics ID persistence', function () {
   it('MetaMetrics ID should persist when the user opts-out and then opts-in again of MetaMetrics collection', async function () {
-    const { initialBalanceInHex } = genRandInitBal();
-
     const initialMetaMetricsId = 'test-metrics-id';
 
     await withFixtures(
@@ -23,14 +18,6 @@ describe('MetaMetrics ID persistence', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        localNodeOptions: generateGanacheOptions({
-          accounts: [
-            {
-              secretKey: defaultGanacheOptions.accounts[0].secretKey,
-              balance: initialBalanceInHex,
-            },
-          ],
-        }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
