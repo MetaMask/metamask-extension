@@ -6,7 +6,9 @@ import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
+  formatEtaInMinutes,
 } from '@metamask/bridge-controller';
+import { BigNumber } from 'bignumber.js';
 import {
   ButtonLink,
   IconSize,
@@ -23,11 +25,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  formatEtaInMinutes,
-  formatCurrencyAmount,
-  formatTokenAmount,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
 import {
@@ -214,9 +212,9 @@ export const BridgeQuotesModal = ({
                       sentAmount?.valueInCurrency
                         ? t('quotedTotalCost', [
                             formatCurrencyAmount(
-                              totalNetworkFee.valueInCurrency.plus(
-                                sentAmount.valueInCurrency,
-                              ),
+                              new BigNumber(totalNetworkFee.valueInCurrency)
+                                .plus(sentAmount.valueInCurrency)
+                                .toString(),
                               currency,
                               2,
                             ),

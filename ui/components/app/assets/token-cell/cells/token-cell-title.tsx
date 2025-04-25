@@ -22,7 +22,7 @@ export const TokenCellTitle = React.memo(
   ({ token }: TokenCellTitleProps) => {
     const t = useI18nContext();
 
-    if (token.title.length > 12) {
+    if (token.title && token.title.length > 12) {
       return (
         <Tooltip
           position="bottom"
@@ -31,6 +31,7 @@ export const TokenCellTitle = React.memo(
         >
           <Text
             as="span"
+            data-testid="multichain-token-list-item-token-name"
             fontWeight={FontWeight.Medium}
             variant={TextVariant.bodyMd}
             display={Display.Block}
@@ -51,6 +52,7 @@ export const TokenCellTitle = React.memo(
         fontWeight={FontWeight.Medium}
         variant={TextVariant.bodyMd}
         ellipsis
+        data-testid="multichain-token-list-item-token-name"
       >
         {networkTitleOverrides(t as TranslateFunction, token)}
         {token.isStakeable && (

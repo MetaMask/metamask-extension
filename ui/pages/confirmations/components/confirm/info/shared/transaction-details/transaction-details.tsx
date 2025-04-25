@@ -23,19 +23,15 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
+import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
+import {
+  useIsDowngradeTransaction,
+  useIsUpgradeTransaction,
+} from '../../hooks/useIsUpgradeTransaction';
 import { HEX_ZERO } from '../constants';
 import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
 import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  TextColor,
-} from '../../../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../../../../components/component-library';
 import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
 
 export const OriginRow = () => {
@@ -176,8 +172,10 @@ export const TransactionDetails = () => {
     () => checkValueAndNativeBalanceMismatch(currentConfirmation),
     [currentConfirmation],
   );
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const isDowngrade = useIsDowngradeTransaction();
 
-  if (currentConfirmation?.type === TransactionType.revokeDelegation) {
+  if (isUpgradeOnly || isDowngrade) {
     return null;
   }
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
@@ -203,24 +201,3 @@ export const TransactionDetails = () => {
     </>
   );
 };
-
-function SmartContractWithLogo() {
-  const t = useI18nContext();
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      borderRadius={BorderRadius.pill}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      style={{
-        padding: '1px 8px 1px 4px',
-      }}
-    >
-      <img src="images/logo/metamask-fox.svg" width="16" height="16" />
-      <Text marginLeft={2} color={TextColor.inherit}>
-        {t('interactWithSmartContract')}
-      </Text>
-    </Box>
-  );
-}
