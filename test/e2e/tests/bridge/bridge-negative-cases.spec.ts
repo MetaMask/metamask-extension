@@ -114,7 +114,8 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.goToActivityList();
         await driver.delay(5000);
         const activityList = new ActivityListPage(driver);
-        //await activityList.check_failedTxNumberDisplayedInActivity();
+        // Waiting on a gix on bug #32266
+        // await activityList.check_failedTxNumberDisplayedInActivity();
       },
     );
   });
@@ -138,7 +139,8 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.goToActivityList();
         await driver.delay(5000);
         const activityList = new ActivityListPage(driver);
-        //await activityList.check_failedTxNumberDisplayedInActivity();
+        // Waiting on a gix on bug #32266
+        // await activityList.check_failedTxNumberDisplayedInActivity();
       },
     );
   });
