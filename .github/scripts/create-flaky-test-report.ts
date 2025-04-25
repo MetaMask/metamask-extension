@@ -111,11 +111,16 @@ async function main() {
   const fromDateString = from.toLocaleDateString('en-US', options);
   const toDateString = to.toLocaleDateString('en-US', options);
 
+  const repositoryUrl = new URL(
+    `https://github.com/${env.OWNER}/${env.REPOSITORY}`,
+  );
+  const branchUrl = new URL(`${repositoryUrl}/tree/${env.BRANCH}`);
+
   console.log(
     `❌ Failed tests on the ${env.REPOSITORY} repository ${env.BRANCH} branch from ${fromDateString} to ${toDateString}`,
   );
   const lines = [
-    `\n\n:x: Failed tests on the <https://github.com/${env.OWNER}/${env.REPOSITORY}|${env.REPOSITORY}> repository <https://github.com/${env.OWNER}/${env.REPOSITORY}/tree/${env.BRANCH}|${env.BRANCH}> branch from ${fromDateString} to ${toDateString}`,
+    `\n\n:x: Failed tests on the <${repositoryUrl}|${env.REPOSITORY}> repository <${branchUrl}|${env.BRANCH}> branch from ${fromDateString} to ${toDateString}`,
   ];
 
   if (!summarizedFailedTests.length) {
@@ -133,14 +138,14 @@ async function main() {
       console.error(
         `• ${test.name} failed ${test.count} time${test.count > 1 ? 's' : ''}`,
       );
+      const testUrl = new URL(
+        `${repositoryUrl}/blob/${env.BRANCH}/${test.path}`,
+      );
+      const issueUrl = new URL(`${repositoryUrl}/issues/new?${params}`);
       lines.push(
-        `\n• <https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${
-          env.BRANCH
-        }/${test.path}|${test.name}> failed ${test.count} time${
+        `\n• <${testUrl}|${test.name}> failed ${test.count} time${
           test.count > 1 ? 's' : ''
-        } :arrow_right: <https://github.com/${env.OWNER}/${
-          env.REPOSITORY
-        }/issues/new?${params.toString()}|Create an issue>`,
+        } :arrow_right: <${issueUrl}|Create an issue>`,
       );
     }
   }
