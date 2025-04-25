@@ -72,9 +72,9 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
 
           // 1. Start a transaction and cancel it
           const sendSolTest = await testDapp.getSendSolTest();
-          await sendSolTest.signTransaction();
+          await sendSolTest.sendTransaction();
 
-          // Cancel the signature
+          // Cancel the sendTransaction
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickCancelButton(driver);
           await testDapp.switchTo();
