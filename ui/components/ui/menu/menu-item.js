@@ -61,7 +61,7 @@ const MenuItem = React.forwardRef(
       {iconName && !showInfoDot && (
         <Icon
           name={iconName}
-          size={IconSize.Md}
+          size={IconSize.Sm}
           marginRight={3}
           color={iconColor}
         />
