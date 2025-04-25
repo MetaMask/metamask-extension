@@ -115,3 +115,7 @@ jobs:
           path: |
             ./test-artifacts
             ./test/test-results/e2e
+
+      - if: failure()
+        name: canceling workflow
+        uses: Metamask/cancel-action@main

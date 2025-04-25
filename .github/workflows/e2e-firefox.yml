@@ -68,3 +68,7 @@ jobs:
         with:
           name: test-e2e-firefox-report
           path: test/test-results/test-runs.json
+
+      - if: failure()
+        name: canceling workflow
+        uses: Metamask/cancel-action@main

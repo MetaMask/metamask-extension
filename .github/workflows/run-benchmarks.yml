@@ -50,3 +50,7 @@ jobs:
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
           path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
+
+      - if: failure()
+        name: canceling workflow
+        uses: Metamask/cancel-action@main

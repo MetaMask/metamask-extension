@@ -41,3 +41,6 @@ jobs:
             echo "::error::Workflow status is '${workflow_status}'. Exiting with error."
             exit 1
           fi
+      - if: failure()
+        name: canceling workflow
+        uses: Metamask/cancel-action@main
