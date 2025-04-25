@@ -77,7 +77,6 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
-import { preSeedWellknownChains } from "../../shared/lib/network-utils";
 import {
   ApprovalType,
   ERC1155,
@@ -166,6 +165,7 @@ import {
   getPermittedAccountsForScopes,
   KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
+import { preSeedWellknownChains } from '../../shared/lib/network-utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -210,11 +210,6 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { LOG_EVENT } from '../../shared/constants/logs';
-
-import {
-  getStorageItem,
-  setStorageItem,
-} from '../../shared/lib/storage-helpers';
 import {
   getTokenIdParam,
   fetchTokenBalance,

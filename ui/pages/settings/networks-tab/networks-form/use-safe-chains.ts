@@ -20,8 +20,8 @@ export const useSafeChains = () => {
   useEffect(() => {
     async function fetchSafeChains() {
       try {
-        const safeChains = await getWellknownChains();
-        setSafeChains({ safeChains });
+        const _safeChains = await getWellknownChains();
+        setSafeChains({ safeChains: _safeChains });
       } catch (error) {
         if (error instanceof Error) {
           setSafeChains({ error });

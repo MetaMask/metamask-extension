@@ -43,7 +43,6 @@ import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
-import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
@@ -375,8 +374,13 @@ export default function ConfirmationPage({
     async function fetchSafeChainsList(_pendingConfirmation) {
       try {
         const safeChainsList = await getWellknownChains();
-        const requestId = parseInt(_pendingConfirmation.requestData.chainId, 16);
-        const _matchedChain = safeChainsList.find(({ chainId }) => chainId === requestId);
+        const requestId = parseInt(
+          _pendingConfirmation.requestData.chainId,
+          16,
+        );
+        const _matchedChain = safeChainsList.find(
+          ({ chainId }) => chainId === requestId,
+        );
         setMatchedChain(_matchedChain);
         setChainFetchComplete(true);
         setProviderError(null);
