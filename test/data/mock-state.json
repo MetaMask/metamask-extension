@@ -462,6 +462,21 @@
           }
         ],
         "blockExplorerUrls": []
+      },
+      "0xaa36a7": {
+        "chainId": "0xaa36a7",
+        "name": "Sepolia",
+        "nativeCurrency": "ETH",
+        "defaultRpcEndpointIndex": 0,
+        "ticker": "ETH",
+        "rpcEndpoints": [
+          {
+            "type": "custom",
+            "url": "https://sepolia.com",
+            "networkClientId": "sepolia"
+          }
+        ],
+        "blockExplorerUrls": []
       }
     },
     "internalAccounts": {
