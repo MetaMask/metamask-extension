@@ -45,15 +45,6 @@ export type ExecutionMode =
   | typeof BATCH_TRY_MODE;
 
 /**
- * The ABI type components of an Execution.
- */
-export const EXECUTION_ABI_TYPE_COMPONENTS = [
-  { type: 'address', name: 'target' },
-  { type: 'uint256', name: 'value' },
-  { type: 'bytes', name: 'callData' },
-];
-
-/**
  * Encodes a single Execution. Used for executing a single Execution in a DeleGator SCA.
  *
  * @param execution - the execution to encode
