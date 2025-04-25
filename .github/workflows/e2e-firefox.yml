@@ -71,4 +71,4 @@ jobs:
 
       - if: failure()
         name: canceling workflow
-        uses: Metamask/cancel-action@main
+        uses: Metamask/cancel-action@2f9a9700f608f28936a88728937f5bef920f62c1 # v1
