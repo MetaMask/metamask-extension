@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { strict as assert } from 'assert';
 import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
@@ -141,4 +142,26 @@ export const switchToAccount = async (
     text: accountName,
     tag: 'button',
   });
+};
+
+export const assertConnected = async (
+  connectionStatus: 'Connected' | 'Disconnected' | string,
+  expectedAddress?: string,
+): Promise<void> => {
+  assert.strictEqual(
+    connectionStatus,
+    expectedAddress ? `${expectedAddress}` : 'Connected',
+    `Connection status should be ${expectedAddress ? `"${expectedAddress}"` : 'Connected'}`,
+  );
+
+};
+
+export const assertDisconnected = async (
+  connectionStatus: string,
+): Promise<void> => {
+  assert.strictEqual(
+    connectionStatus,
+    'Disconnected',
+    'Connection status should be "Disconnected"',
+  );
 };

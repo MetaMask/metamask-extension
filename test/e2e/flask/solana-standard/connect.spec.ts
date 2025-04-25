@@ -5,6 +5,8 @@ import {
 } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
+  assertConnected,
+  assertDisconnected,
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
   switchToAccount,
@@ -30,18 +32,10 @@ describe('Solana Wallet Standard - Connect', function () {
           const header = await testDapp.getHeader();
 
           const connectionStatus = await header.getConnectionStatus();
-          assert.strictEqual(
-            connectionStatus,
-            'Connected',
-            'Connection status should be "Connected"',
-          );
+          assertConnected(connectionStatus);
 
           const account = await header.getAccount();
-          assert.strictEqual(
-            account,
-            '4tE7...Uxer',
-            'Connection status should be "4tE7...Uxer"',
-          );
+          assertConnected(account, '4tE7...Uxer');
         },
       );
     });
@@ -75,11 +69,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
           // Verify we're not connected
           const connectionStatus = await header.getConnectionStatus();
-          assert.strictEqual(
-            connectionStatus,
-            'Not connected',
-            'Connection status should be "Not connected" after cancellation',
-          );
+          assertDisconnected(connectionStatus);
 
           // 2. Connect again
           await connectSolanaTestDapp(driver, testDapp);
@@ -87,18 +77,10 @@ describe('Solana Wallet Standard - Connect', function () {
           // Verify successful connection
           const connectionStatusAfterConnect =
             await header.getConnectionStatus();
-          assert.strictEqual(
-            connectionStatusAfterConnect,
-            'Connected',
-            'Connection status should be "Connected" after reconnecting',
-          );
+          assertConnected(connectionStatusAfterConnect);
 
           const account = await header.getAccount();
-          assert.strictEqual(
-            account,
-            '4tE7...Uxer',
-            'Account should be "4tE7...Uxer"',
-          );
+          assertConnected(account, '4tE7...Uxer');
         },
       );
     });
@@ -119,28 +101,16 @@ describe('Solana Wallet Standard - Connect', function () {
           const header = await testDapp.getHeader();
 
           const connectionStatus = await header.getConnectionStatus();
-          assert.strictEqual(
-            connectionStatus,
-            'Connected',
-            'Connection status should be "Connected"',
-          );
+          assertConnected(connectionStatus);
 
           const account = await header.getAccount();
-          assert.strictEqual(
-            account,
-            '4tE7...Uxer',
-            'Connection status should be "4tE7...Uxer"',
-          );
+          assertConnected(account, '4tE7...Uxer');
 
           await header.disconnect();
 
           const connectionStatusAfterDisconnect =
             await header.getConnectionStatus();
-          assert.strictEqual(
-            connectionStatusAfterDisconnect,
-            'Not connected',
-            'Connection status should be "Disconnected"',
-          );
+          assertDisconnected(connectionStatusAfterDisconnect);
         },
       );
     });
@@ -162,10 +132,10 @@ describe('Solana Wallet Standard - Connect', function () {
               selectAllAccounts: true,
             });
 
-            // Check that we're connected to the second account
+            // Check that we're connected to the last selected account
             const header = await testDapp.getHeader();
             const account = await header.getAccount();
-            assert.strictEqual(account, 'ExTE...GNtt');
+            assertConnected(account, 'ExTE...GNtt');
 
             // Switch to the first account
             await driver.switchToWindowWithTitle(
@@ -176,7 +146,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
             // Check that we're connected to the first account
             const account2 = await header.getAccount();
-            assert.strictEqual(account2, '4tE7...Uxer');
+            assertConnected(account2, '4tE7...Uxer');
           },
         );
       });
@@ -197,10 +167,10 @@ describe('Solana Wallet Standard - Connect', function () {
               selectAllAccounts: false,
             });
 
-            // Check that we're connected to the second account
+            // Check that we're connected to the last selected account
             const header = await testDapp.getHeader();
             let account = await header.getAccount();
-            assert.strictEqual(account, 'ExTE...GNtt');
+            assertConnected(account, 'ExTE...GNtt');
 
             // Switch to the first account
             await driver.switchToWindowWithTitle(
@@ -211,7 +181,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
             // Check that we're connected to the first account
             account = await header.getAccount();
-            assert.strictEqual(account, 'ExTE...GNtt');
+            assertConnected(account, 'ExTE...GNtt');
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.ExtensionInFullScreenView,
@@ -221,7 +191,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
             // Check that we're connected to the first account
             account = await header.getAccount();
-            assert.strictEqual(account, 'ExTE...GNtt');
+            assertConnected(account, 'ExTE...GNtt');
           },
         );
       });
@@ -243,12 +213,12 @@ describe('Solana Wallet Standard - Connect', function () {
 
           const header = await testDapp.getHeader();
           const account = await header.getAccount();
-          assert.strictEqual(account, '4tE7...Uxer');
+          assertConnected(account, '4tE7...Uxer');
 
           await driver.refresh();
 
           const accountAfterRefresh = await header.getAccount();
-          assert.strictEqual(accountAfterRefresh, '4tE7...Uxer');
+          assertConnected(accountAfterRefresh, '4tE7...Uxer');
         },
       );
     });
