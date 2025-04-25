@@ -345,7 +345,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            // Check that devnet appears in the dialog
+            // Check that mainnet appears in the dialog
             const el = await driver.findElement(
               By.xpath("//p[text()='Solana Mainnet']"),
             );
