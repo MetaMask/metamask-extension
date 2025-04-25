@@ -197,12 +197,13 @@ export class TestSnaps {
 
   /**
    * Validate the preferences result span JSON response.
-   * 
+   *
    * @param expectedPreferences - The expected preferences object to validate against.
    */
     async check_preferencesResult(expectedPreferences: {
       locale: string;
       currency: string;
+      hideBalances: boolean;
       useSecurityAlerts: boolean;
       useExternalPricingData: boolean;
       simulateOnChainActions: boolean;

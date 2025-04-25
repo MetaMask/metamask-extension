@@ -34,6 +34,7 @@ describe('Test Snap get preferences', function () {
         await testSnaps.check_preferencesResult({
           locale: "en",
           currency: "usd",
+          hideBalances:true,
           useSecurityAlerts: true,
           useExternalPricingData: true,
           simulateOnChainActions: true,
