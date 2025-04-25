@@ -224,7 +224,7 @@ describe('Solana Wallet Standard - Connect', function () {
     });
 
     describe('Given I have connected to Mainnet and Devnet', function () {
-      it('Should set the scope to Devnet to protect users', async function () {
+      it('Should use the Mainnet scope by default', async function () {
         await withSolanaAccountSnap(
           {
             ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -256,7 +256,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
             // Check that devnet appears in the dialog
             const el = await driver.findElement(
-              By.xpath("//p[text()='Solana Devnet']"),
+              By.xpath("//p[text()='Solana Mainnet']"),
             );
             assert.ok(el);
           },

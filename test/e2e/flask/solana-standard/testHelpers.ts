@@ -100,7 +100,7 @@ const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
   await editButtons[0].click();
 
   const checkboxes = await driver.findElements('input[type="checkbox" i]');
-  await checkboxes[0].click(); // select all checkbox
+  await checkboxes[0].click(); // select all checkbox without deselecting the already selected accounts
 
   await driver.clickElement({ text: 'Update', tag: 'button' });
 };
