@@ -1,10 +1,10 @@
-import type { AbiFunction, Hex } from '../utils';
+import type { Hex } from '../utils';
 import { concat, isHex, toFunctionSelector } from '../utils';
 import type { Caveat, DeleGatorEnvironment } from '..';
 
 export const allowedMethods = 'allowedMethods';
 
-export type MethodSelector = Hex | string | AbiFunction;
+export type MethodSelector = Hex | string;
 
 // length of function selector in chars, _including_ 0x prefix
 const FUNCTION_SELECTOR_STRING_LENGTH = 10;
