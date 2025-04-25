@@ -1,6 +1,6 @@
 import type { DeleGatorEnvironment } from '..';
-import { allowedCalldataBuilder } from './allowedCalldataBuilder';
 import type { Hex } from '../utils';
+import { allowedCalldataBuilder } from './allowedCalldataBuilder';
 
 describe('allowedCalldataBuilder', () => {
   const mockEnvironment: DeleGatorEnvironment = {
