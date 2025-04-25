@@ -19,6 +19,9 @@ buildTypes:
       - build-main
       - keyring-snaps
       - multi-srp
+      - multichain
+      - solana
+      - solana-swaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
