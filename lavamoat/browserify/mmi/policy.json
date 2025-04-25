@@ -2857,11 +2857,6 @@
         "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": {
-      "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
-      }
-    },
     "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings>@solana/codecs-core": {
       "packages": {
         "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
