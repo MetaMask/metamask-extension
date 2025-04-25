@@ -10,8 +10,6 @@ import {
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 
 describe('Solana Wallet Standard - Transfer WSOL', function () {
-  this.timeout(3000000);
-
   describe('Send WSOL transactions', function () {
     it('Should sign and send multiple WSOL transactions', async function () {
       await withSolanaAccountSnap(

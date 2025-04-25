@@ -11,8 +11,6 @@ import {
 import { WINDOW_TITLES } from '../../helpers';
 
 describe('Solana Wallet Standard - Transfer SOL', function () {
-  this.timeout(3000000); // do not remove this line
-
   describe('Send a transaction', function () {
     it('Should send a transaction', async function () {
       await withSolanaAccountSnap(

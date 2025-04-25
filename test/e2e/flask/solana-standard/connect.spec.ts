@@ -15,8 +15,6 @@ import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { By } from 'selenium-webdriver';
 
 describe('Solana Wallet Standard - Connect', function () {
-  this.timeout(300000); // do not remove this line
-
   describe('Connect the dapp with solana Standard', function () {
     it('Should connect', async function () {
       await withSolanaAccountSnap(

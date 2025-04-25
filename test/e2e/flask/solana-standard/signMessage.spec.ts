@@ -9,8 +9,6 @@ import {
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 
 describe('Solana Wallet Standard - Sign Message', function () {
-  this.timeout(3000000); // do not remove this line
-
   describe('Sign a message', function () {
     it('Should sign a message', async function () {
       await withSolanaAccountSnap(
