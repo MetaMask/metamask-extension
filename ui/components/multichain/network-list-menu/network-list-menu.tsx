@@ -563,7 +563,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               setSearchQuery={setSearchQuery}
               setFocusSearch={setFocusSearch}
             />
-            {completedOnboarding &&
+            {!process.env.REMOVE_GNS &&
+              completedOnboarding &&
               !onboardedInThisUISession &&
               showNetworkBanner &&
               !searchQuery && (

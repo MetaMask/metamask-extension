@@ -278,7 +278,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
             closeMenu();
           }}
         >
-          {t('networks')}
+          {t('manageNetworksMenuHeading')}
         </MenuItem>
       )}
       <MenuItem
