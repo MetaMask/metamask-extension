@@ -116,4 +116,3 @@ describe('redeemerBuilder', () => {
     expect(terms).toContain('2f6fc5e27628158758ae4688bba809c62713d152');
   });
 });
-

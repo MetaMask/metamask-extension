@@ -98,4 +98,3 @@ describe('allowedMethodsBuilder', () => {
     expect(caveat.terms).toBeDefined();
   });
 });
-

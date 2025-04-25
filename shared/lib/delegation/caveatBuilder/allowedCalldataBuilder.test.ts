@@ -22,7 +22,9 @@ describe('allowedCalldataBuilder', () => {
 
     const caveat = allowedCalldataBuilder(mockEnvironment, startIndex, value);
 
-    expect(caveat.enforcer).toBe(mockEnvironment.caveatEnforcers.AllowedCalldataEnforcer);
+    expect(caveat.enforcer).toBe(
+      mockEnvironment.caveatEnforcers.AllowedCalldataEnforcer,
+    );
     expect(caveat.args).toBe('0x');
     expect(caveat.terms).toBeDefined();
   });
@@ -60,7 +62,9 @@ describe('allowedCalldataBuilder', () => {
 
     const caveat = allowedCalldataBuilder(mockEnvironment, startIndex, value);
 
-    expect(caveat.enforcer).toBe(mockEnvironment.caveatEnforcers.AllowedCalldataEnforcer);
+    expect(caveat.enforcer).toBe(
+      mockEnvironment.caveatEnforcers.AllowedCalldataEnforcer,
+    );
     expect(caveat.args).toBe('0x');
     expect(caveat.terms).toBeDefined();
   });
@@ -71,7 +75,9 @@ describe('allowedCalldataBuilder', () => {
 
     const caveat = allowedCalldataBuilder(mockEnvironment, startIndex, value);
 
-    expect(caveat.enforcer).toBe(mockEnvironment.caveatEnforcers.AllowedCalldataEnforcer);
+    expect(caveat.enforcer).toBe(
+      mockEnvironment.caveatEnforcers.AllowedCalldataEnforcer,
+    );
     expect(caveat.args).toBe('0x');
     expect(caveat.terms).toBeDefined();
   });

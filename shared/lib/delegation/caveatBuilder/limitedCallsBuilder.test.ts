@@ -75,4 +75,3 @@ describe('limitedCallsBuilder', () => {
     }).toThrow('Invalid limit: must be a positive integer');
   });
 });
-
