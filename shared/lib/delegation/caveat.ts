@@ -1,7 +1,7 @@
 import { encode } from '@metamask/abi-utils';
 import { keccak } from 'ethereumjs-util';
 import type { Hex } from './utils';
-import { keccak256, toHex } from './utils';
+import { keccak256 } from './utils';
 
 export type Caveat = {
   enforcer: Hex;
@@ -32,7 +32,7 @@ const getCaveatPacketHash = (input: Caveat): Uint8Array => {
  * @param input - The array of Caveats.
  * @returns The keccak256 hash of the encoded Caveat array packet.
  */
-export const getCaveatArrayPacketHash = (input: Caveat[]): Hex => {
+export const getCaveatArrayPacketHash = (input: Caveat[]): Uint8Array => {
   let encoded: Buffer = Buffer.from([]);
 
   for (const caveat of input) {
@@ -41,7 +41,7 @@ export const getCaveatArrayPacketHash = (input: Caveat[]): Hex => {
       encode(['bytes', 'bytes32'], [encoded, caveatPacketHash], true),
     );
   }
-  return toHex(keccak(encoded));
+  return keccak(encoded);
 };
 
 /**

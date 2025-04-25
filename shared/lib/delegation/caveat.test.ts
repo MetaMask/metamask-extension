@@ -1,5 +1,5 @@
 import { createCaveat, getCaveatArrayPacketHash } from './caveat';
-import { isHex, type Hex } from './utils';
+import { type Hex, toHex } from './utils';
 
 describe('caveat', () => {
   const mockEnforcer = '0x1234567890123456789012345678901234567890' as Hex;
@@ -30,11 +30,12 @@ describe('caveat', () => {
   });
 
   describe('getCaveatArrayPacketHash', () => {
-    it('should return a valid hex string', () => {
+    it('should return a valid Uint8Array', () => {
       const caveat = createCaveat(mockEnforcer, mockTerms, mockArgs);
       const result = getCaveatArrayPacketHash([caveat]);
 
-      expect(isHex(result)).toBe(true);
+      expect(result).toBeInstanceOf(Uint8Array);
+      expect(result).toHaveLength(32); // keccak256 hash is 32 bytes
     });
 
     it('should return the same hash for the same caveat array', () => {
@@ -42,7 +43,7 @@ describe('caveat', () => {
       const result1 = getCaveatArrayPacketHash([caveat]);
       const result2 = getCaveatArrayPacketHash([caveat]);
 
-      expect(result1).toBe(result2);
+      expect(Buffer.from(result1).equals(Buffer.from(result2))).toBe(true);
     });
 
     it('should return different hashes for different caveat arrays', () => {
@@ -56,7 +57,7 @@ describe('caveat', () => {
       const result1 = getCaveatArrayPacketHash([caveat1]);
       const result2 = getCaveatArrayPacketHash([caveat2]);
 
-      expect(result1).not.toBe(result2);
+      expect(Buffer.from(result1).equals(Buffer.from(result2))).toBe(false);
     });
 
     it('should handle multiple caveats', () => {
@@ -69,17 +70,20 @@ describe('caveat', () => {
 
       const result = getCaveatArrayPacketHash([caveat1, caveat2]);
 
-      expect(isHex(result)).toBe(true);
+      expect(result).toBeInstanceOf(Uint8Array);
+      expect(result).toHaveLength(32); // keccak256 hash is 32 bytes
     });
 
     it('should handle empty caveat array', () => {
       const result = getCaveatArrayPacketHash([]);
 
-      expect(isHex(result)).toBe(true);
+      expect(result).toBeInstanceOf(Uint8Array);
+      expect(result).toHaveLength(32); // keccak256 hash is 32 bytes
+
       // Empty array should hash to a specific value
-      expect(result).toBe(
-        '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470',
-      );
+      const expectedHash =
+        '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470';
+      expect(toHex(result)).toBe(expectedHash);
     });
 
     it('should be deterministic for the same caveat array', () => {
@@ -93,7 +97,7 @@ describe('caveat', () => {
       const result1 = getCaveatArrayPacketHash([caveat1, caveat2]);
       const result2 = getCaveatArrayPacketHash([caveat1, caveat2]);
 
-      expect(result1).toBe(result2);
+      expect(Buffer.from(result1).equals(Buffer.from(result2))).toBe(true);
     });
 
     it('should be sensitive to caveat order', () => {
@@ -107,7 +111,7 @@ describe('caveat', () => {
       const result1 = getCaveatArrayPacketHash([caveat1, caveat2]);
       const result2 = getCaveatArrayPacketHash([caveat2, caveat1]);
 
-      expect(result1).not.toBe(result2);
+      expect(Buffer.from(result1).equals(Buffer.from(result2))).toBe(false);
     });
   });
 });
