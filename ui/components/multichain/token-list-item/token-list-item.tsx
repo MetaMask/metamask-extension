@@ -36,7 +36,11 @@ import {
   SensitiveTextLength,
   Text,
 } from '../../component-library';
-import { getMarketData, getCurrencyRates } from '../../../selectors';
+import {
+  getMarketData,
+  getCurrencyRates,
+  useExternalWellKnownChainsValidationSelector,
+} from '../../../selectors';
 import { getMultichainIsEvm } from '../../../selectors/multichain';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -105,7 +109,10 @@ export const TokenListItemComponent = ({
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
-  const { wellKnownChains } = useWellKnownChains();
+  const useWellKnownChainsValidation = useSelector(
+    useExternalWellKnownChainsValidationSelector,
+  );
+  const { wellKnownChains } = useWellKnownChains(useWellKnownChainsValidation);
   const currencyRates = useSelector(getCurrencyRates);
 
   const wellKnownChainDetails: WellKnownChain | undefined =

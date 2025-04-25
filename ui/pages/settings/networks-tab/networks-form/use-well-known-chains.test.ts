@@ -124,7 +124,7 @@ describe('useWellKnownChains', () => {
     override?.(arrangeMocks);
 
     const hook = renderHookWithProviderTyped(
-      () => useWellKnownChains(),
+      () => useWellKnownChains(true),
       arrangeMocks.mockState,
     );
 

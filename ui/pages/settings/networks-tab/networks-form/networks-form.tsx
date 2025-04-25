@@ -67,7 +67,10 @@ import {
   DropdownEditor,
   DropdownEditorStyle,
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
-import { getTokenNetworkFilter } from '../../../../selectors';
+import {
+  getTokenNetworkFilter,
+  useExternalWellKnownChainsValidationSelector,
+} from '../../../../selectors';
 import {
   useWellKnownChains,
   rpcIdentifierUtility,
@@ -90,6 +93,9 @@ export const NetworksForm = ({
   const trackEvent = useContext(MetaMetricsContext);
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const useWellKnownChainsValidation = useSelector(
+    useExternalWellKnownChainsValidationSelector,
+  );
 
   const {
     name,
@@ -104,7 +110,10 @@ export const NetworksForm = ({
     setBlockExplorers,
   } = networkFormState;
 
-  const { wellKnownChains } = useWellKnownChains();
+  const { wellKnownChains, error } = useWellKnownChains(
+    useWellKnownChainsValidation,
+  );
+  console.log(wellKnownChains, error);
 
   const [errors, setErrors] = useState<
     Record<string, { key: string; msg: string } | undefined>

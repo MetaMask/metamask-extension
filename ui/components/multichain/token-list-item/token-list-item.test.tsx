@@ -6,7 +6,10 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { useWellKnownChains } from '../../../pages/settings/networks-tab/networks-form/use-well-known-chains';
+import {
+  type WellKnownChain,
+  useWellKnownChains,
+} from '../../../pages/settings/networks-tab/networks-form/use-well-known-chains';
 import {
   getCurrencyRates,
   getNetworkConfigurationIdByChainId,
@@ -39,11 +42,13 @@ const state = {
   },
 };
 
-const wellKnownChainDetails = {
-  chainId: '1',
+const wellKnownChainDetails: WellKnownChain = {
+  chainId: 1,
   nativeCurrency: {
     symbol: 'ETH',
   },
+  name: 'Ethereum Mainnet',
+  rpc: ['https://mainnet.infura.io/v3/your-infura-key'],
 };
 
 let openTabSpy: jest.SpyInstance<void, [opts: { url: string }], unknown>;

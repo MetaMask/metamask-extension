@@ -1,7 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-
-import { useExternalWellKnownChainsValidationSelector } from '../../../../selectors';
 import {
   type WellKnownChain,
   getWellKnownChains,
@@ -9,11 +6,7 @@ import {
 
 export type { WellKnownChain } from '../../../../../shared/modules/well-known-chains';
 
-export const useWellKnownChains = () => {
-  const useWellKnownChainsValidation = useSelector(
-    useExternalWellKnownChainsValidationSelector,
-  );
-
+export const useWellKnownChains = (useWellKnownChainsValidation: boolean) => {
   const [wellKnownChains, setWellKnownChains] = useState<{
     wellKnownChains?: WellKnownChain[];
     error?: Error;
@@ -22,7 +15,11 @@ export const useWellKnownChains = () => {
   useEffect(() => {
     async function fetchWellKnownChains() {
       try {
-        setWellKnownChains({ wellKnownChains: await getWellKnownChains() });
+        setWellKnownChains({
+          wellKnownChains: await getWellKnownChains(
+            useWellKnownChainsValidation,
+          ),
+        });
       } catch (error) {
         if (error instanceof Error) {
           setWellKnownChains({ error });

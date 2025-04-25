@@ -40,6 +40,7 @@ import {
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
 } from './cells';
+import { useExternalWellKnownChainsValidationSelector } from '../../../../selectors';
 
 export type TokenCellProps = {
   token: TokenWithFiatAmount;
@@ -59,7 +60,10 @@ export default function TokenCell({
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
-  const { wellKnownChains } = useWellKnownChains();
+  const useWellKnownChainsValidation = useSelector(
+    useExternalWellKnownChainsValidationSelector,
+  );
+  const { wellKnownChains } = useWellKnownChains(useWellKnownChainsValidation);
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 

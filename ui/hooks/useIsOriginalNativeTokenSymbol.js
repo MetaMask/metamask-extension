@@ -21,7 +21,7 @@ export function useIsOriginalNativeTokenSymbol(
   rpcUrl = '',
 ) {
   const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(false);
-  const useSafeChainsListValidation = useSelector(
+  const useExternalWellKnownChainsValidation = useSelector(
     useExternalWellKnownChainsValidationSelector,
   );
 
@@ -71,7 +71,7 @@ export function useIsOriginalNativeTokenSymbol(
           return;
         }
 
-        const wellKnownChains = await getWellKnownChains();
+        const wellKnownChains = await getWellKnownChains(useExternalWellKnownChainsValidation);
 
         const matchedChain = wellKnownChains.find(
           (network) => network.chainId === parseInt(networkId, 16),
@@ -92,7 +92,7 @@ export function useIsOriginalNativeTokenSymbol(
     ticker,
     type,
     rpcUrl,
-    useSafeChainsListValidation,
+    useExternalWellKnownChainsValidation,
   ]);
 
   return isOriginalNativeSymbol;

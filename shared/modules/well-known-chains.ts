@@ -34,12 +34,11 @@ async function getWellKnownChainsFromCache(): Promise<WellKnownChain[] | null> {
  * network list of well-known chains (if the user's `useSafeChainsListValidation`
  * security setting allows for it).
  */
-export async function getWellKnownChains(): Promise<WellKnownChain[]> {
+export async function getWellKnownChains(
+  useExternalWellKnownChainsValidation: boolean,
+): Promise<WellKnownChain[]> {
   await preSeedPromise;
 
-  const useExternalWellKnownChainsValidation = useSelector(
-    useExternalWellKnownChainsValidationSelector,
-  );
   // don't send a network request if the user has disabled the setting,
   // instead, we'll use the cached response if available
   if (useExternalWellKnownChainsValidation) {
