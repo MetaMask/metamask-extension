@@ -19,21 +19,42 @@ function boolToHex(value: boolean): Hex {
   return `0x${Number(value)}`;
 }
 
+/**
+ * Calculates the keccak256 hash of a hex string.
+ *
+ * @param value - The hex string to hash
+ * @returns The keccak256 hash of the hex string
+ */
 export function keccak256(value: Hex): Hex {
   const buf = keccak(toBuffer(value));
   const hex = buf.toString('hex');
   return `0x${hex}`;
 }
 
+type ToHexOptions = {
+  /**
+   * The size of the hex string. Defaults to `undefined`.
+   */
+  size?: number | undefined;
+};
+
+/**
+ * Converts a value to a hex string.
+ *
+ * @param value - The value to convert
+ * @param options - Options for the function
+ * @param options.size - The size of the hex string. Defaults to `undefined`
+ * @returns The hex string
+ */
 export function toHex(
   value: string | number | boolean | Buffer | Uint8Array,
-  { size }: { size?: number | undefined } = {},
+  options?: ToHexOptions | undefined,
 ): Hex {
+  const { size } = options || {};
   const res: Hex = (() => {
     if (value instanceof Uint8Array) {
-      return `0x${Array.from(value, (byte) =>
-        byte.toString(16).padStart(2, '0'),
-      )}`;
+      const buf = Buffer.from(value);
+      return `0x${buf.toString('hex')}`;
     }
     if (Buffer.isBuffer(value)) {
       return `0x${value.toString('hex')}`;
@@ -55,10 +76,29 @@ export function toHex(
   return res;
 }
 
+type IsHexOptions = {
+  /**
+   * Enables strict mode. Whether or not to check if the value is a valid hex string.
+   *
+   * @default true
+   */
+  strict?: boolean | undefined;
+};
+
+/**
+ * Checks if the given value is a valid hex string.
+ *
+ * @param value - The value to check
+ * @param options - Options for the function
+ * @param options.strict - Enables strict mode. Whether or not to check if the value is a valid hex string. Defaults to `true`
+ * @returns `true` if the value is a valid hex string, `false` otherwise
+ */
 export function isHex(
   value: unknown,
-  { strict = true }: { strict?: boolean | undefined } = {},
+  options?: IsHexOptions | undefined,
 ): value is Hex {
+  const { strict = true } = options || {};
+
   if (!value) {
     return false;
   }
@@ -73,13 +113,25 @@ type PadOptions = {
   size?: number | null | undefined;
 };
 
-export function pad(value: Hex, { dir, size = 32 }: PadOptions = {}): Hex {
+/**
+ * Pads a hex string with zeros on the left or right.
+ *
+ * @param value - The hex string to pad
+ * @param options - Options for the function
+ * @param options.dir - The direction to pad the hex string. Defaults to `'left'`
+ * @param options.size - The size of the hex string. Defaults to `32`
+ * @returns The padded hex string
+ */
+export function pad(value: Hex, options?: PadOptions | undefined): Hex {
+  const { dir = 'left', size = 32 } = options || {};
+
   if (size === null) {
     return value;
   }
+
   const hex = value.replace('0x', '');
   if (hex.length > size * 2) {
-    throw new Error(`Cannot pad ${hex} to ${size} bytes`);
+    throw new Error(`Cannot pad 0x${hex} to ${size} bytes`);
   }
 
   return `0x${hex[dir === 'right' ? 'padEnd' : 'padStart'](
@@ -88,6 +140,12 @@ export function pad(value: Hex, { dir, size = 32 }: PadOptions = {}): Hex {
   )}` as Hex;
 }
 
+/**
+ * Concatenates an array of hex strings into a single hex string.
+ *
+ * @param values - The array of hex strings to concatenate
+ * @returns The concatenated hex string
+ */
 export function concat(values: readonly Hex[]): Hex {
   return `0x${(values as Hex[]).reduce(
     (acc, x) => acc + x.replace('0x', ''),
@@ -97,10 +155,29 @@ export function concat(values: readonly Hex[]): Hex {
 
 const addressRegex = /^0x[a-fA-F0-9]{40}$/;
 
+type IsAddressOptions = {
+  /**
+   * Enables strict mode. Whether or not to compare the address against its checksum.
+   *
+   * @default true
+   */
+  strict?: boolean | undefined;
+};
+
+/**
+ * Checks if the given string is a valid address
+ *
+ * @param address - The address to check
+ * @param options - Options for the function
+ * @param options.strict - Enables strict mode. Whether or not to compare the address against its checksum. Defaults to `true`
+ * @returns `true` if the address is valid, `false` otherwise
+ */
 export function isAddress(
   address: string,
-  { strict }: { strict: boolean } = { strict: true },
+  options?: IsAddressOptions | undefined,
 ): address is Address {
+  const { strict = true } = options || {};
+
   if (!addressRegex.test(address)) {
     return false;
   }
