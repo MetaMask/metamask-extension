@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Improvements in confirmation page to upgrade to smart account ([#32034](https://github.com/MetaMask/metamask-extension/pull/32034))
 - Changes in account modal to switch to smart account type ([#31899](https://github.com/MetaMask/metamask-extension/pull/31899))
 - Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
 - [Beta] Create Solana account automatically on wallet creation or SRP import [#32038](https://github.com/MetaMask/metamask-extension/pull/32038)
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix exchange rate lookups on Solana Swap page to prevent crashing when values are undefined ([#32114](https://github.com/MetaMask/metamask-extension/pull/32114))
 - updates display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
 - Add Multichain API analytics support ([#32013](https://github.com/MetaMask/metamask-extension/pull/32013))
+- Updated institutional snap to version which includes a fix for dev mode to prevent unwanted logging and state reads ([#32208](https://github.com/MetaMask/metamask-extension/pull/32208))
 
 ## [12.15.2]
 ### Added
