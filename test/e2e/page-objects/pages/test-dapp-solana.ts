@@ -8,6 +8,8 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappSolana {
   constructor(private readonly driver: Driver) {}
+  walletModalSelector = '.wallet-adapter-modal-list';
+  walletButtonSelector = `${this.walletModalSelector} .wallet-adapter-button`;
 
   /**
    * Open the solana test dapp page.
@@ -37,11 +39,9 @@ export class TestDappSolana {
    * @returns The wallet modal component helper methods.
    */
   async getWalletModal() {
-    await this.driver.waitForSelector('.wallet-adapter-modal-list');
+    await this.driver.waitForSelector(this.walletModalSelector);
 
-    const walletButtons = await this.driver.findElements(
-      '.wallet-adapter-modal-list .wallet-adapter-button ',
-    );
+    const walletButtons = await this.driver.findElements(this.walletButtonSelector);
 
     return {
       connectToMetaMaskWallet: async () => {
