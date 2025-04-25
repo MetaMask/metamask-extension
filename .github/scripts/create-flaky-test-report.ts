@@ -1,6 +1,7 @@
 import unzipper from 'unzipper';
 import type { TestRun } from './shared/test-reports';
 import { IncomingWebhook } from '@slack/webhook';
+import { hasProperty } from '@metamask/utils';
 
 async function main() {
   const { Octokit } = await import('octokit');
@@ -97,7 +98,7 @@ async function main() {
     failedTests.reduce<
       Record<string, (typeof failedTests)[number] & { count: number }>
     >((summary, test) => {
-      if (summary[test.name]) {
+      if (hasProperty(summary, test.name) && summary[test.name]) {
         summary[test.name].count += 1;
       } else {
         summary[test.name] = { ...test, count: 1 };
