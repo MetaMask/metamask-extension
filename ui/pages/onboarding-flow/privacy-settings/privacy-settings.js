@@ -474,7 +474,9 @@ export default function PrivacySettings() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {t('privacyMsg')}
+                            {t(
+                              'onboardingAdvancedPrivacyNetworkDescriptionCallToAction',
+                            )}
                           </a>,
                         ])}
 
