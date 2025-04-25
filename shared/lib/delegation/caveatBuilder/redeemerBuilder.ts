@@ -1,4 +1,4 @@
-import type { Address } from '../utils';
+import type { Address, Hex } from '../utils';
 import { concat, isAddress } from '../utils';
 import type { Caveat, DeleGatorEnvironment } from '..';
 
@@ -28,7 +28,10 @@ export const redeemerBuilder = (
     }
   }
 
-  const terms = concat(redeemers);
+  // The `encode` function from `@metamask/abi-utils` doesn't convert `bytes` to lowercase.
+  // However, the `viem` encodeAbiParameters function seems to do it.
+  // So we'll do it here to make sure the terms are consistent.
+  const terms = concat(redeemers.map((r) => r.toLowerCase() as Hex));
 
   const {
     caveatEnforcers: { RedeemerEnforcer },

@@ -46,7 +46,7 @@ function parseSelector(selector: MethodSelector) {
       return selector;
     }
     throw new Error(
-      'Invalid selector: must be a 4 byte hex string, abi function signature, or AbiFunction',
+      'Invalid selector: must be a 4 byte hex string or abi function signature',
     );
   }
 
@@ -54,7 +54,7 @@ function parseSelector(selector: MethodSelector) {
     return toFunctionSelector(selector);
   } catch (rootError: unknown) {
     throw new Error(
-      'Invalid selector: must be a 4 byte hex string, abi function signature, or AbiFunction',
+      'Invalid selector: must be a 4 byte hex string or abi function signature',
       { cause: rootError },
     );
   }
