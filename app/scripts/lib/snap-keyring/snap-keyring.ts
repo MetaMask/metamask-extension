@@ -19,10 +19,11 @@ import { t } from '../../translate';
 import { IconName } from '../../../../ui/components/component-library/icon';
 import MetaMetricsController from '../../controllers/metametrics-controller';
 import { getUniqueAccountName } from '../../../../shared/lib/accounts';
+import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
+import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
-import { getSnapName, isSnapPreinstalled } from './snaps';
 
 /**
  * Builder type for the Snap keyring.
