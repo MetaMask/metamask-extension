@@ -259,8 +259,18 @@ describe('MetaMaskController', function () {
 
     it('two parallel calls with same token details give same result', async function () {
       const [token1, token2] = await Promise.all([
-        metamaskController.getApi().addToken({ address, symbol, decimals }),
-        metamaskController.getApi().addToken({ address, symbol, decimals }),
+        metamaskController.getApi().addToken({
+          address,
+          symbol,
+          decimals,
+          networkClientId: 'mainnet',
+        }),
+        metamaskController.getApi().addToken({
+          address,
+          symbol,
+          decimals,
+          networkClientId: 'mainnet',
+        }),
       ]);
       expect(token1).toStrictEqual(token2);
     });
