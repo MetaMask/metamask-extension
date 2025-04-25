@@ -4,14 +4,10 @@ export {
 } from './environment';
 export {
   ANY_BENEFICIARY,
-  DELEGATION_ABI_TYPE_COMPONENTS,
-  DELEGATION_ARRAY_ABI_TYPE,
   ROOT_AUTHORITY,
-  SIGNABLE_DELEGATION_TYPED_DATA,
   createDelegation,
   createOpenDelegation,
   encodeDelegation,
-  encodeDelegations,
   encodePermissionContexts,
   getDelegationHashOffchain,
   toDelegationStruct,

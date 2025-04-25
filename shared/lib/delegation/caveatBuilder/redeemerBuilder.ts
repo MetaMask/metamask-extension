@@ -1,5 +1,5 @@
-import type { Address } from '../viem';
-import { concat, isAddress } from '../viem';
+import type { Address } from '../utils';
+import { concat, isAddress } from '../utils';
 import type { Caveat, DeleGatorEnvironment } from '..';
 
 export const redeemer = 'redeemer';

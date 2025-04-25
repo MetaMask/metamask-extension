@@ -1,5 +1,5 @@
-import type { Hex } from '../viem';
-import { toHex, pad } from '../viem';
+import type { Hex } from '../utils';
+import { toHex, pad } from '../utils';
 import type { DeleGatorEnvironment, Caveat } from '..';
 
 export const limitedCalls = 'limitedCalls';

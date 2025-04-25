@@ -1,54 +1,8 @@
-import type { AbiParameter, Hex, TypedData } from './viem';
-import {
-  encodeAbiParameters,
-  getAddress,
-  keccak256,
-  parseAbiParameters,
-  toHex,
-} from './viem';
-import {
-  CAVEAT_ABI_TYPE_COMPONENTS,
-  getCaveatArrayPacketHash,
-  type Caveat,
-} from './caveat';
+import { encode } from '@metamask/abi-utils';
+import { getChecksumAddress } from '@metamask/utils';
+import { getCaveatArrayPacketHash, type Caveat } from './caveat';
 import { resolveCaveats, type Caveats } from './caveatBuilder';
-
-/**
- * The ABI type components of a Delegation.
- */
-export const DELEGATION_ABI_TYPE_COMPONENTS = [
-  { type: 'address', name: 'delegate' },
-  { type: 'address', name: 'delegator' },
-  { type: 'bytes32', name: 'authority' },
-  { type: 'tuple[]', name: 'caveats', components: CAVEAT_ABI_TYPE_COMPONENTS },
-  { type: 'uint256', name: 'salt' },
-  { type: 'bytes', name: 'signature' },
-];
-
-/**
- * TypedData to be used when signing a Delegation. Delegation value for `signature` and Caveat values for `args` are omitted as they cannot be known at signing time.
- */
-export const SIGNABLE_DELEGATION_TYPED_DATA: TypedData = {
-  Caveat: [
-    { name: 'enforcer', type: 'address' },
-    { name: 'terms', type: 'bytes' },
-  ],
-  Delegation: [
-    { name: 'delegate', type: 'address' },
-    { name: 'delegator', type: 'address' },
-    { name: 'authority', type: 'bytes32' },
-    { name: 'caveats', type: 'Caveat[]' },
-    { name: 'salt', type: 'uint256' },
-  ],
-} as const;
-
-/**
- * The ABI type for a full delegation.
- */
-export const DELEGATION_ARRAY_ABI_TYPE: AbiParameter = {
-  type: 'tuple[]',
-  components: DELEGATION_ABI_TYPE_COMPONENTS,
-} as const;
+import { keccak256, toHex, type Hex } from './utils';
 
 /**
  * To be used on a delegation as the root authority.
@@ -82,7 +36,7 @@ export const toDelegationStruct = (
   delegation: Delegation,
 ): DelegationStruct => {
   const caveats = delegation.caveats.map((caveat) => ({
-    enforcer: getAddress(caveat.enforcer),
+    enforcer: getChecksumAddress(caveat.enforcer),
     terms: caveat.terms,
     args: caveat.args,
   }));
@@ -90,8 +44,8 @@ export const toDelegationStruct = (
   const salt = delegation.salt === '0x' ? 0n : BigInt(delegation.salt);
 
   return {
-    delegate: getAddress(delegation.delegate),
-    delegator: getAddress(delegation.delegator),
+    delegate: getChecksumAddress(delegation.delegate),
+    delegator: getChecksumAddress(delegation.delegator),
     authority:
       delegation.authority === undefined
         ? ROOT_AUTHORITY
@@ -138,18 +92,13 @@ export type DelegationStruct = Omit<Delegation, 'salt'> & {
  * @param delegations
  * @returns
  */
-export const encodeDelegation = (delegations: Delegation[]) => {
+export const encodeDelegation = (delegations: Delegation[]): Hex => {
   const delegationStructs = delegations.map(toDelegationStruct);
-
-  return encodeAbiParameters(
-    [
-      {
-        components: DELEGATION_ABI_TYPE_COMPONENTS,
-        name: 'delegations',
-        type: 'tuple[]',
-      },
-    ],
-    [delegationStructs],
+  return toHex(
+    encode(
+      ['(address,address,bytes32,(address,bytes,bytes)[],uint256,bytes)[]'],
+      [delegationStructs],
+    ),
   );
 };
 
@@ -167,15 +116,6 @@ export const encodePermissionContexts = (delegations: Delegation[][]) => {
 };
 
 /**
- * Encodes an array of Delegations for use in a contract call.
- *
- * @param delegations - The array of Delegations to encode.
- * @returns The encoded Delegations as abi parameters.
- */
-export const encodeDelegations = (delegations: Delegation[]) =>
-  encodeAbiParameters([DELEGATION_ARRAY_ABI_TYPE], [delegations]);
-
-/**
  * This function is used to get the hash of the Delegation parameters.
  *
  * @param input - The Delegation parameters to be hashed.
@@ -183,19 +123,19 @@ export const encodeDelegations = (delegations: Delegation[]) =>
  */
 export const getDelegationHashOffchain = (input: Delegation): Hex => {
   const delegationStruct = toDelegationStruct(input);
-
-  const encoded = encodeAbiParameters(
-    parseAbiParameters('bytes32, address, address, bytes32, bytes32, uint'),
-    [
-      DELEGATION_TYPEHASH,
-      delegationStruct.delegate,
-      delegationStruct.delegator,
-      delegationStruct.authority,
-      getCaveatArrayPacketHash(delegationStruct.caveats),
-      delegationStruct.salt,
-    ],
+  const encoded: Hex = toHex(
+    encode(
+      ['bytes32', 'address', 'address', 'bytes32', 'bytes32', 'uint'],
+      [
+        DELEGATION_TYPEHASH,
+        delegationStruct.delegate,
+        delegationStruct.delegator,
+        delegationStruct.authority,
+        getCaveatArrayPacketHash(delegationStruct.caveats),
+        delegationStruct.salt,
+      ],
+    ),
   );
-
   return keccak256(encoded);
 };
 

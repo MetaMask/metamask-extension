@@ -1,11 +1,6 @@
-import type { Hex } from './viem';
-import {
-  encodeAbiParameters,
-  encodePacked,
-  keccak256,
-  parseAbiParameters,
-  toHex,
-} from './viem';
+import { encode } from '@metamask/abi-utils';
+import type { Hex } from './utils';
+import { keccak256, toHex } from './utils';
 
 export const CAVEAT_ABI_TYPE_COMPONENTS = [
   { type: 'address', name: 'enforcer' },
@@ -30,9 +25,11 @@ export const CAVEAT_TYPEHASH: Hex = keccak256(
  * @returns The keccak256 hash of the encoded Caveat packet.
  */
 export const getCaveatPacketHash = (input: Caveat): Hex => {
-  const encoded = encodeAbiParameters(
-    parseAbiParameters('bytes32, address, bytes32'),
-    [CAVEAT_TYPEHASH, input.enforcer, keccak256(input.terms)],
+  const encoded: Hex = toHex(
+    encode(
+      ['bytes32', 'address', 'bytes32'],
+      [CAVEAT_TYPEHASH, input.enforcer, keccak256(input.terms)],
+    ),
   );
   return keccak256(encoded);
 };
@@ -48,7 +45,9 @@ export const getCaveatArrayPacketHash = (input: Caveat[]): Hex => {
 
   for (const caveat of input) {
     const caveatPacketHash = getCaveatPacketHash(caveat);
-    encoded = encodePacked(['bytes', 'bytes32'], [encoded, caveatPacketHash]);
+    encoded = toHex(
+      encode(['bytes', 'bytes32'], [encoded, caveatPacketHash], true),
+    );
   }
   return keccak256(encoded);
 };

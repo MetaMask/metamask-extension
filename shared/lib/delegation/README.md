@@ -2,6 +2,8 @@
 
 This directory contains code extracted directly from the [Delegation Toolkit](https://github.com/metamask/delegator-sdk/) repository.
 The reason for extracting this code is to avoid bringing any dependencies that are not needed for the MetaMask extension.
+In addition, the code has been modified so it doesn't rely on `viem` utilities.
+Instead, we've created the necessary utilities in `utils.ts`, which leverage the utilities currently available in the MetaMask extension.
 
 ## TODO
 

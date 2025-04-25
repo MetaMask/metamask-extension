@@ -1,10 +1,10 @@
-import type { Hex } from './viem';
-import { encodeAbiParameters, encodePacked } from './viem';
+import { encode } from '@metamask/abi-utils';
+import { toHex, type Address, type Hex } from './utils';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000' as const;
 
 export type ExecutionStruct = {
-  target: Hex;
+  target: Address;
   value: bigint;
   callData: Hex;
 };
@@ -18,7 +18,7 @@ export type ExecutionStruct = {
  * @returns The created execution data structure.
  */
 export const createExecution = (
-  target: Hex = zeroAddress,
+  target: Address = zeroAddress,
   value: bigint = 0n,
   callData: Hex = '0x',
 ): ExecutionStruct => ({
@@ -60,9 +60,12 @@ export const EXECUTION_ABI_TYPE_COMPONENTS = [
  * @returns the encoded execution
  */
 export const encodeSingleExecution = (execution: ExecutionStruct): Hex => {
-  return encodePacked(
-    ['address', 'uint256', 'bytes'],
-    [execution.target, execution.value, execution.callData],
+  return toHex(
+    encode(
+      ['address', 'uint256', 'bytes'],
+      [execution.target, execution.value, execution.callData],
+      true,
+    ),
   );
 };
 
@@ -74,16 +77,7 @@ export const encodeSingleExecution = (execution: ExecutionStruct): Hex => {
  * @returns the encoded executions
  */
 export const encodeBatchExecution = (executions: ExecutionStruct[]): Hex => {
-  return encodeAbiParameters(
-    [
-      {
-        components: EXECUTION_ABI_TYPE_COMPONENTS,
-        name: 'executions',
-        type: 'tuple[]',
-      },
-    ],
-    [executions],
-  );
+  return toHex(encode(['(address,uint256,bytes)[]'], [executions]));
 };
 
 /**
