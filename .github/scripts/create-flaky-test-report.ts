@@ -86,6 +86,7 @@ async function main() {
     testRun.testFiles.flatMap((testFile) =>
       testFile.testSuites.flatMap((testSuite) =>
         testSuite.testCases
+          .concat(testSuite.attempts.flatMap((attempt) => attempt.testCases))
           .filter((testCase) => testCase.status === 'failed')
           .map((testCase) => ({ ...testCase, path: testFile.path })),
       ),
