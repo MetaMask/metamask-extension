@@ -27,8 +27,7 @@ function boolToHex(value: boolean): Hex {
  */
 export function keccak256(value: Hex): Hex {
   const buf = keccak(toBuffer(value));
-  const hex = buf.toString('hex');
-  return `0x${hex}`;
+  return toHex(buf);
 }
 
 type ToHexOptions = {
