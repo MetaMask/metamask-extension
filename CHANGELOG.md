@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [12.18.0]
+
+## [12.17.0]
 ### Added
 - Changes in account modal to switch to smart account type ([#31899](https://github.com/MetaMask/metamask-extension/pull/31899))
 - Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
@@ -5909,7 +5913,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.18.0...HEAD
+[12.18.0]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...v12.18.0
+[12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...v12.17.0
 [12.15.2]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.15.2
 [12.15.1]: https://github.com/MetaMask/metamask-extension/compare/v12.15.0...v12.15.1
 [12.15.0]: https://github.com/MetaMask/metamask-extension/compare/v12.14.2...v12.15.0
