@@ -260,7 +260,13 @@ async function main() {
     }
   }
 
-  if (env.SLACK_WEBHOOK_URL) await webhook.send({ blocks });
+  if (env.SLACK_WEBHOOK_URL) {
+    const BATCH_SIZE = 50; // Slack API limit is 50 blocks per request
+    for (let i = 0; i < blocks.length; i += BATCH_SIZE) {
+      const batch = blocks.slice(i, i + BATCH_SIZE);
+      await webhook.send({ blocks: batch });
+    }
+  }
 }
 
 main();
