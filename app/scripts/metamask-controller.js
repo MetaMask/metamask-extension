@@ -123,6 +123,7 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
   BridgeClientId,
+  UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
 } from '@metamask/bridge-controller';
 
 import {
@@ -303,6 +304,7 @@ import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
   addHexPrefix,
+  getEnvironmentType,
   getMethodDataName,
   previousValueComparator,
 } from './lib/util';
@@ -1613,9 +1615,20 @@ export default class MetamaskController extends EventEmitter {
           fetchOptions: { method: 'GET', headers, signal },
           ...requestOptions,
         }),
-      // eslint-disable-next-line no-empty-function
-      trackMetaMetricsFn: () => {
-        // TODO implement these when ready to start tracking new unified swap events
+      trackMetaMetricsFn: (event, properties) => {
+        const actionId = (Date.now() + Math.random()).toString();
+        const trackEvent = this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        );
+        trackEvent({
+          category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
+          event,
+          properties: {
+            ...(properties ?? {}),
+            environmentType: getEnvironmentType(),
+            actionId,
+          },
+        });
       },
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
@@ -1632,6 +1645,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getState',
           'TokensController:addDetectedTokens',
           'BridgeController:getBridgeERC20Allowance',
+          'BridgeController:trackUnifiedSwapBridgeEvent',
           'GasFeeController:getState',
           'AccountsController:getAccountByAddress',
           'SnapController:handleRequest',
