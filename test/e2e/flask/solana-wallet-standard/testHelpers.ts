@@ -11,6 +11,9 @@ import { By } from 'selenium-webdriver';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
+export const account1Short = '4tE7...Uxer';
+export const account2Short = 'ExTE...GNtt';
+
 /**
  * Default options for setting up Solana E2E test environment
  */
