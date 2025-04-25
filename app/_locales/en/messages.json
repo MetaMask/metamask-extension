@@ -767,6 +767,9 @@
   "blockies": {
     "message": "Blockies"
   },
+  "borrowed": {
+    "message": "Borrowed"
+  },
   "boughtFor": {
     "message": "Bought for"
   },
@@ -1084,9 +1087,6 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmAccountType": {
-    "message": "Type"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "Smart account"
   },
@@ -1123,6 +1123,12 @@
   "confirmGasFeeTokenTooltip": {
     "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
+  "confirmInfoAccountCurrentType": {
+    "message": "Current Type"
+  },
+  "confirmInfoAccountNewType": {
+    "message": "New Type"
+  },
   "confirmInfoAccountType": {
     "message": "Account type"
   },
@@ -1138,11 +1144,11 @@
   "confirmSimulationApprove": {
     "message": "You approve"
   },
+  "confirmTitleAccountTypeSwitch": {
+    "message": "Account update"
+  },
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
-  },
-  "confirmTitleDelegationRevoke": {
-    "message": "Account update"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
@@ -1152,6 +1158,9 @@
   },
   "confirmTitleDescDelegationRevoke": {
     "message": "You're switching back to a standard account (EOA)."
+  },
+  "confirmTitleDescDelegationUpgrade": {
+    "message": "You're switching to a smart account"
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
@@ -1588,6 +1597,15 @@
   },
   "defaultSettingsTitle": {
     "message": "Default privacy settings"
+  },
+  "defi": {
+    "message": "DeFi"
+  },
+  "defiTabErrorContent": {
+    "message": "Your funds are safe, try to visit this page again later."
+  },
+  "defiTabErrorTitle": {
+    "message": "Oops! Something went wrong."
   },
   "delete": {
     "message": "Delete"
@@ -4631,6 +4649,9 @@
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
   },
+  "reward": {
+    "message": "Reward"
+  },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
   },
@@ -5555,6 +5576,9 @@
   "stake": {
     "message": "Stake"
   },
+  "staked": {
+    "message": "Staked"
+  },
   "standardAccountLabel": {
     "message": "Standard Account"
   },
@@ -5679,6 +5703,9 @@
   },
   "suggestedTokenName": {
     "message": "Suggested name:"
+  },
+  "supplied": {
+    "message": "Supplied"
   },
   "support": {
     "message": "Support"
