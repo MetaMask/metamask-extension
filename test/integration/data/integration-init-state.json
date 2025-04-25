@@ -144,7 +144,8 @@
           "description": null,
           "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
           "standard": "ERC721",
-          "chainId": 1
+          "chainId": 1,
+          "tokenURI": null
         }
       ],
       "0x89": [
@@ -155,7 +156,8 @@
           "description": null,
           "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
           "standard": "ERC721",
-          "chainId": 137
+          "chainId": 137,
+          "tokenURI": null
         }
       ],
       "0x5": [
@@ -166,7 +168,8 @@
           "description": null,
           "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
           "standard": "ERC721",
-          "chainId": 5
+          "chainId": 5,
+          "tokenURI": null
         }
       ],
       "0xaa36a7": [
@@ -179,7 +182,7 @@
           "description": "Test Dapp NFTs for testing.",
           "image": "data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==",
           "standard": "ERC721",
-          "tokenURI": "data:application/json;base64,eyJuYW1lIjogIlRlc3QgRGFwcCBORlRzICMxIiwgImRlc2NyaXB0aW9uIjogIlRlc3QgRGFwcCBORlRzIGZvciB0ZXN0aW5nLiIsICJpbWFnZSI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUJvWldsbmFIUTlJak0xTUNJZ2QybGtkR2c5SWpNMU1DSWdkbWxsZDBKdmVEMGlNQ0F3SURFd01DQXhNREFpSUhodGJHNXpQU0pvZEhSd09pOHZkM2QzTG5jekxtOXlaeTh5TURBd0wzTjJaeUkrUEdSbFpuTStQSEJoZEdnZ2FXUTlJazE1VUdGMGFDSWdabWxzYkQwaWJtOXVaU0lnYzNSeWIydGxQU0p5WldRaUlHUTlJazB4TUN3NU1DQlJPVEFzT1RBZ09UQXNORFVnVVRrd0xERXdJRFV3TERFd0lGRXhNQ3d4TUNBeE1DdzBNQ0JSTVRBc056QWdORFVzTnpBZ1VUY3dMRGN3SURjMUxEVXdJaUF2UGp3dlpHVm1jejQ4ZEdWNGRENDhkR1Y0ZEZCaGRHZ2dhSEpsWmowaUkwMTVVR0YwYUNJK1VYVnBZMnNnWW5KdmQyNGdabTk0SUdwMWJYQnpJRzkyWlhJZ2RHaGxJR3hoZW5rZ1pHOW5Mand2ZEdWNGRGQmhkR2crUEM5MFpYaDBQand2YzNablBnPT0iLCAiYXR0cmlidXRlcyI6IFt7InRyYWl0X3R5cGUiOiAiVG9rZW4gSWQiLCAidmFsdWUiOiAiMSJ9XX0=",
+          "tokenURI": null,
           "chainId": 11155111
         },
         {
@@ -197,7 +200,8 @@
           "description": "Red Mohawk bam!",
           "image": "https://lh3.googleusercontent.com/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE",
           "standard": "ERC1155",
-          "chainId": 11155111
+          "chainId": 11155111,
+          "tokenURI": null
         },
         {
           "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
@@ -214,7 +218,8 @@
           "description": "Clown PUNK!!!",
           "image": "https://lh3.googleusercontent.com/H7VrxaalZv4PF1B8U7ADuc8AfuqTVyzmMEDQ5OXKlx0Tqu5XiwsKYj4j_pAF6wUJjLMQbSN_0n3fuj84lNyRhFW9hyrxqDfY1IiQEQ",
           "standard": "ERC1155",
-          "chainId": 11155111
+          "chainId": 11155111,
+          "tokenURI": null
         },
         {
           "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
@@ -231,7 +236,8 @@
           "description": "Got glasses and black hair!",
           "image": "https://lh3.googleusercontent.com/CHNTSlKB_Gob-iwTq8jcag6XwBkTqBMLt_vEKeBv18Q4AoPFAEPceqK6mRzkad2s5djx6CT5zbGQwDy81WwtNzViK5dQbG60uAWv",
           "standard": "ERC1155",
-          "chainId": 11155111
+          "chainId": 11155111,
+          "tokenURI": null
         }
       ]
     }
