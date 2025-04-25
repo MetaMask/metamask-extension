@@ -3,9 +3,9 @@ import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { SmartAccountUpdate } from './smart-account-update';
 
 export function Splash() {
-  const isUpgradeTransaction = useIsUpgradeTransaction();
+  const { isUpgrade } = useIsUpgradeTransaction();
 
-  if (!isUpgradeTransaction) {
+  if (!isUpgrade) {
     return null;
   }
 
