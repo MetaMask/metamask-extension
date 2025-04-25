@@ -3077,6 +3077,9 @@
   "networkMenuHeading": {
     "message": "Pumili ng network"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "networkName": {
     "message": "Pangalan ng Network"
   },

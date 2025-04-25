@@ -771,7 +771,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   let title;
   if (actionMode === ACTION_MODE.LIST) {
-    title = t('networkMenuHeading');
+    title = process.env.REMOVE_GNS
+      ? t('manageNetworksMenuHeading')
+      : t('networkMenuHeading');
   } else if (actionMode === ACTION_MODE.ADD_EDIT && !editedNetwork) {
     title = t('addACustomNetwork');
   } else if (actionMode === ACTION_MODE.ADD_RPC) {

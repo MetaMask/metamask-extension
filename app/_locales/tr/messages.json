@@ -3077,6 +3077,9 @@
   "networkMenuHeading": {
     "message": "Ağ seç"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "networkName": {
     "message": "Ağ adı"
   },

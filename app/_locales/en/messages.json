@@ -3207,6 +3207,9 @@
   "networkMenuHeading": {
     "message": "Select a network"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "networkName": {
     "message": "Network name"
   },

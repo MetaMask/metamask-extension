@@ -3077,6 +3077,9 @@
   "networkMenuHeading": {
     "message": "Επιλέξτε ένα δίκτυο"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "networkName": {
     "message": "Όνομα δικτύου"
   },

@@ -3077,6 +3077,9 @@
   "networkMenuHeading": {
     "message": "एक नेटवर्क को चुनें"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "networkName": {
     "message": "नेटवर्क का नाम"
   },

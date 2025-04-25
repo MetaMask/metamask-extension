@@ -3077,6 +3077,9 @@
   "networkMenuHeading": {
     "message": "Seleccionar una red"
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "networkName": {
     "message": "Nombre de la red"
   },
