@@ -107,6 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix Bridge page showing high cost alert twice when bridging ([#32158](https://github.com/MetaMask/metamask-extension/pull/32158))
 - Fix Snap rate limiting issues ([#32042](https://github.com/MetaMask/metamask-extension/pull/32042))
 - Fix missing `includeMarketData` param from `onAssetsConversion` handler ([#32196](https://github.com/MetaMask/metamask-extension/pull/32196))
+- Fix remove duplicate label for insufficient gas ([#32267](https://github.com/MetaMask/metamask-extension/pull/32267))
 
 ## [12.16.1]
 ### Added
