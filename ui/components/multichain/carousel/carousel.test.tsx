@@ -27,9 +27,7 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('reselect', () => ({
-  createSelector: jest.fn(),
-  createDeepEqualSelector: jest.fn(),
-  createSelectorCreator: jest.fn(() => jest.fn()),
+  ...jest.requireActual('reselect'),
   lruMemoize: jest.fn(),
 }));
 

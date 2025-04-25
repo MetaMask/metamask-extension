@@ -1,3 +1,4 @@
+import { Browser } from 'selenium-webdriver';
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
@@ -46,14 +47,23 @@ describe('App Installed Events', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
+
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickIAgreeButton();
+        }
+
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
         await startOnboardingPage.checkTermsCheckbox();
         await startOnboardingPage.clickCreateWalletButton();
 
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
-        await onboardingMetricsPage.clickIAgreeButton();
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickIAgreeButton();
+        }
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
@@ -80,14 +90,23 @@ describe('App Installed Events', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
+
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
+
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
         await startOnboardingPage.checkTermsCheckbox();
         await startOnboardingPage.clickCreateWalletButton();
 
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
-        await onboardingMetricsPage.clickNoThanksButton();
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
 
         const mockedRequests = await getEventPayloads(
           driver,
