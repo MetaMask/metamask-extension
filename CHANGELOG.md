@@ -111,6 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix remove duplicate label for insufficient gas ([#32267](https://github.com/MetaMask/metamask-extension/pull/32267))
 - Fix bridge for token with no decimals ([#32265](https://github.com/MetaMask/metamask-extension/pull/32265))
 - Fix: Removed timeout for messages requiring user actions ([#32046](https://github.com/MetaMask/metamask-extension/pull/32046))
+- Fix: Unable to send transaction low / high nonce transaction on any network when STX is enabled ([#32244](https://github.com/MetaMask/metamask-extension/pull/32244))
 
 ## [12.16.1]
 ### Added
