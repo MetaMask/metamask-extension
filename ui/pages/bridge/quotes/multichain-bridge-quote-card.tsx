@@ -4,6 +4,7 @@ import {
   isSolanaChainId,
   BRIDGE_MM_FEE_RATE,
   formatChainIdToHex,
+  formatEtaInMinutes,
 } from '@metamask/bridge-controller';
 import type { ChainId } from '@metamask/bridge-controller';
 import {
@@ -23,11 +24,7 @@ import {
   getIsBridgeTx,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  formatEtaInMinutes,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
@@ -119,9 +116,7 @@ export const MultichainBridgeQuoteCard = () => {
               <Text>
                 {`1 ${activeQuote.quote.srcAsset.symbol} = ${formatTokenAmount(
                   locale,
-                  activeQuote.toTokenAmount.amount.dividedBy(
-                    activeQuote.sentAmount.amount,
-                  ),
+                  activeQuote.swapRate,
                 )} ${activeQuote.quote.destAsset.symbol}`}
               </Text>
             </Row>
