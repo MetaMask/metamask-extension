@@ -15,6 +15,7 @@ import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
+import SignTypedData from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 
 describe('Confirmation Navigation', function (this: Suite) {
   it('initiates and queues multiple signatures and confirms', async function () {
@@ -170,8 +171,9 @@ describe('Confirmation Navigation', function (this: Suite) {
 });
 
 async function verifySignTypedData(driver: Driver) {
-  await driver.waitForSelector({ text: DAPP_HOST_ADDRESS });
-  await driver.waitForSelector({ text: 'Hi, Alice!' });
+  const confirmation = new SignTypedData(driver);
+  await confirmation.verifyOrigin();
+  await confirmation.verifySignTypedDataMessage();
 }
 
 async function verifyRejectionResults(driver: Driver, verifyResultId: string) {
@@ -182,57 +184,63 @@ async function verifyRejectionResults(driver: Driver, verifyResultId: string) {
 }
 
 async function verifySignedTypeV3Confirmation(driver: Driver) {
-  await driver.waitForSelector({ text: DAPP_HOST_ADDRESS });
-  await driver.waitForSelector({
-    css: '.name__value',
-    text: '0xCD2a3...DD826',
-  });
-  await driver.waitForSelector({
-    css: '.name__value',
-    text: '0xbBbBB...bBBbB',
-  });
-  await driver.waitForSelector({ text: 'Hello, Bob!' });
+  const confirmation = new SignTypedData(driver);
+  await confirmation.verifyOrigin();
+  await confirmation.verifyFromAddress();
+  await confirmation.verifyToAddress();
+  await confirmation.verifyContents();
 }
 
 async function verifySignedTypeV4Confirmation(driver: Driver) {
-  verifySignedTypeV3Confirmation(driver);
-  await driver.waitForSelector({ text: '0x' });
+    const confirmation = new SignTypedData(driver);
+    verifySignedTypeV3Confirmation(driver);
+    await confirmation.verifyAttachment();
 }
 
 async function queueSignatures(driver: Driver) {
-  // There is a race condition which changes the order in which signatures are displayed (#25251)
-  // We fix it deterministically by waiting for an element in the screen for each signature
-  await driver.clickElement('#signTypedData');
+  const testDapp = new TestDapp(driver);
+  const confirmation = new SignTypedData(driver);
 
+  // Sign Typed Data
+  await testDapp.clickSignTypedData();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.findElement({ text: 'Hi, Alice!' });
+  await confirmation.verifySignTypedDataMessage();
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signTypedDataV3');
+
+  // Sign Typed Data V3
+  await testDapp.clickSignTypedDatav3();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.findElement({ text: 'Reject all' });
-  await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 2']"));
+  await confirmation.check_pageNumbers(1, 2);
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signTypedDataV4');
+
+  // Sign Typed Data V4
+  await testDapp.clickSignTypedDatav4();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 3']"));
+  await confirmation.check_pageNumbers(1, 3);
 }
 
 async function queueSignaturesAndTransactions(driver: Driver) {
-  await driver.clickElement('#signTypedData');
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.waitForSelector({
-    tag: 'p',
-    text: 'Hi, Alice!',
-  });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  const testDapp = new TestDapp(driver);
+  const confirmation = new SignTypedData(driver);
 
-  await driver.clickElement('#sendButton');
+  // Sign Typed Data
+  await testDapp.clickSignTypedData();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 2']"));
+  await confirmation.verifySignTypedDataMessage();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  await driver.clickElement('#signTypedDataV3');
+  // Send Transaction
+  await testDapp.clickSimpleSendButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.waitForSelector(By.xpath("//div[normalize-space(.)='1 of 3']"));
+  await confirmation.check_pageNumbers(1, 2);
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+  // Sign Typed Data V3
+  await testDapp.clickSignTypedDatav3();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await confirmation.check_pageNumbers(1, 3);
 }
