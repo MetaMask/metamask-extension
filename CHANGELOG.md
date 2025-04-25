@@ -109,6 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix Snap rate limiting issues ([#32042](https://github.com/MetaMask/metamask-extension/pull/32042))
 - Fix missing `includeMarketData` param from `onAssetsConversion` handler ([#32196](https://github.com/MetaMask/metamask-extension/pull/32196))
 - Fix remove duplicate label for insufficient gas ([#32267](https://github.com/MetaMask/metamask-extension/pull/32267))
+- Fix bridge for token with no decimals ([#32265](https://github.com/MetaMask/metamask-extension/pull/32265))
 
 ## [12.16.1]
 ### Added
