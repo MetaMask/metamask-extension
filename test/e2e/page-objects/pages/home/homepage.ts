@@ -47,6 +47,10 @@ class HomePage {
     testId: 'account-overview__nfts-tab',
   };
 
+  private readonly defiTab = {
+    testId: 'account-overview__defi-tab',
+  };
+
   private readonly popoverBackground = '.popover-bg';
 
   private readonly popoverCloseButton = {
@@ -124,6 +128,11 @@ class HomePage {
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
+  }
+
+  async goToDeFiTab(): Promise<void> {
+    console.log(`Go to DeFi tab on homepage`);
+    await this.driver.clickElement(this.defiTab);
   }
 
   async goToTokensTab(): Promise<void> {

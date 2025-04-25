@@ -767,6 +767,9 @@
   "blockies": {
     "message": "Blockies"
   },
+  "borrowed": {
+    "message": "Borrowed"
+  },
   "boughtFor": {
     "message": "Bought for"
   },
@@ -1594,6 +1597,15 @@
   },
   "defaultSettingsTitle": {
     "message": "Default privacy settings"
+  },
+  "defi": {
+    "message": "DeFi"
+  },
+  "defiTabErrorContent": {
+    "message": "Your funds are safe, try to visit this page again later."
+  },
+  "defiTabErrorTitle": {
+    "message": "Oops! Something went wrong."
   },
   "delete": {
     "message": "Delete"
@@ -2765,6 +2777,9 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Learn more about privacy best practices."
+  },
+  "learnMoreAboutSolanaAccounts": {
+    "message": "Learn more about Solana accounts"
   },
   "learnMoreKeystone": {
     "message": "Learn More"
@@ -4637,6 +4652,9 @@
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
   },
+  "reward": {
+    "message": "Reward"
+  },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
   },
@@ -5355,7 +5373,7 @@
     "message": "More features coming soon"
   },
   "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Solana dapps, NFTs, hardware wallet support, and more coming soon."
+    "message": "NFTs, hardware wallet support, and more coming soon."
   },
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"
@@ -5561,6 +5579,9 @@
   "stake": {
     "message": "Stake"
   },
+  "staked": {
+    "message": "Staked"
+  },
   "standardAccountLabel": {
     "message": "Standard Account"
   },
@@ -5685,6 +5706,9 @@
   },
   "suggestedTokenName": {
     "message": "Suggested name:"
+  },
+  "supplied": {
+    "message": "Supplied"
   },
   "support": {
     "message": "Support"
@@ -6585,6 +6609,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewSolanaAccount": {
+    "message": "View Solana account"
   },
   "viewTransaction": {
     "message": "View transaction"
