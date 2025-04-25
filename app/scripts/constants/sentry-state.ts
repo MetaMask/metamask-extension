@@ -119,6 +119,7 @@ export const SENTRY_BACKGROUND_STATE = {
       },
       mobileConfig: false,
     },
+    assetExchangeRates: false,
     quoteRequest: {
       walletAddress: false,
       srcTokenAddress: true,
