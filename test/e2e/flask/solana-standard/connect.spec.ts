@@ -84,6 +84,71 @@ describe('Solana Wallet Standard - Connect', function () {
         },
       );
     });
+
+    it('Should not create session when Solana permissions are deselected', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // Start connection
+          const header = await testDapp.getHeader();
+          await header.connect();
+          await driver.delay(regularDelayMs);
+          const modal = await testDapp.getWalletModal();
+          await modal.connectToMetaMaskWallet();
+          await driver.delay(regularDelayMs);
+
+          // Open the permissions modal
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await driver.clickElement('[data-testid="permissions-tab"]');
+          const editButtons = await driver.findElements('[data-testid="edit"]');
+          await editButtons[1].click();
+          await driver.delay(regularDelayMs);
+          const networkListItems = await driver.findElements(
+            '.multichain-network-list-item',
+          );
+
+          // Deselect Solana permission and select mainnet
+          for (const item of networkListItems) {
+            const networkNameDiv = await item.findElement(By.css('div[data-testid]'));
+            const network = await networkNameDiv.getAttribute('data-testid');
+            // Deselect Solana permission
+            if (network === 'Solana') {
+              const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
+              const isChecked = await checkbox.isSelected();
+
+              if (isChecked) {
+                await checkbox.click();
+              }
+              break;
+            } else if (network === 'Ethereum Mainnet') {
+              const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
+              const isChecked = await checkbox.isSelected();
+
+              if (!isChecked) {
+                await checkbox.click();
+              }
+            }
+          }
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          // Click connect
+          await driver.clickElement({ text: 'Connect', tag: 'button' });
+
+          // Switch back to test dapp
+          await testDapp.switchTo();
+
+          // Verify we're not connected
+          const connectionStatus = await header.getConnectionStatus();
+          assertDisconnected(connectionStatus);
+        },
+      );
+    });
   });
 
   describe('Disconnect the dapp', function () {
@@ -204,7 +269,6 @@ describe('Solana Wallet Standard - Connect', function () {
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
-          numberOfAccounts: 1,
         },
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
@@ -223,13 +287,37 @@ describe('Solana Wallet Standard - Connect', function () {
       );
     });
 
+    describe('Given I have connected to two accounts', function () {
+      it.only('Refreshing the page should keep me connected to the last selected account', async function () {
+        await withSolanaAccountSnap(
+          {
+            ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+            title: this.test?.fullTitle(),
+            numberOfAccounts: 2,
+          },
+          async (driver) => {
+            const testDapp = new TestDappSolana(driver);
+            await testDapp.openTestDappPage();
+            await connectSolanaTestDapp(driver, testDapp, {
+              selectAllAccounts: true,
+            });
+
+            await driver.refresh();
+
+            const header = await testDapp.getHeader();
+            const account = await header.getAccount();
+            assertConnected(account, 'ExTE...GNtt');
+          },
+        );
+      });
+    });
+
     describe('Given I have connected to Mainnet and Devnet', function () {
       it('Should use the Mainnet scope by default', async function () {
         await withSolanaAccountSnap(
           {
             ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            numberOfAccounts: 1,
           },
           async (driver) => {
             const testDapp = new TestDappSolana(driver);
