@@ -165,6 +165,7 @@
     "marketData": "object",
     "multichainNetworkConfigurationsByChainId": "object",
     "selectedMultichainNetworkChainId": "string",
+    "networksWithTransactionActivity": "object",
     "isEvmSelected": "boolean",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
@@ -337,6 +338,7 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
+    "assetExchangeRates": "object",
     "bridgeFeatureFlags": {
       "extensionConfig": {
         "maxRefreshCount": "number",
