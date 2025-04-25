@@ -13,8 +13,8 @@ const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_DEVELOPMENT: string[] = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.BSC,
   CHAIN_IDS.BASE,
-  CHAIN_IDS.LINEA_MAINNET,
-  CHAIN_IDS.LINEA_SEPOLIA,
+  // CHAIN_IDS.LINEA_MAINNET, // TODO: Add linea mainnet to development when ready
+  // CHAIN_IDS.LINEA_SEPOLIA, // TODO: Add linea sepolia to development when ready
 ];
 
 const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_PRODUCTION: string[] = [

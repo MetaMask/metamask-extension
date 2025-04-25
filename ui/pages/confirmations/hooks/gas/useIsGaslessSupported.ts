@@ -1,7 +1,10 @@
 import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
+import {
+  getIsSmartTransaction,
+  type SmartTransactionsState,
+} from '../../../../../shared/modules/selectors';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
@@ -10,10 +13,12 @@ export function useIsGaslessSupported() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
-
   const { chainId, txParams } = transactionMeta;
   const { from } = txParams;
+
+  const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
+    getIsSmartTransaction(state, chainId),
+  );
 
   const { value: atomicBatchSupportResult } = useAsyncResult(
     async () =>
