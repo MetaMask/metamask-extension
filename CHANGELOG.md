@@ -113,6 +113,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix: Removed timeout for messages requiring user actions ([#32046](https://github.com/MetaMask/metamask-extension/pull/32046))
 - Fix: Unable to send transaction low / high nonce transaction on any network when STX is enabled ([#32244](https://github.com/MetaMask/metamask-extension/pull/32244))
 - Fix: Ensure no duplicate accounts are persisted ([#32287](https://github.com/MetaMask/metamask-extension/pull/32287))
+- Fix: provide better native token names when bridging and swapping removed networks([#32293](https://github.com/MetaMask/metamask-extension/pull/32293))
 
 ## [12.16.1]
 ### Added
