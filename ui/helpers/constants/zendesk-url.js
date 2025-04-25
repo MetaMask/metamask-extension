@@ -51,6 +51,8 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/networks-and-sidechains/managing-networks/verifying-custom-network-information/',
   NETWORK_DEPRECATED:
     'https://support.metamask.io/networks-and-sidechains/eth-on-testnets/',
+  SOLANA_ACCOUNTS:
+    'https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts',
 };
 
 export default ZENDESK_URLS;
