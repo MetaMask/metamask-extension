@@ -12,7 +12,9 @@ export const getSmartTransactionMetricsProperties = (
   transactionMetricsRequest: TransactionMetricsRequest,
   transactionMeta: TransactionMeta,
 ) => {
-  const isSmartTransaction = transactionMetricsRequest.getIsSmartTransaction();
+  const isSmartTransaction = transactionMetricsRequest.getIsSmartTransaction(
+    transactionMeta.chainId,
+  );
   const properties = {
     is_smart_transaction: isSmartTransaction,
   } as SmartTransactionMetricsProperties;
