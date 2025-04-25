@@ -186,16 +186,15 @@ const AccountListItem = ({
     const chainsWithActivityByAddress =
       chainsWithTransactionActivity?.[account.address]?.activeChains ?? [];
 
-    const chainsWithActivity = chainsWithActivityByAddress
-      .map((chainId) => toHex(chainId))
-      .map((chainId) => {
-        const networkName = CHAIN_ID_TO_NAME_MAP[chainId];
-        return {
-          chainId,
-          name: networkName,
-          avatarValue: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId],
-        };
-      });
+    const chainsWithActivity = chainsWithActivityByAddress.map((chainId) => {
+      const formattedChainId = toHex(chainId);
+      const networkName = CHAIN_ID_TO_NAME_MAP[formattedChainId];
+      return {
+        chainId: formattedChainId,
+        name: networkName,
+        avatarValue: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[formattedChainId],
+      };
+    });
 
     return chainsWithActivity;
   }, [chainsWithTransactionActivity, account.address]);
