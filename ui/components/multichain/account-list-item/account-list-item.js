@@ -16,6 +16,8 @@ import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   ButtonIcon,
   Icon,
@@ -62,6 +64,8 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 ///: END:ONLY_INCLUDE_IF
 import {
   getMultichainIsTestnet,
+  getMultichainNativeCurrency,
+  getMultichainNativeCurrencyImage,
   getMultichainNetwork,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
@@ -136,6 +140,7 @@ const AccountListItem = ({
 
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
+
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
@@ -239,6 +244,14 @@ const AccountListItem = ({
   }, [itemRef, selected, shouldScrollToWhenSelected]);
 
   const trackEvent = useContext(MetaMetricsContext);
+  const primaryTokenImage = useMultichainSelector(
+    getMultichainNativeCurrencyImage,
+    account,
+  );
+  const nativeCurrency = useMultichainSelector(
+    getMultichainNativeCurrency,
+    account,
+  );
 
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
@@ -416,13 +429,29 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {sortedNetworkIcons.length > 0 && (
+          {sortedNetworkIcons.length > 0 && isEvmNetwork && (
             <AvatarGroup
               avatarType={AvatarType.NETWORK}
               members={sortedNetworkIcons}
               limit={4}
               renderTag={false}
             />
+          )}
+          {!isEvmNetwork && primaryTokenImage && (
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              gap={1}
+              className="multichain-account-list-item__avatar-currency"
+            >
+              <AvatarNetwork
+                src={primaryTokenImage}
+                name={nativeCurrency}
+                size={AvatarNetworkSize.Xs}
+                borderColor={BorderColor.borderDefault}
+              />
+            </Box>
           )}
         </Box>
         {accountLabels.length > 0 ? (
