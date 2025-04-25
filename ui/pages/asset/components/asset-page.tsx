@@ -62,7 +62,7 @@ import {
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { Asset } from '../types/asset';
-import { useCurrentPrice } from '../useCurrentPrice';
+import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { getMultichainNativeAssetType } from '../../../selectors/assets';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';

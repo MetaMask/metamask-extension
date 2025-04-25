@@ -2,8 +2,8 @@ import { CaipAssetType, assert } from '@metamask/utils';
 import { chain } from 'lodash';
 import { Duration } from 'luxon';
 import { useSelector } from 'react-redux';
-import { getHistoricalPrices } from '../../selectors/assets';
-import { getMultichainIsEvm } from '../../selectors/multichain';
+import { getHistoricalPrices } from '../../../selectors/assets';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 
 /**
  * Returns the list of time ranges (as ISO 8601 durations) to display in the historical prices chart for a given asset.
@@ -13,7 +13,7 @@ import { getMultichainIsEvm } from '../../selectors/multichain';
  *
  * @param caipAssetType - The caipAssetType of the asset. Only used on non-EVM chains.
  * @param currency - The currency of the asset. Only used on non-EVM chains.
- * @returns The time ranges available for the given asset.
+ * @returns The time ranges available for the given asset, for instance: `['P1D', 'P7D', 'P1M', 'P3M', 'P1Y', 'P1000Y']`
  */
 export const useChartTimeRanges = (
   caipAssetType?: CaipAssetType,

@@ -1,8 +1,8 @@
 import { SolScope } from '@metamask/keyring-api';
 import { waitFor } from '@testing-library/react';
 import { cloneDeep } from 'lodash';
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import {
   DEFAULT_USE_HISTORICAL_PRICES_METADATA,
   useHistoricalPrices,

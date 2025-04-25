@@ -31,10 +31,10 @@ import {
   ButtonBaseSize,
 } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useHistoricalPrices } from '../../useHistoricalPrices';
+import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { loadingOpacity } from '../../util';
 import AssetPrice from '../asset-price';
-import { useChartTimeRanges } from '../../useChartTimeRanges';
+import { useChartTimeRanges } from '../../hooks/useChartTimeRanges';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 

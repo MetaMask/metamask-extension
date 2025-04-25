@@ -1,4 +1,4 @@
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import { useChartTimeRanges } from './useChartTimeRanges';
 
 describe('useChartTimeRanges', () => {

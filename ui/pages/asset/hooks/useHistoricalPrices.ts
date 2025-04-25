@@ -4,15 +4,15 @@ import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { useSelector } from 'react-redux';
-import { MINUTE } from '../../../shared/constants/time';
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import { getShouldShowFiat } from '../../selectors';
-import { getHistoricalPrices } from '../../selectors/assets';
-import { getMultichainIsEvm } from '../../selectors/multichain';
+import { MINUTE } from '../../../../shared/constants/time';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { getShouldShowFiat } from '../../../selectors';
+import { getHistoricalPrices } from '../../../selectors/assets';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 import {
   chainSupportsPricing,
   fromIso8601DurationToPriceApiTimePeriod,
-} from './util';
+} from '../util';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
