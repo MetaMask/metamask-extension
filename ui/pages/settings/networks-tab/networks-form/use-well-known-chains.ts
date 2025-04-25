@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   type WellKnownChain,
   getWellKnownChains,
 } from '../../../../../shared/modules/well-known-chains';
+import { useExternalWellKnownChainsValidationSelector } from '../../../../selectors';
 
 export type { WellKnownChain } from '../../../../../shared/modules/well-known-chains';
 
