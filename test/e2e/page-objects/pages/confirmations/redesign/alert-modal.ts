@@ -15,7 +15,7 @@ class AlertModal {
   }
 
   async clickConfirmButton(): Promise<void> {
-    await this.driver.clickElement(this.confirmAlertButton);
+    await this.driver.clickElementAndWaitToDisappear(this.confirmAlertButton);
   }
 
   async check_insufficientBalanceMessageIsDisplayed(): Promise<void> {
