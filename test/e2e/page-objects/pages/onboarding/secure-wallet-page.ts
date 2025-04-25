@@ -40,6 +40,17 @@ class SecureWalletPage {
     tag: 'h2',
   };
 
+  private readonly skipAccountSecurityMessage = {
+    text: 'Skip account security?',
+    tag: 'h3',
+  };
+
+  private readonly skipSRPBackupCheckbox =
+    '[data-testid="skip-srp-backup-popover-checkbox"]';
+
+  private readonly skipSRPBackupConfirmButton =
+    '[data-testid="skip-srp-backup"]';
+
   private readonly writeDownSecretRecoveryPhraseMessage = {
     text: 'Write down your Secret Recovery Phrase',
     tag: 'h2',
@@ -66,12 +77,22 @@ class SecureWalletPage {
     console.log('Secure wallet page is loaded');
   }
 
-  async revealAndConfirmSRP(): Promise<void> {
+  /**
+   * Reveal and confirm SRP on secure wallet page during onboarding
+   * @param needEnterPassword - Whether to enter the password
+   */
+  async revealAndConfirmSRP(
+    needEnterPassword: string = '',
+  ): Promise<void> {
     console.log(
       'Reveal and confirm SRP on secure wallet page during onboarding',
     );
     // click secure my wallet button to reveal SRP
     await this.driver.clickElement(this.secureWalletButton);
+    if (needEnterPassword) {
+      await this.driver.fill(this.passwordInput, needEnterPassword);
+      await this.driver.clickElement(this.confirmPasswordButton);
+    }
     await this.driver.waitForMultipleSelectors([
       this.writeDownSecretRecoveryPhraseMessage,
       this.revealSecretRecoveryPhraseButton,
@@ -127,6 +148,16 @@ class SecureWalletPage {
       return finalWords.length === 12;
     }, this.driver.timeout);
     await this.driver.clickElement(this.recoveryPhraseNextButton);
+  }
+
+  async skipSRPBackup(): Promise<void> {
+    console.log('Skip SRP backup on secure wallet page during onboarding');
+    await this.driver.clickElement(this.secureWalletLaterButton);
+    await this.driver.waitForSelector(this.skipAccountSecurityMessage);
+    await this.driver.clickElement(this.skipSRPBackupCheckbox);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.skipSRPBackupConfirmButton,
+    );
   }
 }
 

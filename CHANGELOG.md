@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update privacy policy url for Firefox builds on metametrics screen ([#32062](https://github.com/MetaMask/metamask-extension/pull/32062))
+- Move MetaMetrics opt-in page to first position during onboarding flow for Firefox users to comply with updated Firefox Add-on policies ([#32179](https://github.com/MetaMask/metamask-extension/pull/32179))
+- Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
+- Update security and privacy policy description to reflect Solana account handling ([#32231](https://github.com/MetaMask/metamask-extension/pull/32208))
+- Updates the Solana modal by adding a learn more link, UI tweaks and auto selects a solana account when it exists. ([#32087](https://github.com/MetaMask/metamask-extension/pull/32087))
 
 ### Fixed
 - Fix confusing error shown when trying to unlock the wallet with the wrong password ([#31933](https://github.com/MetaMask/metamask-extension/pull/31933))
