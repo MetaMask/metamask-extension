@@ -1,4 +1,4 @@
-import JSZip from 'jszip';
+import unzipper from 'unzipper';
 import type { TestRun } from './shared/test-reports';
 import { IncomingWebhook } from '@slack/webhook';
 
@@ -72,11 +72,12 @@ async function main() {
           artifact_id: artifact.id,
           archive_format: 'zip',
         });
-        const zip = await JSZip.loadAsync(response.data as ArrayBuffer);
-        const file = zip.files['test-runs.json'];
+        const buffer = Buffer.from(response.data as ArrayBuffer);
+        const zip = await unzipper.Open.buffer(buffer);
+        const file = zip.files.find((file) => file.path === 'test-runs.json');
         if (!file) throw new Error(`'test-runs.json' file in zip not found!`);
-        const content = await file.async('string');
-        return JSON.parse(content);
+        const content = await file.buffer();
+        return JSON.parse(content.toString());
       }),
     )
   ).flat();
