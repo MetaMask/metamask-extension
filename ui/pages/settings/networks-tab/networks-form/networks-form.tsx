@@ -93,9 +93,6 @@ export const NetworksForm = ({
   const trackEvent = useContext(MetaMetricsContext);
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const useWellKnownChainsValidation = useSelector(
-    useExternalWellKnownChainsValidationSelector,
-  );
 
   const {
     name,
@@ -110,10 +107,7 @@ export const NetworksForm = ({
     setBlockExplorers,
   } = networkFormState;
 
-  const { wellKnownChains, error } = useWellKnownChains(
-    useWellKnownChainsValidation,
-  );
-  console.log(wellKnownChains, error);
+  const { wellKnownChains } = useWellKnownChains();
 
   const [errors, setErrors] = useState<
     Record<string, { key: string; msg: string } | undefined>

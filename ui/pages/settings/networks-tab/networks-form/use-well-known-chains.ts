@@ -6,7 +6,11 @@ import {
 
 export type { WellKnownChain } from '../../../../../shared/modules/well-known-chains';
 
-export const useWellKnownChains = (useWellKnownChainsValidation: boolean) => {
+export const useWellKnownChains = () => {
+  const useWellKnownChainsValidation = useSelector(
+    useExternalWellKnownChainsValidationSelector,
+  );
+
   const [wellKnownChains, setWellKnownChains] = useState<{
     wellKnownChains?: WellKnownChain[];
     error?: Error;
