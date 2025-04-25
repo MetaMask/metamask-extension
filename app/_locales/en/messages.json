@@ -2760,6 +2760,9 @@
   "learnMoreAboutPrivacy": {
     "message": "Learn more about privacy best practices."
   },
+  "learnMoreAboutSolanaAccounts": {
+    "message": "Learn more about Solana accounts"
+  },
   "learnMoreKeystone": {
     "message": "Learn More"
   },
@@ -5349,7 +5352,7 @@
     "message": "More features coming soon"
   },
   "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Solana dapps, NFTs, hardware wallet support, and more coming soon."
+    "message": "NFTs, hardware wallet support, and more coming soon."
   },
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"
@@ -6579,6 +6582,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewSolanaAccount": {
+    "message": "View Solana account"
   },
   "viewTransaction": {
     "message": "View transaction"
