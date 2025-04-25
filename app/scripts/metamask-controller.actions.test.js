@@ -14,6 +14,7 @@ import { PermissionsRequestNotFoundError } from '@metamask/permission-controller
 import nock from 'nock';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import MetaMaskController from './metamask-controller';
+import { getNetworkConfigurationIdByChainId } from '../../ui/selectors';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -278,7 +279,17 @@ describe('MetaMaskController', function () {
     it('networkClientId is used when provided', async function () {
       const callSpy = jest
         .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValue({ configuration: { chainId: '0xa' } });
+        .mockReturnValueOnce({
+          configuration: { chainId: '0xa' },
+        })
+        .mockReturnValueOnce({
+          networkConfigurationsByChainId: {
+            '0xa': {
+              nativeCurrency: 'ETH',
+              chainId: '0xa',
+            },
+          },
+        });
 
       await metamaskController.getApi().addToken({
         address,
