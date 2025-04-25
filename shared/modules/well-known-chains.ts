@@ -1,7 +1,4 @@
 import { type Chain as WellKnownChain } from 'eth-chainlist';
-import { useSelector } from 'react-redux';
-// eslint-disable-next-line import/no-restricted-paths
-import { useExternalWellKnownChainsValidationSelector } from '../../ui/selectors';
 import { DAY } from '../constants/time';
 import fetchWithCache from '../lib/fetch-with-cache';
 import { getStorageItem, setStorageItem } from '../lib/storage-helpers';
@@ -33,6 +30,8 @@ async function getWellKnownChainsFromCache(): Promise<WellKnownChain[] | null> {
  * a build-time compiled list of networks), or from an up-to-date external
  * network list of well-known chains (if the user's `useSafeChainsListValidation`
  * security setting allows for it).
+ *
+ * @param useExternalWellKnownChainsValidation
  */
 export async function getWellKnownChains(
   useExternalWellKnownChainsValidation: boolean,

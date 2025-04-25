@@ -373,7 +373,9 @@ export default function ConfirmationPage({
   useEffect(() => {
     async function fetchWellKnownChainsList(_pendingConfirmation) {
       try {
-        const wellKnownChains = await getWellKnownChains(useSafeChainsListValidation);
+        const wellKnownChains = await getWellKnownChains(
+          useSafeChainsListValidation,
+        );
         const requestId = parseInt(
           _pendingConfirmation.requestData.chainId,
           16,

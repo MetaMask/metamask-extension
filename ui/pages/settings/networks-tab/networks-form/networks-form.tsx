@@ -67,10 +67,7 @@ import {
   DropdownEditor,
   DropdownEditorStyle,
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
-import {
-  getTokenNetworkFilter,
-  useExternalWellKnownChainsValidationSelector,
-} from '../../../../selectors';
+import { getTokenNetworkFilter } from '../../../../selectors';
 import {
   useWellKnownChains,
   rpcIdentifierUtility,

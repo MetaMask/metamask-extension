@@ -35,7 +35,6 @@ import {
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
 } from './cells';
-import { useExternalWellKnownChainsValidationSelector } from '../../../../selectors';
 
 export type TokenCellProps = {
   token: TokenWithFiatAmount;

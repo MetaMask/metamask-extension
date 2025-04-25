@@ -71,7 +71,9 @@ export function useIsOriginalNativeTokenSymbol(
           return;
         }
 
-        const wellKnownChains = await getWellKnownChains(useExternalWellKnownChainsValidation);
+        const wellKnownChains = await getWellKnownChains(
+          useExternalWellKnownChainsValidation,
+        );
 
         const matchedChain = wellKnownChains.find(
           (network) => network.chainId === parseInt(networkId, 16),
