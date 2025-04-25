@@ -111,7 +111,7 @@ describe('Solana Wallet Standard - Connect', function () {
             '.multichain-network-list-item',
           );
 
-          // Deselect Solana permission and select mainnet
+          // Deselect Solana permission and select Ethereum mainnet
           for (const item of networkListItems) {
             const networkNameDiv = await item.findElement(By.css('div[data-testid]'));
             const network = await networkNameDiv.getAttribute('data-testid');
