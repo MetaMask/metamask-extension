@@ -896,8 +896,6 @@ describe('Custom network', function () {
           );
           await rpcNameInput.sendKeys('testName');
 
-          await new Promise((resolve) => setTimeout(resolve, 5000));
-
           await driver.clickElement({
             text: 'Add URL',
             tag: 'button',
