@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
-  CHAIN_SPEC_URL,
 } from '../../shared/constants/network';
-import { DAY } from '../../shared/constants/time';
+import { getWellknownChains } from '../../shared/lib/network-utils';
 import { useSafeChainsListValidationSelector } from '../selectors';
 import {
   getMultichainIsEvm,
@@ -47,16 +45,12 @@ export function useIsOriginalNativeTokenSymbol(
       }
 
       try {
-        if (!useSafeChainsListValidation) {
-          setIsOriginalNativeSymbol(true);
-          return;
-        }
-
         // exclude local dev network
         if (isLocalhost(rpcUrl)) {
           setIsOriginalNativeSymbol(true);
           return;
         }
+
 
         const mappedCurrencySymbol = CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
         if (mappedCurrencySymbol) {
@@ -65,25 +59,21 @@ export function useIsOriginalNativeTokenSymbol(
         }
 
         const mappedAsNetworkCollision =
-          CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId];
+        CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId];
 
         const isMappedCollision =
-          mappedAsNetworkCollision &&
-          mappedAsNetworkCollision.some(
-            (network) => network.currencySymbol === ticker,
-          );
+        mappedAsNetworkCollision &&
+        mappedAsNetworkCollision.some(
+          (network) => network.currencySymbol === ticker,
+        );
 
         if (isMappedCollision) {
           setIsOriginalNativeSymbol(true);
           return;
         }
 
-        const safeChainsList = await fetchWithCache({
-          url: CHAIN_SPEC_URL,
-          allowStale: true,
-          cacheOptions: { cacheRefreshTime: DAY },
-          functionName: 'getSafeChainsList',
-        });
+
+        const safeChainsList = await getWellknownChains();
 
         const matchedChain = safeChainsList.find(
           (network) => network.chainId === parseInt(networkId, 16),

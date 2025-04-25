@@ -2,16 +2,10 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useSafeChainsListValidationSelector } from '../../../../selectors';
-import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
-import { CHAIN_SPEC_URL } from '../../../../../shared/constants/network';
-import { DAY } from '../../../../../shared/constants/time';
-
-export type SafeChain = {
-  chainId: string;
-  name: string;
-  nativeCurrency: { symbol: string };
-  rpc: string[];
-};
+import {
+  WellknownChain,
+  getWellknownChains,
+} from '../../../../../shared/lib/network-utils';
 
 export const useSafeChains = () => {
   const useSafeChainsListValidation = useSelector(
@@ -19,25 +13,22 @@ export const useSafeChains = () => {
   );
 
   const [safeChains, setSafeChains] = useState<{
-    safeChains?: SafeChain[];
+    safeChains?: WellknownChain[];
     error?: Error;
   }>({ safeChains: [] });
 
   useEffect(() => {
-    if (useSafeChainsListValidation) {
-      fetchWithCache({
-        url: CHAIN_SPEC_URL,
-        functionName: 'getSafeChainsList',
-        allowStale: true,
-        cacheOptions: { cacheRefreshTime: DAY },
-      })
-        .then((response) => {
-          setSafeChains({ safeChains: response });
-        })
-        .catch((error) => {
+    async function fetchSafeChains() {
+      try {
+        const safeChains = await getWellknownChains();
+        setSafeChains({ safeChains });
+      } catch (error) {
+        if (error instanceof Error) {
           setSafeChains({ error });
-        });
+        }
+      }
     }
+    fetchSafeChains();
   }, [useSafeChainsListValidation]);
 
   return safeChains;
@@ -45,7 +36,7 @@ export const useSafeChains = () => {
 
 export const rpcIdentifierUtility = (
   rpcUrl: string,
-  safeChains: SafeChain[],
+  safeChains: WellknownChain[],
 ) => {
   const { host } = new URL(rpcUrl);
 

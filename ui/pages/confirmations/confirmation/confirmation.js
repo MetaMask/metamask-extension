@@ -15,8 +15,7 @@ import { produce } from 'immer';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { getWellknownChains } from '../../../../shared/lib/network-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -375,34 +374,23 @@ export default function ConfirmationPage({
   useEffect(() => {
     async function fetchSafeChainsList(_pendingConfirmation) {
       try {
-        if (useSafeChainsListValidation) {
-          const response = await fetchWithCache({
-            url: CHAIN_SPEC_URL,
-            allowStale: true,
-            cacheOptions: { cacheRefreshTime: DAY },
-            functionName: 'getSafeChainsList',
-          });
-          const safeChainsList = response;
-          const _matchedChain = safeChainsList.find(
-            (chain) =>
-              chain.chainId ===
-              parseInt(_pendingConfirmation.requestData.chainId, 16),
+        const safeChainsList = await getWellknownChains();
+        const requestId = parseInt(_pendingConfirmation.requestData.chainId, 16);
+        const _matchedChain = safeChainsList.find(({ chainId }) => chainId === requestId);
+        setMatchedChain(_matchedChain);
+        setChainFetchComplete(true);
+        setProviderError(null);
+        if (
+          _matchedChain?.nativeCurrency?.symbol?.toLowerCase() ===
+          _pendingConfirmation.requestData.ticker?.toLowerCase()
+        ) {
+          setCurrencySymbolWarning(null);
+        } else {
+          setCurrencySymbolWarning(
+            t('chainListReturnedDifferentTickerSymbol', [
+              _matchedChain?.nativeCurrency?.symbol,
+            ]),
           );
-          setMatchedChain(_matchedChain);
-          setChainFetchComplete(true);
-          setProviderError(null);
-          if (
-            _matchedChain?.nativeCurrency?.symbol?.toLowerCase() ===
-            _pendingConfirmation.requestData.ticker?.toLowerCase()
-          ) {
-            setCurrencySymbolWarning(null);
-          } else {
-            setCurrencySymbolWarning(
-              t('chainListReturnedDifferentTickerSymbol', [
-                _matchedChain?.nativeCurrency?.symbol,
-              ]),
-            );
-          }
         }
       } catch (error) {
         log.warn('Failed to fetch the chainList from chainid.network', error);

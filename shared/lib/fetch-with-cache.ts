@@ -8,6 +8,7 @@ const fetchWithCache = async ({
   cacheOptions: { cacheRefreshTime = MINUTE * 6, timeout = SECOND * 30 } = {},
   functionName = '',
   allowStale = false,
+  cacheKey = `cachedFetch:${url}`,
 }: {
   url: string;
 
@@ -20,6 +21,7 @@ const fetchWithCache = async ({
   cacheOptions?: Record<string, any>;
   functionName: string;
   allowStale?: boolean;
+  cacheKey?: string;
 }) => {
   if (
     fetchOptions.body ||
@@ -38,7 +40,7 @@ const fetchWithCache = async ({
   }
 
   const currentTime = Date.now();
-  const cacheKey = `cachedFetch:${url}`;
+
   const { cachedResponse, cachedTime } = (await getStorageItem(cacheKey)) || {};
   if (cachedResponse && currentTime - cachedTime < cacheRefreshTime) {
     return cachedResponse;
