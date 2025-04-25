@@ -9,7 +9,13 @@ describe('Test Snap get preferences', function () {
   it('validate the results', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: {
+              privacyMode: true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
