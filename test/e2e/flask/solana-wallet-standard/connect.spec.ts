@@ -278,7 +278,7 @@ describe('Solana Wallet Standard - Connect', function () {
     });
 
     describe('Given I have connected to two accounts', function () {
-      it.only('Refreshing the page should keep me connected to the last selected account', async function () {
+      it('Refreshing the page should keep me connected to the last selected account', async function () {
         await withSolanaAccountSnap(
           {
             ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
