@@ -892,11 +892,17 @@ const PrepareBridgePage = () => {
             !isInsufficientBalance(srcTokenBalance) &&
             isInsufficientGasForQuote(nativeAssetBalance) && (
               <BannerAlert
+                ref={isEstimatedReturnLowRef}
                 marginInline={4}
-                marginBottom={10}
+                marginBottom={3}
+                title={t('bridgeValidationInsufficientGasTitle', [ticker])}
                 severity={BannerAlertSeverity.Danger}
-                description={t('noOptionsAvailableMessage')}
+                description={t('bridgeValidationInsufficientGasMessage', [
+                  ticker,
+                ])}
                 textAlign={TextAlign.Left}
+                actionButtonLabel={t('buyMoreAsset', [ticker])}
+                actionButtonOnClick={() => openBuyCryptoInPdapp()}
               />
             )}
           {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
@@ -913,24 +919,6 @@ const PrepareBridgePage = () => {
               onClose={() => setIsLowReturnBannerOpen(false)}
             />
           )}
-          {!isLoading &&
-            activeQuote &&
-            !isInsufficientBalance(srcTokenBalance) &&
-            isInsufficientGasForQuote(nativeAssetBalance) && (
-              <BannerAlert
-                ref={isEstimatedReturnLowRef}
-                marginInline={4}
-                marginBottom={3}
-                title={t('bridgeValidationInsufficientGasTitle', [ticker])}
-                severity={BannerAlertSeverity.Danger}
-                description={t('bridgeValidationInsufficientGasMessage', [
-                  ticker,
-                ])}
-                textAlign={TextAlign.Left}
-                actionButtonLabel={t('buyMoreAsset', [ticker])}
-                actionButtonOnClick={() => openBuyCryptoInPdapp()}
-              />
-            )}
         </Column>
       </Column>
       {showBlockExplorerToast && blockExplorerToken && (
