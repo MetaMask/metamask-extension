@@ -14,7 +14,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
-import { Hex } from '@metamask/utils';
+import { CaipAssetType, Hex } from '@metamask/utils';
 import { useTheme } from '../../../../hooks/useTheme';
 import {
   BackgroundColor,
@@ -31,9 +31,10 @@ import {
   ButtonBaseSize,
 } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TimeRange, useHistoricalPrices } from '../../useHistoricalPrices';
+import { useHistoricalPrices } from '../../useHistoricalPrices';
 import { loadingOpacity } from '../../util';
 import AssetPrice from '../asset-price';
+import { useChartTimeRanges } from '../../useChartTimeRanges';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 
@@ -89,7 +90,11 @@ const AssetChart = ({
   const t = useI18nContext();
   const theme = useTheme();
 
-  const [timeRange, setTimeRange] = useState<TimeRange>('1D');
+  const timeRanges = useChartTimeRanges(address as CaipAssetType, currency);
+
+  const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
+    timeRanges[0] ?? 'P1D',
+  );
 
   const chartRef = useRef<Chart<'line', Point[]>>();
   const priceRef = useRef<{
@@ -98,25 +103,27 @@ const AssetChart = ({
 
   const {
     loading,
-    data: { prices, edges },
+    data: {
+      prices,
+      metadata: { minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax },
+    },
   } = useHistoricalPrices({
     chainId,
     address,
     currency,
-    timeRange,
+    timeRange: selectedTimeRange,
   });
 
-  const { xMin, xMax, yMin, yMax } = edges ?? {};
   const options = {
     ...initialChartOptions,
     borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
     scales: {
-      x: { min: xMin?.x, max: xMax?.x, display: false, type: 'linear' },
-      y: { min: yMin?.y, max: yMax?.y, display: false },
+      x: { min: xMin, max: xMax, display: false, type: 'linear' },
+      y: { min: yMin, max: yMax, display: false },
     },
   } as const;
 
-  if (!currentPrice || (!loading && !prices)) {
+  if (!currentPrice || (!loading && !prices.length)) {
     return null;
   }
 
@@ -141,7 +148,12 @@ const AssetChart = ({
         }
       >
         <Box style={{ opacity: loading && prices ? loadingOpacity : 1 }}>
-          <ChartTooltip point={yMax} {...edges} currency={currency} />
+          <ChartTooltip
+            point={maxPricePoint}
+            xMin={xMin}
+            xMax={xMax}
+            currency={currency}
+          />
           <Box
             style={{ aspectRatio: `${options.aspectRatio}` }}
             display={Display.Flex}
@@ -188,7 +200,12 @@ const AssetChart = ({
               }}
             />
           </Box>
-          <ChartTooltip point={yMin} {...edges} currency={currency} />
+          <ChartTooltip
+            point={minPricePoint}
+            xMin={xMin}
+            xMax={xMax}
+            currency={currency}
+          />
         </Box>
 
         <Box
@@ -199,29 +216,21 @@ const AssetChart = ({
           marginLeft={4}
           marginRight={4}
         >
-          {((buttons: [string, TimeRange][]) =>
-            buttons.map(([label, range]) => (
-              <ButtonBase
-                key={range}
-                className={classnames('time-range-button', {
-                  'time-range-button__selected': range === timeRange,
-                })}
-                onClick={() => setTimeRange(range)}
-                variant={TextVariant.bodySmMedium}
-                size={ButtonBaseSize.Sm}
-                backgroundColor={BackgroundColor.transparent}
-                color={TextColor.textAlternative}
-              >
-                {label}
-              </ButtonBase>
-            )))([
-            [t('oneDayAbbreviation'), '1D'],
-            [t('oneWeekAbbreviation'), '7D'],
-            [t('oneMonthAbbreviation'), '1M'],
-            [t('threeMonthsAbbreviation'), '3M'],
-            [t('oneYearAbbreviation'), '1Y'],
-            [t('all'), '1000Y'],
-          ])}
+          {timeRanges.map((timeRange) => (
+            <ButtonBase
+              key={timeRange}
+              className={classnames('time-range-button', {
+                'time-range-button__selected': timeRange === selectedTimeRange,
+              })}
+              onClick={() => setSelectedTimeRange(timeRange)}
+              variant={TextVariant.bodySmMedium}
+              size={ButtonBaseSize.Sm}
+              backgroundColor={BackgroundColor.transparent}
+              color={TextColor.textAlternative}
+            >
+              {timeRange}
+            </ButtonBase>
+          ))}
         </Box>
       </Box>
     </Box>
