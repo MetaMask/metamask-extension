@@ -2,7 +2,6 @@
 import React from 'react';
 import { KnownCaipNamespace } from '@metamask/utils';
 import { fireEvent, screen } from '@testing-library/react';
-import { merge } from 'lodash';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -70,7 +69,7 @@ const DEFAULT_PROPS = {
 };
 
 const render = (props = {}, state = {}) => {
-  const defaultState = {
+  const store = configureStore({
     metamask: {
       ...mockState.metamask,
       completedOnboarding: true,
@@ -105,6 +104,7 @@ const render = (props = {}, state = {}) => {
         ...mockState.metamask.snaps,
         [mockSnap.id]: mockSnap,
       },
+      ...state.metamask,
     },
     activeTab: {
       id: 113,
@@ -113,9 +113,7 @@ const render = (props = {}, state = {}) => {
       protocol: 'https:',
       url: 'https://metamask.github.io/test-dapp/',
     },
-  };
-
-  const store = configureStore(merge(defaultState, state));
+  });
   const allProps = { ...DEFAULT_PROPS, ...props };
   return renderWithProvider(<AccountListItem {...allProps} />, store);
 };
@@ -419,105 +417,48 @@ describe('AccountListItem', () => {
           },
           {
             metamask: {
-              ...mockState.metamask,
               networksWithTransactionActivity: {
                 [mockAccount.address]: {
-                  activeChains: [1, 137],
+                  activeChains: [1, 137, 10],
                   namespace: KnownCaipNamespace.EIP155,
                 },
               },
             },
           },
         );
+
         const avatarGroup = container.querySelector(
           '[data-testid="avatar-group"]',
         );
-        console.log('avatarGroup:', avatarGroup);
         expect(avatarGroup).toBeInTheDocument();
 
-        const networkIcons = container.querySelectorAll(
-          '[data-testid="avatar-group""]',
-        );
-        expect(networkIcons).toHaveLength(2);
+        // Count the actual network avatars within the avatar group
+        const networkIcons = avatarGroup.querySelectorAll('.mm-avatar-network');
+        expect(networkIcons).toHaveLength(3);
       });
 
-      // it('does not render network icons when account has no transaction activity', () => {
-      //   const { container } = render(
-      //     {
-      //       account: mockAccount,
-      //     },
-      //     {
-      //       metamask: {
-      //         ...mockState.metamask,
-      //         networksWithTransactionActivity: {},
-      //       },
-      //     },
-      //   );
+      it('does not render network icons when account has no transaction activity', () => {
+        const { container } = render(
+          {
+            account: mockAccount,
+          },
+          {
+            metamask: {
+              networksWithTransactionActivity: {
+                [mockAccount.address]: {
+                  activeChains: [],
+                  namespace: KnownCaipNamespace.EIP155,
+                },
+              },
+            },
+          },
+        );
 
-      //   const avatarGroup = container.querySelector(
-      //     '[data-testid="avatar-group"]',
-      //   );
-      //   expect(avatarGroup).not.toBeInTheDocument();
-      // });
-
-      // it('renders network icons in correct order based on transaction activity', () => {
-      //   const { container } = render(
-      //     {
-      //       account: mockAccount,
-      //     },
-      //     {
-      //       metamask: {
-      //         ...mockState.metamask,
-      //         networksWithTransactionActivity: {
-      //           [mockAccount.address]: {
-      //             activeChains: ['0x1', '0x89', '0x38'],
-      //           },
-      //         },
-      //       },
-      //     },
-      //   );
-
-      //   const avatarGroup = container.querySelector(
-      //     '[data-testid="avatar-group"]',
-      //   );
-      //   expect(avatarGroup).toBeInTheDocument();
-
-      //   const networkIcons = container.querySelectorAll(
-      //     '[data-testid="avatar-network"]',
-      //   );
-      //   expect(networkIcons).toHaveLength(3);
-      // });
-
-      // it('handles non-EVM accounts network activity display correctly', () => {
-      //   const { container } = render(
-      //     {
-      //       account: mockNonEvmAccount,
-      //     },
-      //     {
-      //       metamask: {
-      //         ...mockState.metamask,
-      //         networksWithTransactionActivity: {
-      //           [mockNonEvmAccount.address]: {
-      //             activeChains: [
-      //               'bip122:000000000019d6689c085ae165831e93/slip44:0',
-      //             ], // Bitcoin mainnet
-      //           },
-      //         },
-      //       },
-      //     },
-      //   );
-
-      //   const avatarGroup = container.querySelector(
-      //     '[data-testid="avatar-group"]',
-      //   );
-      //   console.log('avatarGroup:', avatarGroup);
-      //   expect(avatarGroup).toBeInTheDocument();
-
-      //   const networkIcons = container.querySelectorAll(
-      //     '[data-testid="avatar-network"]',
-      //   );
-      //   expect(networkIcons).toHaveLength(1);
-      // });
+        const avatarGroup = container.querySelector(
+          '[data-testid="avatar-group"]',
+        );
+        expect(avatarGroup).not.toBeInTheDocument();
+      });
     });
   });
 });

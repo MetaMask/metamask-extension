@@ -184,7 +184,11 @@ const AccountListItem = ({
 
   const sortedNetworkIcons = useMemo(() => {
     const chainsWithActivityByAddress =
-      chainsWithTransactionActivity?.[account.address]?.activeChains ?? [];
+      chainsWithTransactionActivity?.[account.address]?.activeChains;
+
+    if (!chainsWithActivityByAddress?.length) {
+      return [];
+    }
 
     const chainsWithActivity = chainsWithActivityByAddress.map((chainId) => {
       const formattedChainId = toHex(chainId);
