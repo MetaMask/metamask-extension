@@ -1,8 +1,9 @@
 import { encode } from '@metamask/abi-utils';
 import { getChecksumAddress } from '@metamask/utils';
+import { keccak } from 'ethereumjs-util';
 import { getCaveatArrayPacketHash, type Caveat } from './caveat';
 import { resolveCaveats, type Caveats } from './caveatBuilder';
-import { keccak256, toHex, type Hex } from './utils';
+import { toHex, type Hex } from './utils';
 
 /**
  * To be used on a delegation as the root authority.
@@ -19,11 +20,8 @@ export const ANY_BENEFICIARY = '0x0000000000000000000000000000000000000a11';
  * To be used when generating a delegation hash to be signed
  * NOTE: signature is omitted from the Delegation typehash
  */
-export const DELEGATION_TYPEHASH = keccak256(
-  toHex(
-    'Delegation(address delegate,address delegator,bytes32 authority,Caveat[] caveats,uint256 salt)Caveat(address enforcer,bytes terms)',
-  ),
-);
+export const DELEGATION_TYPEHASH =
+  '0x88c1d2ecf185adf710588203a5f263f0ff61be0d33da39792cde19ba9aa4331e' as Hex;
 
 /**
  * Converts a Delegation to a DelegationStruct.
@@ -123,20 +121,18 @@ export const encodePermissionContexts = (delegations: Delegation[][]) => {
  */
 export const getDelegationHashOffchain = (input: Delegation): Hex => {
   const delegationStruct = toDelegationStruct(input);
-  const encoded: Hex = toHex(
-    encode(
-      ['bytes32', 'address', 'address', 'bytes32', 'bytes32', 'uint'],
-      [
-        DELEGATION_TYPEHASH,
-        delegationStruct.delegate,
-        delegationStruct.delegator,
-        delegationStruct.authority,
-        getCaveatArrayPacketHash(delegationStruct.caveats),
-        delegationStruct.salt,
-      ],
-    ),
+  const encoded = encode(
+    ['bytes32', 'address', 'address', 'bytes32', 'bytes32', 'uint'],
+    [
+      DELEGATION_TYPEHASH,
+      delegationStruct.delegate,
+      delegationStruct.delegator,
+      delegationStruct.authority,
+      getCaveatArrayPacketHash(delegationStruct.caveats),
+      delegationStruct.salt,
+    ],
   );
-  return keccak256(encoded);
+  return toHex(keccak(Buffer.from(encoded)));
 };
 
 type BaseCreateDelegationOptions = {
