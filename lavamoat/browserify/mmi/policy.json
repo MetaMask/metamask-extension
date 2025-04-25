@@ -1277,7 +1277,9 @@
       "globals": {
         "AbortController": true,
         "URLSearchParams": true,
-        "console.log": true
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true
       },
       "packages": {
         "ethers>@ethersproject/address": true,
@@ -1287,11 +1289,13 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/polling-controller": true,
-        "@metamask/bridge-controller>@metamask/snaps-utils": true,
         "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "@metamask/bridge-controller>bignumber.js": true,
+        "lodash": true,
+        "reselect": true
       }
     },
     "@metamask/browser-passworder": {
@@ -1359,22 +1363,6 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/utils": true
-      }
-    },
-    "@metamask/delegation-toolkit": {
-      "packages": {
-        "@metamask/delegation-toolkit>@metamask/delegation-utils>@metamask/delegation-abis": true,
-        "@metamask/delegation-toolkit>@metamask/delegation-utils": true,
-        "viem": true
-      }
-    },
-    "@metamask/delegation-toolkit>@metamask/delegation-utils": {
-      "packages": {
-        "@metamask/delegation-toolkit>@metamask/delegation-utils>@metamask/delegation-abis": true,
-        "@metamask/delegation-toolkit>@metamask/delegation-utils>@metamask/delegation-deployments": true,
-        "browserify>buffer": true,
-        "viem": true,
-        "@metamask/delegation-toolkit>webauthn-p256": true
       }
     },
     "@metamask/ens-controller": {
@@ -1508,7 +1496,7 @@
         "@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/abi-utils": true,
         "@metamask/eth-sig-util>@metamask/utils": true,
-        "@metamask/eth-sig-util>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1520,7 +1508,7 @@
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1532,7 +1520,7 @@
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1544,7 +1532,7 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1556,7 +1544,7 @@
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1568,7 +1556,7 @@
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1580,7 +1568,7 @@
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1592,7 +1580,7 @@
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1604,7 +1592,7 @@
         "@metamask/keyring-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/keyring-controller>@metamask/eth-sig-util>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1616,7 +1604,7 @@
         "@metamask/signature-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/signature-controller>@metamask/eth-sig-util>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/eth-sig-util>tweetnacl": true
@@ -1788,7 +1776,7 @@
       "packages": {
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
-        "viem>@noble/curves": true,
+        "viem>webauthn-p256>@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
@@ -1891,21 +1879,16 @@
       }
     },
     "@metamask/multichain-network-controller": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/network-controller": true,
+        "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/multichain-network-controller>@solana/addresses": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/utils": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": true
       }
     },
     "@metamask/multichain-transactions-controller": {
@@ -2197,7 +2180,7 @@
       },
       "packages": {
         "@metamask/scure-bip39>@noble/hashes": true,
-        "@metamask/scure-bip39>@scure/base": true
+        "@metamask/utils>@scure/base": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -2298,7 +2281,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "viem>@noble/curves": true,
+        "viem>webauthn-p256>@noble/curves": true,
         "@noble/hashes": true
       }
     },
@@ -2356,41 +2339,6 @@
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "luxon": true,
-        "@metamask/snaps-utils>marked": true,
-        "@metamask/snaps-utils>rfdc": true,
-        "semver": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/snaps-utils": {
-      "globals": {
-        "File": true,
-        "FileReader": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "crypto": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-utils>@metamask/slip44": true,
-        "@metamask/snaps-sdk": true,
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "chalk": true,
-        "@metamask/snaps-utils>cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "@metamask/snaps-utils>fast-xml-parser": true,
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
         "semver": true,
@@ -2538,7 +2486,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/eth-sig-util>@metamask/utils>@scure/base": true,
+        "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2564,6 +2512,14 @@
         "crypto": true
       }
     },
+    "viem>@scure/bip32>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "viem>@scure/bip32>@noble/hashes": true
+      }
+    },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -2572,12 +2528,12 @@
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "viem>@noble/curves": {
+    "viem>webauthn-p256>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
       "packages": {
-        "viem>@noble/curves>@noble/hashes": true
+        "@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2592,19 +2548,13 @@
         "crypto": true
       }
     },
-    "viem>@noble/curves>@noble/hashes": {
+    "viem>@scure/bip32>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "viem>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2678,107 +2628,16 @@
         "document.defaultView": true
       }
     },
-    "@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/scure-bip39>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
     "@metamask/utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
       }
     },
-    "@metamask/eth-sig-util>@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
-      "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
-      }
-    },
     "viem>@scure/bip32": {
       "packages": {
-        "viem>@noble/curves": true,
-        "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
-      }
-    },
-    "viem>@scure/bip39": {
-      "packages": {
-        "@noble/hashes": true,
+        "viem>@scure/bip32>@noble/curves": true,
+        "viem>@scure/bip32>@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
     },
@@ -2978,20 +2837,6 @@
       }
     },
     "@metamask/multichain-network-controller>@solana/addresses": {
-      "globals": {
-        "Intl.Collator": true,
-        "TextEncoder": true,
-        "crypto.subtle.digest": true,
-        "crypto.subtle.exportKey": true
-      },
-      "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": {
       "globals": {
         "Intl.Collator": true,
         "TextEncoder": true,
@@ -3421,6 +3266,12 @@
       }
     },
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask/bridge-controller>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
@@ -3936,6 +3787,12 @@
         "@babel/runtime": true
       }
     },
+    "dompurify": {
+      "globals": {
+        "console.warn": true,
+        "define": true
+      }
+    },
     "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": {
       "packages": {
         "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
@@ -4026,7 +3883,7 @@
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+        "viem>@scure/bip32": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
@@ -4471,11 +4328,6 @@
         "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
       }
     },
-    "viem>isows": {
-      "globals": {
-        "WebSocket": true
-      }
-    },
     "@ensdomains/content-hash>js-base64": {
       "globals": {
         "Base64": "write",
@@ -4863,24 +4715,6 @@
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
-      }
-    },
-    "viem>ox": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "crypto.getRandomValues": true,
-        "crypto.subtle.exportKey": true,
-        "crypto.subtle.importKey": true,
-        "document.title": true,
-        "location.hostname": true,
-        "location.origin": true,
-        "navigator.credentials": true
-      },
-      "packages": {
-        "viem>@noble/curves": true,
-        "@noble/hashes": true,
-        "viem>abitype": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1": {
@@ -5930,32 +5764,6 @@
         "react-markdown>vfile>vfile-message": true
       }
     },
-    "viem": {
-      "globals": {
-        "AbortController": true,
-        "Image": true,
-        "Request": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "atob": true,
-        "btoa": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "viem>@noble/curves": true,
-        "viem>@noble/hashes": true,
-        "viem>@scure/bip32": true,
-        "viem>@scure/bip39": true,
-        "viem>abitype": true,
-        "viem>isows": true,
-        "viem>ox": true
-      }
-    },
     "browserify>vm-browserify": {
       "globals": {
         "document.body.appendChild": true,
@@ -5985,22 +5793,6 @@
     "@metamask/controllers>web3": {
       "globals": {
         "XMLHttpRequest": true
-      }
-    },
-    "@metamask/delegation-toolkit>webauthn-p256": {
-      "globals": {
-        "atob": true,
-        "btoa": true,
-        "crypto.subtle.digest": true,
-        "crypto.subtle.exportKey": true,
-        "crypto.subtle.importKey": true,
-        "document.title": true,
-        "location.hostname": true,
-        "navigator.credentials": true
-      },
-      "packages": {
-        "viem>@noble/curves": true,
-        "@noble/hashes": true
       }
     },
     "webextension-polyfill": {

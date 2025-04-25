@@ -1,9 +1,9 @@
 import { Hex } from '@metamask/utils';
 import { useEIP7702Account } from '../../confirmations/hooks/useEIP7702Account';
 import { useEIP7702Networks } from '../../confirmations/hooks/useEIP7702Networks';
-import { createDelegation } from '@metamask/delegation-toolkit';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { signDelegation, storeDelegationEntry } from '../../../store/actions';
+import { createDelegation } from '../../../../shared/lib/delegation';
 
 export enum REMOTE_MODES {
   SWAP = 'swap',

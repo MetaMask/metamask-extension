@@ -13,11 +13,10 @@ import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
-  CaipAssetType,
+  type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
-  hexToNumber,
 } from '@metamask/utils';
 import {
   AssetsContractController,
@@ -53,15 +52,12 @@ import {
   type DelegationEntry,
   type DelegationFilter,
 } from '@metamask/delegation-controller';
-import {
-  getDeleGatorEnvironment,
-  type UnsignedDelegation,
-} from '@metamask/delegation-toolkit';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import type { UnsignedDelegation } from '../../shared/lib/delegation';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -2664,6 +2660,27 @@ export function setActiveNetworkWithError(
   };
 }
 
+export function getNetworksWithTransactionActivityByAccounts(): ThunkAction<
+  Promise<NetworkConfiguration[]>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    log.debug('background.getNetworksWithTransactionActivityByAccounts');
+    try {
+      return await submitRequestToBackground(
+        'getNetworksWithTransactionActivityByAccounts',
+      );
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw new Error(
+        'Had a problem getting networks with activity by accounts!',
+      );
+    }
+  };
+}
+
 export function setActiveNetworkConfigurationId(
   networkConfigurationId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
@@ -2698,7 +2715,7 @@ export function rollbackToPreviousProvider(): ThunkAction<
 }
 
 export function removeNetwork(
-  chainId: Hex,
+  chainId: CaipChainId,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
@@ -6205,11 +6222,8 @@ export const signDelegation = async ({
   delegation: UnsignedDelegation;
   chainId: Hex;
 }): Promise<Hex> => {
-  const verifyingContract = getDeleGatorEnvironment(
-    hexToNumber(chainId),
-  ).DelegationManager;
   return await submitRequestToBackground('signDelegation', [
-    { delegation, verifyingContract, chainId },
+    { delegation, chainId },
   ]);
 };
 
