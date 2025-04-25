@@ -35,7 +35,6 @@ describe('Alert for insufficient funds', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.check_pageIsLoaded();
         await testDapp.clickERC721MintButton();
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.clickInlineAlert();
         await alertModal.check_insufficientBalanceMessageIsDisplayed();
