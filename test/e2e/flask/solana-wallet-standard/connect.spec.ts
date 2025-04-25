@@ -15,7 +15,7 @@ import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { By } from 'selenium-webdriver';
 
 describe('Solana Wallet Standard - Connect', function () {
-  describe('Connect the dapp with solana Standard', function () {
+  describe('Connect to a dapp via the Solana Wallet Standard', function () {
     it('Should connect', async function () {
       await withSolanaAccountSnap(
         {
