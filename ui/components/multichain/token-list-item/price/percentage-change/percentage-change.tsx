@@ -1,4 +1,5 @@
 import React from 'react';
+import { CaipAssetType } from '@metamask/utils';
 import { Box, Text } from '../../../../component-library';
 import {
   Display,
@@ -17,7 +18,7 @@ export const PercentageChange = ({
   address,
 }: {
   value: number | null | undefined;
-  address: `0x${string}`;
+  address: `0x${string}` | CaipAssetType;
 }) => {
   let color = TextColor.textDefault;
 
