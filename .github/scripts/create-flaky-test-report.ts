@@ -2,6 +2,7 @@ import unzipper from 'unzipper';
 import type { TestRun } from './shared/test-reports';
 import { IncomingWebhook } from '@slack/webhook';
 import { hasProperty } from '@metamask/utils';
+import type { AnyBlock } from '@slack/types';
 
 async function main() {
   const { Octokit } = await import('octokit');
@@ -83,16 +84,34 @@ async function main() {
     )
   ).flat();
 
-  const failedTests = testRuns.flatMap((testRun) =>
-    testRun.testFiles.flatMap((testFile) =>
-      testFile.testSuites.flatMap((testSuite) =>
-        testSuite.testCases
-          .concat(testSuite.attempts.flatMap((attempt) => attempt.testCases))
-          .filter((testCase) => testCase.status === 'failed')
-          .map((testCase) => ({ ...testCase, path: testFile.path })),
+  const failedTests = testRuns
+    .flatMap((testRun) =>
+      testRun.testFiles.flatMap((testFile) =>
+        testFile.testSuites.flatMap((testSuite) =>
+          testSuite.testCases
+            .map((testCase) => ({
+              ...testCase,
+              path: testFile.path,
+              jobId: testSuite.job.id,
+              runId: testSuite.job.runId,
+              date: new Date(testSuite.date),
+            }))
+            .concat(
+              testSuite.attempts.flatMap((attempt) =>
+                attempt.testCases.map((testCase) => ({
+                  ...testCase,
+                  path: testFile.path,
+                  jobId: attempt.job.id,
+                  runId: attempt.job.runId,
+                  date: new Date(attempt.date),
+                })),
+              ),
+            )
+            .filter((testCase) => testCase.status === 'failed'),
+        ),
       ),
-    ),
-  );
+    )
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
 
   const summarizedFailedTests = Object.values(
     failedTests.reduce<
@@ -119,38 +138,129 @@ async function main() {
   console.log(
     `❌ Failed tests on the ${env.REPOSITORY} repository ${env.BRANCH} branch from ${fromDateString} to ${toDateString}`,
   );
-  const lines = [
-    `\n\n:x: Failed tests on the <${repositoryUrl}|${env.REPOSITORY}> repository <${branchUrl}|${env.BRANCH}> branch from ${fromDateString} to ${toDateString}`,
+  const blocks: AnyBlock[] = [
+    {
+      type: 'rich_text',
+      elements: [
+        {
+          type: 'rich_text_section',
+          elements: [
+            {
+              type: 'emoji',
+              name: 'x',
+            },
+            {
+              type: 'text',
+              text: ' Failed tests on the ',
+            },
+            {
+              type: 'link',
+              url: repositoryUrl.toString(),
+              text: env.REPOSITORY,
+            },
+            {
+              type: 'text',
+              text: ' repository ',
+            },
+            {
+              type: 'link',
+              url: branchUrl.toString(),
+              text: env.BRANCH,
+            },
+            {
+              type: 'text',
+              text: ` branch from ${fromDateString} to ${toDateString} on GitHub Actions`,
+            },
+          ],
+        },
+      ],
+    },
   ];
 
   if (!summarizedFailedTests.length) {
     console.log('No failed tests found, good job!');
-    lines.push('\n No failed tests found, good job!');
+    blocks.push({
+      type: 'rich_text',
+      elements: [
+        {
+          type: 'rich_text_section',
+          elements: [
+            {
+              type: 'text',
+              text: 'No failed tests found, good job!',
+            },
+          ],
+        },
+      ],
+    });
   } else {
     for (const test of summarizedFailedTests) {
+      const testUrl = new URL(
+        `${repositoryUrl}/blob/${env.BRANCH}/${test.path}`,
+      );
+      const jobUrl = new URL(
+        `${repositoryUrl}/actions/runs/${test.runId}/job/${test.jobId}`,
+      );
       const issue = {
         template: 'general-issue.yml',
         labels: ['type-bug', 'Sev2-normal', 'flaky tests'].toString(),
         title: `Flaky test: \`${test.name}\``,
-        description: `\`\`\`js\n${test.error}\n\`\`\``,
+        description: `[View logs](${jobUrl})\n\`\`\`js\n${test.error}\n\`\`\``,
       };
-      const params = new URLSearchParams(issue);
+      const issueParams = new URLSearchParams(issue);
+      const issueUrl = new URL(`${repositoryUrl}/issues/new?${issueParams}`);
       console.error(
         `• ${test.name} failed ${test.count} time${test.count > 1 ? 's' : ''}`,
       );
-      const testUrl = new URL(
-        `${repositoryUrl}/blob/${env.BRANCH}/${test.path}`,
-      );
-      const issueUrl = new URL(`${repositoryUrl}/issues/new?${params}`);
-      lines.push(
-        `\n• <${testUrl}|${test.name}> failed ${test.count} time${
-          test.count > 1 ? 's' : ''
-        } :arrow_right: <${issueUrl}|Create an issue>`,
-      );
+      blocks.push({
+        type: 'rich_text',
+        elements: [
+          {
+            type: 'rich_text_section',
+            elements: [
+              {
+                type: 'text',
+                text: '• ',
+              },
+              {
+                type: 'link',
+                url: testUrl.toString(),
+                text: test.name,
+              },
+              {
+                type: 'text',
+                text: ` failed ${test.count} time${test.count > 1 ? 's' : ''} `,
+              },
+              {
+                type: 'emoji',
+                name: 'arrow_right',
+              },
+              {
+                type: 'text',
+                text: ' ',
+              },
+              {
+                type: 'link',
+                url: jobUrl.toString(),
+                text: 'View logs',
+              },
+              {
+                type: 'text',
+                text: ' | ',
+              },
+              {
+                type: 'link',
+                url: issueUrl.toString(),
+                text: 'Create issue',
+              },
+            ],
+          },
+        ],
+      });
     }
   }
 
-  if (env.SLACK_WEBHOOK_URL) await webhook.send({ text: lines.join('\n') });
+  if (env.SLACK_WEBHOOK_URL) await webhook.send({ blocks });
 }
 
 main();
