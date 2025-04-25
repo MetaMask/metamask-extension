@@ -54,7 +54,7 @@ export const getCommonProperties = (
     token_symbol_source: bridgeHistoryItem.quote.srcAsset.symbol,
     token_symbol_destination: bridgeHistoryItem.quote.destAsset.symbol,
 
-    stx_enabled: getIsSmartTransaction(state),
+    stx_enabled: getIsSmartTransaction(state, chain_id_source),
     is_hardware_wallet,
 
     provider: formatProviderLabel(bridgeHistoryItem.quote),

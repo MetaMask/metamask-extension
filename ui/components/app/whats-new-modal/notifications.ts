@@ -21,7 +21,7 @@ export const getTranslatedUINotifications = (
       image: {
         src: 'images/solana-logo-transparent.svg',
         width: 'auto',
-        height: '70px',
+        height: '60px',
       },
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
