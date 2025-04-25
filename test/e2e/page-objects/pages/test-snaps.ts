@@ -35,6 +35,8 @@ export const buttonLocator = {
   getAccountButton: '#getAccounts',
   getBip32CompressedPublicKeyButton: '#bip32GetCompressedPublic',
   getBip32PublicKeyButton: '#bip32GetPublic',
+  getPreferencesConnectButton: '#connectpreferences',
+  getPreferencesSubmitButton: '#getPreferences',
   getSettingsStateButton: '#settings-state',
   publicKeyBip44Button: '#sendBip44Test',
   sendErrorButton: '#sendError',
@@ -67,6 +69,7 @@ const spanLocator = {
   installedSnapResultSpan: '#installedSnapsResult',
   interactiveUIResultSpan: '#interactiveUIResult',
   messageResultEd25519SBip32Span: '#bip32MessageResult-ed25519Bip32',
+  preferencesResultSpan: '#preferencesResult',
   rpcResultSpan: '#rpcResult',
   updateVersionSpan: '#updateSnapVersion',
   wasmResultSpan: '#wasmResult',
@@ -190,5 +193,36 @@ export class TestSnaps {
       text: name,
       css: `${locator} option`,
     });
+  }
+
+  /**
+   * Validate the preferences result span JSON response.
+   * 
+   * @param expectedPreferences - The expected preferences object to validate against.
+   */
+    async check_preferencesResult(expectedPreferences: {
+      locale: string;
+      currency: string;
+      useSecurityAlerts: boolean;
+      useExternalPricingData: boolean;
+      simulateOnChainActions: boolean;
+      useTokenDetection: boolean;
+      batchCheckBalances: boolean;
+      displayNftMedia: boolean;
+      useNftDetection: boolean;
+    }) {
+    console.log('Validating preferences result span JSON response');
+
+    const element = await this.driver.findElement(spanLocator.preferencesResultSpan);
+    const spanText= await element.getAttribute("textContent")
+    const actualPreferences = JSON.parse(spanText);
+
+    console.log(`Actual preferences: ${JSON.stringify(actualPreferences)}`);
+    console.log(`Expected preferences: ${JSON.stringify(expectedPreferences)}`);
+
+    if (JSON.stringify(actualPreferences) !== JSON.stringify(expectedPreferences)) {
+      throw new Error('Preferences result span JSON does not match expected values');
+    }
+    console.log('Preferences result span JSON is valid');
   }
 }
