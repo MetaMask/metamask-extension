@@ -392,18 +392,23 @@ describe('wallet_createSession', () => {
     });
     await handler(baseRequest);
 
-    expect(sendMetrics).toHaveBeenCalledWith({
-      category: 'inpage_provider',
-      event: 'Dapp Viewed',
-      properties: {
-        is_first_visit: true,
-        number_of_accounts: 3,
-        number_of_accounts_connected: 4,
+    expect(sendMetrics).toHaveBeenCalledWith(
+      {
+        category: 'inpage_provider',
+        event: 'Dapp Viewed',
+        properties: {
+          is_first_visit: true,
+          number_of_accounts: 3,
+          number_of_accounts_connected: 4,
+        },
+        referrer: {
+          url: 'http://test.com',
+        },
       },
-      referrer: {
-        url: 'http://test.com',
+      {
+        excludeMetaMetricsId: true,
       },
-    });
+    );
   });
 
   it('returns the session ID, properties, and session scopes', async () => {
