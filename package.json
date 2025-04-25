@@ -415,7 +415,7 @@
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
     "xml2js": "^0.6.2",
-    "yjs": "file:../../work/yjs",
+    "yjs": "github:mirceanis/yjs#ffd17e19e39915055c864faaf123521a75ec64c7",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {

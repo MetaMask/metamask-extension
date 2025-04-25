@@ -27737,7 +27737,7 @@ __metadata:
     yaml: "npm:^2.4.1"
     yargs: "npm:^17.7.2"
     yargs-parser: "npm:^21.1.1"
-    yjs: "file:../../work/yjs"
+    yjs: "github:mirceanis/yjs#ffd17e19e39915055c864faaf123521a75ec64c7"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
   linkType: soft
@@ -39096,10 +39096,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yjs@file:../../work/yjs::locator=metamask-crx%40workspace%3A.":
-  version: 13.6.24
-  resolution: "yjs@file:../../work/yjs#../../work/yjs::hash=a5780c&locator=metamask-crx%40workspace%3A."
-  checksum: 10/75a40cd94d7c30fe2b64739a8f70d0c68bcfe755392540d33c0e59ec42b6485b37b799511ecf7da7c2f7838cebf4e04e344a8ead2d3d25e698223b82e2b81d30
+"yjs@github:mirceanis/yjs#ffd17e19e39915055c864faaf123521a75ec64c7":
+  version: 13.6.26
+  resolution: "yjs@https://github.com/mirceanis/yjs.git#commit=ffd17e19e39915055c864faaf123521a75ec64c7"
+  checksum: 10/c45a5613eff6972c595906605b138d3afc88d4eddb1f816e9274fe2f8a8679771b21a9a767c1aa2834e78a38e170037dcfcd77d406def1852524b1315b6468c5
   languageName: node
   linkType: hard
 
