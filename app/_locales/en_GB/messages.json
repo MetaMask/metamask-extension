@@ -1982,7 +1982,7 @@
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
   "errorGettingSafeChainList": {
-    "message": "Error while getting safe chain list, please continue with caution."
+    "message": "Error while getting well-known chain list, please continue with caution."
   },
   "errorMessage": {
     "message": "Message: $1",

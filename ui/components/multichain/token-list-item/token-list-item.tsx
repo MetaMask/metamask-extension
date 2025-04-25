@@ -53,9 +53,9 @@ import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import {
-  SafeChain,
-  useSafeChains,
-} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+  type WellKnownChain,
+  useWellKnownChains,
+} from '../../../pages/settings/networks-tab/networks-form/use-well-known-chains';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { PercentageChange } from './price/percentage-change/percentage-change';
@@ -105,17 +105,18 @@ export const TokenListItemComponent = ({
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
-  const { safeChains } = useSafeChains();
+  const { wellKnownChains } = useWellKnownChains();
   const currencyRates = useSelector(getCurrencyRates);
 
-  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
-    const decimalChainId =
-      isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
-    if (typeof decimalChainId === 'number') {
-      return chain.chainId === decimalChainId.toString();
-    }
-    return undefined;
-  });
+  const wellKnownChainDetails: WellKnownChain | undefined =
+    wellKnownChains?.find((chain) => {
+      const decimalChainId =
+        isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
+      if (typeof decimalChainId === 'number') {
+        return chain.chainId === decimalChainId;
+      }
+      return undefined;
+    });
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:
@@ -379,7 +380,7 @@ export const TokenListItemComponent = ({
                 tokenSymbol,
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                safeChainDetails?.nativeCurrency?.symbol ||
+                wellKnownChainDetails?.nativeCurrency?.symbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}
             </ModalBody>

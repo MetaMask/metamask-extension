@@ -15,7 +15,7 @@ import { produce } from 'immer';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { getWellknownChains } from '../../../../shared/lib/network-utils';
+import { getWellKnownChains } from '../../../../shared/modules/well-known-chains';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -30,7 +30,7 @@ import {
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
-  useSafeChainsListValidationSelector,
+  useExternalWellKnownChainsValidationSelector,
   getSnapsMetadata,
   getHideSnapBranding,
 } from '../../../selectors';
@@ -231,7 +231,7 @@ export default function ConfirmationPage({
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    useExternalWellKnownChainsValidationSelector,
   );
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
@@ -371,14 +371,14 @@ export default function ConfirmationPage({
   }, [approvalFlows]);
 
   useEffect(() => {
-    async function fetchSafeChainsList(_pendingConfirmation) {
+    async function fetchWellKnownChainsList(_pendingConfirmation) {
       try {
-        const safeChainsList = await getWellknownChains();
+        const wellKnownChains = await getWellKnownChains();
         const requestId = parseInt(
           _pendingConfirmation.requestData.chainId,
           16,
         );
-        const _matchedChain = safeChainsList.find(
+        const _matchedChain = wellKnownChains.find(
           ({ chainId }) => chainId === requestId,
         );
         setMatchedChain(_matchedChain);
@@ -397,7 +397,7 @@ export default function ConfirmationPage({
           );
         }
       } catch (error) {
-        log.warn('Failed to fetch the chainList from chainid.network', error);
+        log.warn('Failed to fetch the chainList', error);
         setProviderError(error);
         setMatchedChain(null);
         setCurrencySymbolWarning(null);
@@ -406,7 +406,7 @@ export default function ConfirmationPage({
       }
     }
     if (pendingConfirmation?.type === ApprovalType.AddEthereumChain) {
-      fetchSafeChainsList(pendingConfirmation);
+      fetchWellKnownChainsList(pendingConfirmation);
     }
   }, [
     pendingConfirmation,

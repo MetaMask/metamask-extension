@@ -165,7 +165,7 @@ import {
   getPermittedAccountsForScopes,
   KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
-import { preSeedWellknownChains } from '../../shared/lib/network-utils';
+import { preSeedWellKnownChains } from '../../shared/modules/well-known-chains';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -474,7 +474,7 @@ export default class MetamaskController extends EventEmitter {
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
     // fire this async method and forget
-    preSeedWellknownChains();
+    preSeedWellKnownChains();
 
     this.controllerMessenger = new Messenger();
 

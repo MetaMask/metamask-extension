@@ -1,9 +1,9 @@
 declare module 'eth-chainlist' {
-  export type WellknownChain = {
+  export type Chain = {
     chainId: number;
     name: string;
     nativeCurrency?: { symbol?: string };
     rpc: string[];
   };
-  export function rawChainData(): WellknownChain[];
+  export function rawChainData(): Chain[];
 }

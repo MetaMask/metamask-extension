@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import * as fetchWithCacheModule from '../../shared/lib/fetch-with-cache';
-import { useSafeChainsListValidationSelector } from '../selectors';
+import { useExternalWellKnownChainsValidationSelector } from '../selectors';
 import { getMultichainIsEvm } from '../selectors/multichain';
 import { useIsOriginalNativeTokenSymbol } from './useIsOriginalNativeTokenSymbol'; // Adjust the import path accordingly
 
@@ -20,7 +20,7 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     // - getMultichainCurrentNetwork
     return true;
   }
-  if (selector === useSafeChainsListValidationSelector) {
+  if (selector === useExternalWellKnownChainsValidationSelector) {
     return opts;
   }
   return undefined;
@@ -32,8 +32,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
   });
   it('should return the correct value when the native symbol matches the ticker', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter(true));
-    // Mock the safeChainsList response
-    const safeChainsList = [
+    // Mock the wellKnownChains response
+    const wellKnownChains = [
       {
         chainId: 1,
         nativeCurrency: {
@@ -42,10 +42,10 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       },
     ];
 
-    // Mock the fetchWithCache function to return the safeChainsList
+    // Mock the fetchWithCache function to return the wellKnownChains
     const spyFetch = jest
       .spyOn(fetchWithCacheModule, 'default')
-      .mockResolvedValue(safeChainsList);
+      .mockResolvedValue(wellKnownChains);
 
     let result;
 
@@ -62,8 +62,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
 
   it('should return the correct value when the native symbol does not match the ticker', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter(true));
-    // Mock the safeChainsList response with a different native symbol
-    const safeChainsList = [
+    // Mock the wellKnownChains response with a different native symbol
+    const wellKnownChains = [
       {
         chainId: 1,
         nativeCurrency: {
@@ -72,10 +72,10 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       },
     ];
 
-    // Mock the fetchWithCache function to return the safeChainsList
+    // Mock the fetchWithCache function to return the wellKnownChains
     const spyFetch = jest
       .spyOn(fetchWithCacheModule, 'default')
-      .mockResolvedValue(safeChainsList);
+      .mockResolvedValue(wellKnownChains);
 
     let result;
 
@@ -115,8 +115,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
   it('should return the correct value when the chainId is in the CHAIN_ID_TO_CURRENCY_SYMBOL_MAP', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter(true));
 
-    // Mock the safeChainsList response with a different native symbol
-    const safeChainsList = [
+    // Mock the wellKnownChains response with a different native symbol
+    const wellKnownChains = [
       {
         chainId: 1,
         nativeCurrency: {
@@ -125,10 +125,10 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       },
     ];
 
-    // Mock the fetchWithCache function to return the safeChainsList
+    // Mock the fetchWithCache function to return the wellKnownChains
     const spyFetch = jest
       .spyOn(fetchWithCacheModule, 'default')
-      .mockResolvedValue(safeChainsList);
+      .mockResolvedValue(wellKnownChains);
 
     let result;
 
@@ -145,8 +145,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
 
   it('should return the correct value when the chainId is not in the CHAIN_ID_TO_CURRENCY_SYMBOL_MAP', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter(true));
-    // Mock the safeChainsList response
-    const safeChainsList = [
+    // Mock the wellKnownChains response
+    const wellKnownChains = [
       {
         chainId: 314,
         nativeCurrency: {
@@ -155,10 +155,10 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       },
     ];
 
-    // Mock the fetchWithCache function to return the safeChainsList
+    // Mock the fetchWithCache function to return the wellKnownChains
     const spyFetch = jest
       .spyOn(fetchWithCacheModule, 'default')
-      .mockResolvedValue(safeChainsList);
+      .mockResolvedValue(wellKnownChains);
 
     let result;
 
@@ -176,8 +176,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
 
   it('should return true if chain safe validation is disabled', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter(false));
-    // Mock the safeChainsList response with a different native symbol
-    const safeChainsList = [
+    // Mock the wellKnownChains response with a different native symbol
+    const wellKnownChains = [
       {
         chainId: 1,
         nativeCurrency: {
@@ -186,10 +186,10 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       },
     ];
 
-    // Mock the fetchWithCache function to return the safeChainsList
+    // Mock the fetchWithCache function to return the wellKnownChains
     const spyFetch = jest
       .spyOn(fetchWithCacheModule, 'default')
-      .mockResolvedValue(safeChainsList);
+      .mockResolvedValue(wellKnownChains);
 
     let result;
 
@@ -259,8 +259,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
 
   it('should return false for collision network with wrong symbol', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter(true));
-    // Mock the safeChainsList response
-    const safeChainsList = [
+    // Mock the wellKnownChains response
+    const wellKnownChains = [
       {
         chainId: 78,
         nativeCurrency: {
@@ -269,10 +269,10 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       },
     ];
 
-    // Mock the fetchWithCache function to return the safeChainsList
+    // Mock the fetchWithCache function to return the wellKnownChains
     const spyFetch = jest
       .spyOn(fetchWithCacheModule, 'default')
-      .mockResolvedValue(safeChainsList);
+      .mockResolvedValue(wellKnownChains);
 
     let result;
 
@@ -294,8 +294,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
 
   it('should return true for collision network with correct symbol', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter(true));
-    // Mock the safeChainsList response
-    const safeChainsList = [
+    // Mock the wellKnownChains response
+    const wellKnownChains = [
       {
         chainId: 78,
         nativeCurrency: {
@@ -304,10 +304,10 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       },
     ];
 
-    // Mock the fetchWithCache function to return the safeChainsList
+    // Mock the fetchWithCache function to return the wellKnownChains
     const spyFetch = jest
       .spyOn(fetchWithCacheModule, 'default')
-      .mockResolvedValue(safeChainsList);
+      .mockResolvedValue(wellKnownChains);
 
     let result;
 

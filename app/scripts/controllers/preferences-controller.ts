@@ -511,7 +511,8 @@ export class PreferencesController extends BaseController<
   /**
    * Setter for the `useSafeChainsListValidation` property
    *
-   * @param val - Whether or not the user prefers to turn off/on validation for manually adding networks
+   * @param val - Whether or not the user permits using the external well-known
+   * chains list, or only our local copy.
    */
   setUseSafeChainsListValidation(val: boolean): void {
     this.update((state) => {

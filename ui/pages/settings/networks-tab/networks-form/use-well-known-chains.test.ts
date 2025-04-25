@@ -2,23 +2,23 @@ import * as FetchWithCacheModule from '../../../../../shared/lib/fetch-with-cach
 import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers';
 import {
   rpcIdentifierUtility,
-  SafeChain,
-  useSafeChains,
-} from './use-safe-chains';
+  WellKnownChain,
+  useWellKnownChains,
+} from './use-well-known-chains';
 
 describe('rpcIdentifierUtility', () => {
-  let safeChains: SafeChain[];
+  let wellKnownChains: WellKnownChain[];
 
   beforeEach(() => {
-    safeChains = [
+    wellKnownChains = [
       {
-        chainId: '1',
+        chainId: 1,
         name: 'Ethereum Mainnet',
         nativeCurrency: { symbol: 'ETH' },
         rpc: ['https://example.com/rpc', 'https://another-example.com/rpc'],
       },
       {
-        chainId: '2',
+        chainId: 2,
         name: 'Another Chain',
         nativeCurrency: { symbol: 'ANC' },
         rpc: ['https://known-rpc.com', 'https://rpc.example.com'],
@@ -28,43 +28,43 @@ describe('rpcIdentifierUtility', () => {
 
   it('should return the host if the rpcUrl host is known', () => {
     const rpcUrl = 'https://example.com/rpc';
-    const result = rpcIdentifierUtility(rpcUrl, safeChains);
+    const result = rpcIdentifierUtility(rpcUrl, wellKnownChains);
     expect(result).toBe('example.com');
   });
 
-  it('should return "Unknown rpcUrl" if the rpcUrl host is not in safeChains', () => {
+  it('should return "Unknown rpcUrl" if the rpcUrl host is not in wellKnownChains', () => {
     const rpcUrl = 'https://unknown.com/rpc';
-    const result = rpcIdentifierUtility(rpcUrl, safeChains);
+    const result = rpcIdentifierUtility(rpcUrl, wellKnownChains);
     expect(result).toBe('Unknown rpcUrl');
   });
 
   it('should sanitize rpcUrls by removing placeholders and compare by host', () => {
     const rpcUrlWithEnvVar = 'https://example.com/rpc/{API_KEY}';
-    const result = rpcIdentifierUtility(rpcUrlWithEnvVar, safeChains);
+    const result = rpcIdentifierUtility(rpcUrlWithEnvVar, wellKnownChains);
     expect(result).toBe('example.com');
   });
 
   it('should correctly identify rpcUrls by host even with special characters', () => {
-    safeChains.push({
-      chainId: '3',
+    wellKnownChains.push({
+      chainId: 3,
       name: 'Special Chain',
       nativeCurrency: { symbol: 'SPC' },
       rpc: ['https://example.com/rpc?token=1234'],
     });
     const rpcUrlWithSpecialChar = 'https://example.com/rpc';
-    const result = rpcIdentifierUtility(rpcUrlWithSpecialChar, safeChains);
+    const result = rpcIdentifierUtility(rpcUrlWithSpecialChar, wellKnownChains);
     expect(result).toBe('example.com');
   });
 
   it('should handle cases where rpcUrls contain mixed case characters', () => {
-    safeChains.push({
-      chainId: '4',
+    wellKnownChains.push({
+      chainId: 4,
       name: 'Mixed Case Chain',
       nativeCurrency: { symbol: 'MCC' },
       rpc: ['https://Example.com/rpc'],
     });
     const rpcUrlMixedCase = 'https://example.com/rpc';
-    const result = rpcIdentifierUtility(rpcUrlMixedCase, safeChains);
+    const result = rpcIdentifierUtility(rpcUrlMixedCase, wellKnownChains);
     expect(result).toBe('example.com');
   });
 
@@ -73,11 +73,11 @@ describe('rpcIdentifierUtility', () => {
     const rpcUrlWithoutTrailingSlash = 'https://example.com/rpc';
     const resultWithSlash = rpcIdentifierUtility(
       rpcUrlWithTrailingSlash,
-      safeChains,
+      wellKnownChains,
     );
     const resultWithoutSlash = rpcIdentifierUtility(
       rpcUrlWithoutTrailingSlash,
-      safeChains,
+      wellKnownChains,
     );
 
     expect(resultWithSlash).toBe('example.com');
@@ -86,19 +86,19 @@ describe('rpcIdentifierUtility', () => {
 
   it('should return "Unknown rpcUrl" for unknown rpcUrls with trailing slashes', () => {
     const rpcUrl = 'https://unknown.com/rpc/';
-    const result = rpcIdentifierUtility(rpcUrl, safeChains);
+    const result = rpcIdentifierUtility(rpcUrl, wellKnownChains);
     expect(result).toBe('Unknown rpcUrl');
   });
 });
 
-describe('useSafeChains', () => {
+describe('useWellKnownChains', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
   const arrange = () => {
-    const mockSafeChain: SafeChain = {
-      chainId: '1',
+    const mockWellKnownChain: WellKnownChain = {
+      chainId: 1,
       name: 'Ethereum Mainnet',
       nativeCurrency: {
         symbol: 'ETH',
@@ -108,14 +108,14 @@ describe('useSafeChains', () => {
 
     const mockFetchWithCache = jest
       .spyOn(FetchWithCacheModule, 'default')
-      .mockResolvedValue([mockSafeChain]);
+      .mockResolvedValue([mockWellKnownChain]);
     const mockState = {
       metamask: {
         useSafeChainsListValidation: true,
       },
     };
 
-    return { mockFetchWithCache, mockState, mockSafeChain };
+    return { mockFetchWithCache, mockState, mockWellKnownChain };
   };
 
   type Arrange = ReturnType<typeof arrange>;
@@ -124,7 +124,7 @@ describe('useSafeChains', () => {
     override?.(arrangeMocks);
 
     const hook = renderHookWithProviderTyped(
-      () => useSafeChains(),
+      () => useWellKnownChains(),
       arrangeMocks.mockState,
     );
 
@@ -134,19 +134,19 @@ describe('useSafeChains', () => {
     };
   };
 
-  it('fetches safe chains when useSafeChainsListValidation is enabled', async () => {
+  it('fetches external well-known chains when useSafeChainsListValidation is enabled', async () => {
     const { result, mockFetchWithCache, waitFor } = arrangeAct();
 
-    await waitFor(() => expect(result.current.safeChains).toHaveLength(1));
+    await waitFor(() => expect(result.current.wellKnownChains).toHaveLength(1));
     expect(mockFetchWithCache).toHaveBeenCalled();
   });
 
-  it('does not fetch safe chains when useSafeChainsListValidation is disabled', async () => {
+  it('does not fetch external well-known chains when useSafeChainsListValidation is disabled', async () => {
     const { result, mockFetchWithCache } = arrangeAct((mocks) => {
       mocks.mockState.metamask.useSafeChainsListValidation = false;
     });
 
-    expect(result.current.safeChains).toHaveLength(0);
+    expect(result.current.wellKnownChains).toHaveLength(0);
     expect(mockFetchWithCache).not.toHaveBeenCalled();
   });
 
@@ -156,7 +156,7 @@ describe('useSafeChains', () => {
     });
 
     await waitFor(() => expect(result.current.error).toBeDefined());
-    expect(result.current.safeChains).toBeUndefined();
+    expect(result.current.wellKnownChains).toBeUndefined();
     expect(mockFetchWithCache).toHaveBeenCalled();
   });
 });

@@ -4,8 +4,8 @@ import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
 } from '../../shared/constants/network';
-import { getWellknownChains } from '../../shared/lib/network-utils';
-import { useSafeChainsListValidationSelector } from '../selectors';
+import { getWellKnownChains } from '../../shared/modules/well-known-chains';
+import { useExternalWellKnownChainsValidationSelector } from '../selectors';
 import {
   getMultichainIsEvm,
   getMultichainCurrentNetwork,
@@ -22,7 +22,7 @@ export function useIsOriginalNativeTokenSymbol(
 ) {
   const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(false);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    useExternalWellKnownChainsValidationSelector,
   );
 
   const isLocalhost = (urlString) => {
@@ -71,9 +71,9 @@ export function useIsOriginalNativeTokenSymbol(
           return;
         }
 
-        const safeChainsList = await getWellknownChains();
+        const wellKnownChains = await getWellKnownChains();
 
-        const matchedChain = safeChainsList.find(
+        const matchedChain = wellKnownChains.find(
           (network) => network.chainId === parseInt(networkId, 16),
         );
 

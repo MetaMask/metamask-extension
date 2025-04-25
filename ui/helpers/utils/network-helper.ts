@@ -1,26 +1,24 @@
 export const getMatchedChain = (
-  decimalChainId: string,
-  safeChainsList: {
-    chainId: string;
+  decimalChainId: number,
+  wellKnownChains: {
+    chainId: number;
     name: string;
     nativeCurrency: { symbol: string };
   }[],
 ) => {
-  return safeChainsList.find(
-    (chain) => chain.chainId.toString() === decimalChainId,
-  );
+  return wellKnownChains.find((chain) => chain.chainId === decimalChainId);
 };
 
 export const getMatchedSymbols = (
-  decimalChainId: string,
-  safeChainsList: {
-    chainId: string;
+  decimalChainId: number,
+  wellKnownChains: {
+    chainId: number;
     name: string;
     nativeCurrency: { symbol: string };
   }[],
 ): string[] => {
-  return safeChainsList.reduce<string[]>((accumulator, currentNetwork) => {
-    if (currentNetwork.chainId.toString() === decimalChainId) {
+  return wellKnownChains.reduce<string[]>((accumulator, currentNetwork) => {
+    if (currentNetwork.chainId === decimalChainId) {
       accumulator.push(currentNetwork.nativeCurrency?.symbol);
     }
     return accumulator;
@@ -28,15 +26,15 @@ export const getMatchedSymbols = (
 };
 
 export const getMatchedNames = (
-  decimalChainId: string,
-  safeChainsList: {
-    chainId: string;
+  decimalChainId: number,
+  wellKnownChains: {
+    chainId: number;
     name: string;
     nativeCurrency: { symbol: string; name: string };
   }[],
 ): string[] => {
-  return safeChainsList.reduce<string[]>((accumulator, currentNetwork) => {
-    if (currentNetwork.chainId.toString() === decimalChainId) {
+  return wellKnownChains.reduce<string[]>((accumulator, currentNetwork) => {
+    if (currentNetwork.chainId === decimalChainId) {
       accumulator.push(currentNetwork?.name);
     }
     return accumulator;

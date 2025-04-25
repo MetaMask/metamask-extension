@@ -1,12 +1,12 @@
-import { type WellknownChain } from 'eth-chainlist';
+import { type Chain as WellKnownChain } from 'eth-chainlist';
 import { useSelector } from 'react-redux';
 // eslint-disable-next-line import/no-restricted-paths
-import { useSafeChainsListValidationSelector } from '../../ui/selectors';
+import { useExternalWellKnownChainsValidationSelector } from '../../ui/selectors';
 import { DAY } from '../constants/time';
-import fetchWithCache from './fetch-with-cache';
-import { getStorageItem, setStorageItem } from './storage-helpers';
+import fetchWithCache from '../lib/fetch-with-cache';
+import { getStorageItem, setStorageItem } from '../lib/storage-helpers';
 
-export type { WellknownChain } from 'eth-chainlist';
+export type { Chain as WellKnownChain } from 'eth-chainlist';
 const CHAIN_SPEC_URL = 'https://chainid.network/chains.json';
 export const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
 
@@ -20,7 +20,7 @@ let preSeedPromise: Promise<void> | null = null;
 /**
  * Retrieve well-known chains from the cache.
  */
-async function getWellknownChainsFromCache(): Promise<WellknownChain[] | null> {
+async function getWellKnownChainsFromCache(): Promise<WellKnownChain[] | null> {
   const cachedResponse = (await getStorageItem(cacheKey)) || {};
   if (cachedResponse) {
     return cachedResponse;
@@ -30,28 +30,28 @@ async function getWellknownChainsFromCache(): Promise<WellknownChain[] | null> {
 
 /**
  * Returns a list of well-known chains either from the cache (which might be
- * a build-time compiled list of networks), or from an up-to-date remote network
- * list of well-known chains (if the user's `useSafeChainsListValidation`
+ * a build-time compiled list of networks), or from an up-to-date external
+ * network list of well-known chains (if the user's `useSafeChainsListValidation`
  * security setting allows for it).
  */
-export async function getWellknownChains(): Promise<WellknownChain[]> {
+export async function getWellKnownChains(): Promise<WellKnownChain[]> {
   await preSeedPromise;
 
-  const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+  const useExternalWellKnownChainsValidation = useSelector(
+    useExternalWellKnownChainsValidationSelector,
   );
   // don't send a network request if the user has disabled the setting,
   // instead, we'll use the cached response if available
-  if (useSafeChainsListValidation) {
+  if (useExternalWellKnownChainsValidation) {
     return await fetchWithCache({
       url: CHAIN_SPEC_URL,
       allowStale: true,
       cacheOptions: { cacheRefreshTime: DAY },
-      functionName: 'getWellknownChains',
+      functionName: 'getWellKnownChains',
       cacheKey,
     });
   }
-  return (await getWellknownChainsFromCache()) || [];
+  return (await getWellKnownChainsFromCache()) || [];
 }
 
 /**
@@ -61,14 +61,14 @@ export async function getWellknownChains(): Promise<WellknownChain[]> {
  * This function should be called at the start of the app, as part of
  * initialization.
  */
-export async function preSeedWellknownChains() {
+export async function preSeedWellKnownChains() {
   if (preSeedPromise) {
     return preSeedPromise;
   }
   // eslint-disable-next-line no-async-promise-executor
   preSeedPromise = new Promise(async (resolve, reject) => {
     try {
-      const cachedResponse = await getWellknownChainsFromCache();
+      const cachedResponse = await getWellKnownChainsFromCache();
       if (cachedResponse) {
         // already seeded, no need to update the cache
         resolve();
