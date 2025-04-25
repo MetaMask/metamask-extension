@@ -249,6 +249,17 @@ describe('Solana Wallet Standard - Connect', function () {
             // Check that we're still connected to the second account
             account = await header.getAccount();
             assertConnected(account, account2Short);
+
+            // Switch back to the second account
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
+            await switchToAccount(driver, 'Solana 2');
+            await testDapp.switchTo();
+
+            // Check that we're still connected to the second account
+            account = await header.getAccount();
+            assertConnected(account, account2Short);
           },
         );
       });
