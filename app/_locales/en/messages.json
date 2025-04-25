@@ -357,6 +357,12 @@
   "alert": {
     "message": "Alert"
   },
+  "alertAccountTypeUpgradeMessage": {
+    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1."
+  },
+  "alertAccountTypeUpgradeTitle": {
+    "message": "Account type"
+  },
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
   },
@@ -1078,9 +1084,6 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmAccountType": {
-    "message": "Type"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "Smart account"
   },
@@ -1117,6 +1120,15 @@
   "confirmGasFeeTokenTooltip": {
     "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
+  "confirmInfoAccountCurrentType": {
+    "message": "Current Type"
+  },
+  "confirmInfoAccountNewType": {
+    "message": "New Type"
+  },
+  "confirmInfoAccountType": {
+    "message": "Account type"
+  },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
   },
@@ -1129,11 +1141,11 @@
   "confirmSimulationApprove": {
     "message": "You approve"
   },
+  "confirmTitleAccountTypeSwitch": {
+    "message": "Account update"
+  },
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
-  },
-  "confirmTitleDelegationRevoke": {
-    "message": "Account update"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
@@ -1143,6 +1155,9 @@
   },
   "confirmTitleDescDelegationRevoke": {
     "message": "You're switching back to a standard account (EOA)."
+  },
+  "confirmTitleDescDelegationUpgrade": {
+    "message": "You're switching to a smart account"
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
@@ -5068,6 +5083,12 @@
   "slideRemoteModeTitle": {
     "message": "Remote mode is here!"
   },
+  "slideSolanaDescription": {
+    "message": "Create a Solana account to get started"
+  },
+  "slideSolanaTitle": {
+    "message": "Solana is now supported"
+  },
   "slideSweepStakeDescription": {
     "message": "Mint an NFT now for a chance to win"
   },
@@ -6643,7 +6664,7 @@
     "description": "Used in the 'permission_rpc' message."
   },
   "welcomeBack": {
-    "message": "Welcome back!"
+    "message": "Welcome back"
   },
   "welcomeExploreDescription": {
     "message": "Store, send, and spend crypto currencies and assets."
