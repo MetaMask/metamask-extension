@@ -3,6 +3,11 @@ import { Driver } from '../../../webdriver/driver';
 class SecureWalletPage {
   private driver: Driver;
 
+  private readonly confirmPasswordButton = {
+    text: 'Confirm',
+    tag: 'button',
+  };
+
   private readonly confirmRecoveryPhraseButton =
     '[data-testid="recovery-phrase-confirm"]';
 
@@ -10,6 +15,8 @@ class SecureWalletPage {
     text: 'Confirm Secret Recovery Phrase',
     tag: 'h2',
   };
+
+  private readonly passwordInput = '#account-details-authenticate';
 
   private readonly recoveryPhraseChips =
     '[data-testid="recovery-phrase-chips"]';
@@ -79,11 +86,10 @@ class SecureWalletPage {
 
   /**
    * Reveal and confirm SRP on secure wallet page during onboarding
+   *
    * @param needEnterPassword - Whether to enter the password
    */
-  async revealAndConfirmSRP(
-    needEnterPassword: string = '',
-  ): Promise<void> {
+  async revealAndConfirmSRP(needEnterPassword: string = ''): Promise<void> {
     console.log(
       'Reveal and confirm SRP on secure wallet page during onboarding',
     );
