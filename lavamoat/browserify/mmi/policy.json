@@ -2402,6 +2402,7 @@
         "clearTimeout": true,
         "console.error": true,
         "fetch": true,
+        "origin": true,
         "setTimeout": true
       },
       "packages": {
