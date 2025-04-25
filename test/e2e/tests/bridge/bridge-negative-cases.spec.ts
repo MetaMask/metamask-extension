@@ -71,7 +71,7 @@ describe('Bridge functionality', function (this: Suite) {
     );
   });
 
-  it('should show that bridge transaction is pending if getTxStaus returns error 500', async function () {
+  it('should show that bridge transaction is pending if getTxStatus returns error 500', async function () {
     await withFixtures(
       getTxStatusNegativeCasesFixtures(
         INTERNAL_SERVER_ERROR,
