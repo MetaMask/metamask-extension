@@ -11,15 +11,11 @@ import {
   fetchBridgeTokens,
   BridgeClientId,
   type BridgeAsset,
-  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { selectERC20TokensByChain } from '../../selectors';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { useMultichainBalances } from '../useMultichainBalances';
 import { useAsyncResult } from '../useAsync';
 import { fetchTopAssetsList } from '../../pages/swaps/swaps.util';
-import { MINUTE } from '../../../shared/constants/time';
 import {
   type BridgeAppState,
   getTopAssetsFromFeatureFlags,
@@ -31,8 +27,6 @@ import type {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 
 type FilterPredicate = (
   symbol: string,
@@ -53,35 +47,19 @@ type FilterPredicate = (
  * @param tokenToExclude.symbol
  * @param tokenToExclude.address
  * @param tokenToExclude.chainId
- * @param accountId - the accountId to use for the token list
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
   tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
-  accountId?: string,
 ) => {
   const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>
     getTopAssetsFromFeatureFlags(state, chainId),
   );
 
-  const { assetsWithBalance: multichainTokensWithBalance } =
-    useMultichainBalances(accountId);
-
-  const cachedTokens = useSelector(selectERC20TokensByChain);
-
   const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
     Record<string, BridgeAsset>
   >(async () => {
     if (chainId) {
-      if (!isSolanaChainId(chainId)) {
-        const hexChainId = formatChainIdToHex(chainId);
-        const timestamp = cachedTokens[hexChainId]?.timestamp;
-        // Use cached token data if updated in the last 10 minutes
-        if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
-          return cachedTokens[hexChainId]?.data;
-        }
-      }
-      // Otherwise fetch new token data
       return await fetchBridgeTokens(
         chainId,
         BridgeClientId.EXTENSION,
@@ -99,7 +77,7 @@ export const useTokensWithFiltering = (
     }
 
     return {};
-  }, [chainId, cachedTokens]);
+  }, [chainId]);
 
   const { value: topTokens, pending: isTopTokenListLoading } = useAsyncResult<
     { address: string }[]
@@ -193,62 +171,6 @@ export const useTokensWithFiltering = (
           return;
         }
 
-        // Yield multichain tokens with balances and are not blocked
-        for (const token of multichainTokensWithBalance) {
-          if (
-            shouldAddToken(
-              token.symbol,
-              token.address ?? undefined,
-              token.chainId,
-            )
-          ) {
-            if (isNativeAddress(token.address) || token.isNative) {
-              yield {
-                symbol: token.symbol,
-                chainId: token.chainId,
-                tokenFiatAmount: token.tokenFiatAmount,
-                decimals: token.decimals,
-                address: '',
-                type: AssetType.native,
-                balance: token.balance ?? '0',
-                string: token.string ?? undefined,
-                image:
-                  CHAIN_ID_TOKEN_IMAGE_MAP[
-                    token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ] ??
-                  MULTICHAIN_TOKEN_IMAGE_MAP[
-                    token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
-                  ] ??
-                  (getNativeAssetForChainId(token.chainId)?.icon ||
-                    getNativeAssetForChainId(token.chainId)?.iconUrl ||
-                    getAssetImageUrl(
-                      token.address,
-                      formatChainIdToCaip(token.chainId),
-                    )),
-              };
-            } else {
-              yield {
-                symbol: token.symbol,
-                chainId: token.chainId,
-                tokenFiatAmount: token.tokenFiatAmount,
-                decimals: token.decimals,
-                address: token.address,
-                type: AssetType.token,
-                balance: token.balance ?? '',
-                string: token.string ?? undefined,
-                image:
-                  (token.image ||
-                    tokenList?.[token.address.toLowerCase()]?.iconUrl) ??
-                  getAssetImageUrl(
-                    token.address,
-                    formatChainIdToCaip(token.chainId),
-                  ) ??
-                  '',
-              };
-            }
-          }
-        }
-
         // Yield topTokens from selected chain
         for (const token_ of topTokens) {
           const matchedToken = tokenList?.[token_.address];
@@ -277,14 +199,7 @@ export const useTokensWithFiltering = (
           }
         }
       })(),
-    [
-      buildTokenData,
-      multichainTokensWithBalance,
-      topTokens,
-      chainId,
-      tokenList,
-      tokenToExclude,
-    ],
+    [buildTokenData, topTokens, chainId, tokenList, tokenToExclude],
   );
   return {
     filteredTokenListGenerator,
