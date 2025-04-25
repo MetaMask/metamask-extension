@@ -6,7 +6,7 @@ import {
   numberToHex,
   stringToBytes,
 } from '@metamask/utils';
-import { keccak, toBuffer } from 'ethereumjs-util';
+import { keccak } from 'ethereumjs-util';
 
 export type Hex = `0x${string}`;
 export type Address = `0x${string}`;
@@ -17,17 +17,6 @@ function stringToHex(value: string): Hex {
 
 function boolToHex(value: boolean): Hex {
   return `0x${Number(value)}`;
-}
-
-/**
- * Calculates the keccak256 hash of a hex string.
- *
- * @param value - The hex string to hash
- * @returns The keccak256 hash of the hex string
- */
-export function keccak256(value: Hex): Hex {
-  const buf = keccak(toBuffer(value));
-  return toHex(buf);
 }
 
 type ToHexOptions = {
@@ -255,8 +244,8 @@ function normalizeSignature(signature: string): string {
   return result;
 }
 
-function hashSignature(fn: string): Hex {
-  return keccak256(toHex(stringToBytes(normalizeSignature(fn))));
+function hashSignature(fn: string) {
+  return keccak(Buffer.from(stringToBytes(normalizeSignature(fn))));
 }
 /**
  * Returns the function selector for a given function definition.
@@ -267,6 +256,6 @@ function hashSignature(fn: string): Hex {
  * // 0x6352211e
  */
 export const toFunctionSelector = (fn: string): Hex => {
-  const hash = hashSignature(fn);
+  const hash = toHex(hashSignature(fn));
   return hash.slice(0, 10) as Hex;
 };
