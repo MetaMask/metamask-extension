@@ -1,7 +1,12 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { getCleanAppState, getEventPayloads, WINDOW_TITLES, withFixtures } from '../../helpers';
+import {
+  getCleanAppState,
+  getEventPayloads,
+  WINDOW_TITLES,
+  withFixtures,
+} from '../../helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import FixtureBuilder from '../../fixture-builder';
 import { MOCK_META_METRICS_ID } from '../../constants';

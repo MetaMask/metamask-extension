@@ -6,9 +6,7 @@ import { Browser } from 'selenium-webdriver';
 import { format } from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
 import { Mockttp } from 'mockttp';
-import {
-  SENTRY_UI_STATE,
-} from '../../../../app/scripts/constants/sentry-state';
+import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
@@ -77,7 +75,9 @@ const WAIT_FOR_SENTRY_MS = 10000;
  *
  * @param data - The data to transform
  */
-function transformBackgroundState(data: JsonRpcResponse<Json>): JsonRpcResponse<Json> {
+function transformBackgroundState(
+  data: JsonRpcResponse<Json>,
+): JsonRpcResponse<Json> {
   const clonedData = cloneDeep(data);
   for (const field of maskedBackgroundFields) {
     if (has(clonedData, field)) {
@@ -114,10 +114,10 @@ function transformUiState(data: JsonRpcResponse<Json>): JsonRpcResponse<Json> {
 /**
  * Check that the data provided matches the snapshot.
  *
- * @param {object }args - Function arguments.
- * @param {any} args.data - The data to compare with the snapshot.
- * @param {string} args.snapshot - The name of the snapshot.
- * @param {boolean} [args.update] - Whether to update the snapshot if it doesn't match.
+ * @param args - Function arguments.
+ * @param args.data - The data to compare with the snapshot.
+ * @param args.snapshot - The name of the snapshot.
+ * @param [args.update] - Whether to update the snapshot if it doesn't match.
  */
 async function matchesSnapshot({
   data,
@@ -162,13 +162,14 @@ async function matchesSnapshot({
  * @param object - The object to test for missing properties.
  */
 function getMissingProperties(complete: object, object: object): object {
-  const missing: Record<string, any> = {};
+  const missing: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(complete)) {
     if (key in object) {
-      if (isObject(value) && isObject(object[key])) {
+      const objectValue = (object as Record<string, unknown>)[key];
+      if (isObject(value) && isObject(objectValue)) {
         const missingNestedProperties = getMissingProperties(
           value,
-          object[key],
+          objectValue as object,
         );
         if (Object.keys(missingNestedProperties).length > 0) {
           missing[key] = missingNestedProperties;
@@ -435,12 +436,14 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const breadcrumbs = mockJsonBody?.breadcrumbs ?? [];
-          const migrationLogBreadcrumbs = breadcrumbs.filter((breadcrumb: any) => {
-            return breadcrumb.message?.match(/Running migration \d+/u);
-          });
+          const migrationLogBreadcrumbs = breadcrumbs.filter(
+            (breadcrumb: { message?: string }) => {
+              return breadcrumb.message?.match(/Running migration \d+/u);
+            },
+          );
           const migrationLogMessages = migrationLogBreadcrumbs.map(
-            (breadcrumb: any) =>
-              breadcrumb.message.match(/(Running migration \d+)/u)[1],
+            (breadcrumb: { message?: string }) =>
+              breadcrumb.message?.match(/(Running migration \d+)/u)?.[1] ?? '',
           );
 
           const firstMigrationLog = migrationLogMessages[0];
@@ -920,7 +923,9 @@ describe('Sentry errors', function () {
         await new LoginPage(driver).check_pageIsLoaded();
 
         const fullUiState = await driver.executeScript(() =>
-          (window as any).stateHooks?.getCleanAppState?.(),
+          (
+            window as { stateHooks?: { getCleanAppState?: () => unknown } }
+          ).stateHooks?.getCleanAppState?.(),
         );
 
         const extraMaskProperties = getMissingProperties(
