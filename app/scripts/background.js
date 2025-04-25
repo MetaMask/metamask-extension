@@ -104,6 +104,15 @@ const persistenceManager = new PersistenceManager({ localStore });
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
 
+/**
+ * A helper function to log the current state of the vault. Useful for debugging
+ * purposes, to, in the case of database corruption, an possible way for an end
+ * user to recover their vault. Hopefully this is never needed.
+ */
+global.logEncryptedVault = () => {
+  persistenceManager.logEncryptedVault();
+};
+
 const { sentry } = global;
 let firstTimeState = { ...rawFirstTimeState };
 

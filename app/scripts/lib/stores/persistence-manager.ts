@@ -7,7 +7,7 @@ import 'navigator.locks';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
-import { hasProperty, isObject } from '@metamask/utils';
+import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
@@ -19,9 +19,8 @@ import type {
 
 export type Backup = {
   KeyringController?: unknown;
-  OnboardingController?: unknown;
-  PreferencesController?: unknown;
   AppStateController?: unknown;
+  meta?: MetaData;
 };
 
 /**
@@ -35,12 +34,11 @@ export type Backup = {
  * @param state - The current MetaMask state.
  * @returns A Backup object containing the state of various controllers.
  */
-function makeBackup(state?: MetaMaskStateType): Backup {
+function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
   return {
     KeyringController: state?.KeyringController,
-    OnboardingController: state?.OnboardingController,
-    PreferencesController: state?.PreferencesController,
     AppStateController: state?.AppStateController,
+    meta,
   };
 }
 
@@ -51,7 +49,9 @@ function makeBackup(state?: MetaMaskStateType): Backup {
  * @param state - The current MetaMask state.
  * @returns
  */
-function hasVault(state?: MetaMaskStateType): state is MetaMaskStateType {
+function hasVault(
+  state?: MetaMaskStateType,
+): state is { KeyringController: RuntimeObject & Record<'vault', unknown> } {
   const keyringController = state?.KeyringController;
   return (
     isObject(keyringController) &&
@@ -174,7 +174,7 @@ export class PersistenceManager {
             meta,
           });
 
-          const backup = makeBackup(state);
+          const backup = makeBackup(state, meta);
           // if we have a vault we can back it up
           if (hasVault(backup)) {
             const stringifiedBackup = JSON.stringify(backup);
@@ -210,7 +210,7 @@ export class PersistenceManager {
    * @throws Error if the vault is missing and a backup vault is found in IndexedDB.
    * @throws Error if the local store is not open.
    */
-  async get(): Promise<MetaMaskStorageStructure | null> {
+  async get(): Promise<MetaMaskStorageStructure | undefined> {
     await this.open();
 
     return await navigator.locks.request(
@@ -249,23 +249,51 @@ export class PersistenceManager {
   }
 
   async getBackup(): Promise<Backup> {
-    const [
-      KeyringController,
-      OnboardingController,
-      PreferencesController,
-      AppStateController,
-    ] = await this.#backupDb.get([
-      'KeyringController',
-      'OnboardingController',
-      'PreferencesController',
-      'AppStateController',
-    ]);
+    const [KeyringController, AppStateController, meta] =
+      await this.#backupDb.get([
+        'KeyringController',
+        'AppStateController',
+        `meta`,
+      ]);
     return {
       KeyringController,
-      OnboardingController,
-      PreferencesController,
       AppStateController,
-    } as Backup;
+      meta: meta as MetaData | undefined,
+    };
+  }
+
+  /**
+   * Logs the encrypted vault state to the console. This is useful for
+   * debugging purposes.
+   */
+  async logEncryptedVault() {
+    let state: MetaMaskStateType | Backup | undefined;
+    let source: string | null = null;
+    try {
+      state = (await this.get())?.data;
+      source = 'primary database';
+    } catch (e) {
+      console.error('Error getting state from persistence manager', e);
+    }
+    if (!hasVault(state)) {
+      // try from backup
+      try {
+        state = await this.getBackup();
+        source = 'backup database';
+      } catch (e) {
+        source = null;
+        console.error('Error getting state from backup', e);
+      }
+    }
+    // if we have a vault, log it
+    if (hasVault(state)) {
+      console.log(`MetaMask - Encrypted Vault from ${source}:`);
+      console.log(state.KeyringController.vault);
+    } else {
+      console.log(
+        'MetaMask - No vault found in primary database or backup database',
+      );
+    }
   }
 
   get mostRecentRetrievedState() {
