@@ -143,6 +143,9 @@ export const NetworkListItem = ({
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
         'multichain-network-list-item--disabled': disabled,
+        'multichain-network-list-item--not-selectable': Boolean(
+          process.env.REMOVE_GNS,
+        ),
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}
