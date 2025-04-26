@@ -40,7 +40,7 @@ describe('Bridge functionality', function (this: Suite) {
             unapproved: true,
           },
           2,
-          '24.9976',
+          '24.9',
         );
 
         // Switch to Linea Mainnet to set it as the selected network
@@ -57,7 +57,7 @@ describe('Bridge functionality', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           3,
-          '23.9975',
+          '23.9',
         );
 
         await bridgeTransaction(
@@ -70,7 +70,7 @@ describe('Bridge functionality', function (this: Suite) {
             toChain: 'Linea',
           },
           4,
-          '22.9974',
+          '22.9',
         );
 
         // Switch to Linea Mainnet to set it as the selected network
@@ -87,7 +87,7 @@ describe('Bridge functionality', function (this: Suite) {
             toChain: 'Linea',
           },
           5,
-          '22.9973',
+          '22.9',
         );
       },
     );
