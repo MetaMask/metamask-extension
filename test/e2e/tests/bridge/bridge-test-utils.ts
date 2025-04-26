@@ -20,6 +20,7 @@ import {
   MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM,
   MOCK_BRIDGE_DAI_TO_ETH_LINEA,
   MOCK_BRIDGE_DAI_TO_USDT_LINEA,
+  MOCK_BRIDGE_ETH_TO_WETH_LINEA,
 } from './constants';
 
 export class BridgePage {
@@ -188,6 +189,22 @@ async function mockETHtoETH(mockServer: Mockttp) {
     });
 }
 
+async function mockETHtoWETH(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f',
+    })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_ETH_TO_WETH_LINEA,
+      };
+    });
+}
+
 async function mockETHtoUSDC(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getQuote/u)
@@ -299,6 +316,7 @@ export const getBridgeFixtures = (
         type: 'anvil',
         options: {
           chainId: 1,
+          hardfork: 'london',
           loadState: './test/e2e/seeder/network-states/with50Dai.json',
         },
       },
@@ -343,7 +361,7 @@ export const getQuoteNegativeCasesFixtures = (
   };
 };
 
-export const getTxStatusNegativeCasesFixtures = (
+export const getBridgeNegativeCasesFixtures = (
   response: any,
   title?: string,
 ) => {
@@ -365,6 +383,7 @@ export const getTxStatusNegativeCasesFixtures = (
       }),
       await mockTopAssets(mockServer),
       await mockETHtoETH(mockServer),
+      await mockETHtoWETH(mockServer),
       await mockGetTxStatuInvalid(mockServer, response),
     ],
     smartContract: SMART_CONTRACTS.HST,
@@ -373,6 +392,7 @@ export const getTxStatusNegativeCasesFixtures = (
         type: 'anvil',
         options: {
           chainId: 1,
+          hardfork: 'london',
         },
       },
     ],

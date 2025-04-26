@@ -30,6 +30,11 @@ class BridgeQuotePage {
 
   private submitButton = { text: 'Submit', tag: 'button' };
 
+  private insufficientFundsButton = {
+    text: 'Insufficient funds',
+    tag: 'button',
+  };
+
   private backButton = '[aria-label="Back"]';
 
   private networkSelector = '[data-testid="avatar-group"]';
@@ -41,6 +46,10 @@ class BridgeQuotePage {
     css: '.mm-text--body-md',
   };
 
+  private moreETHneededForGas = {
+    text: `You don't have enough ETH to pay the gas fee for this bridge. Enter a smaller amount or buy more ETH.`,
+    css: '.mm-text--body-md',
+  };
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -88,11 +97,33 @@ class BridgeQuotePage {
       await this.driver.waitForSelector(this.noOptionAvailable);
     } catch (e) {
       console.log(
-        `Expected message that "no trade route is avaiable" is not present`,
+        `Expected message that "no trade route is available" is not present`,
       );
       throw e;
     }
-    console.log('The message "no trade route is avaiable" is displayed');
+    console.log('The message "no trade route is available" is displayed');
+  }
+
+  async check_insufficientFundsButtonIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.insufficientFundsButton);
+    } catch (e) {
+      console.log(`Expected button "Insufficient funds" is not present`);
+      throw e;
+    }
+    console.log('The button "Insufficient funds" is displayed');
+  }
+
+  async check_moreETHneededIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.moreETHneededForGas);
+    } catch (e) {
+      console.log(
+        `Expected message that "More ETH needed for gas" is not present`,
+      );
+      throw e;
+    }
+    console.log('The message "More ETH needed for gas" is displayed');
   }
 }
 

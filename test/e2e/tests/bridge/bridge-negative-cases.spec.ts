@@ -1,14 +1,11 @@
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import {
+  getBridgeNegativeCasesFixtures,
   getQuoteNegativeCasesFixtures,
-  getTxStatusNegativeCasesFixtures,
 } from './bridge-test-utils';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import {
@@ -20,6 +17,32 @@ import {
 } from './constants';
 
 describe('Bridge functionality', function (this: Suite) {
+  it('should show that more funds are needed to execute the Bridge', async function () {
+    await withFixtures(
+      getBridgeNegativeCasesFixtures(
+        FAILED_SOURCE_TRANSACTION,
+        this.test?.fullTitle(),
+      ),
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_expectedBalanceIsDisplayed('24');
+        await homePage.startBridgeFlow();
+
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.enterBridgeQuote({
+          amount: '24.9950',
+          tokenFrom: 'ETH',
+          tokenTo: 'WETH',
+          fromChain: 'Ethereum',
+          toChain: 'Linea',
+        });
+        await bridgePage.check_insufficientFundsButtonIsDisplayed();
+        await bridgePage.check_moreETHneededIsDisplayed();
+      },
+    );
+  });
+
   it('should show message that no trade route is available if getQuote returns error 500', async function () {
     await withFixtures(
       getQuoteNegativeCasesFixtures(
@@ -73,15 +96,14 @@ describe('Bridge functionality', function (this: Suite) {
 
   it('should show that bridge transaction is pending if getTxStatus returns error 500', async function () {
     await withFixtures(
-      getTxStatusNegativeCasesFixtures(
+      getBridgeNegativeCasesFixtures(
         INTERNAL_SERVER_ERROR,
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed();
-        await disableSmartTransactions(driver);
+        await homePage.check_expectedBalanceIsDisplayed('24');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -97,15 +119,14 @@ describe('Bridge functionality', function (this: Suite) {
 
   it('should show failed bridge activity if getTxStatus returns failed source transaction', async function () {
     await withFixtures(
-      getTxStatusNegativeCasesFixtures(
+      getBridgeNegativeCasesFixtures(
         FAILED_SOURCE_TRANSACTION,
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed();
-        await disableSmartTransactions(driver);
+        await homePage.check_expectedBalanceIsDisplayed('24');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -114,7 +135,7 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.goToActivityList();
         await driver.delay(5000);
         const activityList = new ActivityListPage(driver);
-        // Waiting on a gix on bug #32266
+        // Until bug #32266 is fixed
         // await activityList.check_failedTxNumberDisplayedInActivity();
       },
     );
@@ -122,15 +143,14 @@ describe('Bridge functionality', function (this: Suite) {
 
   it('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
     await withFixtures(
-      getTxStatusNegativeCasesFixtures(
+      getBridgeNegativeCasesFixtures(
         FAILED_DEST_TRANSACTION,
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed();
-        await disableSmartTransactions(driver);
+        await homePage.check_expectedBalanceIsDisplayed('24');
         await homePage.startBridgeFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -139,27 +159,13 @@ describe('Bridge functionality', function (this: Suite) {
         await homePage.goToActivityList();
         await driver.delay(5000);
         const activityList = new ActivityListPage(driver);
-        // Waiting on a gix on bug #32266
+        // Until bug #32266 is fixed
         // await activityList.check_failedTxNumberDisplayedInActivity();
       },
     );
   });
 });
 
-async function disableSmartTransactions(driver: Driver) {
-  // disable smart transactions
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.check_pageIsLoaded();
-  await headerNavbar.openSettingsPage();
-
-  const settingsPage = new SettingsPage(driver);
-  await settingsPage.check_pageIsLoaded();
-  await settingsPage.clickAdvancedTab();
-  const advancedSettingsPage = new AdvancedSettings(driver);
-  await advancedSettingsPage.check_pageIsLoaded();
-  await advancedSettingsPage.toggleSmartTransactions();
-  await settingsPage.closeSettingsPage();
-}
 
 async function enterBridgeQuote(driver: Driver): Promise<BridgeQuotePage> {
   const bridgePage = new BridgeQuotePage(driver);
