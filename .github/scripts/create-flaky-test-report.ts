@@ -130,10 +130,11 @@ async function main() {
   const fromDateString = from.toLocaleDateString('en-US', options);
   const toDateString = to.toLocaleDateString('en-US', options);
 
-  const repositoryUrl = new URL(
-    `https://github.com/${env.OWNER}/${env.REPOSITORY}`,
-  );
-  const branchUrl = new URL(`${repositoryUrl}/tree/${env.BRANCH}`);
+  const repositoryUrl = new URL('https://github.com');
+  repositoryUrl.pathname = `/${env.OWNER}/${env.REPOSITORY}`;
+
+  const branchUrl = new URL(repositoryUrl);
+  branchUrl.pathname += `/tree/${env.BRANCH}`;
 
   console.log(
     `❌ Failed tests on the ${env.REPOSITORY} repository ${env.BRANCH} branch from ${fromDateString} to ${toDateString}`,
@@ -195,23 +196,25 @@ async function main() {
     });
   } else {
     for (const test of summarizedFailedTests) {
-      const testUrl = new URL(
-        `${repositoryUrl}/blob/${env.BRANCH}/${test.path}`,
-      );
-      const jobUrl = new URL(
-        `${repositoryUrl}/actions/runs/${test.runId}/job/${test.jobId}`,
-      );
-      const issue = {
+      const testUrl = new URL(repositoryUrl);
+      testUrl.pathname += `/blob/${env.BRANCH}/${test.path}`;
+
+      const jobUrl = new URL(repositoryUrl);
+      jobUrl.pathname += `/actions/runs/${test.runId}/job/${test.jobId}`;
+
+      const issueUrl = new URL(repositoryUrl);
+      issueUrl.pathname += '/issues/new';
+      issueUrl.search = new URLSearchParams({
         template: 'general-issue.yml',
         labels: ['type-bug', 'Sev2-normal', 'flaky tests'].toString(),
         title: `Flaky test: \`${test.name}\``,
         description: `[View logs](${jobUrl})\n\`\`\`js\n${test.error}\n\`\`\``,
-      };
-      const issueParams = new URLSearchParams(issue);
-      const issueUrl = new URL(`${repositoryUrl}/issues/new?${issueParams}`);
+      }).toString();
+
       console.error(
         `• ${test.name} failed ${test.count} time${test.count > 1 ? 's' : ''}`,
       );
+
       blocks.push({
         type: 'rich_text',
         elements: [
