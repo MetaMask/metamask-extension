@@ -19,6 +19,7 @@ import {
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -110,6 +111,7 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
+  getImageForChainId,
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
   getMultichainProviderConfig,
@@ -124,6 +126,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   fetchAssetMetadata,
+  getAssetImageUrl,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { BridgeInputGroup } from './bridge-input-group';
@@ -708,7 +711,27 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      dispatch(setToToken(null));
+                      const destNativeAsset = getNativeAssetForChainId(
+                        networkConfig.chainId,
+                      );
+                      dispatch(
+                        setToToken({
+                          ...destNativeAsset,
+                          image:
+                            (isSolanaChainId(networkConfig.chainId)
+                              ? getImageForChainId(
+                                  formatChainIdToCaip(networkConfig.chainId),
+                                )
+                              : getImageForChainId(
+                                  formatChainIdToHex(networkConfig.chainId),
+                                )) ||
+                            getAssetImageUrl(
+                              destNativeAsset.assetId,
+                              networkConfig.chainId,
+                            ) ||
+                            '',
+                        }),
+                      );
                     },
                     header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
                     shouldDisableNetwork: ({ chainId }) =>
