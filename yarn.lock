@@ -5060,9 +5060,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^15.0.0":
+"@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller::locator=metamask-crx%40workspace%3A.":
   version: 15.0.0
-  resolution: "@metamask/bridge-status-controller@npm:15.0.0"
+  resolution: "@metamask/bridge-status-controller@file:../core/packages/bridge-status-controller#../core/packages/bridge-status-controller::hash=5d2707&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.7.0"
@@ -5079,9 +5079,9 @@ __metadata:
     "@metamask/bridge-controller": ^18.0.0
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
-    "@metamask/snaps-controllers": ^11.0.0
-    "@metamask/transaction-controller": ^54.0.0
-  checksum: 10/786f5e71774993de0b4fa829fb2ca506220ab483b164120cd8149205dddd3a63ff4ba7506496f27f08fbe3771b58820e471e18a5b64f0d3bf31c5002f0844525
+    "@metamask/snaps-controllers": ^11.2.1
+    "@metamask/transaction-controller": ^54.2.0
+  checksum: 10/06eb993b90299c337e3546a007fd5aee279188f1eb06b788c8c7b87e0668a2eeae4a8d2e0de765d3dc5ac0094fbcfd0cfdc2a09e6be6bb1575a9b8b71f39ddbf
   languageName: node
   linkType: hard
 
