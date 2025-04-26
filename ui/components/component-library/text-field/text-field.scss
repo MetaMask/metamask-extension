@@ -16,10 +16,6 @@
   height: var(--text-field-height);
   border-color: var(--color-border-default);
 
-  &--focused {
-    border: 2px var(--color-primary-default);
-  }
-
   &--error {
     border-color: var(--color-error-default);
   }
@@ -39,5 +35,15 @@
   &__input {
     width: 100%;
     flex-grow: 1;
+
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary-default);
+      outline-offset: 2px;
+      transition: outline-offset 0.2s ease-in-out;
+    }
   }
 }
