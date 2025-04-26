@@ -3,6 +3,7 @@ import {
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
   toEvmCaipChainId,
   toMultichainNetworkConfiguration,
+  ActiveNetworksByAddress,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { BtcScope, SolScope } from '@metamask/keyring-api';
@@ -39,6 +40,12 @@ export type IsEvmSelectedState = {
   metamask: Pick<InternalMultichainNetworkState, 'isEvmSelected'>;
 };
 
+export type NetworksWithTransactionActivityByAccountsState = {
+  metamask: {
+    networksWithTransactionActivity: ActiveNetworksByAddress;
+  };
+};
+
 /**
  * This type takes into account the state
  * of the multichain-network-controller and
@@ -49,7 +56,8 @@ export type MultichainNetworkConfigState =
     SelectedNetworkChainIdState &
     IsEvmSelectedState &
     SelectedNetworkClientIdState &
-    ProviderConfigState;
+    ProviderConfigState &
+    NetworksWithTransactionActivityByAccountsState;
 
 // Selectors
 
@@ -117,11 +125,20 @@ export const getMultichainNetworkConfigurationsByChainId =
       if (bitcoinEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet];
+        filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
+          nonEvmNetworkConfigurationsByChainId[BtcScope.Testnet];
+        filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Signet] =
+          nonEvmNetworkConfigurationsByChainId[BtcScope.Signet];
       }
 
       if (solanaEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
           nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
+        // TODO: Uncomment this when we want to support testnet
+        // filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] =
+        //   nonEvmNetworkConfigurationsByChainId[SolScope.Testnet];
+        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
+          nonEvmNetworkConfigurationsByChainId[SolScope.Devnet];
       }
       ///: END:ONLY_INCLUDE_IF
 
@@ -175,3 +192,11 @@ export const getSelectedMultichainNetworkConfiguration = (
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
 };
+
+export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
+  state.metamask.networksWithTransactionActivity;
+
+export const getNetworksWithTransactionActivity = createDeepEqualSelector(
+  getNetworksWithActivity,
+  (networksWithActivity) => networksWithActivity,
+);
