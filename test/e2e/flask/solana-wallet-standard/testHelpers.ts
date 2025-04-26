@@ -108,6 +108,9 @@ const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
   await driver.clickElement({ text: 'Update', tag: 'button' });
 };
 
+/**
+ * Selects the Devnet checkbox in the permissions tab.
+ */
 const selectDevnet = async (driver: Driver): Promise<void> => {
   const permissionsTab = await driver.findElement(
     '[data-testid="permissions-tab"]',
@@ -136,6 +139,9 @@ const selectDevnet = async (driver: Driver): Promise<void> => {
   await driver.clickElement({ text: 'Update', tag: 'button' });
 };
 
+/**
+ * Switches to the specified account in the account menu.
+ */
 export const switchToAccount = async (
   driver: Driver,
   accountName: string,
@@ -147,6 +153,9 @@ export const switchToAccount = async (
   });
 };
 
+/**
+ * Asserts that the connection status is as expected.
+ */
 export const assertConnected = async (
   connectionStatus: 'Connected' | 'Disconnected' | string,
   expectedAddress?: string,
@@ -156,9 +165,11 @@ export const assertConnected = async (
     expectedAddress ? `${expectedAddress}` : 'Connected',
     `Connection status should be ${expectedAddress ? `"${expectedAddress}"` : 'Connected'}`,
   );
-
 };
 
+/**
+ * Asserts that the connection status is "Disconnected".
+ */
 export const assertDisconnected = async (
   connectionStatus: string,
 ): Promise<void> => {
