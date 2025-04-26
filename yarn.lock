@@ -8510,7 +8510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@slack/types@npm:^2.9.0":
+"@slack/types@npm:^2.14.0, @slack/types@npm:^2.9.0":
   version: 2.14.0
   resolution: "@slack/types@npm:2.14.0"
   checksum: 10/fa24a113b88e087f899078504c2ba50ab9795f7c2dd1a2d95b28217a3af20e554494f9cc3b8c8ce173120990d98e19400c95369f9067cecfcc46c08b59d2a46f
@@ -27750,6 +27750,7 @@ __metadata:
     "@sentry/cli": "npm:^2.19.4"
     "@sentry/types": "npm:^8.33.1"
     "@sentry/utils": "npm:^8.33.1"
+    "@slack/types": "npm:^2.14.0"
     "@slack/webhook": "npm:^7.0.5"
     "@solana/addresses": "npm:2.0.0-rc.4"
     "@storybook/addon-a11y": "npm:^7.6.20"
