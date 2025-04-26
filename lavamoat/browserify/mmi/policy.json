@@ -1492,7 +1492,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
+        "tweetnacl": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util": {
@@ -1504,7 +1504,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
+        "tweetnacl": true
       }
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
@@ -1516,7 +1516,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
+        "tweetnacl": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
@@ -1528,7 +1528,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
+        "tweetnacl": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": {
@@ -1540,7 +1540,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
+        "tweetnacl": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util": {
@@ -1552,7 +1552,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
+        "tweetnacl": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util": {
@@ -1564,7 +1564,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
+        "tweetnacl": true
       }
     },
     "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": {
@@ -1576,7 +1576,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
+        "tweetnacl": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-sig-util": {
@@ -1588,7 +1588,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
+        "tweetnacl": true
       }
     },
     "@metamask/signature-controller>@metamask/eth-sig-util": {
@@ -1600,7 +1600,7 @@
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util>tweetnacl": true
+        "tweetnacl": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring": {
@@ -2505,14 +2505,6 @@
         "crypto": true
       }
     },
-    "viem>@scure/bip32>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "viem>@scure/bip32>@noble/hashes": true
-      }
-    },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -2536,12 +2528,6 @@
       }
     },
     "@metamask/scure-bip39>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "viem>@scure/bip32>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2627,10 +2613,10 @@
         "TextEncoder": true
       }
     },
-    "viem>@scure/bip32": {
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
       "packages": {
-        "viem>@scure/bip32>@noble/curves": true,
-        "viem>@scure/bip32>@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
     },
@@ -2871,6 +2857,11 @@
         "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
+    "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings>@solana/codecs-core": {
+      "packages": {
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
+      }
+    },
     "@solana/addresses>@solana/codecs-strings": {
       "globals": {
         "TextDecoder": true,
@@ -2891,7 +2882,7 @@
         "btoa": true
       },
       "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings>@solana/codecs-core": true,
         "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
@@ -2952,7 +2943,7 @@
       },
       "packages": {
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": true,
-        "@trezor/connect-web>@trezor/utils": true,
+        "@trezor/connect-web>@trezor/connect-common>@trezor/utils": true,
         "tslib": true
       }
     },
@@ -3000,7 +2991,7 @@
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "@trezor/connect-web>@trezor/utils": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/utils": true,
         "tslib": true
       }
     },
@@ -3040,6 +3031,28 @@
         "ts-mixer": true
       }
     },
+    "@trezor/connect-web>@trezor/connect-common>@trezor/utils": {
+      "globals": {
+        "AbortController": true,
+        "Intl.NumberFormat": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.info": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto.getRandomValues": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect-common>@trezor/utils>bignumber.js": true,
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "tslib": true
+      }
+    },
     "@trezor/connect-web>@trezor/utils": {
       "globals": {
         "AbortController": true,
@@ -3056,6 +3069,28 @@
       },
       "packages": {
         "@trezor/connect-web>@trezor/utils>bignumber.js": true,
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "tslib": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/utils": {
+      "globals": {
+        "AbortController": true,
+        "Intl.NumberFormat": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.info": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto.getRandomValues": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/utils>bignumber.js": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
         "webpack>events": true,
@@ -3288,7 +3323,19 @@
         "define": true
       }
     },
+    "@trezor/connect-web>@trezor/connect-common>@trezor/utils>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
     "@trezor/connect-web>@trezor/utils>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/utils>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
@@ -3876,7 +3923,7 @@
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "viem>@scure/bip32": true
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
@@ -4123,6 +4170,13 @@
       }
     },
     "ethereumjs-util>create-hash>md5.js>hash-base": {
+      "packages": {
+        "pumpify>inherits": true,
+        "readable-stream": true,
+        "koa>content-disposition>safe-buffer": true
+      }
+    },
+    "ethereumjs-util>create-hash>ripemd160>hash-base": {
       "packages": {
         "pumpify>inherits": true,
         "readable-stream": true,
@@ -4599,7 +4653,7 @@
     "@ensdomains/content-hash>cids>multihashes": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true,
+        "@ensdomains/content-hash>cids>multihashes>uint8arrays": true,
         "@ensdomains/content-hash>cids>multihashes>varint": true
       }
     },
@@ -5342,7 +5396,7 @@
     "ethereumjs-util>create-hash>ripemd160": {
       "packages": {
         "browserify>buffer": true,
-        "ethereumjs-util>create-hash>md5.js>hash-base": true,
+        "ethereumjs-util>create-hash>ripemd160>hash-base": true,
         "pumpify>inherits": true
       }
     },
@@ -5591,7 +5645,7 @@
         "define": true
       }
     },
-    "@metamask/eth-sig-util>tweetnacl": {
+    "tweetnacl": {
       "globals": {
         "crypto": true,
         "msCrypto": true,
@@ -5608,8 +5662,7 @@
     },
     "@ensdomains/content-hash>cids>uint8arrays": {
       "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
+        "TextDecoder": true
       },
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true
@@ -5623,6 +5676,15 @@
       },
       "packages": {
         "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
+      }
+    },
+    "@ensdomains/content-hash>cids>multihashes>uint8arrays": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@ensdomains/content-hash>cids>multibase": true
       }
     },
     "@metamask/keyring-controller>ulid": {
