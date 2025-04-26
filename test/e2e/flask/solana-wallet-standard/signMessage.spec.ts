@@ -2,6 +2,8 @@ import { strict as assert } from 'assert';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
+  acccount1,
+  assertSignedMessageIsValid,
   clickConfirmButton,
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -17,12 +19,13 @@ describe('Solana Wallet Standard - Sign Message', function () {
           title: this.test?.fullTitle(),
         },
         async (driver) => {
+          const messageToSign = 'Hello, world!';
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await connectSolanaTestDapp(driver, testDapp);
 
           const signMessageTest = await testDapp.getSignMessageTest();
-          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.setMessage(messageToSign);
 
           await signMessageTest.signMessage();
 
@@ -33,8 +36,11 @@ describe('Solana Wallet Standard - Sign Message', function () {
 
           const signedMessage = await signMessageTest.getSignedMessage();
 
-          assert.strictEqual(signedMessage.length, 1);
-          assert.ok(signedMessage[0]);
+          assertSignedMessageIsValid({
+            signedMessageBase64: signedMessage[0],
+            originalMessageString: messageToSign,
+            publicKeyBase58: acccount1,
+          });
         },
       );
     });

@@ -8,9 +8,12 @@ import {
   withSolanaAccountSnap,
 } from '../solana/common-solana';
 import { By } from 'selenium-webdriver';
+import nacl from "tweetnacl";
+import bs58 from "bs58";
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
+export const acccount1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer'
 export const account1Short = '4tE7...Uxer';
 export const account2Short = 'ExTE...GNtt';
 
@@ -179,3 +182,29 @@ export const assertDisconnected = async (
     'Connection status should be "Disconnected"',
   );
 };
+
+/**
+ * Asserts that the signed message is valid.
+ */
+export function assertSignedMessageIsValid({
+  signedMessageBase64,
+  originalMessageString,
+  publicKeyBase58,
+}: {
+  signedMessageBase64: string;
+  originalMessageString: string;
+  publicKeyBase58: string;
+}) {
+  const signature = Uint8Array.from(Buffer.from(signedMessageBase64, "base64"));
+  const publicKey = bs58.decode(publicKeyBase58);
+  const message = new TextEncoder().encode(originalMessageString);
+
+  assert.strictEqual(publicKey.length, 32, 'Invalid public key length');
+  assert.strictEqual(signature.length, 64, 'Invalid signature length');
+
+  // Verify the signature
+  assert.ok(
+    nacl.sign.detached.verify(message, signature, publicKey),
+    'Signature verification failed',
+  );
+}
