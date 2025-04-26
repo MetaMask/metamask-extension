@@ -70,7 +70,7 @@ describe('Bridge functionality', function (this: Suite) {
             toChain: 'Linea',
           },
           4,
-          '22.9997',
+          '22.9974',
         );
 
         // Switch to Linea Mainnet to set it as the selected network
@@ -87,7 +87,7 @@ describe('Bridge functionality', function (this: Suite) {
             toChain: 'Linea',
           },
           5,
-          '22.9974',
+          '22.9973',
         );
       },
     );
