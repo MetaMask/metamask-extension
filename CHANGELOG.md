@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [12.16.2]
+### Changed
+- feat: update onboarding flow for Firefox ([#32179](https://github.com/MetaMask/metamask-extension/pull/32179))
 
 ## [12.16.1]
 ### Added
