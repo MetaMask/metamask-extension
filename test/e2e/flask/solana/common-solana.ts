@@ -42,6 +42,7 @@ export const SOLANA_DEVNET_URL = 'https://solana-devnet.infura.io/v3/';
 
 export const SOL_BALANCE = 50000000000;
 
+// https://docs.anza.xyz/implemented-proposals/rent#two-tiered-rent-regime
 export const MINIMUM_BALANCE_FOR_RENT_EXEMPTION = 890880; // = 0.00089088 SOL
 
 export const SOL_TO_USD_RATE = 225.88;
