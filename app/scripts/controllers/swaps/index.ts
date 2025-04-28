@@ -75,6 +75,19 @@ type Network = {
   ethersProvider: Web3Provider;
 };
 
+type SwapsNetworkConfig = {
+  refreshRates?: {
+    quotes: number;
+    quotesPrefetching: number;
+    stxGetTransactions: number;
+    stxBatchStatus: number;
+    stxStatusDeadline: number;
+  };
+  parameters: {
+    stxMaxFeeMultiplier: number;
+  };
+};
+
 const metadata: StateMetadata<SwapsControllerState> = {
   swapsState: {
     persist: false,
@@ -941,13 +954,13 @@ export default class SwapsController extends BaseController<
 
   // Private Methods
   private async _fetchSwapsNetworkConfig(network: Network) {
-    const response = await fetchWithCache({
+    const response = await fetchWithCache<SwapsNetworkConfig>({
       url: getBaseApi('network', network.chainId),
       fetchOptions: { method: 'GET' },
       cacheOptions: { cacheRefreshTime: 600000 },
       functionName: '_fetchSwapsNetworkConfig',
     });
-    const { refreshRates, parameters = {} } = response || {};
+    const { refreshRates, parameters } = response || {};
     if (
       !refreshRates ||
       typeof refreshRates.quotes !== 'number' ||
@@ -964,7 +977,7 @@ export default class SwapsController extends BaseController<
       stxGetTransactions: refreshRates.stxGetTransactions * 1000,
       stxBatchStatus: refreshRates.stxBatchStatus * 1000,
       stxStatusDeadline: refreshRates.stxStatusDeadline,
-      stxMaxFeeMultiplier: parameters.stxMaxFeeMultiplier,
+      stxMaxFeeMultiplier: parameters?.stxMaxFeeMultiplier,
     };
   }
 

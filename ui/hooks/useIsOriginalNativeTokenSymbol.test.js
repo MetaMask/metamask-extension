@@ -217,7 +217,11 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       result = renderHook(() =>
         // 0x0000000000 is invalid. It is used just so we don't ever end up with
         // a collision with some other valid future ChainID
-        useIsOriginalNativeTokenSymbol('0x0000000000', 'CrAzYeTh', 'CrAzYChAiN'),
+        useIsOriginalNativeTokenSymbol(
+          '0x0000000000',
+          'CrAzYeTh',
+          'CrAzYChAiN',
+        ),
       );
     });
 

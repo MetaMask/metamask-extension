@@ -167,50 +167,48 @@ export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
     chainId,
   )}/quotes?${queryString}`;
 
-  const tradesResponse = await fetchWithCache({
-    url,
-    fetchOptions: {
-      method: 'GET',
-      headers: { 'X-Client-Id': SWAPS_CLIENT_ID },
-    },
-    cacheOptions: { cacheRefreshTime: 0, timeout: SECOND * 15 },
-    functionName: 'getSwapAndSendQuotes',
-  });
+  const tradesResponse =
+    (await fetchWithCache<Quote[]>({
+      url,
+      fetchOptions: {
+        method: 'GET',
+        headers: { 'X-Client-Id': SWAPS_CLIENT_ID },
+      },
+      cacheOptions: { cacheRefreshTime: 0, timeout: SECOND * 15 },
+      functionName: 'getSwapAndSendQuotes',
+    })) || [];
 
-  const newQuotes = tradesResponse
-    .map((quote: Quote) => {
-      if (
-        quote.trade &&
-        !quote.error &&
-        validateData(QUOTE_VALIDATORS, quote, url)
-      ) {
-        const constructedTrade = addHexPrefixToObjectValues({
-          to: quote.trade.to,
-          from: quote.trade.from,
-          data: quote.trade.data,
-          value: decimalToHex(quote.trade.value),
-          gas: decimalToHex(quote.gasParams.maxGas),
-        });
+  const newQuotes = tradesResponse.reduce((acc, quote: Quote) => {
+    if (
+      quote.trade &&
+      !quote.error &&
+      validateData(QUOTE_VALIDATORS, quote, url)
+    ) {
+      const constructedTrade = addHexPrefixToObjectValues({
+        to: quote.trade.to,
+        from: quote.trade.from,
+        data: quote.trade.data,
+        value: decimalToHex(quote.trade.value),
+        gas: decimalToHex(quote.gasParams.maxGas),
+      });
 
-        let { approvalNeeded } = quote;
+      let { approvalNeeded } = quote;
 
-        if (approvalNeeded) {
-          approvalNeeded = addHexPrefixToObjectValues(
-            approvalNeeded,
-          ) as Quote['approvalNeeded'];
-        }
-
-        return {
-          ...quote,
-          slippage: params.slippage,
-          trade: constructedTrade,
+      if (approvalNeeded) {
+        approvalNeeded = addHexPrefixToObjectValues(
           approvalNeeded,
-        };
+        ) as Quote['approvalNeeded'];
       }
-      return undefined;
-    })
-    .filter(Boolean);
 
+      acc.push({
+        ...quote,
+        slippage: params.slippage,
+        trade: constructedTrade,
+        approvalNeeded,
+      });
+    }
+    return acc;
+  }, [] as (Quote & { slippage?: string })[]);
   return newQuotes;
 }
 

@@ -101,18 +101,23 @@ export const fetchAssetMetadata = async (
   }
 
   try {
-    const [assetMetadata]: AssetMetadata[] = await fetchWithCache({
-      url: `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${assetId}`,
-      fetchOptions: {
-        method: 'GET',
-        headers: { 'X-Client-Id': 'extension' },
-        signal: abortSignal,
-      },
-      cacheOptions: {
-        cacheRefreshTime: MINUTE,
-      },
-      functionName: 'fetchAssetMetadata',
-    });
+    const [assetMetadata] =
+      (await fetchWithCache<AssetMetadata[]>({
+        url: `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${assetId}`,
+        fetchOptions: {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+          signal: abortSignal,
+        },
+        cacheOptions: {
+          cacheRefreshTime: MINUTE,
+        },
+        functionName: 'fetchAssetMetadata',
+      })) || [];
+
+    if (!assetMetadata) {
+      return undefined;
+    }
 
     const commonFields = {
       symbol: assetMetadata.symbol,

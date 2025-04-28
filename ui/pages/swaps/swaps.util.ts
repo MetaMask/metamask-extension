@@ -21,7 +21,6 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
   SWAPS_DEV_API_V2_BASE_URL,
-  SwapsTokenObject,
 } from '../../../shared/constants/swaps';
 import {
   isSwapsDefaultTokenAddress,
@@ -61,6 +60,12 @@ type Validator = {
   property: string;
   type: string;
   validator: (a: string) => boolean;
+};
+
+type SwapGasPrice = {
+  SafeGasPrice: string;
+  ProposeGasPrice: string;
+  FastGasPrice: string;
 };
 
 export const TOKEN_VALIDATORS: Validator[] = [
@@ -130,9 +135,9 @@ export async function fetchToken(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chainId: any,
-): Promise<Json> {
+): Promise<Json | undefined> {
   const tokenUrl = getBaseApi('token', chainId);
-  return await fetchWithCache({
+  return await fetchWithCache<Json>({
     url: `${tokenUrl}?address=${contractAddress}`,
     fetchOptions: { method: 'GET', headers: clientIdHeader },
     cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
@@ -140,31 +145,30 @@ export async function fetchToken(
   });
 }
 
-export async function fetchBlockedTokens(
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  chainId: any,
-): Promise<string[]> {
+export async function fetchBlockedTokens(chainId: Hex): Promise<string[]> {
   const blockedTokensUrl = getBaseApi('blockedTokens', chainId);
-  return await fetchWithCache({
-    url: `${blockedTokensUrl}`,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    functionName: 'fetchBlockedTokens',
-  });
+  return (
+    (await fetchWithCache<string[]>({
+      url: `${blockedTokensUrl}`,
+      fetchOptions: { method: 'GET', headers: clientIdHeader },
+      cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+      functionName: 'fetchBlockedTokens',
+    })) || []
+  );
 }
 
 type Token = { symbol: string; address: string };
 export async function fetchTokens(
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-): Promise<SwapsTokenObject[]> {
+): Promise<Token[]> {
   const tokensUrl = getBaseApi('tokens', chainId);
-  const tokens = await fetchWithCache({
-    url: tokensUrl,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    functionName: 'fetchTokens',
-  });
+  const tokens =
+    (await fetchWithCache<Token[]>({
+      url: tokensUrl,
+      fetchOptions: { method: 'GET', headers: clientIdHeader },
+      cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+      functionName: 'fetchTokens',
+    })) || [];
   const logError = false;
   const tokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId] || null;
   return [
@@ -181,20 +185,18 @@ export async function fetchTokens(
   ];
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
+export async function fetchAggregatorMetadata(
+  chainId: Hex,
+): Promise<Record<string, object>> {
   const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', chainId);
-  const aggregators = await fetchWithCache({
+  const aggregators = await fetchWithCache<Record<string, object>>({
     url: aggregatorMetadataUrl,
     fetchOptions: { method: 'GET', headers: clientIdHeader },
     cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     functionName: 'fetchAggregatorMetadata',
   });
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const filteredAggregators = {} as any;
+  const filteredAggregators = {} as Record<string, object>;
   for (const aggKey in aggregators) {
     if (
       validateData(
@@ -214,13 +216,13 @@ export async function fetchTopAssetsList(
 ): Promise<{ address: Hex }[]> {
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
-    (await fetchWithCache({
+    (await fetchWithCache<{ address: Hex }[]>({
       url: topAssetsUrl,
       functionName: 'fetchTopAssets',
       fetchOptions: { method: 'GET', headers: clientIdHeader },
       cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     })) || [];
-  const topAssetsList = response.filter((asset: { address: string }) =>
+  const topAssetsList = response.filter((asset) =>
     validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl),
   );
   return topAssetsList;
@@ -253,14 +255,12 @@ export async function fetchSwapsFeatureFlags(): Promise<any> {
   });
 }
 
-export async function fetchTokenPrice(
-  tokenContractAddress: string,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> {
+export async function fetchTokenPrice<T extends string>(
+  tokenContractAddress: T,
+): Promise<number | undefined> {
   const query = `spot-prices?tokenAddresses=${tokenContractAddress}&vsCurrency=eth&includeMarketData=false`;
 
-  const prices = await fetchWithCache({
+  const prices = await fetchWithCache<{ [K in T]: { eth: number } }>({
     url: `https://price.api.cx.metamask.io/v2/chains/1/${query}`,
     fetchOptions: {
       method: 'GET',
@@ -273,18 +273,13 @@ export async function fetchTokenPrice(
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function fetchSwapsGasPrices(chainId: any): Promise<
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | any
-  | {
-      safeLow: string;
-      average: string;
-      fast: string;
-    }
-> {
+export async function fetchSwapsGasPrices(chainId: any): Promise<{
+  safeLow: string;
+  average: string;
+  fast: string;
+}> {
   const gasPricesUrl = getBaseApi('gasPrices', chainId);
-  const response = await fetchWithCache({
+  const response = await fetchWithCache<SwapGasPrice>({
     url: gasPricesUrl,
     fetchOptions: { method: 'GET', headers: clientIdHeader },
     cacheOptions: { cacheRefreshTime: 30000 },
@@ -296,7 +291,7 @@ export async function fetchSwapsGasPrices(chainId: any): Promise<
     gasPricesUrl,
   );
 
-  if (!responseIsValid) {
+  if (!responseIsValid || !response) {
     throw new Error(`${gasPricesUrl} response is invalid`);
   }
 

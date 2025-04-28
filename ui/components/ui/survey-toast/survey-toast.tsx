@@ -49,7 +49,7 @@ export function SurveyToast() {
 
     const fetchSurvey = async () => {
       try {
-        const response = await fetchWithCache({
+        const response = await fetchWithCache<{ surveys: Survey }>({
           url: surveyUrl,
           fetchOptions: {
             method: 'GET',
@@ -62,7 +62,7 @@ export function SurveyToast() {
           cacheOptions: { cacheRefreshTime: process.env.IN_TEST ? 0 : DAY },
         });
 
-        const _survey: Survey = response?.surveys;
+        const _survey = response?.surveys;
 
         if (
           !_survey ||

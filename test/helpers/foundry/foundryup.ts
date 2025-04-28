@@ -133,6 +133,13 @@ export async function downloadAndInstallFoundryBinaries(): Promise<void> {
   );
   const BIN_DIR = join(cwd(), 'node_modules', '.bin');
 
+  if (version !== 'nightly') {
+    if (checkBinPath(BIN_DIR, binaries, version, platform)) {
+      say('done!');
+      return;
+    }
+  }
+
   const url = new URL(BIN_ARCHIVE_URL);
   const cacheKey = createHash('sha256')
     .update(`${BIN_ARCHIVE_URL}-${bins}`)
