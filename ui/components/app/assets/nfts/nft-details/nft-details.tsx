@@ -133,9 +133,6 @@ export function NftDetailsComponent({
   const { networkClientId: nftNetworkClientId } =
     nftChainNetwork.rpcEndpoints[defaultRpcEndpointIndex];
   const nftChainImage = getImageForChainId(nftChainId as string);
-  const nftNetworkClientId =
-    nftChainNetwork?.rpcEndpoints?.[nftChainNetwork?.defaultRpcEndpointIndex]
-      .networkClientId;
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
