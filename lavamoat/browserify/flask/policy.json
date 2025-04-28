@@ -1358,7 +1358,7 @@
         "@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/abi-utils": true,
         "@metamask/eth-sig-util>@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1370,7 +1370,7 @@
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1382,7 +1382,7 @@
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1394,7 +1394,7 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1406,7 +1406,7 @@
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1418,7 +1418,7 @@
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1430,7 +1430,7 @@
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1442,7 +1442,7 @@
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1454,7 +1454,7 @@
         "@metamask/keyring-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/keyring-controller>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1466,7 +1466,7 @@
         "@metamask/signature-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/signature-controller>@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "tweetnacl": true
@@ -1527,7 +1527,7 @@
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
-        "@trezor/connect-web": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web": true,
         "browserify>buffer": true,
         "@metamask/eth-trezor-keyring>hdkey": true
       }
@@ -1638,7 +1638,7 @@
       "packages": {
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
-        "viem>webauthn-p256>@noble/curves": true,
+        "viem>ox>@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
@@ -2042,7 +2042,7 @@
       },
       "packages": {
         "@metamask/scure-bip39>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
+        "@metamask/scure-bip39>@scure/base": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -2143,7 +2143,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "viem>webauthn-p256>@noble/curves": true,
+        "viem>ox>@noble/curves": true,
         "@noble/hashes": true
       }
     },
@@ -2347,7 +2347,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@metamask/eth-sig-util>@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
@@ -2381,7 +2381,7 @@
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "viem>webauthn-p256>@noble/curves": {
+    "viem>ox>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
@@ -2391,6 +2391,7 @@
     },
     "@noble/hashes": {
       "globals": {
+        "TextDecoder": true,
         "TextEncoder": true,
         "crypto": true
       }
@@ -2475,7 +2476,85 @@
         "document.defaultView": true
       }
     },
+    "@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/signature-controller>@metamask/eth-sig-util>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/scure-bip39>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
     "@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/eth-sig-util>@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -2485,7 +2564,7 @@
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
     "@segment/loosely-validate-event": {
@@ -2688,7 +2767,8 @@
         "Intl.Collator": true,
         "TextEncoder": true,
         "crypto.subtle.digest": true,
-        "crypto.subtle.exportKey": true
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.importKey": true
       },
       "packages": {
         "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
@@ -2725,11 +2805,6 @@
         "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
-    "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings>@solana/codecs-core": {
-      "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
-      }
-    },
     "@solana/addresses>@solana/codecs-strings": {
       "globals": {
         "TextDecoder": true,
@@ -2750,7 +2825,7 @@
         "btoa": true
       },
       "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings>@solana/codecs-core": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
         "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
       }
     },
@@ -2811,7 +2886,22 @@
       },
       "packages": {
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": true,
-        "@trezor/connect-web>@trezor/connect-common>@trezor/utils": true,
+        "@trezor/connect-web>@trezor/utils": true,
+        "tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common": {
+      "globals": {
+        "console.warn": true,
+        "localStorage.getItem": true,
+        "localStorage.setItem": true,
+        "navigator": true,
+        "setTimeout": true,
+        "window": true
+      },
+      "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
         "tslib": true
       }
     },
@@ -2854,12 +2944,59 @@
         "tslib": true
       }
     },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web": {
+      "globals": {
+        "URLSearchParams": true,
+        "__TREZOR_CONNECT_SRC": true,
+        "addEventListener": true,
+        "btoa": true,
+        "chrome": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.warn": true,
+        "document.body": true,
+        "document.createElement": true,
+        "document.createTextNode": true,
+        "document.getElementById": true,
+        "document.querySelectorAll": true,
+        "location.origin": true,
+        "navigator": true,
+        "open": true,
+        "origin": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@trezor/websocket-client": true,
+        "webpack>events": true,
+        "tslib": true
+      }
+    },
     "@trezor/connect-web>@trezor/connect": {
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/utils": true,
+        "@trezor/connect-web>@trezor/utils": true,
+        "tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": {
+      "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/device-utils": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
+        "tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/device-utils": {
+      "packages": {
         "tslib": true
       }
     },
@@ -2881,10 +3018,36 @@
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true
       }
     },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": {
+      "globals": {
+        "innerHeight": true,
+        "innerWidth": true,
+        "location.hostname": true,
+        "location.origin": true,
+        "navigator.languages": true,
+        "navigator.platform": true,
+        "navigator.userAgent": true,
+        "screen.height": true,
+        "screen.width": true
+      },
+      "packages": {
+        "process": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true
+      }
+    },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "browserify>buffer": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
+        "tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
+      "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
+        "browserify>buffer": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>long": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
         "tslib": true
       }
@@ -2899,26 +3062,14 @@
         "ts-mixer": true
       }
     },
-    "@trezor/connect-web>@trezor/connect-common>@trezor/utils": {
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/schema-utils": {
       "globals": {
-        "AbortController": true,
-        "Intl.NumberFormat": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.info": true,
-        "console.log": true,
-        "console.warn": true,
-        "crypto.getRandomValues": true,
-        "setInterval": true,
-        "setTimeout": true
+        "console.warn": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect-common>@trezor/utils>bignumber.js": true,
-        "browserify>browser-resolve": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>@sinclair/typebox": true,
         "browserify>buffer": true,
-        "webpack>events": true,
-        "tslib": true
+        "ts-mixer": true
       }
     },
     "@trezor/connect-web>@trezor/utils": {
@@ -2943,10 +3094,12 @@
         "tslib": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/utils": {
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": {
       "globals": {
         "AbortController": true,
+        "Blob": true,
         "Intl.NumberFormat": true,
+        "TextEncoder": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -2958,9 +3111,21 @@
         "setTimeout": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/utils>bignumber.js": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils>bignumber.js": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
+        "webpack>events": true,
+        "tslib": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@trezor/websocket-client": {
+      "globals": {
+        "WebSocket": true,
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
         "webpack>events": true,
         "tslib": true
       }
@@ -3191,19 +3356,13 @@
         "define": true
       }
     },
-    "@trezor/connect-web>@trezor/connect-common>@trezor/utils>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
     "@trezor/connect-web>@trezor/utils>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/utils>bignumber.js": {
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
@@ -3292,21 +3451,21 @@
     "crypto-browserify>public-encrypt>browserify-rsa": {
       "packages": {
         "bn.js": true,
-        "browserify>buffer": true,
-        "crypto-browserify>randombytes": true
+        "crypto-browserify>randombytes": true,
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>browserify-sign": {
       "packages": {
         "bn.js": true,
         "crypto-browserify>public-encrypt>browserify-rsa": true,
-        "browserify>buffer": true,
         "ethereumjs-util>create-hash": true,
         "crypto-browserify>create-hmac": true,
         "@metamask/ppom-validator>elliptic": true,
         "pumpify>inherits": true,
         "crypto-browserify>public-encrypt>parse-asn1": true,
-        "stream-browserify": true
+        "crypto-browserify>browserify-sign>readable-stream": true,
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "browserify>browserify-zlib": {
@@ -3365,24 +3524,23 @@
         "semver": true
       }
     },
-    "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": {
+    "string.prototype.matchall>call-bind>call-bind-apply-helpers": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "browserify>has>function-bind": true
       }
     },
     "string.prototype.matchall>call-bind": {
       "packages": {
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
-        "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-map>call-bound": {
       "packages": {
-        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
@@ -3510,6 +3668,11 @@
         "copy-to-clipboard>toggle-selection": true
       }
     },
+    "readable-stream-2>core-util-is": {
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
+      }
+    },
     "eth-lattice-keyring>gridplus-sdk>crc-32": {
       "globals": {
         "DO_NOT_EXPORT_CRC": true,
@@ -3627,7 +3790,7 @@
         "process": true
       },
       "packages": {
-        "nock>debug>ms": true,
+        "mocha>ms": true,
         "process": true
       }
     },
@@ -3656,7 +3819,7 @@
     "string.prototype.matchall>define-properties>define-data-property": {
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>gopd": true
       }
     },
@@ -3703,7 +3866,7 @@
     },
     "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": {
       "packages": {
-        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>es-abstract>gopd": true
       }
     },
@@ -3969,12 +4132,13 @@
       "globals": {
         "AggregateError": true,
         "FinalizationRegistry": true,
+        "Float16Array": true,
         "WeakRef": true
       },
       "packages": {
-        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>es-object-atoms": true,
         "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic>get-proto": true,
@@ -4143,7 +4307,7 @@
     },
     "string.prototype.matchall>internal-slot": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
@@ -4377,6 +4541,13 @@
         "localStorage": true,
         "log": "write",
         "navigator": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>long": {
+      "globals": {
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true,
+        "define": true
       }
     },
     "lottie-web": {
@@ -4636,9 +4807,9 @@
       "packages": {
         "crypto-browserify>public-encrypt>parse-asn1>asn1.js": true,
         "ethereumjs-util>ethereum-cryptography>browserify-aes": true,
-        "browserify>buffer": true,
         "crypto-browserify>browserify-cipher>evp_bytestokey": true,
-        "crypto-browserify>pbkdf2": true
+        "crypto-browserify>pbkdf2": true,
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "react-syntax-highlighter>refractor>parse-entities": {
@@ -4712,6 +4883,11 @@
         "setTimeout": true
       }
     },
+    "readable-stream-2>process-nextick-args": {
+      "packages": {
+        "process": true
+      }
+    },
     "promise-to-callback": {
       "packages": {
         "promise-to-callback>is-fn": true,
@@ -4754,13 +4930,18 @@
       "packages": {
         "bn.js": true,
         "crypto-browserify>public-encrypt>browserify-rsa": true,
-        "browserify>buffer": true,
         "ethereumjs-util>create-hash": true,
         "crypto-browserify>public-encrypt>parse-asn1": true,
-        "crypto-browserify>randombytes": true
+        "crypto-browserify>randombytes": true,
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "browserify>punycode": {
+      "globals": {
+        "define": true
+      }
+    },
+    "browserify>url>punycode": {
       "globals": {
         "define": true
       }
@@ -4779,7 +4960,7 @@
         "react": true
       }
     },
-    "mockttp>body-parser>qs": {
+    "browserify>url>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5179,13 +5360,27 @@
         "readable-stream>util-deprecate": true
       }
     },
+    "crypto-browserify>browserify-sign>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "readable-stream-2>core-util-is": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "crypto-browserify>browserify-sign>readable-stream>isarray": true,
+        "process": true,
+        "readable-stream-2>process-nextick-args": true,
+        "crypto-browserify>browserify-sign>readable-stream>safe-buffer": true,
+        "crypto-browserify>browserify-sign>readable-stream>string_decoder": true,
+        "browserify>timers-browserify": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
     "extension-port-stream>readable-stream": {
       "globals": {
         "AbortController": true,
         "AbortSignal": true,
         "AggregateError": true,
         "Blob": true,
-        "ERR_INVALID_ARG_TYPE": true,
         "queueMicrotask": true
       },
       "packages": {
@@ -5202,7 +5397,6 @@
         "AbortSignal": true,
         "AggregateError": true,
         "Blob": true,
-        "ERR_INVALID_ARG_TYPE": true,
         "queueMicrotask": true
       },
       "packages": {
@@ -5230,7 +5424,7 @@
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>regexp.prototype.flags>set-function-name": true
       }
     },
@@ -5301,6 +5495,16 @@
         "browserify>buffer": true
       }
     },
+    "crypto-browserify>browserify-sign>readable-stream>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "crypto-browserify>browserify-sign>readable-stream>string_decoder>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
     "react-dom>scheduler": {
       "globals": {
         "MessageChannel": true,
@@ -5338,7 +5542,7 @@
     "string.prototype.matchall>call-bind>set-function-length": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true
@@ -5347,7 +5551,7 @@
     "string.prototype.matchall>regexp.prototype.flags>set-function-name": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>function.prototype.name>functions-have-names": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true
       }
@@ -5368,14 +5572,14 @@
     },
     "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
         "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
       }
@@ -5383,7 +5587,7 @@
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
         "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-map": true
@@ -5391,7 +5595,7 @@
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-list": true,
         "string.prototype.matchall>side-channel>side-channel-map": true,
@@ -5461,6 +5665,11 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
+    "crypto-browserify>browserify-sign>readable-stream>string_decoder": {
+      "packages": {
+        "crypto-browserify>browserify-sign>readable-stream>string_decoder>safe-buffer": true
+      }
+    },
     "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": {
       "packages": {
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>is-hex-prefixed": true
@@ -5528,6 +5737,11 @@
         "define": true
       }
     },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
+      "globals": {
+        "define": true
+      }
+    },
     "@ensdomains/content-hash>cids>uint8arrays": {
       "globals": {
         "TextDecoder": true
@@ -5589,8 +5803,8 @@
     },
     "browserify>url": {
       "packages": {
-        "browserify>punycode": true,
-        "mockttp>body-parser>qs": true
+        "browserify>url>punycode": true,
+        "browserify>url>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {
