@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.16.2]
+### Changed
+- Update onboarding flow for Firefox ([#32179](https://github.com/MetaMask/metamask-extension/pull/32179))
+- Make "Dapp Viewed" event exclude metametrics id data ([#32207](https://github.com/MetaMask/metamask-extension/pull/32207))
+
 ## [12.16.1]
 ### Added
 - Add support for version 2.0.0 of EIP-5792 ([#31913](https://github.com/MetaMask/metamask-extension/pull/31913))
@@ -5963,7 +5968,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.16.2...HEAD
+[12.16.2]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...v12.16.2
 [12.16.1]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...v12.16.1
 [12.16.0]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...v12.16.0
 [12.15.2]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.15.2
