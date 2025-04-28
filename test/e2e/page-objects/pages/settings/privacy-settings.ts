@@ -32,7 +32,7 @@ class PrivacySettings {
 
   private readonly dataCollectionWarningAckButton = {
     text: 'Okay',
-    tag: 'Button',
+    tag: 'button',
   };
 
   private readonly dataCollectionWarningMessage = {
