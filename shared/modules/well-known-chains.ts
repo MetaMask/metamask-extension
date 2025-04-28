@@ -31,7 +31,8 @@ async function getWellKnownChainsFromCache() {
  * network list of well-known chains (if the user's `useSafeChainsListValidation`
  * security setting allows for it).
  *
- * @param useExternalWellKnownChainsValidation
+ * @param useExternalWellKnownChainsValidation - Whether to use the external
+ * well-known chains list or only use the cached one.
  */
 export async function getWellKnownChains(
   useExternalWellKnownChainsValidation: boolean,
