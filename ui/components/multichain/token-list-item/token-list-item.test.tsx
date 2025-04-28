@@ -48,7 +48,7 @@ const wellKnownChainDetails: WellKnownChain = {
     symbol: 'ETH',
   },
   name: 'Ethereum Mainnet',
-  rpc: ['https://mainnet.infura.io/v3/your-infura-key'],
+  rpc: [],
 };
 
 let openTabSpy: jest.SpyInstance<void, [opts: { url: string }], unknown>;

@@ -2,7 +2,12 @@ import { MINUTE, SECOND } from '../constants/time';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { getStorageItem, setStorageItem } from './storage-helpers';
 
-const fetchWithCache = async ({
+type CacheEntry<T = any> = {
+  cachedResponse: T;
+  cachedTime: number;
+};
+
+const fetchWithCache = async <T = any>({
   url,
   fetchOptions = {},
   cacheOptions: { cacheRefreshTime = MINUTE * 6, timeout = SECOND * 30 } = {},
@@ -14,7 +19,7 @@ const fetchWithCache = async ({
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fetchOptions?: Record<string, any>;
+  fetchOptions?: RequestInit;
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,9 +45,14 @@ const fetchWithCache = async ({
   }
 
   const currentTime = Date.now();
-  const { cachedResponse, cachedTime } = (await getStorageItem(cacheKey)) || {};
-  if (cachedResponse && currentTime - cachedTime < cacheRefreshTime) {
-    return cachedResponse;
+  const cacheResponse = await getStorageItem<CacheEntry<T>>(cacheKey);
+  let cachedResponse: CacheEntry<T>['cachedResponse'] | undefined;
+  if (cacheResponse) {
+    let cachedTime: (typeof cacheResponse)['cachedTime'];
+    ({ cachedResponse, cachedTime } = cacheResponse);
+    if (currentTime - cachedTime < cacheRefreshTime) {
+      return cachedResponse;
+    }
   }
   fetchOptions.headers.set('Content-Type', 'application/json');
   const fetchWithTimeout = getFetchWithTimeout(timeout);
@@ -65,7 +75,7 @@ const fetchWithCache = async ({
   }
   const responseJson =
     response.status === 204 ? undefined : await response.json();
-  const cacheEntry = {
+  const cacheEntry: CacheEntry<T> = {
     cachedResponse: responseJson,
     cachedTime: currentTime,
   };

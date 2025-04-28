@@ -17,8 +17,8 @@ let preSeedPromise: Promise<void> | null = null;
 /**
  * Retrieve well-known chains from the cache.
  */
-async function getWellKnownChainsFromCache(): Promise<WellKnownChain[] | null> {
-  const cachedResponse = (await getStorageItem(cacheKey)) || {};
+async function getWellKnownChainsFromCache() {
+  const cachedResponse = await getStorageItem<WellKnownChain[]>(cacheKey);
   if (cachedResponse) {
     return cachedResponse;
   }
@@ -41,14 +41,17 @@ export async function getWellKnownChains(
   // don't send a network request if the user has disabled the setting,
   // instead, we'll use the cached response if available
   if (useExternalWellKnownChainsValidation) {
-    return await fetchWithCache({
+    const externalResponse = await fetchWithCache<WellKnownChain[]>({
       url: CHAIN_SPEC_URL,
       allowStale: true,
       cacheOptions: { cacheRefreshTime: DAY },
       functionName: 'getWellKnownChains',
       cacheKey,
     });
+    return externalResponse || [];
   }
+  // returns well-known chains from the cache WITHOUT updating the list
+  // from `CHAIN_SPEC_URL`
   return (await getWellKnownChainsFromCache()) || [];
 }
 
