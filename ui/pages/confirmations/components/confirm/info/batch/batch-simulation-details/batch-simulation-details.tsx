@@ -17,11 +17,9 @@ import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
-import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 
 export function BatchSimulationDetails() {
   const t = useI18nContext();
-  const { isUpgradeOnly } = useIsUpgradeTransaction();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -56,10 +54,7 @@ export function BatchSimulationDetails() {
     [id, nestedTransactionIndexToEdit],
   );
 
-  if (
-    transactionMeta?.type === TransactionType.revokeDelegation ||
-    isUpgradeOnly
-  ) {
+  if (transactionMeta?.type === TransactionType.revokeDelegation) {
     return null;
   }
 

@@ -2,11 +2,6 @@ import { AuthorizationList } from '@metamask/transaction-controller';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import {
-  upgradeAccountConfirmation,
-  upgradeAccountConfirmationOnly,
-} from '../../../../../../../test/data/confirmations/batch-transaction';
-import { Confirmation } from '../../../../types/confirm';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
 import {
   useIsDowngradeTransaction,
@@ -25,18 +20,7 @@ function runUpgradeHook(authorizationList?: AuthorizationList) {
     state,
   );
 
-  return result.current;
-}
-
-function runUpgradeHookForConfirmation(confirmation: Confirmation) {
-  const state = getMockConfirmStateForTransaction(confirmation);
-
-  const { result } = renderHookWithConfirmContextProvider(
-    useIsUpgradeTransaction,
-    state,
-  );
-
-  return result.current;
+  return result.current as boolean;
 }
 
 function runDowngradeHook(authorizationList?: AuthorizationList) {
@@ -55,41 +39,24 @@ function runDowngradeHook(authorizationList?: AuthorizationList) {
 }
 
 describe('useIsUpgradeTransaction', () => {
-  it('isUpgrade is true if authorization address is not empty', async () => {
+  it('returns true if authorization address is not empty', async () => {
     const result = runUpgradeHook([{ address: '0x123' }]);
-    expect(result.isUpgrade).toBe(true);
-    expect(result.isUpgradeOnly).toBe(false);
+    expect(result).toBe(true);
   });
 
   it.each([undefined, null, []] as const)(
-    'isUpgrade is false if authorizationList is %s',
+    'returns false if authorizationList is %s',
     async (authorizationList) => {
       const result = runUpgradeHook(
         authorizationList as unknown as AuthorizationList,
       );
-      expect(result.isUpgrade).toBe(false);
-      expect(result.isUpgradeOnly).toBe(false);
+      expect(result).toBe(false);
     },
   );
 
-  it('isUpgrade is false if authorization address is zero address', async () => {
+  it('returns false if authorization address is zero address', async () => {
     const result = runUpgradeHook([{ address: EIP_7702_REVOKE_ADDRESS }]);
-    expect(result.isUpgrade).toBe(false);
-    expect(result.isUpgradeOnly).toBe(false);
-  });
-
-  it('isUpgradeOnly is false if authorization address is not empty and there is data', async () => {
-    const result = runUpgradeHookForConfirmation(upgradeAccountConfirmation);
-    expect(result.isUpgrade).toBe(true);
-    expect(result.isUpgradeOnly).toBe(false);
-  });
-
-  it('isUpgradeOnly is true if authorization address is not empty and there is no data', async () => {
-    const result = runUpgradeHookForConfirmation(
-      upgradeAccountConfirmationOnly,
-    );
-    expect(result.isUpgrade).toBe(true);
-    expect(result.isUpgradeOnly).toBe(true);
+    expect(result).toBe(false);
   });
 });
 

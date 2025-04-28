@@ -3,7 +3,6 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import {
   getMockApproveConfirmState,
-  getMockConfirmStateForTransaction,
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
   getMockPersonalSignConfirmStateForRequest,
@@ -18,13 +17,11 @@ import {
 } from '../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../test/lib/i18n-helpers';
-import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
 import {
   Alert,
   ConfirmAlertsState,
 } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { Confirmation } from '../../../types/confirm';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import ConfirmTitle from './title';
 
@@ -46,11 +43,6 @@ jest.mock('../../../hooks/useAssetDetails', () => ({
 
 jest.mock('../info/approve/hooks/use-is-nft', () => ({
   useIsNFT: jest.fn(() => ({ isNFT: true })),
-}));
-
-jest.mock('../../../../../store/actions', () => ({
-  getContractMethodData: jest.fn().mockReturnValue({ type: 'dummy' }),
-  setAccountDetailsAddress: jest.fn().mockReturnValue({ type: 'dummy' }),
 }));
 
 describe('ConfirmTitle', () => {
@@ -94,23 +86,6 @@ describe('ConfirmTitle', () => {
     expect(getByText('Withdrawal request')).toBeInTheDocument();
     expect(
       getByText('This site wants permission to withdraw your NFTs'),
-    ).toBeInTheDocument();
-  });
-
-  it('should render the title and description for smart account upgrade correctly', () => {
-    const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-      ),
-    );
-    const { getByText } = renderWithConfirmContextProvider(
-      <ConfirmTitle />,
-      mockStore,
-    );
-
-    expect(getByText('Account update')).toBeInTheDocument();
-    expect(
-      getByText("You're switching to a smart account"),
     ).toBeInTheDocument();
   });
 
