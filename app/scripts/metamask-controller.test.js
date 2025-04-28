@@ -3286,12 +3286,15 @@ describe('MetaMaskController', () => {
           symbol: 'DAI',
         };
 
-        await metamaskController.tokensController.addTokens([
-          {
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            ...tokenData,
-          },
-        ]);
+        await metamaskController.tokensController.addTokens(
+          [
+            {
+              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              ...tokenData,
+            },
+          ],
+          'networkConfigurationId1',
+        );
 
         metamaskController.provider = provider;
         const tokenDetails =
