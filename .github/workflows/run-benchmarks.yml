@@ -1,5 +1,9 @@
 on:
   workflow_call:
+    inputs:
+      runner-type:
+        default: 'ubuntu-latest'
+        type: string
 
 env:
   COMMANDS: |
@@ -10,7 +14,7 @@ env:
 
 jobs:
   benchmarks:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ inputs.runner-type }}
     strategy:
       fail-fast: false
       matrix:

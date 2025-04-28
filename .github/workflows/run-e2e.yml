@@ -31,11 +31,14 @@ on:
         type: number
         default: 1
         description: The total number of jobs in the matrix
+      runner-type:
+        default: 'ubuntu-latest'
+        type: string
 
 jobs:
   run-e2e:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner-type }}
     container:
       image: cimg/node:22.14-browsers
     continue-on-error: true # soft launch

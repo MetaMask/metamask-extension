@@ -82,10 +82,87 @@ jobs:
       - prep-deps
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
+  check-runner-count:
+    runs-on: ubuntu-latest
+    outputs:
+      runner-type: ${{ steps.set-runner.outputs.runner-type }}
+    env:
+      REPO_OWNER: MetaMask
+      REPO_NAME: metamask-extension
+      WORKFLOW_ID: 60751188
+    steps:
+      - name: Count running workflow jobs
+        id: count-jobs
+        run: |
+          # Set GitHub token
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+
+          # Step 1: Get all in-progress workflow run IDs
+          echo "Fetching in-progress workflow runs..."
+          RUN_IDS=$(curl -s -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/workflows/${{ env.WORKFLOW_ID }}/runs?status=in_progress" \
+            | jq -r '.workflow_runs[].id')
+
+          # Check if we got any run IDs
+          if [ -z "$RUN_IDS" ]; then
+            echo "No in-progress workflow runs found."
+            echo "total_count=0" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Found in-progress workflow run IDs: $RUN_IDS"
+
+          # Step 2: Get job counts for each workflow run and sum them
+          TOTAL_COUNT=0
+
+          for RUN_ID in $RUN_IDS; do
+            echo "Fetching jobs for run ID: $RUN_ID"
+            JOB_COUNT=$(curl -s -L \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/runs/$RUN_ID/jobs" \
+              | jq -r '.total_count')
+
+            echo "Run ID $RUN_ID has $JOB_COUNT jobs"
+
+            # Add to total (using bc for floating point arithmetic if needed)
+            TOTAL_COUNT=$((TOTAL_COUNT + JOB_COUNT))
+          done
+
+          echo "Total number of running jobs: $TOTAL_COUNT"
+          echo "total_count=$TOTAL_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Set runner type based on count
+        id: set-runner
+        run: |
+          TOTAL_COUNT=${{ steps.count-jobs.outputs.total_count }}
+
+          echo "Total job count: $TOTAL_COUNT"
+
+          # Default to ubuntu-latest if count is not a number
+          if ! [[ "$TOTAL_COUNT" =~ ^[0-9]+$ ]]; then
+            echo "Count is not a valid number, defaulting to ubuntu-latest"
+            echo "runner-type=ubuntu-latest" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          if [[ $TOTAL_COUNT -lt 350 ]]; then
+            echo "Using ubuntu-latest runner (count: $TOTAL_COUNT < 350)"
+            echo "runner-type=ubuntu-latest" >> $GITHUB_OUTPUT
+          else
+            echo "Using custom runner (count: $TOTAL_COUNT >= 350)"
+            echo "runner-type=gha-runner-scale-set-ubuntu-22.04-amd64-med" >> $GITHUB_OUTPUT
+          fi
+
   prep-build-test-browserify:
     needs:
       - prep-deps
-    runs-on: ubuntu-latest
+      - check-runner-count
+    runs-on: ${{ needs.check-runner-count.outputs.runner-type }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -110,7 +187,8 @@ jobs:
   prep-build-test-webpack:
     needs:
       - prep-deps
-    runs-on: ubuntu-latest
+      - check-runner-count
+    runs-on: ${{ needs.check-runner-count.outputs.runner-type }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -135,7 +213,8 @@ jobs:
   prep-build-dist-browserify:
     needs:
       - prep-deps
-    runs-on: ubuntu-latest
+      - check-runner-count
+    runs-on: ${{ needs.check-runner-count.outputs.runner-type }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -165,6 +244,9 @@ jobs:
     needs:
       - prep-build-test-browserify
       - prep-build-test-webpack
+      - check-runner-count
+    with:
+      runner-type: ${{ needs.check-runner-count.outputs.runner-type }}
     permissions:
       contents: read
       # id-token permission is required for uploading to s3
@@ -174,12 +256,16 @@ jobs:
     name: Run tests
     needs:
       - prep-deps
+      - check-runner-count
+    with:
+      runner-type: ${{ needs.check-runner-count.outputs.runner-type }}
     uses: ./.github/workflows/run-tests.yml
 
   bundle-size:
     needs:
       - prep-build-dist-browserify
-    runs-on: ubuntu-latest
+      - check-runner-count
+    runs-on: ${{ needs.check-runner-count.outputs.runner-type }}
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
@@ -220,6 +306,9 @@ jobs:
   needs-e2e:
     needs:
       - prep-deps
+      - check-runner-count
+    with:
+      runner-type: ${{ needs.check-runner-count.outputs.runner-type }}
     uses: ./.github/workflows/needs-e2e.yml
 
   e2e-chrome:
@@ -228,12 +317,18 @@ jobs:
       - prep-build-test-browserify
       - prep-build-test-webpack
       - prep-build-dist-browserify
+      - check-runner-count
+    with:
+      runner-type: ${{ needs.check-runner-count.outputs.runner-type }}
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
 
   e2e-firefox:
     needs:
       - needs-e2e
+      - check-runner-count
+    with:
+      runner-type: ${{ needs.check-runner-count.outputs.runner-type }}
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
 
@@ -288,7 +383,7 @@ jobs:
   # https://github.com/MetaMask/metamask-module-template/pull/151
   all-jobs-completed:
     name: All jobs completed
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner-type }}
     needs:
       - lint-workflows
       - test-lint
@@ -313,7 +408,7 @@ jobs:
   all-jobs-pass:
     name: All jobs pass
     if: ${{ always() }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner-type }}
     needs:
       - all-jobs-completed
     steps:

@@ -2,6 +2,10 @@ name: E2E Firefox
 
 on:
   workflow_call:
+    inputs:
+      runner-type:
+        default: 'ubuntu-latest'
+        type: string
 
 jobs:
   test-e2e-firefox-browserify:
@@ -17,6 +21,7 @@ jobs:
       test-command: yarn test:e2e:firefox
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+      runner-type: ${{ inputs.runner-type }}
 
   test-e2e-firefox-flask:
     uses: ./.github/workflows/run-e2e.yml
@@ -30,12 +35,13 @@ jobs:
       test-command: yarn test:e2e:firefox:flask
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+      runner-type: ${{ inputs.runner-type }}
 
   test-e2e-firefox-report:
     needs:
       - test-e2e-firefox-browserify
       - test-e2e-firefox-flask
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner-type }}
     if: ${{ !cancelled() }}
     env:
       OWNER: ${{ github.repository_owner }}

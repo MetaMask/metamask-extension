@@ -2,6 +2,10 @@ name: E2E Chrome
 
 on:
   workflow_call:
+    inputs:
+      runner-type:
+        default: 'ubuntu-latest'
+        type: string
 
 jobs:
   test-e2e-chrome-browserify:
@@ -18,6 +22,7 @@ jobs:
       test-command: yarn test:e2e:chrome
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+      runner-type: ${{ inputs.runner-type }}
 
   test-e2e-chrome-webpack:
     uses: ./.github/workflows/run-e2e.yml
@@ -33,6 +38,7 @@ jobs:
       test-command: yarn test:e2e:chrome:webpack
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+      runner-type: ${{ inputs.runner-type }}
 
   test-e2e-chrome-multiple-providers:
     uses: ./.github/workflows/run-e2e.yml
@@ -41,6 +47,7 @@ jobs:
       build-artifact: prep-build-test-browserify-chrome
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:multi-provider
+      runner-type: ${{ inputs.runner-type }}
 
   test-e2e-chrome-rpc:
     uses: ./.github/workflows/run-e2e.yml
@@ -49,6 +56,7 @@ jobs:
       build-artifact: prep-build-test-browserify-chrome
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
+      runner-type: ${{ inputs.runner-type }}
 
   test-e2e-chrome-flask:
     uses: ./.github/workflows/run-e2e.yml
@@ -62,6 +70,7 @@ jobs:
       test-command: yarn test:e2e:chrome:flask
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+      runner-type: ${{ inputs.runner-type }}
 
   test-e2e-chrome-vault-decryption:
     uses: ./.github/workflows/run-e2e.yml
@@ -69,6 +78,7 @@ jobs:
       test-suite-name: test-e2e-chrome-vault-decryption
       build-artifact: prep-build-dist-browserify-chrome
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
+      runner-type: ${{ inputs.runner-type }}
 
   test-e2e-chrome-report:
     needs:
@@ -78,7 +88,7 @@ jobs:
       - test-e2e-chrome-rpc
       - test-e2e-chrome-flask
       - test-e2e-chrome-vault-decryption
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner-type }}
     if: ${{ !cancelled() }}
     env:
       OWNER: ${{ github.repository_owner }}
