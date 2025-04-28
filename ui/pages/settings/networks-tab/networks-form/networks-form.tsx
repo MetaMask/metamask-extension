@@ -103,9 +103,9 @@ export const NetworksForm = ({
     setBlockExplorers,
   } = networkFormState;
 
-  const defaultRpcEndpoint =
-    rpcUrls.defaultRpcEndpointIndex &&
-    rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
+  const defaultRpcEndpoint = rpcUrls.defaultRpcEndpointIndex === undefined
+    ? undefined
+    : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
   const { safeChains } = useSafeChains();
 
@@ -349,6 +349,8 @@ export const NetworksForm = ({
           data-testid="network-form-name-input"
           autoFocus
           helpText={
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ((name && warnings?.name?.msg) || suggestedName) && (
               <>
                 {name && warnings?.name?.msg && (
@@ -386,6 +388,7 @@ export const NetworksForm = ({
               </>
             )
           }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
             setName(e.target?.value);
@@ -413,6 +416,8 @@ export const NetworksForm = ({
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
           renderItem={(item, isList) =>
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             isList || item?.name || item?.type === RpcEndpointType.Infura ? (
               <RpcListItem rpcEndpoint={item} />
             ) : (
@@ -580,6 +585,7 @@ export const NetworksForm = ({
               </Text>
             ) : null
           }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
             setTicker(e.target?.value);

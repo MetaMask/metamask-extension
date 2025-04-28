@@ -529,6 +529,7 @@ export class PreferencesController extends BaseController<
     this.setUseAddressBarEnsResolution(useExternalServices);
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
+    this.setUseSafeChainsListValidation(useExternalServices);
   }
 
   /**

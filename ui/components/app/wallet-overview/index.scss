@@ -34,8 +34,13 @@
     display: flex;
     flex-direction: row;
     height: 100%;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     padding: 0 16px;
+    width: 100%;
+
+    .wallet-overview-fullscreen > & {
+      width: auto;
+    }
   }
 
   &__currency-wrapper {

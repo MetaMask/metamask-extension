@@ -1,80 +1,21 @@
-import { RpcEndpointType } from '@metamask/network-controller';
-import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
-import { cloneDeep, escapeRegExp } from 'lodash';
+import { cloneDeep } from 'lodash';
+import { hasProperty, isObject } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-export const version = 152;
-
-// Chains supported by Infura that are either built in or featured,
-// mapped to their corresponding failover URLs.
-// Copied from `FEATURED_RPCS` in shared/constants/network.ts:
-// <https://github.com/MetaMask/metamask-extension/blob/f28216fad810d138dab8577fe9bdb39f5b6d18d8/shared/constants/network.ts#L1051>
-export const INFURA_CHAINS_WITH_FAILOVERS: Map<
-  Hex,
-  { subdomain: string; getFailoverUrl: () => string | undefined }
-> = new Map([
-  [
-    '0x1',
-    {
-      subdomain: 'mainnet',
-      getFailoverUrl: () => process.env.QUICKNODE_MAINNET_URL,
-    },
-  ],
-  // linea mainnet
-  [
-    '0xe708',
-    {
-      subdomain: 'linea-mainnet',
-      getFailoverUrl: () => process.env.QUICKNODE_LINEA_MAINNET_URL,
-    },
-  ],
-  [
-    '0xa4b1',
-    {
-      subdomain: 'arbitrum',
-      getFailoverUrl: () => process.env.QUICKNODE_ARBITRUM_URL,
-    },
-  ],
-  [
-    '0xa86a',
-    {
-      subdomain: 'avalanche',
-      getFailoverUrl: () => process.env.QUICKNODE_AVALANCHE_URL,
-    },
-  ],
-  [
-    '0xa',
-    {
-      subdomain: 'optimism',
-      getFailoverUrl: () => process.env.QUICKNODE_OPTIMISM_URL,
-    },
-  ],
-  [
-    '0x89',
-    {
-      subdomain: 'polygon',
-      getFailoverUrl: () => process.env.QUICKNODE_POLYGON_URL,
-    },
-  ],
-  [
-    '0x2105',
-    {
-      subdomain: 'base',
-      getFailoverUrl: () => process.env.QUICKNODE_BASE_URL,
-    },
-  ],
-]);
+export const version = 153;
 
 /**
- * This migration ensures that all RPC endpoints that hit Infura and use our API
- * key are Infura RPC endpoints and not custom RPC endpoints.
+ * This migration removes the `tokens` property from the TokensController state.
  *
- * @param originalVersionedData - The original MetaMask extension state.
- * @returns Updated versioned MetaMask extension state.
+ * If the TokensController is not found or is not an object, the migration logs an error,
+ * but otherwise leaves the state unchanged.
+ *
+ * @param originalVersionedData - The versioned extension state.
+ * @returns The updated versioned extension state without the tokens property.
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -82,107 +23,61 @@ export async function migrate(
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
 
-  try {
-    transformState(versionedData.data);
-  } catch (error) {
-    console.error(error);
-    const newError = new Error(
-      `Migration #${version}: ${getErrorMessage(error)}`,
-    );
-    if (global.sentry) {
-      global.sentry.captureException(newError);
-    }
-    // Even though we encountered an error, we need the migration to pass for
-    // the migrator tests to work
-    versionedData.data = originalVersionedData.data;
-  }
+  versionedData.data = transformState(versionedData.data);
 
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
-  if (!process.env.INFURA_PROJECT_ID) {
-    throw new Error('No INFURA_PROJECT_ID set!');
-  }
-
-  if (!hasProperty(state, 'NetworkController')) {
-    throw new Error('Missing NetworkController state');
-  }
-
-  if (!isObject(state.NetworkController)) {
-    throw new Error(
-      `Expected state.NetworkController to be an object, but is ${typeof state.NetworkController}`,
+function transformState(
+  state: Record<string, unknown>,
+): Record<string, unknown> {
+  if (!hasProperty(state, 'TokensController')) {
+    global.sentry?.captureException?.(
+      new Error(`Migration ${version}: TokensController not found.`),
     );
+    return state;
   }
 
-  if (!hasProperty(state.NetworkController, 'networkConfigurationsByChainId')) {
-    throw new Error(
-      'Missing state.NetworkController.networkConfigurationsByChainId',
+  const tokensControllerState = state.TokensController;
+
+  if (!isObject(tokensControllerState)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: TokensController is type '${typeof tokensControllerState}', expected object.`,
+      ),
     );
+    return state;
+  }
+  const tokenListControllerState = state.TokenListController;
+
+  if (!isObject(tokenListControllerState)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: TokenListController is type '${typeof tokenListControllerState}', expected object.`,
+      ),
+    );
+    return state;
   }
 
-  if (!isObject(state.NetworkController.networkConfigurationsByChainId)) {
-    throw new Error(
-      `Expected state.NetworkController.networkConfigurationsByChainId to be an object, but is ${typeof state
-        .NetworkController.networkConfigurationsByChainId}`,
-    );
+  if (hasProperty(tokensControllerState, 'tokens')) {
+    // Remove the tokens property from the TokensController state.
+    delete tokensControllerState.tokens;
   }
 
-  const { networkConfigurationsByChainId } = state.NetworkController;
-
-  for (const [chainId, networkConfiguration] of Object.entries(
-    networkConfigurationsByChainId,
-  )) {
-    const infuraChainWithFailover = INFURA_CHAINS_WITH_FAILOVERS.get(
-      chainId as Hex,
-    );
-
-    if (
-      !isObject(networkConfiguration) ||
-      !hasProperty(networkConfiguration, 'rpcEndpoints') ||
-      !Array.isArray(networkConfiguration.rpcEndpoints)
-    ) {
-      continue;
-    }
-
-    networkConfiguration.rpcEndpoints = networkConfiguration.rpcEndpoints.map(
-      (rpcEndpoint) => {
-        if (
-          !isObject(rpcEndpoint) ||
-          !hasProperty(rpcEndpoint, 'url') ||
-          typeof rpcEndpoint.url !== 'string' ||
-          hasProperty(rpcEndpoint, 'failoverUrls')
-        ) {
-          return rpcEndpoint;
-        }
-
-        // All featured networks that use Infura get added as custom RPC
-        // endpoints, not Infura RPC endpoints
-        const match = rpcEndpoint.url.match(
-          new RegExp(
-            `https://(.+?)\\.infura\\.io/v3/${escapeRegExp(
-              process.env.INFURA_PROJECT_ID,
-            )}`,
-            'u',
-          ),
-        );
-        const isInfuraLike =
-          match &&
-          infuraChainWithFailover &&
-          match[1] === infuraChainWithFailover.subdomain;
-
-        const failoverUrl = infuraChainWithFailover?.getFailoverUrl();
-
-        const failoverUrls =
-          failoverUrl &&
-          (rpcEndpoint.type === RpcEndpointType.Infura || isInfuraLike)
-            ? [failoverUrl]
-            : [];
-        return {
-          ...rpcEndpoint,
-          failoverUrls,
-        };
-      },
-    );
+  if (hasProperty(tokensControllerState, 'detectedTokens')) {
+    // Remove the detectedTokens property from the TokensController state.
+    delete tokensControllerState.detectedTokens;
   }
+
+  if (hasProperty(tokensControllerState, 'ignoredTokens')) {
+    // Remove the ignoredTokens property from the TokensController state.
+    delete tokensControllerState.ignoredTokens;
+  }
+
+  if (hasProperty(tokenListControllerState, 'tokenList')) {
+    // Remove the tokenList property from the TokenListController state.
+    delete tokenListControllerState.tokenList;
+  }
+
+  return state;
 }

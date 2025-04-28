@@ -79,6 +79,8 @@ const RpcListItem = ({
           alignItems={AlignItems.center}
           gap={1}
         >
+          {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
           {name || displayEndpoint(url)}
           {rpcEndpoint.failoverUrls && rpcEndpoint.failoverUrls.length > 0 ? (
             <Tag label={t('failover')} display={Display.Inline} />
