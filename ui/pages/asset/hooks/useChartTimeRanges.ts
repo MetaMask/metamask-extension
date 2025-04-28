@@ -18,7 +18,7 @@ import { getMultichainIsEvm } from '../../../selectors/multichain';
 export const useChartTimeRanges = (
   caipAssetType?: CaipAssetType,
   currency?: string,
-) => {
+): string[] => {
   const isEvm = useSelector(getMultichainIsEvm);
   const historicalPricesNonEvm = useSelector(getHistoricalPrices);
 
@@ -39,8 +39,6 @@ export const useChartTimeRanges = (
     .map((duration) => Duration.fromISO(duration)) // Convert to Duration object
     .filter((duration) => duration.isValid) // Filter out invalid durations
     .sortBy((duration) => duration.toMillis()) // Sort from shortest to longest
-    .map((duration) => duration.normalize()) // Normalize the duration. For instance 12 hours and -15 minutes becomes 11 hours and 45 minutes
-    .map((duration) => duration.rescale()) // Rescale the units to its largest representation. For instance P7D becomes P1W
     .map((duration) => duration.toISO()) // Convert back to ISO string
     .uniq() // Remove duplicates
     .value();

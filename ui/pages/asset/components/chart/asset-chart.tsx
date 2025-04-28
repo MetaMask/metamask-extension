@@ -15,6 +15,7 @@ import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
 import { CaipAssetType, Hex } from '@metamask/utils';
+import { Duration } from 'luxon';
 import { useTheme } from '../../../../hooks/useTheme';
 import {
   BackgroundColor,
@@ -73,6 +74,49 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
       enabled: true,
     },
   },
+};
+
+/**
+ * Returns a translated time range label for a given ISO 8601 duration string.
+ * The passed duration is normalized and rescaled to get the cleanest, most human-friendly representation.
+ *
+ * Any passed duration string that is greater than 100 years will be translated to "All".
+ *
+ * [Normalized](https://moment.github.io/luxon/api-docs/index.html#durationnormalize).
+ * It's reduced to its canonical representation in its current units, for instance:
+ * - "P2YT5000D" (2 years and 5000 days) becomes "P15YT255D" (15 years and 255 days)
+ * - "PT12H-45M" (12 hours and -45 minutes) becomes "P1DT11H15M" (11 hours and 15 minutes)
+ *
+ * [Rescaled](https://moment.github.io/luxon/api-docs/index.html#durationrescale)
+ * Converts to the largest possible unit, for instance:
+ * - "PT9000S" (9000 seconds) becomes "P2H30M" (2 hours and 30 minutes)
+ *
+ * @param translator - A function that translates a key to a string.
+ * @param iso8601Duration - The ISO 8601 duration string, e.g. "P1D", "P1M", "P1Y", "P3YT45S", ...
+ * @returns The translated time range label, e.g. "1 day", "1 month", "1 year", "3 years 45 seconds", ...
+ */
+const getTranslatedTimeRangeLabel = (
+  translator: (key: string) => string,
+  iso8601Duration: string,
+) => {
+  const { years, months, weeks, days, hours, minutes, seconds, milliseconds } =
+    Duration.fromISO(iso8601Duration).normalize().rescale().toObject();
+
+  if (years && years > 100) {
+    return `${translator('all')} `;
+  }
+
+  return `${years ? `${years}${translator('durationSuffixYear')} ` : ''}${
+    months ? `${months}${translator('durationSuffixMonth')} ` : ''
+  }${weeks ? `${weeks}${translator('durationSuffixWeek')} ` : ''}${
+    days ? `${days}${translator('durationSuffixDay')} ` : ''
+  }${hours ? `${hours}${translator('durationSuffixHour')} ` : ''}${
+    minutes ? `${minutes}${translator('durationSuffixMinute')} ` : ''
+  }${seconds ? `${seconds}${translator('durationSuffixSecond')} ` : ''}${
+    milliseconds
+      ? `${milliseconds}${translator('durationSuffixMillisecond')}`
+      : ''
+  }`;
 };
 
 // A chart showing historic prices for a native or token asset
@@ -228,7 +272,10 @@ const AssetChart = ({
               backgroundColor={BackgroundColor.transparent}
               color={TextColor.textAlternative}
             >
-              {timeRange}
+              {getTranslatedTimeRangeLabel(
+                t as (key: string) => string,
+                timeRange,
+              )}
             </ButtonBase>
           ))}
         </Box>
