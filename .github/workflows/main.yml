@@ -83,7 +83,7 @@ jobs:
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
   check-runner-count:
-    runs-on: gha-runner-scale-set-ubuntu-22.04-amd64-small
+    runs-on: gha-mm-scale-set-ubuntu-22.04-amd64-small
     outputs:
       runner-type: ${{ steps.set-runner.outputs.runner-type }}
     env:
@@ -155,7 +155,7 @@ jobs:
             echo "runner-type=ubuntu-latest" >> "${GITHUB_OUTPUT}"
           else
             echo "Using custom runner (count: ${TOTAL_COUNT} >= 400)"
-            echo "runner-type=gha-runner-scale-set-ubuntu-22.04-amd64-med" >> "${GITHUB_OUTPUT}"
+            echo "runner-type=gha-mm-scale-set-ubuntu-22.04-amd64-med" >> "${GITHUB_OUTPUT}"
           fi
 
   prep-build-test-browserify:
