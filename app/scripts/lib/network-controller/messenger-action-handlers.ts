@@ -54,9 +54,9 @@ export function onRpcEndpointUnavailable({
     log.debug(
       `Creating Segment event "${
         MetaMetricsEventName.RpcServiceUnavailable
-      }" with chain_id_caip: "eip155:${chainId}", rpc_endpoint_url: ${onlyKeepHost(
-        endpointUrl,
-      )}`,
+      }" with chain_id_caip: "eip155:${hexToNumber(
+        chainId,
+      )}", rpc_endpoint_url: ${onlyKeepHost(endpointUrl)}`,
     );
     trackEvent({
       category: MetaMetricsEventCategory.Network,
@@ -104,9 +104,9 @@ export function onRpcEndpointDegraded({
     log.debug(
       `Creating Segment event "${
         MetaMetricsEventName.RpcServiceDegraded
-      }" with chain_id_caip: "eip155:${chainId}", rpc_endpoint_url: ${onlyKeepHost(
-        endpointUrl,
-      )}`,
+      }" with chain_id_caip: "eip155:${hexToNumber(
+        chainId,
+      )}", rpc_endpoint_url: ${onlyKeepHost(endpointUrl)}`,
     );
     trackEvent({
       category: MetaMetricsEventCategory.Network,
