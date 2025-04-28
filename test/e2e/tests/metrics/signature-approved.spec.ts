@@ -1,18 +1,13 @@
-const { strict: assert } = require('assert');
+import { strict as assert } from 'assert';
+import { Mockttp } from 'mockttp';
+import { MockedEndpoint } from 'mockttp/dist/pluggable-admin';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { MOCK_META_METRICS_ID } from '../../constants';
+import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-const {
-  switchToNotificationWindow,
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  getEventPayloads,
-  clickSignOnRedesignedSignatureConfirmation,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const { MOCK_META_METRICS_ID } = require('../../constants');
-const {
-  MetaMetricsRequestedThrough,
-} = require('../../../../shared/constants/metametrics');
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
  * see when these tests are run. In this case we are looking for
@@ -20,10 +15,9 @@ const {
  * from the metrics constants files, because if these change we want a strong
  * indicator to our data team that the shape of data will change.
  *
- * @param {import('mockttp').Mockttp} mockServer
- * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse>[]}
+ * @param mockServer
  */
-async function mockSegment(mockServer) {
+async function mockSegment(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
@@ -58,7 +52,7 @@ const expectedEventPropertiesBase = {
   security_alert_response: 'loading',
   ui_customizations: ['redesigned_confirmation'],
   requested_through: MetaMetricsRequestedThrough.EthereumProvider,
-};
+} as const;
 
 describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
@@ -72,17 +66,17 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
-        // creates a sign typed data signature request
-        await driver.clickElement('#signTypedDataV4');
-        await switchToNotificationWindow(driver);
-        await clickSignOnRedesignedSignatureConfirmation({ driver });
+        // creates a sign typed data V4 signature request
+        await testDapp.signTypedDataV4();
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
@@ -115,17 +109,17 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
-        // creates a sign typed data signature request
-        await driver.clickElement('#signTypedDataV3');
-        await switchToNotificationWindow(driver);
-        await clickSignOnRedesignedSignatureConfirmation({ driver });
+        // creates a sign typed data V3 signature request
+        await testDapp.signTypedDataV3Redesign();
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
@@ -156,17 +150,17 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         // creates a sign typed data signature request
-        await driver.clickElement('#signTypedData');
-        await switchToNotificationWindow(driver);
-        await clickSignOnRedesignedSignatureConfirmation({ driver });
+        await testDapp.signTypedData();
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
@@ -197,17 +191,17 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
         // creates a sign typed data signature request
-        await driver.clickElement('#personalSign');
-        await switchToNotificationWindow(driver);
-        await clickSignOnRedesignedSignatureConfirmation({ driver });
+        await testDapp.personalSign();
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
