@@ -2,6 +2,7 @@ import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
+import AccountList from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
@@ -44,6 +45,15 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           json: [{ fakedata: true }],
         };
       }),
+    // TODO: Enable this mock once bug #32312 is resolved: https://github.com/MetaMask/metamask-extension/issues/32312
+    /*
+    await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v2/activeNetworks')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [{ fakedata: true }]
+      })),
+    */
   ];
 }
 describe('MetaMask onboarding @no-mmi', function () {
@@ -79,6 +89,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
         await homePage.refreshErc20TokenList();
+        await homePage.check_pageIsLoaded();
+        await homePage.headerNavbar.openAccountMenu();
+        await new AccountList(driver).check_pageIsLoaded();
 
         for (const m of mockedEndpoint) {
           const requests = await m.getSeenRequests();
@@ -108,6 +121,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed();
         await homePage.refreshErc20TokenList();
+        await homePage.check_pageIsLoaded();
+        await homePage.headerNavbar.openAccountMenu();
+        await new AccountList(driver).check_pageIsLoaded();
 
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
