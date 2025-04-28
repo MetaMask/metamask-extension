@@ -66,8 +66,7 @@ jobs:
       # not installed by checkout-and-setup when cache is restored
       - name: Install anvil
         run: |
-          ls node_modules/.bin
-          yarn anvil --version
+          ls -li ./node_modules/.bin/anvil
           yarn foundryup
 
       - name: Download build artifact
