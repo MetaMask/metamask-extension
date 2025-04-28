@@ -15,6 +15,7 @@ import {
 } from './testHelpers';
 import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { By } from 'selenium-webdriver';
+import { updateNetworkCheckboxes } from '../multichain-api/testHelpers';
 
 describe('Solana Wallet Standard - Connect', function () {
   describe('Connect to a dapp via the Solana Wallet Standard', function () {
@@ -106,36 +107,9 @@ describe('Solana Wallet Standard - Connect', function () {
           // Open the permissions modal
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await driver.clickElement('[data-testid="permissions-tab"]');
-          const editButtons = await driver.findElements('[data-testid="edit"]');
-          await editButtons[1].click();
-          await driver.delay(regularDelayMs);
-          const networkListItems = await driver.findElements(
-            '.multichain-network-list-item',
-          );
 
-          // Deselect Solana permission and select Ethereum mainnet
-          for (const item of networkListItems) {
-            const networkNameDiv = await item.findElement(By.css('div[data-testid]'));
-            const network = await networkNameDiv.getAttribute('data-testid');
-            // Deselect Solana permission
-            if (network === 'Solana') {
-              const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
-              const isChecked = await checkbox.isSelected();
-
-              if (isChecked) {
-                await checkbox.click();
-              }
-              break;
-            } else if (network === 'Ethereum Mainnet') {
-              const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
-              const isChecked = await checkbox.isSelected();
-
-              if (!isChecked) {
-                await checkbox.click();
-              }
-            }
-          }
-          await driver.clickElement({ text: 'Update', tag: 'button' });
+          // Deselect all networks except "Ethereum Mainnet"
+          await updateNetworkCheckboxes(driver, ['Ethereum Mainnet']);
 
           // Click connect
           await driver.clickElement({ text: 'Connect', tag: 'button' });
