@@ -37,24 +37,3 @@ export const useWellKnownChains = () => {
 
   return wellKnownChains;
 };
-
-export const rpcIdentifierUtility = (
-  rpcUrl: string,
-  wellKnownChains: WellKnownChain[],
-) => {
-  const { host } = new URL(rpcUrl);
-
-  for (const chain of wellKnownChains) {
-    for (const rpc of chain.rpc) {
-      try {
-        if (host === new URL(rpc).host) {
-          return host;
-        }
-      } catch {
-        continue;
-      }
-    }
-  }
-
-  return 'Unknown rpcUrl';
-};

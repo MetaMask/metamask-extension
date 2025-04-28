@@ -1,7 +1,9 @@
+import { ChainId } from '@metamask/controller-utils';
 import {
   getMatchedChain,
   getMatchedNames,
   getMatchedSymbols,
+  getMatchedRpcHosts,
 } from './network-helper';
 
 describe('netwotkHelper', () => {
@@ -110,6 +112,51 @@ describe('netwotkHelper', () => {
       const decimalChainId = 2; // No matching chainId
 
       const result = getMatchedNames(decimalChainId, chains);
+
+      expect(result).toEqual([]);
+    });
+  });
+  describe('getMatchedRpcHost', () => {
+    it('should return the matched chain for a given host', () => {
+      const expected = [
+        {
+          rpc: ['http://rpc0.com/', 'http://RPC2.com/a'],
+        },
+        {
+          rpc: ['https://rpc2.com/b'],
+        },
+      ];
+      const chains = [
+        {
+          rpc: ['https://rpc1.com'],
+        },
+        ...expected,
+        {
+          rpc: [],
+        },
+      ];
+      const host = 'rpc2.com';
+
+      const result = [...getMatchedRpcHosts(host, chains)];
+
+      expect(result).toEqual(expected);
+    });
+
+    it('should return undefined if no chain matches the given host', () => {
+      const chains = [
+        {
+          rpc: [],
+        },
+        {
+          rpc: ['https://rpc1.com'],
+        },
+        {
+          rpc: ['https://rpc2.com'],
+        },
+      ];
+      const host = 'rpc3.com'; // No matching host
+
+      const result = [...getMatchedRpcHosts(host, chains)];
 
       expect(result).toEqual([]);
     });
