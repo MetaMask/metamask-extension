@@ -559,11 +559,9 @@ export async function mockTokenApiMainnet(mockServer: Mockttp) {
       },
     ],
   };
-  return await mockServer
-    .forGet(SOLANA_TOKEN_API)
-    .thenCallback(() => {
-      return response;
-    });
+  return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
+    return response;
+  });
 }
 
 export async function mockTokenApiMainnet2(mockServer: Mockttp) {
