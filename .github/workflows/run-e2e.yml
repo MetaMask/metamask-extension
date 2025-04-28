@@ -67,6 +67,7 @@ jobs:
       - name: Install anvil
         run: |
           ls -li ./node_modules/.bin/anvil
+          ls -li /home/runner/work/metamask-extension/metamask-extension/.metamask/cache/e8263365c086121ae7aba67089b92654b5c38a8c27f0562c4d1b6ba97100f4fa/anvil
           yarn foundryup
 
       - name: Download build artifact
