@@ -108,15 +108,12 @@ export const TokenListItemComponent = ({
   const { wellKnownChains } = useWellKnownChains();
   const currencyRates = useSelector(getCurrencyRates);
 
+  const decimalChainId = isStrictHexString(chainId) && parseInt(chainId, 16);
+
   const wellKnownChainDetails: WellKnownChain | undefined =
-    wellKnownChains?.find((chain) => {
-      const decimalChainId =
-        isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
-      if (typeof decimalChainId === 'number') {
-        return chain.chainId === decimalChainId;
-      }
-      return undefined;
-    });
+    typeof decimalChainId === 'number'
+      ? wellKnownChains?.find((chain) => chain.chainId === decimalChainId)
+      : undefined;
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:

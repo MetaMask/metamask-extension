@@ -62,15 +62,12 @@ export default function TokenCell({
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
+  const decimalChainId = isEvm && parseInt(token.chainId, 16);
 
   const wellKnownChainDetails: WellKnownChain | undefined =
-    wellKnownChains?.find((chain) => {
-      if (typeof decimalChainId === 'number') {
-        return chain.chainId === decimalChainId;
-      }
-      return undefined;
-    });
+    typeof decimalChainId === 'number'
+      ? wellKnownChains?.find((chain) => chain.chainId === decimalChainId)
+      : undefined;
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
