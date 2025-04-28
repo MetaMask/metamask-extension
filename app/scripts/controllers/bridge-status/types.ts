@@ -77,6 +77,8 @@ type AllowedEvents = never;
 export type BridgeStatusControllerMessenger = RestrictedMessenger<
   typeof BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusControllerActions | AllowedActions,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   BridgeStatusControllerEvents | AllowedEvents,
   AllowedActions['type'],
   AllowedEvents['type']

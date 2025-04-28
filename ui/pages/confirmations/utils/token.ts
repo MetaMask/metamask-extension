@@ -46,6 +46,8 @@ export const parseTokenDetailDecimals = (
 
 export const memoizedGetTokenStandardAndDetails = memoize(
   async (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     tokenAddress?: Hex | string,
     userAddress?: string,
     tokenId?: string,
@@ -74,6 +76,8 @@ export const memoizedGetTokenStandardAndDetails = memoize(
  * {@see .yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch}
  */
 export const fetchErc20Decimals = async (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31882
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   address: Hex | string,
 ): Promise<number> => {
   try {
