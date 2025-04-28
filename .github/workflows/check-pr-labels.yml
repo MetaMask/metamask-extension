@@ -10,6 +10,10 @@ on:
       - labeled
       - unlabeled
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-pr-labels:
     runs-on: ubuntu-latest

@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -23,19 +20,15 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
+import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
+import {
+  useIsDowngradeTransaction,
+  useIsUpgradeTransaction,
+} from '../../hooks/useIsUpgradeTransaction';
 import { HEX_ZERO } from '../constants';
 import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
 import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  TextColor,
-} from '../../../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../../../../components/component-library';
 import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
 
 export const OriginRow = () => {
@@ -65,24 +58,31 @@ export const OriginRow = () => {
 export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const to = recipient ?? currentConfirmation?.txParams?.to;
-  const isBatch = currentConfirmation?.type === TransactionType.batch;
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const isDowngrade = useIsDowngradeTransaction();
+  const { nestedTransactions, txParams, chainId, id } =
+    currentConfirmation ?? {};
+  const { from, to: txTo } = txParams ?? {};
+  const to = recipient ?? txTo;
+
+  const isBatch =
+    isBatchTransaction(nestedTransactions) &&
+    to?.toLowerCase() === from.toLowerCase();
+  const showContractLogo = isBatch || isDowngrade || isUpgradeOnly;
 
   if (!to || !isValidAddress(to)) {
     return null;
   }
 
-  const { chainId } = currentConfirmation;
-
   return (
     <ConfirmInfoAlertRow
-      ownerId={currentConfirmation.id}
+      ownerId={id}
       alertKey={RowAlertKey.InteractingWith}
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      {isBatch ? (
+      {showContractLogo ? (
         <SmartContractWithLogo />
       ) : (
         <ConfirmInfoRowAddress address={to} chainId={chainId} />
@@ -176,8 +176,10 @@ export const TransactionDetails = () => {
     () => checkValueAndNativeBalanceMismatch(currentConfirmation),
     [currentConfirmation],
   );
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const isDowngrade = useIsDowngradeTransaction();
 
-  if (currentConfirmation?.type === TransactionType.revokeDelegation) {
+  if (isUpgradeOnly || isDowngrade) {
     return null;
   }
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
@@ -203,24 +205,3 @@ export const TransactionDetails = () => {
     </>
   );
 };
-
-function SmartContractWithLogo() {
-  const t = useI18nContext();
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      borderRadius={BorderRadius.pill}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      style={{
-        padding: '1px 8px 1px 4px',
-      }}
-    >
-      <img src="images/logo/metamask-fox.svg" width="16" height="16" />
-      <Text marginLeft={2} color={TextColor.inherit}>
-        {t('interactWithSmartContract')}
-      </Text>
-    </Box>
-  );
-}

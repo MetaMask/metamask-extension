@@ -2710,7 +2710,7 @@ export function rollbackToPreviousProvider(): ThunkAction<
 }
 
 export function removeNetwork(
-  chainId: Hex,
+  chainId: CaipChainId,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
@@ -4806,13 +4806,15 @@ export async function tokenBalancesStopPollingByPollingToken(
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
  *
- * @param chainId - The chain id to poll token rates on.
+ * @param chainIds - An array of chain ids to poll token rates on.
  * @returns polling token that can be used to stop polling
  */
-export async function tokenRatesStartPolling(chainId: string): Promise<string> {
+export async function tokenRatesStartPolling(
+  chainIds: string[],
+): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'tokenRatesStartPolling',
-    [{ chainId }],
+    [{ chainIds }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
@@ -5236,10 +5238,16 @@ export function cancelSmartTransaction(
 }
 
 // TODO: Not a thunk but rather a wrapper around a background call
-export function fetchSmartTransactionsLiveness() {
+export function fetchSmartTransactionsLiveness({
+  networkClientId,
+}: {
+  networkClientId?: string;
+} = {}) {
   return async () => {
     try {
-      await submitRequestToBackground('fetchSmartTransactionsLiveness');
+      await submitRequestToBackground('fetchSmartTransactionsLiveness', [
+        { networkClientId },
+      ]);
     } catch (err) {
       logErrorWithMessage(err);
     }
