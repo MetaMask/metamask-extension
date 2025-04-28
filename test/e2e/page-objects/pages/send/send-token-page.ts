@@ -109,8 +109,7 @@ class SendTokenPage {
     await this.driver.pasteIntoField(this.inputAmount, amount);
     // The return value is not ts-compatible, requiring a temporary any cast to access the element's value. This will be corrected with the driver function's ts migration.
 
-
-    const inputValue = await (inputAmount as any).getProperty('value');
+    const inputValue = await inputAmount.getAttribute('value');
     assert.equal(
       inputValue,
       amount,
