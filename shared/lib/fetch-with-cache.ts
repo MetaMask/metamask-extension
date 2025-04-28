@@ -40,7 +40,6 @@ const fetchWithCache = async ({
   }
 
   const currentTime = Date.now();
-
   const { cachedResponse, cachedTime } = (await getStorageItem(cacheKey)) || {};
   if (cachedResponse && currentTime - cachedTime < cacheRefreshTime) {
     return cachedResponse;

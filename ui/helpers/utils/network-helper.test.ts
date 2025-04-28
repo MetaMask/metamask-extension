@@ -10,20 +10,14 @@ describe('netwotkHelper', () => {
       const chains = [
         {
           chainId: 1,
-          name: 'Ethereum Mainnet',
-          nativeCurrency: { symbol: 'ETH' },
         },
         {
           chainId: 3,
-          name: 'Ropsten Testnet',
-          nativeCurrency: { symbol: 'ETH' },
         },
       ];
       const decimalChainId = 3;
       const expected = {
         chainId: 3,
-        name: 'Ropsten Testnet',
-        nativeCurrency: { symbol: 'ETH' },
       };
 
       const result = getMatchedChain(decimalChainId, chains);
@@ -35,13 +29,9 @@ describe('netwotkHelper', () => {
       const chains = [
         {
           chainId: 1,
-          name: 'Ethereum Mainnet',
-          nativeCurrency: { symbol: 'ETH' },
         },
         {
           chainId: 3,
-          name: 'Ropsten Testnet',
-          nativeCurrency: { symbol: 'ETH' },
         },
       ];
       const decimalChainId = 4; // No matching chainId
@@ -55,9 +45,9 @@ describe('netwotkHelper', () => {
   describe('getMatchedSymbols', () => {
     it('should return an array of symbols that match the given decimalChainId', () => {
       const chains = [
-        { chainId: 1, name: 'test', nativeCurrency: { symbol: 'ETH' } },
-        { chainId: 3, name: 'test', nativeCurrency: { symbol: 'tETH' } },
-        { chainId: 1, name: 'test', nativeCurrency: { symbol: 'WETH' } },
+        { chainId: 3, nativeCurrency: { symbol: 'tETH' } },
+        { chainId: 1, nativeCurrency: { symbol: 'ETH' } },
+        { chainId: 1, nativeCurrency: { symbol: 'WETH' } },
       ];
       const decimalChainId = 1;
       const expected = ['ETH', 'WETH'];
@@ -70,8 +60,8 @@ describe('netwotkHelper', () => {
 
     it('should return an empty array if no symbols match the given decimalChainId', () => {
       const chains = [
-        { chainId: 1, name: 'test', nativeCurrency: { symbol: 'ETH' } },
-        { chainId: 3, name: 'test', nativeCurrency: { symbol: 'tETH' } },
+        { chainId: 1, nativeCurrency: { symbol: 'ETH' } },
+        { chainId: 3, nativeCurrency: { symbol: 'tETH' } },
       ];
       const decimalChainId = 2; // No matching chainId
 
@@ -87,17 +77,14 @@ describe('netwotkHelper', () => {
         {
           chainId: 1,
           name: 'Ethereum',
-          nativeCurrency: { symbol: 'ETH', name: 'Ethereum' },
         },
         {
           chainId: 3,
           name: 'tEthereum',
-          nativeCurrency: { symbol: 'tETH', name: 'tEthereum' },
         },
         {
           chainId: 1,
           name: 'WEthereum',
-          nativeCurrency: { symbol: 'WETH', name: 'WEthereum' },
         },
       ];
       const decimalChainId = 1;
@@ -114,12 +101,10 @@ describe('netwotkHelper', () => {
         {
           chainId: 1,
           name: 'Ethereum',
-          nativeCurrency: { symbol: 'ETH', name: 'Ethereum' },
         },
         {
           chainId: 3,
           name: 'tEthereum',
-          nativeCurrency: { symbol: 'tETH', name: 'tEthereum' },
         },
       ];
       const decimalChainId = 2; // No matching chainId

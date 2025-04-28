@@ -1,25 +1,19 @@
+import { type WellKnownChain } from '../../../shared/modules/well-known-chains';
+
 export const getMatchedChain = (
   decimalChainId: number,
-  wellKnownChains: {
-    chainId: number;
-    name: string;
-    nativeCurrency: { symbol: string };
-  }[],
+  wellKnownChains: Pick<WellKnownChain, 'chainId'>[],
 ) => {
   return wellKnownChains.find((chain) => chain.chainId === decimalChainId);
 };
 
 export const getMatchedSymbols = (
   decimalChainId: number,
-  wellKnownChains: {
-    chainId: number;
-    name: string;
-    nativeCurrency: { symbol: string };
-  }[],
+  wellKnownChains: Pick<WellKnownChain, 'chainId' | 'nativeCurrency'>[],
 ): string[] => {
   return wellKnownChains.reduce<string[]>((accumulator, currentNetwork) => {
     if (currentNetwork.chainId === decimalChainId) {
-      accumulator.push(currentNetwork.nativeCurrency?.symbol);
+      accumulator.push(currentNetwork.nativeCurrency.symbol);
     }
     return accumulator;
   }, []);
@@ -27,15 +21,11 @@ export const getMatchedSymbols = (
 
 export const getMatchedNames = (
   decimalChainId: number,
-  wellKnownChains: {
-    chainId: number;
-    name: string;
-    nativeCurrency: { symbol: string; name: string };
-  }[],
+  wellKnownChains: Pick<WellKnownChain, 'chainId' | 'name'>[],
 ): string[] => {
   return wellKnownChains.reduce<string[]>((accumulator, currentNetwork) => {
     if (currentNetwork.chainId === decimalChainId) {
-      accumulator.push(currentNetwork?.name);
+      accumulator.push(currentNetwork.name);
     }
     return accumulator;
   }, []);
