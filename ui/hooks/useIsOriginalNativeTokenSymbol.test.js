@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import * as fetchWithCacheModule from '../../shared/lib/fetch-with-cache';
+import * as wellKnownCacheModule from '../../shared/modules/well-known-chains';
 import { useExternalWellKnownChainsValidationSelector } from '../selectors';
 import { getMultichainIsEvm } from '../selectors/multichain';
 import { useIsOriginalNativeTokenSymbol } from './useIsOriginalNativeTokenSymbol'; // Adjust the import path accordingly
@@ -174,10 +175,12 @@ describe('useIsOriginalNativeTokenSymbol', () => {
     expect(spyFetch).toHaveBeenCalled();
   });
 
-  it('should return false even if chain external well-known list is disabled', async () => {
+  it('should only use the internal cache if fetching the external well-known list is disabled', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter(false));
     // Mock the wellKnownChains response with a different native symbol
-    const wellKnownChains = [
+    const externalWellKnownChains = [
+      // this list doesn't contain the tests "CrAzYeTh" symbol, so if it
+      // were used it would return `false`
       {
         chainId: 1,
         nativeCurrency: {
@@ -186,22 +189,41 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       },
     ];
 
-    // Mock the fetchWithCache function to return the wellKnownChains
+    const internalWellKnownChains = [
+      {
+        chainId: 0,
+        nativeCurrency: {
+          symbol: 'CrAzYeTh',
+        },
+      },
+    ];
+
+    // Mock the fetchWithCache function to return the externalWellKnownChains.
     // this should NOT be called (tested for below)
     const spyFetch = jest
       .spyOn(fetchWithCacheModule, 'default')
-      .mockResolvedValue(wellKnownChains);
+      .mockResolvedValue(externalWellKnownChains);
+
+    // Mock the getWellKnownChains function to return the
+    // internalWellKnownChains.
+    // this *should* be called (tested for below)
+    const spyCache = jest
+      .spyOn(wellKnownCacheModule, 'getWellKnownChains')
+      .mockResolvedValue(internalWellKnownChains);
 
     let result;
 
     await act(async () => {
       result = renderHook(() =>
-        useIsOriginalNativeTokenSymbol('0x1', 'GoerliETH', 'goerli'),
+        // 0x0000000000 is invalid. It is used just so we don't ever end up with
+        // a collision with some other valid future ChainID
+        useIsOriginalNativeTokenSymbol('0x0000000000', 'CrAzYeTh', 'CrAzYChAiN'),
       );
     });
 
-    expect(result.result.current).toBe(false);
+    expect(result.result.current).toBe(true);
     expect(spyFetch).not.toHaveBeenCalled();
+    expect(spyCache).toHaveBeenCalled();
   });
 
   it('should return false if rpcUrl is localhost', async () => {
