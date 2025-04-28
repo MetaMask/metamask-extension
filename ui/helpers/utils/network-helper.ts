@@ -30,23 +30,3 @@ export const getMatchedNames = (
     return accumulator;
   }, []);
 };
-
-/**
- * Returns the host of the first RPC URL that matches the given RPC URL's host.
- *
- * @param rpcUrl - The RPC URL to match against
- * @param wellKnownChains - The list of well-known chains to check against
- */
-export function* getMatchedChainByRpcHost(
-  host: string,
-  wellKnownChains: Pick<WellKnownChain, 'rpc'>[],
-): IterableIterator<Pick<WellKnownChain, 'rpc'>> {
-  for (const chain of wellKnownChains) {
-    for (const rpc of chain.rpc) {
-      if (new URL(rpc).host === host) {
-        yield chain;
-        break;
-      }
-    }
-  }
-}
