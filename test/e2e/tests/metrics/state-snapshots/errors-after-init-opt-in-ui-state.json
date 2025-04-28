@@ -23,7 +23,6 @@
     "externalServicesOnboardingToggleState": "boolean",
     "keyringRemovalSnapModal": "object",
     "showKeyringRemovalSnapModal": "boolean",
-    "showNewSrpAddedToast": "boolean",
     "importTokensModalOpen": "boolean",
     "deprecatedNetworkModalOpen": "boolean",
     "accountDetail": "object",
@@ -65,7 +64,8 @@
     "snapsInstallPrivacyWarningShown": "boolean",
     "isAddingNewNetwork": "boolean",
     "isMultiRpcOnboarding": "boolean",
-    "errorInSettings": null
+    "errorInSettings": null,
+    "showNewSrpAddedToast": "boolean"
   },
   "bridge": "object",
   "confirmAlerts": "object",
@@ -165,6 +165,7 @@
     "marketData": "object",
     "multichainNetworkConfigurationsByChainId": "object",
     "selectedMultichainNetworkChainId": "string",
+    "networksWithTransactionActivity": "object",
     "isEvmSelected": "boolean",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
@@ -237,12 +238,8 @@
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean",
-    "tokenList": "object",
     "tokensChainsCache": { "0x539": "object" },
     "preventPollingOnNetworkRestart": false,
-    "tokens": "object",
-    "ignoredTokens": "object",
-    "detectedTokens": "object",
     "allTokens": {},
     "allIgnoredTokens": {},
     "allDetectedTokens": {},
@@ -279,6 +276,7 @@
     "isSignedIn": "boolean",
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
+    "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
     "isAccountSyncingInProgress": "boolean",
@@ -292,7 +290,6 @@
     "isFetchingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": "object",
     "isCheckingAccountsPresence": "boolean",
-    "queuedRequestCount": 0,
     "isPushEnabled": "boolean",
     "fcmToken": "string",
     "isUpdatingFCMToken": "boolean",
@@ -341,6 +338,7 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
+    "assetExchangeRates": "object",
     "bridgeFeatureFlags": {
       "extensionConfig": {
         "maxRefreshCount": "number",
@@ -381,7 +379,8 @@
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
     "encryptionKey": "string",
-    "encryptionSalt": "string"
+    "encryptionSalt": "string",
+    "allDeFiPositions": "object"
   },
   "ramps": "object",
   "send": "object",
