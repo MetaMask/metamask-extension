@@ -20,7 +20,6 @@ import {
 } from '../../../component-library';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../../store/actions';
 import {

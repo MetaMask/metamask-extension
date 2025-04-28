@@ -6,7 +6,7 @@ import localforage from 'localforage';
  * @param key - The key to store the data under
  * @returns The data stored under the key
  */
-export async function getStorageItem<T = any>(
+export async function getStorageItem<T = unknown>(
   key: string,
 ): Promise<T | undefined> {
   try {
@@ -29,7 +29,10 @@ export async function getStorageItem<T = any>(
  * @param key - The key to store the data under
  * @param value - The value to be stored
  */
-export async function setStorageItem(key: string, value: any): Promise<void> {
+export async function setStorageItem(
+  key: string,
+  value: unknown,
+): Promise<void> {
   try {
     const serializedData = JSON.stringify(value);
     await localforage.setItem(key, serializedData);

@@ -2,12 +2,12 @@ import { MINUTE, SECOND } from '../constants/time';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { getStorageItem, setStorageItem } from './storage-helpers';
 
-type CacheEntry<T = any> = {
+type CacheEntry<T = unknown> = {
   cachedResponse: T;
   cachedTime: number;
 };
 
-const fetchWithCache = async <T = any>({
+const fetchWithCache = async <T = unknown>({
   url,
   fetchOptions = {},
   cacheOptions: { cacheRefreshTime = MINUTE * 6, timeout = SECOND * 30 } = {},
@@ -74,7 +74,7 @@ const fetchWithCache = async <T = any>({
     );
   }
   const responseJson =
-    response.status === 204 ? undefined : await response.json();
+    response.status === 204 ? undefined : ((await response.json()) as T);
   const cacheEntry = {
     cachedResponse: responseJson,
     cachedTime: currentTime,
