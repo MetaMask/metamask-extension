@@ -304,13 +304,6 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
-  # Determines if Multichain API features should be used
-  # NOTE: The manifest.json for the build that sets this feature flag
-  # must also include an "externally_connectable" entry as follows:
-  # "externally_connectable": {
-  #   "matches": ["http://*/*", "https://*/*"],
-  #   "ids": ["*"]
-  # }
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
   # Determines if Portfolio View UI should be shown
