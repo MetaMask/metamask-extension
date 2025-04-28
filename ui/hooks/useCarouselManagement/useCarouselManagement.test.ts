@@ -149,7 +149,7 @@ jest.mock('../../selectors/selectors.js', () => ({
   getSlides: jest.fn(),
 }));
 
-jest.mock('../../selectors/remote-feature-flags', () => ({
+jest.mock('../../selectors/remote-mode', () => ({
   getIsRemoteModeEnabled: jest.fn(),
 }));
 

@@ -28,10 +28,7 @@ import {
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getIsRpcFailoverEnabled,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,
@@ -71,7 +68,10 @@ import {
   DropdownEditor,
   DropdownEditorStyle,
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
-import { getTokenNetworkFilter } from '../../../../selectors';
+import {
+  getIsRpcFailoverEnabled,
+  getTokenNetworkFilter,
+} from '../../../../selectors';
 import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';

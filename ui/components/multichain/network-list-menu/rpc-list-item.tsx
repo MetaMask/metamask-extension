@@ -15,7 +15,7 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getIsRpcFailoverEnabled } from '../../../../shared/modules/selectors/networks';
+import { getIsRpcFailoverEnabled } from '../../../selectors';
 
 export const stripKeyFromInfuraUrl = (endpoint: string) => {
   let modifiedEndpoint = endpoint;

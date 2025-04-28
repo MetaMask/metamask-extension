@@ -9,7 +9,6 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import { NetworkStatus } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
 import { createDeepEqualSelector } from './util';
-import { getRemoteFeatureFlags } from '../../../ui/selectors/remote-feature-flags';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -232,9 +231,4 @@ export const getIsAllNetworksFilterEnabled = createSelector(
     });
     return allOpts;
   },
-);
-
-export const getIsRpcFailoverEnabled = createSelector(
-  getRemoteFeatureFlags,
-  (remoteFeatureFlags) => remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
 );
