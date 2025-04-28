@@ -10,7 +10,7 @@ import {
   BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { Numeric, NumericValue } from '../../../shared/modules/Numeric';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {

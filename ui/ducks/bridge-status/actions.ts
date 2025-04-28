@@ -1,4 +1,4 @@
-import { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { BridgeStatusAction } from '@metamask/bridge-status-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';

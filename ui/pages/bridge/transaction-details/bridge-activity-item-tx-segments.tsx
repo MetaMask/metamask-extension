@@ -3,7 +3,7 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { Box, Text } from '../../../components/component-library';
 import {

@@ -3,9 +3,9 @@ import {
   formatChainIdToCaip,
   BRIDGE_DEFAULT_SLIPPAGE,
 } from '@metamask/bridge-controller';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { getHexGasTotalUsd } from '../../../app/scripts/lib/bridge-status/metrics-utils';
-import { MetricsBackgroundState } from '../../types/bridge-status';
+import type { MetricsBackgroundState } from '../../types/bridge-status';
 import { isHardwareKeyring } from '../../../ui/helpers/utils/hardware';
 import { ActionType } from '../../../ui/hooks/bridge/events/types';
 import { formatProviderLabel } from '../../../ui/pages/bridge/utils/quote';

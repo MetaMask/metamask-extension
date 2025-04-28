@@ -13,7 +13,10 @@ import {
   type BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { TokenListMap, TokenListToken } from '@metamask/assets-controllers';
+import type {
+  TokenListMap,
+  TokenListToken,
+} from '@metamask/assets-controllers';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';

@@ -1,10 +1,10 @@
-import { TransactionControllerState } from '@metamask/transaction-controller';
-import { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
-import {
+import type { TransactionControllerState } from '@metamask/transaction-controller';
+import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
+import type {
   NetworkState,
   ProviderConfigState,
 } from '../modules/selectors/networks';
-import { SmartTransactionsMetaMaskState } from '../modules/selectors';
+import type { SmartTransactionsMetaMaskState } from '../modules/selectors';
 
 export type BridgeStatusAppState = ProviderConfigState & {
   metamask: BridgeStatusControllerState;

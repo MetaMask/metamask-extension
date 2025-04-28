@@ -6,7 +6,7 @@ import {
   StatusTypes,
 } from '@metamask/bridge-controller';
 // eslint-disable-next-line import/no-restricted-paths
-import {
+import type {
   BridgeStatusControllerBridgeTransactionCompleteEvent,
   BridgeStatusControllerBridgeTransactionFailedEvent,
 } from '@metamask/bridge-status-controller';

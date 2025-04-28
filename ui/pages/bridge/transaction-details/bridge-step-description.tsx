@@ -5,7 +5,7 @@ import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import {
-  BridgeHistoryItem,
+  type BridgeHistoryItem,
   ActionTypes,
 } from '@metamask/bridge-status-controller';
 import { StatusTypes, type Step } from '@metamask/bridge-controller';
