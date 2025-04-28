@@ -144,13 +144,6 @@ workflows:
             - validate-source-maps-flask
             - test-mozilla-lint-mv2
             - test-mozilla-lint-flask-mv2
-            - test-e2e-chrome
-            - test-e2e-chrome-multiple-providers
-            - test-e2e-firefox
-            - test-e2e-chrome-flask
-            - test-e2e-firefox-flask
-            - test-e2e-chrome-vault-decryption
-            - test-e2e-chrome-webpack
       - job-publish-prerelease:
           requires:
             - prep-deps
