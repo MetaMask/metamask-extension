@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import log from 'loglevel';
 import { updateSlides } from '../../store/actions';
-import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
+import {
+  getRemoteFeatureFlags,
+  getSelectedAccountCachedBalance,
+  getSlides,
+} from '../../selectors';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
@@ -22,6 +27,7 @@ import {
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
 } from './constants';
+import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = {
   testDate?: string; // Only used in unit/e2e tests to simulate dates for sweepstakes campaign
@@ -31,12 +37,29 @@ export function getSweepstakesCampaignActive(currentDate: Date) {
   return currentDate >= SWEEPSTAKES_START && currentDate <= SWEEPSTAKES_END;
 }
 
+export function isActive(
+  slide: { startDate?: string; endDate?: string },
+  now = new Date(),
+): boolean {
+  const start = slide.startDate ? new Date(slide.startDate) : null;
+  const end = slide.endDate ? new Date(slide.endDate) : null;
+
+  if (start && now < start) {
+    return false;
+  }
+  if (end && now > end) {
+    return false;
+  }
+  return true;
+}
+
 export const useCarouselManagement = ({
   testDate,
 }: UseSlideManagementProps = {}) => {
   const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
-  const slides = useSelector(getSlides);
+  const slides: CarouselSlide[] = useSelector(getSlides);
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
@@ -99,8 +122,40 @@ export const useCarouselManagement = ({
       defaultSlides.push(dismissedSweepstakesSlide);
     }
 
+    // Handle Contentful Data
+    const maybeFetchContentful = async () => {
+      const contentfulEnabled =
+        remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
+
+      if (contentfulEnabled) {
+        try {
+          const contentfulSlides = await fetchCarouselSlidesFromContentful();
+          const checkedContentfulSlides = contentfulSlides
+            .map((slide) => {
+              const existing = slides.find(
+                (s: CarouselSlide) => s.id === slide.id,
+              );
+              return {
+                ...slide,
+                dismissed: existing?.dismissed ?? false,
+              };
+            })
+            .filter((slide) =>
+              isActive(slide, testDate ? new Date(testDate) : new Date()),
+            );
+          const mergedSlides = [...defaultSlides, ...checkedContentfulSlides];
+          dispatch(updateSlides(mergedSlides));
+        } catch (err) {
+          log.warn(
+            'Failed to fetch Contentful slides, fallback to default slides:',
+            err,
+          );
+        }
+      }
+    };
     dispatch(updateSlides(defaultSlides));
-  }, [dispatch, hasZeroBalance, isRemoteModeEnabled, slides, testDate, inTest]);
+    maybeFetchContentful();
+  }, [dispatch, hasZeroBalance, isRemoteModeEnabled, testDate, inTest]);
 
   return { slides };
 };
