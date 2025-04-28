@@ -550,11 +550,15 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(
         `Must specify success event and category. Success event was: ${
           options.event
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         }. Category was: ${options.category}. Payload keys were: ${Object.keys(
           options,
         )}. ${
           typeof options.properties === 'object'
-            ? `Payload property keys were: ${Object.keys(options.properties)}`
+            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Payload property keys were: ${Object.keys(options.properties)}`
             : ''
         }`,
       );
@@ -797,6 +801,8 @@ export default class MetaMetricsController extends BaseController<
     // this.extension not currently defined in tests
     if (this.#extension && this.#extension.runtime) {
       this.#extension.runtime.setUninstallURL(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `${EXTENSION_UNINSTALL_URL}?${queryString}`,
       );
     }
@@ -998,11 +1004,15 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(
         `Must specify event and category. Event was: ${
           payload.event
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
           payload,
         )}. ${
           typeof payload.properties === 'object'
-            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `Payload property keys were: ${Object.keys(payload.properties)}`
             : ''
         }`,
       );
