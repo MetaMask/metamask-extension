@@ -115,6 +115,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix: Ensure no duplicate accounts are persisted ([#32287](https://github.com/MetaMask/metamask-extension/pull/32287))
 - Fix: provide better native token names when bridging and swapping removed networks([#32293](https://github.com/MetaMask/metamask-extension/pull/32293))
 
+## [12.16.2]
+### Changed
+- Update onboarding flow for Firefox ([#32179](https://github.com/MetaMask/metamask-extension/pull/32179))
+- Make "Dapp Viewed" event exclude metametrics id data ([#32207](https://github.com/MetaMask/metamask-extension/pull/32207))
+
 ## [12.16.1]
 ### Added
 - Add support for version 2.0.0 of EIP-5792 ([#31913](https://github.com/MetaMask/metamask-extension/pull/31913))
@@ -6075,7 +6080,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...HEAD
-[12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...v12.17.0
+[12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.2...v12.17.0
+[12.16.2]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...v12.16.2
 [12.16.1]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...v12.16.1
 [12.16.0]: https://github.com/MetaMask/metamask-extension/compare/v12.15.2...v12.16.0
 [12.15.2]: https://github.com/MetaMask/metamask-extension/compare/v12.15.1...v12.15.2
