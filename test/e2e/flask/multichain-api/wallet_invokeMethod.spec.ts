@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
@@ -10,21 +9,20 @@ import {
   withFixtures,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   addAccountInWalletAndAuthorize,
-  describeBrowserOnly,
   escapeColon,
   type FixtureCallbackArgs,
 } from './testHelpers';
 
-describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
+describe('Multichain API', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
   const ACCOUNTS = [ACCOUNT_1, ACCOUNT_2];
   const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
-    DEFAULT_GANACHE_ETH_BALANCE_DEC,
+    DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   );
 
   describe('Calling `wallet_invokeMethod` on the same dapp across three different connected chains', function () {
@@ -34,7 +32,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
@@ -98,7 +96,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
@@ -164,7 +162,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },

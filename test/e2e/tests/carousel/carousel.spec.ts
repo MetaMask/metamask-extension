@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert';
-import { withFixtures } from '../../helpers';
+import { tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Carousel component e2e tests', () => {
+describe('Carousel component e2e tests', function () {
   it('should display correct slides with expected content', async function () {
     await withFixtures(
       {
@@ -23,7 +23,13 @@ describe('Carousel component e2e tests', () => {
         const slides = await driver.findElements('.mm-carousel-slide');
         assert.ok(slides.length > 0, 'Carousel should have slides');
 
-        const slideIds = ['bridge', 'card', 'fund', 'cash'];
+        const slideIds = [
+          'smartAccountUpgrade',
+          'bridge',
+          'card',
+          'fund',
+          'cash',
+        ];
 
         const firstSlideSelector = `[data-testid="slide-${slideIds[0]}"]`;
         await driver.waitForSelector(firstSlideSelector);
@@ -79,22 +85,24 @@ describe('Carousel component e2e tests', () => {
         // It should be updated if the number of slides changes
         // in the carousel component.
         // Please refer to the `useCarouselManagement` hook.
-        const slideCount = 4;
+        const slideCount = 6;
+        const maxVisibleSlideCount = 5;
         await loginWithBalanceValidation(driver);
         await driver.waitForSelector('.mm-carousel');
         await driver.waitForSelector('.mm-carousel-slide');
 
         const initialSlides = await driver.findElements('.mm-carousel-slide');
-        assert.equal(initialSlides.length, slideCount);
+        assert.equal(initialSlides.length, maxVisibleSlideCount);
 
         for (let i = 0; i < slideCount; i++) {
           const currentSlides = await driver.findElements('.mm-carousel-slide');
           assert.equal(
             currentSlides.length,
-            slideCount - i,
-            `Expected ${slideCount - i} slides remaining`,
+            Math.min(slideCount - i, 5),
+            `Expected ${Math.min(slideCount - i, 5)} slides remaining`,
           );
 
+          await driver.delay(tinyDelayMs);
           const dismissButton = await driver.findElement(
             '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
           );

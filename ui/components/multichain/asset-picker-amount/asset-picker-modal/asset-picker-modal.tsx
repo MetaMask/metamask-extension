@@ -33,6 +33,7 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Toast, ToastContainer } from '../../toast';
 
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
@@ -149,6 +150,10 @@ export function AssetPickerModal({
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
+  const [showSolanaAccountCreatedToast, setShowSolanaAccountCreatedToast] =
+    useState(false);
+
+  const prevNeedsSolanaAccountRef = useRef(false);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
@@ -191,13 +196,27 @@ export function AssetPickerModal({
 
   // Default to false before the code fence is enabled (will not render the prompt)
   let needsSolanaAccount = false;
+  let hasSolanaAccount = false;
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   // Check if we need to show the Solana account creation UI when Solana is selected
-  const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
+  hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
   needsSolanaAccount =
     !hasSolanaAccount && selectedNetwork.chainId === MultichainNetworks.SOLANA;
   ///: END:ONLY_INCLUDE_IF
+
+  // watches for needsSolanaAccount changes to show the Solana Account created toast
+  useEffect(() => {
+    if (
+      prevNeedsSolanaAccountRef.current === true &&
+      !needsSolanaAccount &&
+      hasSolanaAccount &&
+      showSolanaAccountCreatedToast === false
+    ) {
+      setShowSolanaAccountCreatedToast(true);
+    }
+    prevNeedsSolanaAccountRef.current = needsSolanaAccount;
+  }, [needsSolanaAccount, hasSolanaAccount, showSolanaAccountCreatedToast]);
 
   const { address: selectedEvmAddress } = useSelector(
     getSelectedEvmInternalAccount,
@@ -241,6 +260,8 @@ export function AssetPickerModal({
       | AssetWithDisplayData<NativeAsset>) => {
       const isDisabled = sendingAsset?.symbol
         ? !isEqualCaseInsensitive(sendingAsset.symbol, symbol) &&
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           memoizedSwapsBlockedTokens.has(address || '')
         : false;
 
@@ -525,6 +546,41 @@ export function AssetPickerModal({
             {header}
           </Text>
         </ModalHeader>
+        {showSolanaAccountCreatedToast && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 15,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 1000,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '16px',
+            }}
+          >
+            <ToastContainer>
+              <Toast
+                text={t('bridgeSolanaAccountCreated')}
+                onClose={() => setShowSolanaAccountCreatedToast(false)}
+                startAdornment={
+                  <img
+                    src="/images/solana-logo.svg"
+                    alt="Solana Logo"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '4px',
+                    }}
+                  />
+                }
+                autoHideTime={5000}
+                onAutoHideToast={() => setShowSolanaAccountCreatedToast(false)}
+              />
+            </ToastContainer>
+          </div>
+        )}
         {sendingAsset?.image && sendingAsset?.symbol && (
           <Box
             display={Display.Flex}
@@ -574,12 +630,7 @@ export function AssetPickerModal({
         <Box className="modal-tab__wrapper">
           {/* Show Solana account creation prompt if the destination is Solana but no Solana account exists */}
           {needsSolanaAccount ? (
-            <SolanaAccountCreationPrompt
-              onSuccess={() => {
-                // Refresh the component after account creation
-                onClose();
-              }}
-            />
+            <SolanaAccountCreationPrompt />
           ) : (
             <AssetPickerModalTabs {...tabProps}>
               <React.Fragment key={TabName.TOKENS}>

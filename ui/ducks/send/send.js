@@ -12,6 +12,7 @@ import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { toHex } from '@metamask/controller-utils';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   decimalToHex,
@@ -1608,8 +1609,11 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const { tokens, tokenAddressList, isProbablyAnAssetContract } =
-            action.payload;
+          const {
+            tokens,
+            tokenAddressList = [],
+            isProbablyAnAssetContract,
+          } = action.payload;
 
           if (
             isBurnAddress(state.recipientInput) ||
@@ -2731,9 +2735,7 @@ export function updateSendAsset(
 
           if (isCurrentOwner) {
             asset.error = null;
-            asset.balance = details.balance
-              ? addHexPrefix(details.balance)
-              : '0x1';
+            asset.balance = details.balance ? toHex(details.balance) : '0x1';
           } else {
             throw new Error(
               'Send slice initialized as NFT send with an NFT not currently owned by the select account',

@@ -22,14 +22,14 @@ import {
   useSelectedGasFeeToken,
 } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
-import { getIsSmartTransaction } from '../../../../../../../../shared/modules/selectors';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId, gasFeeTokens } = currentConfirmation;
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
-  const hasGasFeeTokens = isSmartTransaction && Boolean(gasFeeTokens?.length);
+  const isGaslessSupported = useIsGaslessSupported();
+  const hasGasFeeTokens = isGaslessSupported && Boolean(gasFeeTokens?.length);
 
   const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
     chainId
@@ -53,15 +53,17 @@ export function SelectedGasFeeToken() {
         <GasFeeTokenModal onClose={() => setIsModalOpen(false)} />
       )}
       <Box
+        data-testid="selected-gas-fee-token"
         onClick={handleClick}
         backgroundColor={BackgroundColor.backgroundAlternative}
         borderRadius={BorderRadius.pill}
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
-        paddingInline={2}
+        paddingInlineStart={1}
         gap={1}
         style={{
           cursor: hasGasFeeTokens ? 'pointer' : 'default',
+          paddingInlineEnd: '6px',
         }}
       >
         <GasFeeTokenIcon

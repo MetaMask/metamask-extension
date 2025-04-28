@@ -100,7 +100,7 @@ const mockTransactionMetricsRequest = {
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
   provider: provider as Provider,
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapAndHardwareMessenger: jest.fn() as any,
   trackEvent: jest.fn(),
@@ -116,16 +116,16 @@ describe('Transaction metrics', () => {
     mockChainId,
     mockNetworkId,
     mockTransactionMeta: TransactionMeta,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockTransactionMetaWithBlockaid: any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expectedProperties: any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expectedSensitiveProperties: any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockActionId: any;
 
@@ -219,7 +219,7 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionAdded', () => {
     it('should return if transaction meta is not defined', async () => {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionAdded(mockTransactionMetricsRequest, {} as any);
       expect(
@@ -229,7 +229,7 @@ describe('Transaction metrics', () => {
 
     it('should create event fragment', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
@@ -258,7 +258,7 @@ describe('Transaction metrics', () => {
       };
 
       await handleTransactionAdded(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
@@ -289,7 +289,7 @@ describe('Transaction metrics', () => {
 
     it('should create event fragment with blockaid', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMetaWithBlockaid as any,
         actionId: mockActionId,
@@ -324,7 +324,7 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionApproved', () => {
     it('should return if transaction meta is not defined', async () => {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionApproved(mockTransactionMetricsRequest, {} as any);
       expect(
@@ -340,7 +340,7 @@ describe('Transaction metrics', () => {
 
     it('should create, update, finalize event fragment', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
@@ -383,7 +383,7 @@ describe('Transaction metrics', () => {
 
     it('should create, update, finalize event fragment with blockaid', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMetaWithBlockaid as any,
         actionId: mockActionId,
@@ -447,7 +447,7 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionFailed', () => {
     it('should return if transaction meta is not defined', async () => {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionFailed(mockTransactionMetricsRequest, {} as any);
       expect(
@@ -473,7 +473,7 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
         error: mockErrorMessage,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -529,7 +529,7 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
         error: mockErrorMessage,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -600,7 +600,7 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
         error: mockErrorMessage,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -649,7 +649,7 @@ describe('Transaction metrics', () => {
     it('should return if transaction meta is not defined', async () => {
       await handleTransactionConfirmed(
         mockTransactionMetricsRequest,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as any,
       );
@@ -674,7 +674,7 @@ describe('Transaction metrics', () => {
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMeta,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -732,7 +732,7 @@ describe('Transaction metrics', () => {
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -833,7 +833,7 @@ describe('Transaction metrics', () => {
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMeta,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -878,7 +878,7 @@ describe('Transaction metrics', () => {
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMeta,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -931,7 +931,7 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionDropped', () => {
     it('should return if transaction meta is not defined', async () => {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionDropped(mockTransactionMetricsRequest, {} as any);
       expect(
@@ -949,7 +949,7 @@ describe('Transaction metrics', () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -999,7 +999,7 @@ describe('Transaction metrics', () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -1068,7 +1068,7 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionRejected', () => {
     it('should return if transaction meta is not defined', async () => {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionRejected(mockTransactionMetricsRequest, {} as any);
       expect(
@@ -1086,7 +1086,7 @@ describe('Transaction metrics', () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -1131,7 +1131,7 @@ describe('Transaction metrics', () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -1221,7 +1221,7 @@ describe('Transaction metrics', () => {
     it('should return if transaction meta is not defined', async () => {
       await handleTransactionSubmitted(
         mockTransactionMetricsRequest,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as any,
       );
@@ -1232,7 +1232,7 @@ describe('Transaction metrics', () => {
 
     it('should only create event fragment', async () => {
       await handleTransactionSubmitted(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
@@ -1261,218 +1261,210 @@ describe('Transaction metrics', () => {
     });
   });
 
-  (
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  describe.each([
+    ['if added', handleTransactionAdded],
+    ['if approved', handleTransactionApproved],
+    ['if dropped', handleTransactionDropped],
+    ['if failed', handleTransactionFailed],
+    ['if rejected', handleTransactionRejected],
+    ['if submitted', handleTransactionSubmitted],
     [
-      ['if added', handleTransactionAdded],
-      ['if approved', handleTransactionApproved],
-      ['if dropped', handleTransactionDropped],
-      ['if failed', handleTransactionFailed],
-      ['if rejected', handleTransactionRejected],
-      ['if submitted', handleTransactionSubmitted],
-      [
-        'if confirmed',
-        (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
-          handleTransactionConfirmed(
-            request,
-            args.transactionMeta as TransactionMetaEventPayload,
-          ),
-      ],
-    ] as [
-      string,
-      (
-        request: TransactionMetricsRequest,
-        args: TransactionEventPayload,
-      ) => ReturnType<typeof handleTransactionConfirmed>,
-    ][]
-  ).forEach(([_title, fn]) =>
-    describe(_title, () => {
-      it('includes batch properties', async () => {
-        const transactionMeta = {
-          ...mockTransactionMeta,
-          delegationAddress: ADDRESS_3_MOCK,
-          nestedTransactions: [
+      'if confirmed',
+      (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
+        handleTransactionConfirmed(
+          request,
+          args.transactionMeta as TransactionMetaEventPayload,
+        ),
+    ],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ])('%s', (_title: string, fn: any) => {
+    it('includes batch properties', async () => {
+      const transactionMeta = {
+        ...mockTransactionMeta,
+        delegationAddress: ADDRESS_3_MOCK,
+        nestedTransactions: [
+          {
+            to: ADDRESS_MOCK,
+            data: '0x1',
+            type: TransactionType.contractInteraction,
+          },
+          {
+            to: ADDRESS_2_MOCK,
+            data: '0x2',
+            type: TransactionType.contractInteraction,
+          },
+        ],
+        txParams: {
+          ...mockTransactionMeta.txParams,
+          authorizationList: [
             {
-              to: ADDRESS_MOCK,
-              data: '0x1',
-              type: TransactionType.contractInteraction,
-            },
-            {
-              to: ADDRESS_2_MOCK,
-              data: '0x2',
-              type: TransactionType.contractInteraction,
+              address: ADDRESS_3_MOCK,
             },
           ],
-          txParams: {
-            ...mockTransactionMeta.txParams,
-            authorizationList: [
-              {
-                address: ADDRESS_3_MOCK,
-              },
-            ],
-          },
-        } as TransactionMeta;
+        },
+      } as TransactionMeta;
 
-        jest
-          .mocked(mockTransactionMetricsRequest.getMethodData)
-          .mockResolvedValueOnce({
-            name: METHOD_NAME_MOCK,
-          })
-          .mockResolvedValueOnce({
-            name: METHOD_NAME_2_MOCK,
-          });
-
-        await fn(mockTransactionMetricsRequest, {
-          transactionMeta,
+      jest
+        .mocked(mockTransactionMetricsRequest.getMethodData)
+        .mockResolvedValueOnce({
+          name: METHOD_NAME_MOCK,
+        })
+        .mockResolvedValueOnce({
+          name: METHOD_NAME_2_MOCK,
         });
 
-        const { properties, sensitiveProperties } = jest.mocked(
-          mockTransactionMetricsRequest.createEventFragment,
-        ).mock.calls[0][0];
-
-        expect(properties).toStrictEqual(
-          expect.objectContaining({
-            api_method: MESSAGE_TYPE.WALLET_SEND_CALLS,
-            batch_transaction_count: 2,
-            batch_transaction_method: 'eip7702',
-            eip7702_upgrade_transaction: true,
-            transaction_contract_method: [METHOD_NAME_MOCK, METHOD_NAME_2_MOCK],
-          }),
-        );
-
-        expect(sensitiveProperties).toStrictEqual(
-          expect.objectContaining({
-            account_eip7702_upgraded: ADDRESS_3_MOCK,
-            transaction_contract_address: [ADDRESS_MOCK, ADDRESS_2_MOCK],
-          }),
-        );
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta,
       });
 
-      it('includes gas_paid_with if selected gas fee token', async () => {
-        const transactionMeta = {
-          ...mockTransactionMeta,
-          gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-          selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
-        } as TransactionMeta;
+      const { properties, sensitiveProperties } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
 
-        await fn(mockTransactionMetricsRequest, {
-          transactionMeta,
-        });
+      expect(properties).toStrictEqual(
+        expect.objectContaining({
+          api_method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+          batch_transaction_count: 2,
+          batch_transaction_method: 'eip7702',
+          eip7702_upgrade_transaction: true,
+          transaction_contract_method: [METHOD_NAME_MOCK, METHOD_NAME_2_MOCK],
+        }),
+      );
 
-        const { properties } = jest.mocked(
-          mockTransactionMetricsRequest.createEventFragment,
-        ).mock.calls[0][0];
+      expect(sensitiveProperties).toStrictEqual(
+        expect.objectContaining({
+          account_eip7702_upgraded: ADDRESS_3_MOCK,
+          transaction_contract_address: [ADDRESS_MOCK, ADDRESS_2_MOCK],
+        }),
+      );
+    });
 
-        expect(properties).toStrictEqual(
-          expect.objectContaining({
-            gas_paid_with: GAS_FEE_TOKEN_MOCK.symbol,
-          }),
-        );
+    it('includes gas_paid_with if selected gas fee token', async () => {
+      const transactionMeta = {
+        ...mockTransactionMeta,
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      } as TransactionMeta;
+
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta,
       });
 
-      it('includes gas_payment_tokens_available if gas fee tokens', async () => {
-        const transactionMeta = {
-          ...mockTransactionMeta,
-          gasFeeTokens: [
-            GAS_FEE_TOKEN_MOCK,
-            { ...GAS_FEE_TOKEN_MOCK, symbol: 'DAI' },
-          ],
-        } as TransactionMeta;
+      const { properties } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
 
-        await fn(mockTransactionMetricsRequest, {
-          transactionMeta,
-        });
+      expect(properties).toStrictEqual(
+        expect.objectContaining({
+          gas_paid_with: GAS_FEE_TOKEN_MOCK.symbol,
+        }),
+      );
+    });
 
-        const { properties } = jest.mocked(
-          mockTransactionMetricsRequest.createEventFragment,
-        ).mock.calls[0][0];
+    it('includes gas_payment_tokens_available if gas fee tokens', async () => {
+      const transactionMeta = {
+        ...mockTransactionMeta,
+        gasFeeTokens: [
+          GAS_FEE_TOKEN_MOCK,
+          { ...GAS_FEE_TOKEN_MOCK, symbol: 'DAI' },
+        ],
+      } as TransactionMeta;
 
-        expect(properties).toStrictEqual(
-          expect.objectContaining({
-            gas_payment_tokens_available: [GAS_FEE_TOKEN_MOCK.symbol, 'DAI'],
-          }),
-        );
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta,
       });
 
-      it('includes transasction_type as gas_payment', async () => {
-        const transactionMeta = {
-          ...mockTransactionMeta,
-          batchId: '0x123',
-        } as TransactionMeta;
+      const { properties } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
 
-        await fn(mockTransactionMetricsRequest, {
-          transactionMeta,
-        });
+      expect(properties).toStrictEqual(
+        expect.objectContaining({
+          gas_payment_tokens_available: [GAS_FEE_TOKEN_MOCK.symbol, 'DAI'],
+        }),
+      );
+    });
 
-        const { properties } = jest.mocked(
-          mockTransactionMetricsRequest.createEventFragment,
-        ).mock.calls[0][0];
+    it('includes transasction_type as gas_payment', async () => {
+      const transactionMeta = {
+        ...mockTransactionMeta,
+        batchId: '0x123',
+      } as TransactionMeta;
 
-        expect(properties).toStrictEqual(
-          expect.objectContaining({
-            transaction_type: 'gas_payment',
-          }),
-        );
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta,
       });
 
-      it('includes gas_insufficient_native_asset as true if insufficient native balance', async () => {
-        const transactionMeta = {
-          ...mockTransactionMeta,
-          txParams: {
-            ...mockTransactionMeta.txParams,
-            gas: toHex(10),
-            maxFeePerGas: toHex(5),
-            value: toHex(3),
-          },
-        } as TransactionMeta;
+      const { properties } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
 
-        jest
-          .mocked(mockTransactionMetricsRequest.getAccountBalance)
-          .mockReturnValueOnce(toHex(52));
+      expect(properties).toStrictEqual(
+        expect.objectContaining({
+          transaction_type: 'gas_payment',
+        }),
+      );
+    });
 
-        await fn(mockTransactionMetricsRequest, {
-          transactionMeta,
-        });
+    it('includes gas_insufficient_native_asset as true if insufficient native balance', async () => {
+      const transactionMeta = {
+        ...mockTransactionMeta,
+        txParams: {
+          ...mockTransactionMeta.txParams,
+          gas: toHex(10),
+          maxFeePerGas: toHex(5),
+          value: toHex(3),
+        },
+      } as TransactionMeta;
 
-        const { properties } = jest.mocked(
-          mockTransactionMetricsRequest.createEventFragment,
-        ).mock.calls[0][0];
+      jest
+        .mocked(mockTransactionMetricsRequest.getAccountBalance)
+        .mockReturnValueOnce(toHex(52));
 
-        expect(properties).toStrictEqual(
-          expect.objectContaining({
-            gas_insufficient_native_asset: true,
-          }),
-        );
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta,
       });
 
-      it('includes gas_insufficient_native_asset as false if sufficient native balance', async () => {
-        const transactionMeta = {
-          ...mockTransactionMeta,
-          txParams: {
-            ...mockTransactionMeta.txParams,
-            gas: toHex(10),
-            maxFeePerGas: toHex(5),
-            value: toHex(3),
-          },
-        } as TransactionMeta;
+      const { properties } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
 
-        jest
-          .mocked(mockTransactionMetricsRequest.getAccountBalance)
-          .mockReturnValueOnce(toHex(53));
+      expect(properties).toStrictEqual(
+        expect.objectContaining({
+          gas_insufficient_native_asset: true,
+        }),
+      );
+    });
 
-        await fn(mockTransactionMetricsRequest, {
-          transactionMeta,
-        });
+    it('includes gas_insufficient_native_asset as false if sufficient native balance', async () => {
+      const transactionMeta = {
+        ...mockTransactionMeta,
+        txParams: {
+          ...mockTransactionMeta.txParams,
+          gas: toHex(10),
+          maxFeePerGas: toHex(5),
+          value: toHex(3),
+        },
+      } as TransactionMeta;
 
-        const { properties } = jest.mocked(
-          mockTransactionMetricsRequest.createEventFragment,
-        ).mock.calls[0][0];
+      jest
+        .mocked(mockTransactionMetricsRequest.getAccountBalance)
+        .mockReturnValueOnce(toHex(53));
 
-        expect(properties).toStrictEqual(
-          expect.objectContaining({
-            gas_insufficient_native_asset: false,
-          }),
-        );
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta,
       });
-    }),
-  );
+
+      const { properties } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
+
+      expect(properties).toStrictEqual(
+        expect.objectContaining({
+          gas_insufficient_native_asset: false,
+        }),
+      );
+    });
+  });
 });

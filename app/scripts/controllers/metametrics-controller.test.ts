@@ -1414,6 +1414,22 @@ describe('MetaMetricsController', function () {
             },
             selectedAccount: 'mock1',
           },
+          multichainNetworkConfigurationsByChainId: {
+            'bip122:000000000019d6689c085ae165831e93': {
+              chainId: 'bip122:000000000019d6689c085ae165831e93',
+              isEvm: false,
+              name: 'Bitcoin Mainnet',
+              nativeCurrency:
+                'bip122:000000000019d6689c085ae165831e93/slip44:0',
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+              chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+              isEvm: false,
+              name: 'Solana Mainnet',
+              nativeCurrency:
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            },
+          },
           ledgerTransportType: LedgerTransportTypes.webhid,
           openSeaEnabled: true,
           useNftDetection: false,
@@ -1465,6 +1481,13 @@ describe('MetaMetricsController', function () {
 
         expect(traits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 3,
+          [MetaMetricsUserTrait.ChainIdList]: [
+            'eip155:1',
+            'eip155:5',
+            'eip155:175',
+            'bip122:000000000019d6689c085ae165831e93',
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          ],
           [MetaMetricsUserTrait.InstallDateExt]: '',
           [MetaMetricsUserTrait.LedgerConnectionType]:
             LedgerTransportTypes.webhid,
@@ -1562,6 +1585,7 @@ describe('MetaMetricsController', function () {
           ///: END:ONLY_INCLUDE_IF
           sessionData: undefined,
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1634,6 +1658,7 @@ describe('MetaMetricsController', function () {
             },
           },
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         expect(updatedTraits).toStrictEqual({
@@ -1715,6 +1740,7 @@ describe('MetaMetricsController', function () {
             },
           },
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1777,6 +1803,7 @@ describe('MetaMetricsController', function () {
             },
           },
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
         expect(updatedTraits).toStrictEqual(null);
       });

@@ -12,9 +12,14 @@ import { TransactionController } from '@metamask/transaction-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
+  AssetsContractController,
+  DeFiPositionsController,
   MultichainAssetsController,
   MultichainAssetsRatesController,
   MultichainBalancesController,
+  NftController,
+  NftDetectionController,
+  TokenRatesController,
 } from '@metamask/assets-controllers';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
@@ -34,9 +39,11 @@ import { Controller as AuthenticationController } from '@metamask/profile-sync-c
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
 import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
+
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
+import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -44,6 +51,7 @@ import SwapsController from '../controllers/swaps';
 export type Controller =
   | AuthenticationController
   | CronjobController
+  | DeFiPositionsController
   | ExecutionService
   | GasFeeController
   | JsonSnapsRegistry
@@ -73,7 +81,12 @@ export type Controller =
       name: 'TransactionUpdateController';
       state: Record<string, unknown>;
     })
-  | UserStorageController;
+  | InstitutionalSnapController
+  | UserStorageController
+  | TokenRatesController
+  | NftController
+  | NftDetectionController
+  | AssetsContractController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -82,6 +95,7 @@ export type Controller =
 export type ControllerFlatState = AccountsController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
+  DeFiPositionsController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
@@ -104,4 +118,7 @@ export type ControllerFlatState = AccountsController['state'] &
   SnapInterfaceController['state'] &
   TransactionController['state'] &
   SwapsController['state'] &
-  UserStorageController['state'];
+  UserStorageController['state'] &
+  TokenRatesController['state'] &
+  NftController['state'] &
+  NftDetectionController['state'];

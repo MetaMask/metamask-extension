@@ -24,6 +24,8 @@ class AccountListPage {
   private readonly accountMenuButton =
     '[data-testid="account-list-menu-details"]';
 
+  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
+
   private readonly accountNameInput = '#account-name';
 
   private readonly accountOptionsMenuButton =
@@ -145,7 +147,7 @@ class AccountListPage {
     tag: 'h4',
   };
 
-  private readonly importSrpInput = '#import-multi-srp__srp-word-0';
+  private readonly importSrpInput = '#import-srp__multi-srp__srp-word-0';
 
   private readonly importSrpConfirmButton = {
     text: 'Import wallet',
@@ -335,7 +337,7 @@ class AccountListPage {
       const srpName = `Secret Recovery Phrase ${srpIndex.toString()}`;
       // First, we first click here to go to the SRP List.
       await this.driver.clickElement({
-        text: 'Secret Recovery Phrase 1',
+        text: 'Secret Recovery Phrase 2',
       });
       // Then, we select the SRP that we want to add the account to.
       await this.driver.clickElement({
@@ -414,6 +416,7 @@ class AccountListPage {
     );
     await this.openAccountOptionsInAccountList(accountLabel);
     await this.driver.clickElement(this.accountMenuButton);
+    await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
   /**
@@ -777,6 +780,10 @@ class AccountListPage {
     }
     const srps = await this.driver.findElements('.select-srp__container');
     const selectedSrp = srps[srpIndex - 1];
+    const showAccountsButton = await this.driver.waitForSelector(
+      `[data-testid="srp-list-show-accounts-${srpIndex - 1}"]`,
+    );
+    await showAccountsButton.click();
 
     await this.driver.findNestedElement(selectedSrp, {
       text: accountName,
