@@ -67,6 +67,8 @@ import {
   MOONRIVER_DISPLAY_NAME,
   TEST_NETWORK_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  NETWORK_TO_NAME_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -797,11 +799,12 @@ export function getTokensAcrossChainsByAccountAddress(state, selectedAddress) {
  * @param {string} chainId - Chain ID
  * @returns {object} Native token information
  */
-function getNativeTokenInfo(state, chainId) {
+export function getNativeTokenInfo(state, chainId) {
   const { networkConfigurationsByChainId } = state.metamask;
 
   const networkConfig = networkConfigurationsByChainId?.[chainId];
 
+  // Fill native token info by network config (if a user has a network added)
   if (networkConfig) {
     const symbol = networkConfig.nativeCurrency || AssetType.native;
     const decimals = 18;
@@ -814,6 +817,7 @@ function getNativeTokenInfo(state, chainId) {
     };
   }
 
+  // Fill native token info by DApp provider
   const { provider } = state.metamask;
   if (provider?.chainId === chainId) {
     const symbol = provider.ticker || AssetType.native;
@@ -827,6 +831,14 @@ function getNativeTokenInfo(state, chainId) {
     };
   }
 
+  // Attempt to retried native token info from hardcoded known networks
+  const hardcodedSymbol = CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
+  const hardcodedName = NETWORK_TO_NAME_MAP[chainId];
+  if (hardcodedSymbol && hardcodedName) {
+    return { symbol: hardcodedSymbol, decimals: 18, name: hardcodedName };
+  }
+
+  // Fallback to "NATIVE" symbol as this is an unknown native token
   return { symbol: AssetType.native, decimals: 18, name: 'Native Token' };
 }
 
@@ -2946,6 +2958,16 @@ export function getIsSolanaSupportEnabled(state) {
 
 export function getManageInstitutionalWallets(state) {
   return state.metamask.manageInstitutionalWallets;
+}
+/**
+ * Get the state of the `defiPositionsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `defiPositionsEnabled` remote feature flag.
+ */
+export function getIsDefiPositionsEnabled(state) {
+  const { assetsDefiPositionsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(assetsDefiPositionsEnabled);
 }
 
 export function getIsCustomNetwork(state) {
