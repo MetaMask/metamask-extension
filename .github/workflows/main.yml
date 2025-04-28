@@ -109,7 +109,7 @@ jobs:
           # Check if we got any run IDs
           if [ -z "${RUN_IDS}" ]; then
             echo "No in-progress workflow runs found."
-            echo "total_count=0" >> $GITHUB_OUTPUT
+            echo "total_count=0" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
 
@@ -134,7 +134,7 @@ jobs:
           done
 
           echo "Total number of running jobs: ${TOTAL_COUNT}"
-          echo "total_count=${TOTAL_COUNT}" >> $GITHUB_OUTPUT
+          echo "total_count=${TOTAL_COUNT}" >> "${GITHUB_OUTPUT}"
 
       - name: Set runner type based on count
         id: set-runner
@@ -146,16 +146,17 @@ jobs:
           # Default to ubuntu-latest if count is not a number
           if ! [[ "${TOTAL_COUNT}" =~ ^[0-9]+$ ]]; then
             echo "Count is not a valid number, defaulting to ubuntu-latest"
-            echo "runner-type=ubuntu-latest" >> $GITHUB_OUTPUT
+            echo "runner-type=ubuntu-latest" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
 
-          if [[ ${TOTAL_COUNT} -lt 350 ]]; then
+          if [[ "${TOTAL_COUNT}" -lt 350 ]]; then
             echo "Using ubuntu-latest runner (count: ${TOTAL_COUNT} < 350)"
-            echo "runner-type=ubuntu-latest" >> $GITHUB_OUTPUT
+            echo "runner-type=ubuntu-latest" >> "${GITHUB_OUTPUT}"
           else
             echo "Using custom runner (count: ${TOTAL_COUNT} >= 350)"
-            echo "runner-type=gha-runner-scale-set-ubuntu-22.04-amd64-small" >> $GITHUB_OUTPUT
+            echo "runner-type=gha-runner-scale-set-ubuntu-22.04-amd64-small" >> "${GITHUB_OUTPUT}"
+          fi
 
   prep-build-test-browserify:
     needs:
@@ -397,6 +398,7 @@ jobs:
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta
+      - check-runner-count
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
@@ -410,6 +412,7 @@ jobs:
     runs-on: ${{ needs.check-runner-count.outputs.runner-type }}
     needs:
       - all-jobs-completed
+      - check-runner-count
     steps:
       - name: Check that all jobs have passed
         run: |
