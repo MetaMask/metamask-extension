@@ -5031,9 +5031,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "@metamask/bridge-controller@npm:17.0.0"
+"@metamask/bridge-controller@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "@metamask/bridge-controller@npm:18.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5052,11 +5052,35 @@ __metadata:
     reselect: "npm:^5.1.1"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
-    "@metamask/assets-controllers": ^58.0.0
+    "@metamask/assets-controllers": ^59.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^11.0.0
     "@metamask/transaction-controller": ^54.0.0
-  checksum: 10/55ed5090fff9a91d75279d008c334e0cd14d5088111ee520e45b1ab7777c3779d6022aff501109a7d5ffcfe9a3b2a904c10fa7047efdaef6c6417fe9cf8eb561
+  checksum: 10/8178599c0f712bc4ed47c9fe870f5ce1b927efeb939e3ac64719394c8bd3f2a12ec64dc1c404f4f5efe74d6fe58a13469e16e90290d311251c8a073e0d0aa08c
+  languageName: node
+  linkType: hard
+
+"@metamask/bridge-status-controller@npm:^16.0.0":
+  version: 16.0.0
+  resolution: "@metamask/bridge-status-controller@npm:16.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/user-operation-controller": "npm:^33.0.0"
+    "@metamask/utils": "npm:^11.2.0"
+    bignumber.js: "npm:^9.1.2"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^27.0.0
+    "@metamask/bridge-controller": ^19.0.0
+    "@metamask/gas-fee-controller": ^23.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/snaps-controllers": ^11.0.0
+    "@metamask/transaction-controller": ^54.0.0
+  checksum: 10/7a5138b4e7ff3c2d9cecc19b1600414b72823007f00f10acdf06818435fdef2d38da5b17e9eae38047b149a4fc67af9fadcdf196d60a85885d808d332f16a76b
   languageName: node
   linkType: hard
 
@@ -6604,6 +6628,32 @@ __metadata:
     "@metamask/network-controller": ^23.0.0
     "@metamask/transaction-controller": ^52.0.0
   checksum: 10/a6ec2eb62c308b6e40f9e27105896c2e9ce938e1d6b4929b9a0b998d2b6a9c90b81f8cb3de1889632d591761738c8e5942975e59fbc09bb24889b7d2029987af
+  languageName: node
+  linkType: hard
+
+"@metamask/user-operation-controller@npm:^33.0.0":
+  version: 33.0.0
+  resolution: "@metamask/user-operation-controller@npm:33.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.2.0"
+    bn.js: "npm:^5.2.1"
+    immer: "npm:^9.0.6"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
+    "@metamask/gas-fee-controller": ^23.0.0
+    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/transaction-controller": ^54.0.0
+  checksum: 10/d0477fc4a51ebe5dbc20083228dbff0ada110be6d3c5d57a17c198d8c82abbaa2cb1fc407a6d4339071d3d56b0e740c7601e4f16251db6edb0ccd617dcfba055
   languageName: node
   linkType: hard
 
@@ -27626,7 +27676,8 @@ __metadata:
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
-    "@metamask/bridge-controller": "npm:^17.0.0"
+    "@metamask/bridge-controller": "npm:^18.0.0"
+    "@metamask/bridge-status-controller": "npm:^16.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
@@ -27679,7 +27730,6 @@ __metadata:
     "@metamask/permission-log-controller": "npm:^3.0.3"
     "@metamask/phishing-controller": "npm:^12.3.2"
     "@metamask/phishing-warning": "npm:^4.1.0"
-    "@metamask/polling-controller": "npm:^13.0.0"
     "@metamask/post-message-stream": "npm:^9.0.0"
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
