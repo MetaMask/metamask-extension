@@ -67,6 +67,7 @@ jobs:
       - name: Install anvil
         run: |
           ls node_modules/.bin
+          yarn anvil --version
           yarn foundryup
 
       - name: Download build artifact
