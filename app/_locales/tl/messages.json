@@ -2711,9 +2711,6 @@
   "ledgerLocked": {
     "message": "Hindi makakonekta sa Ledger device. Siguruhin na ang device mo ay naka-unlock at bukas ang Ethereum."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Hindi puwedeng magkonekta ng maraming Ledger device nang sabay-sabay. Para magkonekta ng bagong Ledger device, kailangan mo munang idiskonekta ang dati."
-  },
   "ledgerTimeout": {
     "message": "Masyadong natatagalan ang Ledger Live upang tumugon o mag-timeout ng koneksyon. Tiyaking nakabukas ang Ledger Live app at naka-unlock ang iyong device."
   },
