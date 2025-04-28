@@ -474,7 +474,8 @@ export default class MetamaskController extends EventEmitter {
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
-    // fire this async method and forget
+    // fire this async method and forget - we don't want to wait for the list
+    // to update, as this will slow down the extension startup
     preSeedWellKnownChains();
 
     this.controllerMessenger = new Messenger();
