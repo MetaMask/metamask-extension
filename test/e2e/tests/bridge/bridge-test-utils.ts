@@ -253,15 +253,15 @@ async function mockDAItoUSDT(mockServer: Mockttp) {
     });
 }
 
-async function mockGetQuoteInvalid(mockServer: Mockttp, response: any) {
+async function mockGetQuoteInvalid(mockServer: Mockttp, response: string) {
   return await mockServer.forGet(/getQuote/u).thenCallback(() => {
-    return response;
+    return JSON.parse(response);
   });
 }
 
-async function mockGetTxStatuInvalid(mockServer: Mockttp, response: any) {
-  return await mockServer.forGet(/getTxStatus/u).thenCallback(async (req) => {
-    return response;
+async function mockGetTxStatuInvalid(mockServer: Mockttp, response: string) {
+  return await mockServer.forGet(/getTxStatus/u).thenCallback(async () => {
+    return JSON.parse(response);
   });
 }
 
@@ -326,7 +326,7 @@ export const getBridgeFixtures = (
 };
 
 export const getQuoteNegativeCasesFixtures = (
-  response: any,
+  response: string,
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
@@ -362,7 +362,7 @@ export const getQuoteNegativeCasesFixtures = (
 };
 
 export const getBridgeNegativeCasesFixtures = (
-  response: any,
+  response: string,
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilder({

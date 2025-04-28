@@ -50,6 +50,7 @@ class BridgeQuotePage {
     text: `You don't have enough ETH to pay the gas fee for this bridge. Enter a smaller amount or buy more ETH.`,
     css: '.mm-text--body-md',
   };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -57,11 +58,10 @@ class BridgeQuotePage {
   enterBridgeQuote = async (quote: BridgeQuote) => {
     // Source
     await this.driver.clickElement(this.sourceAssetPickerButton);
-    if (quote.tokenFrom === 'ETH') {
-      await this.driver.clickElement(this.networkSelector);
-      await this.driver.clickElement(this.lineaNetwork);
-      await this.driver.clickElement(this.applyButton);
-    }
+    await this.driver.clickElement(this.networkSelector);
+    await this.driver.clickElement(this.lineaNetwork);
+    await this.driver.clickElement(this.applyButton);
+
     await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
     await this.driver.clickElement({
       text: quote.tokenFrom,

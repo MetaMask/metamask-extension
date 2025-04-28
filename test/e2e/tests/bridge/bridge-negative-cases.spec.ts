@@ -3,11 +3,11 @@ import { unlockWallet, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import {
   getBridgeNegativeCasesFixtures,
   getQuoteNegativeCasesFixtures,
 } from './bridge-test-utils';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import {
   INTERNAL_SERVER_ERROR,
   EMPTY_RESPONSE,
@@ -134,8 +134,8 @@ describe('Bridge functionality', function (this: Suite) {
 
         await homePage.goToActivityList();
         await driver.delay(5000);
-        const activityList = new ActivityListPage(driver);
         // Until bug #32266 is fixed
+        // const activityList = new ActivityListPage(driver);
         // await activityList.check_failedTxNumberDisplayedInActivity();
       },
     );
@@ -158,14 +158,13 @@ describe('Bridge functionality', function (this: Suite) {
 
         await homePage.goToActivityList();
         await driver.delay(5000);
-        const activityList = new ActivityListPage(driver);
         // Until bug #32266 is fixed
+        // const activityList = new ActivityListPage(driver);
         // await activityList.check_failedTxNumberDisplayedInActivity();
       },
     );
   });
 });
-
 
 async function enterBridgeQuote(driver: Driver): Promise<BridgeQuotePage> {
   const bridgePage = new BridgeQuotePage(driver);
