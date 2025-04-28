@@ -20,7 +20,6 @@ import {
   type QuoteResponse,
   SortOrder,
   BridgeFeatureFlagsKey,
-  RequestStatus,
   type BridgeControllerState,
   type SolanaFees,
   isNativeAddress,
@@ -28,6 +27,7 @@ import {
   BRIDGE_PREFERRED_GAS_ESTIMATE,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
+  selectBridgeQuotes,
 } from '@metamask/bridge-controller';
 import type {
   CurrencyRateState,
@@ -35,6 +35,7 @@ import type {
   MultichainAssetsRatesControllerState,
   MultichainBalancesControllerState,
   RatesControllerState,
+  TokenListState,
   TokenRatesControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
@@ -100,6 +101,7 @@ export type BridgeAppState = {
     MultichainTransactionsControllerState &
     MultichainAssetsControllerState &
     MultichainNetworkControllerState &
+    TokenListState &
     CurrencyRateState & {
       useExternalServices: boolean;
     };
@@ -613,39 +615,16 @@ const _getSelectedQuote = createSelector(
 
 export const getBridgeQuotes = createSelector(
   [
-    _getSortedQuotesWithMetadata,
-    _getSelectedQuote,
-    (state) => state.metamask.quotesLastFetched,
-    (state) => state.metamask.quotesLoadingStatus === RequestStatus.LOADING,
-    (state: BridgeAppState) => state.metamask.quotesRefreshCount,
-    (state: BridgeAppState) => state.metamask.quotesInitialLoadTime,
-    (state: BridgeAppState) => state.metamask.quoteFetchError,
-    getBridgeQuotesConfig,
-    getQuoteRequest,
+    ({ metamask }: BridgeAppState) => metamask,
+    ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
+    ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (
-    sortedQuotesWithMetadata,
-    selectedQuote,
-    quotesLastFetchedMs,
-    isLoading,
-    quotesRefreshCount,
-    quotesInitialLoadTimeMs,
-    quoteFetchError,
-    { maxRefreshCount },
-    { insufficientBal },
-  ) => ({
-    sortedQuotes: sortedQuotesWithMetadata,
-    recommendedQuote: sortedQuotesWithMetadata[0],
-    activeQuote: selectedQuote ?? sortedQuotesWithMetadata[0],
-    quotesLastFetchedMs,
-    isLoading,
-    quoteFetchError,
-    quotesRefreshCount,
-    quotesInitialLoadTimeMs,
-    isQuoteGoingToRefresh: insufficientBal
-      ? false
-      : quotesRefreshCount < maxRefreshCount,
-  }),
+  (controllerStates, sortOrder, selectedQuote) =>
+    selectBridgeQuotes(controllerStates, {
+      sortOrder,
+      selectedQuote,
+      featureFlagsKey: BridgeFeatureFlagsKey.EXTENSION_CONFIG,
+    }),
 );
 
 export const getIsBridgeTx = createDeepEqualSelector(
