@@ -24,7 +24,7 @@ export const useChartTimeRanges = (
 
   if (isEvm) {
     // On EVM, time ranges are hardcoded
-    return ['P1D', 'P7D', 'P1M', 'P3M', 'P1Y', 'P1000Y'];
+    return ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y'];
   }
 
   assert(caipAssetType, 'caipAssetType is required on non-EVM chains');
@@ -36,7 +36,12 @@ export const useChartTimeRanges = (
 
   return chain(intervals)
     .keys()
-    .filter((duration) => Duration.fromISO(duration).isValid)
-    .sortBy((duration) => Duration.fromISO(duration).toMillis())
+    .map((duration) => Duration.fromISO(duration)) // Convert to Duration object
+    .filter((duration) => duration.isValid) // Filter out invalid durations
+    .sortBy((duration) => duration.toMillis()) // Sort from shortest to longest
+    .map((duration) => duration.normalize()) // Normalize the duration. For instance 12 hours and -15 minutes becomes 11 hours and 45 minutes
+    .map((duration) => duration.rescale()) // Rescale the units to its largest representation. For instance P7D becomes P1W
+    .map((duration) => duration.toISO()) // Convert back to ISO string
+    .uniq() // Remove duplicates
     .value();
 };

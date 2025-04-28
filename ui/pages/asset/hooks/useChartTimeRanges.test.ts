@@ -27,7 +27,7 @@ describe('useChartTimeRanges', () => {
       );
       const timeRanges = result.current;
 
-      expect(timeRanges).toEqual(['P1D', 'P7D', 'P1M', 'P3M', 'P1Y', 'P1000Y']);
+      expect(timeRanges).toEqual(['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y']);
     });
   });
 
@@ -60,7 +60,6 @@ describe('useChartTimeRanges', () => {
               usd: {
                 intervals: {
                   P4D: [],
-                  P37M: [],
                   P99Y: [],
                 },
               },
@@ -75,7 +74,7 @@ describe('useChartTimeRanges', () => {
       );
       const timeRanges = result.current;
 
-      expect(timeRanges).toEqual(['P4D', 'P37M', 'P99Y']);
+      expect(timeRanges).toEqual(['P4D', 'P99Y']);
     });
 
     it('returns empty array for non-EVM chains when data is missing for the address/currency', () => {
@@ -162,6 +161,91 @@ describe('useChartTimeRanges', () => {
       const timeRanges = result.current;
 
       expect(timeRanges).toEqual(['P1D', 'P1M', 'P1Y']);
+    });
+
+    it('normalizes time ranges', () => {
+      const address = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+      const currency = 'usd';
+
+      const mockStateWithNormalizedTimeRanges = {
+        metamask: {
+          ...mockStateNonEvm.metamask,
+          historicalPrices: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+              usd: {
+                intervals: {
+                  'PT12H-45M': [], // 12 hours and -45 minutes is normalized to 11 hours and 15 minutes
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useChartTimeRanges(address, currency),
+        mockStateWithNormalizedTimeRanges,
+      );
+      const timeRanges = result.current;
+
+      expect(timeRanges).toEqual(['PT11H15M']);
+    });
+
+    it('rescales time ranges', () => {
+      const address = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+      const currency = 'usd';
+
+      const mockStateWithRescaledTimeRanges = {
+        metamask: {
+          ...mockStateNonEvm.metamask,
+          historicalPrices: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+              usd: {
+                intervals: {
+                  P7D: [], // 7 days is normalized to 1 week
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useChartTimeRanges(address, currency),
+        mockStateWithRescaledTimeRanges,
+      );
+      const timeRanges = result.current;
+
+      expect(timeRanges).toEqual(['P1W']);
+    });
+
+    it('removes duplicates', () => {
+      const address = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+      const currency = 'usd';
+
+      const mockStateWithDuplicateTimeRanges = {
+        metamask: {
+          ...mockStateNonEvm.metamask,
+          historicalPrices: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+              usd: {
+                intervals: {
+                  P7D: [],
+                  P1W: [], // Results in duplicate time range
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useChartTimeRanges(address, currency),
+        mockStateWithDuplicateTimeRanges,
+      );
+      const timeRanges = result.current;
+
+      expect(timeRanges).toEqual(['P1W']);
     });
   });
 });
