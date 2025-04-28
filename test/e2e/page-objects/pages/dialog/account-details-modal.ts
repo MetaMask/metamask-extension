@@ -177,7 +177,9 @@ class AccountDetailsModal {
   }
 
   async triggerAccountSwitch(): Promise<void> {
-    await this.driver.clickElement('[data-testid="switch_account-Localhost 8545"]');
+    await this.driver.clickElement(
+      '[data-testid="switch_account-Localhost 8545"]',
+    );
   }
 }
 

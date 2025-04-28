@@ -1,17 +1,16 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Anvil } from '@viem/anvil';
-import { Driver } from '../../webdriver/driver';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
-import { tinyDelayMs, WINDOW_TITLES, withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/redesign/batch-confirmation';
+
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import HomePage from '../../page-objects/pages/home/homepage';
-import { mockEip7702FeatureFlag } from '../confirmations/helpers';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
+import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/redesign/batch-confirmation';
+import FixtureBuilder from '../../fixture-builder';
+import HomePage from '../../page-objects/pages/home/homepage';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import { Driver } from '../../webdriver/driver';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockEip7702FeatureFlag } from '../confirmations/helpers';
 
 describe('Switch Modal - Switch Account', function (this: Suite) {
   it('Account modal should have options to upgrade / downgrade the account', async function () {
