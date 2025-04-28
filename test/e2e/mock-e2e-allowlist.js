@@ -27,7 +27,7 @@ const ALLOWLISTED_URLS = [
   'https://doesntexist.test/customRPC',
   'https://etherscan.io/favicon.ico',
   'https://execution.metamask.io/iframe/7.2.2/index.html',
-  'https://execution.metamask.io/iframe/7.2.1/bundle.js',
+  'https://execution.metamask.io/iframe/7.2.2/bundle.js',
   'https://gas.api.cx.metamask.io/networks/1/gasPrices',
   'https://gas.api.cx.metamask.io/networks/1/suggestedGasFees',
   'https://gas.api.cx.metamask.io/networks/1337/suggestedGasFees',
