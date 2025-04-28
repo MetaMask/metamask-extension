@@ -5076,21 +5076,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:@metamask-previews/chain-agnostic-permission@0.4.0-preview-72122b6f":
-  version: 0.4.0-preview-72122b6f
-  resolution: "@metamask-previews/chain-agnostic-permission@npm:0.4.0-preview-72122b6f"
-  dependencies:
-    "@metamask/api-specs": "npm:^0.10.12"
-    "@metamask/controller-utils": "npm:^11.7.0"
-    "@metamask/network-controller": "npm:^23.2.0"
-    "@metamask/permission-controller": "npm:^11.0.6"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.2.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/4573b28f15c1054af7c8f94e27a980c635c6410c5f8161a5dd2ec4980b8eb8ba0fd0162d40b3ad066ebfcbaed59552ce380d99bcd2e9a1c12866cad79a6d70ad
-  languageName: node
-  linkType: hard
-
 "@metamask/chain-agnostic-permission@npm:^0.2.0":
   version: 0.2.0
   resolution: "@metamask/chain-agnostic-permission@npm:0.2.0"
@@ -5103,6 +5088,21 @@ __metadata:
     "@metamask/utils": "npm:^11.2.0"
     lodash: "npm:^4.17.21"
   checksum: 10/b3121bdbcc2a14d44802ad1799045b4a01c99047fa2675a639b3ebed51a1b30eba071b5a8d8cbf5a045204670a4ef159c44560036013f54a368a6e80071dd5df
+  languageName: node
+  linkType: hard
+
+"@metamask/chain-agnostic-permission@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/chain-agnostic-permission@npm:0.5.0"
+  dependencies:
+    "@metamask/api-specs": "npm:^0.10.12"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/network-controller": "npm:^23.2.0"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.2.0"
+    lodash: "npm:^4.17.21"
+  checksum: 10/fd97df566797b8ef4c361edc05d322bace08ba4cac285280235cb13be46501e694c51ca1240239bce838b25ce392573ba420e5f64a517bdacb4c43778fd6ebaf
   languageName: node
   linkType: hard
 
@@ -27614,7 +27614,7 @@ __metadata:
     "@metamask/bridge-controller": "npm:^11.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
-    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@0.4.0-preview-72122b6f"
+    "@metamask/chain-agnostic-permission": "npm:^0.5.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.7.0"
     "@metamask/design-tokens": "npm:^7.0.0"
