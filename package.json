@@ -460,6 +460,8 @@
     "@playwright/test": "^1.39.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@sentry/cli": "^2.19.4",
+    "@slack/types": "^2.14.0",
+    "@slack/webhook": "^7.0.5",
     "@storybook/addon-a11y": "^7.6.20",
     "@storybook/addon-actions": "^7.6.20",
     "@storybook/addon-designs": "^7.0.9",
