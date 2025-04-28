@@ -1,5 +1,12 @@
-import { MockttpServer } from 'mockttp';
+import { MockttpServer, CompletedRequest } from 'mockttp';
 import { mockJsonRpcResult } from './json-rpc-result';
+
+type JsonRpcRequestPayload = {
+  jsonrpc: string;
+  method: string;
+  params?: unknown[] | Record<string, unknown>;
+  id?: number | string;
+};
 
 type RequestConfig = [
   method: string,
@@ -7,17 +14,14 @@ type RequestConfig = [
     /** optional arbitrary method variant name to return various result values */
     methodResultVariant?: string;
     /** optional params value for JSON request used in withJsonBodyIncluding() */
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    params?: any;
+
+    params?: unknown[] | Record<string, unknown>;
     /** optional result value returned in JSON response */
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    result?: any;
+
+    result?: unknown;
     /** optional result value returned in JSON response */
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error?: any;
+
+    error?: unknown;
   },
 ];
 
@@ -68,14 +72,16 @@ export async function mockServerJsonRpc(
       .forPost(/infura/u)
       .always()
       .withJsonBodyIncluding(params ? { method, params } : { method })
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .thenCallback(async (req: any) => {
+
+      .thenCallback(async (req: CompletedRequest) => {
+        const jsonBody = (await req.body.getJson()) as
+          | JsonRpcRequestPayload
+          | undefined;
         return {
           statusCode: 200,
           json: {
             jsonrpc: '2.0',
-            id: (await req.body.getJson()).id,
+            id: jsonBody?.id,
             result,
           },
         };

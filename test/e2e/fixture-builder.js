@@ -115,12 +115,6 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
-        showTestNetworks: false,
-        smartTransactionsOptInStatus: true,
-        tokenNetworkFilter: {},
-      },
-      QueuedRequestController: {
-        queuedRequestCount: 0,
       },
       SelectedNetworkController: {
         domains: {},
@@ -139,9 +133,6 @@ function onboardingFixture() {
         allDetectedTokens: {},
         allIgnoredTokens: {},
         allTokens: {},
-        detectedTokens: [],
-        ignoredTokens: [],
-        tokens: [],
       },
       TransactionController: {},
       config: {},
@@ -237,6 +228,12 @@ class FixtureBuilder {
     });
   }
 
+  withUseBasicFunctionalityEnabled() {
+    return this.withPreferencesController({
+      useExternalServices: true,
+    });
+  }
+
   withGasFeeController(data) {
     merge(this.fixture.data.GasFeeController, data);
     return this;
@@ -299,6 +296,12 @@ class FixtureBuilder {
 
   withNetworkControllerOnMainnet() {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
+  }
+
+  withNetworkControllerOnLinea() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'linea-mainnet',
+    });
   }
 
   withNetworkControllerOnOptimism() {
@@ -365,6 +368,16 @@ class FixtureBuilder {
       this.fixture.data.NftController
         ? this.fixture.data.NftController
         : (this.fixture.data.NftController = {}),
+      data,
+    );
+    return this;
+  }
+
+  withDeFiPositionsController(data) {
+    merge(
+      this.fixture.data.DeFiPositionsController
+        ? this.fixture.data.DeFiPositionsController
+        : (this.fixture.data.DeFiPositionsController = {}),
       data,
     );
     return this;
@@ -1036,19 +1049,6 @@ class FixtureBuilder {
 
   withTokensControllerERC20({ chainId = 1337 } = {}) {
     merge(this.fixture.data.TokensController, {
-      tokens: [
-        {
-          address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
-          symbol: 'TST',
-          decimals: 4,
-          image:
-            'https://static.cx.metamask.io/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
-          isERC721: false,
-          aggregators: [],
-        },
-      ],
-      ignoredTokens: [],
-      detectedTokens: [],
       allTokens: {
         [toHex(chainId)]: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
@@ -1631,14 +1631,6 @@ class FixtureBuilder {
         },
         selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
       });
-  }
-
-  withIncomingTransactionsPreferences(incomingTransactionsPreferences) {
-    return this.withPreferencesController({
-      featureFlags: {
-        showIncomingTransactions: incomingTransactionsPreferences,
-      },
-    });
   }
 
   withIncomingTransactionsCache(cache) {

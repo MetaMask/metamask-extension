@@ -139,12 +139,11 @@ describe('SnapUIRenderer', () => {
       [
         {
           handler: 'onUserInput',
-          origin: '',
+          origin: 'metamask',
           request: {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              context: null,
               event: { name: 'input', type: 'InputChangeEvent', value: 'a' },
               id: MOCK_INTERFACE_ID,
             },

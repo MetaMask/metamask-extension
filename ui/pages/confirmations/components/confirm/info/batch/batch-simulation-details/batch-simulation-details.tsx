@@ -1,5 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
   SimulationDetails,
@@ -13,10 +16,12 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit-spending-cap-modal';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { updateAtomicBatchData } from '../../../../../../../store/actions/transaction-controller';
+import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
+import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 
 export function BatchSimulationDetails() {
   const t = useI18nContext();
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -50,6 +55,13 @@ export function BatchSimulationDetails() {
     },
     [id, nestedTransactionIndexToEdit],
   );
+
+  if (
+    transactionMeta?.type === TransactionType.revokeDelegation ||
+    isUpgradeOnly
+  ) {
+    return null;
+  }
 
   const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
     ...change,

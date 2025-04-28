@@ -15,6 +15,7 @@ import {
   addTransaction,
   updateTransaction,
   addTransactionAndWaitForPublish,
+  setDefaultHomeActiveTabName,
 } from '../../../store/actions';
 import {
   getHexMaxGasLimit,
@@ -30,6 +31,7 @@ import {
 } from '../../../selectors/multichain';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
 import { useMultichainWalletSnapSender } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { type SmartTransactionsState } from '../../../../shared/modules/selectors/smart-transactions';
 import {
   checkNetworkAndAccountSupports1559,
   getMemoizedUnapprovedTemplatedConfirmations,
@@ -48,7 +50,12 @@ export default function useHandleTx() {
     checkNetworkAndAccountSupports1559,
   );
   const networkGasFeeEstimates = useSelector(getGasFeeEstimates);
-  const shouldUseSmartTransaction = useSelector(getIsSmartTransaction);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const shouldUseSmartTransaction = useSelector(
+    (state: SmartTransactionsState) => {
+      return getIsSmartTransaction(state, currentChainId);
+    },
+  );
 
   const networkConfigurationIds = useSelector(
     getNetworkConfigurationIdByChainId,
@@ -123,7 +130,6 @@ export default function useHandleTx() {
   };
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const currentChainId = useSelector(getMultichainCurrentChainId);
   const snapSender = useMultichainWalletSnapSender(SOLANA_WALLET_SNAP_ID);
   const history = useHistory();
 
@@ -158,6 +164,10 @@ export default function useHandleTx() {
     txParams: string;
     fieldsToAddToTxMeta: Omit<Partial<TransactionMeta>, 'status'>;
   }): Promise<TransactionMeta> => {
+    // Move to activity tab before submitting a transaction
+    // This is a temporary solution to avoid the transaction not being shown in the activity tab
+    // We should find a better solution in the future
+    await dispatch(setDefaultHomeActiveTabName('activity'));
     // Submit a signing request to the snap
     const snapResponse = await snapSender.send({
       id: crypto.randomUUID(),

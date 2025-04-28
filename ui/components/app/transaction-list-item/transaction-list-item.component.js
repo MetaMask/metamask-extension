@@ -86,7 +86,9 @@ function TransactionListItemInner({
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
+  const isSmartTransaction = useSelector((state) =>
+    getIsSmartTransaction(state, chainId),
+  );
   const dispatch = useDispatch();
 
   // Bridge transactions
@@ -372,8 +374,6 @@ function TransactionListItemInner({
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
-          showCancel={isPending && !hasCancelled && !isBridgeTx}
-          showErrorBanner={Boolean(error)}
           transactionStatus={() => (
             <TransactionStatusLabel
               isPending={isPending}
@@ -382,7 +382,6 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
               statusOnly
-              shouldShowTooltip={false}
             />
           )}
           chainId={chainId}

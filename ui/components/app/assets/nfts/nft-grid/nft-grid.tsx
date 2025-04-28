@@ -18,6 +18,10 @@ import {
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import NFTGridItemErrorBoundary from './nft-grid-item-error-boundary';
 
 const NFTGridItem = (props: {
@@ -27,7 +31,8 @@ const NFTGridItem = (props: {
 }) => {
   const { nft, onClick, privacyMode } = props;
 
-  const { image: _image, imageOriginal } = nft;
+  const { image: _image, imageOriginal, tokenURI } = nft;
+  const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
   const image = getNftImage(_image);
 
   const ipfsGateway = useSelector(getIpfsGateway);
@@ -38,8 +43,13 @@ const NFTGridItem = (props: {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const isImageHosted =
-    image?.startsWith('https:') || image?.startsWith('http:');
-  const nftItemSrc = isImageHosted ? image : nftImageURL;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    (image && isWebUrl(image)) ||
+    (imageFromTokenURI && isWebUrl(imageFromTokenURI));
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   const nftImageAlt = getNftImageAlt(nft);
 
@@ -52,6 +62,8 @@ const NFTGridItem = (props: {
       alt={nftImageAlt}
       src={nftItemSrc}
       networkName={allNetworks?.[toHex(nft.chainId)]?.name}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       networkSrc={getImageForChainId(toHex(nft.chainId)) || undefined}
       onClick={onClick}
       isIpfsURL={isIpfsURL}

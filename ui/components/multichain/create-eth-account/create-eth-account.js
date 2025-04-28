@@ -12,22 +12,14 @@ import { CreateAccount } from '../create-account';
 
 export const CreateEthAccount = ({
   onActionComplete,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   onSelectSrp,
   selectedKeyringId,
-  ///: END:ONLY_INCLUDE_IF(multi-srp)
 }) => {
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name) => {
     trace({ name: TraceName.AddAccount });
-    const newAccountAddress = await dispatch(
-      addNewAccount(
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        selectedKeyringId,
-        ///: END:ONLY_INCLUDE_IF(multi-srp)
-      ),
-    );
+    const newAccountAddress = await dispatch(addNewAccount(selectedKeyringId));
     if (name) {
       dispatch(setAccountLabel(newAccountAddress, name));
     }

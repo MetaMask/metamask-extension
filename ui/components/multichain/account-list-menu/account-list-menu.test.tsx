@@ -31,6 +31,7 @@ const mockGetEnvironmentType = jest.fn();
 const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 const mockBitcoinClientCreateAccount = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
+const mockDetectNfts = jest.fn();
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -41,8 +42,9 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
-    getNextAvailableAccountName: () => mockNextAccountName,
-    generateNewHdKeyring: () => mockGenerateNewHdKeyring,
+    getNextAvailableAccountName: () => mockNextAccountName(),
+    generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
+    detectNfts: () => mockDetectNfts,
   };
 });
 
@@ -157,6 +159,7 @@ describe('AccountListMenu', () => {
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
+
     expect(listItems).toHaveLength(6);
 
     const searchBox = document.querySelector('input[type=search]') as Element;
@@ -314,6 +317,8 @@ describe('AccountListMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Ethereum account'));
+    const header = document.querySelector('header') as Element;
+    expect(header.innerHTML).toContain('Add Ethereum account');
     const addAccountButton = document.querySelector(
       '[data-testid="submit-add-account-with-name"]',
     );
@@ -546,6 +551,17 @@ describe('AccountListMenu', () => {
     expect(tag.textContent).toBe('mock snap name (Beta)');
   });
 
+  it('detects NFTs when an account is clicked', () => {
+    const { getAllByTestId } = render();
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    expect(listItems).toHaveLength(6);
+    const button = getAllByTestId('account-item');
+    button[0].click();
+    expect(mockDetectNfts).toHaveBeenCalled();
+  });
+
   it('displays the correct label for named snap accounts', () => {
     render({
       metamask: {
@@ -586,6 +602,7 @@ describe('AccountListMenu', () => {
     });
 
     it('calls the bitcoin client to create an account', async () => {
+      mockNextAccountName.mockReturnValue('Snap Account 1');
       const { getByText, getByTestId } = render();
 
       const button = getByTestId(
@@ -753,5 +770,22 @@ describe('AccountListMenu', () => {
 
       expect(getByTestId('select-srp-container')).toBeInTheDocument();
     });
+  });
+
+  it('should render institutional wallet button if manage institutional wallets is enabled', () => {
+    const { getByText, getByTestId } = render({
+      metamask: {
+        ...mockState.metamask,
+        manageInstitutionalWallets: true,
+      },
+    });
+
+    // Click the action button to enter menu mode
+    const actionButton = getByTestId(
+      'multichain-account-menu-popover-action-button',
+    );
+    actionButton.click();
+
+    expect(getByText('Manage Institutional Wallets')).toBeInTheDocument();
   });
 });
