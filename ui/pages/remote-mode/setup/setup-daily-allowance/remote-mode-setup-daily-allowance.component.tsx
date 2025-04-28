@@ -85,8 +85,7 @@ export default function RemoteModeSetupDailyAllowance() {
     useState<boolean>(false);
   const [selectedAccount, setSelectedAccount] =
     useState<InternalAccount | null>(null);
-  const [isInitialized, setIsInitialized] = useState<boolean>(false);
-  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -99,7 +98,6 @@ export default function RemoteModeSetupDailyAllowance() {
 
   useEffect(() => {
     setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
-    setIsInitialized(true);
   }, [selectedHardwareAccount]);
 
   useEffect(() => {
@@ -485,7 +483,7 @@ export default function RemoteModeSetupDailyAllowance() {
         paddingRight={4}
         width={BlockSize.Full}
       >
-        {isInitialized && !isHardwareAccount && (
+        {!isHardwareAccount && (
           <BannerAlert severity={BannerAlertSeverity.Warning} marginBottom={2}>
             <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
               Select a hardware wallet

@@ -49,8 +49,7 @@ export default function RemoteModeIntroducing() {
   const [currentScreen, setCurrentScreen] = useState<RemoteScreen>(
     RemoteScreen.OVERVIEW,
   );
-  const [isInitialized, setIsInitialized] = useState<boolean>(false);
-  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
 
   const history = useHistory();
 
@@ -75,7 +74,6 @@ export default function RemoteModeIntroducing() {
 
   useEffect(() => {
     setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
-    setIsInitialized(true);
   }, [selectedHardwareAccount]);
 
   const renderScreen = () => {
@@ -147,7 +145,7 @@ export default function RemoteModeIntroducing() {
       >
         Remote mode
       </Header>
-      {isInitialized && !isHardwareAccount && (
+      {!isHardwareAccount && (
         <Box padding={4}>
           <BannerAlert severity={BannerAlertSeverity.Warning} marginBottom={2}>
             <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
