@@ -79,7 +79,10 @@ export async function preSeedWellKnownChains() {
       const { rawChainData } = await import('eth-chainlist');
       await setStorageItem(cacheKey, {
         cachedResponse: rawChainData(),
-        // Cached value is immediately invalidated
+        // Cached value is immediately invalidated, which allows for updates to
+        // the list to be fetched from the network: a) if enabled, and b) if
+        // possible. If the user has disabled the setting, or the external
+        // resource is not available, this cached value will be used.
         cachedTime: 0,
       });
       resolve();
