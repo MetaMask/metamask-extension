@@ -1,167 +1,350 @@
-import { QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME } from '../../../../shared/constants/network';
-import { onRpcEndpointUnavailable } from './messenger-action-handlers';
-
-const QUICKNODE_MAINNET_URL = 'https://example.quicknode.com/mainnet';
-const QUICKNODE_LINEA_MAINNET_URL =
-  'https://example.quicknode.com/linea-mainnet';
-const QUICKNODE_ARBITRUM_URL = 'https://example.quicknode.com/arbitrum';
-const QUICKNODE_AVALANCHE_URL = 'https://example.quicknode.com/avalanche';
-const QUICKNODE_OPTIMISM_URL = 'https://example.quicknode.com/optimism';
-const QUICKNODE_POLYGON_URL = 'https://example.quicknode.com/polygon';
-const QUICKNODE_BASE_URL = 'https://example.quicknode.com/base';
+import {
+  onRpcEndpointDegraded,
+  onRpcEndpointUnavailable,
+} from './messenger-action-handlers';
+import * as networkControllerUtilsModule from './utils';
 
 describe('onRpcEndpointUnavailable', () => {
-  let originalEnv: NodeJS.ProcessEnv;
+  let getIsOurInfuraEndpointUrlMock: jest.SpyInstance<
+    ReturnType<typeof networkControllerUtilsModule.getIsOurInfuraEndpointUrl>,
+    Parameters<typeof networkControllerUtilsModule.getIsOurInfuraEndpointUrl>
+  >;
+  let getIsQuicknodeEndpointUrlMock: jest.SpyInstance<
+    ReturnType<typeof networkControllerUtilsModule.getIsQuicknodeEndpointUrl>,
+    Parameters<typeof networkControllerUtilsModule.getIsQuicknodeEndpointUrl>
+  >;
+  let shouldCreateRpcServiceEventsMock: jest.SpyInstance<
+    ReturnType<
+      typeof networkControllerUtilsModule.shouldCreateRpcServiceEvents
+    >,
+    Parameters<typeof networkControllerUtilsModule.shouldCreateRpcServiceEvents>
+  >;
 
   beforeEach(() => {
-    originalEnv = { ...process.env };
-
-    process.env.QUICKNODE_MAINNET_URL = QUICKNODE_MAINNET_URL;
-    process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
-    process.env.QUICKNODE_ARBITRUM_URL = QUICKNODE_ARBITRUM_URL;
-    process.env.QUICKNODE_AVALANCHE_URL = QUICKNODE_AVALANCHE_URL;
-    process.env.QUICKNODE_OPTIMISM_URL = QUICKNODE_OPTIMISM_URL;
-    process.env.QUICKNODE_POLYGON_URL = QUICKNODE_POLYGON_URL;
-    process.env.QUICKNODE_BASE_URL = QUICKNODE_BASE_URL;
+    getIsOurInfuraEndpointUrlMock = jest
+      .spyOn(networkControllerUtilsModule, 'getIsOurInfuraEndpointUrl')
+      .mockReturnValue(false);
+    getIsQuicknodeEndpointUrlMock = jest
+      .spyOn(networkControllerUtilsModule, 'getIsQuicknodeEndpointUrl')
+      .mockReturnValue(false);
+    shouldCreateRpcServiceEventsMock = jest
+      .spyOn(networkControllerUtilsModule, 'shouldCreateRpcServiceEvents')
+      .mockReturnValue(false);
   });
 
-  afterEach(() => {
-    for (const key of new Set([
-      ...Object.keys(originalEnv),
-      ...Object.keys(process.env),
-    ])) {
-      if (originalEnv[key]) {
-        process.env[key] = originalEnv[key];
-      } else {
-        delete process.env[key];
-      }
-    }
-  });
+  describe('if the Segment event should be created', () => {
+    describe('if the endpoint is an Infura URL using our API key', () => {
+      describe('if the error is a connection error', () => {
+        it('does not create a Segment event', () => {
+          shouldCreateRpcServiceEventsMock.mockReturnValue(true);
+          getIsOurInfuraEndpointUrlMock.mockReturnValue(true);
+          const trackEvent = jest.fn();
 
-  it('creates a Segment event if the endpoint is an Infura URL containing our API key and the error is not a connection error', () => {
-    const infuraProjectId = 'the-infura-project-id';
-    const trackEvent = jest.fn();
+          onRpcEndpointUnavailable({
+            chainId: '0xaa36a7',
+            endpointUrl: 'https://endpoint.url',
+            error: new TypeError('Failed to fetch'),
+            infuraProjectId: 'the-infura-project-id',
+            trackEvent,
+            metaMetricsId:
+              '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+          });
 
-    onRpcEndpointUnavailable({
-      chainId: '0xaa36a7',
-      endpointUrl: `https://some-subdomain.infura.io/v3/${infuraProjectId}`,
-      error: new Error('some error'),
-      infuraProjectId,
-      trackEvent,
+          expect(trackEvent).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('if the error is not a connection error', () => {
+        it('creates a Segment event, hiding the API from the URL', () => {
+          shouldCreateRpcServiceEventsMock.mockReturnValue(true);
+          getIsOurInfuraEndpointUrlMock.mockReturnValue(true);
+          const trackEvent = jest.fn();
+
+          onRpcEndpointUnavailable({
+            chainId: '0xaa36a7',
+            endpointUrl:
+              'https://some-subdomain.infura.io/v3/the-infura-project-id',
+            error: new Error('some error'),
+            infuraProjectId: 'the-infura-project-id',
+            trackEvent,
+            metaMetricsId:
+              '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+          });
+
+          expect(trackEvent).toHaveBeenCalledWith({
+            category: 'Network',
+            event: 'RPC Service Unavailable',
+            properties: {
+              chain_id_caip: 'eip155:11155111',
+              rpc_endpoint_url: 'some-subdomain.infura.io',
+            },
+          });
+        });
+      });
     });
 
-    expect(trackEvent).toHaveBeenCalledWith({
-      category: 'Network',
-      event: 'RPC Service Unavailable',
-      properties: {
-        chain_id_caip: 'eip155:11155111',
-        rpc_endpoint_url: 'some-subdomain.infura.io',
-      },
+    describe('if the endpoint is a Quicknode URL', () => {
+      describe('if the error is a connection error', () => {
+        it('does not create a Segment event', () => {
+          shouldCreateRpcServiceEventsMock.mockReturnValue(true);
+          getIsQuicknodeEndpointUrlMock.mockReturnValue(true);
+          const trackEvent = jest.fn();
+
+          onRpcEndpointUnavailable({
+            chainId: '0xaa36a7',
+            endpointUrl: 'https://endpoint.url',
+            error: new TypeError('Failed to fetch'),
+            infuraProjectId: 'the-infura-project-id',
+            trackEvent,
+            metaMetricsId:
+              '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+          });
+
+          expect(trackEvent).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('if the error is not a connection error', () => {
+        it('creates a Segment event, simplifying the URL to just the host', () => {
+          shouldCreateRpcServiceEventsMock.mockReturnValue(true);
+          getIsQuicknodeEndpointUrlMock.mockReturnValue(true);
+          const trackEvent = jest.fn();
+
+          onRpcEndpointUnavailable({
+            chainId: '0xaa36a7',
+            endpointUrl: 'https://endpoint.url',
+            error: new Error('some error'),
+            infuraProjectId: 'the-infura-project-id',
+            trackEvent,
+            metaMetricsId:
+              '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+          });
+
+          expect(trackEvent).toHaveBeenCalledWith({
+            category: 'Network',
+            event: 'RPC Service Unavailable',
+            properties: {
+              chain_id_caip: 'eip155:11155111',
+              rpc_endpoint_url: 'endpoint.url',
+            },
+          });
+        });
+      });
+    });
+
+    describe('if the endpoint is not an Infura URL using our API key or a Quicknode URL', () => {
+      describe('even if the error is not a connection error', () => {
+        it('does not create a Segment event', () => {
+          shouldCreateRpcServiceEventsMock.mockReturnValue(true);
+          getIsOurInfuraEndpointUrlMock.mockReturnValue(false);
+          getIsQuicknodeEndpointUrlMock.mockReturnValue(false);
+          const trackEvent = jest.fn();
+
+          onRpcEndpointUnavailable({
+            chainId: '0xaa36a7',
+            endpointUrl: 'http://some.custom.endpoint',
+            error: new Error('some error'),
+            infuraProjectId: 'the-infura-project-id',
+            trackEvent,
+            metaMetricsId:
+              '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+          });
+
+          expect(trackEvent).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 
-  it('does not create a Segment event if the endpoint is an Infura URL but does not contain our API key', () => {
-    const trackEvent = jest.fn();
+  describe('if the Segment event should not be created', () => {
+    describe('even if the endpoint is an Infura URL using our API key', () => {
+      describe('even if the error is not a connection error', () => {
+        it('does not create a Segment event', () => {
+          shouldCreateRpcServiceEventsMock.mockReturnValue(false);
+          getIsOurInfuraEndpointUrlMock.mockReturnValue(true);
+          const trackEvent = jest.fn();
 
-    onRpcEndpointUnavailable({
-      chainId: '0xaa36a7',
-      endpointUrl:
-        'https://some-subdomain.infura.io/v3/different-infura-project-id',
-      error: new Error('some error'),
-      infuraProjectId: 'the-infura-project-id',
-      trackEvent,
+          onRpcEndpointUnavailable({
+            chainId: '0xaa36a7',
+            endpointUrl:
+              'https://some-subdomain.infura.io/v3/the-infura-project-id',
+            error: new Error('some error'),
+            infuraProjectId: 'the-infura-project-id',
+            trackEvent,
+            metaMetricsId:
+              '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+          });
+
+          expect(trackEvent).not.toHaveBeenCalled();
+        });
+      });
     });
 
-    expect(trackEvent).not.toHaveBeenCalled();
-  });
+    describe('even if the endpoint is a Quicknode URL', () => {
+      describe('even if the error is not a connection error', () => {
+        it('does not create a Segment event', () => {
+          shouldCreateRpcServiceEventsMock.mockReturnValue(false);
+          getIsOurInfuraEndpointUrlMock.mockReturnValue(true);
+          const trackEvent = jest.fn();
 
-  it('does not create a Segment event if the endpoint is an Infura URL containing our API key but the error is a connection error', () => {
-    const trackEvent = jest.fn();
+          onRpcEndpointUnavailable({
+            chainId: '0xaa36a7',
+            endpointUrl: 'https://endpoint.url',
+            error: new Error('some error'),
+            infuraProjectId: 'the-infura-project-id',
+            trackEvent,
+            metaMetricsId:
+              '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+          });
 
-    onRpcEndpointUnavailable({
-      chainId: '0xaa36a7',
-      endpointUrl: 'https://some-subdomain.infura.io/v3/the-infura-project-id',
-      error: new TypeError('Failed to fetch'),
-      infuraProjectId: 'the-infura-project-id',
-      trackEvent,
+          expect(trackEvent).not.toHaveBeenCalled();
+        });
+      });
     });
+  });
+});
 
-    expect(trackEvent).not.toHaveBeenCalled();
+describe('onRpcEndpointDegraded', () => {
+  let getIsOurInfuraEndpointUrlMock: jest.SpyInstance<
+    ReturnType<typeof networkControllerUtilsModule.getIsOurInfuraEndpointUrl>,
+    Parameters<typeof networkControllerUtilsModule.getIsOurInfuraEndpointUrl>
+  >;
+  let getIsQuicknodeEndpointUrlMock: jest.SpyInstance<
+    ReturnType<typeof networkControllerUtilsModule.getIsQuicknodeEndpointUrl>,
+    Parameters<typeof networkControllerUtilsModule.getIsQuicknodeEndpointUrl>
+  >;
+  let shouldCreateRpcServiceEventsMock: jest.SpyInstance<
+    ReturnType<
+      typeof networkControllerUtilsModule.shouldCreateRpcServiceEvents
+    >,
+    Parameters<typeof networkControllerUtilsModule.shouldCreateRpcServiceEvents>
+  >;
+
+  beforeEach(() => {
+    getIsOurInfuraEndpointUrlMock = jest
+      .spyOn(networkControllerUtilsModule, 'getIsOurInfuraEndpointUrl')
+      .mockReturnValue(false);
+    getIsQuicknodeEndpointUrlMock = jest
+      .spyOn(networkControllerUtilsModule, 'getIsQuicknodeEndpointUrl')
+      .mockReturnValue(false);
+    shouldCreateRpcServiceEventsMock = jest
+      .spyOn(networkControllerUtilsModule, 'shouldCreateRpcServiceEvents')
+      .mockReturnValue(false);
   });
 
-  it('does not create a Segment event if the endpoint URL ends with infura.io, contains our API key, and the error is not a connection error', () => {
-    const infuraProjectId = 'the-infura-project-id';
-    const trackEvent = jest.fn();
-
-    onRpcEndpointUnavailable({
-      chainId: '0xaa36a7',
-      endpointUrl: `https://someinfura.io/v3/${infuraProjectId}`,
-      error: new Error('some error'),
-      infuraProjectId,
-      trackEvent,
-    });
-
-    expect(trackEvent).not.toHaveBeenCalled();
-  });
-
-  for (const [infuraNetwork, getQuicknodeEndpointUrl] of Object.entries(
-    QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
-  )) {
-    describe(`for the Infura network ${infuraNetwork}`, () => {
-      it(`creates a Segment event if the endpoint is a known Quicknode URL and the error is not a connection error`, () => {
-        // We can assume this is set.
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const endpointUrl = getQuicknodeEndpointUrl()!;
+  describe('if the Segment event should be created', () => {
+    describe('if the endpoint is an Infura URL using our API key', () => {
+      it('creates a Segment event, hiding the API from the URL', () => {
+        shouldCreateRpcServiceEventsMock.mockReturnValue(true);
+        getIsOurInfuraEndpointUrlMock.mockReturnValue(true);
         const trackEvent = jest.fn();
 
-        onRpcEndpointUnavailable({
+        onRpcEndpointDegraded({
           chainId: '0xaa36a7',
-          endpointUrl,
-          error: new Error('some error'),
+          endpointUrl:
+            'https://some-subdomain.infura.io/v3/the-infura-project-id',
           infuraProjectId: 'the-infura-project-id',
           trackEvent,
+          metaMetricsId:
+            '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
         });
 
         expect(trackEvent).toHaveBeenCalledWith({
           category: 'Network',
-          event: 'RPC Service Unavailable',
+          event: 'RPC Service Degraded',
           properties: {
             chain_id_caip: 'eip155:11155111',
-            rpc_endpoint_url: 'example.quicknode.com',
+            rpc_endpoint_url: 'some-subdomain.infura.io',
           },
         });
       });
+    });
 
-      it(`creates a Segment event if the endpoint is a known Quicknode URL but the error is a connection error`, () => {
-        // We can assume this is set.
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const endpointUrl = getQuicknodeEndpointUrl()!;
+    describe('if the endpoint is a Quicknode URL', () => {
+      it('creates a Segment event, simplifying the URL to just the host', () => {
+        shouldCreateRpcServiceEventsMock.mockReturnValue(true);
+        getIsQuicknodeEndpointUrlMock.mockReturnValue(true);
         const trackEvent = jest.fn();
 
-        onRpcEndpointUnavailable({
+        onRpcEndpointDegraded({
           chainId: '0xaa36a7',
-          endpointUrl,
-          error: new TypeError('Failed to fetch'),
+          endpointUrl: 'https://endpoint.url',
           infuraProjectId: 'the-infura-project-id',
           trackEvent,
+          metaMetricsId:
+            '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+        });
+
+        expect(trackEvent).toHaveBeenCalledWith({
+          category: 'Network',
+          event: 'RPC Service Degraded',
+          properties: {
+            chain_id_caip: 'eip155:11155111',
+            rpc_endpoint_url: 'endpoint.url',
+          },
+        });
+      });
+    });
+
+    describe('if the endpoint is not an Infura URL using our API key or a Quicknode URL', () => {
+      it('does not create a Segment event', () => {
+        shouldCreateRpcServiceEventsMock.mockReturnValue(true);
+        getIsOurInfuraEndpointUrlMock.mockReturnValue(false);
+        getIsQuicknodeEndpointUrlMock.mockReturnValue(false);
+        const trackEvent = jest.fn();
+
+        onRpcEndpointDegraded({
+          chainId: '0xaa36a7',
+          endpointUrl: 'http://some.custom.endpoint',
+          infuraProjectId: 'the-infura-project-id',
+          trackEvent,
+          metaMetricsId:
+            '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
         });
 
         expect(trackEvent).not.toHaveBeenCalled();
       });
     });
-  }
+  });
 
-  it('does not create a Segment event given a non-Infura, non-Quicknode URL', () => {
-    const trackEvent = jest.fn();
+  describe('if the Segment event should not be created', () => {
+    describe('even if the endpoint is an Infura URL using our API key', () => {
+      it('does not create a Segment event', () => {
+        shouldCreateRpcServiceEventsMock.mockReturnValue(false);
+        getIsOurInfuraEndpointUrlMock.mockReturnValue(true);
+        const trackEvent = jest.fn();
 
-    onRpcEndpointUnavailable({
-      chainId: '0xaa36a7',
-      endpointUrl: 'http://some.custom.endpoint',
-      error: new Error('some error'),
-      infuraProjectId: 'the-infura-project-id',
-      trackEvent,
+        onRpcEndpointDegraded({
+          chainId: '0xaa36a7',
+          endpointUrl:
+            'https://some-subdomain.infura.io/v3/the-infura-project-id',
+          infuraProjectId: 'the-infura-project-id',
+          trackEvent,
+          metaMetricsId:
+            '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+        });
+
+        expect(trackEvent).not.toHaveBeenCalled();
+      });
     });
 
-    expect(trackEvent).not.toHaveBeenCalled();
+    describe('even if the endpoint is a Quicknode URL', () => {
+      it('does not create a Segment event', () => {
+        shouldCreateRpcServiceEventsMock.mockReturnValue(false);
+        getIsOurInfuraEndpointUrlMock.mockReturnValue(true);
+        const trackEvent = jest.fn();
+
+        onRpcEndpointDegraded({
+          chainId: '0xaa36a7',
+          endpointUrl: 'https://endpoint.url',
+          infuraProjectId: 'the-infura-project-id',
+          trackEvent,
+          metaMetricsId:
+            '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+        });
+
+        expect(trackEvent).not.toHaveBeenCalled();
+      });
+    });
   });
 });

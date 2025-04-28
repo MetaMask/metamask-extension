@@ -708,6 +708,7 @@ export default class MetamaskController extends EventEmitter {
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
+          metaMetricsId: this.metaMetricsController.state.metaMetricsId,
         });
       },
     );
@@ -721,6 +722,7 @@ export default class MetamaskController extends EventEmitter {
           trackEvent: this.metaMetricsController.trackEvent.bind(
             this.metaMetricsController,
           ),
+          metaMetricsId: this.metaMetricsController.state.metaMetricsId,
         });
       },
     );

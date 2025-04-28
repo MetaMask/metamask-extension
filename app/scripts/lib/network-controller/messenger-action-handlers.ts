@@ -7,7 +7,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 import MetaMetricsController from '../../controllers/metametrics-controller';
-import { getIsInfuraEndpointUrl, getIsQuicknodeEndpointUrl } from './utils';
+import {
+  getIsOurInfuraEndpointUrl,
+  getIsQuicknodeEndpointUrl,
+  shouldCreateRpcServiceEvents,
+} from './utils';
 
 /**
  * Handler for the `NetworkController:rpcEndpointUnavailable` messenger action,
@@ -21,6 +25,11 @@ import { getIsInfuraEndpointUrl, getIsQuicknodeEndpointUrl } from './utils';
  * - When we detect that Quicknode is down, we create an event in Segment so
  * that Quicknode can be automatically re-enabled.
  *
+ * Note that in production we do not create events *every* time an endpoint is
+ * unavailable. If Infura is truly down, this would create millions of events
+ * and we would quickly be in trouble with Segment. Instead we only create an
+ * event 1% of the time.
+ *
  * @param args - The arguments.
  * @param args.chainId - The chain ID that the endpoint represents.
  * @param args.endpointUrl - The URL of the endpoint.
@@ -28,6 +37,7 @@ import { getIsInfuraEndpointUrl, getIsQuicknodeEndpointUrl } from './utils';
  * a request to the RPC endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
  * @param args.trackEvent - The function that will create the Segment event.
+ * @param args.metaMetricsId - The MetaMetrics ID of the user.
  */
 export function onRpcEndpointUnavailable({
   chainId,
@@ -35,21 +45,25 @@ export function onRpcEndpointUnavailable({
   error,
   infuraProjectId,
   trackEvent,
+  metaMetricsId,
 }: {
   chainId: Hex;
   endpointUrl: string;
   error: unknown;
   infuraProjectId: string;
   trackEvent: MetaMetricsController['trackEvent'];
+  metaMetricsId: string | null;
 }): void {
-  const isInfuraEndpointUrl = getIsInfuraEndpointUrl(
+  const isInfuraEndpointUrl = getIsOurInfuraEndpointUrl(
     endpointUrl,
     infuraProjectId,
   );
   const isQuicknodeEndpointUrl = getIsQuicknodeEndpointUrl(endpointUrl);
+
   if (
-    (isInfuraEndpointUrl || isQuicknodeEndpointUrl) &&
-    !isConnectionError(error)
+    shouldCreateRpcServiceEvents(metaMetricsId) &&
+    !isConnectionError(error) &&
+    (isInfuraEndpointUrl || isQuicknodeEndpointUrl)
   ) {
     log.debug(
       `Creating Segment event "${
@@ -78,29 +92,41 @@ export function onRpcEndpointUnavailable({
  * In this case, when we detect that Infura or Quicknode are degraded, we create
  * an event in Segment so that we know to investigate further.
  *
+ * Note that in production we do not create events *every* time an endpoint is
+ * unavailable. If Infura is truly down, this would create millions of events
+ * and we would quickly be in trouble with Segment. Instead we only create an
+ * event 1% of the time.
+ *
  * @param args - The arguments.
  * @param args.chainId - The chain ID that the endpoint represents.
  * @param args.endpointUrl - The URL of the endpoint.
  * @param args.infuraProjectId - Our Infura project ID.
  * @param args.trackEvent - The function that will create the Segment event.
+ * @param args.metaMetricsId - The MetaMetrics ID of the user.
  */
 export function onRpcEndpointDegraded({
   chainId,
   endpointUrl,
   infuraProjectId,
   trackEvent,
+  metaMetricsId,
 }: {
   chainId: Hex;
   endpointUrl: string;
   infuraProjectId: string;
   trackEvent: MetaMetricsController['trackEvent'];
+  metaMetricsId: string | null;
 }): void {
-  const isInfuraEndpointUrl = getIsInfuraEndpointUrl(
+  const isInfuraEndpointUrl = getIsOurInfuraEndpointUrl(
     endpointUrl,
     infuraProjectId,
   );
   const isQuicknodeEndpointUrl = getIsQuicknodeEndpointUrl(endpointUrl);
-  if (isInfuraEndpointUrl || isQuicknodeEndpointUrl) {
+
+  if (
+    shouldCreateRpcServiceEvents(metaMetricsId) &&
+    (isInfuraEndpointUrl || isQuicknodeEndpointUrl)
+  ) {
     log.debug(
       `Creating Segment event "${
         MetaMetricsEventName.RpcServiceDegraded
