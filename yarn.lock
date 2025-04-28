@@ -8489,6 +8489,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@slack/types@npm:^2.14.0, @slack/types@npm:^2.9.0":
+  version: 2.14.0
+  resolution: "@slack/types@npm:2.14.0"
+  checksum: 10/fa24a113b88e087f899078504c2ba50ab9795f7c2dd1a2d95b28217a3af20e554494f9cc3b8c8ce173120990d98e19400c95369f9067cecfcc46c08b59d2a46f
+  languageName: node
+  linkType: hard
+
+"@slack/webhook@npm:^7.0.5":
+  version: 7.0.5
+  resolution: "@slack/webhook@npm:7.0.5"
+  dependencies:
+    "@slack/types": "npm:^2.9.0"
+    "@types/node": "npm:>=18.0.0"
+    axios: "npm:^1.8.3"
+  checksum: 10/91bb30068d3572a5e59b5396def9f21172199132315d6dcf1d6aaf1ac593bfae6f1dc9604796115ec674c5596da6ee4e40c37aef73f3b9996a1fe9de9ff9fd7e
+  languageName: node
+  linkType: hard
+
 "@solana-program/token@npm:^0.4.1":
   version: 0.4.1
   resolution: "@solana-program/token@npm:0.4.1"
@@ -11813,12 +11831,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0, @types/node@npm:^20, @types/node@npm:^20.14.9":
-  version: 20.16.11
-  resolution: "@types/node@npm:20.16.11"
+"@types/node@npm:*, @types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0, @types/node@npm:>=18.0.0":
+  version: 22.14.1
+  resolution: "@types/node@npm:22.14.1"
   dependencies:
-    undici-types: "npm:~6.19.2"
-  checksum: 10/6d2f92b7b320c32ba0c2bc54d21651bd21690998a2e27f00d15019d4db3e0ec30fce85332efed5e37d4cda078ff93ea86ee3e92b76b7a25a9b92a52a039b60b2
+    undici-types: "npm:~6.21.0"
+  checksum: 10/561b1ad98ef5176d6da856ffbbe494f16655149f6a7d561de0423c8784910c81267d7d6459f59d68a97b3cbae9b5996b3b5dfe64f4de3de2239d295dcf4a4dcc
   languageName: node
   linkType: hard
 
@@ -11842,6 +11860,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~5.26.4"
   checksum: 10/ebd98b117c868edc597807cd0dab214b6110b9cd5ee406632641d0cf5b8bd7cb199caaac657a046d9203c441dbcfb3c71154ffa2d615ec89f80e6972143e6ec8
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20, @types/node@npm:^20.14.9":
+  version: 20.16.11
+  resolution: "@types/node@npm:20.16.11"
+  dependencies:
+    undici-types: "npm:~6.19.2"
+  checksum: 10/6d2f92b7b320c32ba0c2bc54d21651bd21690998a2e27f00d15019d4db3e0ec30fce85332efed5e37d4cda078ff93ea86ee3e92b76b7a25a9b92a52a039b60b2
   languageName: node
   linkType: hard
 
@@ -14286,14 +14313,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.8.2":
-  version: 1.8.2
-  resolution: "axios@npm:1.8.2"
+"axios@npm:^1.8.2, axios@npm:^1.8.3":
+  version: 1.8.4
+  resolution: "axios@npm:1.8.4"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/d4328758128d0602cc809a8e7627622cb7839b379eae5e4d6b9d603dd4d5fb89159985630243ec107cf5c675cd8825dba737a319dff9499f3b7688d9a69ec9ed
+  checksum: 10/a10f0dd836613924e48cf03dc2eff3fd21b14f764807aedaee4880a70c0f142aaebdb21da7ce27104d4c16ca00d0e452a20a20851f60e385a8d5bad1ae909d46
   languageName: node
   linkType: hard
 
@@ -27702,6 +27729,8 @@ __metadata:
     "@sentry/cli": "npm:^2.19.4"
     "@sentry/types": "npm:^8.33.1"
     "@sentry/utils": "npm:^8.33.1"
+    "@slack/types": "npm:^2.14.0"
+    "@slack/webhook": "npm:^7.0.5"
     "@solana/addresses": "npm:2.0.0-rc.4"
     "@storybook/addon-a11y": "npm:^7.6.20"
     "@storybook/addon-actions": "npm:^7.6.20"
@@ -37243,7 +37272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:^6.20.0":
+"undici-types@npm:^6.20.0, undici-types@npm:~6.21.0":
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
   checksum: 10/ec8f41aa4359d50f9b59fa61fe3efce3477cc681908c8f84354d8567bb3701fafdddf36ef6bff307024d3feb42c837cf6f670314ba37fc8145e219560e473d14
