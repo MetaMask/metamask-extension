@@ -2289,6 +2289,13 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
+      manifestFlags: {
+        // This flag is used to enable/disable the remote mode for the carousel
+        // component, which will impact to the slides count.
+        // - If this flag is not set, the slides count will be 4.
+        // - If this flag is set, the slides count will be 5.
+        remoteFeatureFlags: { addSolanaAccount: true },
+      },
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList: MockedEndpoint[] = [];
 
