@@ -8,7 +8,7 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const SOLANA_URL_REGEX_MAINNET =
-  /^https:\/\/solana-mainnet\.infura\.io\/v3\/.*/u;
+  /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u;
 const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
 const SOLANA_SPOT_PRICE_API =
   /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
@@ -564,15 +564,9 @@ export async function mockTokenApiMainnet(mockServer: Mockttp) {
       },
     ],
   };
-  return await mockServer
-    .forGet(SOLANA_TOKEN_API)
-    .withQuery({
-      assetIds:
-        'solana%5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501%2Csolana%5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Ftoken%3A2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-    })
-    .thenCallback(() => {
-      return response;
-    });
+  return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
+    return response;
+  });
 }
 
 export async function mockTokenApiMainnet2(mockServer: Mockttp) {
@@ -2040,7 +2034,7 @@ export async function mockGetTokenAccountsByOwner(
       params: [
         '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
         {
-          programId: programId,
+          programId,
         },
         {
           encoding: 'jsonParsed',
