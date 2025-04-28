@@ -49,7 +49,6 @@ import {
   CURRENCY_SYMBOLS,
   NON_EVM_CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import {
