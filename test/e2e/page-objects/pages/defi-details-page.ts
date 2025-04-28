@@ -6,7 +6,9 @@ class DeFiDetailsPage extends TokenList {
 
   private readonly defiBackButton =
     '[data-testid="defi-details-page-back-button"]';
+
   private readonly defiProtocolName = '[data-testid="defi-details-page-title"]';
+
   private readonly defiProtocolTotalVlaue =
     '[data-testid="defi-details-page-market-value"]';
 
