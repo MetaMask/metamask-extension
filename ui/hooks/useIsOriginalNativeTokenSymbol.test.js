@@ -174,7 +174,7 @@ describe('useIsOriginalNativeTokenSymbol', () => {
     expect(spyFetch).toHaveBeenCalled();
   });
 
-  it('should return true if chain safe validation is disabled', async () => {
+  it('should return false even if chain well-known validation is disabled', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter(false));
     // Mock the wellKnownChains response with a different native symbol
     const wellKnownChains = [
@@ -199,7 +199,7 @@ describe('useIsOriginalNativeTokenSymbol', () => {
       );
     });
 
-    expect(result.result.current).toBe(true);
+    expect(result.result.current).toBe(false);
     expect(spyFetch).not.toHaveBeenCalled();
   });
 
