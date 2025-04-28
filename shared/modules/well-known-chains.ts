@@ -37,7 +37,7 @@ async function getWellKnownChainsFromCache() {
 export async function getWellKnownChains(
   useExternalWellKnownChainsValidation: boolean,
 ): Promise<WellKnownChain[]> {
-  await preSeedPromise;
+  preSeedPromise && (await preSeedPromise);
 
   // don't send a network request if the user has disabled the setting,
   // instead, we'll use the cached response if available
@@ -68,27 +68,21 @@ export async function preSeedWellKnownChains() {
     return preSeedPromise;
   }
   // eslint-disable-next-line no-async-promise-executor
-  preSeedPromise = new Promise(async (resolve, reject) => {
-    try {
-      const cachedResponse = await getWellKnownChainsFromCache();
-      if (cachedResponse) {
-        // already seeded, no need to update the cache
-        resolve();
-        return;
-      }
-      const { rawChainData } = await import('eth-chainlist');
-      await setStorageItem(cacheKey, {
-        cachedResponse: rawChainData(),
-        // Cached value is immediately invalidated, which allows for updates to
-        // the list to be fetched from the network: a) if enabled, and b) if
-        // possible. If the user has disabled the setting, or the external
-        // resource is not available, this cached value will be used.
-        cachedTime: 0,
-      });
-      resolve();
-    } catch (error) {
-      reject(error);
+  preSeedPromise = (async () => {
+    const cachedResponse = await getWellKnownChainsFromCache();
+    if (cachedResponse) {
+      // already seeded, no need to update the cache
+      return;
     }
-  });
+    const { rawChainData } = await import('eth-chainlist');
+    await setStorageItem(cacheKey, {
+      cachedResponse: rawChainData(),
+      // Cached value is immediately invalidated, which allows for updates to
+      // the list to be fetched from the network: a) if enabled, and b) if
+      // possible. If the user has disabled the setting, or the external
+      // resource is not available, this cached value will be used.
+      cachedTime: 0,
+    });
+  })();
   return preSeedPromise;
 }
