@@ -1025,6 +1025,9 @@
   "confirm": {
     "message": "Kumpirmahin"
   },
+  "confirmAccountType": {
+    "message": "Uri"
+  },
   "confirmAccountTypeSmartContract": {
     "message": "Smart account"
   },

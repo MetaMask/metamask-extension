@@ -1025,6 +1025,9 @@
   "confirm": {
     "message": "Confirmar"
   },
+  "confirmAccountType": {
+    "message": "Tipo"
+  },
   "confirmAccountTypeSmartContract": {
     "message": "Conta inteligente"
   },

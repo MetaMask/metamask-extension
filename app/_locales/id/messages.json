@@ -1025,6 +1025,9 @@
   "confirm": {
     "message": "Konfirmasikan"
   },
+  "confirmAccountType": {
+    "message": "Jenis"
+  },
   "confirmAccountTypeSmartContract": {
     "message": "Akun cerdas"
   },

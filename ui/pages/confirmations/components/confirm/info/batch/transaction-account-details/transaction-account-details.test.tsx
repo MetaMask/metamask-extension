@@ -8,12 +8,6 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { Confirmation } from '../../../../../types/confirm';
-import {
-  downgradeAccountConfirmation,
-  upgradeAccountConfirmation,
-  upgradeAccountConfirmationOnly,
-} from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { TransactionAccountDetails } from './transaction-account-details';
 
 const FROM_MOCK = '0x1234567890123456789012345678901234567890';
@@ -48,16 +42,13 @@ function render({
   return renderWithConfirmContextProvider(<TransactionAccountDetails />, store);
 }
 
-function renderConfirmation(confirmation: Confirmation) {
-  const store = configureStore(getMockConfirmStateForTransaction(confirmation));
-  return renderWithConfirmContextProvider(<TransactionAccountDetails />, store);
-}
-
 describe('TransactionAccountDetails', () => {
   it('renders from address', () => {
-    const { getByText } = renderConfirmation(upgradeAccountConfirmationOnly);
+    const { getByText } = render({
+      authorizationList: [{ address: DELEGATION_MOCK }],
+    });
 
-    expect(getByText('0x935E7...05477')).toBeInTheDocument();
+    expect(getByText('0x12345...67890')).toBeInTheDocument();
   });
 
   it('renders type row', () => {
@@ -66,8 +57,8 @@ describe('TransactionAccountDetails', () => {
     });
 
     expect(getByText('Smart account')).toBeInTheDocument();
-    expect(getByText('Current Type')).toBeInTheDocument();
-    expect(queryByText('New type')).toBeNull();
+    expect(getByText('Type')).toBeInTheDocument();
+    expect(queryByText('Account type')).toBeNull();
   });
 
   it('does not render if no authorization list', () => {
@@ -84,26 +75,6 @@ describe('TransactionAccountDetails', () => {
     });
 
     expect(getByText('Account type')).toBeInTheDocument();
-  });
-
-  it('renders required data for upgrade request with nested transactions', () => {
-    const { getByText } = renderConfirmation(upgradeAccountConfirmation);
-    expect(getByText('Account type')).toBeInTheDocument();
-    expect(getByText('Smart contract')).toBeInTheDocument();
-  });
-
-  it('renders required data for upgrade only request', () => {
-    const { getByText } = renderConfirmation(upgradeAccountConfirmationOnly);
-    expect(getByText('0x935E7...05477')).toBeInTheDocument();
-    expect(getByText('Standard account')).toBeInTheDocument();
-    expect(getByText('Smart contract')).toBeInTheDocument();
-  });
-
-  it('renders required data for revoke request', () => {
-    const { getByText } = renderConfirmation(downgradeAccountConfirmation);
-    expect(getByText('0x8a0bb...bDB87')).toBeInTheDocument();
-    expect(getByText('Standard account')).toBeInTheDocument();
-    expect(getByText('Smart account')).toBeInTheDocument();
   });
 
   describe('RecipientRow', () => {

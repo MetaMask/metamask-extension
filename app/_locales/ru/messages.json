@@ -1025,6 +1025,9 @@
   "confirm": {
     "message": "Подтвердить"
   },
+  "confirmAccountType": {
+    "message": "Тип"
+  },
   "confirmAccountTypeSmartContract": {
     "message": "Смарт-счет"
   },

@@ -20,7 +20,7 @@ export function useNonContractAddressAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const { isUpgrade } = useIsUpgradeTransaction();
+  const isUpgradeTransaction = useIsUpgradeTransaction();
 
   const isSendingHexData =
     currentConfirmation?.txParams?.data !== undefined &&
@@ -47,7 +47,10 @@ export function useNonContractAddressAlerts(): Alert[] {
     !isContractDeploymentTx;
 
   return useMemo(() => {
-    if (!isSendingHexDataWhileInteractingWithNonContractAddress || isUpgrade) {
+    if (
+      !isSendingHexDataWhileInteractingWithNonContractAddress ||
+      isUpgradeTransaction
+    ) {
       return [];
     }
 
@@ -61,5 +64,8 @@ export function useNonContractAddressAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [isSendingHexDataWhileInteractingWithNonContractAddress, isUpgrade]);
+  }, [
+    isSendingHexDataWhileInteractingWithNonContractAddress,
+    isUpgradeTransaction,
+  ]);
 }

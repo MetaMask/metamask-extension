@@ -26,7 +26,6 @@ import { getIsRevokeDAIPermit } from '../utils';
 import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
-import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
@@ -81,7 +80,6 @@ const getTitle = (
   pending?: boolean,
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
-  isUpgrade?: boolean,
 ) => {
   if (pending) {
     return '';
@@ -89,11 +87,7 @@ const getTitle = (
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
-      return t('confirmTitleTransaction');
     case TransactionType.batch:
-      if (isUpgrade) {
-        return t('confirmTitleAccountTypeSwitch');
-      }
       return t('confirmTitleTransaction');
     case TransactionType.deployContract:
       return t('confirmTitleDeployContract');
@@ -103,7 +97,7 @@ const getTitle = (
       }
       return t('confirmTitleSignature');
     case TransactionType.revokeDelegation:
-      return t('confirmTitleAccountTypeSwitch');
+      return t('confirmTitleDelegationRevoke');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
@@ -149,7 +143,6 @@ const getDescription = (
   pending?: boolean,
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
-  isUpgrade?: boolean,
 ) => {
   if (pending) {
     return '';
@@ -157,11 +150,7 @@ const getDescription = (
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
-      return '';
     case TransactionType.batch:
-      if (isUpgrade) {
-        return t('confirmTitleDescDelegationUpgrade');
-      }
       return '';
     case TransactionType.deployContract:
       return t('confirmTitleDescDeployContract');
@@ -212,7 +201,6 @@ const getDescription = (
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
-  const { isUpgrade } = useIsUpgradeTransaction();
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
@@ -241,7 +229,6 @@ const ConfirmTitle: React.FC = memo(() => {
         spendingCapPending,
         primaryType,
         tokenStandard,
-        isUpgrade,
       ),
     [
       currentConfirmation,
@@ -252,7 +239,6 @@ const ConfirmTitle: React.FC = memo(() => {
       primaryType,
       t,
       tokenStandard,
-      isUpgrade,
     ],
   );
 
@@ -267,7 +253,6 @@ const ConfirmTitle: React.FC = memo(() => {
         spendingCapPending,
         primaryType,
         tokenStandard,
-        isUpgrade,
       ),
     [
       currentConfirmation,
@@ -278,7 +263,6 @@ const ConfirmTitle: React.FC = memo(() => {
       primaryType,
       t,
       tokenStandard,
-      isUpgrade,
     ],
   );
 
