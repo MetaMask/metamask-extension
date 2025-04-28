@@ -101,62 +101,61 @@ jobs:
           echo "Fetching in-progress workflow runs..."
           RUN_IDS=$(curl -s -L \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "https://api.github.com/repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/workflows/${{ env.WORKFLOW_ID }}/runs?status=in_progress" \
             | jq -r '.workflow_runs[].id')
 
           # Check if we got any run IDs
-          if [ -z "$RUN_IDS" ]; then
+          if [ -z "${RUN_IDS}" ]; then
             echo "No in-progress workflow runs found."
             echo "total_count=0" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "Found in-progress workflow run IDs: $RUN_IDS"
+          echo "Found in-progress workflow run IDs: ${RUN_IDS}"
 
           # Step 2: Get job counts for each workflow run and sum them
           TOTAL_COUNT=0
 
-          for RUN_ID in $RUN_IDS; do
-            echo "Fetching jobs for run ID: $RUN_ID"
+          for RUN_ID in ${RUN_IDS}; do
+            echo "Fetching jobs for run ID: ${RUN_ID}"
             JOB_COUNT=$(curl -s -L \
               -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
-              "https://api.github.com/repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/runs/$RUN_ID/jobs" \
+              "https://api.github.com/repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/runs/${RUN_ID}/jobs" \
               | jq -r '.total_count')
 
-            echo "Run ID $RUN_ID has $JOB_COUNT jobs"
+            echo "Run ID ${RUN_ID} has ${JOB_COUNT} jobs"
 
             # Add to total (using bc for floating point arithmetic if needed)
             TOTAL_COUNT=$((TOTAL_COUNT + JOB_COUNT))
           done
 
-          echo "Total number of running jobs: $TOTAL_COUNT"
-          echo "total_count=$TOTAL_COUNT" >> $GITHUB_OUTPUT
+          echo "Total number of running jobs: ${TOTAL_COUNT}"
+          echo "total_count=${TOTAL_COUNT}" >> $GITHUB_OUTPUT
 
       - name: Set runner type based on count
         id: set-runner
         run: |
-          TOTAL_COUNT=${{ steps.count-jobs.outputs.total_count }}
+          TOTAL_COUNT="${{ steps.count-jobs.outputs.total_count }}"
 
-          echo "Total job count: $TOTAL_COUNT"
+          echo "Total job count: ${TOTAL_COUNT}"
 
           # Default to ubuntu-latest if count is not a number
-          if ! [[ "$TOTAL_COUNT" =~ ^[0-9]+$ ]]; then
+          if ! [[ "${TOTAL_COUNT}" =~ ^[0-9]+$ ]]; then
             echo "Count is not a valid number, defaulting to ubuntu-latest"
             echo "runner-type=ubuntu-latest" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          if [[ $TOTAL_COUNT -lt 350 ]]; then
-            echo "Using ubuntu-latest runner (count: $TOTAL_COUNT < 350)"
+          if [[ ${TOTAL_COUNT} -lt 350 ]]; then
+            echo "Using ubuntu-latest runner (count: ${TOTAL_COUNT} < 350)"
             echo "runner-type=ubuntu-latest" >> $GITHUB_OUTPUT
           else
-            echo "Using custom runner (count: $TOTAL_COUNT >= 350)"
-            echo "runner-type=gha-runner-scale-set-ubuntu-22.04-amd64-med" >> $GITHUB_OUTPUT
-          fi
+            echo "Using custom runner (count: ${TOTAL_COUNT} >= 350)"
+            echo "runner-type=gha-runner-scale-set-ubuntu-22.04-amd64-small" >> $GITHUB_OUTPUT
 
   prep-build-test-browserify:
     needs:
@@ -383,7 +382,7 @@ jobs:
   # https://github.com/MetaMask/metamask-module-template/pull/151
   all-jobs-completed:
     name: All jobs completed
-    runs-on: ${{ inputs.runner-type }}
+    runs-on: ${{ needs.check-runner-count.outputs.runner-type }}
     needs:
       - lint-workflows
       - test-lint
@@ -408,7 +407,7 @@ jobs:
   all-jobs-pass:
     name: All jobs pass
     if: ${{ always() }}
-    runs-on: ${{ inputs.runner-type }}
+    runs-on: ${{ needs.check-runner-count.outputs.runner-type }}
     needs:
       - all-jobs-completed
     steps:
