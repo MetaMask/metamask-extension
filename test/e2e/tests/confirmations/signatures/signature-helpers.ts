@@ -16,6 +16,11 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
+type EventPayload = {
+  event: string;
+  properties: Record<string, unknown>;
+};
+
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
 export enum SignatureType {
@@ -93,6 +98,7 @@ export async function initializePages(driver: Driver) {
  * @param decodingChangeTypes
  * @param decodingResponse
  * @param decodingDescription
+ * @param requestedThrough
  */
 function getSignatureEventProperty(
   signatureType: string,
@@ -135,8 +141,7 @@ function getSignatureEventProperty(
 }
 
 function assertSignatureRequestedMetrics(
-
-  events: any[],
+  events: EventPayload[],
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
 ) {
@@ -275,12 +280,13 @@ export async function assertAccountDetailsMetrics(
 }
 
 function assertEventPropertiesMatch(
-
-  events: any[],
+  events: EventPayload[],
   eventName: string,
   expectedProperties: object,
 ) {
   const event = events.find((e) => e.event === eventName);
+
+  assert(event, `${eventName} event not found`);
 
   const actualProperties = { ...event.properties };
   const expectedProps = { ...expectedProperties };
@@ -289,7 +295,6 @@ function assertEventPropertiesMatch(
 
   compareSecurityAlertProperties(actualProperties, expectedProps, eventName);
 
-  assert(event, `${eventName} event not found`);
   assert.deepStrictEqual(
     actualProperties,
     expectedProps,
