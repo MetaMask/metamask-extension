@@ -184,6 +184,7 @@ exports[`AssetPage should render a native asset 1`] = `
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                data-testid="multichain-token-list-item-token-name"
               >
                 TEST
                 <button
@@ -510,6 +511,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                data-testid="multichain-token-list-item-token-name"
               >
                 TEST
               </p>
@@ -1004,6 +1006,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                data-testid="multichain-token-list-item-token-name"
               >
                 TEST
               </p>

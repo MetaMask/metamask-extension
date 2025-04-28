@@ -28,6 +28,7 @@ export default class GasFeeTokenModal {
       text: amountFiat,
     });
   }
+
   async check_AmountToken(symbol: string, amountToken: string): Promise<void> {
     await this.driver.findElement({
       css: `${this.listItem(symbol)} ${this.listItemAmountToken}`,

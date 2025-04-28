@@ -205,7 +205,7 @@ async function withAccountSnap(
     paymaster,
     localNodeOptions,
   }: { title?: string; paymaster?: string; localNodeOptions?: object },
-  test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
+  testCallback: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
 ) {
   await withFixtures(
     {
@@ -252,7 +252,7 @@ async function withAccountSnap(
         WINDOW_TITLES.ExtensionInFullScreenView,
       );
 
-      await test(driver, bundlerServer);
+      await testCallback(driver, bundlerServer);
     },
   );
 }

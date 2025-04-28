@@ -379,7 +379,8 @@
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
     "encryptionKey": "string",
-    "encryptionSalt": "string"
+    "encryptionSalt": "string",
+    "allDeFiPositions": "object"
   },
   "ramps": "object",
   "send": "object",

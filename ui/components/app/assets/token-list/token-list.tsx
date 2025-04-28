@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
@@ -21,6 +21,11 @@ import {
   getIsEvmMultichainNetworkSelected,
 } from '../../../../selectors/multichain/networks';
 import { getTokenBalancesEvm } from '../../../../selectors/assets';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -37,6 +42,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
   const evmBalances = useSelector((state) =>
     getTokenBalancesEvm(state, selectedAccount.address),
   );
+  const trackEvent = useContext(MetaMetricsContext);
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
   pollAndUpdateEvmBalances({
     chainIds: chainIdsToPoll as Hex[],
@@ -78,6 +84,26 @@ function TokenList({ onTokenClick }: TokenListProps) {
     }
   }, [sortedFilteredTokens]);
 
+  const handleTokenClick = (token: TokenWithFiatAmount) => () => {
+    // Ensure token has a valid chainId before proceeding
+    if (!token.chainId) {
+      return;
+    }
+
+    onTokenClick(token.chainId, token.address);
+
+    // Track event: token details
+    trackEvent({
+      category: MetaMetricsEventCategory.Tokens,
+      event: MetaMetricsEventName.TokenDetailsOpened,
+      properties: {
+        location: 'Home',
+        token_symbol: token.symbol ?? 'unknown',
+        chain_id: token.chainId,
+      },
+    });
+  };
+
   return (
     <>
       {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
@@ -85,7 +111,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
           key={`${token.chainId}-${token.symbol}-${token.address}`}
           token={token}
           privacyMode={privacyMode}
-          onClick={onTokenClick}
+          onClick={handleTokenClick(token)}
         />
       ))}
     </>

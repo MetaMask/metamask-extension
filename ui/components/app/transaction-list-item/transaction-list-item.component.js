@@ -86,7 +86,9 @@ function TransactionListItemInner({
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
+  const isSmartTransaction = useSelector((state) =>
+    getIsSmartTransaction(state, chainId),
+  );
   const dispatch = useDispatch();
 
   // Bridge transactions

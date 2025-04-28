@@ -23,6 +23,7 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+
 describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
     await withTransactionEnvelopeTypeFixtures(

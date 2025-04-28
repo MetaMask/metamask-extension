@@ -1261,6 +1261,7 @@ describe('Transaction metrics', () => {
     });
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   describe.each([
     ['if added', handleTransactionAdded],
     ['if approved', handleTransactionApproved],
@@ -1276,7 +1277,8 @@ describe('Transaction metrics', () => {
           args.transactionMeta as TransactionMetaEventPayload,
         ),
     ],
-  ])('%s', (_title, fn) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ])('%s', (_title: string, fn: any) => {
     it('includes batch properties', async () => {
       const transactionMeta = {
         ...mockTransactionMeta,

@@ -483,6 +483,7 @@ describe('EIP-5792', () => {
       );
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       TransactionStatus.approved,
       TransactionStatus.signed,

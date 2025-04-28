@@ -873,6 +873,7 @@ describe('MetaMetricsController', function () {
   });
 
   describe('Change Signature XXX anonymous event names', function () {
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['Signature Requested', 'Signature Requested Anon'],
       ['Signature Rejected', 'Signature Rejected Anon'],

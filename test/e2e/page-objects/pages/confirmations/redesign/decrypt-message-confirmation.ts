@@ -3,18 +3,25 @@ import { Driver } from '../../../../webdriver/driver';
 class DecryptMessageConfirmation {
   driver: Driver;
 
-  private readonly accountBalanceValue = '.request-decrypt-message__balance-value';
+  private readonly accountBalanceValue =
+    '.request-decrypt-message__balance-value';
 
-  private readonly confirmDecryptMessageButton = { text: 'Decrypt', tag: 'button' };
+  private readonly confirmDecryptMessageButton = {
+    text: 'Decrypt',
+    tag: 'button',
+  };
 
   private readonly decryptedMessage = '.request-decrypt-message__message-text';
 
-  private readonly decryptMessageButton = { text: 'Decrypt message', tag: 'div' };
+  private readonly decryptMessageButton = {
+    text: 'Decrypt message',
+    tag: 'div',
+  };
 
   private readonly decryptMessageConfirmationTitle = {
     text: 'Decrypt request',
     css: '.request-decrypt-message__header__text',
-  }
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -37,15 +44,17 @@ class DecryptMessageConfirmation {
   }
 
   async clickDecryptMessageButton(): Promise<void> {
-    console.log('Click decrypt message button on decrypt message confirmation page');
+    console.log(
+      'Click decrypt message button on decrypt message confirmation page',
+    );
     await this.driver.clickElement(this.decryptMessageButton);
   }
 
   async clickToConfirmDecryptMessage(): Promise<void> {
-    console.log('Click to confirm decrypt message on decrypt message confirmation page');
-    await this.driver.clickElement(
-      this.confirmDecryptMessageButton,
+    console.log(
+      'Click to confirm decrypt message on decrypt message confirmation page',
     );
+    await this.driver.clickElement(this.confirmDecryptMessageButton);
   }
 
   /**
@@ -54,7 +63,10 @@ class DecryptMessageConfirmation {
    * @param balanceValue - The balance value to check.
    */
   async check_accountBalance(balanceValue: string): Promise<void> {
-    console.log('Check account balance on decrypt message confirmation screen: ', balanceValue);
+    console.log(
+      'Check account balance on decrypt message confirmation screen: ',
+      balanceValue,
+    );
     await this.driver.waitForSelector({
       css: this.accountBalanceValue,
       text: balanceValue,

@@ -1,19 +1,19 @@
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import  SnapInteractiveDialog  from '../page-objects/pages/dialog/snap-interactive-dialog';
+import SnapInteractiveDialog from '../page-objects/pages/dialog/snap-interactive-dialog';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 
 describe('Interactive UI Snap', function () {
   it('validate the interactive ui elements', async function () {
-        await withFixtures(
-          {
-            fixtures: new FixtureBuilder().build(),
-            title: this.test?.fullTitle(),
-          },
-          async ({ driver }: { driver: Driver }) => {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
@@ -37,9 +37,9 @@ describe('Interactive UI Snap', function () {
         // fill in the details in the example dialog
         await interactiveUI.fillMessage('foo bar');
         await interactiveUI.scrollToSelectorDropDown();
-        await interactiveUI.selectDropDownOption('selector','Option 3');
+        await interactiveUI.selectDropDownOption('selector', 'Option 3');
         await interactiveUI.selectRadioOption('Option 1');
-        await interactiveUI.selectDropDownOption('dropDown','Option 2');
+        await interactiveUI.selectDropDownOption('dropDown', 'Option 2');
         await interactiveUI.selectCheckbox();
         await interactiveUI.clickSubmitButton();
 
@@ -47,9 +47,12 @@ describe('Interactive UI Snap', function () {
         await interactiveUI.check_result();
         await interactiveUI.clickOKButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.check_messageResultSpan('interactiveUIResultSpan', 'null');
+        await testSnaps.check_messageResultSpan(
+          'interactiveUIResultSpan',
+          'null',
+        );
 
-        //validate the disabled elements in the dialog
+        // validate the disabled elements in the dialog
         await testSnaps.clickButton('createDialogDisabledButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await interactiveUI.checkElementIsDisabled('exampleInput');

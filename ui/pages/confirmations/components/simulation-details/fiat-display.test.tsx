@@ -56,6 +56,7 @@ describe('FiatDisplay', () => {
   });
 
   describe('IndividualFiatDisplay', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [100, '$100'],
       [-100, '$100'],
@@ -80,6 +81,7 @@ describe('FiatDisplay', () => {
   });
 
   describe('TotalFiatDisplay', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [[100, 200, FIAT_UNAVAILABLE, 300], 'Total = $600'],
       [[-100, -200, FIAT_UNAVAILABLE, -300], 'Total = $600'],

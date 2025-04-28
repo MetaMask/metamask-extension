@@ -767,6 +767,9 @@
   "blockies": {
     "message": "Blockies"
   },
+  "borrowed": {
+    "message": "Borrowed"
+  },
   "boughtFor": {
     "message": "Bought for"
   },
@@ -1594,6 +1597,15 @@
   },
   "defaultSettingsTitle": {
     "message": "Default privacy settings"
+  },
+  "defi": {
+    "message": "DeFi"
+  },
+  "defiTabErrorContent": {
+    "message": "Your funds are safe, try to visit this page again later."
+  },
+  "defiTabErrorTitle": {
+    "message": "Oops! Something went wrong."
   },
   "delete": {
     "message": "Delete"
@@ -2766,6 +2778,9 @@
   "learnMoreAboutPrivacy": {
     "message": "Learn more about privacy best practices."
   },
+  "learnMoreAboutSolanaAccounts": {
+    "message": "Learn more about Solana accounts"
+  },
   "learnMoreKeystone": {
     "message": "Learn More"
   },
@@ -3687,7 +3702,10 @@
     "message": "IPFS gateway URL is valid"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data."
+    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our Privacy policy to learn more about how Infura handles data for EVM accounts, for Solana accounts $2."
+  },
+  "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
+    "message": "click here"
   },
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
@@ -4198,8 +4216,8 @@
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "popularNetworkAddToolTip": {
-    "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity. $1",
-    "description": "$1 is Learn more link"
+    "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity.",
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Popular networks"
@@ -4636,6 +4654,9 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
+  },
+  "reward": {
+    "message": "Reward"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
@@ -5355,7 +5376,7 @@
     "message": "More features coming soon"
   },
   "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Solana dapps, NFTs, hardware wallet support, and more coming soon."
+    "message": "NFTs, hardware wallet support, and more coming soon."
   },
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"
@@ -5561,6 +5582,9 @@
   "stake": {
     "message": "Stake"
   },
+  "staked": {
+    "message": "Staked"
+  },
   "standardAccountLabel": {
     "message": "Standard Account"
   },
@@ -5685,6 +5709,9 @@
   },
   "suggestedTokenName": {
     "message": "Suggested name:"
+  },
+  "supplied": {
+    "message": "Supplied"
   },
   "support": {
     "message": "Support"
@@ -6585,6 +6612,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewSolanaAccount": {
+    "message": "View Solana account"
   },
   "viewTransaction": {
     "message": "View transaction"

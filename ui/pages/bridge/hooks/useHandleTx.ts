@@ -31,6 +31,7 @@ import {
 } from '../../../selectors/multichain';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
 import { useMultichainWalletSnapSender } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { type SmartTransactionsState } from '../../../../shared/modules/selectors/smart-transactions';
 import {
   checkNetworkAndAccountSupports1559,
   getMemoizedUnapprovedTemplatedConfirmations,
@@ -49,7 +50,12 @@ export default function useHandleTx() {
     checkNetworkAndAccountSupports1559,
   );
   const networkGasFeeEstimates = useSelector(getGasFeeEstimates);
-  const shouldUseSmartTransaction = useSelector(getIsSmartTransaction);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const shouldUseSmartTransaction = useSelector(
+    (state: SmartTransactionsState) => {
+      return getIsSmartTransaction(state, currentChainId);
+    },
+  );
 
   const networkConfigurationIds = useSelector(
     getNetworkConfigurationIdByChainId,
@@ -124,7 +130,6 @@ export default function useHandleTx() {
   };
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const currentChainId = useSelector(getMultichainCurrentChainId);
   const snapSender = useMultichainWalletSnapSender(SOLANA_WALLET_SNAP_ID);
   const history = useHistory();
 

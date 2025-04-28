@@ -4084,7 +4084,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "这些网络中的其中一些依赖于第三方。此连接可能不太可靠，或使第三方可进行活动跟踪。$1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "热门网络"

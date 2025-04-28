@@ -1,3 +1,4 @@
+import { Browser } from 'selenium-webdriver';
 import {
   convertToHexValue,
   TEST_SEED_PHRASE,
@@ -110,14 +111,23 @@ describe('MetaMask onboarding', function () {
         const wrongSeedPhrase =
           'test test test test test test test test test test test test';
         await driver.navigate();
+
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
+
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
         await startOnboardingPage.checkTermsCheckbox();
         await startOnboardingPage.clickImportWalletButton();
 
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
-        await onboardingMetricsPage.clickNoThanksButton();
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
 
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.check_pageIsLoaded();
@@ -138,14 +148,23 @@ describe('MetaMask onboarding', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
+
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
+
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
         await startOnboardingPage.checkTermsCheckbox();
         await startOnboardingPage.clickImportWalletButton();
 
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
-        await onboardingMetricsPage.clickNoThanksButton();
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
 
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.check_pageIsLoaded();
@@ -163,14 +182,23 @@ describe('MetaMask onboarding', function () {
       async ({ driver }: { driver: Driver }) => {
         const wrongTestPassword = 'test test test test';
         await driver.navigate();
+
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
+
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
         await startOnboardingPage.checkTermsCheckbox();
         await startOnboardingPage.clickCreateWalletButton();
 
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.check_pageIsLoaded();
-        await onboardingMetricsPage.clickNoThanksButton();
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.check_pageIsLoaded();
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
 
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.check_pageIsLoaded();

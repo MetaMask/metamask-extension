@@ -43,11 +43,11 @@ export const NetworkSelectorCustomImport = ({
         borderColor={BorderColor.borderDefault}
         borderWidth={1}
         paddingLeft={4}
-        paddingRight={1}
+        paddingRight={2}
       >
         <Text
           variant={TextVariant.bodyMdMedium}
-          color={TextColor.textAlternative}
+          color={TextColor.textDefault}
           paddingTop={3}
           paddingBottom={3}
         >
@@ -69,7 +69,7 @@ export const NetworkSelectorCustomImport = ({
           <ButtonIcon
             marginLeft="auto"
             iconName={IconName.ArrowRight}
-            size={ButtonIconSize.Md}
+            size={ButtonIconSize.Sm}
             ariaLabel={title}
           />
         </Box>
