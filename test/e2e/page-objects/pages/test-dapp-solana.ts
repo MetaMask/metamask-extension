@@ -1,14 +1,20 @@
-import { text } from 'stream/consumers';
-import { WINDOW_TITLES } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
 import { dataTestIds } from '@metamask/test-dapp-solana';
 import { By } from 'selenium-webdriver';
+import { WINDOW_TITLES } from '../../helpers';
+import { Driver } from '../../webdriver/driver';
+
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
 export class TestDappSolana {
-  constructor(private readonly driver: Driver) {}
+  private readonly driver: Driver;
+
+  constructor(driver: Driver) {
+    this.driver = driver;
+  }
+
   walletModalSelector = '.wallet-adapter-modal-list';
+
   walletButtonSelector = `${this.walletModalSelector} .wallet-adapter-button`;
 
   /**
@@ -41,7 +47,9 @@ export class TestDappSolana {
   async getWalletModal() {
     await this.driver.waitForSelector(this.walletModalSelector);
 
-    const walletButtons = await this.driver.findElements(this.walletButtonSelector);
+    const walletButtons = await this.driver.findElements(
+      this.walletButtonSelector,
+    );
 
     return {
       connectToMetaMaskWallet: async () => {
@@ -279,7 +287,7 @@ export class TestDappSolana {
   /**
    * Get the selector for an element by its data-testid.
    *
-   * @param id - The data-testid of the element.
+   * @param testId - The data-testid of the element.
    * @returns The CSS selector for the element.
    */
   private getElementSelectorTestId(testId: string) {

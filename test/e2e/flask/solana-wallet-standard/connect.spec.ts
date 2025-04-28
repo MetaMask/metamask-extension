@@ -1,9 +1,12 @@
 import { strict as assert } from 'assert';
+import { By } from 'selenium-webdriver';
 import {
   SOLANA_DEVNET_URL,
   withSolanaAccountSnap,
 } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
+import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { updateNetworkCheckboxes } from '../multichain-api/testHelpers';
 import {
   account1Short,
   account2Short,
@@ -13,9 +16,6 @@ import {
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
   switchToAccount,
 } from './testHelpers';
-import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
-import { By } from 'selenium-webdriver';
-import { updateNetworkCheckboxes } from '../multichain-api/testHelpers';
 
 describe('Solana Wallet Standard - Connect', function () {
   describe('Connect to a dapp via the Solana Wallet Standard', function () {

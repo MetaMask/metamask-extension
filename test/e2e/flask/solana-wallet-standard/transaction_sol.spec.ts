@@ -2,13 +2,13 @@ import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
+import { WINDOW_TITLES } from '../../helpers';
 import {
   clickCancelButton,
   clickConfirmButton,
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
-import { WINDOW_TITLES } from '../../helpers';
 
 describe('Solana Wallet Standard - Transfer SOL', function () {
   describe('Send a transaction', function () {

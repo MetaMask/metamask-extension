@@ -1,5 +1,8 @@
 import * as path from 'path';
 import { strict as assert } from 'assert';
+import { By } from 'selenium-webdriver';
+import nacl from 'tweetnacl';
+import bs58 from 'bs58';
 import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
@@ -7,13 +10,10 @@ import {
   SOLANA_DEVNET_URL,
   withSolanaAccountSnap,
 } from '../solana/common-solana';
-import { By } from 'selenium-webdriver';
-import nacl from "tweetnacl";
-import bs58 from "bs58";
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
-export const acccount1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer'
+export const acccount1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 export const account1Short = '4tE7...Uxer';
 export const account2Short = 'ExTE...GNtt';
 
@@ -34,7 +34,61 @@ export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
 } satisfies Parameters<typeof withSolanaAccountSnap>[0];
 
 /**
+ * Inspired by `addAccountInWalletAndAuthorize` in test/e2e/flask/multichain-api/testHelpers.ts
+ *
+ * @param driver
+ */
+const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
+  const editButtons = await driver.findElements('[data-testid="edit"]');
+  await editButtons[0].click();
+
+  const checkboxes = await driver.findElements('input[type="checkbox" i]');
+  await checkboxes[0].click(); // select all checkbox without deselecting the already selected accounts
+
+  await driver.clickElement({ text: 'Update', tag: 'button' });
+};
+
+/**
+ * Selects the Devnet checkbox in the permissions tab.
+ *
+ * @param driver
+ */
+const selectDevnet = async (driver: Driver): Promise<void> => {
+  const permissionsTab = await driver.findElement(
+    '[data-testid="permissions-tab"]',
+  );
+  await permissionsTab.click();
+  const editButtons = await driver.findElements('[data-testid="edit"]');
+  await editButtons[1].click();
+  await driver.delay(largeDelayMs);
+  const networkListItems = await driver.findElements(
+    '.multichain-network-list-item',
+  );
+
+  for (const item of networkListItems) {
+    const networkNameDiv = await item.findElement(By.css('div[data-testid]'));
+    const network = await networkNameDiv.getAttribute('data-testid');
+    if (network === 'Solana Devnet') {
+      const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
+      const isChecked = await checkbox.isSelected();
+
+      if (!isChecked) {
+        await checkbox.click();
+      }
+      break;
+    }
+  }
+  await driver.clickElement({ text: 'Update', tag: 'button' });
+};
+
+/**
  * Connects the Solana test dapp to the wallet.
+ *
+ * @param driver
+ * @param testDapp
+ * @param options
+ * @param options.selectAllAccounts
+ * @param options.includeDevnet
  */
 export const connectSolanaTestDapp = async (
   driver: Driver,
@@ -77,6 +131,8 @@ export const connectSolanaTestDapp = async (
 /**
  * Waits for the Confirm button in the footer of a Solana-specific modal to be clickable then clicks it.
  * Note: This function does not work for general purpose modals like connect/disconnect.
+ *
+ * @param driver
  */
 export const clickConfirmButton = async (driver: Driver): Promise<void> => {
   const footerButtons = await driver.findClickableElements(
@@ -89,6 +145,8 @@ export const clickConfirmButton = async (driver: Driver): Promise<void> => {
 /**
  * Clicks the Cancel button in the footer in a Solana-specific modal.
  * Note: This function does not work for general purpose modals like connect/disconnect.
+ *
+ * @param driver
  */
 export const clickCancelButton = async (driver: Driver): Promise<void> => {
   const footerButtons = await driver.findClickableElements(
@@ -99,51 +157,10 @@ export const clickCancelButton = async (driver: Driver): Promise<void> => {
 };
 
 /**
- * Inspired by `addAccountInWalletAndAuthorize` in test/e2e/flask/multichain-api/testHelpers.ts
- */
-const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[0].click();
-
-  const checkboxes = await driver.findElements('input[type="checkbox" i]');
-  await checkboxes[0].click(); // select all checkbox without deselecting the already selected accounts
-
-  await driver.clickElement({ text: 'Update', tag: 'button' });
-};
-
-/**
- * Selects the Devnet checkbox in the permissions tab.
- */
-const selectDevnet = async (driver: Driver): Promise<void> => {
-  const permissionsTab = await driver.findElement(
-    '[data-testid="permissions-tab"]',
-  );
-  await permissionsTab.click();
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[1].click();
-  await driver.delay(largeDelayMs);
-  const networkListItems = await driver.findElements(
-    '.multichain-network-list-item',
-  );
-
-  for (const item of networkListItems) {
-    const networkNameDiv = await item.findElement(By.css('div[data-testid]'));
-    const network = await networkNameDiv.getAttribute('data-testid');
-    if (network === 'Solana Devnet') {
-      const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
-      const isChecked = await checkbox.isSelected();
-
-      if (!isChecked) {
-        await checkbox.click();
-      }
-      break;
-    }
-  }
-  await driver.clickElement({ text: 'Update', tag: 'button' });
-};
-
-/**
  * Switches to the specified account in the account menu.
+ *
+ * @param driver
+ * @param accountName
  */
 export const switchToAccount = async (
   driver: Driver,
@@ -158,6 +175,9 @@ export const switchToAccount = async (
 
 /**
  * Asserts that the connection status is as expected.
+ *
+ * @param connectionStatus
+ * @param expectedAddress
  */
 export const assertConnected = async (
   connectionStatus: 'Connected' | 'Disconnected' | string,
@@ -166,12 +186,16 @@ export const assertConnected = async (
   assert.strictEqual(
     connectionStatus,
     expectedAddress ? `${expectedAddress}` : 'Connected',
-    `Connection status should be ${expectedAddress ? `"${expectedAddress}"` : 'Connected'}`,
+    `Connection status should be ${
+      expectedAddress ? `"${expectedAddress}"` : 'Connected'
+    }`,
   );
 };
 
 /**
  * Asserts that the connection status is "Disconnected".
+ *
+ * @param connectionStatus
  */
 export const assertDisconnected = async (
   connectionStatus: string,
@@ -185,6 +209,11 @@ export const assertDisconnected = async (
 
 /**
  * Asserts that the signed message is valid.
+ *
+ * @param options0
+ * @param options0.signedMessageBase64
+ * @param options0.originalMessageString
+ * @param options0.publicKeyBase58
  */
 export function assertSignedMessageIsValid({
   signedMessageBase64,
@@ -195,7 +224,7 @@ export function assertSignedMessageIsValid({
   originalMessageString: string;
   publicKeyBase58: string;
 }) {
-  const signature = Uint8Array.from(Buffer.from(signedMessageBase64, "base64"));
+  const signature = Uint8Array.from(Buffer.from(signedMessageBase64, 'base64'));
   const publicKey = bs58.decode(publicKeyBase58);
   const message = new TextEncoder().encode(originalMessageString);
 

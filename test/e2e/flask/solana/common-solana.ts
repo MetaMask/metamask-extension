@@ -821,7 +821,6 @@ export async function simulateSolanaTransaction(
               returnData: null,
               unitsConsumed: 4794,
             },
-
           },
         },
       }
@@ -2209,7 +2208,7 @@ export async function mockGetAccountInfoDevnet(mockServer: Mockttp) {
           executable: false,
           lamports: 1124837338893,
           owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          // eslint-disable-next-line no-loss-of-precision
+          // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
           rentEpoch: 18446744073709551615,
           space: 82,
         },

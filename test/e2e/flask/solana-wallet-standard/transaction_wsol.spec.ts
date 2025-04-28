@@ -1,13 +1,12 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
+import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import {
   clickConfirmButton,
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 
 describe('Solana Wallet Standard - Transfer WSOL', function () {
   describe('Send WSOL transactions', function () {

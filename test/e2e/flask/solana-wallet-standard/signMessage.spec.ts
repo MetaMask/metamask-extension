@@ -1,6 +1,6 @@
-import { strict as assert } from 'assert';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
+import { WINDOW_TITLES } from '../../helpers';
 import {
   acccount1,
   assertSignedMessageIsValid,
@@ -8,7 +8,6 @@ import {
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
-import { WINDOW_TITLES } from '../../helpers';
 
 describe('Solana Wallet Standard - Sign Message', function () {
   describe('Sign a message', function () {
