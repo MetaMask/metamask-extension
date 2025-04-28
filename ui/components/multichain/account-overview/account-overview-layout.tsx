@@ -32,6 +32,7 @@ import {
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import {
   useCarouselManagement,
+  SMART_ACCOUNT_UPGRADE_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
@@ -97,7 +98,7 @@ export const AccountOverviewLayout = ({
     }
     ///: END:ONLY_INCLUDE_IF
 
-    if (id === 'smartAccountUpgrade') {
+    if (id === SMART_ACCOUNT_UPGRADE_SLIDE.id) {
       dispatch(setAccountDetailsAddress(selectedAccount.address));
     }
 

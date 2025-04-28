@@ -55,8 +55,8 @@ export const useCarouselManagement = ({
       undismissable: hasZeroBalance,
     };
 
-    defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
     defaultSlides.push(BRIDGE_SLIDE);
     ///: END:ONLY_INCLUDE_IF
     defaultSlides.push(CARD_SLIDE);
