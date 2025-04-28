@@ -265,6 +265,7 @@ export const AccountListMenu = ({
       ),
     [accounts, allowedAccountTypes],
   );
+
   const allChainIds = useSelector(getAllChainsToPoll);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(
@@ -517,19 +518,11 @@ export const AccountListMenu = ({
   };
   ///: END:ONLY_INCLUDE_IF(multichain)
 
-  const fetchAccountsWithActivity = useCallback(async () => {
-    try {
-      await dispatch(getNetworksWithTransactionActivityByAccounts());
-    } catch (error) {
-      console.error('Failed to fetch accounts with activity:', error);
-    }
-  }, [dispatch]);
-
   useEffect(() => {
     if (filteredAccounts.length > 0) {
-      fetchAccountsWithActivity();
+      dispatch(getNetworksWithTransactionActivityByAccounts());
     }
-  }, [fetchAccountsWithActivity, filteredAccounts]);
+  }, [dispatch, filteredAccounts.length]);
 
   return (
     <Modal isOpen onClose={onClose}>
