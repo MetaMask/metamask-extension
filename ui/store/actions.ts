@@ -53,7 +53,9 @@ import { Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
 import { AuthConnection } from '@metamask-previews/seedless-onboarding-controller';
+///: END:ONLY_INCLUDE_IF
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -3373,6 +3375,7 @@ export function resetOnboardingAction() {
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
 export function startOAuthLogin(
   provider: AuthConnection,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -3397,6 +3400,7 @@ export function startOAuthLogin(
     }
   };
 }
+///: END:ONLY_INCLUDE_IF
 
 export function setServiceWorkerKeepAlivePreference(
   value: boolean,

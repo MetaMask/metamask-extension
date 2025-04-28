@@ -962,6 +962,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
     const oauthControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'OAuthController',
       allowedActions: [],
@@ -979,6 +980,7 @@ export default class MetamaskController extends EventEmitter {
         groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
       },
     });
+    ///: END:ONLY_INCLUDE_IF
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
@@ -2096,7 +2098,9 @@ export default class MetamaskController extends EventEmitter {
       NetworkController: this.networkController,
       AlertController: this.alertController,
       OnboardingController: this.onboardingController,
+      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
       OAuthController: this.oauthController,
+      ///: END:ONLY_INCLUDE_IF
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,
       SubjectMetadataController: this.subjectMetadataController,
@@ -2155,7 +2159,9 @@ export default class MetamaskController extends EventEmitter {
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
+        ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
         OAuthController: this.oauthController,
+        ///: END:ONLY_INCLUDE_IF
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController,
         SubjectMetadataController: this.subjectMetadataController,
@@ -3547,9 +3553,11 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IF
 
       // oauth controller
+      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
       startOAuthLogin: this.oauthController.startOAuthLogin.bind(
         this.oauthController,
       ),
+      ///: END:ONLY_INCLUDE_IF
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
