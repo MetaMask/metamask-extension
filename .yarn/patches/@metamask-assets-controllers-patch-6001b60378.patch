@@ -1,5 +1,5 @@
 diff --git a/dist/NftController.cjs b/dist/NftController.cjs
-index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..3e8636c3026ac1eb86282c3539391d9b51fe6f31 100644
+index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..e78c148874756f89b28ef4da0d85e07c976f026e 100644
 --- a/dist/NftController.cjs
 +++ b/dist/NftController.cjs
 @@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -28,7 +28,7 @@ index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..3e8636c3026ac1eb86282c3539391d9b
          super({
              name: controllerName,
              metadata: nftControllerMetadata,
-@@ -75,14 +74,12 @@ class NftController extends base_controller_1.BaseController {
+@@ -75,25 +74,22 @@ class NftController extends base_controller_1.BaseController {
          _NftController_instances.add(this);
          _NftController_mutex.set(this, new async_mutex_1.Mutex());
          _NftController_selectedAccountId.set(this, void 0);
@@ -43,14 +43,19 @@ index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..3e8636c3026ac1eb86282c3539391d9b
          __classPrivateFieldSet(this, _NftController_ipfsGateway, ipfsGateway, "f");
          __classPrivateFieldSet(this, _NftController_openSeaEnabled, openSeaEnabled, "f");
          __classPrivateFieldSet(this, _NftController_useIpfsSubdomains, useIpfsSubdomains, "f");
-@@ -92,7 +89,6 @@ class NftController extends base_controller_1.BaseController {
+         __classPrivateFieldSet(this, _NftController_isIpfsGatewayEnabled, isIpfsGatewayEnabled, "f");
+         __classPrivateFieldSet(this, _NftController_onNftAdded, onNftAdded, "f");
+-        this.messagingSystem.subscribe('PreferencesController:stateChange', 
++        this.messagingSystem.subscribe('PreferencesController:stateChange',
          // TODO: Either fix this lint violation or explain why it's necessary to ignore.
          // eslint-disable-next-line @typescript-eslint/no-misused-promises
          __classPrivateFieldGet(this, _NftController_instances, "m", _NftController_onPreferencesControllerStateChange).bind(this));
 -        this.messagingSystem.subscribe('NetworkController:networkDidChange', __classPrivateFieldGet(this, _NftController_instances, "m", _NftController_onNetworkControllerNetworkDidChange).bind(this));
-         this.messagingSystem.subscribe('AccountsController:selectedEvmAccountChange', 
+-        this.messagingSystem.subscribe('AccountsController:selectedEvmAccountChange', 
++        this.messagingSystem.subscribe('AccountsController:selectedEvmAccountChange',
          // TODO: Either fix this lint violation or explain why it's necessary to ignore.
          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+         __classPrivateFieldGet(this, _NftController_instances, "m", _NftController_onSelectedAccountChange).bind(this));
 @@ -112,17 +108,20 @@ class NftController extends base_controller_1.BaseController {
       * @param asset.tokenId - The ID of the asset.
       * @param type - The asset type.
@@ -202,7 +207,7 @@ index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..3e8636c3026ac1eb86282c3539391d9b
              const nftMetadataResults = await Promise.all(nftsWithChecksumAdr.map(async (nft) => {
 -                const resMetadata = await __classPrivateFieldGet(this, _NftController_instances, "m", _NftController_getNftInformation).call(this, nft.address, nft.tokenId, networkClientId);
 +                // Each NFT should have a chainId; convert nft.chainId to networkClientId
-+                const networkClientId = this.messagingSystem.call('NetworkController:findNetworkClientIdByChainId', (0, controller_utils_1.toHex)(nft.chainId));
++                const networkClientId = this.messagingSystem.call('NetworkController:getNetworkClientIdByChainId', (0, controller_utils_1.toHex)(nft.chainId));
 +                const resMetadata = networkClientId
 +                    ? await __classPrivateFieldGet(this, _NftController_instances, "m", _NftController_getNftInformation).call(this, nft.address, nft.tokenId, networkClientId)
 +                    : undefined;
@@ -351,21 +356,61 @@ index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..3e8636c3026ac1eb86282c3539391d9b
 -    const { configuration: { chainId }, } = this.messagingSystem.call('NetworkController:getNetworkClientById', selectedNetworkClientId);
 -    __classPrivateFieldSet(this, _NftController_chainId, chainId, "f");
 -}, _NftController_onPreferencesControllerStateChange = 
-+_NftController_mutex = new WeakMap(), _NftController_selectedAccountId = new WeakMap(), _NftController_ipfsGateway = new WeakMap(), _NftController_openSeaEnabled = new WeakMap(), _NftController_useIpfsSubdomains = new WeakMap(), _NftController_isIpfsGatewayEnabled = new WeakMap(), _NftController_onNftAdded = new WeakMap(), _NftController_instances = new WeakSet(), _NftController_onPreferencesControllerStateChange = 
++_NftController_mutex = new WeakMap(), _NftController_selectedAccountId = new WeakMap(), _NftController_ipfsGateway = new WeakMap(), _NftController_openSeaEnabled = new WeakMap(), _NftController_useIpfsSubdomains = new WeakMap(), _NftController_isIpfsGatewayEnabled = new WeakMap(), _NftController_onNftAdded = new WeakMap(), _NftController_instances = new WeakSet(), _NftController_onPreferencesControllerStateChange =
  /**
   * Handles the state change of the preference controller.
 + *
   * @param preferencesState - The new state of the preference controller.
   * @param preferencesState.ipfsGateway - The configured IPFS gateway.
   * @param preferencesState.openSeaEnabled - Controls whether the OpenSea API is used.
-@@ -626,6 +623,7 @@ async function _NftController_onPreferencesControllerStateChange({ ipfsGateway,
- }, _NftController_onSelectedAccountChange = 
+@@ -623,9 +620,10 @@ async function _NftController_onPreferencesControllerStateChange({ ipfsGateway,
+             await __classPrivateFieldGet(this, _NftController_instances, "m", _NftController_updateNftUpdateForAccount).call(this, selectedAccount);
+         }
+     }
+-}, _NftController_onSelectedAccountChange = 
++}, _NftController_onSelectedAccountChange =
  /**
   * Handles the selected account change on the accounts controller.
 + *
   * @param internalAccount - The new selected account.
   */
  async function _NftController_onSelectedAccountChange(internalAccount) {
+@@ -659,7 +657,7 @@ async function _NftController_onSelectedAccountChange(internalAccount) {
+     // False negative.
+     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+     return `${controller_utils_1.NFT_API_BASE_URL}/collections`;
+-}, _NftController_getNftInformationFromApi = 
++}, _NftController_getNftInformationFromApi =
+ /**
+  * Request individual NFT information from NFT API.
+  *
+@@ -727,7 +725,7 @@ async function _NftController_getNftInformationFromApi(contractAddress, tokenId)
+         },
+     });
+     return nftMetadata;
+-}, _NftController_getNftInformationFromTokenURI = 
++}, _NftController_getNftInformationFromTokenURI =
+ /**
+  * Request individual NFT information from contracts that follows Metadata Interface.
+  *
+@@ -800,7 +798,7 @@ async function _NftController_getNftInformationFromTokenURI(contractAddress, tok
+             tokenURI: tokenURI ?? null,
+         };
+     }
+-}, _NftController_getNftURIAndStandard = 
++}, _NftController_getNftURIAndStandard =
+ /**
+  * Retrieve NFT uri with  metadata. TODO Update method to use IPFS.
+  *
+@@ -838,7 +836,7 @@ async function _NftController_getNftURIAndStandard(contractAddress, tokenId, net
+         // Ignore error
+     }
+     return ['', ''];
+-}, _NftController_getNftInformation = 
++}, _NftController_getNftInformation =
+ /**
+  * Request individual NFT information (name, image url and description).
+  *
 @@ -848,9 +846,7 @@ async function _NftController_getNftURIAndStandard(contractAddress, tokenId, net
   * @returns Promise resolving to the current NFT name and image.
   */
@@ -377,6 +422,15 @@ index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..3e8636c3026ac1eb86282c3539391d9b
      const [blockchainMetadata, nftApiMetadata] = await Promise.all([
          (0, controller_utils_1.safelyExecute)(() => __classPrivateFieldGet(this, _NftController_instances, "m", _NftController_getNftInformationFromTokenURI).call(this, contractAddress, tokenId, networkClientId)),
          __classPrivateFieldGet(this, _NftController_openSeaEnabled, "f") && chainId === '0x1'
+@@ -865,7 +861,7 @@ async function _NftController_getNftInformation(contractAddress, tokenId, networ
+         standard: blockchainMetadata?.standard ?? nftApiMetadata?.standard ?? null,
+         tokenURI: blockchainMetadata?.tokenURI ?? null,
+     };
+-}, _NftController_getNftContractInformationFromContract = 
++}, _NftController_getNftContractInformationFromContract =
+ /**
+  * Request NFT contract information from the contract itself.
+  *
 @@ -873,7 +869,9 @@ async function _NftController_getNftInformation(contractAddress, tokenId, networ
   * @param networkClientId - The networkClientId that can be used to identify the network client to use for this request.
   * @returns Promise resolving to the current NFT name and image.
@@ -388,7 +442,30 @@ index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..3e8636c3026ac1eb86282c3539391d9b
      const [name, symbol] = await Promise.all([
          this.messagingSystem.call('AssetsContractController:getERC721AssetName', contractAddress, networkClientId),
          this.messagingSystem.call('AssetsContractController:getERC721AssetSymbol', contractAddress, networkClientId),
-@@ -1008,22 +1006,20 @@ async function _NftController_addIndividualNft(tokenAddress, tokenId, nftMetadat
+@@ -883,7 +881,7 @@ async function _NftController_getNftContractInformationFromContract(contractAddr
+         symbol,
+         address: contractAddress,
+     };
+-}, _NftController_getNftContractInformation = 
++}, _NftController_getNftContractInformation =
+ /**
+  * Request NFT contract information from Blockchain and aggregate with received data from NFTMetadata.
+  *
+@@ -939,7 +937,7 @@ async function _NftController_getNftContractInformation(contractAddress, nftMeta
+         // eslint-disable-next-line @typescript-eslint/naming-convention
+         collection: { name: null, image_url: null },
+     };
+-}, _NftController_addIndividualNft = 
++}, _NftController_addIndividualNft =
+ /**
+  * Adds an individual NFT to the stored NFT list.
+  *
+@@ -1004,26 +1002,24 @@ async function _NftController_addIndividualNft(tokenAddress, tokenId, nftMetadat
+     finally {
+         releaseLock();
+     }
+-}, _NftController_addNftContract = 
++}, _NftController_addNftContract =
  /**
   * Adds an NFT contract to the stored NFT contracts list.
   *
@@ -414,6 +491,31 @@ index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..3e8636c3026ac1eb86282c3539391d9b
          const nftContracts = allNftContracts[userAddress]?.[chainId] || [];
          const existingEntry = nftContracts.find((nftContract) => nftContract.address.toLowerCase() ===
              checksumHexAddress.toLowerCase());
+@@ -1034,19 +1030,19 @@ async function _NftController_addNftContract({ tokenAddress, userAddress, networ
+         // will be fixed once detection uses networkClientIds
+         // get name and symbol if ERC721 then put together the metadata
+         const contractInformation = await __classPrivateFieldGet(this, _NftController_instances, "m", _NftController_getNftContractInformation).call(this, checksumHexAddress, nftMetadata, networkClientId);
+-        const { 
++        const {
+         // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+         // eslint-disable-next-line @typescript-eslint/naming-convention
+-        asset_contract_type, 
++        asset_contract_type,
+         // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+         // eslint-disable-next-line @typescript-eslint/naming-convention
+-        created_date, symbol, description, 
++        created_date, symbol, description,
+         // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+         // eslint-disable-next-line @typescript-eslint/naming-convention
+-        external_link, 
++        external_link,
+         // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+         // eslint-disable-next-line @typescript-eslint/naming-convention
+-        schema_name, 
++        schema_name,
+         // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+         // eslint-disable-next-line @typescript-eslint/naming-convention
+         collection: { name, image_url, tokenCount }, } = contractInformation;
 @@ -1117,7 +1113,7 @@ async function _NftController_addNftContract({ tokenAddress, userAddress, networ
          userAddress,
      });
@@ -451,7 +553,7 @@ index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..3e8636c3026ac1eb86282c3539391d9b
      return selectedAccount?.address || '';
 -}, _NftController_updateNftUpdateForAccount = async function _NftController_updateNftUpdateForAccount(account) {
 -    const nfts = this.state.allNfts[account.address]?.[__classPrivateFieldGet(this, _NftController_chainId, "f")] ?? [];
-+}, _NftController_updateNftUpdateForAccount = 
++}, _NftController_updateNftUpdateForAccount =
 +/**
 + * Updates the all nfts in state for the account.
 + * Nfts will be updated if they don't have a name, description or image.
@@ -470,7 +572,7 @@ index 0f15eb691d8f35e4f28cc7c436d3b16be5c8b8ec..3e8636c3026ac1eb86282c3539391d9b
              nfts: nftsToUpdate,
              userAddress: account.address,
 diff --git a/dist/NftController.d.cts b/dist/NftController.d.cts
-index 4384784b3ca24558de8da5f576c3140d694975f0..df9ee16f5ce4eb9eee8b995847efaab7838e5a24 100644
+index 4384784b3ca24558de8da5f576c3140d694975f0..0e404057f6cae6c9db3e5cce2325e237cbcedbb0 100644
 --- a/dist/NftController.d.cts
 +++ b/dist/NftController.d.cts
 @@ -2,13 +2,14 @@ import type { AccountsControllerSelectedEvmAccountChangeEvent, AccountsControlle
@@ -485,7 +587,7 @@ index 4384784b3ca24558de8da5f576c3140d694975f0..df9ee16f5ce4eb9eee8b995847efaab7
  import { Source } from "./constants.cjs";
  import type { Collection, Attributes, LastSale, TopBid } from "./NftDetectionController.cjs";
 -type NFTStandardType = 'ERC721' | 'ERC1155';
-+import type { NetworkControllerFindNetworkClientIdByChainIdAction } from "../../network-controller/src/NetworkController.cjs";
++import type { NetworkControllerGetNetworkClientIdByChainIdAction } from "../../network-controller/src/NetworkController.cjs";
 +export type NFTStandardType = 'ERC721' | 'ERC1155';
  type SuggestedNftMeta = {
      asset: {
@@ -496,7 +598,7 @@ index 4384784b3ca24558de8da5f576c3140d694975f0..df9ee16f5ce4eb9eee8b995847efaab7
   */
 -export type AllowedActions = AddApprovalRequest | AccountsControllerGetAccountAction | AccountsControllerGetSelectedAccountAction | NetworkControllerGetNetworkClientByIdAction | AssetsContractControllerGetERC721AssetNameAction | AssetsContractControllerGetERC721AssetSymbolAction | AssetsContractControllerGetERC721TokenURIAction | AssetsContractControllerGetERC721OwnerOfAction | AssetsContractControllerGetERC1155BalanceOfAction | AssetsContractControllerGetERC1155TokenURIAction;
 -export type AllowedEvents = PreferencesControllerStateChangeEvent | NetworkControllerNetworkDidChangeEvent | AccountsControllerSelectedEvmAccountChangeEvent;
-+export type AllowedActions = AddApprovalRequest | AccountsControllerGetAccountAction | AccountsControllerGetSelectedAccountAction | NetworkControllerGetNetworkClientByIdAction | AssetsContractControllerGetERC721AssetNameAction | AssetsContractControllerGetERC721AssetSymbolAction | AssetsContractControllerGetERC721TokenURIAction | AssetsContractControllerGetERC721OwnerOfAction | AssetsContractControllerGetERC1155BalanceOfAction | AssetsContractControllerGetERC1155TokenURIAction | NetworkControllerFindNetworkClientIdByChainIdAction;
++export type AllowedActions = AddApprovalRequest | AccountsControllerGetAccountAction | AccountsControllerGetSelectedAccountAction | NetworkControllerGetNetworkClientByIdAction | AssetsContractControllerGetERC721AssetNameAction | AssetsContractControllerGetERC721AssetSymbolAction | AssetsContractControllerGetERC721TokenURIAction | AssetsContractControllerGetERC721OwnerOfAction | AssetsContractControllerGetERC1155BalanceOfAction | AssetsContractControllerGetERC1155TokenURIAction | NetworkControllerGetNetworkClientIdByChainIdAction;
 +export type AllowedEvents = PreferencesControllerStateChangeEvent | AccountsControllerSelectedEvmAccountChangeEvent;
  export type NftControllerStateChangeEvent = ControllerStateChangeEvent<typeof controllerName, NftControllerState>;
  export type NftControllerEvents = NftControllerStateChangeEvent;
@@ -681,15 +783,15 @@ index 4384784b3ca24558de8da5f576c3140d694975f0..df9ee16f5ce4eb9eee8b995847efaab7
      }): void;
      /**
 diff --git a/dist/NftDetectionController.cjs b/dist/NftDetectionController.cjs
-index 8a4b71d699144ceeb32022e43abb82c17ee8c815..46098de4bf14ee1cde884be217e9968d09498ae8 100644
+index b13f9ddf601fcacca0d95fcd7f38447df03ff60d..478bc5457b5439934a767b2a0741e5e94b9ac1e9 100644
 --- a/dist/NftDetectionController.cjs
 +++ b/dist/NftDetectionController.cjs
-@@ -213,11 +213,11 @@ class NftDetectionController extends base_controller_1.BaseController {
+@@ -207,11 +207,11 @@ class NftDetectionController extends base_controller_1.BaseController {
                      if (!ignored) {
                          /* istanbul ignore next */
                          const nftMetadata = Object.assign({}, { name }, description && { description }, imageUrl && { image: imageUrl }, imageThumbnailUrl && { imageThumbnail: imageThumbnailUrl }, imageOriginalUrl && { imageOriginal: imageOriginalUrl }, kind && { standard: kind.toUpperCase() }, lastSale && { lastSale }, attributes && { attributes }, topBid && { topBid }, rarityRank && { rarityRank }, rarityScore && { rarityScore }, collection && { collection }, chainId && { chainId });
 -                        await __classPrivateFieldGet(this, _NftDetectionController_addNft, "f").call(this, contract, tokenId, {
-+                        const networkClientId = this.messagingSystem.call('NetworkController:findNetworkClientIdByChainId', (0, controller_utils_1.toHex)(chainId));
++                        const networkClientId = this.messagingSystem.call('NetworkController:getNetworkClientIdByChainId', (0, controller_utils_1.toHex)(chainId));
 +                        await __classPrivateFieldGet(this, _NftDetectionController_addNft, "f").call(this, contract, tokenId, networkClientId, {
                              nftMetadata,
                              userAddress,
@@ -699,368 +801,23 @@ index 8a4b71d699144ceeb32022e43abb82c17ee8c815..46098de4bf14ee1cde884be217e9968d
                      }
                  });
 diff --git a/dist/NftDetectionController.d.cts b/dist/NftDetectionController.d.cts
-index 137c3ac6314caf9180ef33b8cdc5729e30c9c429..2152b475aee99cdd236b46656373d95178a530f1 100644
+index 137c3ac6314caf9180ef33b8cdc5729e30c9c429..2b53146276260a6a246cbff4de1928d8a4733ef0 100644
 --- a/dist/NftDetectionController.d.cts
 +++ b/dist/NftDetectionController.d.cts
-@@ -7,9 +7,10 @@ import type { PreferencesControllerGetStateAction, PreferencesControllerStateCha
+@@ -2,14 +2,14 @@ import type { AccountsControllerGetSelectedAccountAction } from "@metamask/accou
+ import type { AddApprovalRequest } from "@metamask/approval-controller";
+ import type { RestrictedMessenger } from "@metamask/base-controller";
+ import { BaseController } from "@metamask/base-controller";
+-import type { NetworkClient, NetworkControllerGetNetworkClientByIdAction, NetworkControllerStateChangeEvent, NetworkControllerGetStateAction } from "@metamask/network-controller";
++import type { NetworkClient, NetworkControllerGetNetworkClientByIdAction, NetworkControllerStateChangeEvent, NetworkControllerGetStateAction, NetworkControllerGetNetworkClientIdByChainIdAction } from "@metamask/network-controller";
+ import type { PreferencesControllerGetStateAction, PreferencesControllerStateChangeEvent } from "@metamask/preferences-controller";
  import { type Hex } from "@metamask/utils";
  import { Source } from "./constants.cjs";
  import { type NftController, type NftControllerState } from "./NftController.cjs";
-+import type { NetworkControllerFindNetworkClientIdByChainIdAction } from "../../network-controller/src/NetworkController.cjs";
  declare const controllerName = "NftDetectionController";
  export type NFTDetectionControllerState = Record<never, never>;
 -export type AllowedActions = AddApprovalRequest | NetworkControllerGetStateAction | NetworkControllerGetNetworkClientByIdAction | PreferencesControllerGetStateAction | AccountsControllerGetSelectedAccountAction;
-+export type AllowedActions = AddApprovalRequest | NetworkControllerGetStateAction | NetworkControllerGetNetworkClientByIdAction | PreferencesControllerGetStateAction | AccountsControllerGetSelectedAccountAction | NetworkControllerFindNetworkClientIdByChainIdAction;
++export type AllowedActions = AddApprovalRequest | NetworkControllerGetStateAction | NetworkControllerGetNetworkClientByIdAction | PreferencesControllerGetStateAction | AccountsControllerGetSelectedAccountAction | NetworkControllerGetNetworkClientIdByChainIdAction;
  export type AllowedEvents = PreferencesControllerStateChangeEvent | NetworkControllerStateChangeEvent;
  export type NftDetectionControllerMessenger = RestrictedMessenger<typeof controllerName, AllowedActions, AllowedEvents, AllowedActions['type'], AllowedEvents['type']>;
  /**
-diff --git a/dist/TokensController.cjs b/dist/TokensController.cjs
-index 6da824f4011c1343e3edbbc36829874eefa03408..31aaf6db162eac1001955eb61b9e8c5599d7558a 100644
---- a/dist/TokensController.cjs
-+++ b/dist/TokensController.cjs
-@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
- var __importDefault = (this && this.__importDefault) || function (mod) {
-     return (mod && mod.__esModule) ? mod : { "default": mod };
- };
--var _TokensController_instances, _TokensController_mutex, _TokensController_chainId, _TokensController_selectedAccountId, _TokensController_provider, _TokensController_abortController, _TokensController_onNetworkDidChange, _TokensController_onNetworkStateChange, _TokensController_onSelectedAccountChange, _TokensController_fetchTokenMetadata, _TokensController_detectIsERC721, _TokensController_getProvider, _TokensController_createEthersContract, _TokensController_generateRandomId, _TokensController_getNewAllTokensState, _TokensController_getAddressOrSelectedAddress, _TokensController_requestApproval, _TokensController_getSelectedAccount, _TokensController_getSelectedAddress;
-+var _TokensController_instances, _TokensController_mutex, _TokensController_selectedAccountId, _TokensController_provider, _TokensController_abortController, _TokensController_onNetworkStateChange, _TokensController_onSelectedAccountChange, _TokensController_fetchTokenMetadata, _TokensController_detectIsERC721, _TokensController_getProvider, _TokensController_createEthersContract, _TokensController_generateRandomId, _TokensController_getNewAllTokensState, _TokensController_getAddressOrSelectedAddress, _TokensController_requestApproval, _TokensController_getSelectedAccount, _TokensController_getSelectedAddress;
- Object.defineProperty(exports, "__esModule", { value: true });
- exports.TokensController = exports.getDefaultTokensState = void 0;
- const contracts_1 = require("@ethersproject/contracts");
-@@ -65,7 +65,7 @@ class TokensController extends base_controller_1.BaseController {
-      * @param options.state - Initial state to set on this controller.
-      * @param options.messenger - The messenger.
-      */
--    constructor({ chainId: initialChainId, provider, state, messenger, }) {
-+    constructor({ provider, state, messenger, }) {
-         super({
-             name: controllerName,
-             metadata,
-@@ -77,17 +77,14 @@ class TokensController extends base_controller_1.BaseController {
-         });
-         _TokensController_instances.add(this);
-         _TokensController_mutex.set(this, new async_mutex_1.Mutex());
--        _TokensController_chainId.set(this, void 0);
-         _TokensController_selectedAccountId.set(this, void 0);
-         _TokensController_provider.set(this, void 0);
-         _TokensController_abortController.set(this, void 0);
--        __classPrivateFieldSet(this, _TokensController_chainId, initialChainId, "f");
-         __classPrivateFieldSet(this, _TokensController_provider, provider, "f");
-         __classPrivateFieldSet(this, _TokensController_selectedAccountId, __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAccount).call(this).id, "f");
-         __classPrivateFieldSet(this, _TokensController_abortController, new AbortController(), "f");
-         this.messagingSystem.registerActionHandler(`${controllerName}:addDetectedTokens`, this.addDetectedTokens.bind(this));
-         this.messagingSystem.subscribe('AccountsController:selectedEvmAccountChange', __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_onSelectedAccountChange).bind(this));
--        this.messagingSystem.subscribe('NetworkController:networkDidChange', __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_onNetworkDidChange).bind(this));
-         this.messagingSystem.subscribe('NetworkController:stateChange', __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_onNetworkStateChange).bind(this));
-         this.messagingSystem.subscribe('TokenListController:stateChange', ({ tokensChainsCache }) => {
-             const { allTokens } = this.state;
-@@ -131,37 +128,28 @@ class TokensController extends base_controller_1.BaseController {
-      * @returns Current token list.
-      */
-     async addToken({ address, symbol, decimals, name, image, interactingAddress, networkClientId, }) {
--        // TODO: remove this once this method is fully parameterized by chainId
--        const chainId = __classPrivateFieldGet(this, _TokensController_chainId, "f");
-         const releaseLock = await __classPrivateFieldGet(this, _TokensController_mutex, "f").acquire();
-         const { allTokens, allIgnoredTokens, allDetectedTokens } = this.state;
--        let currentChainId = chainId;
--        if (networkClientId) {
--            currentChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
--        }
-+        const chainIdToUse = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
-         const accountAddress = __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getAddressOrSelectedAddress).call(this, interactingAddress);
-         try {
-             address = (0, controller_utils_1.toChecksumHexAddress)(address);
--            const tokens = allTokens[currentChainId]?.[accountAddress] || [];
--            const ignoredTokens = allIgnoredTokens[currentChainId]?.[accountAddress] || [];
--            const detectedTokens = allDetectedTokens[currentChainId]?.[accountAddress] || [];
-+            const tokens = allTokens[chainIdToUse]?.[accountAddress] || [];
-+            const ignoredTokens = allIgnoredTokens[chainIdToUse]?.[accountAddress] || [];
-+            const detectedTokens = allDetectedTokens[chainIdToUse]?.[accountAddress] || [];
-             const newTokens = [...tokens];
-             const [isERC721, tokenMetadata] = await Promise.all([
-                 __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_detectIsERC721).call(this, address, networkClientId),
-                 // TODO parameterize the token metadata fetch by networkClientId
--                __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_fetchTokenMetadata).call(this, address),
-+                __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_fetchTokenMetadata).call(this, address, chainIdToUse),
-             ]);
--            // TODO remove this once this method is fully parameterized by networkClientId
--            if (!networkClientId && currentChainId !== __classPrivateFieldGet(this, _TokensController_chainId, "f")) {
--                throw new Error('TokensController Error: Switched networks while adding token');
--            }
-             const newEntry = {
-                 address,
-                 symbol,
-                 decimals,
-                 image: image ||
-                     (0, assetsUtil_1.formatIconUrlWithProxy)({
--                        chainId: currentChainId,
-+                        chainId: chainIdToUse,
-                         tokenAddress: address,
-                     }),
-                 isERC721,
-@@ -182,7 +170,7 @@ class TokensController extends base_controller_1.BaseController {
-                 newIgnoredTokens,
-                 newDetectedTokens,
-                 interactingAddress: accountAddress,
--                interactingChainId: currentChainId,
-+                interactingChainId: chainIdToUse,
-             });
-             const newState = {
-                 allTokens: newAllTokens,
-@@ -208,10 +196,7 @@ class TokensController extends base_controller_1.BaseController {
-         const releaseLock = await __classPrivateFieldGet(this, _TokensController_mutex, "f").acquire();
-         const { allTokens, allIgnoredTokens, allDetectedTokens } = this.state;
-         const importedTokensMap = {};
--        let interactingChainId = __classPrivateFieldGet(this, _TokensController_chainId, "f");
--        if (networkClientId) {
--            interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
--        }
-+        const interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
-         // Used later to dedupe imported tokens
-         const newTokensMap = [
-             ...(allTokens[interactingChainId]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAccount).call(this).address] ||
-@@ -238,7 +223,7 @@ class TokensController extends base_controller_1.BaseController {
-                 return formattedToken;
-             });
-             const newTokens = Object.values(newTokensMap);
--            const newIgnoredTokens = allIgnoredTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)]?.filter((tokenAddress) => !newTokensMap[tokenAddress.toLowerCase()]);
-+            const newIgnoredTokens = allIgnoredTokens[interactingChainId]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)]?.filter((tokenAddress) => !newTokensMap[tokenAddress.toLowerCase()]);
-             const detectedTokensForGivenChain = interactingChainId
-                 ? allDetectedTokens?.[interactingChainId]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)]
-                 : [];
-@@ -266,16 +251,13 @@ class TokensController extends base_controller_1.BaseController {
-      * @param networkClientId - Optional network client ID used to determine interacting chain ID.
-      */
-     ignoreTokens(tokenAddressesToIgnore, networkClientId) {
--        let interactingChainId = __classPrivateFieldGet(this, _TokensController_chainId, "f");
--        if (networkClientId) {
--            interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
--        }
-+        const interactingChainId = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
-         const { allTokens, allDetectedTokens, allIgnoredTokens } = this.state;
-         const ignoredTokensMap = {};
--        const ignoredTokens = allIgnoredTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
-+        const ignoredTokens = allIgnoredTokens[interactingChainId]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
-         let newIgnoredTokens = [...ignoredTokens];
--        const tokens = allTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
--        const detectedTokens = allDetectedTokens[interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
-+        const tokens = allTokens[interactingChainId]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
-+        const detectedTokens = allDetectedTokens[interactingChainId]?.[__classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this)] || [];
-         const checksummedTokenAddresses = tokenAddressesToIgnore.map((address) => {
-             const checksumAddress = (0, controller_utils_1.toChecksumHexAddress)(address);
-             ignoredTokensMap[address.toLowerCase()] = true;
-@@ -306,7 +288,7 @@ class TokensController extends base_controller_1.BaseController {
-      */
-     async addDetectedTokens(incomingDetectedTokens, detectionDetails) {
-         const releaseLock = await __classPrivateFieldGet(this, _TokensController_mutex, "f").acquire();
--        const chainId = detectionDetails?.chainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f");
-+        const { chainId } = detectionDetails;
-         // Previously selectedAddress could be an empty string. This is to preserve the behaviour
-         const accountAddress = detectionDetails?.selectedAddress ?? __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this);
-         const { allTokens, allDetectedTokens, allIgnoredTokens } = this.state;
-@@ -356,9 +338,9 @@ class TokensController extends base_controller_1.BaseController {
-             // We may be detecting tokens on a different chain/account pair than are currently configured.
-             // Re-point `tokens` and `detectedTokens` to keep them referencing the current chain/account.
-             const selectedAddress = __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this);
--            newTokens = newAllTokens?.[__classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[selectedAddress] || [];
-+            newTokens = newAllTokens?.[chainId]?.[selectedAddress] || [];
-             newDetectedTokens =
--                newAllDetectedTokens?.[__classPrivateFieldGet(this, _TokensController_chainId, "f")]?.[selectedAddress] || [];
-+                newAllDetectedTokens?.[chainId]?.[selectedAddress] || [];
-             this.update((state) => {
-                 state.allTokens = newAllTokens;
-                 state.allDetectedTokens = newAllDetectedTokens;
-@@ -373,20 +355,21 @@ class TokensController extends base_controller_1.BaseController {
-      * were previously added which do not yet had isERC721 field.
-      *
-      * @param tokenAddress - The contract address of the token requiring the isERC721 field added.
-+     * @param networkClientId - The network client ID of the network on which the token is detected.
-      * @returns The new token object with the added isERC721 field.
-      */
--    async updateTokenType(tokenAddress) {
--        const isERC721 = await __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_detectIsERC721).call(this, tokenAddress);
--        const chainId = __classPrivateFieldGet(this, _TokensController_chainId, "f");
-+    async updateTokenType(tokenAddress, networkClientId) {
-+        const chainIdToUse = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId).configuration.chainId;
-+        const isERC721 = await __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_detectIsERC721).call(this, tokenAddress, networkClientId);
-         const accountAddress = __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getSelectedAddress).call(this);
--        const tokens = [...this.state.allTokens[chainId][accountAddress]];
-+        const tokens = [...this.state.allTokens[chainIdToUse][accountAddress]];
-         const tokenIndex = tokens.findIndex((token) => {
-             return token.address.toLowerCase() === tokenAddress.toLowerCase();
-         });
-         const updatedToken = { ...tokens[tokenIndex], isERC721 };
-         tokens[tokenIndex] = updatedToken;
-         this.update((state) => {
--            state.allTokens[chainId][accountAddress] = tokens;
-+            state.allTokens[chainIdToUse][accountAddress] = tokens;
-         });
-         return updatedToken;
-     }
-@@ -511,13 +494,7 @@ class TokensController extends base_controller_1.BaseController {
-     }
- }
- exports.TokensController = TokensController;
--_TokensController_mutex = new WeakMap(), _TokensController_chainId = new WeakMap(), _TokensController_selectedAccountId = new WeakMap(), _TokensController_provider = new WeakMap(), _TokensController_abortController = new WeakMap(), _TokensController_instances = new WeakSet(), _TokensController_onNetworkDidChange = function _TokensController_onNetworkDidChange({ selectedNetworkClientId }) {
--    const selectedNetworkClient = this.messagingSystem.call('NetworkController:getNetworkClientById', selectedNetworkClientId);
--    const { chainId } = selectedNetworkClient.configuration;
--    __classPrivateFieldGet(this, _TokensController_abortController, "f").abort();
--    __classPrivateFieldSet(this, _TokensController_abortController, new AbortController(), "f");
--    __classPrivateFieldSet(this, _TokensController_chainId, chainId, "f");
--}, _TokensController_onNetworkStateChange = function _TokensController_onNetworkStateChange(_, patches) {
-+_TokensController_mutex = new WeakMap(), _TokensController_selectedAccountId = new WeakMap(), _TokensController_provider = new WeakMap(), _TokensController_abortController = new WeakMap(), _TokensController_instances = new WeakSet(), _TokensController_onNetworkStateChange = function _TokensController_onNetworkStateChange(_, patches) {
-     // Remove state for deleted networks
-     for (const patch of patches) {
-         if (patch.op === 'remove' &&
-@@ -537,11 +514,12 @@ _TokensController_mutex = new WeakMap(), _TokensController_chainId = new WeakMap
-  * Fetch metadata for a token.
-  *
-  * @param tokenAddress - The address of the token.
-+ * @param chainId - The chain ID of the network on which the token is detected.
-  * @returns The token metadata.
-  */
--async function _TokensController_fetchTokenMetadata(tokenAddress) {
-+async function _TokensController_fetchTokenMetadata(tokenAddress, chainId) {
-     try {
--        const token = await (0, token_service_1.fetchTokenMetadata)(__classPrivateFieldGet(this, _TokensController_chainId, "f"), tokenAddress, __classPrivateFieldGet(this, _TokensController_abortController, "f").signal);
-+        const token = await (0, token_service_1.fetchTokenMetadata)(chainId, tokenAddress, __classPrivateFieldGet(this, _TokensController_abortController, "f").signal);
-         return token;
-     }
-     catch (error) {
-@@ -595,53 +573,52 @@ async function _TokensController_detectIsERC721(tokenAddress, networkClientId) {
-     const { newTokens, newIgnoredTokens, newDetectedTokens, interactingAddress, interactingChainId, } = params;
-     const { allTokens, allIgnoredTokens, allDetectedTokens } = this.state;
-     const userAddressToAddTokens = __classPrivateFieldGet(this, _TokensController_instances, "m", _TokensController_getAddressOrSelectedAddress).call(this, interactingAddress);
--    const chainIdToAddTokens = interactingChainId ?? __classPrivateFieldGet(this, _TokensController_chainId, "f");
-     let newAllTokens = allTokens;
-     if (newTokens?.length ||
-         (newTokens &&
-             allTokens &&
--            allTokens[chainIdToAddTokens] &&
--            allTokens[chainIdToAddTokens][userAddressToAddTokens])) {
--        const networkTokens = allTokens[chainIdToAddTokens];
-+            allTokens[interactingChainId] &&
-+            allTokens[interactingChainId][userAddressToAddTokens])) {
-+        const networkTokens = allTokens[interactingChainId];
-         const newNetworkTokens = {
-             ...networkTokens,
-             ...{ [userAddressToAddTokens]: newTokens },
-         };
-         newAllTokens = {
-             ...allTokens,
--            ...{ [chainIdToAddTokens]: newNetworkTokens },
-+            ...{ [interactingChainId]: newNetworkTokens },
-         };
-     }
-     let newAllIgnoredTokens = allIgnoredTokens;
-     if (newIgnoredTokens?.length ||
-         (newIgnoredTokens &&
-             allIgnoredTokens &&
--            allIgnoredTokens[chainIdToAddTokens] &&
--            allIgnoredTokens[chainIdToAddTokens][userAddressToAddTokens])) {
--        const networkIgnoredTokens = allIgnoredTokens[chainIdToAddTokens];
-+            allIgnoredTokens[interactingChainId] &&
-+            allIgnoredTokens[interactingChainId][userAddressToAddTokens])) {
-+        const networkIgnoredTokens = allIgnoredTokens[interactingChainId];
-         const newIgnoredNetworkTokens = {
-             ...networkIgnoredTokens,
-             ...{ [userAddressToAddTokens]: newIgnoredTokens },
-         };
-         newAllIgnoredTokens = {
-             ...allIgnoredTokens,
--            ...{ [chainIdToAddTokens]: newIgnoredNetworkTokens },
-+            ...{ [interactingChainId]: newIgnoredNetworkTokens },
-         };
-     }
-     let newAllDetectedTokens = allDetectedTokens;
-     if (newDetectedTokens?.length ||
-         (newDetectedTokens &&
-             allDetectedTokens &&
--            allDetectedTokens[chainIdToAddTokens] &&
--            allDetectedTokens[chainIdToAddTokens][userAddressToAddTokens])) {
--        const networkDetectedTokens = allDetectedTokens[chainIdToAddTokens];
-+            allDetectedTokens[interactingChainId] &&
-+            allDetectedTokens[interactingChainId][userAddressToAddTokens])) {
-+        const networkDetectedTokens = allDetectedTokens[interactingChainId];
-         const newDetectedNetworkTokens = {
-             ...networkDetectedTokens,
-             ...{ [userAddressToAddTokens]: newDetectedTokens },
-         };
-         newAllDetectedTokens = {
-             ...allDetectedTokens,
--            ...{ [chainIdToAddTokens]: newDetectedNetworkTokens },
-+            ...{ [interactingChainId]: newDetectedNetworkTokens },
-         };
-     }
-     return { newAllTokens, newAllIgnoredTokens, newAllDetectedTokens };
-diff --git a/dist/TokensController.d.cts b/dist/TokensController.d.cts
-index b533921cd7910b3f368b2122de69b46242b7f294..bc081baa90a268311d4ce12261edc73a96262162 100644
---- a/dist/TokensController.d.cts
-+++ b/dist/TokensController.d.cts
-@@ -63,7 +63,7 @@ export declare class TokensController extends BaseController<typeof controllerNa
-      * @param options.state - Initial state to set on this controller.
-      * @param options.messenger - The messenger.
-      */
--    constructor({ chainId: initialChainId, provider, state, messenger, }: {
-+    constructor({ provider, state, messenger, }: {
-         chainId: Hex;
-         provider: Provider;
-         state?: Partial<TokensControllerState>;
-@@ -89,7 +89,7 @@ export declare class TokensController extends BaseController<typeof controllerNa
-         name?: string;
-         image?: string;
-         interactingAddress?: string;
--        networkClientId?: NetworkClientId;
-+        networkClientId: NetworkClientId;
-     }): Promise<Token[]>;
-     /**
-      * Add a batch of tokens.
-@@ -97,14 +97,14 @@ export declare class TokensController extends BaseController<typeof controllerNa
-      * @param tokensToImport - Array of tokens to import.
-      * @param networkClientId - Optional network client ID used to determine interacting chain ID.
-      */
--    addTokens(tokensToImport: Token[], networkClientId?: NetworkClientId): Promise<void>;
-+    addTokens(tokensToImport: Token[], networkClientId: NetworkClientId): Promise<void>;
-     /**
-      * Ignore a batch of tokens.
-      *
-      * @param tokenAddressesToIgnore - Array of token addresses to ignore.
-      * @param networkClientId - Optional network client ID used to determine interacting chain ID.
-      */
--    ignoreTokens(tokenAddressesToIgnore: string[], networkClientId?: NetworkClientId): void;
-+    ignoreTokens(tokenAddressesToIgnore: string[], networkClientId: NetworkClientId): void;
-     /**
-      * Adds a batch of detected tokens to the stored token list.
-      *
-@@ -113,8 +113,8 @@ export declare class TokensController extends BaseController<typeof controllerNa
-      * @param detectionDetails.selectedAddress - the account address on which the incomingDetectedTokens were detected.
-      * @param detectionDetails.chainId - the chainId on which the incomingDetectedTokens were detected.
-      */
--    addDetectedTokens(incomingDetectedTokens: Token[], detectionDetails?: {
--        selectedAddress: string;
-+    addDetectedTokens(incomingDetectedTokens: Token[], detectionDetails: {
-+        selectedAddress?: string;
-         chainId: Hex;
-     }): Promise<void>;
-     /**
-@@ -122,9 +122,10 @@ export declare class TokensController extends BaseController<typeof controllerNa
-      * were previously added which do not yet had isERC721 field.
-      *
-      * @param tokenAddress - The contract address of the token requiring the isERC721 field added.
-+     * @param networkClientId - The network client ID of the network on which the token is detected.
-      * @returns The new token object with the added isERC721 field.
-      */
--    updateTokenType(tokenAddress: string): Promise<{
-+    updateTokenType(tokenAddress: string, networkClientId: NetworkClientId): Promise<{
-         isERC721: any;
-         address: string;
-         decimals: number;
-@@ -149,7 +150,7 @@ export declare class TokensController extends BaseController<typeof controllerNa
-         asset: Token;
-         type: string;
-         interactingAddress?: string;
--        networkClientId?: NetworkClientId;
-+        networkClientId: NetworkClientId;
-     }): Promise<void>;
-     /**
-      * Removes all tokens from the ignored list.

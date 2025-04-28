@@ -22,7 +22,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/modules/selectors/networks';
 import {
   getIsMainnet,
   getSelectedInternalAccount,
@@ -66,6 +69,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
   const {
     tokenAddress: initialTokenAddress,
     tokenId: initialTokenId,
@@ -85,7 +89,9 @@ export const ImportNftsModal = ({ onClose }) => {
   const handleAddNft = async () => {
     trace({ name: TraceName.ImportNfts });
     try {
-      await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
+      await dispatch(
+        addNftVerifyOwnership(nftAddress, tokenId, networkClientId),
+      );
       const newNftDropdownState = {
         ...nftsDropdownState,
         [selectedAccount.address]: {

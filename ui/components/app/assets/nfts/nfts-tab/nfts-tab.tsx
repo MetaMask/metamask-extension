@@ -20,6 +20,8 @@ import {
   getNftIsStillFetchingIndication,
   getPreferences,
   getAllChainsToPoll,
+  getIsLineaMainnet,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../../../selectors';
 import {
   Box,
@@ -36,7 +38,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { getCurrentLocale } from '../../../../../ducks/locale/locale';
-import Spinner from '../../../../ui/spinner';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
@@ -55,12 +56,15 @@ import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IF
 import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import PulseLoader from '../../../../ui/pulse-loader';
 
 export default function NftsTab() {
   const history = useHistory();
   const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
+  const isLineaMainnet = useSelector(getIsLineaMainnet);
   const { privacyMode } = useSelector(getPreferences);
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -77,6 +81,19 @@ export default function NftsTab() {
   const { chainId, nickname } = useSelector(getCurrentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
   const allChainIds = useSelector(getAllChainsToPoll);
+  const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+  const chainIdsToUpdateOwnershipStatus =
+    isTokenNetworkFilterEqualCurrentNetwork ? [chainId] : allChainIds;
+  const allNetworkClientIds = chainIdsToUpdateOwnershipStatus.map(
+    (chainIdElm: string) => {
+      const networkConfig = nftNetworkConfigs[toHex(chainIdElm)];
+      return networkConfig.rpcEndpoints[networkConfig.defaultRpcEndpointIndex]
+        .networkClientId;
+    },
+  );
 
   useEffect(() => {
     if (nftsLoading || !showNftBanner) {
@@ -117,11 +134,15 @@ export default function NftsTab() {
     history.push(SECURITY_ROUTE);
   };
 
-  const onRefresh = () => {
-    if (isMainnet) {
+  const onRefresh = async () => {
+    if (isMainnet || isLineaMainnet) {
       dispatch(detectNfts(allChainIds));
     }
-    checkAndUpdateAllNftsOwnershipStatus();
+    await Promise.allSettled(
+      allNetworkClientIds.map((clientId) => {
+        return checkAndUpdateAllNftsOwnershipStatus(clientId);
+      }),
+    );
   };
 
   const sortedNfts = sortAssets(currentlyOwnedNfts, {
@@ -139,10 +160,9 @@ export default function NftsTab() {
         display={Display.Flex}
         marginTop={4}
       >
-        <Spinner
-          color="var(--color-warning-default)"
-          className="loading-overlay__spinner"
-        />
+        <Box marginTop={4} marginBottom={4}>
+          <PulseLoader />
+        </Box>
       </Box>
     );
   }
