@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { WINDOW_TITLES } from '../../helpers';
+import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import {
   clickCancelButton,
   clickConfirmButton,
@@ -32,6 +32,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await sendSolTest.signTransaction();
 
           // Confirm the signature
+          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
           await testDapp.switchTo();
@@ -44,6 +45,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await sendSolTest.sendTransaction();
 
           // Confirm the transaction
+          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
           await testDapp.switchTo();
@@ -75,6 +77,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await sendSolTest.sendTransaction();
 
           // Cancel the sendTransaction
+          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickCancelButton(driver);
           await testDapp.switchTo();
@@ -83,6 +86,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await sendSolTest.sendTransaction();
 
           // Confirm the transaction
+          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
           await testDapp.switchTo();
@@ -114,6 +118,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
             await sendSolTest.sendTransaction();
 
             // Confirm the signature
+            await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
             // Look for the permission to be set to Devnet

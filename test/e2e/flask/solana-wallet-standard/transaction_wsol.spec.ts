@@ -33,11 +33,12 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await sendWSolTest.signTransaction();
 
           // Confirm the first signature
+          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
-          await driver.delay(largeDelayMs);
 
           // Confirm the second signature
+          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
           await testDapp.switchTo();
@@ -51,12 +52,12 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           // 2. Send multiple transactions
           await sendWSolTest.sendTransaction();
           // Confirm the first transaction
+          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
 
-          await driver.delay(largeDelayMs);
-
           // Confirm the second transaction
+          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
           await testDapp.switchTo();

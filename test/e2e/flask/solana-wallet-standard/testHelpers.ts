@@ -111,6 +111,7 @@ export const connectSolanaTestDapp = async (
   await modal.connectToMetaMaskWallet();
 
   // Get to extension modal, and click on the "Connect" button
+  await driver.delay(largeDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   if (options?.selectAllAccounts) {
     await selectAccountsAndAuthorize(driver);
