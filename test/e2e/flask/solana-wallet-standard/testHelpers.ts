@@ -2,7 +2,6 @@ import * as path from 'path';
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import nacl from 'tweetnacl';
-import bs58 from 'bs58';
 import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
@@ -215,7 +214,7 @@ export const assertDisconnected = async (
  * @param options0.originalMessageString
  * @param options0.publicKeyBase58
  */
-export function assertSignedMessageIsValid({
+export async function assertSignedMessageIsValid({
   signedMessageBase64,
   originalMessageString,
   publicKeyBase58,
@@ -224,6 +223,9 @@ export function assertSignedMessageIsValid({
   originalMessageString: string;
   publicKeyBase58: string;
 }) {
+  // To fix this issue: The current file is a CommonJS module whose imports will produce 'require' calls;
+  // however, the referenced file is an ECMAScript module and cannot be imported with 'require'.
+  const bs58 = (await import('bs58')).default;
   const signature = Uint8Array.from(Buffer.from(signedMessageBase64, 'base64'));
   const publicKey = bs58.decode(publicKeyBase58);
   const message = new TextEncoder().encode(originalMessageString);
