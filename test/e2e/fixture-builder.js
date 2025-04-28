@@ -303,6 +303,7 @@ class FixtureBuilder {
       selectedNetworkClientId: 'linea-mainnet',
     });
   }
+
   withNetworkControllerOnLineaLocahost() {
     return this.withNetworkController({
       networkConfigurations: {

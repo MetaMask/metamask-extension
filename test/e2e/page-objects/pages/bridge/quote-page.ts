@@ -45,12 +45,11 @@ class BridgeQuotePage {
   enterBridgeQuote = async (quote: BridgeQuote) => {
     // Source
     await this.driver.clickElement(this.sourceAssetPickerButton);
-    if (quote.tokenFrom === 'ETH') {
-      await this.driver.clickElement(this.networkSelector);
-      await this.driver.clickElement(this.selectAllButton);
-      await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
-      await this.driver.clickElement(this.applyButton);
-    }
+    await this.driver.clickElement(this.networkSelector);
+    await this.driver.clickElement(this.selectAllButton);
+    await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
+    await this.driver.clickElement(this.applyButton);
+
     await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
     await this.driver.clickElement({
       text: quote.tokenFrom,

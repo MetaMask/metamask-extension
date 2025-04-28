@@ -15,7 +15,7 @@ import { getBridgeL2Fixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 
 describe('Bridge tests', function (this: Suite) {
-  it('should execete bridge transactions on L2 network', async function () {
+  it('should execete bridge transactions on L2 networks', async function () {
     await withFixtures(
       getBridgeL2Fixtures(this.test?.fullTitle(), {
         'extension-config': {
@@ -27,6 +27,9 @@ describe('Bridge tests', function (this: Suite) {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed();
+
+        // Add Arbitrum One and make it the current network
+        await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
 
         await bridgeTransaction(
           driver,
@@ -41,9 +44,6 @@ describe('Bridge tests', function (this: Suite) {
           '23.9999',
         );
 
-        // Add Arbitrum One as a network
-        await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
-
         await bridgeTransaction(
           driver,
           {
@@ -57,9 +57,8 @@ describe('Bridge tests', function (this: Suite) {
           '22.9999',
         );
 
-        // Switch to Linea Mainnet to set it as the selected network
-        // in the network-controller
-        await switchToNetworkFlow(driver, 'Linea Mainnet');
+        // Switch to Ethereum to set it as the current network
+        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
 
         await bridgeTransaction(
           driver,
@@ -73,6 +72,9 @@ describe('Bridge tests', function (this: Suite) {
           4,
           '22.9998',
         );
+
+        // Switch to Arbitrum One to set it as the current network
+        await switchToNetworkFlow(driver, 'Arbitrum One');
 
         await bridgeTransaction(
           driver,
