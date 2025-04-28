@@ -28,7 +28,10 @@ import {
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import {
+  getIsRpcFailoverEnabled,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,
@@ -89,6 +92,7 @@ export const NetworksForm = ({
   const trackEvent = useContext(MetaMetricsContext);
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
 
   const {
     name,
@@ -103,9 +107,10 @@ export const NetworksForm = ({
     setBlockExplorers,
   } = networkFormState;
 
-  const defaultRpcEndpoint = rpcUrls.defaultRpcEndpointIndex === undefined
-    ? undefined
-    : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
+  const defaultRpcEndpoint =
+    rpcUrls.defaultRpcEndpointIndex === undefined
+      ? undefined
+      : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
   const { safeChains } = useSafeChains();
 
@@ -431,7 +436,9 @@ export const NetworksForm = ({
                 gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                {item.failoverUrls && item.failoverUrls.length > 0 ? (
+                {isRpcFailoverEnabled &&
+                item.failoverUrls &&
+                item.failoverUrls.length > 0 ? (
                   <Tag label={t('failover')} display={Display.Inline} />
                 ) : null}
               </Text>
@@ -472,9 +479,11 @@ export const NetworksForm = ({
           </Box>
         )}
 
-        {defaultRpcEndpoint &&
+        {/* eslint-disable-next-line @typescript-eslint/prefer-optional-chain */}
+        {isRpcFailoverEnabled &&
+        defaultRpcEndpoint &&
         defaultRpcEndpoint.failoverUrls &&
-        defaultRpcEndpoint.failoverUrls.length > 0 ? (
+        (defaultRpcEndpoint?.failoverUrls?.length ?? 0) > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}
