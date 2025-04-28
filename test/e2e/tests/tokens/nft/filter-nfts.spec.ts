@@ -1,10 +1,10 @@
+import { toHex } from '@metamask/controller-utils';
 import { withFixtures, unlockWallet } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixture-builder';
 import { Driver } from '../../../webdriver/driver';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { toHex } from '@metamask/controller-utils';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -94,13 +94,21 @@ describe('View NFT details', function () {
         const nftListPage = new NftListPage(driver);
         await nftListPage.filterNftsByNetworks('Current network');
         await nftListPage.check_numberOfNftsDisplayed(2);
-        await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #1 on mainnet');
-        await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #2 on mainnet');
+        await nftListPage.check_nftNameIsDisplayed(
+          'Test Dapp NFTs #1 on mainnet',
+        );
+        await nftListPage.check_nftNameIsDisplayed(
+          'Test Dapp NFTs #2 on mainnet',
+        );
         await nftListPage.filterNftsByNetworks('Popular networks');
         await nftListPage.check_numberOfNftsDisplayed(3);
         await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #1');
-        await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #1 on mainnet');
-        await nftListPage.check_nftNameIsDisplayed('Test Dapp NFTs #2 on mainnet');
+        await nftListPage.check_nftNameIsDisplayed(
+          'Test Dapp NFTs #1 on mainnet',
+        );
+        await nftListPage.check_nftNameIsDisplayed(
+          'Test Dapp NFTs #2 on mainnet',
+        );
       },
     );
   });
