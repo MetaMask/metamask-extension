@@ -34,4 +34,5 @@ export const FIXTURES_PREFERENCES = {
   enableMV3TimestampSave: true,
   useExternalServices: true,
   isProfileSyncingEnabled: true,
+  isAccountSyncingEnabled: true,
 };

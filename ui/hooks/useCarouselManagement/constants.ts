@@ -7,6 +7,15 @@ export const REMOTE_MODE_SLIDE = {
   href: '/home.html#remote',
 };
 
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+export const SOLANA_SLIDE = {
+  id: 'solana',
+  title: 'slideSolanaTitle',
+  description: 'slideSolanaDescription',
+  image: './images/slide-solana-icon.svg',
+};
+///: END:ONLY_INCLUDE_IF
+
 export const SWEEPSTAKES_SLIDE = {
   id: 'sweepStake',
   title: 'slideSweepStakeTitle',
@@ -48,7 +57,14 @@ export const CASH_SLIDE = {
   href: 'https://portfolio.metamask.io/sell',
 };
 
+export const MULTI_SRP_SLIDE = {
+  id: 'multiSrp',
+  title: 'slideMultiSrpTitle',
+  description: 'slideMultiSrpDescription',
+  image: './images/slide-multi-srp-icon.svg',
+};
+
 export const ZERO_BALANCE = '0x0';
 
 export const SWEEPSTAKES_START = new Date('2025-04-09T00:00:00Z');
-export const SWEEPSTAKES_END = new Date('2025-04-15T23:59:59Z');
+export const SWEEPSTAKES_END = new Date('2025-04-28T23:59:59Z');
