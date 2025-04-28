@@ -1,5 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
+// eslint-disable-next-line import/no-named-as-default
 import userEvent from '@testing-library/user-event';
 import nock from 'nock';
 import { TokenStandard } from '../../../../shared/constants/transaction';
