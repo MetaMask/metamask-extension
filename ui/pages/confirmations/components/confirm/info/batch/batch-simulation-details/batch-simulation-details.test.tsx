@@ -14,6 +14,10 @@ import { AlertMetricsProvider } from '../../../../../../../components/app/alert-
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { buildApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
+import {
+  downgradeAccountConfirmation,
+  upgradeAccountConfirmationOnly,
+} from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { Confirmation } from '../../../../../types/confirm';
 import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
@@ -279,5 +283,15 @@ describe('BatchSimulationDetails', () => {
       transactionData: DATA_MOCK,
       transactionIndex: 0,
     });
+  });
+
+  it('return null for transaction of type revokeDelegation', () => {
+    const { container } = render(downgradeAccountConfirmation);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('return null for upgrade transaction if there are no nested transactions', () => {
+    const { container } = render(upgradeAccountConfirmationOnly);
+    expect(container.firstChild).toBeNull();
   });
 });

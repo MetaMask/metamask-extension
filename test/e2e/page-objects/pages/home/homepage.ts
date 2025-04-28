@@ -47,6 +47,10 @@ class HomePage {
     testId: 'account-overview__nfts-tab',
   };
 
+  private readonly defiTab = {
+    testId: 'account-overview__defi-tab',
+  };
+
   private readonly popoverBackground = '.popover-bg';
 
   private readonly popoverCloseButton = {
@@ -115,13 +119,20 @@ class HomePage {
 
   async goToBackupSRPPage(): Promise<void> {
     console.log(`Go to backup secret recovery phrase on homepage`);
-    await this.driver.waitForSelector(this.backupSecretRecoveryPhraseNotification);
+    await this.driver.waitForSelector(
+      this.backupSecretRecoveryPhraseNotification,
+    );
     await this.driver.clickElement(this.backupSecretRecoveryPhraseButton);
   }
 
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
+  }
+
+  async goToDeFiTab(): Promise<void> {
+    console.log(`Go to DeFi tab on homepage`);
+    await this.driver.clickElement(this.defiTab);
   }
 
   async goToTokensTab(): Promise<void> {
@@ -169,7 +180,9 @@ class HomePage {
 
   async check_backupReminderIsNotDisplayed(): Promise<void> {
     console.log('Check backup reminder is not displayed on homepage');
-    await this.driver.assertElementNotPresent(this.backupSecretRecoveryPhraseNotification);
+    await this.driver.assertElementNotPresent(
+      this.backupSecretRecoveryPhraseNotification,
+    );
   }
 
   async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
@@ -259,7 +272,9 @@ class HomePage {
 
   async check_ifBridgeButtonIsClickable(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.bridgeButton, 1000);
+      await this.driver.findClickableElement(this.bridgeButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Bridge button not clickable', e);
       return false;
@@ -270,7 +285,9 @@ class HomePage {
 
   async check_ifSendButtonIsClickable(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.sendButton, 1000);
+      await this.driver.findClickableElement(this.sendButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Send button not clickable', e);
       return false;
@@ -281,7 +298,9 @@ class HomePage {
 
   async check_ifSwapButtonIsClickable(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.swapButton, 1000);
+      await this.driver.findClickableElement(this.swapButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Swap button not clickable', e);
       return false;

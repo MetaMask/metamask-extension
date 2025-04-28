@@ -780,6 +780,40 @@ describe('MetaMaskController', () => {
             allDetectedTokens: { '0x1': { [TEST_ADDRESS_2]: [{}] } },
           });
 
+        const mockSnapKeyring = {
+          createAccount: jest
+            .fn()
+            .mockResolvedValue({ address: 'mockedAddress' }),
+        };
+
+        const originalGetKeyringsByType =
+          metamaskController.keyringController.getKeyringsByType;
+        let snapKeyringCallCount = 0;
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringsByType')
+          .mockImplementation((type) => {
+            if (type === 'Snap Keyring') {
+              snapKeyringCallCount += 1;
+
+              if (snapKeyringCallCount === 1) {
+                // First call - use original implementation to let controller initialize snap keyring
+                return originalGetKeyringsByType.call(
+                  metamaskController.keyringController,
+                  type,
+                );
+              }
+              // Second call and beyond - return mock
+              console.log('returning mocked snap keyring!');
+              return [mockSnapKeyring];
+            }
+
+            // For other types, always use original implementation
+            return originalGetKeyringsByType.call(
+              metamaskController.keyringController,
+              type,
+            );
+          });
+
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
@@ -2611,7 +2645,7 @@ describe('MetaMaskController', () => {
         await new Promise((resolve) => {
           streamTest.write(
             {
-              type: 'caip-x',
+              type: 'caip-348',
               data: {
                 method: 'wallet_invokeMethod',
                 params: {
@@ -3912,6 +3946,39 @@ describe('MetaMaskController', () => {
       it('generates a new hd keyring instance with a mnemonic', async () => {
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+        const mockSnapKeyring = {
+          createAccount: jest
+            .fn()
+            .mockResolvedValue({ address: 'mockedAddress' }),
+        };
+
+        const originalGetKeyringsByType =
+          metamaskController.keyringController.getKeyringsByType;
+        let snapKeyringCallCount = 0;
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringsByType')
+          .mockImplementation((type) => {
+            if (type === 'Snap Keyring') {
+              snapKeyringCallCount += 1;
+
+              if (snapKeyringCallCount === 1) {
+                // First call - use original implementation to let controller initialize snap keyring
+                return originalGetKeyringsByType.call(
+                  metamaskController.keyringController,
+                  type,
+                );
+              }
+              // Second call and beyond - return mock
+              console.log('returning mocked snap keyring!');
+              return [mockSnapKeyring];
+            }
+
+            // For other types, always use original implementation
+            return originalGetKeyringsByType.call(
+              metamaskController.keyringController,
+              type,
+            );
+          });
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
 
@@ -3971,10 +4038,9 @@ describe('MetaMaskController', () => {
           .mockImplementation(mockDiscoverAccounts);
 
         const mockCreateAccount = jest.fn().mockResolvedValue(undefined);
-        const mockSnapKeyring = { createAccount: mockCreateAccount };
         jest
           .spyOn(metamaskController, 'getSnapKeyring')
-          .mockResolvedValue(mockSnapKeyring);
+          .mockResolvedValue({ createAccount: mockCreateAccount });
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
@@ -4000,14 +4066,14 @@ describe('MetaMaskController', () => {
         expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(2);
 
         // Assert that createAccount was called correctly for each discovered account
-        expect(mockCreateAccount).toHaveBeenCalledTimes(2);
+        expect(mockCreateAccount).toHaveBeenCalledTimes(3);
 
         // All calls should use the solana snap ID
         expect(mockCreateAccount.mock.calls[0][0]).toStrictEqual(
           expect.stringContaining('solana-wallet'),
         );
-        // First call should use derivation path on index 0
-        expect(mockCreateAccount.mock.calls[0][1]).toStrictEqual({
+        // Second call should use derivation path on index 0
+        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
           derivationPath: "m/44'/501'/0'/0'",
           entropySource: expect.any(String),
         });
@@ -4018,13 +4084,45 @@ describe('MetaMaskController', () => {
           setSelectedAccount: false,
         });
 
-        // Second call should use derivation path on index 1
-        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+        // Third call should use derivation path on index 1
+        expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
           derivationPath: "m/44'/501'/1'/0'",
           entropySource: expect.any(String),
         });
       });
       ///: END:ONLY_INCLUDE_IF
+    });
+
+    describe('NetworkController state', () => {
+      it('fixes selectedNetworkClientId from network controller state if it is invalid', () => {
+        metamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            NetworkController: {
+              ...cloneDeep(firstTimeState.NetworkController),
+              selectedNetworkClientId: 'invalid-client-id',
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        expect(
+          metamaskController.networkController.state.selectedNetworkClientId,
+        ).toBe(
+          metamaskController.networkController.state
+            .networkConfigurationsByChainId[CHAIN_IDS.MAINNET].rpcEndpoints[0]
+            .networkClientId,
+        );
+      });
     });
   });
 

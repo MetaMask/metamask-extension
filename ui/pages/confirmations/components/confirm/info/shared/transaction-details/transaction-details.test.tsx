@@ -11,10 +11,12 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { upgradeAccountConfirmation } from '../../../../../../../../test/data/confirmations/batch-transaction';
+import {
+  downgradeAccountConfirmation,
+  upgradeAccountConfirmationOnly,
+} from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
-import { Confirmation } from '../../../../../types/confirm';
 import { TransactionDetails } from './transaction-details';
 
 jest.mock(
@@ -219,24 +221,29 @@ describe('<TransactionDetails />', () => {
         getByTestId('transaction-details-recipient-row'),
       ).toBeInTheDocument();
     });
+  });
 
-    it('renders SmartContractWithLogo when transaction is a batch transaction', () => {
-      const state = getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-        {
-          metamask: {
-            preferences: {
-              showConfirmationAdvancedDetails: true,
-            },
-          },
-        },
-      );
-      const mockStore = configureMockStore(middleware)(state);
-      const { getByText } = renderWithConfirmContextProvider(
-        <TransactionDetails />,
-        mockStore,
-      );
-      expect(getByText('Smart contract')).toBeInTheDocument();
-    });
+  it('return null for transaction of type revokeDelegation', () => {
+    const state = getMockConfirmStateForTransaction(
+      downgradeAccountConfirmation,
+    );
+    const mockStore = configureMockStore([])(state);
+    const { container } = renderWithConfirmContextProvider(
+      <TransactionDetails />,
+      mockStore,
+    );
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('return null for transaction of type smart account upgrade transaction if there are no nested transactions', () => {
+    const state = getMockConfirmStateForTransaction(
+      upgradeAccountConfirmationOnly,
+    );
+    const mockStore = configureMockStore([])(state);
+    const { container } = renderWithConfirmContextProvider(
+      <TransactionDetails />,
+      mockStore,
+    );
+    expect(container.firstChild).toBeNull();
   });
 });
