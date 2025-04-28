@@ -45,11 +45,11 @@ const fetchWithCache = async <T = any>({
   }
 
   const currentTime = Date.now();
-  const cacheResponse = await getStorageItem<CacheEntry<T>>(cacheKey);
+  const storedItem = await getStorageItem<CacheEntry<T>>(cacheKey);
   let cachedResponse: CacheEntry<T>['cachedResponse'] | undefined;
-  if (cacheResponse) {
-    let cachedTime: (typeof cacheResponse)['cachedTime'];
-    ({ cachedResponse, cachedTime } = cacheResponse);
+  if (storedItem) {
+    let cachedTime: CacheEntry<T>['cachedTime'];
+    ({ cachedResponse, cachedTime } = storedItem);
     if (currentTime - cachedTime < cacheRefreshTime) {
       return cachedResponse;
     }
@@ -75,7 +75,7 @@ const fetchWithCache = async <T = any>({
   }
   const responseJson =
     response.status === 204 ? undefined : await response.json();
-  const cacheEntry: CacheEntry<T> = {
+  const cacheEntry = {
     cachedResponse: responseJson,
     cachedTime: currentTime,
   };
