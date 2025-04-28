@@ -174,7 +174,7 @@ describe('useIsOriginalNativeTokenSymbol', () => {
     expect(spyFetch).toHaveBeenCalled();
   });
 
-  it('should return false even if chain well-known validation is disabled', async () => {
+  it('should return false even if chain external well-known list is disabled', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter(false));
     // Mock the wellKnownChains response with a different native symbol
     const wellKnownChains = [
@@ -187,6 +187,7 @@ describe('useIsOriginalNativeTokenSymbol', () => {
     ];
 
     // Mock the fetchWithCache function to return the wellKnownChains
+    // this should NOT be called (tested for below)
     const spyFetch = jest
       .spyOn(fetchWithCacheModule, 'default')
       .mockResolvedValue(wellKnownChains);
