@@ -241,10 +241,14 @@ class PrivacySettings {
   }
 
   async optOutDataCollectionForMarketing(): Promise<void> {
-    console.log('Opt out data collection for marketing on privacy settings page');
+    console.log(
+      'Opt out data collection for marketing on privacy settings page',
+    );
     await this.toggleDataCollectionForMarketing();
     await this.driver.waitForSelector(this.dataCollectionWarningMessage);
-    await this.driver.clickElementAndWaitToDisappear(this.dataCollectionWarningAckButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.dataCollectionWarningAckButton,
+    );
   }
 
   async toggleAutodetectNft(): Promise<void> {
