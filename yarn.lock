@@ -4940,7 +4940,6 @@ __metadata:
     "@metamask/snaps-controllers": ^11.0.0
     "@metamask/transaction-controller": ^54.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-<<<<<<< HEAD
   checksum: 10/7c2452664e18882bc88c86b25a6cc88c6cc85d9481cf01c0b85683e7f93b18dd00cb0f88651ebe087e416a13fa3ffb25269d00299a4899505cb3073dd69dc052
   languageName: node
   linkType: hard
@@ -4948,15 +4947,6 @@ __metadata:
 "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A60.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-60.0.0-7fc404c3fc.patch":
   version: 60.0.0
   resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A60.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-60.0.0-7fc404c3fc.patch::version=60.0.0&hash=f9ee52"
-=======
-  checksum: 10/140617b33f24c15da6652dbe9d62993efb1f653aa2d1035cc852118f45da63a5a08a38199a2561f92ed84f0ffae9c714c95979e520f8a084e68d990ae508ea4f
-  languageName: node
-  linkType: hard
-
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A59.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-59.0.0-98709ca958.patch":
-  version: 59.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A59.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-59.0.0-98709ca958.patch::version=59.0.0&hash=f9ee52"
->>>>>>> main
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -4996,12 +4986,13 @@ __metadata:
     "@metamask/snaps-controllers": ^11.0.0
     "@metamask/transaction-controller": ^54.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-<<<<<<< HEAD
   checksum: 10/14f15d4b0fa48aaf8d5aedf4256b36a01a05a7294f9831cca224d99580aee695ef18acefbd1254c273e1cd32fd2d15f69a740937b7f883c159c5a379fd2a0cec
-=======
-  checksum: 10/80c643cba40bf735c36d1c798fab7fb9d8eba2095c2b0b09a9ba355b143976bf48d26e2a1949aa7e94d895908d6a4983554cc2d45503b2cc56b11046da9be02e
->>>>>>> main
   languageName: node
+  linkType: hard
+
+"@metamask/auto-changelog@npm:^2.1.0":
+  version: 2.6.1
+  resolution: "@metamask/auto-changelog@npm:2.6.1"
   dependencies:
     diff: "npm:^5.0.0"
     execa: "npm:^5.1.1"
@@ -27610,18 +27601,18 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-<<<<<<< HEAD
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A60.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-60.0.0-7fc404c3fc.patch"
-=======
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A59.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-59.0.0-98709ca958.patch"
->>>>>>> main
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
     "@metamask/bridge-controller": "npm:^17.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
+    "@metamask/chain-agnostic-permission": "npm:^0.3.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/design-tokens": "npm:^7.0.0"
+    "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
