@@ -117,11 +117,9 @@ export const useHistoricalPrices = ({
       };
     }
 
+    // On non-EVM, we fetch the prices from the snap, then store them in the redux state, and grab them from the redux state
     const fetchPrices = async () => {
-      // Only show the loading state if we don't have any prices yet
-      if (prices.length === 0) {
-        setLoading(true);
-      }
+      setLoading(true);
       try {
         await dispatch(fetchHistoricalPricesForAsset(address as CaipAssetType));
       } catch (error) {
@@ -135,6 +133,7 @@ export const useHistoricalPrices = ({
         setLoading(false);
       }
     };
+
     fetchPrices();
     const intervalId = setInterval(fetchPrices, 60000); // Refresh every minute
     return () => clearInterval(intervalId); // Cleanup on unmount
@@ -147,7 +146,6 @@ export const useHistoricalPrices = ({
     historicalPricesNonEvm,
     showFiat,
     dispatch,
-    prices,
   ]);
 
   // On non-EVM, retrieve the prices from the state
@@ -157,7 +155,7 @@ export const useHistoricalPrices = ({
     }
 
     const historicalPricesNonEvmThisTokenAndPeriod =
-      historicalPricesNonEvm[address as CaipAssetType]?.[currency]?.intervals[
+      historicalPricesNonEvm?.[address as CaipAssetType]?.[currency]?.intervals[
         timeRange
       ] ?? [];
     const pricesToSet = historicalPricesNonEvmThisTokenAndPeriod.map(

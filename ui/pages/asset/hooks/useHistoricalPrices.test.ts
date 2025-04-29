@@ -220,6 +220,24 @@ describe('useHistoricalPrices', () => {
     const currency = 'usd';
     const timeRange = 'P7D';
 
+    it('returns loading true and default data initially', () => {
+      const mockState = cloneDeep(mockStateIsNonEvm) as any;
+      mockState.metamask.historicalPrices = {};
+
+      const { result } = renderHookWithProvider(
+        () => useHistoricalPrices({ chainId, address, currency, timeRange }),
+        mockStateIsNonEvm,
+      );
+
+      expect(result.current).toEqual({
+        loading: true,
+        data: {
+          prices: [],
+          metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
+        },
+      });
+    });
+
     it('returns the historical prices when the state is populated', async () => {
       const mockState = cloneDeep(mockStateIsNonEvm) as any;
       mockState.metamask.historicalPrices = {
@@ -245,6 +263,10 @@ describe('useHistoricalPrices', () => {
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
         mockState,
       );
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
 
       expect(result.current).toEqual({
         loading: false,
@@ -278,6 +300,10 @@ describe('useHistoricalPrices', () => {
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
         mockState,
       );
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
 
       expect(result.current).toEqual({
         loading: false,
