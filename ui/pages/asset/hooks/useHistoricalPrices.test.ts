@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SolScope } from '@metamask/keyring-api';
 import { waitFor } from '@testing-library/react';
 import { cloneDeep } from 'lodash';
@@ -8,7 +9,7 @@ import {
   useHistoricalPrices,
 } from './useHistoricalPrices';
 
-jest.mock('../../../shared/lib/fetch-with-cache', () => ({
+jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
   __esModule: true,
   default: jest.fn(),
 }));

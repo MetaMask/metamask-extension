@@ -3,7 +3,7 @@ import { HistoricalPriceValue } from '@metamask/snaps-sdk';
 import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { MINUTE } from '../../../../shared/constants/time';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { getShouldShowFiat } from '../../../selectors';
@@ -13,6 +13,7 @@ import {
   chainSupportsPricing,
   fromIso8601DurationToPriceApiTimePeriod,
 } from '../util';
+import { fetchHistoricalPricesForAsset } from '../../../store/actions';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
@@ -76,12 +77,23 @@ export const useHistoricalPrices = ({
 
   const historicalPricesNonEvm = useSelector(getHistoricalPrices);
 
-  // Fetch the prices
+  const dispatch = useDispatch();
+
+  /**
+   * Trigger a fetch of prices
+   *
+   * On EVM, we set setPrices directly as a result of the fetch.
+   *
+   * On non-EVM, we dispatch an action to fetch the prices and update the redux state.
+   * So we follow up with an other effect that will respond on the redux state update and set the prices locally in this hook.
+   */
   useEffect(() => {
     if (isEvm) {
       const chainSupported = showFiat && chainSupportsPricing(chainId as Hex);
       if (!chainSupported) {
-        return;
+        return () => {
+          // No cleanup needed
+        };
       }
       setLoading(true);
       const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
@@ -100,16 +112,30 @@ export const useHistoricalPrices = ({
         .finally(() => {
           setLoading(false);
         });
-    } else {
-      const historicalPricesNonEvmThisTokenAndPeriod =
-        historicalPricesNonEvm[address as CaipAssetType]?.[currency]?.intervals[
-          timeRange
-        ] ?? [];
-      const pricesToSet = historicalPricesNonEvmThisTokenAndPeriod.map(
-        ([x, y]: HistoricalPriceValue) => ({ x, y: Number(y) }),
-      );
-      setPrices(pricesToSet);
+      return () => {
+        // No cleanup needed
+      };
     }
+
+    const fetchPrices = async () => {
+      // Only show the loading state if we don't have any prices yet
+      if (prices.length === 0) {
+        setLoading(true);
+      }
+      try {
+        await dispatch(fetchHistoricalPricesForAsset(address as CaipAssetType));
+      } catch (error) {
+        console.error(
+          `Error fetching historical prices for ${address} on ${chainId}`,
+          error,
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPrices();
+    const intervalId = setInterval(fetchPrices, 60000); // Refresh every minute
+    return () => clearInterval(intervalId); // Cleanup on unmount
   }, [
     chainId,
     address,
@@ -118,7 +144,25 @@ export const useHistoricalPrices = ({
     isEvm,
     historicalPricesNonEvm,
     showFiat,
+    dispatch,
+    prices,
   ]);
+
+  // On non-EVM, retrieve the prices from the state
+  useEffect(() => {
+    if (isEvm) {
+      return;
+    }
+
+    const historicalPricesNonEvmThisTokenAndPeriod =
+      historicalPricesNonEvm[address as CaipAssetType]?.[currency]?.intervals[
+        timeRange
+      ] ?? [];
+    const pricesToSet = historicalPricesNonEvmThisTokenAndPeriod.map(
+      ([x, y]: HistoricalPriceValue) => ({ x, y: Number(y) }),
+    );
+    setPrices(pricesToSet);
+  }, [isEvm, historicalPricesNonEvm, address, currency, timeRange]);
 
   // Compute the metadata
   useEffect(() => {

@@ -552,6 +552,9 @@
   "asset": {
     "message": "Asset"
   },
+  "assetChartNoHistoricalPrices": {
+    "message": "We could not fetch any historical data"
+  },
   "assetMultipleNFTsBalance": {
     "message": "$1 NFTs"
   },

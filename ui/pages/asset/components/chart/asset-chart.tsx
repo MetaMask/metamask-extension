@@ -34,10 +34,12 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { loadingOpacity } from '../../util';
-import AssetPrice from '../asset-price';
 import { useChartTimeRanges } from '../../hooks/useChartTimeRanges';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
+import { AssetChartEmptyState } from './asset-chart-empty-state';
+import { AssetChartLoading } from './asset-chart-loading';
+import AssetChartPrice from './asset-chart-price';
 
 Chart.register(
   LinearScale,
@@ -100,7 +102,10 @@ const getTranslatedTimeRangeLabel = (
   iso8601Duration: string,
 ) => {
   const { years, months, weeks, days, hours, minutes, seconds, milliseconds } =
-    Duration.fromISO(iso8601Duration).normalize().rescale().toObject();
+    Duration.fromISO(iso8601Duration, { locale: 'en' })
+      .normalize()
+      .rescale()
+      .toObject();
 
   if (years && years > 100) {
     return `${translator('all')} `;
@@ -158,6 +163,12 @@ const AssetChart = ({
     timeRange: selectedTimeRange,
   });
 
+  // The cases below are intentionally mutually exclusive, in order to flatten the render logic
+  const shouldShowChartLoading = loading && prices.length === 0;
+  const shouldShowChartEmptyState = !loading && prices.length === 0; // When the chart is not loading anymore and there are no prices, show an empty state
+  const shouldShowChartMuted = loading && prices.length > 0;
+  const shouldShowChart = !loading && prices.length > 0;
+
   const options = {
     ...initialChartOptions,
     borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
@@ -167,13 +178,9 @@ const AssetChart = ({
     },
   } as const;
 
-  if (!currentPrice || (!loading && !prices.length)) {
-    return null;
-  }
-
   return (
     <Box borderRadius={BorderRadius.LG}>
-      <AssetPrice
+      <AssetChartPrice
         ref={priceRef}
         loading={loading}
         currency={currency}
@@ -185,72 +192,73 @@ const AssetChart = ({
         data-testid="asset-price-chart"
         marginTop={4}
         borderRadius={BorderRadius.LG}
-        backgroundColor={
-          loading && !prices
-            ? BackgroundColor.backgroundAlternative
-            : BackgroundColor.transparent
-        }
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
       >
-        <Box style={{ opacity: loading && prices ? loadingOpacity : 1 }}>
-          <ChartTooltip
-            point={maxPricePoint}
-            xMin={xMin}
-            xMax={xMax}
-            currency={currency}
-          />
-          <Box
-            style={{ aspectRatio: `${options.aspectRatio}` }}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={
-              currentPrice ? JustifyContent.flexEnd : JustifyContent.flexStart
-            }
-          >
-            <Line
-              ref={chartRef}
-              data={{ datasets: [{ data: prices }] }}
-              options={options}
-              updateMode="none"
-              // Update the price display on chart hover
-              onMouseMove={(event) => {
-                const data = chartRef?.current?.data?.datasets?.[0]?.data;
-                if (data) {
-                  const target = event.target as HTMLElement;
-                  const index = Math.max(
-                    0,
-                    Math.min(
-                      data.length - 1,
-                      Math.round(
-                        (event.nativeEvent.offsetX / target.clientWidth) *
-                          data.length,
+        {shouldShowChartLoading && <AssetChartLoading />}
+        {shouldShowChartEmptyState && <AssetChartEmptyState />}
+        {(shouldShowChart || shouldShowChartMuted) && (
+          <Box style={{ opacity: loading && prices ? loadingOpacity : 1 }}>
+            <ChartTooltip
+              point={maxPricePoint}
+              xMin={xMin}
+              xMax={xMax}
+              currency={currency}
+            />
+            <Box
+              style={{ aspectRatio: `${options.aspectRatio}` }}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              justifyContent={
+                currentPrice ? JustifyContent.flexEnd : JustifyContent.flexStart
+              }
+            >
+              <Line
+                ref={chartRef}
+                data={{ datasets: [{ data: prices }] }}
+                options={options}
+                updateMode="none"
+                // Update the price display on chart hover
+                onMouseMove={(event) => {
+                  const data = chartRef?.current?.data?.datasets?.[0]?.data;
+                  if (data) {
+                    const target = event.target as HTMLElement;
+                    const index = Math.max(
+                      0,
+                      Math.min(
+                        data.length - 1,
+                        Math.round(
+                          (event.nativeEvent.offsetX / target.clientWidth) *
+                            data.length,
+                        ),
                       ),
-                    ),
-                  );
-                  const point = data[index];
-                  if (point) {
-                    priceRef?.current?.setPrice({
-                      price: point.y,
-                      date: point.x,
-                    });
+                    );
+                    const point = data[index];
+                    if (point) {
+                      priceRef?.current?.setPrice({
+                        price: point.y,
+                        date: point.x,
+                      });
+                    }
                   }
-                }
-              }}
-              // Revert to current price when not hovering
-              onMouseOut={() => {
-                priceRef?.current?.setPrice({
-                  price: currentPrice,
-                  date: Date.now(),
-                });
-              }}
+                }}
+                // Revert to current price when not hovering
+                onMouseOut={() => {
+                  priceRef?.current?.setPrice({
+                    price: currentPrice,
+                    date: Date.now(),
+                  });
+                }}
+              />
+            </Box>
+            <ChartTooltip
+              point={minPricePoint}
+              xMin={xMin}
+              xMax={xMax}
+              currency={currency}
             />
           </Box>
-          <ChartTooltip
-            point={minPricePoint}
-            xMin={xMin}
-            xMax={xMax}
-            currency={currency}
-          />
-        </Box>
+        )}
 
         <Box
           style={prices ? undefined : { visibility: `hidden` }}

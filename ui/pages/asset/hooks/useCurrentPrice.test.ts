@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssetType } from '@metamask/bridge-controller';
 import { SolScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';

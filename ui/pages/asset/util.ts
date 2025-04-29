@@ -105,7 +105,7 @@ export const fromIso8601DurationToPriceApiTimePeriod = (
   duration: string,
 ): PriceApiTimePeriod => {
   assert(
-    Duration.fromISO(duration).isValid,
+    Duration.fromISO(duration, { locale: 'en' }).isValid,
     `Invalid ISO 8601 duration: ${duration}`,
   );
 

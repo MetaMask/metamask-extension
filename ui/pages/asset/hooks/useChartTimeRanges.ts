@@ -19,12 +19,13 @@ export const useChartTimeRanges = (
   caipAssetType?: CaipAssetType,
   currency?: string,
 ): string[] => {
+  const DEFAULT_TIME_RANGES = ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y'];
   const isEvm = useSelector(getMultichainIsEvm);
   const historicalPricesNonEvm = useSelector(getHistoricalPrices);
 
   if (isEvm) {
     // On EVM, time ranges are hardcoded
-    return ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y'];
+    return DEFAULT_TIME_RANGES;
   }
 
   assert(caipAssetType, 'caipAssetType is required on non-EVM chains');
@@ -32,7 +33,11 @@ export const useChartTimeRanges = (
 
   // On non-EVM, time ranges are the intervals defined in the the historicalPrices state
   const intervals =
-    historicalPricesNonEvm[caipAssetType]?.[currency]?.intervals ?? {};
+    historicalPricesNonEvm[caipAssetType]?.[currency]?.intervals;
+
+  if (!intervals) {
+    return DEFAULT_TIME_RANGES;
+  }
 
   return chain(intervals)
     .keys()

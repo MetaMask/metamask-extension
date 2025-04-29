@@ -1,14 +1,13 @@
 import { Nft } from '@metamask/assets-controllers';
-import { CaipAssetType, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
-import { fetchHistoricalPricesForAsset } from '../../store/actions';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 
@@ -40,13 +39,6 @@ const Asset = () => {
       isEqualCaseInsensitive(address, decodedAsset) &&
       id === tokenId.toString(),
   );
-
-  const dispatch = useDispatch();
-
-  // Preload non-EVM historical prices for the asset
-  useEffect(() => {
-    dispatch(fetchHistoricalPricesForAsset(decodedAsset as CaipAssetType));
-  }, [dispatch, decodedAsset]);
 
   useEffect(() => {
     const el = document.querySelector('.app');
