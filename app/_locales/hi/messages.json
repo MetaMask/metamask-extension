@@ -1025,9 +1025,6 @@
   "confirm": {
     "message": "कन्फर्म करें"
   },
-  "confirmAccountType": {
-    "message": "प्रकार"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "स्मार्ट अकाउंट"
   },

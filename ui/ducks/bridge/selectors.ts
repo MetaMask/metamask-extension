@@ -4,31 +4,26 @@ import type {
   ///: END:ONLY_INCLUDE_IF
   NetworkState,
 } from '@metamask/network-controller';
+import {
+  isSolanaChainId,
+  type BridgeToken,
+  BridgeFeatureFlagsKey,
+  isNativeAddress,
+  formatChainIdToCaip,
+  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+  getNativeAssetForChainId,
+  type BridgeAppState as BridgeAppStateFromController,
+  selectBridgeQuotes,
+  selectIsQuoteExpired,
+} from '@metamask/bridge-controller';
 import { SolAccountType } from '@metamask/keyring-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { orderBy, uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
-import type { GasFeeEstimates } from '@metamask/gas-fee-controller';
+import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import { CaipAssetType, type CaipChainId, type Hex } from '@metamask/utils';
-import {
-  isSolanaChainId,
-  type L1GasFees,
-  type BridgeToken,
-  type QuoteMetadata,
-  type QuoteResponse,
-  SortOrder,
-  BridgeFeatureFlagsKey,
-  RequestStatus,
-  type BridgeControllerState,
-  type SolanaFees,
-  isNativeAddress,
-  formatChainIdToCaip,
-  BRIDGE_PREFERRED_GAS_ESTIMATE,
-  BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  getNativeAssetForChainId,
-} from '@metamask/bridge-controller';
 import type {
   CurrencyRateState,
   MultichainAssetsControllerState,
@@ -48,25 +43,13 @@ import {
 import {
   getHardwareWalletType,
   getIsBridgeEnabled,
-  getUSDConversionRate,
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
 } from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
-import { getConversionRate, getGasFeeEstimates } from '../metamask/metamask';
-import {
-  calcAdjustedReturn,
-  calcCost,
-  calcRelayerFee,
-  calcSentAmount,
-  calcSwapRate,
-  calcToAmount,
-  calcEstimatedAndMaxTotalGasFee,
-  calcSolanaTotalNetworkFee,
-} from '../../pages/bridge/utils/quote';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
+import {} from '../../pages/bridge/utils/quote';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   FEATURED_RPCS,
@@ -90,7 +73,8 @@ import {
 import type { BridgeState } from './bridge';
 
 export type BridgeAppState = {
-  metamask: BridgeControllerState &
+  metamask: BridgeAppStateFromController &
+    GasFeeState &
     NetworkState &
     AccountsControllerState &
     MultichainAssetsRatesControllerState &
@@ -270,26 +254,6 @@ export const getQuoteRefreshRate = createSelector(
         ?.refreshRate) ??
     extensionConfig.refreshRate,
 );
-
-const _getBridgeFeesPerGas = createSelector(
-  getGasFeeEstimates,
-  (gasFeeEstimates) => ({
-    estimatedBaseFeeInDecGwei: (gasFeeEstimates as GasFeeEstimates)
-      ?.estimatedBaseFee,
-    maxPriorityFeePerGasInDecGwei: (gasFeeEstimates as GasFeeEstimates)?.[
-      BRIDGE_PREFERRED_GAS_ESTIMATE
-    ]?.suggestedMaxPriorityFeePerGas,
-    maxFeePerGasInDecGwei: (gasFeeEstimates as GasFeeEstimates)?.high
-      ?.suggestedMaxFeePerGas,
-    maxFeePerGas: decGWEIToHexWEI(
-      (gasFeeEstimates as GasFeeEstimates)?.high?.suggestedMaxFeePerGas,
-    ),
-    maxPriorityFeePerGas: decGWEIToHexWEI(
-      (gasFeeEstimates as GasFeeEstimates)?.high?.suggestedMaxPriorityFeePerGas,
-    ),
-  }),
-);
-
 export const getBridgeSortOrder = (state: BridgeAppState) =>
   state.bridge.sortOrder;
 
@@ -465,187 +429,30 @@ export const getToTokenConversionRate = createDeepEqualSelector(
   },
 );
 
-const _getQuotesWithMetadata = createSelector(
-  (state: BridgeAppState) => state.metamask.quotes,
-  getToTokenConversionRate,
-  getFromTokenConversionRate,
-  getConversionRate,
-  getMultichainCoinRates,
-  getUSDConversionRate,
-  _getBridgeFeesPerGas,
-  (
-    quotes,
-    toTokenExchangeRate,
-    fromTokenExchangeRate,
-    nativeToDisplayCurrencyExchangeRate,
-    nonEvmNativeConversionRate,
-    nativeToUsdExchangeRate,
-    {
-      estimatedBaseFeeInDecGwei,
-      maxPriorityFeePerGasInDecGwei,
-      maxFeePerGasInDecGwei,
-    },
-  ): (QuoteResponse & QuoteMetadata)[] => {
-    const newQuotes = quotes.map((quote: QuoteResponse & SolanaFees) => {
-      const isSolanaQuote =
-        isSolanaChainId(quote.quote.srcChainId) && quote.solanaFeesInLamports;
-
-      const toTokenAmount = calcToAmount(
-        quote.quote,
-        toTokenExchangeRate.valueInCurrency,
-        toTokenExchangeRate.usd,
-      );
-      let totalEstimatedNetworkFee, gasFee, totalMaxNetworkFee;
-      if (isSolanaQuote) {
-        totalEstimatedNetworkFee = calcSolanaTotalNetworkFee(
-          quote,
-          nonEvmNativeConversionRate.sol.conversionRate,
-          nonEvmNativeConversionRate.sol.usdConversionRate,
-        );
-        gasFee = totalEstimatedNetworkFee;
-        totalMaxNetworkFee = totalEstimatedNetworkFee;
-      } else {
-        gasFee = calcEstimatedAndMaxTotalGasFee({
-          bridgeQuote: quote,
-          estimatedBaseFeeInDecGwei,
-          maxFeePerGasInDecGwei,
-          maxPriorityFeePerGasInDecGwei,
-          nativeToDisplayCurrencyExchangeRate,
-          nativeToUsdExchangeRate,
-        });
-        const relayerFee = calcRelayerFee(
-          quote,
-          nativeToDisplayCurrencyExchangeRate,
-          nativeToUsdExchangeRate,
-        );
-        totalEstimatedNetworkFee = {
-          amount: gasFee.amount.plus(relayerFee.amount),
-          valueInCurrency:
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            gasFee.valueInCurrency?.plus(relayerFee.valueInCurrency || '0') ??
-            null,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          usd: gasFee.usd?.plus(relayerFee.usd || '0') ?? null,
-        };
-        totalMaxNetworkFee = {
-          amount: gasFee.amountMax.plus(relayerFee.amount),
-          valueInCurrency:
-            gasFee.valueInCurrencyMax?.plus(
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              relayerFee.valueInCurrency || '0',
-            ) ?? null,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          usd: gasFee.usdMax?.plus(relayerFee.usd || '0') ?? null,
-        };
-      }
-
-      const sentAmount = calcSentAmount(
-        quote.quote,
-        fromTokenExchangeRate.valueInCurrency,
-        fromTokenExchangeRate.usd,
-      );
-      const adjustedReturn = calcAdjustedReturn(
-        toTokenAmount,
-        totalEstimatedNetworkFee,
-      );
-      return {
-        ...quote,
-        // QuoteMetadata fields
-        toTokenAmount,
-        sentAmount,
-        totalNetworkFee: totalEstimatedNetworkFee,
-        totalMaxNetworkFee,
-        adjustedReturn,
-        gasFee,
-        swapRate: calcSwapRate(sentAmount.amount, toTokenAmount.amount),
-        cost: calcCost(adjustedReturn, sentAmount),
-      };
-    });
-
-    return newQuotes;
-  },
-);
-
-const _getSortedQuotesWithMetadata = createSelector(
-  _getQuotesWithMetadata,
-  getBridgeSortOrder,
-  (quotesWithMetadata, sortOrder) => {
-    switch (sortOrder) {
-      case SortOrder.ETA_ASC:
-        return orderBy(
-          quotesWithMetadata,
-          (quote) => quote.estimatedProcessingTimeInSeconds,
-          'asc',
-        );
-      default:
-        return orderBy(
-          quotesWithMetadata,
-          ({ cost }) => cost.valueInCurrency?.toNumber(),
-          'asc',
-        );
-    }
-  },
-);
-
-// Generates a pseudo-unique string that identifies each quote
-// by aggregator, bridge, steps and value
-const _getQuoteIdentifier = ({ quote }: QuoteResponse & L1GasFees) =>
-  `${quote.bridgeId}-${quote.bridges[0]}-${quote.steps.length}`;
-
-const _getSelectedQuote = createSelector(
-  (state: BridgeAppState) => state.metamask.quotesRefreshCount,
-  (state: BridgeAppState) => state.bridge.selectedQuote,
-  _getSortedQuotesWithMetadata,
-  (quotesRefreshCount, selectedQuote, sortedQuotesWithMetadata) =>
-    quotesRefreshCount <= 1
-      ? selectedQuote
-      : // Find match for selectedQuote in new quotes
-        sortedQuotesWithMetadata.find((quote) =>
-          selectedQuote
-            ? _getQuoteIdentifier(quote) === _getQuoteIdentifier(selectedQuote)
-            : false,
-        ),
-);
+export const getIsQuoteExpired = (
+  { metamask }: BridgeAppState,
+  currentTimeInMs: number,
+) =>
+  selectIsQuoteExpired(
+    metamask,
+    { featureFlagsKey: BridgeFeatureFlagsKey.EXTENSION_CONFIG },
+    currentTimeInMs,
+  );
 
 export const getBridgeQuotes = createSelector(
   [
-    _getSortedQuotesWithMetadata,
-    _getSelectedQuote,
-    (state) => state.metamask.quotesLastFetched,
-    (state) => state.metamask.quotesLoadingStatus === RequestStatus.LOADING,
-    (state: BridgeAppState) => state.metamask.quotesRefreshCount,
-    (state: BridgeAppState) => state.metamask.quotesInitialLoadTime,
-    (state: BridgeAppState) => state.metamask.quoteFetchError,
-    getBridgeQuotesConfig,
-    getQuoteRequest,
+    ({ metamask }: BridgeAppState) => metamask,
+    ({ bridge: { sortOrder, selectedQuote } }: BridgeAppState) => ({
+      sortOrder,
+      selectedQuote,
+    }),
   ],
-  (
-    sortedQuotesWithMetadata,
-    selectedQuote,
-    quotesLastFetchedMs,
-    isLoading,
-    quotesRefreshCount,
-    quotesInitialLoadTimeMs,
-    quoteFetchError,
-    { maxRefreshCount },
-    { insufficientBal },
-  ) => ({
-    sortedQuotes: sortedQuotesWithMetadata,
-    recommendedQuote: sortedQuotesWithMetadata[0],
-    activeQuote: selectedQuote ?? sortedQuotesWithMetadata[0],
-    quotesLastFetchedMs,
-    isLoading,
-    quoteFetchError,
-    quotesRefreshCount,
-    quotesInitialLoadTimeMs,
-    isQuoteGoingToRefresh: insufficientBal
-      ? false
-      : quotesRefreshCount < maxRefreshCount,
-  }),
+  (controllerStates, { sortOrder, selectedQuote }) =>
+    selectBridgeQuotes(controllerStates, {
+      sortOrder,
+      selectedQuote,
+      featureFlagsKey: BridgeFeatureFlagsKey.EXTENSION_CONFIG,
+    }),
 );
 
 export const getIsBridgeTx = createDeepEqualSelector(
@@ -754,7 +561,7 @@ export const getValidationErrors = createDeepEqualSelector(
         activeQuote?.sentAmount?.valueInCurrency &&
         activeQuote?.adjustedReturn?.valueInCurrency &&
         fromTokenInputValue
-          ? activeQuote.adjustedReturn.valueInCurrency.lt(
+          ? new BigNumber(activeQuote.adjustedReturn.valueInCurrency).lt(
               new BigNumber(
                 1 - BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
               ).times(activeQuote.sentAmount.valueInCurrency),
