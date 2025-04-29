@@ -21,6 +21,7 @@ import {
   MOCK_BRIDGE_DAI_L2_TO_MAINNET,
   TOP_ASSETS_API_LINEA_MOCK_RESULT,
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
+  MOCK_BRIDGE_ETH_TO_WETH_LINEA,
 } from './constants';
 
 export class BridgePage {
@@ -175,6 +176,22 @@ async function mockETHtoETH(mockServer: Mockttp) {
     });
 }
 
+async function mockETHtoWETH(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f',
+    })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_ETH_TO_WETH_LINEA,
+      };
+    });
+}
+
 async function mockETHtoUSDC(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getQuote/u)
@@ -221,6 +238,30 @@ async function mockDAItoUSDT(mockServer: Mockttp) {
         json: MOCK_BRIDGE_DAI_TO_USDT_LINEA,
       };
     });
+}
+
+async function mockGetQuoteInvalid(
+  mockServer: Mockttp,
+  options: { statusCode: number; json: unknown },
+) {
+  return await mockServer.forGet(/getQuote/u).thenCallback(() => {
+    return {
+      statusCode: options.statusCode,
+      json: options.json,
+    };
+  });
+}
+
+async function mockGetTxStatusInvalid(
+  mockServer: Mockttp,
+  options: { statusCode: number; json: unknown },
+) {
+  return await mockServer.forGet(/getTxStatus/u).thenCallback(() => {
+    return {
+      statusCode: options.statusCode,
+      json: options.json,
+    };
+  });
 }
 
 async function mockL2toMainnet(mockServer: Mockttp) {
@@ -346,7 +387,116 @@ export const getBridgeFixtures = (
         type: 'anvil',
         options: {
           chainId: 1,
+          hardfork: 'london',
           loadState: './test/e2e/seeder/network-states/with50Dai.json',
+        },
+      },
+    ],
+    title,
+  };
+};
+
+export const getQuoteNegativeCasesFixtures = (
+  options: { statusCode: number; json: unknown },
+  title?: string,
+) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withTokensControllerERC20({ chainId: 1 });
+
+  return {
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, {
+        'extension-config': {
+          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+          support: true,
+        },
+      }),
+      await mockTopAssetsLinea(mockServer),
+      await mockGetQuoteInvalid(mockServer, options),
+    ],
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+        },
+      },
+    ],
+    title,
+  };
+};
+
+export const getBridgeNegativeCasesFixtures = (
+  options: { statusCode: number; json: unknown },
+  title?: string,
+) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withTokensControllerERC20({ chainId: 1 });
+
+  return {
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, {
+        'extension-config': {
+          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+          support: true,
+        },
+      }),
+      await mockTopAssetsLinea(mockServer),
+      await mockETHtoETH(mockServer),
+      await mockGetTxStatusInvalid(mockServer, options),
+    ],
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+          hardfork: 'london',
+        },
+      },
+    ],
+    title,
+  };
+};
+
+export const getInsufficientFundsFixtures = (title?: string) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withTokensControllerERC20({ chainId: 1 });
+
+  return {
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, {
+        'extension-config': {
+          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+          support: true,
+        },
+      }),
+      await mockTopAssetsLinea(mockServer),
+      await mockETHtoWETH(mockServer),
+    ],
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+          hardfork: 'london',
         },
       },
     ],

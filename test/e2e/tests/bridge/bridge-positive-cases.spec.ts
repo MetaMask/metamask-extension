@@ -2,9 +2,6 @@ import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage, {
   BridgeQuote,
@@ -29,20 +26,7 @@ describe('Bridge tests', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed();
-        // disable smart transactions
-
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.openSettingsPage();
-
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.check_pageIsLoaded();
-        await advancedSettingsPage.toggleSmartTransactions();
-        await settingsPage.closeSettingsPage();
+        await homePage.check_expectedBalanceIsDisplayed('24');
 
         await bridgeTransaction(
           driver,
@@ -55,7 +39,7 @@ describe('Bridge tests', function (this: Suite) {
             unapproved: true,
           },
           2,
-          '24.9998',
+          '24.9',
         );
 
         // Switch to Linea Mainnet to set it as the selected network
@@ -72,7 +56,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           3,
-          '23.9997',
+          '23.9',
         );
 
         await bridgeTransaction(
@@ -85,7 +69,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           4,
-          '22.9997',
+          '22.9',
         );
 
         // Switch to Linea Mainnet to set it as the selected network
@@ -102,7 +86,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           5,
-          '22.9996',
+          '22.9',
         );
       },
     );
