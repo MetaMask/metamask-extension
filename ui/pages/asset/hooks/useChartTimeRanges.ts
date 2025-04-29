@@ -41,10 +41,11 @@ export const useChartTimeRanges = (
 
   return chain(intervals)
     .keys()
-    .map((duration) => Duration.fromISO(duration)) // Convert to Duration object
+    .map((iso8601String) => Duration.fromISO(iso8601String)) // Convert to Duration object
     .filter((duration) => duration.isValid) // Filter out invalid durations
     .sortBy((duration) => duration.toMillis()) // Sort from shortest to longest
     .map((duration) => duration.toISO()) // Convert back to ISO string
+    .filter((iso8601String): iso8601String is string => iso8601String !== null) // Filter out nulls
     .uniq() // Remove duplicates
     .value();
 };

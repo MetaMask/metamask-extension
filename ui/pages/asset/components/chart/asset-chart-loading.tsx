@@ -6,7 +6,10 @@ import { BorderRadius } from '../../../../helpers/constants/design-system';
 
 export const AssetChartLoading = () => {
   return (
-    <Box className="asset-chart__skeleton-container">
+    <Box
+      className="asset-chart__skeleton-container"
+      data-testid="asset-chart-loading"
+    >
       <Skeleton
         className="asset-chart__skeleton"
         borderRadius={BorderRadius.LG}

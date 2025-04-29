@@ -15,6 +15,7 @@ import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
 import { CaipAssetType, Hex } from '@metamask/utils';
+import { trim } from 'lodash';
 import { Duration } from 'luxon';
 import { useTheme } from '../../../../hooks/useTheme';
 import {
@@ -108,20 +109,22 @@ const getTranslatedTimeRangeLabel = (
       .toObject();
 
   if (years && years > 100) {
-    return `${translator('all')} `;
+    return `${translator('all')}`;
   }
 
-  return `${years ? `${years}${translator('durationSuffixYear')} ` : ''}${
-    months ? `${months}${translator('durationSuffixMonth')} ` : ''
-  }${weeks ? `${weeks}${translator('durationSuffixWeek')} ` : ''}${
-    days ? `${days}${translator('durationSuffixDay')} ` : ''
-  }${hours ? `${hours}${translator('durationSuffixHour')} ` : ''}${
-    minutes ? `${minutes}${translator('durationSuffixMinute')} ` : ''
-  }${seconds ? `${seconds}${translator('durationSuffixSecond')} ` : ''}${
-    milliseconds
-      ? `${milliseconds}${translator('durationSuffixMillisecond')}`
-      : ''
-  }`;
+  return trim(
+    `${years ? `${years}${translator('durationSuffixYear')} ` : ''}${
+      months ? `${months}${translator('durationSuffixMonth')} ` : ''
+    }${weeks ? `${weeks}${translator('durationSuffixWeek')} ` : ''}${
+      days ? `${days}${translator('durationSuffixDay')} ` : ''
+    }${hours ? `${hours}${translator('durationSuffixHour')} ` : ''}${
+      minutes ? `${minutes}${translator('durationSuffixMinute')} ` : ''
+    }${seconds ? `${seconds}${translator('durationSuffixSecond')} ` : ''}${
+      milliseconds
+        ? `${milliseconds}${translator('durationSuffixMillisecond')}`
+        : ''
+    }`,
+  );
 };
 
 // A chart showing historic prices for a native or token asset
