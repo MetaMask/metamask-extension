@@ -939,6 +939,7 @@ function setupBundlerDefaults(
             './**/node_modules/@ledgerhq',
             './**/node_modules/rxjs',
             './**/node_modules/axios',
+            './**/node_modules/xstate',
           ],
           global: true,
         },

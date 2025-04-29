@@ -412,19 +412,4 @@ const config = {
   },
 } as const satisfies Configuration;
 
-// Apply Ledger-specific webpack overrides if available
-function applyWebpackOverrides(inputConfig: typeof config): typeof config {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { overrideWebpackConfig } = require('./webpack.override.js');
-    if (typeof overrideWebpackConfig === 'function') {
-      return overrideWebpackConfig(inputConfig);
-    }
-  } catch (error) {
-    console.log('No webpack overrides found or error loading them');
-  }
-  return inputConfig;
-}
-
-// Apply any custom modifications and export the final config
-export default applyWebpackOverrides(config);
+export default config;
