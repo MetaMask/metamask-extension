@@ -94,11 +94,11 @@ async function main() {
     {} as { [method: string]: string },
   );
 
-  const mockedServer = mockServer(
+  const openRpcMockServer = mockServer(
     port,
     await parseOpenRPCDocument(transformedDoc),
   );
-  mockedServer.start();
+  openRpcMockServer.start();
 
   // Multichain API excluding `wallet_invokeMethod`
   await withFixtures(
