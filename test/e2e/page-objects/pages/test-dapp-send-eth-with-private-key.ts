@@ -55,10 +55,7 @@ class TestDappSendEthWithPrivateKey {
     console.log('Paste address and send eth with private key on test dapp');
     await this.driver.pasteFromClipboardIntoField(this.addressInput);
     await this.driver.clickElement(this.sendEthWithPrivateKeyButton);
-    await this.driver.waitForSelector(
-      this.successMessage,
-      { timeout: 15000 },
-    );
+    await this.driver.waitForSelector(this.successMessage, { timeout: 15000 });
   }
 }
 
