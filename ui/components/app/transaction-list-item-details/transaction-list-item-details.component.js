@@ -33,6 +33,7 @@ export default class TransactionListItemDetails extends PureComponent {
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
     showSpeedUp: PropTypes.bool,
+    showRetry: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     transactionGroup: PropTypes.object,
@@ -146,6 +147,7 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionGroup,
       primaryCurrency,
       showSpeedUp,
+      showRetry,
       recipientAddress,
       recipientName,
       senderAddress,
@@ -184,6 +186,18 @@ export default class TransactionListItemDetails extends PureComponent {
                   cancelTransaction={this.handleCancel}
                   detailsModal
                 />
+              )}
+              {showRetry && (
+                <Tooltip title={t('retryTransaction')}>
+                  <Button
+                    type="raised"
+                    onClick={this.handleRetry}
+                    className="transaction-list-item-details__header-button"
+                    data-testid="rety-button"
+                  >
+                    <i className="fa fa-sync"></i>
+                  </Button>
+                </Tooltip>
               )}
             </div>
           </div>
