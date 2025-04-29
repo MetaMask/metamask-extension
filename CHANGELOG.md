@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace `caip-x` with `caip-348` in Multichain API over externally_connectable ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
 
 ### Changed
-- Move network selector from home screen to Settings menu as a "Networks" section behind the `REMOVE_GNS` feature flag ([#31959](https://github.com/MetaMask/metamask-extension/pull/31959))
 - Move MetaMetrics opt-in page to first position during onboarding flow for Firefox users to comply with updated Firefox Add-on policies ([#32179](https://github.com/MetaMask/metamask-extension/pull/32179))
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
 - Update security and privacy policy description to reflect Solana account handling ([#32231](https://github.com/MetaMask/metamask-extension/pull/32208))
