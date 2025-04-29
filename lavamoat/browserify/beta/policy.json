@@ -849,6 +849,7 @@
         "APDU_MAX_PAYLOAD": true,
         "APDU_MAX_SIZE": true,
         "APDU_RESPONSE_STATUS_CODE_LENGTH": true,
+        "AlreadySendingApduError": true,
         "Apdu": true,
         "ApduBuilder": true,
         "ApduParser": true,
@@ -876,6 +877,7 @@
         "ConsoleLogger": true,
         "DEFAULT_MANAGER_API_BASE_URL": true,
         "DEFAULT_MOCK_SERVER_BASE_URL": true,
+        "DEFAULT_PROVIDER": true,
         "DEFAULT_UNLOCK_TIMEOUT_MS": true,
         "DEFAULT_WEB_SOCKET_BASE_URL": true,
         "DEVICE_SESSION_REFRESHER_DEFAULT_OPTIONS": true,
@@ -894,6 +896,9 @@
         "DeviceActionStatus": true,
         "DeviceAlreadyConnectedError": true,
         "DeviceBusyError": true,
+        "DeviceConnectionStateMachine": true,
+        "DeviceDisconnectedBeforeSendingApdu": true,
+        "DeviceDisconnectedWhileSendingError": true,
         "DeviceExchangeError": true,
         "DeviceLockedError": true,
         "DeviceManagementKit": true,
@@ -982,10 +987,12 @@
         "SecureChannelOperationEnum": true,
         "SecureElementFlagsParser": true,
         "SendApduConcurrencyError": true,
+        "SendApduTimeoutError": true,
         "SendApduUseCase": true,
         "SendCommandInAppDeviceAction": true,
         "SendCommandUseCase": true,
         "SessionEvents": true,
+        "SetProviderUseCase": true,
         "StartDiscoveringUseCase": true,
         "StaticDeviceModelDataSource": true,
         "StopDiscoveringUseCase": true,
@@ -1010,6 +1017,7 @@
         "atob": true,
         "base64StringToBuffer": true,
         "bufferToHexaString": true,
+        "clearTimeout": true,
         "commandModuleFactory": true,
         "commandTypes": true,
         "configModuleFactory": true,
@@ -6044,9 +6052,9 @@
     },
     "@ledgerhq/device-management-kit>xstate": {
       "globals": {
+        "AbortController": true,
         "clearTimeout": true,
         "console": true,
-        "event": true,
         "setTimeout": true
       }
     }
