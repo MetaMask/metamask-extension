@@ -63,6 +63,7 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await testDapp.switchTo();
 
           // Assert that transaction hashes were received
+          await driver.delay(largeDelayMs);
           const transactionHashes = await sendWSolTest.getTransactionHashs();
           assert.strictEqual(transactionHashes.length, 2);
           assert.ok(transactionHashes[0]);

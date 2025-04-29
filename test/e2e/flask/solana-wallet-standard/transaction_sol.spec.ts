@@ -51,6 +51,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await testDapp.switchTo();
 
           // Assert that a transaction hash is received
+          await driver.delay(largeDelayMs);
           const transactionHash = await sendSolTest.getTransactionHash();
           assert.ok(transactionHash);
         },
@@ -92,6 +93,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await testDapp.switchTo();
 
           // Assert that a transaction hash is received
+          await driver.delay(largeDelayMs);
           const transactionHash = await sendSolTest.getTransactionHash();
           assert.ok(transactionHash);
         },
