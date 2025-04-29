@@ -9,7 +9,6 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import {
   mockExchangeRates,
   mockInitialFullScan,
-  mockInscriptions,
   mockRampsDynamicFeatureFlag,
 } from './mocks';
 
@@ -32,7 +31,6 @@ export async function withBtcAccountSnap(
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockInitialFullScan(mockServer),
         await mockExchangeRates(mockServer),
-        await mockInscriptions(mockServer),
 
         // See: PROD_RAMP_API_BASE_URL
         await mockRampsDynamicFeatureFlag(mockServer, 'api'),
