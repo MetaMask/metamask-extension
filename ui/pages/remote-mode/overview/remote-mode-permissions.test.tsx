@@ -21,7 +21,10 @@ const renderComponent = (props: RemoteModePermissionsProps = defaultProps) => {
       ...mockState.metamask,
     },
   });
-  return renderWithProvider(<RemoteModePermissions {...props} />, store);
+  return renderWithProvider(
+    <RemoteModePermissions {...props} remoteModeConfig={null} />,
+    store,
+  );
 };
 
 describe('RemoteModePermissions Component', () => {
