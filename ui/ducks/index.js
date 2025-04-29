@@ -13,6 +13,7 @@ import bridgeReducer from './bridge/bridge';
 import historyReducer from './history/history';
 import rampsReducer from './ramps/ramps';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
+import ledgerDmkReducer from './ledger-dmk/ledger-dmk';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
@@ -30,4 +31,5 @@ export default combineReducers({
   bridge: bridgeReducer,
   gas: gasReducer,
   localeMessages: localeMessagesReducer,
+  ledgerDmk: ledgerDmkReducer,
 });

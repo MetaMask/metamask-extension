@@ -2,9 +2,6 @@ import {
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-import LedgerHandler from './ledger/ledger-handler';
-
-const ledgerHandler = new LedgerHandler();
 
 function setupMessageListeners() {
   // This listener received action messages from the offscreen bridge
@@ -28,7 +25,6 @@ function setupMessageListeners() {
 
       switch (msg.action) {
         case LedgerAction.makeApp:
-          ledgerHandler.makeEthApp();
           sendResponse({
             success: true,
             payload: {},
@@ -43,10 +39,10 @@ function setupMessageListeners() {
 
           break;
         case LedgerAction.unlock:
-          const result = await ledgerHandler.unlock(msg.params);
+          // const result = await ledgerHandler.unlock(msg.params);
           sendResponse({
             success: true,
-            payload: result,
+            payload: {},
           });
           break;
         case LedgerAction.getPublicKey:

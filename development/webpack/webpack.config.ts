@@ -226,14 +226,6 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    // Add aliases for Ledger packages to help resolve the custom EIP7702 versions
-    alias: {
-      '@ledgerhq/context-module': require.resolve('@ledgerhq/context-module'),
-      '@ledgerhq/device-management-kit': require.resolve('@ledgerhq/device-management-kit'),
-      '@ledgerhq/device-signer-kit-ethereum': require.resolve('@ledgerhq/device-signer-kit-ethereum'),
-      '@ledgerhq/device-transport-kit-web-ble': require.resolve('@ledgerhq/device-transport-kit-web-ble'),
-      '@ledgerhq/device-transport-kit-web-hid': require.resolve('@ledgerhq/device-transport-kit-web-hid'),
-    },
     // use `fallback` to redirect module requests when normal resolving fails,
     // good for polyfill-ing built-in node modules that aren't available in
     // the browser. The browser will first attempt to load these modules, if
@@ -420,4 +412,19 @@ const config = {
   },
 } as const satisfies Configuration;
 
-export default config;
+// Apply Ledger-specific webpack overrides if available
+function applyWebpackOverrides(inputConfig: typeof config): typeof config {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { overrideWebpackConfig } = require('./webpack.override.js');
+    if (typeof overrideWebpackConfig === 'function') {
+      return overrideWebpackConfig(inputConfig);
+    }
+  } catch (error) {
+    console.log('No webpack overrides found or error loading them');
+  }
+  return inputConfig;
+}
+
+// Apply any custom modifications and export the final config
+export default applyWebpackOverrides(config);

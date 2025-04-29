@@ -1,0 +1,14 @@
+diff --git a/package.json b/package.json
+index 707cfd5551278131eaa589ea79ce53653c01e41b..44609072289ef2918a54adf2dd800ea2c8182c84 100644
+--- a/package.json
++++ b/package.json
+@@ -3,6 +3,9 @@
+   "version": "0.0.0-EIP7702-20250418164917",
+   "private": false,
+   "license": "Apache-2.0",
++  "main": "./lib/cjs/index.js",
++  "module": "./lib/esm/index.js",
++  "types": "./lib/types/index.d.ts",
+   "exports": {
+     ".": {
+       "types": "./lib/types/index.d.ts",
