@@ -4,12 +4,12 @@ import { Driver } from '../../../webdriver/driver';
 class SendSolanaPage {
   private driver: Driver;
 
-  private readonly clearToAddressField = '#send-clear-button';
-
   private readonly cancelButton = {
     tag: 'button',
     testId: 'send-cancel-button-snap-footer-button',
   };
+
+  private readonly clearToAddressField = '#send-clear-button';
 
   private readonly continueButton = {
     tag: 'button',
