@@ -6,9 +6,10 @@ import { getRpcDataByChainId } from '../../../../shared/modules/network.utils';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors';
 
 export function useNetworkClientId() {
-  const [_, evmNetworks] = useSelector(
+  const multichainNetworkConfigurations = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  const evmNetworks = multichainNetworkConfigurations[1];
 
   const getNetworkClientIdForChainId = useCallback(
     (chainId: CaipChainId) => {
