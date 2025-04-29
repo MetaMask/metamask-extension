@@ -1,6 +1,5 @@
 import { isEqual, omit } from 'lodash';
 import { Mockttp } from 'mockttp';
-import { MockttpClientResponse } from 'mockttp/dist/pluggable-admin';
 import { Suite } from 'mocha';
 import {
   assertInAnyOrder,
@@ -24,9 +23,7 @@ import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/sen
  *
  * @param mockServer
  */
-async function mockSegment(
-  mockServer: Mockttp,
-): Promise<MockttpClientResponse[]> {
+async function mockSegment(mockServer: Mockttp) {
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')

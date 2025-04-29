@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { MockedEndpoint } from 'mockttp/dist/pluggable-admin';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { MOCK_META_METRICS_ID } from '../../constants';
@@ -17,7 +16,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
  *
  * @param mockServer
  */
-async function mockSegment(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+async function mockSegment(mockServer: Mockttp) {
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')

@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { MockttpClientResponse } from 'mockttp/dist/pluggable-admin';
 import { Suite } from 'mocha';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -18,9 +17,7 @@ type PageEvent = {
 };
 
 describe('Unlock wallet', function (this: Suite) {
-  async function mockSegment(
-    mockServer: Mockttp,
-  ): Promise<MockttpClientResponse[]> {
+  async function mockSegment(mockServer: Mockttp) {
     return [
       await mockServer
         .forPost('https://api.segment.io/v1/batch')
