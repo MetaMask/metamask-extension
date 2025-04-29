@@ -3223,8 +3223,8 @@ export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
  * Sets shouldShowAggregatedBalancePopover to false once the user toggles
  * the setting to show native token as main balance.
  */
-export function setAggregatedBalancePopoverShown() {
-  return setPreference('shouldShowAggregatedBalancePopover', false);
+export async function setAggregatedBalancePopoverShown() {
+  return await setPreference('shouldShowAggregatedBalancePopover', false);
 }
 
 export function setShowTestNetworks(value: boolean) {
