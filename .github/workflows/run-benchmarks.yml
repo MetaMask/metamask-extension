@@ -15,6 +15,8 @@ env:
 jobs:
   benchmarks:
     runs-on: ${{ inputs.runner-type }}
+    container:
+      image: cimg/node:22.14-browsers
     strategy:
       fail-fast: false
       matrix:
@@ -28,6 +30,15 @@ jobs:
       ARTIFACT_NAME: prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}.json
     steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install zstd
+          sudo corepack enable
+          Xvfb -ac :99 -screen 0 1280x1024x16 &
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
