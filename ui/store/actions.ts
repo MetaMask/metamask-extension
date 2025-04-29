@@ -2147,6 +2147,14 @@ export async function getBalancesInSingleCall(
   ]);
 }
 
+export async function getNetworkClientIdByChainId(
+  chainId: string,
+): Promise<string> {
+  return await submitRequestToBackground('getNetworkClientIdByChainId', [
+    chainId,
+  ]);
+}
+
 export function addNft(
   address: string,
   tokenID: string,

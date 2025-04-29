@@ -9,6 +9,7 @@ import { Hex } from '@metamask/utils';
 import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
+  getNetworkClientIdByChainId,
 } from '../../../store/actions';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
@@ -29,7 +30,8 @@ export function useEIP7702Account({
   );
 
   const downgradeAccount = useCallback(
-    async (address: Hex) => {
+    async (address: Hex, chainId: string) => {
+      const networkClientId = await getNetworkClientIdByChainId(chainId);
       const transactionMeta = (await dispatch(
         addTransactionAndRouteToConfirmationPage(
           {
@@ -43,7 +45,7 @@ export function useEIP7702Account({
             type: TransactionEnvelopeType.setCode,
           },
           {
-            networkClientId: globalNetworkClientId,
+            networkClientId,
             type: TransactionType.revokeDelegation,
           },
         ),
@@ -55,7 +57,8 @@ export function useEIP7702Account({
   );
 
   const upgradeAccount = useCallback(
-    async (address: Hex, upgradeContractAddress: Hex) => {
+    async (address: Hex, upgradeContractAddress: Hex, chainId: string) => {
+      const networkClientId = await getNetworkClientIdByChainId(chainId);
       const transactionMeta = (await dispatch(
         addTransactionAndRouteToConfirmationPage(
           {
@@ -69,7 +72,7 @@ export function useEIP7702Account({
             type: TransactionEnvelopeType.setCode,
           },
           {
-            networkClientId: globalNetworkClientId,
+            networkClientId,
             type: TransactionType.batch,
           },
         ),

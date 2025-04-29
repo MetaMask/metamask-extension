@@ -56,12 +56,13 @@ export const AccountNetwork = ({
 
   const onSwitch = useCallback(async () => {
     if (addressSupportSmartAccount) {
-      await downgradeAccount(address);
+      await downgradeAccount(address, chainIdHex);
     } else if (upgradeContractAddress) {
-      await upgradeAccount(address, upgradeContractAddress);
+      await upgradeAccount(address, upgradeContractAddress, chainIdHex);
     }
   }, [
     address,
+    chainIdHex,
     downgradeAccount,
     addressSupportSmartAccount,
     upgradeAccount,

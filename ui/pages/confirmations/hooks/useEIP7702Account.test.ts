@@ -24,6 +24,7 @@ jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   addTransactionAndRouteToConfirmationPage: jest.fn(),
   getCode: jest.fn(),
+  getNetworkClientIdByChainId: () => Promise.resolve('sepolia'),
 }));
 
 jest.mock('./useConfirmationNavigation', () => ({
@@ -34,6 +35,7 @@ const ADDRESS_MOCK = '0x1234';
 const UPGRADE_CONTRACT_ADDRESS_MOCK = '0x5678';
 const CODE_MOCK = '0xabcd';
 const TRANSACTION_ID_MOCK = '1234-5678';
+const SEPOLIA_CHAINID = '0xaa36a7';
 
 function runHook({ onRedirect }: { onRedirect?: () => void } = {}) {
   const { result } = renderHookWithProvider(
@@ -89,7 +91,7 @@ describe('useEIP7702Account', () => {
     it('adds transaction', async () => {
       const { downgradeAccount } = runHook();
 
-      await downgradeAccount(ADDRESS_MOCK);
+      await downgradeAccount(ADDRESS_MOCK, SEPOLIA_CHAINID);
 
       expect(addTransactionAndRouteToConfirmationPageMock).toHaveBeenCalledWith(
         {
@@ -103,6 +105,7 @@ describe('useEIP7702Account', () => {
           type: TransactionEnvelopeType.setCode,
         },
         {
+          networkClientId: 'sepolia',
           type: TransactionType.revokeDelegation,
         },
       );
@@ -125,7 +128,7 @@ describe('useEIP7702Account', () => {
       const { downgradeAccount } = runHook();
 
       await act(async () => {
-        await downgradeAccount(ADDRESS_MOCK);
+        await downgradeAccount(ADDRESS_MOCK, SEPOLIA_CHAINID);
       });
 
       expect(navigateToIdMock).toHaveBeenCalledTimes(1);
@@ -149,7 +152,7 @@ describe('useEIP7702Account', () => {
       const { downgradeAccount } = runHook({ onRedirect });
 
       await act(async () => {
-        await downgradeAccount(ADDRESS_MOCK);
+        await downgradeAccount(ADDRESS_MOCK, SEPOLIA_CHAINID);
       });
 
       expect(onRedirect).toHaveBeenCalledTimes(1);
@@ -160,7 +163,11 @@ describe('useEIP7702Account', () => {
     it('adds transaction', async () => {
       const { upgradeAccount } = runHook();
 
-      await upgradeAccount(ADDRESS_MOCK, UPGRADE_CONTRACT_ADDRESS_MOCK);
+      await upgradeAccount(
+        ADDRESS_MOCK,
+        UPGRADE_CONTRACT_ADDRESS_MOCK,
+        SEPOLIA_CHAINID,
+      );
 
       expect(addTransactionAndRouteToConfirmationPageMock).toHaveBeenCalledWith(
         {
@@ -174,7 +181,7 @@ describe('useEIP7702Account', () => {
           type: TransactionEnvelopeType.setCode,
         },
         {
-          networkClientId: undefined,
+          networkClientId: 'sepolia',
           type: TransactionType.batch,
         },
       );
@@ -197,7 +204,11 @@ describe('useEIP7702Account', () => {
       const { upgradeAccount } = runHook();
 
       await act(async () => {
-        await upgradeAccount(ADDRESS_MOCK, UPGRADE_CONTRACT_ADDRESS_MOCK);
+        await upgradeAccount(
+          ADDRESS_MOCK,
+          UPGRADE_CONTRACT_ADDRESS_MOCK,
+          SEPOLIA_CHAINID,
+        );
       });
 
       expect(navigateToIdMock).toHaveBeenCalledTimes(1);
@@ -221,7 +232,11 @@ describe('useEIP7702Account', () => {
       const { upgradeAccount } = runHook({ onRedirect });
 
       await act(async () => {
-        await upgradeAccount(ADDRESS_MOCK, UPGRADE_CONTRACT_ADDRESS_MOCK);
+        await upgradeAccount(
+          ADDRESS_MOCK,
+          UPGRADE_CONTRACT_ADDRESS_MOCK,
+          SEPOLIA_CHAINID,
+        );
       });
 
       expect(onRedirect).toHaveBeenCalledTimes(1);
