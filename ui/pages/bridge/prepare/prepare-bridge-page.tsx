@@ -718,17 +718,15 @@ const PrepareBridgePage = () => {
                         setToToken({
                           ...destNativeAsset,
                           image:
-                            (isSolanaChainId(networkConfig.chainId)
-                              ? getImageForChainId(
-                                  formatChainIdToCaip(networkConfig.chainId),
-                                )
-                              : getImageForChainId(
-                                  formatChainIdToHex(networkConfig.chainId),
-                                )) ||
+                            getImageForChainId(
+                              isSolanaChainId(networkConfig.chainId)
+                                ? formatChainIdToCaip(networkConfig.chainId)
+                                : formatChainIdToHex(networkConfig.chainId),
+                            ) ??
                             getAssetImageUrl(
                               destNativeAsset.assetId,
                               networkConfig.chainId,
-                            ) ||
+                            ) ??
                             '',
                         }),
                       );
