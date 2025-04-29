@@ -1,5 +1,8 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { useSelector } from 'react-redux';
+import { SolAccountType } from '@metamask/keyring-api';
+import { SOLANA_SLIDE } from '../../../hooks/useCarouselManagement';
 import { Carousel } from './carousel';
 import { MARGIN_VALUES, WIDTH_VALUES } from './constants';
 
@@ -258,5 +261,56 @@ describe('Carousel', () => {
 
     const visibleSlides = container.querySelectorAll('.mm-carousel-slide');
     expect(visibleSlides).toHaveLength(5);
+  });
+
+  describe('Solana slide filtering', () => {
+    const solanaSlide = {
+      id: SOLANA_SLIDE.id,
+      title: 'solana title',
+      description: 'solana description',
+      image: 'solana-image.jpg',
+    };
+
+    const slidesWithSolana = [...mockSlides, solanaSlide];
+
+    beforeEach(() => {
+      (useSelector as jest.Mock).mockReset();
+    });
+
+    it('should filter out Solana slides when account type is DataAccount', () => {
+      (useSelector as jest.Mock).mockImplementation(() => ({
+        type: SolAccountType.DataAccount,
+      }));
+
+      const { container } = render(<Carousel slides={slidesWithSolana} />);
+
+      const slides = container.querySelectorAll('.mm-carousel-slide');
+      expect(slides).toHaveLength(2);
+
+      const slideTestIds = Array.from(slides).map((slide) =>
+        slide.getAttribute('data-testid'),
+      );
+      expect(slideTestIds).toContain('slide-1');
+      expect(slideTestIds).toContain('slide-2');
+      expect(slideTestIds).not.toContain(`slide-${SOLANA_SLIDE.id}`);
+    });
+
+    it('should include Solana slides when account type is not DataAccount', () => {
+      (useSelector as jest.Mock).mockImplementation(() => ({
+        type: 'OtherAccountType',
+      }));
+
+      const { container } = render(<Carousel slides={slidesWithSolana} />);
+
+      const slides = container.querySelectorAll('.mm-carousel-slide');
+      expect(slides).toHaveLength(3);
+
+      const slideTestIds = Array.from(slides).map((slide) =>
+        slide.getAttribute('data-testid'),
+      );
+      expect(slideTestIds).toContain('slide-1');
+      expect(slideTestIds).toContain('slide-2');
+      expect(slideTestIds).toContain(`slide-${SOLANA_SLIDE.id}`);
+    });
   });
 });
