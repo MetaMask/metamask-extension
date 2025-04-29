@@ -14,6 +14,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
   ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+  ONBOARDING_METAMETRICS, // eslint-disable-line no-unused-vars
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -21,6 +24,11 @@ import {
   getIsUnlocked,
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util'; // eslint-disable-line no-unused-vars
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
+///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
@@ -50,7 +58,12 @@ export default function OnboardingFlowSwitch() {
     redirect = <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
-    redirect = <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />;
+    redirect =
+      getPlatform() === PLATFORM_FIREFOX ? (
+        <Redirect to={{ pathname: ONBOARDING_METAMETRICS }} />
+      ) : (
+        <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />
+      );
     ///: END:ONLY_INCLUDE_IF
     return redirect;
   }

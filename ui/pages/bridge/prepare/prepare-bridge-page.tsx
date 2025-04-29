@@ -19,6 +19,7 @@ import {
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -110,6 +111,7 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
+  getImageForChainId,
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
   getMultichainProviderConfig,
@@ -124,6 +126,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   fetchAssetMetadata,
+  getAssetImageUrl,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { BridgeInputGroup } from './bridge-input-group';
@@ -708,7 +711,25 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      dispatch(setToToken(null));
+                      const destNativeAsset = getNativeAssetForChainId(
+                        networkConfig.chainId,
+                      );
+                      dispatch(
+                        setToToken({
+                          ...destNativeAsset,
+                          image:
+                            getImageForChainId(
+                              isSolanaChainId(networkConfig.chainId)
+                                ? formatChainIdToCaip(networkConfig.chainId)
+                                : formatChainIdToHex(networkConfig.chainId),
+                            ) ??
+                            getAssetImageUrl(
+                              destNativeAsset.assetId,
+                              networkConfig.chainId,
+                            ) ??
+                            '',
+                        }),
+                      );
                     },
                     header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
                     shouldDisableNetwork: ({ chainId }) =>
@@ -942,11 +963,17 @@ const PrepareBridgePage = () => {
             !isInsufficientBalance(srcTokenBalance) &&
             isInsufficientGasForQuote(nativeAssetBalance) && (
               <BannerAlert
+                ref={isEstimatedReturnLowRef}
                 marginInline={4}
-                marginBottom={10}
+                marginBottom={3}
+                title={t('bridgeValidationInsufficientGasTitle', [ticker])}
                 severity={BannerAlertSeverity.Danger}
-                description={t('noOptionsAvailableMessage')}
+                description={t('bridgeValidationInsufficientGasMessage', [
+                  ticker,
+                ])}
                 textAlign={TextAlign.Left}
+                actionButtonLabel={t('buyMoreAsset', [ticker])}
+                actionButtonOnClick={() => openBuyCryptoInPdapp()}
               />
             )}
           {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
@@ -963,24 +990,6 @@ const PrepareBridgePage = () => {
               onClose={() => setIsLowReturnBannerOpen(false)}
             />
           )}
-          {!isLoading &&
-            activeQuote &&
-            !isInsufficientBalance(srcTokenBalance) &&
-            isInsufficientGasForQuote(nativeAssetBalance) && (
-              <BannerAlert
-                ref={isEstimatedReturnLowRef}
-                marginInline={4}
-                marginBottom={3}
-                title={t('bridgeValidationInsufficientGasTitle', [ticker])}
-                severity={BannerAlertSeverity.Danger}
-                description={t('bridgeValidationInsufficientGasMessage', [
-                  ticker,
-                ])}
-                textAlign={TextAlign.Left}
-                actionButtonLabel={t('buyMoreAsset', [ticker])}
-                actionButtonOnClick={() => openBuyCryptoInPdapp()}
-              />
-            )}
         </Column>
       </Column>
       {showBlockExplorerToast && blockExplorerToken && (
