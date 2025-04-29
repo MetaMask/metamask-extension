@@ -19,7 +19,7 @@ import type {
 
 export type Backup = {
   KeyringController?: unknown;
-  AppStateController?: unknown;
+  AppMetadataController?: unknown;
   meta?: MetaData;
 };
 
@@ -32,12 +32,13 @@ export type Backup = {
  * duplication and ensure efficient storage usage.
  *
  * @param state - The current MetaMask state.
+ * @param meta - The metadata object containing versioning information.
  * @returns A Backup object containing the state of various controllers.
  */
 function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
   return {
     KeyringController: state?.KeyringController,
-    AppStateController: state?.AppStateController,
+    AppMetadataController: state?.AppMetadataController,
     meta,
   };
 }
@@ -249,15 +250,15 @@ export class PersistenceManager {
   }
 
   async getBackup(): Promise<Backup> {
-    const [KeyringController, AppStateController, meta] =
+    const [KeyringController, AppMetadataController, meta] =
       await this.#backupDb.get([
         'KeyringController',
-        'AppStateController',
+        'AppMetadataController',
         `meta`,
       ]);
     return {
       KeyringController,
-      AppStateController,
+      AppMetadataController,
       meta: meta as MetaData | undefined,
     };
   }
