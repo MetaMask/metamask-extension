@@ -5,6 +5,7 @@ import {
   FeeMarketGasFeeEstimates,
   TransactionParams,
 } from '@metamask/transaction-controller';
+import { Token } from '@metamask/assets-controllers';
 import {
   ALLOWED_CONTRACT_ADDRESSES,
   ARBITRUM,
@@ -157,7 +158,6 @@ export async function fetchBlockedTokens(chainId: Hex): Promise<string[]> {
   );
 }
 
-type Token = { symbol: string; address: string };
 export async function fetchTokens(
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
 ): Promise<Token[]> {
