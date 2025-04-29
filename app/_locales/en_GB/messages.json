@@ -5107,6 +5107,12 @@
   "slideRemoteModeTitle": {
     "message": "Remote mode is here!"
   },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Same address, smarter features"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Start using smart accounts"
+  },
   "slideSolanaDescription": {
     "message": "Create a Solana account to get started"
   },
