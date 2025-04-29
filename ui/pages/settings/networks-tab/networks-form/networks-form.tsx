@@ -479,11 +479,11 @@ export const NetworksForm = ({
           </Box>
         )}
 
-        {/* eslint-disable-next-line @typescript-eslint/prefer-optional-chain */}
         {isRpcFailoverEnabled &&
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
         defaultRpcEndpoint &&
         defaultRpcEndpoint.failoverUrls &&
-        (defaultRpcEndpoint?.failoverUrls?.length ?? 0) > 0 ? (
+        defaultRpcEndpoint.failoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
             size={FormTextFieldSize.Lg}

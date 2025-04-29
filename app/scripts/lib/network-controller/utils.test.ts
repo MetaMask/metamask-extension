@@ -186,7 +186,7 @@ describe('shouldCreateRpcServiceEvents', () => {
 async function withChangesToEnvironmentVariables(
   testFunction: () => void | Promise<void>,
 ) {
-  let originalEnv = { ...process.env };
+  const originalEnv = { ...process.env };
 
   await testFunction();
 
