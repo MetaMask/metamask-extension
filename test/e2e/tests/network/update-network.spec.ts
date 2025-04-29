@@ -9,6 +9,7 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
@@ -52,7 +53,7 @@ async function navigateToEditNetwork(driver: Driver) {
 }
 
 describe('Update Network:', function (this: Suite) {
-  it('update network details and validate the ui elements', async function () {
+  it.only('update network details and validate the ui elements', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -60,7 +61,8 @@ describe('Update Network:', function (this: Suite) {
       },
 
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        throw new Error('test');
         await navigateToEditNetwork(driver);
 
         // Verify chain id is not editable when updating a network
