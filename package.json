@@ -140,8 +140,6 @@
     "js-sha3": "^0.9.2",
     "jsonschema": "^1.4.1",
     "ast-types": "^0.14.2",
-    "@metamask/bridge-status-controller@^15.0.0": "file:../core/packages/bridge-status-controller",
-    "@metamask/bridge-status-controller@^18.0.0": "file:../core/packages/bridge-controller",
     "acorn@^7.0.0": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
     "acorn@^7.4.1": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
     "acorn@^7.1.1": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
