@@ -12,9 +12,10 @@ import {
 
 describe('Multi SRP - Import SRP', function (this: Suite) {
   it('successfully imports a new srp', async function () {
-    await withMultiSrp({
-      title: this.test?.fullTitle(),
-      testSpecificMock: mockActiveNetworks,
+    await withMultiSrp(
+      {
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockActiveNetworks,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
@@ -24,9 +25,10 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
   });
 
   it('successfully imports a new srp and it matches the srp imported', async function () {
-    await withMultiSrp({
-      title: this.test?.fullTitle(),
-      testSpecificMock: mockActiveNetworks,
+    await withMultiSrp(
+      {
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockActiveNetworks,
       },
       async (driver: Driver) => {
         const headerNavbar = new HeaderNavbar(driver);
