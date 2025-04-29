@@ -8,6 +8,10 @@ on:
       - synchronize
       - ready_for_review
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   identify-codeowners:
     runs-on: ubuntu-latest

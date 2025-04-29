@@ -2,7 +2,6 @@ import { MockttpServer } from 'mockttp';
 import { mockEthDaiTrade } from '../swaps/shared';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
-import { SmartTransactionStatus } from '../../../../shared/constants/transaction';
 
 const STX_UUID = '0d506aaa-5e38-4cab-ad09-2039cb7a0f33';
 

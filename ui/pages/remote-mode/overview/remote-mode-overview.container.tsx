@@ -25,6 +25,7 @@ import {
   Content,
   Header,
   Page,
+  Footer,
 } from '../../../components/multichain/pages/page';
 
 import {
@@ -48,15 +49,16 @@ export default function RemoteModeIntroducing() {
   const [currentScreen, setCurrentScreen] = useState<RemoteScreen>(
     RemoteScreen.OVERVIEW,
   );
-  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
+
+  const history = useHistory();
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
-  const history = useHistory();
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-
-  useEffect(() => {
-    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
-  }, [selectedHardwareAccount]);
+  const remoteModeConfig = localStorage.getItem('remoteMode'); // todo: grab this from state
+  const parsedRemoteConfig = remoteModeConfig
+    ? JSON.parse(remoteModeConfig)
+    : null;
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
@@ -64,27 +66,42 @@ export default function RemoteModeIntroducing() {
     }
   }, [isRemoteModeEnabled, history]);
 
+  useEffect(() => {
+    if (remoteModeConfig) {
+      setCurrentScreen(RemoteScreen.PERMISSIONS);
+    }
+  }, [remoteModeConfig]);
+
+  useEffect(() => {
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+  }, [selectedHardwareAccount]);
+
   const renderScreen = () => {
     switch (currentScreen) {
       case RemoteScreen.OVERVIEW:
         return (
-          <Content padding={6}>
-            <RemoteModeOverview />
-            <Button
-              style={{ width: '100%' }}
-              onClick={() => setCurrentScreen(RemoteScreen.PERMISSIONS)}
-              size={ButtonSize.Lg}
-              disabled={!isHardwareAccount}
-            >
-              Get Remote Mode
-            </Button>
-          </Content>
+          <>
+            <Content padding={6}>
+              <RemoteModeOverview />
+            </Content>
+            <Footer>
+              <Button
+                style={{ width: '100%' }}
+                onClick={() => setCurrentScreen(RemoteScreen.PERMISSIONS)}
+                size={ButtonSize.Lg}
+                disabled={!isHardwareAccount}
+              >
+                Get Remote Mode
+              </Button>
+            </Footer>
+          </>
         );
 
       case RemoteScreen.PERMISSIONS:
         return (
           <Content padding={6}>
             <RemoteModePermissions
+              remoteModeConfig={parsedRemoteConfig}
               setStartEnableRemoteSwap={() => {
                 history.push(REMOTE_ROUTE_SETUP_SWAPS);
               }}
