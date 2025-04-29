@@ -4294,6 +4294,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ledgerhq/context-module@patch:@ledgerhq/context-module@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-context-module-npm-0.0.0-EIP7702-20250418164917-2312fcfbeb.patch":
+  version: 0.0.0-EIP7702-20250418164917
+  resolution: "@ledgerhq/context-module@patch:@ledgerhq/context-module@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-context-module-npm-0.0.0-EIP7702-20250418164917-2312fcfbeb.patch::version=0.0.0-EIP7702-20250418164917&hash=ed7081"
+  dependencies:
+    axios: "npm:^1.8.2"
+    crypto-js: "npm:^4.2.0"
+    ethers: "npm:6.13.4"
+    inversify: "npm:^6.2.2"
+    purify-ts: "npm:^2.1.0"
+    reflect-metadata: "npm:^0.2.2"
+  peerDependencies:
+    "@ledgerhq/device-management-kit": 0.0.0-EIP7702-20250418164917
+  checksum: 10/c1466dbe99ba565b0d5f7523f8b6e8fd24001f9c94125502d2c765de24698056afef173e2cfb0d2a6758cae0b28372d425bf1a60cc4cc0afae380363f1a9d20d
+  languageName: node
+  linkType: hard
+
 "@ledgerhq/cryptoassets-evm-signatures@npm:^13.5.2":
   version: 13.5.2
   resolution: "@ledgerhq/cryptoassets-evm-signatures@npm:13.5.2"
@@ -4326,6 +4342,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ledgerhq/device-management-kit@patch:@ledgerhq/device-management-kit@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-management-kit-npm-0.0.0-EIP7702-20250418164917-14cf6a5af4.patch":
+  version: 0.0.0-EIP7702-20250418164917
+  resolution: "@ledgerhq/device-management-kit@patch:@ledgerhq/device-management-kit@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-management-kit-npm-0.0.0-EIP7702-20250418164917-14cf6a5af4.patch::version=0.0.0-EIP7702-20250418164917&hash=1f8bf6"
+  dependencies:
+    "@sentry/minimal": "npm:^6.19.7"
+    axios: "npm:^1.8.2"
+    inversify: "npm:^6.2.2"
+    inversify-logger-middleware: "npm:^3.1.0"
+    isomorphic-ws: "npm:^5.0.0"
+    purify-ts: "npm:^2.1.0"
+    reflect-metadata: "npm:^0.2.2"
+    semver: "npm:^7.6.3"
+    url: "npm:^0.11.4"
+    uuid: "npm:^11.0.3"
+    ws: "npm:^8.18.0"
+    xstate: "npm:^5.19.2"
+  peerDependencies:
+    rxjs: ^7.8.2
+  checksum: 10/1dfb2765e625ca4bc535e299baf7cfe85955ba289b551180bf4cb2e467d02380b528827a21d3775346b2b17f333502f157184b42a99b13acefa96270ae2b2a82
+  languageName: node
+  linkType: hard
+
 "@ledgerhq/device-signer-kit-ethereum@npm:0.0.0-EIP7702-20250418164917":
   version: 0.0.0-EIP7702-20250418164917
   resolution: "@ledgerhq/device-signer-kit-ethereum@npm:0.0.0-EIP7702-20250418164917"
@@ -4342,6 +4380,25 @@ __metadata:
     "@ledgerhq/context-module": 0.0.0-EIP7702-20250418164917
     "@ledgerhq/device-management-kit": 0.0.0-EIP7702-20250418164917
   checksum: 10/acbf907e3b17fd2fc4d8e2d18ab42d25cde81d24dd160483cdb3a530243375b047419495ee48241d911c4afa47ccb9cc29d9214ade1ed49bc289185fd8cd9d50
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/device-signer-kit-ethereum@patch:@ledgerhq/device-signer-kit-ethereum@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-signer-kit-ethereum-npm-0.0.0-EIP7702-20250418164917-a863f84172.patch":
+  version: 0.0.0-EIP7702-20250418164917
+  resolution: "@ledgerhq/device-signer-kit-ethereum@patch:@ledgerhq/device-signer-kit-ethereum@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-signer-kit-ethereum-npm-0.0.0-EIP7702-20250418164917-a863f84172.patch::version=0.0.0-EIP7702-20250418164917&hash=cbdf22"
+  dependencies:
+    "@ledgerhq/signer-utils": "npm:0.0.0-EIP7702-20250418164917"
+    ethers: "npm:6.13.4"
+    inversify: "npm:^6.2.2"
+    inversify-logger-middleware: "npm:^3.1.0"
+    purify-ts: "npm:^2.1.0"
+    reflect-metadata: "npm:^0.2.2"
+    semver: "npm:^7.6.3"
+    xstate: "npm:^5.19.2"
+  peerDependencies:
+    "@ledgerhq/context-module": 0.0.0-EIP7702-20250418164917
+    "@ledgerhq/device-management-kit": 0.0.0-EIP7702-20250418164917
+  checksum: 10/eb13a868fa86c7f2f8b046f1e3109df3b089e3f36069d6ddbdc61eba190f335b1c47c5bef2e66f76005e3d77cb94e7d6ad450007135eba841af3bd16a112637c
   languageName: node
   linkType: hard
 
@@ -27847,9 +27904,9 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.5"
     "@lavamoat/snow": "npm:^2.0.3"
-    "@ledgerhq/context-module": "npm:0.0.0-EIP7702-20250418164917"
-    "@ledgerhq/device-management-kit": "npm:0.0.0-EIP7702-20250418164917"
-    "@ledgerhq/device-signer-kit-ethereum": "npm:0.0.0-EIP7702-20250418164917"
+    "@ledgerhq/context-module": "patch:@ledgerhq/context-module@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-context-module-npm-0.0.0-EIP7702-20250418164917-2312fcfbeb.patch"
+    "@ledgerhq/device-management-kit": "patch:@ledgerhq/device-management-kit@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-management-kit-npm-0.0.0-EIP7702-20250418164917-14cf6a5af4.patch"
+    "@ledgerhq/device-signer-kit-ethereum": "patch:@ledgerhq/device-signer-kit-ethereum@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-signer-kit-ethereum-npm-0.0.0-EIP7702-20250418164917-a863f84172.patch"
     "@ledgerhq/device-transport-kit-web-ble": "npm:0.0.0-EIP7702-20250418164917"
     "@ledgerhq/device-transport-kit-web-hid": "npm:0.0.0-EIP7702-20250418164917"
     "@lydell/node-pty": "npm:^1.1.0"
