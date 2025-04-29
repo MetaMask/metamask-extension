@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+import { useSelector } from 'react-redux';
+import { SolAccountType } from '@metamask/keyring-api';
+///: END:ONLY_INCLUDE_IF
 import { Carousel as ResponsiveCarousel } from 'react-responsive-carousel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, BoxProps, BannerBase } from '../../component-library';
@@ -14,6 +18,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+import { getSelectedAccount } from '../../../selectors';
+///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getSweepstakesCampaignActive,
@@ -45,8 +52,23 @@ export const Carousel = React.forwardRef(
     const t = useI18nContext();
     const trackEvent = useContext(MetaMetricsContext);
 
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
+    const selectedAccount = useSelector(getSelectedAccount);
+    ///: END:ONLY_INCLUDE_IF
+
     const visibleSlides = slides
-      .filter((slide) => !slide.dismissed || slide.undismissable)
+      .filter((slide) => {
+        ///: BEGIN:ONLY_INCLUDE_IF(solana)
+        if (
+          slide.id === SOLANA_SLIDE.id &&
+          selectedAccount?.type === SolAccountType.DataAccount
+        ) {
+          return false;
+        }
+        ///: END:ONLY_INCLUDE_IF
+
+        return !slide.dismissed || slide.undismissable;
+      })
       .sort((a, b) => {
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
         // prioritize Solana slide
