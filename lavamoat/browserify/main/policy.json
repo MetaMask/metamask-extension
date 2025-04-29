@@ -1142,14 +1142,6 @@
         "immer": true
       }
     },
-    "@metamask/transaction-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/bridge-controller": {
       "globals": {
         "AbortController": true,
@@ -2281,7 +2273,7 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@ethersproject/wallet": true,
-        "@metamask/transaction-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
