@@ -31,12 +31,12 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(
-    primaryTransaction.sourceTokenAddress ??
-      bridgeHistoryItem?.quote.srcAsset.address,
-    primaryTransaction.sourceTokenAmount ??
-      bridgeHistoryItem?.pricingData?.amountSent,
-    primaryTransaction.sourceTokenSymbol ??
-      bridgeHistoryItem?.quote.srcAsset.symbol,
+    bridgeHistoryItem?.quote.srcAsset.address ??
+      primaryTransaction.sourceTokenAddress,
+    bridgeHistoryItem?.pricingData?.amountSent ??
+      primaryTransaction.sourceTokenAmount,
+    bridgeHistoryItem?.quote.srcAsset.symbol ??
+      primaryTransaction.sourceTokenSymbol,
     {},
     true,
     chainId,
@@ -46,10 +46,10 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
     category: TransactionGroupCategory.bridge,
     displayCurrencyAmount,
     sourceTokenSymbol:
-      primaryTransaction.sourceTokenSymbol ??
-      bridgeHistoryItem?.quote.srcAsset.symbol,
+      bridgeHistoryItem?.quote.srcAsset.symbol ??
+      primaryTransaction.sourceTokenSymbol,
     sourceTokenAmountSent:
-      primaryTransaction.sourceTokenAmount ??
-      bridgeHistoryItem?.pricingData?.amountSent,
+      bridgeHistoryItem?.pricingData?.amountSent ??
+      primaryTransaction.sourceTokenAmount,
   };
 }
