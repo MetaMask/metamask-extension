@@ -377,6 +377,7 @@ export const getQuoteNegativeCasesFixtures = (
 };
 
 export const getBridgeNegativeCasesFixtures = (
+  statusCode: number,
   response: unknown,
   title?: string,
 ) => {
@@ -399,7 +400,7 @@ export const getBridgeNegativeCasesFixtures = (
       await mockTopAssets(mockServer),
       await mockETHtoETH(mockServer),
       await mockETHtoWETH(mockServer),
-      await mockGetTxStatusInvalid(mockServer, response),
+      await mockGetTxStatusInvalid(mockServer, statusCode, response),
     ],
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
