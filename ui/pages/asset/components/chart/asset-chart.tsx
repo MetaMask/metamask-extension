@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Chart,
   LineElement,
@@ -145,11 +145,6 @@ const AssetChart = ({
     timeRanges[0] ?? 'P1D',
   );
 
-  const chartRef = useRef<Chart<'line', Point[]>>();
-  const priceRef = useRef<{
-    setPrice: (_: { price?: number; date?: number }) => void;
-  }>();
-
   const {
     loading,
     data: {
@@ -178,6 +173,19 @@ const AssetChart = ({
     },
   } as const;
 
+  const chartRef = useRef<Chart<'line', Point[]>>();
+  const priceRef = useRef<{
+    setPrice: (_: { price?: number; date?: number }) => void;
+  }>();
+
+  // Init the price ref with the current price
+  useEffect(() => {
+    priceRef?.current?.setPrice({
+      price: currentPrice,
+      date: Date.now(),
+    });
+  }, [currentPrice]);
+
   return (
     <Box borderRadius={BorderRadius.LG}>
       <AssetChartPrice
@@ -198,7 +206,7 @@ const AssetChart = ({
         {shouldShowChartLoading && <AssetChartLoading />}
         {shouldShowChartEmptyState && <AssetChartEmptyState />}
         {(shouldShowChart || shouldShowChartMuted) && (
-          <Box style={{ opacity: loading && prices ? loadingOpacity : 1 }}>
+          <Box style={{ opacity: shouldShowChartMuted ? loadingOpacity : 1 }}>
             <ChartTooltip
               point={maxPricePoint}
               xMin={xMin}

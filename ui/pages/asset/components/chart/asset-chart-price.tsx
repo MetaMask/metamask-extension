@@ -153,6 +153,7 @@ const AssetChartPrice = forwardRef(
             fontWeight={FontWeight.Medium}
             borderRadius={BorderRadius.LG}
             marginBottom={1}
+            style={{ opacity: shouldShowMainPriceMuted ? loadingOpacity : 1 }}
           >
             {formatCurrency(`${price}`, currency, getPricePrecision(price))}
           </Text>
