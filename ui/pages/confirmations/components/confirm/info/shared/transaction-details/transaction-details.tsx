@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -61,24 +58,31 @@ export const OriginRow = () => {
 export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const to = recipient ?? currentConfirmation?.txParams?.to;
-  const isBatch = currentConfirmation?.type === TransactionType.batch;
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const isDowngrade = useIsDowngradeTransaction();
+  const { nestedTransactions, txParams, chainId, id } =
+    currentConfirmation ?? {};
+  const { from, to: txTo } = txParams ?? {};
+  const to = recipient ?? txTo;
+
+  const isBatch =
+    isBatchTransaction(nestedTransactions) &&
+    to?.toLowerCase() === from.toLowerCase();
+  const showContractLogo = isBatch || isDowngrade || isUpgradeOnly;
 
   if (!to || !isValidAddress(to)) {
     return null;
   }
 
-  const { chainId } = currentConfirmation;
-
   return (
     <ConfirmInfoAlertRow
-      ownerId={currentConfirmation.id}
+      ownerId={id}
       alertKey={RowAlertKey.InteractingWith}
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      {isBatch ? (
+      {showContractLogo ? (
         <SmartContractWithLogo />
       ) : (
         <ConfirmInfoRowAddress address={to} chainId={chainId} />

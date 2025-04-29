@@ -112,7 +112,7 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
               error.message
             } `,
             methodName: method.name,
-
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             params: params as any,
             url: '',
             resultSchema: (method.result as ContentDescriptorObject).schema,
