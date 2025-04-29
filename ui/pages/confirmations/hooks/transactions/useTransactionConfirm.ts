@@ -60,6 +60,7 @@ export function useTransactionConfirm() {
     handleSmartTransaction,
     isSmartTransaction,
     newTransactionMeta,
+    customNonceValue,
   ]);
 
   return {

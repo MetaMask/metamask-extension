@@ -182,6 +182,5 @@ export function getAccountLabels(
     default: {
       break;
     }
-  }
   return labels;
 }
