@@ -23,8 +23,6 @@ async function main() {
     TEST_RESULTS_PATH: process.env.TEST_RESULTS_PATH || 'test/test-results/e2e',
     TEST_RUNS_PATH:
       process.env.TEST_RUNS_PATH || 'test/test-results/test-runs.json',
-    RUN_ID: process.env.RUN_ID ? +process.env.RUN_ID : 0,
-    PR_NUMBER: process.env.PR_NUMBER ? +process.env.PR_NUMBER : 0,
     GITHUB_ACTIONS: process.env.GITHUB_ACTIONS === 'true',
   };
 
@@ -40,6 +38,9 @@ async function main() {
         },
         setFailed: (msg: string) => console.error(msg),
       };
+
+  const repositoryUrl = new URL('https://github.com');
+  repositoryUrl.pathname = `/${env.OWNER}/${env.REPOSITORY}`;
 
   try {
     const testRuns: TestRun[] = [];
@@ -65,6 +66,7 @@ async function main() {
             name: suite.properties?.[0].property?.[0]?.$.value ?? '',
             id: suite.properties?.[0].property?.[1]?.$.value ?? '',
             runId: suite.properties?.[0].property?.[2]?.$.value ?? '',
+            prNumber: suite.properties?.[0].property?.[3]?.$.value ?? '',
           },
           date: new Date(suite.$.timestamp),
           tests,
@@ -221,18 +223,21 @@ async function main() {
           for (const file of testRun.testFiles) {
             if (file.failed === 0) continue;
             console.error(file.path);
-            core.summary.addRaw(
-              `\n#### [${file.path}](https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${env.BRANCH}/${file.path})\n`,
-            );
+            const testUrl = new URL(repositoryUrl);
+            testUrl.pathname += `/blob/${env.BRANCH}/${file.path}`;
+            core.summary.addRaw(`\n#### [${file.path}](${testUrl})\n`);
             for (const suite of file.testSuites) {
               if (suite.failed === 0) continue;
-              if (suite.job.name && suite.job.id && env.RUN_ID) {
+              if (suite.job.name && suite.job.id && suite.job.runId) {
+                const jobUrl = new URL(repositoryUrl);
+                jobUrl.pathname += `/actions/runs/${suite.job.runId}/job/${suite.job.id}`;
+                if (suite.job.prNumber) {
+                  jobUrl.search = new URLSearchParams({
+                    pr: suite.job.prNumber,
+                  }).toString();
+                }
                 core.summary.addRaw(
-                  `\n##### Job: [${suite.job.name}](https://github.com/${
-                    env.OWNER
-                  }/${env.REPOSITORY}/actions/runs/${env.RUN_ID}/job/${
-                    suite.job.id
-                  }${env.PR_NUMBER ? `?pr=${env.PR_NUMBER}` : ''})\n`,
+                  `\n##### Job: [${suite.job.name}](${jobUrl})\n`,
                 );
               }
               for (const test of suite.testCases) {
@@ -259,9 +264,11 @@ async function main() {
         const alignment = '| :--- | ---: | ---: | ---: | ---: |';
         const body = rows
           .map((row) => {
+            const testUrl = new URL(repositoryUrl);
+            testUrl.pathname += `/blob/${env.BRANCH}/${row['Test file']}`;
             const data = {
               ...row,
-              'Test file': `[${row['Test file']}](https://github.com/${env.OWNER}/${env.REPOSITORY}/blob/${env.BRANCH}/${row['Test file']})`,
+              'Test file': `[${row['Test file']}](${testUrl})`,
             };
             return `| ${Object.values(data).join(' | ')} |`;
           })

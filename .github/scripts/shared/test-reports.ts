@@ -19,6 +19,7 @@ export interface TestSuite {
     name: string;
     id: string;
     runId: string;
+    prNumber: string;
   };
   date: Date;
   tests: number;
