@@ -199,6 +199,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
+  const requestedNamespacesWithoutWallet = requestedNamespaces.filter(
+    (namespace) => namespace !== KnownCaipNamespace.Wallet,
+  );
 
   // all accounts that match the requested namespaces
   const supportedAccountsForRequestedNamespaces = allAccounts.filter(
@@ -206,7 +209,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       const {
         chain: { namespace },
       } = parseCaipAccountId(account.caipAccountId);
-      return requestedNamespaces.includes(namespace);
+      return requestedNamespacesWithoutWallet.includes(namespace);
     },
   );
 
@@ -233,7 +236,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const defaultAccounts = getDefaultAccounts(
-    requestedNamespaces,
+    requestedNamespacesWithoutWallet,
     supportedRequestedAccounts,
     supportedAccountsForRequestedNamespaces,
   );
