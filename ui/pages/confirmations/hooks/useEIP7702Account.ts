@@ -5,14 +5,14 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
-  getNetworkClientIdByChainId,
 } from '../../../store/actions';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
+import { useNetworkClientId } from './useNetworkClientId';
 
 export const EIP_7702_REVOKE_ADDRESS =
   '0x0000000000000000000000000000000000000000';
@@ -24,14 +24,15 @@ export function useEIP7702Account({
   const [transactionId, setTransactionId] = useState<string | undefined>();
   const { confirmations, navigateToId } = useConfirmationNavigation();
   const globalNetworkClientId = useSelector(getSelectedNetworkClientId);
+  const { getNetworkClientIdForChainId } = useNetworkClientId();
 
   const isRedirectPending = confirmations.some(
     (conf) => conf.id === transactionId,
   );
 
   const downgradeAccount = useCallback(
-    async (address: Hex, chainId: string) => {
-      const networkClientId = await getNetworkClientIdByChainId(chainId);
+    async (address: Hex, chainId: CaipChainId) => {
+      const networkClientId = getNetworkClientIdForChainId(chainId);
       const transactionMeta = (await dispatch(
         addTransactionAndRouteToConfirmationPage(
           {
@@ -57,8 +58,8 @@ export function useEIP7702Account({
   );
 
   const upgradeAccount = useCallback(
-    async (address: Hex, upgradeContractAddress: Hex, chainId: string) => {
-      const networkClientId = await getNetworkClientIdByChainId(chainId);
+    async (address: Hex, upgradeContractAddress: Hex, chainId: CaipChainId) => {
+      const networkClientId = getNetworkClientIdForChainId(chainId);
       const transactionMeta = (await dispatch(
         addTransactionAndRouteToConfirmationPage(
           {
