@@ -18820,7 +18820,7 @@ THE SOFTWARE.
 ******************************
 
 @metamask/eth-ledger-bridge-keyring
-11.0.2 <https://github.com/MetaMask/eth-ledger-bridge-keyring>
+11.0.3 <https://github.com/MetaMask/eth-ledger-bridge-keyring>
 ISC License
 
 Copyright (c) 2020 MetaMask
@@ -19421,7 +19421,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/keyring-controller
-21.0.3 <https://github.com/MetaMask/core>
+21.0.4 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
