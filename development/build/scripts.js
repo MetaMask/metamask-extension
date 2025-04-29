@@ -956,10 +956,6 @@ function setupBundlerDefaults(
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
-  if (buildTarget === BUILD_TARGETS.DIST) {
-    bundlerOpts.debug = false; // Disable sourcemaps in prod/dist
-  }
-
   // This dependency uses WASM which we cannot execute in accordance with our CSP
   bundlerOpts.manualIgnore.push('@chainsafe/as-sha256');
 
