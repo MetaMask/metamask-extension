@@ -401,6 +401,7 @@ import {
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
+import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
 import {
   getCallsStatus,
   getCapabilities,
@@ -612,6 +613,31 @@ export default class MetamaskController extends EventEmitter {
 
       initialNetworkControllerState.selectedNetworkClientId =
         network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
+    }
+
+    // Fix the network controller state (selectedNetworkClientId) if it is invalid and report the error
+    if (
+      initialNetworkControllerState.networkConfigurationsByChainId &&
+      !Object.values(
+        initialNetworkControllerState.networkConfigurationsByChainId,
+      )
+        .flatMap((networkConfiguration) =>
+          networkConfiguration.rpcEndpoints.map(
+            (rpcEndpoint) => rpcEndpoint.networkClientId,
+          ),
+        )
+        .includes(initialNetworkControllerState.selectedNetworkClientId)
+    ) {
+      captureException(
+        new Error(
+          `NetworkController state is invalid: \`selectedNetworkClientId\` '${initialNetworkControllerState.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`,
+        ),
+      );
+
+      initialNetworkControllerState.selectedNetworkClientId =
+        initialNetworkControllerState.networkConfigurationsByChainId[
+          CHAIN_IDS.MAINNET
+        ].rpcEndpoints[0].networkClientId;
     }
 
     this.networkController = new NetworkController({
@@ -1824,6 +1850,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
+      DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
     };
 
@@ -1875,6 +1902,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.NotificationServicesController;
     this.notificationServicesPushController =
       controllersByName.NotificationServicesPushController;
+    this.deFiPositionsController = controllersByName.DeFiPositionsController;
 
     this.notificationServicesController.init();
 
@@ -2111,6 +2139,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
+      DeFiPositionsController: this.deFiPositionsController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -2173,6 +2202,7 @@ export default class MetamaskController extends EventEmitter {
         NotificationServicesPushController:
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
+        DeFiPositionsController: this.deFiPositionsController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -7785,8 +7815,8 @@ export default class MetamaskController extends EventEmitter {
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
-      getIsSmartTransaction: () => {
-        return getIsSmartTransaction(this._getMetaMaskState());
+      getIsSmartTransaction: (chainId) => {
+        return getIsSmartTransaction(this._getMetaMaskState(), chainId);
       },
       getSmartTransactionByMinedTxHash: (txHash) => {
         return this.smartTransactionsController.getSmartTransactionByMinedTxHash(

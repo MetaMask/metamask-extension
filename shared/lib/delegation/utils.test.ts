@@ -1,6 +1,5 @@
 import {
   type Hex,
-  keccak256,
   toHex,
   isHex,
   pad,
@@ -8,22 +7,6 @@ import {
   isAddress,
   toFunctionSelector,
 } from './utils';
-
-describe('keccak256', () => {
-  it('should hash a hex string correctly', () => {
-    const input = '0x68656c6c6f' as const; // 'hello' in hex
-    const expected =
-      '0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8';
-    expect(keccak256(input)).toBe(expected);
-  });
-
-  it('should handle empty hex string', () => {
-    const input = '0x' as const;
-    const expected =
-      '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470';
-    expect(keccak256(input)).toBe(expected);
-  });
-});
 
 describe('toHex', () => {
   it('should convert string to hex', () => {

@@ -68,7 +68,12 @@ export const encodeSingleExecution = (execution: ExecutionStruct): Hex => {
  * @returns the encoded executions
  */
 export const encodeBatchExecution = (executions: ExecutionStruct[]): Hex => {
-  return toHex(encode(['(address,uint256,bytes)[]'], [executions]));
+  return toHex(
+    encode(
+      ['(address,uint256,bytes)[]'],
+      [executions.map((e) => [e.target, e.value, e.callData])],
+    ),
+  );
 };
 
 /**

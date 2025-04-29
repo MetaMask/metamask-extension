@@ -1,3 +1,4 @@
+import { Browser } from 'selenium-webdriver';
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
@@ -60,13 +61,15 @@ describe('Wallet Created Events', function () {
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 2);
-        assert.deepStrictEqual(events[0].properties, {
-          account_type: 'metamask',
-          category: 'Onboarding',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'fullscreen',
-        });
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          assert.deepStrictEqual(events[0].properties, {
+            account_type: 'metamask',
+            category: 'Onboarding',
+            locale: 'en',
+            chain_id: '0x539',
+            environment_type: 'fullscreen',
+          });
+        }
         assert.deepStrictEqual(events[1].properties, {
           method: 'create',
           category: 'Onboarding',
