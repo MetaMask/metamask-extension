@@ -21,7 +21,10 @@ class TestDappSendEthWithPrivateKey {
         this.sendEthWithPrivateKeyButton,
       ]);
     } catch (e) {
-      console.log('Timeout while waiting for Test Dapp send eth with private key page to be loaded', e);
+      console.log(
+        'Timeout while waiting for Test Dapp send eth with private key page to be loaded',
+        e,
+      );
       throw e;
     }
     console.log('Test Dapp send eth with private key page is loaded');
