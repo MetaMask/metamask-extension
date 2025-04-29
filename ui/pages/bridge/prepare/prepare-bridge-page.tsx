@@ -9,7 +9,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
-import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import {
@@ -20,6 +19,7 @@ import {
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -50,6 +50,8 @@ import {
   getIsToOrFromSolana,
   getQuoteRefreshRate,
   getHardwareWalletName,
+  getIsQuoteExpired,
+  BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -81,10 +83,7 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import {
-  formatTokenAmount,
-  isQuoteExpired as isQuoteExpiredUtil,
-} from '../utils/quote';
+import { formatTokenAmount } from '../utils/quote';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -112,6 +111,7 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
+  getImageForChainId,
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
   getMultichainProviderConfig,
@@ -126,6 +126,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   fetchAssetMetadata,
+  getAssetImageUrl,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { BridgeInputGroup } from './bridge-input-group';
@@ -169,20 +170,23 @@ const PrepareBridgePage = () => {
     isLoading,
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
-    quotesLastFetchedMs,
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
+
+  const isQuoteExpired = useSelector((state) =>
+    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   // If latest quote is expired and user has sufficient balance
   // set activeQuote to undefined to hide stale quotes but keep inputs filled
-  const isQuoteExpired = isQuoteExpiredUtil(
-    isQuoteGoingToRefresh,
-    refreshRate,
-    quotesLastFetchedMs,
-  );
   const activeQuote =
-    isQuoteExpired && !quoteRequest.insufficientBal ? undefined : activeQuote_;
+    isQuoteExpired &&
+    (!quoteRequest.insufficientBal ||
+      // insufficientBal is always true for solana
+      (fromChain && isSolanaChainId(fromChain.chainId)))
+      ? undefined
+      : activeQuote_;
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
@@ -576,7 +580,7 @@ const PrepareBridgePage = () => {
           onMaxButtonClick={(value: string) => {
             dispatch(setFromTokenInputValue(value));
           }}
-          amountInFiat={fromAmountInCurrency.valueInCurrency}
+          amountInFiat={fromAmountInCurrency.valueInCurrency.toString()}
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
@@ -707,7 +711,25 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      dispatch(setToToken(null));
+                      const destNativeAsset = getNativeAssetForChainId(
+                        networkConfig.chainId,
+                      );
+                      dispatch(
+                        setToToken({
+                          ...destNativeAsset,
+                          image:
+                            getImageForChainId(
+                              isSolanaChainId(networkConfig.chainId)
+                                ? formatChainIdToCaip(networkConfig.chainId)
+                                : formatChainIdToHex(networkConfig.chainId),
+                            ) ??
+                            getAssetImageUrl(
+                              destNativeAsset.assetId,
+                              networkConfig.chainId,
+                            ) ??
+                            '',
+                        }),
+                      );
                     },
                     header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
                     shouldDisableNetwork: ({ chainId }) =>
@@ -836,7 +858,7 @@ const PrepareBridgePage = () => {
                         : t('willApproveAmountForBridging', [
                             formatTokenAmount(
                               locale,
-                              new BigNumber(fromAmount),
+                              fromAmount,
                               fromToken.symbol,
                             ),
                           ])}
