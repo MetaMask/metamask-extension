@@ -25,6 +25,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { Hex } from '@metamask/utils';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
