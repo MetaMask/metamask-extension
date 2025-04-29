@@ -255,26 +255,24 @@ async function mockDAItoUSDT(mockServer: Mockttp) {
 
 async function mockGetQuoteInvalid(
   mockServer: Mockttp,
-  statusCode: number,
-  json: unknown,
+  options: { statusCode: number; json: unknown },
 ) {
   return await mockServer.forGet(/getQuote/u).thenCallback(() => {
     return {
-      statusCode,
-      json,
+      statusCode: options.statusCode,
+      json: options.json,
     };
   });
 }
 
 async function mockGetTxStatusInvalid(
   mockServer: Mockttp,
-  statusCode: number,
-  json: unknown,
+  options: { statusCode: number; json: unknown },
 ) {
   return await mockServer.forGet(/getTxStatus/u).thenCallback(() => {
     return {
-      statusCode,
-      json,
+      statusCode: options.statusCode,
+      json: options.json,
     };
   });
 }
@@ -340,8 +338,7 @@ export const getBridgeFixtures = (
 };
 
 export const getQuoteNegativeCasesFixtures = (
-  statusCode: number,
-  response: unknown,
+  options: { statusCode: number; json: unknown },
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
@@ -361,7 +358,7 @@ export const getQuoteNegativeCasesFixtures = (
         },
       }),
       await mockTopAssets(mockServer),
-      await mockGetQuoteInvalid(mockServer, statusCode, response),
+      await mockGetQuoteInvalid(mockServer, options),
     ],
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -377,8 +374,7 @@ export const getQuoteNegativeCasesFixtures = (
 };
 
 export const getBridgeNegativeCasesFixtures = (
-  statusCode: number,
-  response: unknown,
+  options: { statusCode: number; json: unknown },
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
@@ -399,8 +395,41 @@ export const getBridgeNegativeCasesFixtures = (
       }),
       await mockTopAssets(mockServer),
       await mockETHtoETH(mockServer),
+      await mockGetTxStatusInvalid(mockServer, options),
+    ],
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 1,
+          hardfork: 'london',
+        },
+      },
+    ],
+    title,
+  };
+};
+
+export const getInsufficientFundsFixtures = (title?: string) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withTokensControllerERC20({ chainId: 1 });
+
+  return {
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, {
+        'extension-config': {
+          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+          support: true,
+        },
+      }),
+      await mockTopAssets(mockServer),
       await mockETHtoWETH(mockServer),
-      await mockGetTxStatusInvalid(mockServer, statusCode, response),
     ],
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [

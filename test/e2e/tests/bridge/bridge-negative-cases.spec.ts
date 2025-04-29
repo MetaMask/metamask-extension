@@ -6,6 +6,7 @@ import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import {
   getBridgeNegativeCasesFixtures,
+  getInsufficientFundsFixtures,
   getQuoteNegativeCasesFixtures,
 } from './bridge-test-utils';
 import {
@@ -17,10 +18,7 @@ import {
 describe('Bridge functionality', function (this: Suite) {
   it('should show that more funds are needed to execute the Bridge', async function () {
     await withFixtures(
-      getBridgeNegativeCasesFixtures(
-        FAILED_SOURCE_TRANSACTION,
-        this.test?.fullTitle(),
-      ),
+      getInsufficientFundsFixtures(this.test?.fullTitle()),
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
@@ -44,8 +42,10 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show message that no trade route is available if getQuote returns error 500', async function () {
     await withFixtures(
       getQuoteNegativeCasesFixtures(
-        500,
-        'Internal server error',
+        {
+          statusCode: 500,
+          json: 'Internal server error',
+        },
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -62,7 +62,13 @@ describe('Bridge functionality', function (this: Suite) {
 
   it('should show message that no trade route is available if getQuote returns empty array', async function () {
     await withFixtures(
-      getQuoteNegativeCasesFixtures(200, [], this.test?.fullTitle()),
+      getQuoteNegativeCasesFixtures(
+        {
+          statusCode: 200,
+          json: [],
+        },
+        this.test?.fullTitle(),
+      ),
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
@@ -78,8 +84,10 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show message that no trade route is available if getQuote returns invalid response', async function () {
     await withFixtures(
       getQuoteNegativeCasesFixtures(
-        200,
-        GET_QUOTE_INVALID_RESPONSE,
+        {
+          statusCode: 200,
+          json: GET_QUOTE_INVALID_RESPONSE,
+        },
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -97,8 +105,10 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show that bridge transaction is pending if getTxStatus returns error 500', async function () {
     await withFixtures(
       getBridgeNegativeCasesFixtures(
-        500,
-        'Internal server error',
+        {
+          statusCode: 500,
+          json: 'Internal server error',
+        },
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -121,8 +131,10 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show failed bridge activity if getTxStatus returns failed source transaction', async function () {
     await withFixtures(
       getBridgeNegativeCasesFixtures(
-        200,
-        FAILED_SOURCE_TRANSACTION,
+        {
+          statusCode: 200,
+          json: FAILED_SOURCE_TRANSACTION,
+        },
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -146,8 +158,10 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
     await withFixtures(
       getBridgeNegativeCasesFixtures(
-        200,
-        FAILED_DEST_TRANSACTION,
+        {
+          statusCode: 200,
+          json: FAILED_DEST_TRANSACTION,
+        },
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
