@@ -9,8 +9,6 @@ import {
   getQuoteNegativeCasesFixtures,
 } from './bridge-test-utils';
 import {
-  INTERNAL_SERVER_ERROR,
-  EMPTY_RESPONSE,
   GET_QUOTE_INVALID_RESPONSE,
   FAILED_SOURCE_TRANSACTION,
   FAILED_DEST_TRANSACTION,
