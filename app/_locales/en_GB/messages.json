@@ -1129,9 +1129,6 @@
   "confirmInfoAccountNewType": {
     "message": "New Type"
   },
-  "confirmInfoAccountType": {
-    "message": "Account type"
-  },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
   },

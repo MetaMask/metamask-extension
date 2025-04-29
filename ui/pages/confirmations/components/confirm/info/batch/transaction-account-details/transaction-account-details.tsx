@@ -42,11 +42,7 @@ export function TransactionAccountDetails() {
         <>
           <ConfirmInfoAlertRow
             alertKey={RowAlertKey.AccountTypeUpgrade}
-            label={
-              isBatch
-                ? t('confirmInfoAccountType')
-                : t('confirmInfoAccountCurrentType')
-            }
+            label={t('confirmInfoAccountCurrentType')}
             ownerId={id}
           >
             <ConfirmInfoRowText
