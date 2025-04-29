@@ -34,6 +34,7 @@ describe('Solana Wallet Standard - Sign Message', function () {
 
           await testDapp.switchTo();
 
+          await driver.delay(largeDelayMs);
           const signedMessage = await signMessageTest.getSignedMessage();
 
           assertSignedMessageIsValid({

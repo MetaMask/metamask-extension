@@ -37,6 +37,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await clickConfirmButton(driver);
           await testDapp.switchTo();
 
+          await driver.delay(largeDelayMs);
           const signedTransaction = await sendSolTest.getSignedTransaction();
           assert.strictEqual(signedTransaction.length, 1);
           assert.ok(signedTransaction[0]);

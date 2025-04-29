@@ -44,6 +44,7 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await testDapp.switchTo();
 
           // Assert that the transactions were signed
+          await driver.delay(largeDelayMs);
           const signedTransactions = await sendWSolTest.getSignedTransactions();
           assert.strictEqual(signedTransactions.length, 2);
           assert.ok(signedTransactions[0]);
