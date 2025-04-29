@@ -5,7 +5,6 @@ import {
   TestSuiteArguments,
   openDAppWithContract,
 } from '../transactions/shared';
-import { Driver } from '../../../webdriver/driver';
 import AlertModal from '../../../page-objects/pages/confirmations/redesign/alert-modal';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
