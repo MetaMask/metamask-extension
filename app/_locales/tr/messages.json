@@ -2711,9 +2711,6 @@
   "ledgerLocked": {
     "message": "Ledger cihazına bağlanılamıyor. Lütfen cihazınızın kilidinin açık ve Ethereum uygulamasının açık olduğundan emin olun."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Aynı anda birden fazla Ledger cihazı bağlanabilir. Yeni bir Ledger cihazı bağlamak için önceki cihazın bağlantısını kesmeniz gerekecek."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live'ın yanıt vermesi çok uzun sürdü ya da bağlantı zaman aşımına uğradı. Ledger Live uygulamasının açık olduğundan ve cihazınızın kilidinin açık olduğundan emin olun."
   },
@@ -4084,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Bu ağların bazıları üçüncü taraflara dayalıdır. Bağlantılar daha az güvenilir olabilir veya üçüncü tarafların aktiviteleri takip etmesine olanak sağlayabilir. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Popüler ağlar"
