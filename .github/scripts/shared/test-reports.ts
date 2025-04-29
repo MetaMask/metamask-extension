@@ -18,6 +18,7 @@ export interface TestSuite {
   job: {
     name: string;
     id: string;
+    runId: string;
   };
   date: Date;
   tests: number;

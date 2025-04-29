@@ -1,6 +1,5 @@
-import { RpcEndpointType } from '@metamask/network-controller';
-import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
-import { cloneDeep, escapeRegExp } from 'lodash';
+import { cloneDeep } from 'lodash';
+import { hasProperty, isObject } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };
@@ -9,72 +8,14 @@ type VersionedData = {
 
 export const version = 155;
 
-// Chains supported by Infura that are either built in or featured,
-// mapped to their corresponding failover URLs.
-// Copied from `FEATURED_RPCS` in shared/constants/network.ts:
-// <https://github.com/MetaMask/metamask-extension/blob/f28216fad810d138dab8577fe9bdb39f5b6d18d8/shared/constants/network.ts#L1051>
-export const INFURA_CHAINS_WITH_FAILOVERS: Map<
-  Hex,
-  { subdomain: string; getFailoverUrl: () => string | undefined }
-> = new Map([
-  [
-    '0x1',
-    {
-      subdomain: 'mainnet',
-      getFailoverUrl: () => process.env.QUICKNODE_MAINNET_URL,
-    },
-  ],
-  // linea mainnet
-  [
-    '0xe708',
-    {
-      subdomain: 'linea-mainnet',
-      getFailoverUrl: () => process.env.QUICKNODE_LINEA_MAINNET_URL,
-    },
-  ],
-  [
-    '0xa4b1',
-    {
-      subdomain: 'arbitrum',
-      getFailoverUrl: () => process.env.QUICKNODE_ARBITRUM_URL,
-    },
-  ],
-  [
-    '0xa86a',
-    {
-      subdomain: 'avalanche',
-      getFailoverUrl: () => process.env.QUICKNODE_AVALANCHE_URL,
-    },
-  ],
-  [
-    '0xa',
-    {
-      subdomain: 'optimism',
-      getFailoverUrl: () => process.env.QUICKNODE_OPTIMISM_URL,
-    },
-  ],
-  [
-    '0x89',
-    {
-      subdomain: 'polygon',
-      getFailoverUrl: () => process.env.QUICKNODE_POLYGON_URL,
-    },
-  ],
-  [
-    '0x2105',
-    {
-      subdomain: 'base',
-      getFailoverUrl: () => process.env.QUICKNODE_BASE_URL,
-    },
-  ],
-]);
-
 /**
- * This migration ensures that all RPC endpoints that hit Infura and use our API
- * key are Infura RPC endpoints and not custom RPC endpoints.
+ * This migration removes the `bridgeStatusState` property from the BridgeStatusController state.
  *
- * @param originalVersionedData - The original MetaMask extension state.
- * @returns Updated versioned MetaMask extension state.
+ * If the BridgeStatusController is not found or is not an object, the migration logs an error,
+ * but otherwise leaves the state unchanged.
+ *
+ * @param originalVersionedData - The versioned extension state.
+ * @returns The updated versioned extension state without the tokens property.
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -82,107 +23,42 @@ export async function migrate(
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
 
-  try {
-    transformState(versionedData.data);
-  } catch (error) {
-    console.error(error);
-    const newError = new Error(
-      `Migration #${version}: ${getErrorMessage(error)}`,
-    );
-    if (global.sentry) {
-      global.sentry.captureException(newError);
-    }
-    // Even though we encountered an error, we need the migration to pass for
-    // the migrator tests to work
-    versionedData.data = originalVersionedData.data;
-  }
+  versionedData.data = transformState(versionedData.data);
 
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
-  if (!process.env.INFURA_PROJECT_ID) {
-    throw new Error('No INFURA_PROJECT_ID set!');
-  }
-
-  if (!hasProperty(state, 'NetworkController')) {
-    throw new Error('Missing NetworkController state');
-  }
-
-  if (!isObject(state.NetworkController)) {
-    throw new Error(
-      `Expected state.NetworkController to be an object, but is ${typeof state.NetworkController}`,
+function transformState(
+  state: Record<string, unknown>,
+): Record<string, unknown> {
+  if (!hasProperty(state, 'BridgeStatusController')) {
+    global.sentry?.captureException?.(
+      new Error(`Migration ${version}: BridgeStatusController not found.`),
     );
+    return state;
   }
 
-  if (!hasProperty(state.NetworkController, 'networkConfigurationsByChainId')) {
-    throw new Error(
-      'Missing state.NetworkController.networkConfigurationsByChainId',
+  const bridgeStatusControllerState = state.BridgeStatusController;
+
+  if (!isObject(bridgeStatusControllerState)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: BridgeStatusController is type '${typeof bridgeStatusControllerState}', expected object.`,
+      ),
     );
+    return state;
   }
 
-  if (!isObject(state.NetworkController.networkConfigurationsByChainId)) {
-    throw new Error(
-      `Expected state.NetworkController.networkConfigurationsByChainId to be an object, but is ${typeof state
-        .NetworkController.networkConfigurationsByChainId}`,
-    );
-  }
+  if (hasProperty(bridgeStatusControllerState, 'bridgeStatusState')) {
+    if (isObject(bridgeStatusControllerState.bridgeStatusState)) {
+      state.BridgeStatusController = {
+        ...bridgeStatusControllerState.bridgeStatusState,
+      };
 
-  const { networkConfigurationsByChainId } = state.NetworkController;
-
-  for (const [chainId, networkConfiguration] of Object.entries(
-    networkConfigurationsByChainId,
-  )) {
-    const infuraChainWithFailover = INFURA_CHAINS_WITH_FAILOVERS.get(
-      chainId as Hex,
-    );
-
-    if (
-      !isObject(networkConfiguration) ||
-      !hasProperty(networkConfiguration, 'rpcEndpoints') ||
-      !Array.isArray(networkConfiguration.rpcEndpoints)
-    ) {
-      continue;
+      // Remove the bridgeStatusState property from the BridgeStatusController state.
+      delete bridgeStatusControllerState.bridgeStatusState;
     }
-
-    networkConfiguration.rpcEndpoints = networkConfiguration.rpcEndpoints.map(
-      (rpcEndpoint) => {
-        if (
-          !isObject(rpcEndpoint) ||
-          !hasProperty(rpcEndpoint, 'url') ||
-          typeof rpcEndpoint.url !== 'string' ||
-          hasProperty(rpcEndpoint, 'failoverUrls')
-        ) {
-          return rpcEndpoint;
-        }
-
-        // All featured networks that use Infura get added as custom RPC
-        // endpoints, not Infura RPC endpoints
-        const match = rpcEndpoint.url.match(
-          new RegExp(
-            `https://(.+?)\\.infura\\.io/v3/${escapeRegExp(
-              process.env.INFURA_PROJECT_ID,
-            )}`,
-            'u',
-          ),
-        );
-        const isInfuraLike =
-          match &&
-          infuraChainWithFailover &&
-          match[1] === infuraChainWithFailover.subdomain;
-
-        const failoverUrl = infuraChainWithFailover?.getFailoverUrl();
-
-        const failoverUrls =
-          failoverUrl &&
-          (rpcEndpoint.type === RpcEndpointType.Infura || isInfuraLike)
-            ? [failoverUrl]
-            : [];
-        return {
-          ...rpcEndpoint,
-          failoverUrls,
-        };
-      },
-    );
   }
+
+  return state;
 }
