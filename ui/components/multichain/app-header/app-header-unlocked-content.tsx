@@ -14,10 +14,14 @@ import {
   FontWeight,
   IconColor,
   JustifyContent,
+  Size,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -42,6 +46,7 @@ import {
   getSelectedInternalAccount,
   getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
+  getUseBlockie,
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -82,6 +87,7 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const useBlockie = useSelector(getUseBlockie);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const networkIconSrc = getNetworkIcon(currentNetwork);
 
@@ -123,124 +129,90 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      {popupStatus ? (
-        <Box className="multichain-app-header__contents__container">
-          <Tooltip title={currentNetwork.name} position="right">
-            <PickerNetwork
-              avatarNetworkProps={{
-                backgroundColor: testNetworkBackgroundColor,
-                role: 'img',
-                name: currentNetwork.name,
-              }}
-              className="multichain-app-header__contents--avatar-network"
-              ref={menuRef}
-              as="button"
-              src={networkIconSrc}
-              label={currentNetwork.name}
-              aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
-              labelProps={{
-                display: Display.None,
-              }}
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                e.stopPropagation();
-                e.preventDefault();
-                trace({ name: TraceName.NetworkList });
-                networkOpenCallback();
-              }}
-              display={[Display.Flex, Display.None]} // show on popover hide on desktop
-              disabled={disableNetworkPicker}
-            />
-          </Tooltip>
-        </Box>
-      ) : (
-        <div>
-          <PickerNetwork
-            avatarNetworkProps={{
-              backgroundColor: testNetworkBackgroundColor,
-              role: 'img',
-              name: currentNetwork.name,
-            }}
-            margin={2}
-            aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
-            label={currentNetwork.name}
-            src={networkIconSrc}
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              e.stopPropagation();
-              e.preventDefault();
-              trace({ name: TraceName.NetworkList });
-              networkOpenCallback();
-            }}
-            display={[Display.None, Display.Flex]} // show on desktop hide on popover
-            className="multichain-app-header__contents__network-picker"
-            disabled={disableNetworkPicker}
-            data-testid="network-display"
-          />
-        </div>
-      )}
-
-      {internalAccount && (
-        <Text
-          as="div"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          ellipsis
-        >
-          <AccountPicker
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+        gap={2}
+      >
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+          <AvatarAccount
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
             address={internalAccount.address}
-            name={internalAccount.metadata.name}
-            onClick={() => {
-              dispatch(toggleAccountMenu());
-
-              trackEvent({
-                event: MetaMetricsEventName.NavAccountMenuOpened,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  location: 'Home',
-                },
-              });
-            }}
-            disabled={disableAccountPicker}
-            labelProps={{ fontWeight: FontWeight.Bold }}
-            paddingLeft={0}
-            paddingRight={0}
+            size={AvatarAccountSize.Lg}
           />
-          <Tooltip
-            position="left"
-            title={copied ? t('addressCopied') : t('copyToClipboard')}
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {internalAccount && (
+          <Text
+            as="div"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.flexStart}
+            ellipsis
           >
-            <ButtonBase
-              className="multichain-app-header__address-copy-button"
-              onClick={() => handleCopy(normalizedCurrentAddress)}
-              size={ButtonBaseSize.Sm}
-              backgroundColor={BackgroundColor.transparent}
-              borderRadius={BorderRadius.LG}
-              endIconName={copied ? IconName.CopySuccess : IconName.Copy}
-              endIconProps={{
-                color: IconColor.iconAlternative,
-                size: IconSize.Sm,
+            <AccountPicker
+              address={internalAccount.address}
+              name={internalAccount.metadata.name}
+              onClick={() => {
+                dispatch(toggleAccountMenu());
+
+                trackEvent({
+                  event: MetaMetricsEventName.NavAccountMenuOpened,
+                  category: MetaMetricsEventCategory.Navigation,
+                  properties: {
+                    location: 'Home',
+                  },
+                });
               }}
-              ellipsis
-              textProps={{
-                display: Display.Flex,
-                alignItems: AlignItems.center,
-                gap: 2,
-              }}
-              style={{ height: 'auto' }} // ButtonBase doesn't have auto size
-              data-testid="app-header-copy-button"
+              disabled={disableAccountPicker}
+              labelProps={{ fontWeight: FontWeight.Bold }}
+              paddingLeft={0}
+              paddingRight={0}
+            />
+            <Tooltip
+              position="left"
+              title={copied ? t('addressCopied') : t('copyToClipboard')}
             >
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodySm}
+              <ButtonBase
+                className="multichain-app-header__address-copy-button"
+                onClick={() => handleCopy(normalizedCurrentAddress)}
+                size={ButtonBaseSize.Sm}
+                backgroundColor={BackgroundColor.transparent}
+                borderRadius={BorderRadius.LG}
+                endIconName={copied ? IconName.CopySuccess : IconName.Copy}
+                endIconProps={{
+                  color: IconColor.iconAlternative,
+                  size: IconSize.Sm,
+                }}
+                paddingLeft={0}
+                paddingRight={0}
                 ellipsis
-                as="span"
+                textProps={{
+                  display: Display.Flex,
+                  gap: 2,
+                }}
+                style={{ height: 'auto' }} // ButtonBase doesn't have auto size
+                data-testid="app-header-copy-button"
               >
-                {shortenedAddress}
-              </Text>
-            </ButtonBase>
-          </Tooltip>
-        </Text>
-      )}
+                <Text
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodySm}
+                  ellipsis
+                  as="span"
+                >
+                  {shortenedAddress}
+                </Text>
+              </ButtonBase>
+            </Tooltip>
+          </Text>
+        )}
+      </Box>
       <Box
         display={Display.Flex}
         alignItems={AlignItems.center}
