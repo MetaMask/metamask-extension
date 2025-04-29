@@ -4,6 +4,7 @@
 // @reduxjs/toolkit to be patched by our patch files. The patch is 6000+ lines.
 // I don't want to try to figure that one out.
 import { ReactFragment } from 'react';
+import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
@@ -11,7 +12,7 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
-import type { CaipChainId, Hex, Json } from '@metamask/utils';
+import { type CaipChainId, type Hex, type Json } from '@metamask/utils';
 import {
   AssetsContractController,
   BalanceMap,
@@ -57,7 +58,6 @@ import {
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
-  getPermittedAccountsForCurrentTab,
   hasTransactionPendingApprovals,
   getApprovalFlows,
   getCurrentNetworkTransactions,
@@ -69,6 +69,7 @@ import {
   getInternalAccountByAddress,
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
+  getAllPermittedAccountsForCurrentTab,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -123,6 +124,7 @@ import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
+import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
@@ -233,7 +235,6 @@ export function createNewVaultAndRestore(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
 export function importMnemonicToVault(
   mnemonic: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -290,7 +291,6 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
       });
   };
 }
-///: END:ONLY_INCLUDE_IF
 export function createNewVaultAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -377,29 +377,17 @@ export function verifyPassword(password: string): Promise<boolean> {
   });
 }
 
-export async function getSeedPhrase(
-  password: string,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-  keyringId: string,
-  ///: END:ONLY_INCLUDE_IF
-) {
+export async function getSeedPhrase(password: string, keyringId: string) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
     'getSeedPhrase',
-    [
-      password,
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-      keyringId,
-      ///: END:ONLY_INCLUDE_IF
-    ],
+    [password, keyringId],
   );
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
 
 export function requestRevealSeedWords(
   password: string,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   keyringId: string,
-  ///: END:ONLY_INCLUDE_IF
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -407,12 +395,7 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await getSeedPhrase(
-        password,
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        keyringId,
-        ///: END:ONLY_INCLUDE_IF
-      );
+      const seedPhrase = await getSeedPhrase(password, keyringId);
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -522,9 +505,7 @@ export function importNewAccount(
 }
 
 export function addNewAccount(
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   keyringId?: string,
-  ///: END:ONLY_INCLUDE_IF
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
@@ -533,11 +514,9 @@ export function addNewAccount(
 
     // The HD keyring to add the account for.
     let hdKeyring = defaultPrimaryKeyring;
-    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     if (keyringId) {
       hdKeyring = keyrings.find((keyring) => keyring.metadata.id === keyringId);
     }
-    ///: END:ONLY_INCLUDE_IF
     // Fail-safe in case we could not find the associated HD keyring.
     if (!hdKeyring) {
       console.error('Should never reach this. There is always a keyring');
@@ -551,9 +530,7 @@ export function addNewAccount(
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
         oldAccounts.length,
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
         keyringId,
-        ///: END:ONLY_INCLUDE_IF
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -1591,7 +1568,7 @@ export function cancelTxs(
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        closeNotificationPopup();
+        attemptCloseNotificationPopup();
       } else {
         dispatch(hideLoadingIndication());
       }
@@ -1853,21 +1830,30 @@ export function setSelectedAccount(
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
     const activeTabOrigin = state.activeTab.origin;
-    const internalAccount = getInternalAccountByAddress(state, address);
+    const prevAccount = getSelectedInternalAccount(state);
+    const nextAccount = getInternalAccountByAddress(state, address);
     const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(state);
+      getAllPermittedAccountsForCurrentTab(state);
+
     const currentTabIsConnectedToPreviousAddress =
-      Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(internalAccount.address);
+      isInternalAccountInPermittedAccountIds(
+        prevAccount,
+        permittedAccountsForCurrentTab,
+      );
+
     const currentTabIsConnectedToNextAddress =
-      Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(address);
+      isInternalAccountInPermittedAccountIds(
+        nextAccount,
+        permittedAccountsForCurrentTab,
+      );
+
     const switchingToUnconnectedAddress =
+      Boolean(activeTabOrigin) &&
       currentTabIsConnectedToPreviousAddress &&
       !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedInternalAccount(internalAccount.id);
+      await _setSelectedInternalAccount(nextAccount.id);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -1953,7 +1939,7 @@ export function removePermittedAccount(
 
 export function addPermittedChain(
   origin: string,
-  chainId: string,
+  chainId: CaipChainId,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
@@ -2221,6 +2207,7 @@ export function addNftVerifyOwnership(
 export function removeAndIgnoreNft(
   address: string,
   tokenID: string,
+  networkClientId: string,
   shouldShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -2234,7 +2221,11 @@ export function removeAndIgnoreNft(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreNft', [address, tokenID]);
+      await submitRequestToBackground('removeAndIgnoreNft', [
+        address,
+        tokenID,
+        { networkClientId },
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -2326,6 +2317,24 @@ export async function getTokenStandardAndDetails(
     address,
     userAddress,
     tokenId,
+  ]);
+}
+
+export async function getTokenStandardAndDetailsByChain(
+  address: string,
+  userAddress?: string,
+  tokenId?: string,
+  chainId?: string,
+): Promise<
+  Awaited<
+    ReturnType<AssetsContractController['getTokenStandardAndDetails']>
+  > & { balance?: string }
+> {
+  return await submitRequestToBackground('getTokenStandardAndDetailsByChain', [
+    address,
+    userAddress,
+    tokenId,
+    chainId,
   ]);
 }
 
@@ -2837,7 +2846,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
       !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
     ) {
-      closeNotificationPopup();
+      attemptCloseNotificationPopup();
     }
   };
 }
@@ -3243,6 +3252,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
+export function setDismissSmartAccountSuggestionEnabled(value: boolean) {
+  return setPreference('dismissSmartAccountSuggestionEnabled', value);
+}
+
 export function setTokenSortConfig(value: SortCriteria) {
   return setPreference('tokenSortConfig', value, false);
 }
@@ -3276,21 +3289,6 @@ export function setShowMultiRpcModal(value: boolean) {
 
 export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
-}
-
-export function setIncomingTransactionsPreferences(
-  chainId: string,
-  value: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setIncomingTransactionsPreferences`);
-    await submitRequestToBackground('setIncomingTransactionsPreferences', [
-      chainId,
-      value,
-    ]);
-    dispatch(hideLoadingIndication());
-  };
 }
 
 export function setCompletedOnboarding(): ThunkAction<
@@ -4345,6 +4343,16 @@ export function setOverrideContentSecurityPolicyHeader(
   };
 }
 
+export function setManageInstitutionalWallets(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('setManageInstitutionalWallets', [value]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function getRpcMethodPreferences(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -4853,9 +4861,48 @@ export function getGasFeeTimeEstimate(
   ]);
 }
 
-export async function closeNotificationPopup() {
+export async function attemptCloseNotificationPopup() {
+  // Check if the current window is NOT a popup - if confirmed, we should not close it
+  try {
+    const currentWindow = await browser.windows.getCurrent();
+    if (currentWindow.type && currentWindow.type !== 'popup') {
+      console.warn(
+        `Not safe to close a window that is not a popup: It is of type: ${currentWindow.type}`,
+      );
+      // We've confirmed this is not a popup window, so it's not safe to close.
+      return;
+    }
+  } catch (error) {
+    // Error occurred while checking window type - we cannot confirm rule out a popup, so continue
+    // with the closing attempt as we haven't ruled out that it might be a popup
+    console.warn(
+      'attemptCloseNotificationPopup: Error encountered while checking window type',
+      error,
+    );
+  }
+
   await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
-  global.platform.closeCurrentWindow();
+
+  // First attempt: Try window.close()
+  // This has limitations according to MDN:
+  // - Only works on windows opened by Window.open()
+  // - Or top-level windows with single history entry
+  // - Otherwise fails silently with console error: "Scripts may not close windows that were not opened by script"
+  //
+  // Note: we opted for window.close() instead of browser.windows.remove(id) because the latter closes the
+  // entire window and all its tabs (if there are other tabs open).
+  window.close();
+
+  // Second attempt: If we reach here, window.close() failed
+  // Try to close via the browser tabs API
+  try {
+    const tab = await browser.tabs.getCurrent();
+    await browser.tabs.remove(tab.id);
+  } catch (error) {
+    // If closing the tab fails, we don't want to close the entire browser window.
+    // See issue: https://github.com/MetaMask/metamask-extension/issues/29821
+    console.error('attemptCloseNotificationPopup: Failed to close tab', error);
+  }
 }
 
 /**
@@ -6073,9 +6120,11 @@ export async function sendMultichainTransaction(
   {
     account,
     scope,
+    assetType,
   }: {
     account: string;
     scope: string;
+    assetType?: CaipAssetType;
   },
 ) {
   await handleSnapRequest({
@@ -6087,9 +6136,24 @@ export async function sendMultichainTransaction(
       params: {
         account,
         scope,
+        assetId: assetType, // The Solana snap names the parameter `assetId` while it is in fact an `assetType`
       },
     },
   });
+}
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+export async function createSnapAccount(
+  snapId: SnapId,
+  options: Record<string, Json>,
+  internalOptions?: SnapKeyringInternalOptions,
+): Promise<InternalAccount> {
+  return await submitRequestToBackground<InternalAccount>('createSnapAccount', [
+    snapId,
+    options,
+    internalOptions,
+  ]);
 }
 ///: END:ONLY_INCLUDE_IF
 

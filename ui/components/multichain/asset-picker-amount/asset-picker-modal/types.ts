@@ -15,7 +15,7 @@ export type NFT = {
   address: string;
   description: string | null;
   favorite: boolean;
-  image?: string;
+  image?: string | string[];
   isCurrentlyOwned: boolean;
   name: string | null;
   standard: TokenStandard;

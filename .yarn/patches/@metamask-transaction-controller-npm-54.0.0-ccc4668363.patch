@@ -1,0 +1,982 @@
+diff --git a/dist/TransactionController.cjs b/dist/TransactionController.cjs
+index fef52f6b9c89b7ab4c000123a06a2bc00caa8c14..d0fb5d264305ece036f4393d1a064ee848fd2433 100644
+--- a/dist/TransactionController.cjs
++++ b/dist/TransactionController.cjs
+@@ -408,7 +408,7 @@ class TransactionController extends base_controller_1.BaseController {
+         const isDuplicateBatchId = batchId?.length &&
+             this.state.transactions.some((tx) => tx.batchId?.toLowerCase() === batchId?.toLowerCase());
+         if (isDuplicateBatchId && origin && origin !== controller_utils_1.ORIGIN_METAMASK) {
+-            throw rpc_errors_1.rpcErrors.invalidInput('Batch ID already exists');
++            throw new rpc_errors_1.JsonRpcError(validation_1.ErrorCode.DuplicateBundleId, 'Batch ID already exists');
+         }
+         const dappSuggestedGasFees = this.generateDappSuggestedGasFees(txParams, origin);
+         const transactionType = type ?? (await (0, transaction_type_1.determineTransactionType)(txParams, ethQuery)).type;
+diff --git a/dist/TransactionController.mjs b/dist/TransactionController.mjs
+index d169f516b09cc7e5ba77ad399aebdc6cc603ae80..8cc1708679f0349a28f09193a52a6bf71a2ebe57 100644
+--- a/dist/TransactionController.mjs
++++ b/dist/TransactionController.mjs
+@@ -22,7 +22,7 @@ import $EthQuery from "@metamask/eth-query";
+ const EthQuery = $importDefault($EthQuery);
+ import { NetworkClientType } from "@metamask/network-controller";
+ import { NonceTracker } from "@metamask/nonce-tracker";
+-import { errorCodes, rpcErrors, providerErrors } from "@metamask/rpc-errors";
++import { errorCodes, rpcErrors, providerErrors, JsonRpcError } from "@metamask/rpc-errors";
+ import { add0x, hexToNumber, remove0x } from "@metamask/utils";
+ // This package purposefully relies on Node's EventEmitter module.
+ // eslint-disable-next-line import-x/no-nodejs-modules
+@@ -62,7 +62,7 @@ import { getSimulationData } from "./utils/simulation.mjs";
+ import { updatePostTransactionBalance, updateSwapsTransaction } from "./utils/swaps.mjs";
+ import { determineTransactionType } from "./utils/transaction-type.mjs";
+ import { normalizeTransactionParams, isEIP1559Transaction, validateGasValues, validateIfTransactionUnapproved, normalizeTxError, normalizeGasFeeValues, setEnvelopeType } from "./utils/utils.mjs";
+-import { validateParamTo, validateTransactionOrigin, validateTxParams } from "./utils/validation.mjs";
++import { ErrorCode, validateParamTo, validateTransactionOrigin, validateTxParams } from "./utils/validation.mjs";
+ /**
+  * Metadata for the TransactionController state, describing how to "anonymize"
+  * the state and which parts should be persisted.
+@@ -410,7 +410,7 @@ export class TransactionController extends BaseController {
+         const isDuplicateBatchId = batchId?.length &&
+             this.state.transactions.some((tx) => tx.batchId?.toLowerCase() === batchId?.toLowerCase());
+         if (isDuplicateBatchId && origin && origin !== ORIGIN_METAMASK) {
+-            throw rpcErrors.invalidInput('Batch ID already exists');
++            throw new JsonRpcError(ErrorCode.DuplicateBundleId, 'Batch ID already exists');
+         }
+         const dappSuggestedGasFees = this.generateDappSuggestedGasFees(txParams, origin);
+         const transactionType = type ?? (await determineTransactionType(txParams, ethQuery)).type;
+diff --git a/dist/constants.cjs b/dist/constants.cjs
+index f98509f3bdb8243fc649e312d5442d54b28f05a6..7628bb1ee798a3922921b8ef452d4bb5cbd09bd9 100644
+--- a/dist/constants.cjs
++++ b/dist/constants.cjs
+@@ -1,6 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.ABI_IERC7821 = exports.ABI_SIMULATION_ERC721_LEGACY = exports.ABI_SIMULATION_ERC20_WRAPPED = exports.GAS_BUFFER_CHAIN_OVERRIDES = exports.CHAIN_IDS = void 0;
++exports.ABI_IERC7821 = exports.ABI_SIMULATION_ERC721_LEGACY = exports.ABI_SIMULATION_ERC20_WRAPPED = exports.CHAIN_IDS = void 0;
+ exports.CHAIN_IDS = {
+     MAINNET: '0x1',
+     GOERLI: '0x5',
+@@ -34,10 +34,6 @@ exports.CHAIN_IDS = {
+     SCROLL_SEPOLIA: '0x8274f',
+     MEGAETH_TESTNET: '0x18c6',
+ };
+-exports.GAS_BUFFER_CHAIN_OVERRIDES = {
+-    [exports.CHAIN_IDS.OPTIMISM]: 1,
+-    [exports.CHAIN_IDS.OPTIMISM_SEPOLIA]: 1,
+-};
+ /** Extract of the Wrapped ERC-20 ABI required for simulation. */
+ exports.ABI_SIMULATION_ERC20_WRAPPED = [
+     {
+diff --git a/dist/constants.d.cts b/dist/constants.d.cts
+index 8082d6dd26e39d31fcd8142a2033c2b76ee22932..47abbec964b6cf2ecfe2a8ad6a8a059eaa288aa0 100644
+--- a/dist/constants.d.cts
++++ b/dist/constants.d.cts
+@@ -31,10 +31,6 @@ export declare const CHAIN_IDS: {
+     readonly SCROLL_SEPOLIA: "0x8274f";
+     readonly MEGAETH_TESTNET: "0x18c6";
+ };
+-export declare const GAS_BUFFER_CHAIN_OVERRIDES: {
+-    "0xa": number;
+-    "0xaa37dc": number;
+-};
+ /** Extract of the Wrapped ERC-20 ABI required for simulation. */
+ export declare const ABI_SIMULATION_ERC20_WRAPPED: {
+     anonymous: boolean;
+diff --git a/dist/constants.d.mts b/dist/constants.d.mts
+index b62f188479dd6ea181b395286f78d5e9eb501c0e..ab649b7848acf6addc5670f1868ddf349c2f2c40 100644
+--- a/dist/constants.d.mts
++++ b/dist/constants.d.mts
+@@ -31,10 +31,6 @@ export declare const CHAIN_IDS: {
+     readonly SCROLL_SEPOLIA: "0x8274f";
+     readonly MEGAETH_TESTNET: "0x18c6";
+ };
+-export declare const GAS_BUFFER_CHAIN_OVERRIDES: {
+-    "0xa": number;
+-    "0xaa37dc": number;
+-};
+ /** Extract of the Wrapped ERC-20 ABI required for simulation. */
+ export declare const ABI_SIMULATION_ERC20_WRAPPED: {
+     anonymous: boolean;
+diff --git a/dist/constants.mjs b/dist/constants.mjs
+index 21c0af4e0d88942c47d22b74b5ac07377751bb6a..bfb1144959d3f356eba690384b87cccf5af17259 100644
+--- a/dist/constants.mjs
++++ b/dist/constants.mjs
+@@ -31,10 +31,6 @@ export const CHAIN_IDS = {
+     SCROLL_SEPOLIA: '0x8274f',
+     MEGAETH_TESTNET: '0x18c6',
+ };
+-export const GAS_BUFFER_CHAIN_OVERRIDES = {
+-    [CHAIN_IDS.OPTIMISM]: 1,
+-    [CHAIN_IDS.OPTIMISM_SEPOLIA]: 1,
+-};
+ /** Extract of the Wrapped ERC-20 ABI required for simulation. */
+ export const ABI_SIMULATION_ERC20_WRAPPED = [
+     {
+diff --git a/dist/utils/batch.cjs b/dist/utils/batch.cjs
+index ad23a77dd88efcabc15649fb31982d265ec9a405..e06922cfc070dbbffb0439adb28c0746df9afce2 100644
+--- a/dist/utils/batch.cjs
++++ b/dist/utils/batch.cjs
+@@ -111,21 +111,25 @@ async function isAtomicBatchSupported(request) {
+         throw rpc_errors_1.rpcErrors.internal('EIP-7702 public key not specified');
+     }
+     const chainIds7702 = (0, feature_flags_1.getEIP7702SupportedChains)(messenger);
+-    const results = [];
+-    for (const chainId of chainIds7702) {
+-        if (chainIds && !chainIds.includes(chainId)) {
+-            continue;
++    const filteredChainIds = chainIds7702.filter((chainId) => !chainIds || chainIds.includes(chainId));
++    const resultsRaw = await Promise.all(filteredChainIds.map(async (chainId) => {
++        try {
++            const ethQuery = getEthQuery(chainId);
++            const { isSupported, delegationAddress } = await (0, eip7702_1.isAccountUpgradedToEIP7702)(address, chainId, publicKey, messenger, ethQuery);
++            const upgradeContractAddress = (0, feature_flags_1.getEIP7702UpgradeContractAddress)(chainId, messenger, publicKey);
++            return {
++                chainId,
++                delegationAddress,
++                isSupported,
++                upgradeContractAddress,
++            };
+         }
+-        const ethQuery = getEthQuery(chainId);
+-        const { isSupported, delegationAddress } = await (0, eip7702_1.isAccountUpgradedToEIP7702)(address, chainId, publicKey, messenger, ethQuery);
+-        const upgradeContractAddress = (0, feature_flags_1.getEIP7702UpgradeContractAddress)(chainId, messenger, publicKey);
+-        results.push({
+-            chainId,
+-            delegationAddress,
+-            isSupported,
+-            upgradeContractAddress,
+-        });
+-    }
++        catch (error) {
++            log('Error checking atomic batch support', chainId, error);
++            return undefined;
++        }
++    }));
++    const results = resultsRaw.filter((result) => Boolean(result));
+     log('Atomic batch supported results', results);
+     return results;
+ }
+diff --git a/dist/utils/batch.mjs b/dist/utils/batch.mjs
+index 9db6e45c8b31e3e7fb56b36a9b004d0f58045ce1..387e4886a0e938411efd2997caeba92052e866b1 100644
+--- a/dist/utils/batch.mjs
++++ b/dist/utils/batch.mjs
+@@ -107,21 +107,25 @@ export async function isAtomicBatchSupported(request) {
+         throw rpcErrors.internal('EIP-7702 public key not specified');
+     }
+     const chainIds7702 = getEIP7702SupportedChains(messenger);
+-    const results = [];
+-    for (const chainId of chainIds7702) {
+-        if (chainIds && !chainIds.includes(chainId)) {
+-            continue;
++    const filteredChainIds = chainIds7702.filter((chainId) => !chainIds || chainIds.includes(chainId));
++    const resultsRaw = await Promise.all(filteredChainIds.map(async (chainId) => {
++        try {
++            const ethQuery = getEthQuery(chainId);
++            const { isSupported, delegationAddress } = await isAccountUpgradedToEIP7702(address, chainId, publicKey, messenger, ethQuery);
++            const upgradeContractAddress = getEIP7702UpgradeContractAddress(chainId, messenger, publicKey);
++            return {
++                chainId,
++                delegationAddress,
++                isSupported,
++                upgradeContractAddress,
++            };
+         }
+-        const ethQuery = getEthQuery(chainId);
+-        const { isSupported, delegationAddress } = await isAccountUpgradedToEIP7702(address, chainId, publicKey, messenger, ethQuery);
+-        const upgradeContractAddress = getEIP7702UpgradeContractAddress(chainId, messenger, publicKey);
+-        results.push({
+-            chainId,
+-            delegationAddress,
+-            isSupported,
+-            upgradeContractAddress,
+-        });
+-    }
++        catch (error) {
++            log('Error checking atomic batch support', chainId, error);
++            return undefined;
++        }
++    }));
++    const results = resultsRaw.filter((result) => Boolean(result));
+     log('Atomic batch supported results', results);
+     return results;
+ }
+diff --git a/dist/utils/feature-flags.cjs b/dist/utils/feature-flags.cjs
+index c8c3910aa788014c00ecbddb5eb17e2eb4c2f914..71eea48106f672bcb950dd25edbbb9d5b71b2e6a 100644
+--- a/dist/utils/feature-flags.cjs
++++ b/dist/utils/feature-flags.cjs
+@@ -1,16 +1,24 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.getGasEstimateFallback = exports.getGasFeeRandomisation = exports.getAcceleratedPollingParams = exports.getBatchSizeLimit = exports.getEIP7702UpgradeContractAddress = exports.getEIP7702ContractAddresses = exports.getEIP7702SupportedChains = exports.FEATURE_FLAG_EIP_7702 = exports.FEATURE_FLAG_TRANSACTIONS = void 0;
++exports.getGasEstimateBuffer = exports.getGasEstimateFallback = exports.getGasFeeRandomisation = exports.getAcceleratedPollingParams = exports.getBatchSizeLimit = exports.getEIP7702UpgradeContractAddress = exports.getEIP7702ContractAddresses = exports.getEIP7702SupportedChains = exports.FeatureFlag = void 0;
+ const utils_1 = require("@metamask/utils");
+ const signature_1 = require("./signature.cjs");
+ const utils_2 = require("./utils.cjs");
+ const logger_1 = require("../logger.cjs");
+-exports.FEATURE_FLAG_TRANSACTIONS = 'confirmations_transactions';
+-exports.FEATURE_FLAG_EIP_7702 = 'confirmations_eip_7702';
+ const DEFAULT_BATCH_SIZE_LIMIT = 10;
+ const DEFAULT_ACCELERATED_POLLING_COUNT_MAX = 10;
+ const DEFAULT_ACCELERATED_POLLING_INTERVAL_MS = 3 * 1000;
+ const DEFAULT_GAS_ESTIMATE_FALLBACK_BLOCK_PERCENT = 35;
++const DEFAULT_GAS_ESTIMATE_BUFFER = 1;
++/**
++ * Feature flags supporting the transaction controller.
++ */
++var FeatureFlag;
++(function (FeatureFlag) {
++    FeatureFlag["EIP7702"] = "confirmations_eip_7702";
++    FeatureFlag["GasBuffer"] = "confirmations_gas_buffer";
++    FeatureFlag["Transactions"] = "confirmations_transactions";
++})(FeatureFlag || (exports.FeatureFlag = FeatureFlag = {}));
+ const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'feature-flags');
+ /**
+  * Retrieves the supported EIP-7702 chains.
+@@ -20,7 +28,7 @@ const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'feature-fla
+  */
+ function getEIP7702SupportedChains(messenger) {
+     const featureFlags = getFeatureFlags(messenger);
+-    return featureFlags?.[exports.FEATURE_FLAG_EIP_7702]?.supportedChains ?? [];
++    return featureFlags?.[FeatureFlag.EIP7702]?.supportedChains ?? [];
+ }
+ exports.getEIP7702SupportedChains = getEIP7702SupportedChains;
+ /**
+@@ -33,7 +41,7 @@ exports.getEIP7702SupportedChains = getEIP7702SupportedChains;
+  */
+ function getEIP7702ContractAddresses(chainId, messenger, publicKey) {
+     const featureFlags = getFeatureFlags(messenger);
+-    const contracts = featureFlags?.[exports.FEATURE_FLAG_EIP_7702]?.contracts?.[chainId.toLowerCase()] ?? [];
++    const contracts = featureFlags?.[FeatureFlag.EIP7702]?.contracts?.[chainId.toLowerCase()] ?? [];
+     return contracts
+         .filter((contract) => (0, signature_1.isValidSignature)([contract.address, (0, utils_2.padHexToEvenLength)(chainId)], contract.signature, publicKey))
+         .map((contract) => contract.address);
+@@ -60,7 +68,7 @@ exports.getEIP7702UpgradeContractAddress = getEIP7702UpgradeContractAddress;
+  */
+ function getBatchSizeLimit(messenger) {
+     const featureFlags = getFeatureFlags(messenger);
+-    return (featureFlags?.[exports.FEATURE_FLAG_TRANSACTIONS]?.batchSizeLimit ??
++    return (featureFlags?.[FeatureFlag.Transactions]?.batchSizeLimit ??
+         DEFAULT_BATCH_SIZE_LIMIT);
+ }
+ exports.getBatchSizeLimit = getBatchSizeLimit;
+@@ -73,7 +81,7 @@ exports.getBatchSizeLimit = getBatchSizeLimit;
+  */
+ function getAcceleratedPollingParams(chainId, messenger) {
+     const featureFlags = getFeatureFlags(messenger);
+-    const acceleratedPollingParams = featureFlags?.[exports.FEATURE_FLAG_TRANSACTIONS]?.acceleratedPolling;
++    const acceleratedPollingParams = featureFlags?.[FeatureFlag.Transactions]?.acceleratedPolling;
+     const countMax = acceleratedPollingParams?.perChainConfig?.[chainId]?.countMax ||
+         acceleratedPollingParams?.defaultCountMax ||
+         DEFAULT_ACCELERATED_POLLING_COUNT_MAX;
+@@ -91,7 +99,7 @@ exports.getAcceleratedPollingParams = getAcceleratedPollingParams;
+  */
+ function getGasFeeRandomisation(messenger) {
+     const featureFlags = getFeatureFlags(messenger);
+-    const gasFeeRandomisation = featureFlags?.[exports.FEATURE_FLAG_TRANSACTIONS]?.gasFeeRandomisation || {};
++    const gasFeeRandomisation = featureFlags?.[FeatureFlag.Transactions]?.gasFeeRandomisation || {};
+     return {
+         randomisedGasFeeDigits: gasFeeRandomisation.randomisedGasFeeDigits || {},
+         preservedNumberOfDigits: gasFeeRandomisation.preservedNumberOfDigits,
+@@ -108,7 +116,7 @@ exports.getGasFeeRandomisation = getGasFeeRandomisation;
+  */
+ function getGasEstimateFallback(chainId, messenger) {
+     const featureFlags = getFeatureFlags(messenger);
+-    const gasEstimateFallbackFlags = featureFlags?.[exports.FEATURE_FLAG_TRANSACTIONS]?.gasEstimateFallback;
++    const gasEstimateFallbackFlags = featureFlags?.[FeatureFlag.Transactions]?.gasEstimateFallback;
+     const chainFlags = gasEstimateFallbackFlags?.perChainConfig?.[chainId];
+     const percentage = chainFlags?.percentage ??
+         gasEstimateFallbackFlags?.default?.percentage ??
+@@ -117,6 +125,35 @@ function getGasEstimateFallback(chainId, messenger) {
+     return { fixed, percentage };
+ }
+ exports.getGasEstimateFallback = getGasEstimateFallback;
++/**
++ * Retrieves the gas buffers for a given chain ID.
++ *
++ * @param request - The request object.
++ * @param request.chainId - The chain ID.
++ * @param request.isCustomRPC - Whether the network RPC is added by the user.
++ * @param request.isUpgradeWithDataToSelf - Whether the transaction is an EIP-7702 upgrade with data to self.
++ * @param request.messenger - The controller messenger instance.
++ * @returns The gas buffers.
++ */
++function getGasEstimateBuffer({ chainId, isCustomRPC, isUpgradeWithDataToSelf, messenger, }) {
++    const featureFlags = getFeatureFlags(messenger);
++    const gasBufferFlags = featureFlags?.[FeatureFlag.GasBuffer];
++    const chainFlags = gasBufferFlags?.perChainConfig?.[chainId];
++    const chainIncludedRPCBuffer = isCustomRPC ? undefined : chainFlags?.included;
++    const defaultIncludedRPCBuffer = isCustomRPC
++        ? undefined
++        : gasBufferFlags?.included;
++    const upgradeBuffer = isUpgradeWithDataToSelf
++        ? chainFlags?.eip7702
++        : undefined;
++    return (upgradeBuffer ??
++        chainIncludedRPCBuffer ??
++        chainFlags?.base ??
++        defaultIncludedRPCBuffer ??
++        gasBufferFlags?.default ??
++        DEFAULT_GAS_ESTIMATE_BUFFER);
++}
++exports.getGasEstimateBuffer = getGasEstimateBuffer;
+ /**
+  * Retrieves the relevant feature flags from the remote feature flag controller.
+  *
+diff --git a/dist/utils/feature-flags.d.cts b/dist/utils/feature-flags.d.cts
+index 146e04897b689c83cbb73683d40cb39b98bc0cf6..f6c2749f54693e59e2a16ce3ebd604a46d9207c8 100644
+--- a/dist/utils/feature-flags.d.cts
++++ b/dist/utils/feature-flags.d.cts
+@@ -1,7 +1,13 @@
+ import { type Hex } from "@metamask/utils";
+ import type { TransactionControllerMessenger } from "../TransactionController.cjs";
+-export declare const FEATURE_FLAG_TRANSACTIONS = "confirmations_transactions";
+-export declare const FEATURE_FLAG_EIP_7702 = "confirmations_eip_7702";
++/**
++ * Feature flags supporting the transaction controller.
++ */
++export declare enum FeatureFlag {
++    EIP7702 = "confirmations_eip_7702",
++    GasBuffer = "confirmations_gas_buffer",
++    Transactions = "confirmations_transactions"
++}
+ type GasEstimateFallback = {
+     /**
+      * The fixed gas estimate fallback for a transaction.
+@@ -13,7 +19,8 @@ type GasEstimateFallback = {
+     percentage?: number;
+ };
+ export type TransactionControllerFeatureFlags = {
+-    [FEATURE_FLAG_EIP_7702]?: {
++    /** Feature flags to support EIP-7702 / type-4 transactions. */
++    [FeatureFlag.EIP7702]?: {
+         /**
+          * All contracts that support EIP-7702 batch transactions.
+          * Keyed by chain ID.
+@@ -28,16 +35,51 @@ export type TransactionControllerFeatureFlags = {
+         /** Chains enabled for EIP-7702 batch transactions. */
+         supportedChains?: Hex[];
+     };
+-    [FEATURE_FLAG_TRANSACTIONS]?: {
++    /**
++     * Buffers added to gas limit estimations.
++     * Values are multipliers such as `1.5` meaning 150% of the original gas limit.
++     */
++    [FeatureFlag.GasBuffer]?: {
++        /** Fallback buffer for all chains and transactions. */
++        default?: number;
++        /**
++         * Buffer for included network RPCs only and not those added by user.
++         * Takes priority over `default`.
++         */
++        included?: number;
++        /** Buffers for specific chains. */
++        perChainConfig?: {
++            [chainId: Hex]: {
++                /**
++                 * Buffer for the chain for all transactions.
++                 * Takes priority over non-chain `included`.
++                 */
++                base?: number;
++                /**
++                 * Buffer if network RPC is included and not added by user.
++                 * Takes priority over `base`.
++                 */
++                included?: number;
++                /**
++                 * Buffer for the chain for EIP-7702 / type 4 transactions only.
++                 * Only if `data` included and `to` matches `from`.
++                 * Takes priority over `included` and `base`.
++                 */
++                eip7702?: number;
++            };
++        };
++    };
++    /** Miscellaneous feature flags to support the transaction controller. */
++    [FeatureFlag.Transactions]?: {
+         /** Maximum number of transactions that can be in an external batch. */
+         batchSizeLimit?: number;
++        /**
++         * Accelerated polling is used to speed up the polling process for
++         * transactions that are not yet confirmed.
++         */
+         acceleratedPolling?: {
+-            /**
+-             * Accelerated polling is used to speed up the polling process for
+-             * transactions that are not yet confirmed.
+-             */
++            /** Accelerated polling parameters on a per-chain basis. */
+             perChainConfig?: {
+-                /** Accelerated polling parameters on a per-chain basis. */
+                 [chainId: Hex]: {
+                     /**
+                      * Maximum number of polling requests that can be made in a row, before
+@@ -139,5 +181,21 @@ export declare function getGasEstimateFallback(chainId: Hex, messenger: Transact
+     fixed?: number;
+     percentage: number;
+ };
++/**
++ * Retrieves the gas buffers for a given chain ID.
++ *
++ * @param request - The request object.
++ * @param request.chainId - The chain ID.
++ * @param request.isCustomRPC - Whether the network RPC is added by the user.
++ * @param request.isUpgradeWithDataToSelf - Whether the transaction is an EIP-7702 upgrade with data to self.
++ * @param request.messenger - The controller messenger instance.
++ * @returns The gas buffers.
++ */
++export declare function getGasEstimateBuffer({ chainId, isCustomRPC, isUpgradeWithDataToSelf, messenger, }: {
++    chainId: Hex;
++    isCustomRPC: boolean;
++    isUpgradeWithDataToSelf: boolean;
++    messenger: TransactionControllerMessenger;
++}): number;
+ export {};
+ //# sourceMappingURL=feature-flags.d.cts.map
+\ No newline at end of file
+diff --git a/dist/utils/feature-flags.d.mts b/dist/utils/feature-flags.d.mts
+index dba130cf82b5451230772641509dff44404769b3..32a6b819e92bf6b69eb492d7facd8fa5f158a495 100644
+--- a/dist/utils/feature-flags.d.mts
++++ b/dist/utils/feature-flags.d.mts
+@@ -1,7 +1,13 @@
+ import { type Hex } from "@metamask/utils";
+ import type { TransactionControllerMessenger } from "../TransactionController.mjs";
+-export declare const FEATURE_FLAG_TRANSACTIONS = "confirmations_transactions";
+-export declare const FEATURE_FLAG_EIP_7702 = "confirmations_eip_7702";
++/**
++ * Feature flags supporting the transaction controller.
++ */
++export declare enum FeatureFlag {
++    EIP7702 = "confirmations_eip_7702",
++    GasBuffer = "confirmations_gas_buffer",
++    Transactions = "confirmations_transactions"
++}
+ type GasEstimateFallback = {
+     /**
+      * The fixed gas estimate fallback for a transaction.
+@@ -13,7 +19,8 @@ type GasEstimateFallback = {
+     percentage?: number;
+ };
+ export type TransactionControllerFeatureFlags = {
+-    [FEATURE_FLAG_EIP_7702]?: {
++    /** Feature flags to support EIP-7702 / type-4 transactions. */
++    [FeatureFlag.EIP7702]?: {
+         /**
+          * All contracts that support EIP-7702 batch transactions.
+          * Keyed by chain ID.
+@@ -28,16 +35,51 @@ export type TransactionControllerFeatureFlags = {
+         /** Chains enabled for EIP-7702 batch transactions. */
+         supportedChains?: Hex[];
+     };
+-    [FEATURE_FLAG_TRANSACTIONS]?: {
++    /**
++     * Buffers added to gas limit estimations.
++     * Values are multipliers such as `1.5` meaning 150% of the original gas limit.
++     */
++    [FeatureFlag.GasBuffer]?: {
++        /** Fallback buffer for all chains and transactions. */
++        default?: number;
++        /**
++         * Buffer for included network RPCs only and not those added by user.
++         * Takes priority over `default`.
++         */
++        included?: number;
++        /** Buffers for specific chains. */
++        perChainConfig?: {
++            [chainId: Hex]: {
++                /**
++                 * Buffer for the chain for all transactions.
++                 * Takes priority over non-chain `included`.
++                 */
++                base?: number;
++                /**
++                 * Buffer if network RPC is included and not added by user.
++                 * Takes priority over `base`.
++                 */
++                included?: number;
++                /**
++                 * Buffer for the chain for EIP-7702 / type 4 transactions only.
++                 * Only if `data` included and `to` matches `from`.
++                 * Takes priority over `included` and `base`.
++                 */
++                eip7702?: number;
++            };
++        };
++    };
++    /** Miscellaneous feature flags to support the transaction controller. */
++    [FeatureFlag.Transactions]?: {
+         /** Maximum number of transactions that can be in an external batch. */
+         batchSizeLimit?: number;
++        /**
++         * Accelerated polling is used to speed up the polling process for
++         * transactions that are not yet confirmed.
++         */
+         acceleratedPolling?: {
+-            /**
+-             * Accelerated polling is used to speed up the polling process for
+-             * transactions that are not yet confirmed.
+-             */
++            /** Accelerated polling parameters on a per-chain basis. */
+             perChainConfig?: {
+-                /** Accelerated polling parameters on a per-chain basis. */
+                 [chainId: Hex]: {
+                     /**
+                      * Maximum number of polling requests that can be made in a row, before
+@@ -139,5 +181,21 @@ export declare function getGasEstimateFallback(chainId: Hex, messenger: Transact
+     fixed?: number;
+     percentage: number;
+ };
++/**
++ * Retrieves the gas buffers for a given chain ID.
++ *
++ * @param request - The request object.
++ * @param request.chainId - The chain ID.
++ * @param request.isCustomRPC - Whether the network RPC is added by the user.
++ * @param request.isUpgradeWithDataToSelf - Whether the transaction is an EIP-7702 upgrade with data to self.
++ * @param request.messenger - The controller messenger instance.
++ * @returns The gas buffers.
++ */
++export declare function getGasEstimateBuffer({ chainId, isCustomRPC, isUpgradeWithDataToSelf, messenger, }: {
++    chainId: Hex;
++    isCustomRPC: boolean;
++    isUpgradeWithDataToSelf: boolean;
++    messenger: TransactionControllerMessenger;
++}): number;
+ export {};
+ //# sourceMappingURL=feature-flags.d.mts.map
+\ No newline at end of file
+diff --git a/dist/utils/feature-flags.mjs b/dist/utils/feature-flags.mjs
+index fa9937f27d488184865b460116cdf7573d199255..50ddae79090932f8381d16fea8c34a69d7f40af8 100644
+--- a/dist/utils/feature-flags.mjs
++++ b/dist/utils/feature-flags.mjs
+@@ -2,12 +2,20 @@ import { createModuleLogger } from "@metamask/utils";
+ import { isValidSignature } from "./signature.mjs";
+ import { padHexToEvenLength } from "./utils.mjs";
+ import { projectLogger } from "../logger.mjs";
+-export const FEATURE_FLAG_TRANSACTIONS = 'confirmations_transactions';
+-export const FEATURE_FLAG_EIP_7702 = 'confirmations_eip_7702';
+ const DEFAULT_BATCH_SIZE_LIMIT = 10;
+ const DEFAULT_ACCELERATED_POLLING_COUNT_MAX = 10;
+ const DEFAULT_ACCELERATED_POLLING_INTERVAL_MS = 3 * 1000;
+ const DEFAULT_GAS_ESTIMATE_FALLBACK_BLOCK_PERCENT = 35;
++const DEFAULT_GAS_ESTIMATE_BUFFER = 1;
++/**
++ * Feature flags supporting the transaction controller.
++ */
++export var FeatureFlag;
++(function (FeatureFlag) {
++    FeatureFlag["EIP7702"] = "confirmations_eip_7702";
++    FeatureFlag["GasBuffer"] = "confirmations_gas_buffer";
++    FeatureFlag["Transactions"] = "confirmations_transactions";
++})(FeatureFlag || (FeatureFlag = {}));
+ const log = createModuleLogger(projectLogger, 'feature-flags');
+ /**
+  * Retrieves the supported EIP-7702 chains.
+@@ -17,7 +25,7 @@ const log = createModuleLogger(projectLogger, 'feature-flags');
+  */
+ export function getEIP7702SupportedChains(messenger) {
+     const featureFlags = getFeatureFlags(messenger);
+-    return featureFlags?.[FEATURE_FLAG_EIP_7702]?.supportedChains ?? [];
++    return featureFlags?.[FeatureFlag.EIP7702]?.supportedChains ?? [];
+ }
+ /**
+  * Retrieves the supported EIP-7702 contract addresses for a given chain ID.
+@@ -29,7 +37,7 @@ export function getEIP7702SupportedChains(messenger) {
+  */
+ export function getEIP7702ContractAddresses(chainId, messenger, publicKey) {
+     const featureFlags = getFeatureFlags(messenger);
+-    const contracts = featureFlags?.[FEATURE_FLAG_EIP_7702]?.contracts?.[chainId.toLowerCase()] ?? [];
++    const contracts = featureFlags?.[FeatureFlag.EIP7702]?.contracts?.[chainId.toLowerCase()] ?? [];
+     return contracts
+         .filter((contract) => isValidSignature([contract.address, padHexToEvenLength(chainId)], contract.signature, publicKey))
+         .map((contract) => contract.address);
+@@ -54,7 +62,7 @@ export function getEIP7702UpgradeContractAddress(chainId, messenger, publicKey)
+  */
+ export function getBatchSizeLimit(messenger) {
+     const featureFlags = getFeatureFlags(messenger);
+-    return (featureFlags?.[FEATURE_FLAG_TRANSACTIONS]?.batchSizeLimit ??
++    return (featureFlags?.[FeatureFlag.Transactions]?.batchSizeLimit ??
+         DEFAULT_BATCH_SIZE_LIMIT);
+ }
+ /**
+@@ -66,7 +74,7 @@ export function getBatchSizeLimit(messenger) {
+  */
+ export function getAcceleratedPollingParams(chainId, messenger) {
+     const featureFlags = getFeatureFlags(messenger);
+-    const acceleratedPollingParams = featureFlags?.[FEATURE_FLAG_TRANSACTIONS]?.acceleratedPolling;
++    const acceleratedPollingParams = featureFlags?.[FeatureFlag.Transactions]?.acceleratedPolling;
+     const countMax = acceleratedPollingParams?.perChainConfig?.[chainId]?.countMax ||
+         acceleratedPollingParams?.defaultCountMax ||
+         DEFAULT_ACCELERATED_POLLING_COUNT_MAX;
+@@ -83,7 +91,7 @@ export function getAcceleratedPollingParams(chainId, messenger) {
+  */
+ export function getGasFeeRandomisation(messenger) {
+     const featureFlags = getFeatureFlags(messenger);
+-    const gasFeeRandomisation = featureFlags?.[FEATURE_FLAG_TRANSACTIONS]?.gasFeeRandomisation || {};
++    const gasFeeRandomisation = featureFlags?.[FeatureFlag.Transactions]?.gasFeeRandomisation || {};
+     return {
+         randomisedGasFeeDigits: gasFeeRandomisation.randomisedGasFeeDigits || {},
+         preservedNumberOfDigits: gasFeeRandomisation.preservedNumberOfDigits,
+@@ -99,7 +107,7 @@ export function getGasFeeRandomisation(messenger) {
+  */
+ export function getGasEstimateFallback(chainId, messenger) {
+     const featureFlags = getFeatureFlags(messenger);
+-    const gasEstimateFallbackFlags = featureFlags?.[FEATURE_FLAG_TRANSACTIONS]?.gasEstimateFallback;
++    const gasEstimateFallbackFlags = featureFlags?.[FeatureFlag.Transactions]?.gasEstimateFallback;
+     const chainFlags = gasEstimateFallbackFlags?.perChainConfig?.[chainId];
+     const percentage = chainFlags?.percentage ??
+         gasEstimateFallbackFlags?.default?.percentage ??
+@@ -107,6 +115,34 @@ export function getGasEstimateFallback(chainId, messenger) {
+     const fixed = chainFlags?.fixed ?? gasEstimateFallbackFlags?.default?.fixed;
+     return { fixed, percentage };
+ }
++/**
++ * Retrieves the gas buffers for a given chain ID.
++ *
++ * @param request - The request object.
++ * @param request.chainId - The chain ID.
++ * @param request.isCustomRPC - Whether the network RPC is added by the user.
++ * @param request.isUpgradeWithDataToSelf - Whether the transaction is an EIP-7702 upgrade with data to self.
++ * @param request.messenger - The controller messenger instance.
++ * @returns The gas buffers.
++ */
++export function getGasEstimateBuffer({ chainId, isCustomRPC, isUpgradeWithDataToSelf, messenger, }) {
++    const featureFlags = getFeatureFlags(messenger);
++    const gasBufferFlags = featureFlags?.[FeatureFlag.GasBuffer];
++    const chainFlags = gasBufferFlags?.perChainConfig?.[chainId];
++    const chainIncludedRPCBuffer = isCustomRPC ? undefined : chainFlags?.included;
++    const defaultIncludedRPCBuffer = isCustomRPC
++        ? undefined
++        : gasBufferFlags?.included;
++    const upgradeBuffer = isUpgradeWithDataToSelf
++        ? chainFlags?.eip7702
++        : undefined;
++    return (upgradeBuffer ??
++        chainIncludedRPCBuffer ??
++        chainFlags?.base ??
++        defaultIncludedRPCBuffer ??
++        gasBufferFlags?.default ??
++        DEFAULT_GAS_ESTIMATE_BUFFER);
++}
+ /**
+  * Retrieves the relevant feature flags from the remote feature flag controller.
+  *
+diff --git a/dist/utils/gas.cjs b/dist/utils/gas.cjs
+index 7fe7133d22abd32d2f145ff67250c0434d944f27..f69a4968f7f773f1c56aa2c60f68fce57f698441 100644
+--- a/dist/utils/gas.cjs
++++ b/dist/utils/gas.cjs
+@@ -6,7 +6,6 @@ const utils_1 = require("@metamask/utils");
+ const eip7702_1 = require("./eip7702.cjs");
+ const feature_flags_1 = require("./feature-flags.cjs");
+ const simulation_api_1 = require("./simulation-api.cjs");
+-const constants_1 = require("../constants.cjs");
+ const logger_1 = require("../logger.cjs");
+ const types_1 = require("../types.cjs");
+ exports.log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas');
+@@ -67,8 +66,8 @@ async function estimateGas({ chainId, ethQuery, isSimulationEnabled, messenger,
+     let estimatedGas = fallback;
+     let simulationFails;
+     const isUpgradeWithDataToSelf = txParams.type === types_1.TransactionEnvelopeType.setCode &&
+-        authorizationList?.length &&
+-        data &&
++        Boolean(authorizationList?.length) &&
++        Boolean(data) &&
+         data !== '0x' &&
+         from?.toLowerCase() === to?.toLowerCase();
+     try {
+@@ -94,6 +93,7 @@ async function estimateGas({ chainId, ethQuery, isSimulationEnabled, messenger,
+     return {
+         blockGasLimit,
+         estimatedGas,
++        isUpgradeWithDataToSelf,
+         simulationFails,
+     };
+ }
+@@ -133,7 +133,7 @@ exports.addGasBuffer = addGasBuffer;
+  * @returns The final gas value and the estimate used.
+  */
+ async function getGas(request) {
+-    const { chainId, isCustomNetwork, isSimulationEnabled, txMeta } = request;
++    const { chainId, isCustomNetwork, isSimulationEnabled, messenger, txMeta } = request;
+     const { disableGasBuffer } = txMeta;
+     if (txMeta.txParams.gas) {
+         (0, exports.log)('Using value from request', txMeta.txParams.gas);
+@@ -143,25 +143,33 @@ async function getGas(request) {
+         (0, exports.log)('Using fixed value', exports.FIXED_GAS);
+         return [exports.FIXED_GAS, undefined, exports.FIXED_GAS];
+     }
+-    const { blockGasLimit, estimatedGas, simulationFails } = await estimateGas({
++    const { blockGasLimit, estimatedGas, isUpgradeWithDataToSelf, simulationFails, } = await estimateGas({
+         chainId: request.chainId,
+         ethQuery: request.ethQuery,
+         isSimulationEnabled,
+-        messenger: request.messenger,
++        messenger,
+         txParams: txMeta.txParams,
+     });
+-    if (isCustomNetwork || simulationFails) {
+-        (0, exports.log)(isCustomNetwork
+-            ? 'Using original estimate as custom network'
+-            : 'Using original fallback estimate as simulation failed');
+-        return [estimatedGas, simulationFails, estimatedGas];
++    (0, exports.log)('Original estimated gas', estimatedGas);
++    if (simulationFails) {
++        (0, exports.log)('Using original fallback estimate as simulation failed');
++    }
++    if (disableGasBuffer) {
++        (0, exports.log)('Gas buffer disabled');
+     }
+-    let finalGas = estimatedGas;
+-    if (!disableGasBuffer) {
+-        const bufferMultiplier = constants_1.GAS_BUFFER_CHAIN_OVERRIDES[chainId] ?? exports.DEFAULT_GAS_MULTIPLIER;
+-        finalGas = addGasBuffer(estimatedGas, blockGasLimit, bufferMultiplier);
++    if (simulationFails || disableGasBuffer) {
++        return [estimatedGas, simulationFails, estimatedGas];
+     }
+-    return [finalGas, simulationFails, estimatedGas];
++    const bufferMultiplier = (0, feature_flags_1.getGasEstimateBuffer)({
++        chainId,
++        isCustomRPC: isCustomNetwork,
++        isUpgradeWithDataToSelf,
++        messenger,
++    });
++    (0, exports.log)('Buffer', bufferMultiplier);
++    const bufferedGas = addGasBuffer(estimatedGas, blockGasLimit, bufferMultiplier);
++    (0, exports.log)('Buffered gas', bufferedGas);
++    return [bufferedGas, simulationFails, estimatedGas];
+ }
+ /**
+  * Determine if the gas for the provided request should be fixed.
+diff --git a/dist/utils/gas.d.cts b/dist/utils/gas.d.cts
+index 21d45c4b27d36d2ba8dbbfa23ca9040a11c99bb1..6bd465c93af5f4a91b91f51a9fea192092b069f9 100644
+--- a/dist/utils/gas.d.cts
++++ b/dist/utils/gas.d.cts
+@@ -44,6 +44,7 @@ export declare function estimateGas({ chainId, ethQuery, isSimulationEnabled, me
+ }): Promise<{
+     blockGasLimit: string;
+     estimatedGas: `0x${string}`;
++    isUpgradeWithDataToSelf: boolean;
+     simulationFails: {
+         reason?: string | undefined;
+         errorKey?: string | undefined;
+diff --git a/dist/utils/gas.d.mts b/dist/utils/gas.d.mts
+index 077e780ed1f446f2e4f01ea18acad2e18b06bcc1..78deadf8d995ff3cf7de4d29ef59a1779a60dcab 100644
+--- a/dist/utils/gas.d.mts
++++ b/dist/utils/gas.d.mts
+@@ -44,6 +44,7 @@ export declare function estimateGas({ chainId, ethQuery, isSimulationEnabled, me
+ }): Promise<{
+     blockGasLimit: string;
+     estimatedGas: `0x${string}`;
++    isUpgradeWithDataToSelf: boolean;
+     simulationFails: {
+         reason?: string | undefined;
+         errorKey?: string | undefined;
+diff --git a/dist/utils/gas.mjs b/dist/utils/gas.mjs
+index a029072ced066a52226bfbcc05643feacfa0aeb5..be2432cb770b2b9537eddc3306cf90b84b3ea8b5 100644
+--- a/dist/utils/gas.mjs
++++ b/dist/utils/gas.mjs
+@@ -1,9 +1,8 @@
+ import { BNToHex, fractionBN, hexToBN, query, toHex } from "@metamask/controller-utils";
+ import { add0x, createModuleLogger, remove0x } from "@metamask/utils";
+ import { DELEGATION_PREFIX } from "./eip7702.mjs";
+-import { getGasEstimateFallback } from "./feature-flags.mjs";
++import { getGasEstimateBuffer, getGasEstimateFallback } from "./feature-flags.mjs";
+ import { simulateTransactions } from "./simulation-api.mjs";
+-import { GAS_BUFFER_CHAIN_OVERRIDES } from "../constants.mjs";
+ import { projectLogger } from "../logger.mjs";
+ import { TransactionEnvelopeType } from "../types.mjs";
+ export const log = createModuleLogger(projectLogger, 'gas');
+@@ -63,8 +62,8 @@ export async function estimateGas({ chainId, ethQuery, isSimulationEnabled, mess
+     let estimatedGas = fallback;
+     let simulationFails;
+     const isUpgradeWithDataToSelf = txParams.type === TransactionEnvelopeType.setCode &&
+-        authorizationList?.length &&
+-        data &&
++        Boolean(authorizationList?.length) &&
++        Boolean(data) &&
+         data !== '0x' &&
+         from?.toLowerCase() === to?.toLowerCase();
+     try {
+@@ -90,6 +89,7 @@ export async function estimateGas({ chainId, ethQuery, isSimulationEnabled, mess
+     return {
+         blockGasLimit,
+         estimatedGas,
++        isUpgradeWithDataToSelf,
+         simulationFails,
+     };
+ }
+@@ -127,7 +127,7 @@ export function addGasBuffer(estimatedGas, blockGasLimit, multiplier) {
+  * @returns The final gas value and the estimate used.
+  */
+ async function getGas(request) {
+-    const { chainId, isCustomNetwork, isSimulationEnabled, txMeta } = request;
++    const { chainId, isCustomNetwork, isSimulationEnabled, messenger, txMeta } = request;
+     const { disableGasBuffer } = txMeta;
+     if (txMeta.txParams.gas) {
+         log('Using value from request', txMeta.txParams.gas);
+@@ -137,25 +137,33 @@ async function getGas(request) {
+         log('Using fixed value', FIXED_GAS);
+         return [FIXED_GAS, undefined, FIXED_GAS];
+     }
+-    const { blockGasLimit, estimatedGas, simulationFails } = await estimateGas({
++    const { blockGasLimit, estimatedGas, isUpgradeWithDataToSelf, simulationFails, } = await estimateGas({
+         chainId: request.chainId,
+         ethQuery: request.ethQuery,
+         isSimulationEnabled,
+-        messenger: request.messenger,
++        messenger,
+         txParams: txMeta.txParams,
+     });
+-    if (isCustomNetwork || simulationFails) {
+-        log(isCustomNetwork
+-            ? 'Using original estimate as custom network'
+-            : 'Using original fallback estimate as simulation failed');
+-        return [estimatedGas, simulationFails, estimatedGas];
++    log('Original estimated gas', estimatedGas);
++    if (simulationFails) {
++        log('Using original fallback estimate as simulation failed');
++    }
++    if (disableGasBuffer) {
++        log('Gas buffer disabled');
+     }
+-    let finalGas = estimatedGas;
+-    if (!disableGasBuffer) {
+-        const bufferMultiplier = GAS_BUFFER_CHAIN_OVERRIDES[chainId] ?? DEFAULT_GAS_MULTIPLIER;
+-        finalGas = addGasBuffer(estimatedGas, blockGasLimit, bufferMultiplier);
++    if (simulationFails || disableGasBuffer) {
++        return [estimatedGas, simulationFails, estimatedGas];
+     }
+-    return [finalGas, simulationFails, estimatedGas];
++    const bufferMultiplier = getGasEstimateBuffer({
++        chainId,
++        isCustomRPC: isCustomNetwork,
++        isUpgradeWithDataToSelf,
++        messenger,
++    });
++    log('Buffer', bufferMultiplier);
++    const bufferedGas = addGasBuffer(estimatedGas, blockGasLimit, bufferMultiplier);
++    log('Buffered gas', bufferedGas);
++    return [bufferedGas, simulationFails, estimatedGas];
+ }
+ /**
+  * Determine if the gas for the provided request should be fixed.
+diff --git a/dist/utils/validation.cjs b/dist/utils/validation.cjs
+index dfee2549d3cc76e1202e9849dfb90d4b9e4a99f9..71521677f3b61f3cc19c78707b09cb83a9a8505c 100644
+--- a/dist/utils/validation.cjs
++++ b/dist/utils/validation.cjs
+@@ -1,6 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.validateBatchRequest = exports.validateParamTo = exports.validateTxParams = exports.validateTransactionOrigin = void 0;
++exports.validateBatchRequest = exports.validateParamTo = exports.validateTxParams = exports.validateTransactionOrigin = exports.ErrorCode = void 0;
+ const abi_1 = require("@ethersproject/abi");
+ const controller_utils_1 = require("@metamask/controller-utils");
+ const metamask_eth_abis_1 = require("@metamask/metamask-eth-abis");
+@@ -8,6 +8,11 @@ const rpc_errors_1 = require("@metamask/rpc-errors");
+ const utils_1 = require("@metamask/utils");
+ const utils_2 = require("./utils.cjs");
+ const types_1 = require("../types.cjs");
++var ErrorCode;
++(function (ErrorCode) {
++    ErrorCode[ErrorCode["DuplicateBundleId"] = 5720] = "DuplicateBundleId";
++    ErrorCode[ErrorCode["BundleTooLarge"] = 5740] = "BundleTooLarge";
++})(ErrorCode || (exports.ErrorCode = ErrorCode = {}));
+ const TRANSACTION_ENVELOPE_TYPES_FEE_MARKET = [
+     types_1.TransactionEnvelopeType.feeMarket,
+     types_1.TransactionEnvelopeType.setCode,
+@@ -193,14 +198,19 @@ exports.validateParamTo = validateParamTo;
+ function validateBatchRequest({ internalAccounts, request, sizeLimit, }) {
+     const { origin } = request;
+     const isExternal = origin && origin !== controller_utils_1.ORIGIN_METAMASK;
+-    const transactionTargetsNormalized = request.transactions.map((tx) => tx.params.to?.toLowerCase());
+     const internalAccountsNormalized = internalAccounts.map((account) => account.toLowerCase());
+     if (isExternal &&
+-        transactionTargetsNormalized.some((target) => internalAccountsNormalized.includes(target))) {
+-        throw rpc_errors_1.rpcErrors.invalidParams('Calls to internal accounts are not supported');
++        request.transactions.some((nestedTransaction) => {
++            const normalizedCallTo = nestedTransaction.params.to?.toLowerCase();
++            const callData = nestedTransaction.params.data;
++            const isInternalAccount = internalAccountsNormalized.includes(normalizedCallTo);
++            const hasData = Boolean(callData && callData !== '0x');
++            return isInternalAccount && hasData;
++        })) {
++        throw rpc_errors_1.rpcErrors.invalidParams('External calls to internal accounts cannot include data');
+     }
+     if (isExternal && request.transactions.length > sizeLimit) {
+-        throw rpc_errors_1.rpcErrors.invalidParams(`Batch size cannot exceed ${sizeLimit}. got: ${request.transactions.length}`);
++        throw new rpc_errors_1.JsonRpcError(ErrorCode.BundleTooLarge, `Batch size cannot exceed ${sizeLimit}. got: ${request.transactions.length}`);
+     }
+ }
+ exports.validateBatchRequest = validateBatchRequest;
+diff --git a/dist/utils/validation.d.cts b/dist/utils/validation.d.cts
+index 56ad2d71dfcfe9e11f3b438bba57e30b6c20ed3a..81a9ed5cc081a5eab3cc0f18943d774e0958c624 100644
+--- a/dist/utils/validation.d.cts
++++ b/dist/utils/validation.d.cts
+@@ -1,6 +1,10 @@
+ import type { Hex } from "@metamask/utils";
+ import type { TransactionBatchRequest } from "../types.cjs";
+ import { TransactionType, type TransactionParams } from "../types.cjs";
++export declare enum ErrorCode {
++    DuplicateBundleId = 5720,
++    BundleTooLarge = 5740
++}
+ /**
+  * Validates whether a transaction initiated by a specific 'from' address is permitted by the origin.
+  *
+diff --git a/dist/utils/validation.d.mts b/dist/utils/validation.d.mts
+index dccb426ea9b78171a25a7baa8f2e78e11a4b1c2c..d0cb41b42a6747df194ac46922248c52f5f0667f 100644
+--- a/dist/utils/validation.d.mts
++++ b/dist/utils/validation.d.mts
+@@ -1,6 +1,10 @@
+ import type { Hex } from "@metamask/utils";
+ import type { TransactionBatchRequest } from "../types.mjs";
+ import { TransactionType, type TransactionParams } from "../types.mjs";
++export declare enum ErrorCode {
++    DuplicateBundleId = 5720,
++    BundleTooLarge = 5740
++}
+ /**
+  * Validates whether a transaction initiated by a specific 'from' address is permitted by the origin.
+  *
+diff --git a/dist/utils/validation.mjs b/dist/utils/validation.mjs
+index 4c8b3b3362efc750edc5ebfd8aa03db7f4e6e92e..5d4d4cba5f494ce276eda44e96bb88467a39b21e 100644
+--- a/dist/utils/validation.mjs
++++ b/dist/utils/validation.mjs
+@@ -1,10 +1,15 @@
+ import { Interface } from "@ethersproject/abi";
+ import { ORIGIN_METAMASK, isValidHexAddress } from "@metamask/controller-utils";
+ import { abiERC20 } from "@metamask/metamask-eth-abis";
+-import { providerErrors, rpcErrors } from "@metamask/rpc-errors";
++import { JsonRpcError, providerErrors, rpcErrors } from "@metamask/rpc-errors";
+ import { isStrictHexString, remove0x } from "@metamask/utils";
+ import { isEIP1559Transaction } from "./utils.mjs";
+ import { TransactionEnvelopeType, TransactionType } from "../types.mjs";
++export var ErrorCode;
++(function (ErrorCode) {
++    ErrorCode[ErrorCode["DuplicateBundleId"] = 5720] = "DuplicateBundleId";
++    ErrorCode[ErrorCode["BundleTooLarge"] = 5740] = "BundleTooLarge";
++})(ErrorCode || (ErrorCode = {}));
+ const TRANSACTION_ENVELOPE_TYPES_FEE_MARKET = [
+     TransactionEnvelopeType.feeMarket,
+     TransactionEnvelopeType.setCode,
+@@ -187,14 +192,19 @@ export function validateParamTo(to) {
+ export function validateBatchRequest({ internalAccounts, request, sizeLimit, }) {
+     const { origin } = request;
+     const isExternal = origin && origin !== ORIGIN_METAMASK;
+-    const transactionTargetsNormalized = request.transactions.map((tx) => tx.params.to?.toLowerCase());
+     const internalAccountsNormalized = internalAccounts.map((account) => account.toLowerCase());
+     if (isExternal &&
+-        transactionTargetsNormalized.some((target) => internalAccountsNormalized.includes(target))) {
+-        throw rpcErrors.invalidParams('Calls to internal accounts are not supported');
++        request.transactions.some((nestedTransaction) => {
++            const normalizedCallTo = nestedTransaction.params.to?.toLowerCase();
++            const callData = nestedTransaction.params.data;
++            const isInternalAccount = internalAccountsNormalized.includes(normalizedCallTo);
++            const hasData = Boolean(callData && callData !== '0x');
++            return isInternalAccount && hasData;
++        })) {
++        throw rpcErrors.invalidParams('External calls to internal accounts cannot include data');
+     }
+     if (isExternal && request.transactions.length > sizeLimit) {
+-        throw rpcErrors.invalidParams(`Batch size cannot exceed ${sizeLimit}. got: ${request.transactions.length}`);
++        throw new JsonRpcError(ErrorCode.BundleTooLarge, `Batch size cannot exceed ${sizeLimit}. got: ${request.transactions.length}`);
+     }
+ }
+ /**

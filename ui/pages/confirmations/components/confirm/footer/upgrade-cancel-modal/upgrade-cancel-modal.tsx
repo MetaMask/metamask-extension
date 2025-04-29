@@ -1,6 +1,4 @@
-import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { JsonRpcError, serializeError } from '@metamask/rpc-errors';
+import React from 'react';
 import {
   Box,
   Button,
@@ -20,13 +18,9 @@ import {
   FlexDirection,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import {
-  disableAccountUpgradeForChain,
-  rejectPendingApproval,
-} from '../../../../../../store/actions';
 import { useConfirmContext } from '../../../../context/confirm';
 import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
-import { EIP5792ErrorCode } from '../../../../../../../shared/constants/transaction';
+import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 
 export function UpgradeCancelModal({
   isOpen,
@@ -38,23 +32,8 @@ export function UpgradeCancelModal({
   onReject: () => void;
 }) {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext();
-  const { id: confirmationId } = currentConfirmation ?? {};
-  const chainId = currentConfirmation?.chainId as string;
-
-  const handleRejectUpgrade = useCallback(async () => {
-    const error = new JsonRpcError(
-      EIP5792ErrorCode.RejectedUpgrade,
-      'User rejected account upgrade',
-    );
-
-    const serializedError = serializeError(error);
-
-    await disableAccountUpgradeForChain(chainId);
-
-    dispatch(rejectPendingApproval(confirmationId, serializedError));
-  }, [dispatch, confirmationId, chainId]);
+  const { handleRejectUpgrade } = useSmartAccountActions();
 
   if (!currentConfirmation) {
     return null;

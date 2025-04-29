@@ -112,7 +112,7 @@ describe('Send full flow of USD', function (this: Suite) {
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
         await sendSolanaPage.clickOnContinue();
         assert.equal(
-          await confirmSolanaPage.checkAmountDisplayed('0.0504'),
+          await confirmSolanaPage.checkAmountDisplayed('0.0886'),
           true,
           'Check amount displayed is wrong',
         );
@@ -149,7 +149,7 @@ describe('Send full flow of USD', function (this: Suite) {
         await confirmSolanaPage.clickOnSend();
         const sentTxPage = new SolanaTxresultPage(driver);
         assert.equal(
-          await sentTxPage.check_TransactionStatusText('0.0504', true),
+          await sentTxPage.check_TransactionStatusText('0.0886', true),
           true,
           'Transaction amount is not correct',
         );
@@ -319,14 +319,14 @@ describe('Send full flow of SOL', function (this: Suite) {
 });
 describe('Send flow', function (this: Suite) {
   it('and Transaction fails', async function () {
-    this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
+    this.timeout(120000);
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: false,
-        simulateTransaction: true,
+        sendFailedTransaction: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);

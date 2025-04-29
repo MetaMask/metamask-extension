@@ -306,6 +306,14 @@ class HomePage {
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
   }
+
+  async check_newSrpAddedToastIsDisplayed(
+    srpNumber: number = 2,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
+  }
 }
 
 export default HomePage;

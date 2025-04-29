@@ -11,6 +11,8 @@ import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
+import { mockEmptyPrices } from '../tokens/utils/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 async function mockApis(mockServer: Mockttp) {
   return [
@@ -30,7 +32,7 @@ async function mockApis(mockServer: Mockttp) {
       }),
     await mockServer
       .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-      .withQuery({ fsyms: 'ETH,MegaETH', tsyms: 'usd' })
+      .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -58,6 +60,7 @@ async function mockApis(mockServer: Mockttp) {
           },
         };
       }),
+    await mockEmptyPrices(mockServer, CHAIN_IDS.MAINNET),
   ];
 }
 

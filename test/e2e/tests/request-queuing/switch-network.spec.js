@@ -17,7 +17,7 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [
