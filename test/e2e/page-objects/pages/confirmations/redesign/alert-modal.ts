@@ -19,7 +19,7 @@ class AlertModal {
   }
 
   async check_insufficientBalanceMessageIsDisplayed(): Promise<void> {
-    console.log('Checking for insufficient balance alert');
+    console.log('Check insufficient balance message is displayed on alert modal');
     await this.driver.waitForSelector(this.insufficientFundsAlert);
   }
 }
