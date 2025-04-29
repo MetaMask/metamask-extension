@@ -42,7 +42,7 @@ export function TransactionAccountDetails() {
         <>
           <ConfirmInfoAlertRow
             alertKey={RowAlertKey.AccountTypeUpgrade}
-            label={t('confirmInfoAccountCurrentType')}
+            label={t('confirmInfoAccountNow')}
             ownerId={id}
           >
             <ConfirmInfoRowText
@@ -50,17 +50,17 @@ export function TransactionAccountDetails() {
               data-testid="tx-type"
             />
           </ConfirmInfoAlertRow>
-          <ConfirmInfoRow label={t('confirmInfoAccountNewType')}>
+          <ConfirmInfoRow label={t('confirmInfoSwitchingTo')}>
             <ConfirmInfoRowText text={t('confirmAccountTypeSmartContract')} />
           </ConfirmInfoRow>
         </>
       )}
       {isDowngrade && (
         <>
-          <ConfirmInfoRow label={t('confirmInfoAccountCurrentType')}>
+          <ConfirmInfoRow label={t('confirmInfoAccountNow')}>
             <ConfirmInfoRowText text={t('confirmAccountTypeSmartContract')} />
           </ConfirmInfoRow>
-          <ConfirmInfoRow label={t('confirmInfoAccountNewType')}>
+          <ConfirmInfoRow label={t('confirmInfoSwitchingTo')}>
             <ConfirmInfoRowText text={t('confirmAccountTypeStandard')} />
           </ConfirmInfoRow>
         </>

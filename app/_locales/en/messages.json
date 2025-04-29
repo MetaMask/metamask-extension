@@ -1123,11 +1123,11 @@
   "confirmGasFeeTokenTooltip": {
     "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
-  "confirmInfoAccountCurrentType": {
-    "message": "Current Type"
+  "confirmInfoAccountNow": {
+    "message": "Now"
   },
-  "confirmInfoAccountNewType": {
-    "message": "New Type"
+  "confirmInfoSwitchingTo": {
+    "message": "Switching To"
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
