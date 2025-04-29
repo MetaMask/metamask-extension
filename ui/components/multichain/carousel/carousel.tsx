@@ -67,9 +67,7 @@ export const Carousel = React.forwardRef(
         }
         ///: END:ONLY_INCLUDE_IF
 
-        if (!slide.dismissed || slide.undismissable) {
-          return true;
-        }
+        return !slide.dismissed || slide.undismissable;
       })
       .sort((a, b) => {
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
