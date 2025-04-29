@@ -1221,7 +1221,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -1290,7 +1290,7 @@
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/multichain-network-controller": true,
-        "@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
@@ -1658,7 +1658,7 @@
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web": true,
+        "@trezor/connect-web": true,
         "browserify>buffer": true,
         "@metamask/eth-trezor-keyring>hdkey": true
       }
@@ -1729,7 +1729,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
       }
@@ -2018,7 +2018,7 @@
         "punycode": true
       }
     },
-    "@metamask/polling-controller": {
+    "@metamask/bridge-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2414,7 +2414,7 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
-        "@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
@@ -2898,8 +2898,7 @@
         "Intl.Collator": true,
         "TextEncoder": true,
         "crypto.subtle.digest": true,
-        "crypto.subtle.exportKey": true,
-        "crypto.subtle.importKey": true
+        "crypto.subtle.exportKey": true
       },
       "packages": {
         "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
@@ -3021,21 +3020,6 @@
         "tslib": true
       }
     },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common": {
-      "globals": {
-        "console.warn": true,
-        "localStorage.getItem": true,
-        "localStorage.setItem": true,
-        "navigator": true,
-        "setTimeout": true,
-        "window": true
-      },
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "tslib": true
-      }
-    },
     "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": {
       "packages": {
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
@@ -3075,59 +3059,12 @@
         "tslib": true
       }
     },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web": {
-      "globals": {
-        "URLSearchParams": true,
-        "__TREZOR_CONNECT_SRC": true,
-        "addEventListener": true,
-        "btoa": true,
-        "chrome": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "document.body": true,
-        "document.createElement": true,
-        "document.createTextNode": true,
-        "document.getElementById": true,
-        "document.querySelectorAll": true,
-        "location.origin": true,
-        "navigator": true,
-        "open": true,
-        "origin": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@trezor/websocket-client": true,
-        "webpack>events": true,
-        "tslib": true
-      }
-    },
     "@trezor/connect-web>@trezor/connect": {
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/transport": true,
         "@trezor/connect-web>@trezor/utils": true,
-        "tslib": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/device-utils": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "tslib": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/device-utils": {
-      "packages": {
         "tslib": true
       }
     },
@@ -3149,23 +3086,6 @@
         "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true
       }
     },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": {
-      "globals": {
-        "innerHeight": true,
-        "innerWidth": true,
-        "location.hostname": true,
-        "location.origin": true,
-        "navigator.languages": true,
-        "navigator.platform": true,
-        "navigator.userAgent": true,
-        "screen.height": true,
-        "screen.width": true
-      },
-      "packages": {
-        "process": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true
-      }
-    },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
@@ -3174,26 +3094,7 @@
         "tslib": true
       }
     },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
-        "browserify>buffer": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>long": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
-        "tslib": true
-      }
-    },
     "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>@sinclair/typebox": true,
-        "browserify>buffer": true,
-        "ts-mixer": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/schema-utils": {
       "globals": {
         "console.warn": true
       },
@@ -3221,42 +3122,6 @@
         "@trezor/connect-web>@trezor/utils>bignumber.js": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
-        "webpack>events": true,
-        "tslib": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": {
-      "globals": {
-        "AbortController": true,
-        "Blob": true,
-        "Intl.NumberFormat": true,
-        "TextEncoder": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.info": true,
-        "console.log": true,
-        "console.warn": true,
-        "crypto.getRandomValues": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils>bignumber.js": true,
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "webpack>events": true,
-        "tslib": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@trezor/websocket-client": {
-      "globals": {
-        "WebSocket": true,
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
         "webpack>events": true,
         "tslib": true
       }
@@ -3488,12 +3353,6 @@
       }
     },
     "@trezor/connect-web>@trezor/utils>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
@@ -4672,13 +4531,6 @@
         "localStorage": true,
         "log": "write",
         "navigator": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>long": {
-      "globals": {
-        "WebAssembly.Instance": true,
-        "WebAssembly.Module": true,
-        "define": true
       }
     },
     "lottie-web": {
@@ -5864,11 +5716,6 @@
       }
     },
     "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
       "globals": {
         "define": true
       }
