@@ -2,11 +2,15 @@ import * as React from 'react';
 import { Skeleton } from '../../../../components/component-library/skeleton';
 
 import { Box } from '../../../../components/component-library';
+import { BorderRadius } from '../../../../helpers/constants/design-system';
 
 export const AssetChartLoading = () => {
   return (
     <Box className="asset-chart__skeleton-container">
-      <Skeleton className="asset-chart__skeleton" />
+      <Skeleton
+        className="asset-chart__skeleton"
+        borderRadius={BorderRadius.LG}
+      />
     </Box>
   );
 };
