@@ -661,13 +661,17 @@ export default class MetamaskController extends EventEmitter {
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
-      getBlockTrackerOptions: () => ({
-        pollingInterval: 20 * SECOND,
-        // The retry timeout is pretty short by default, and if the endpoint is
-        // down, it will end up exhausting the max number of consecutive
-        // failures quickly.
-        retryTimeout: 20 * SECOND,
-      }),
+      getBlockTrackerOptions: () => {
+        return process.env.IN_TEST
+          ? {}
+          : {
+              pollingInterval: 20 * SECOND,
+              // The retry timeout is pretty short by default, and if the endpoint is
+              // down, it will end up exhausting the max number of consecutive
+              // failures quickly.
+              retryTimeout: 20 * SECOND,
+            };
+      },
       getRpcServiceOptions: (rpcEndpointUrl) => {
         const maxRetries = 4;
         const commonOptions = {
