@@ -21,13 +21,15 @@ import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
+  fixCurrencyToUSD?: boolean;
 };
 
 export const useTokenDisplayInfo = ({
   token,
+  fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
   const isEvm = useSelector(getMultichainIsEvm);
-  const tokenList = useSelector(getTokenList);
+  const tokenList = useSelector(getTokenList) || {};
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
@@ -50,14 +52,16 @@ export const useTokenDisplayInfo = ({
 
   // Format for fiat balance with currency style
   const secondary =
-    shouldShowFiat && token.tokenFiatAmount
+    shouldShowFiat &&
+    token.tokenFiatAmount !== null &&
+    token.tokenFiatAmount !== undefined
       ? formatWithThreshold(
           Number(token.tokenFiatAmount),
           secondaryThreshold,
           locale,
           {
             style: 'currency',
-            currency: currentCurrency.toUpperCase(),
+            currency: fixCurrencyToUSD ? 'USD' : currentCurrency.toUpperCase(),
           },
         )
       : undefined;
@@ -75,7 +79,8 @@ export const useTokenDisplayInfo = ({
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
 
-  const isStakeable = isEvmMainnet && isEvm && token.isNative;
+  const isStakeable =
+    token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
   if (isEvm) {
     const tokenData = Object.values(tokenList).find(

@@ -32,7 +32,7 @@ exports[`AssetPage should render a native asset 1`] = `
       class="mm-box mm-box--margin-top-4"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly mm-box--width-full"
       >
         <button
           class="icon-button coin-overview__button"
@@ -184,6 +184,7 @@ exports[`AssetPage should render a native asset 1`] = `
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                data-testid="multichain-token-list-item-token-name"
               >
                 TEST
                 <button
@@ -510,13 +511,16 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                data-testid="multichain-token-list-item-token-name"
               >
                 TEST
               </p>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
-              />
+              >
+                $0.00
+              </p>
             </div>
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
@@ -1002,13 +1006,16 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                data-testid="multichain-token-list-item-token-name"
               >
                 TEST
               </p>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
-              />
+              >
+                $0.00
+              </p>
             </div>
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
