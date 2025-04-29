@@ -1389,8 +1389,6 @@
       "globals": {
         "clearTimeout": true,
         "console.error": true,
-        "console.log": true,
-        "console.warn": true,
         "setTimeout": true
       },
       "packages": {
@@ -1930,7 +1928,6 @@
     "@metamask/network-controller": {
       "globals": {
         "URL": true,
-        "console.log": true,
         "setTimeout": true
       },
       "packages": {
