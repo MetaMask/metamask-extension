@@ -115,7 +115,7 @@ class SendSolanaPage {
     try {
       const continueButton = await this.driver.findClickableElement(
         this.continueButton,
-        2000,
+        { timeout: 2000 },
       );
       await this.driver.wait(
         async () => await continueButton.isEnabled(),

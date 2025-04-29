@@ -1,5 +1,5 @@
 diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
-index 0eb212b5eb9a9ef2f61c44b9e5f04b14d5571865..f4f097a86a0feba2d20f84199536fdd097360777 100644
+index 0f6d7425a720e2af194e351a017dfb0fc4d8a82c..6c2d3b606b6ac95b3a1962acc90966ff80ec3f30 100644
 --- a/dist/assetsUtil.cjs
 +++ b/dist/assetsUtil.cjs
 @@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -10,7 +10,7 @@ index 0eb212b5eb9a9ef2f61c44b9e5f04b14d5571865..f4f097a86a0feba2d20f84199536fdd0
  exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.reduceInBatchesSerially = exports.divideIntoBatches = exports.ethersBigNumberToBN = exports.addUrlProtocolPrefix = exports.getFormattedIpfsUrl = exports.getIpfsCIDv1AndPath = exports.removeIpfsProtocolPrefix = exports.isTokenListSupportedForNetwork = exports.isTokenDetectionSupportedForNetwork = exports.SupportedStakedBalanceNetworks = exports.SupportedTokenDetectionNetworks = exports.formatIconUrlWithProxy = exports.formatAggregatorNames = exports.hasNewCollectionFields = exports.compareNftMetadata = exports.TOKEN_PRICES_BATCH_SIZE = void 0;
  const controller_utils_1 = require("@metamask/controller-utils");
  const utils_1 = require("@metamask/utils");
-@@ -234,7 +235,7 @@ async function getIpfsCIDv1AndPath(ipfsUrl) {
+@@ -237,7 +238,7 @@ async function getIpfsCIDv1AndPath(ipfsUrl) {
      const index = url.indexOf('/');
      const cid = index !== -1 ? url.substring(0, index) : url;
      const path = index !== -1 ? url.substring(index) : undefined;
