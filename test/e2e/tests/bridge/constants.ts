@@ -4,7 +4,8 @@ export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
   'extension-config': {
     refreshRate: 30000,
     maxRefreshCount: 5,
-    support: false,
+    support: false,  statusCode: 200,
+  json:
     chains: {
       '1': { isActiveSrc: true, isActiveDest: true },
       '42161': { isActiveSrc: true, isActiveDest: true },
@@ -37,19 +38,8 @@ export const MOCK_CURRENCY_RATES = {
   },
 };
 
-export const INTERNAL_SERVER_ERROR = {
-  statusCode: 500,
-  json: { error: 'Internal server error' },
-};
-
-export const EMPTY_RESPONSE = {
-  statusCode: 200,
-  json: [],
-};
-
-export const GET_QUOTE_INVALID_RESPONSE = {
-  statusCode: 200,
-  json: [
+export const GET_QUOTE_INVALID_RESPONSE =
+ [
     {
       quote: {
         requestId: 'd6d465bf-38a1-452e-a8e4-b95cb9ad5421',
@@ -100,12 +90,10 @@ export const GET_QUOTE_INVALID_RESPONSE = {
       },
       estimatedProcessingTimeInSeconds: 0,
     },
-  ],
-};
+  ]
 
-export const FAILED_SOURCE_TRANSACTION = {
-  statusCode: 200,
-  json: {
+
+export const FAILED_SOURCE_TRANSACTION =  {
     status: 'FAILED',
     isExpectedToken: true,
     bridge: 'across',
@@ -118,11 +106,9 @@ export const FAILED_SOURCE_TRANSACTION = {
       txHash: null,
     },
   },
-};
 
-export const FAILED_DEST_TRANSACTION = {
-  statusCode: 200,
-  json: {
+
+export const FAILED_DEST_TRANSACTION =  {
     status: 'FAILED',
     isExpectedToken: true,
     bridge: 'across',
@@ -136,7 +122,7 @@ export const FAILED_DEST_TRANSACTION = {
       txHash: null,
     },
   },
-};
+
 
 export const MOCK_TOKENS_API = [
   {

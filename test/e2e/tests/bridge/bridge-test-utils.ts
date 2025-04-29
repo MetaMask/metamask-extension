@@ -253,15 +253,29 @@ async function mockDAItoUSDT(mockServer: Mockttp) {
     });
 }
 
-async function mockGetQuoteInvalid(mockServer: Mockttp, response: string) {
+async function mockGetQuoteInvalid(
+  mockServer: Mockttp,
+  statusCode: number,
+  json: unknown,
+) {
   return await mockServer.forGet(/getQuote/u).thenCallback(() => {
-    return JSON.parse(response);
+    return {
+      statusCode,
+      json,
+    };
   });
 }
 
-async function mockGetTxStatuInvalid(mockServer: Mockttp, response: string) {
-  return await mockServer.forGet(/getTxStatus/u).thenCallback(async () => {
-    return JSON.parse(response);
+async function mockGetTxStatusInvalid(
+  mockServer: Mockttp,
+  statusCode: number,
+  json: unknown,
+) {
+  return await mockServer.forGet(/getTxStatus/u).thenCallback(() => {
+    return {
+      statusCode,
+      json,
+    };
   });
 }
 
@@ -326,7 +340,8 @@ export const getBridgeFixtures = (
 };
 
 export const getQuoteNegativeCasesFixtures = (
-  response: string,
+  statusCode: number,
+  response: unknown,
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
@@ -346,7 +361,7 @@ export const getQuoteNegativeCasesFixtures = (
         },
       }),
       await mockTopAssets(mockServer),
-      await mockGetQuoteInvalid(mockServer, response),
+      await mockGetQuoteInvalid(mockServer, statusCode, response),
     ],
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -362,7 +377,7 @@ export const getQuoteNegativeCasesFixtures = (
 };
 
 export const getBridgeNegativeCasesFixtures = (
-  response: string,
+  response: unknown,
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
@@ -384,7 +399,7 @@ export const getBridgeNegativeCasesFixtures = (
       await mockTopAssets(mockServer),
       await mockETHtoETH(mockServer),
       await mockETHtoWETH(mockServer),
-      await mockGetTxStatuInvalid(mockServer, response),
+      await mockGetTxStatusInvalid(mockServer, response),
     ],
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [

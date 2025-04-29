@@ -46,7 +46,8 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show message that no trade route is available if getQuote returns error 500', async function () {
     await withFixtures(
       getQuoteNegativeCasesFixtures(
-        INTERNAL_SERVER_ERROR,
+        500,
+        'Internal server error',
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -63,7 +64,7 @@ describe('Bridge functionality', function (this: Suite) {
 
   it('should show message that no trade route is available if getQuote returns empty array', async function () {
     await withFixtures(
-      getQuoteNegativeCasesFixtures(EMPTY_RESPONSE, this.test?.fullTitle()),
+      getQuoteNegativeCasesFixtures(200, [], this.test?.fullTitle()),
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
@@ -79,6 +80,7 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show message that no trade route is available if getQuote returns invalid response', async function () {
     await withFixtures(
       getQuoteNegativeCasesFixtures(
+        200,
         GET_QUOTE_INVALID_RESPONSE,
         this.test?.fullTitle(),
       ),
@@ -97,7 +99,8 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show that bridge transaction is pending if getTxStatus returns error 500', async function () {
     await withFixtures(
       getBridgeNegativeCasesFixtures(
-        INTERNAL_SERVER_ERROR,
+        500,
+        'Internal server error',
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -120,6 +123,7 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show failed bridge activity if getTxStatus returns failed source transaction', async function () {
     await withFixtures(
       getBridgeNegativeCasesFixtures(
+        200,
         FAILED_SOURCE_TRANSACTION,
         this.test?.fullTitle(),
       ),
@@ -144,6 +148,7 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
     await withFixtures(
       getBridgeNegativeCasesFixtures(
+        200,
         FAILED_DEST_TRANSACTION,
         this.test?.fullTitle(),
       ),
