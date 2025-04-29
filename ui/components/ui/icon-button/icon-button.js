@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import { Text } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
@@ -23,9 +23,15 @@ export default function IconButton(props) {
 
   return (
     <button
-      className={classNames('icon-button', className, {
-        'icon-button--disabled': disabled,
-      })}
+      className={classnames(
+        'icon-button',
+        'w-16',
+        {
+          'icon-button--disabled': disabled,
+          'opacity-30 cursor-auto': disabled,
+        },
+        className,
+      )}
       data-testid={otherProps['data-testid'] ?? undefined}
       onClick={onClick}
       disabled={disabled}
@@ -34,7 +40,11 @@ export default function IconButton(props) {
         <>
           <div
             data-theme="light"
-            className={classNames('icon-button__circle', iconButtonClassName)}
+            className={classnames(
+              'icon-button__circle',
+              'flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto',
+              iconButtonClassName,
+            )}
           >
             {Icon}
           </div>

@@ -3,9 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import IconButton from './icon-button';
 import {
   IconColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
-import Tooltip from '../tooltip/tooltip';
 import { Icon, IconName } from '../../component-library';
 
 const meta: Meta<typeof IconButton> = {
@@ -18,6 +16,7 @@ const meta: Meta<typeof IconButton> = {
     label: { control: 'text' },
     tooltipRender: { control: 'function' },
     className: { control: 'text' },
+    iconButtonClassName: { control: 'text' },
   },
   args: {
     onClick: () => {},
@@ -26,6 +25,7 @@ const meta: Meta<typeof IconButton> = {
     label: 'Icon Button',
     tooltipRender: undefined,
     className: '',
+    iconButtonClassName: '',
   },
 };
 
@@ -34,4 +34,15 @@ type Story = StoryObj<typeof IconButton>;
 
 export const Default: Story = {};
 
-Default.storyName = 'Default';
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const LongLabel: Story = {
+  args: {
+    label: 'This is a very long label that should trigger the tooltip',
+  },
+};
+

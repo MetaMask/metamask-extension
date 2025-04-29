@@ -35,11 +35,11 @@ exports[`AssetPage should render a native asset 1`] = `
         class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly mm-box--width-full"
       >
         <button
-          class="icon-button coin-overview__button"
+          class="icon-button w-16 coin-overview__button"
           data-testid="coin-overview-buy"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -54,12 +54,12 @@ exports[`AssetPage should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button coin-overview__button icon-button--disabled"
+          class="icon-button w-16 icon-button--disabled opacity-30 cursor-auto coin-overview__button"
           data-testid="token-overview-button-swap"
           disabled=""
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -74,11 +74,11 @@ exports[`AssetPage should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button coin-overview__button"
+          class="icon-button w-16 coin-overview__button"
           data-testid="coin-overview-bridge"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -93,11 +93,11 @@ exports[`AssetPage should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button coin-overview__button"
+          class="icon-button w-16 coin-overview__button"
           data-testid="coin-overview-send"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -112,11 +112,11 @@ exports[`AssetPage should render a native asset 1`] = `
           </p>
         </button>
         <button
-          class="icon-button coin-overview__button"
+          class="icon-button w-16 coin-overview__button"
           data-testid="coin-overview-receive"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -387,11 +387,11 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
       >
         <button
-          class="icon-button token-overview__button"
+          class="icon-button w-16 token-overview__button"
           data-testid="token-overview-buy"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -406,11 +406,11 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           </p>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="icon-button w-16 token-overview__button"
           data-testid="eth-overview-send"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -425,10 +425,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           </p>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="icon-button w-16 token-overview__button"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -443,11 +443,11 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           </p>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="icon-button w-16 token-overview__button"
           data-testid="token-overview-bridge"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -882,11 +882,11 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
       >
         <button
-          class="icon-button token-overview__button"
+          class="icon-button w-16 token-overview__button"
           data-testid="token-overview-buy"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -901,11 +901,11 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           </p>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="icon-button w-16 token-overview__button"
           data-testid="eth-overview-send"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -920,10 +920,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           </p>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="icon-button w-16 token-overview__button"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
@@ -938,11 +938,11 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           </p>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="icon-button w-16 token-overview__button"
           data-testid="token-overview-bridge"
         >
           <div
-            class="icon-button__circle"
+            class="icon-button__circle flex justify-center items-center h-9 w-9 bg-primary-default rounded-full mt-1.5 mb-1 mx-auto"
             data-theme="light"
           >
             <span
