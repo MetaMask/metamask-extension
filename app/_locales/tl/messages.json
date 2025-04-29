@@ -4442,6 +4442,9 @@
   "resultPageSuccessDefaultMessage": {
     "message": "Matagumpay na nakumpleto ang operasyon."
   },
+  "retryTransaction": {
+    "message": "Subukan ulit ang transaksyon"
+  },
   "reusedTokenNameWarning": {
     "message": "Ang isang token dito ay muling ginagamit ang isang simbolo mula sa ibang token na tinitingnan mo, maaari itong maging nakakalito."
   },

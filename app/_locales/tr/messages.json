@@ -4442,6 +4442,9 @@
   "resultPageSuccessDefaultMessage": {
     "message": "İşlem başarılı bir şekilde tamamlandı."
   },
+  "retryTransaction": {
+    "message": "İşlemi tekrar dene"
+  },
   "reusedTokenNameWarning": {
     "message": "Buradaki bir token izlediğiniz başka bir tokenden sembol kullanıyor, bu kafa karıştırıcı veya aldatıcı olabilir."
   },

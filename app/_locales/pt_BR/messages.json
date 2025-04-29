@@ -1476,6 +1476,9 @@
   "restore": {
     "message": "Restaurar"
   },
+  "retryTransaction": {
+    "message": "Tentar transação novamente"
+  },
   "reusedTokenNameWarning": {
     "message": "Um token aqui reutiliza um símbolo de outro token que você acompanha; isso pode causar confusão ou induzir a erros."
   },

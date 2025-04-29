@@ -4442,6 +4442,9 @@
   "resultPageSuccessDefaultMessage": {
     "message": "Операция выполнена."
   },
+  "retryTransaction": {
+    "message": "Повторить транзакцию"
+  },
   "reusedTokenNameWarning": {
     "message": "В токене здесь используется символ другого токена, который вы отслеживаете. Это может запутать или ввести в заблуждение."
   },

@@ -4584,6 +4584,9 @@
   "resultPageSuccessDefaultMessage": {
     "message": "The operation completed successfully."
   },
+  "retryTransaction": {
+    "message": "Retry transaction"
+  },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },

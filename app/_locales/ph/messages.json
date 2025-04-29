@@ -967,6 +967,9 @@
   "restore": {
     "message": "I-restore"
   },
+  "retryTransaction": {
+    "message": "Subukan Ulit ang Transaksyon"
+  },
   "reusedTokenNameWarning": {
     "message": "Ang isang token dito ay gumagamit ng symbol mula sa ibang token na sinusubaybayan mo, maaari itong maging nakakalito."
   },

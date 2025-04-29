@@ -4442,6 +4442,9 @@
   "resultPageSuccessDefaultMessage": {
     "message": "Đã hoàn thành thao tác thành công."
   },
+  "retryTransaction": {
+    "message": "Thử lại giao dịch"
+  },
   "reusedTokenNameWarning": {
     "message": "Một token trong đây sử dụng lại ký hiệu của một token khác mà bạn thấy, điều này có thể gây nhầm lẫn hoặc mang tính lừa dối."
   },

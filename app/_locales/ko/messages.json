@@ -4442,6 +4442,9 @@
   "resultPageSuccessDefaultMessage": {
     "message": "작업을 완료했습니다."
   },
+  "retryTransaction": {
+    "message": "트랜잭션 재시도"
+  },
   "reusedTokenNameWarning": {
     "message": "여기에 있는 토큰은 사용자가 주시 중인 다른 토큰의 기호를 재사용하기 때문에 혼동되거나 속기 쉽습니다."
   },

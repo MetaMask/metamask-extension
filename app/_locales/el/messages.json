@@ -4442,6 +4442,9 @@
   "resultPageSuccessDefaultMessage": {
     "message": "Η λειτουργία ολοκληρώθηκε με επιτυχία."
   },
+  "retryTransaction": {
+    "message": "Επανάληψη συναλλαγής"
+  },
   "reusedTokenNameWarning": {
     "message": "Ένα token εδώ επαναχρησιμοποιεί ένα σύμβολο από ένα άλλο token που παρακολουθείτε, αυτό μπορεί να προκαλέσει σύγχυση ή να είναι παραπλανητικό."
   },

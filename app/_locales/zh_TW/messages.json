@@ -926,6 +926,9 @@
   "restore": {
     "message": "還原"
   },
+  "retryTransaction": {
+    "message": "重試交易"
+  },
   "reusedTokenNameWarning": {
     "message": "這裡的其中一個代幣重複使用了您關注的另一個代幣的符號，這可能會造成混淆甚至讓您被誤導。"
   },
