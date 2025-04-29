@@ -126,7 +126,9 @@ export const useHistoricalPrices = ({
         await dispatch(fetchHistoricalPricesForAsset(address as CaipAssetType));
       } catch (error) {
         console.error(
-          `Error fetching historical prices for ${address} on ${chainId}`,
+          'Error fetching historical prices for %s on %s',
+          address,
+          chainId,
           error,
         );
       } finally {
