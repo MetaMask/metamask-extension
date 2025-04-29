@@ -6,11 +6,11 @@ import {
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  overwriteCaipChainIdsInCaip25CaveatValue,
   setNonSCACaipAccountIdsInCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
   getAllScopesFromCaip25CaveatValue,
+  setChainIdsInCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
@@ -122,7 +122,7 @@ export function getPermissionBackgroundApiMethods({
     });
 
     const updatedCaveatValueWithChainIds =
-      overwriteCaipChainIdsInCaip25CaveatValue(
+      setChainIdsInCaip25CaveatValue(
         caip25Caveat.value,
         updatedPermittedChainIds,
       );
@@ -156,7 +156,7 @@ export function getPermissionBackgroundApiMethods({
       ]),
     );
 
-    const caveatValueWithChainIds = overwriteCaipChainIdsInCaip25CaveatValue(
+    const caveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
       caip25Caveat.value,
       updatedChainIds,
     );
@@ -303,7 +303,7 @@ export function getPermissionBackgroundApiMethods({
           Caip25EndowmentPermissionName,
         );
       } else {
-        const updatedCaveatValue = overwriteCaipChainIdsInCaip25CaveatValue(
+        const updatedCaveatValue = setChainIdsInCaip25CaveatValue(
           caip25Caveat.value,
           remainingChainIds,
         );
