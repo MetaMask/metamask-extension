@@ -114,7 +114,7 @@ class SendSolanaPage {
   async isContinueButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.continueButton, {
-        timeout: 2000,
+        timeout: 5000,
       });
     } catch (e) {
       console.log('Continue button is not clickable', e);
