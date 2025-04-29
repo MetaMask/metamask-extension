@@ -1025,9 +1025,6 @@
   "confirm": {
     "message": "Onayla"
   },
-  "confirmAccountType": {
-    "message": "Tür"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "Akıllı hesap"
   },

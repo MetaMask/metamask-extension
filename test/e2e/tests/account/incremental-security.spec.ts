@@ -1,8 +1,8 @@
-import { withFixtures } from '../../helpers';
-import { WALLET_PASSWORD } from '../../constants';
+import { Browser } from 'selenium-webdriver';
+import { Suite } from 'mocha';
+import { withFixtures, WALLET_PASSWORD } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import { Suite } from 'mocha';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
@@ -20,6 +20,8 @@ describe('Incremental Security', function (this: Suite) {
         title: this.test?.fullTitle(),
         dappPath: 'send-eth-with-private-key-test',
       },
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async ({ driver, localNodes }: { driver: Driver; localNodes: any[] }) => {
         // Seed Account
         await localNodes[0].setAccountBalance(
@@ -28,6 +30,12 @@ describe('Incremental Security', function (this: Suite) {
         );
         await driver.navigate();
 
+        // skip collect metametrics
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
+
         // agree to terms of use and start onboarding
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
@@ -35,8 +43,10 @@ describe('Incremental Security', function (this: Suite) {
         await startOnboardingPage.clickCreateWalletButton();
 
         // skip collect metametrics
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.clickNoThanksButton();
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
 
         // create password
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);

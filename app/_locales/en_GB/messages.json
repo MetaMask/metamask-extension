@@ -1084,9 +1084,6 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmAccountType": {
-    "message": "Type"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "Smart account"
   },
@@ -1123,6 +1120,12 @@
   "confirmGasFeeTokenTooltip": {
     "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
+  "confirmInfoAccountCurrentType": {
+    "message": "Current Type"
+  },
+  "confirmInfoAccountNewType": {
+    "message": "New Type"
+  },
   "confirmInfoAccountType": {
     "message": "Account type"
   },
@@ -1138,11 +1141,11 @@
   "confirmSimulationApprove": {
     "message": "You approve"
   },
+  "confirmTitleAccountTypeSwitch": {
+    "message": "Account update"
+  },
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
-  },
-  "confirmTitleDelegationRevoke": {
-    "message": "Account update"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
@@ -1152,6 +1155,9 @@
   },
   "confirmTitleDescDelegationRevoke": {
     "message": "You're switching back to a standard account (EOA)."
+  },
+  "confirmTitleDescDelegationUpgrade": {
+    "message": "You're switching to a smart account"
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"

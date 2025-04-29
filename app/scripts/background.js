@@ -731,18 +731,23 @@ function emitDappViewedMetricEvent(origin) {
   );
   const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
 
-  controller.metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.DappViewed,
-    category: MetaMetricsEventCategory.InpageProvider,
-    referrer: {
-      url: origin,
+  controller.metaMetricsController.trackEvent(
+    {
+      event: MetaMetricsEventName.DappViewed,
+      category: MetaMetricsEventCategory.InpageProvider,
+      referrer: {
+        url: origin,
+      },
+      properties: {
+        is_first_visit: false,
+        number_of_accounts: numberOfTotalAccounts,
+        number_of_accounts_connected: numberOfConnectedAccounts,
+      },
     },
-    properties: {
-      is_first_visit: false,
-      number_of_accounts: numberOfTotalAccounts,
-      number_of_accounts_connected: numberOfConnectedAccounts,
+    {
+      excludeMetaMetricsId: true,
     },
-  });
+  );
 }
 
 /**
