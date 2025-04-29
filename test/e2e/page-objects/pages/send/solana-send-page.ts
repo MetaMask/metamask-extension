@@ -117,10 +117,10 @@ class SendSolanaPage {
         timeout: 5000,
       });
     } catch (e) {
-      console.log('Continue button is not clickable', e);
+      console.log('Continue button not enabled', e);
       return false;
     }
-    console.log('Continue button is clickable');
+    console.log('Continue button enabled');
     return true;
   }
 
