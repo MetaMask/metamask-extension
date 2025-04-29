@@ -134,6 +134,7 @@ workflows:
           requires:
             - prep-deps
       - test-e2e-chrome-webpack:
+          <<: *main_master_rc_only
           requires:
             - prep-build-test-webpack
             - get-changed-files-with-git-diff
@@ -142,6 +143,7 @@ workflows:
             - prep-build-test
             - get-changed-files-with-git-diff
       - test-e2e-firefox:
+          <<: *main_master_rc_only
           requires:
             - prep-build-test-mv2
             - get-changed-files-with-git-diff
@@ -166,6 +168,7 @@ workflows:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
       - test-e2e-firefox-flask:
+          <<: *main_master_rc_only
           requires:
             - prep-build-test-flask-mv2
       - test-e2e-swap-playwright - OPTIONAL:
