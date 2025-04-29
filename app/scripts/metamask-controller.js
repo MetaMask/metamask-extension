@@ -413,6 +413,7 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
+import OAuthController from './controllers/oauth/oauth-controller';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -990,6 +991,26 @@ export default class MetamaskController extends EventEmitter {
       messenger: onboardingControllerMessenger,
       state: initState.OnboardingController,
     });
+
+    ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+    const oauthControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'OAuthController',
+      allowedActions: [],
+      allowedEvents: [],
+    });
+    this.oauthController = new OAuthController({
+      messenger: oauthControllerMessenger,
+      state: initState.OAuthController,
+      env: {
+        web3AuthNetwork: process.env.WEB3AUTH_NETWORK,
+        authServerUrl: process.env.AUTH_SERVER_URL,
+        googleClientId: process.env.GOOGLE_CLIENT_ID,
+        appleClientId: process.env.APPLE_CLIENT_ID,
+        authConnectionId: process.env.AUTH_CONNECTION_ID,
+        groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
+      },
+    });
+    ///: END:ONLY_INCLUDE_IF
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
@@ -2138,6 +2159,9 @@ export default class MetamaskController extends EventEmitter {
       NetworkController: this.networkController,
       AlertController: this.alertController,
       OnboardingController: this.onboardingController,
+      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+      OAuthController: this.oauthController,
+      ///: END:ONLY_INCLUDE_IF
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,
       SubjectMetadataController: this.subjectMetadataController,
@@ -2197,6 +2221,9 @@ export default class MetamaskController extends EventEmitter {
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
+        ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+        OAuthController: this.oauthController,
+        ///: END:ONLY_INCLUDE_IF
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController,
         SubjectMetadataController: this.subjectMetadataController,
@@ -3586,6 +3613,13 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       getAccountsBySnapId: (snapId) =>
         getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
+      ///: END:ONLY_INCLUDE_IF
+
+      // oauth controller
+      ///: BEGIN:ONLY_INCLUDE_IF(seedless-onboarding)
+      startOAuthLogin: this.oauthController.startOAuthLogin.bind(
+        this.oauthController,
+      ),
       ///: END:ONLY_INCLUDE_IF
 
       // hardware wallets

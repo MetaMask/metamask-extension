@@ -19,6 +19,7 @@ buildTypes:
       - build-main
       - keyring-snaps
       - multi-srp
+      - seedless-onboarding
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -30,6 +31,12 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.2.2/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - GOOGLE_CLIENT_ID
+      - AUTH_CONNECTION_ID
+      - APPLE_CLIENT_ID
+      - GROUPED_AUTH_CONNECTION_ID
+      - AUTH_SERVER_URL
+      - WEB3AUTH_NETWORK
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
@@ -45,6 +52,7 @@ buildTypes:
       - solana
       - solana-swaps
       - multi-srp
+      - seedless-onboarding
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
@@ -58,6 +66,12 @@ buildTypes:
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.2.2/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - MULTICHAIN_API: true
+      - GOOGLE_CLIENT_ID
+      - AUTH_CONNECTION_ID
+      - APPLE_CLIENT_ID
+      - GROUPED_AUTH_CONNECTION_ID
+      - AUTH_SERVER_URL
+      - WEB3AUTH_NETWORK
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -77,6 +91,7 @@ buildTypes:
       - multi-srp
       - solana-swaps
       - multichain
+      - seedless-onboarding
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -91,6 +106,12 @@ buildTypes:
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
       - MULTICHAIN_API: true
+      - GOOGLE_CLIENT_ID
+      - AUTH_CONNECTION_ID
+      - APPLE_CLIENT_ID
+      - GROUPED_AUTH_CONNECTION_ID
+      - AUTH_SERVER_URL
+      - WEB3AUTH_NETWORK
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -173,6 +194,7 @@ features:
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   solana-swaps:
   multichain:
+  seedless-onboarding:
 
 # Env variables that are required for all types of builds
 #
@@ -375,3 +397,11 @@ env:
 
   # Address of enforcer used for gasless EIP-7702 transactions
   - GASLESS_7702_ENFORCER_ADDRESS: null
+
+  # OAuth provider config
+  - GOOGLE_CLIENT_ID: ''
+  - AUTH_CONNECTION_ID: ''
+  - APPLE_CLIENT_ID: ''
+  - GROUPED_AUTH_CONNECTION_ID: ''
+  - AUTH_SERVER_URL: ''
+  - WEB3AUTH_NETWORK: ''

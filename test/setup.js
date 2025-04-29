@@ -9,3 +9,8 @@ global.platform = {
   // Required for: settings info tab
   getVersion: () => '<version>',
 };
+
+global.chrome.identity = {
+  getRedirectURL: () => 'https://mocked-redirect-uri',
+  launchWebAuthFlow: () => Promise.resolve('https://mocked-redirect-uri?code=mocked-code'),
+};

@@ -129,6 +129,28 @@ describe('Actions', () => {
     sinon.restore();
   });
 
+  describe('#startOAuthLogin', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls startOAuthLogin in the background', async () => {
+      const store = mockStore();
+
+      const startOAuthLoginStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(null, {}));
+      background.getApi.returns({
+        startOAuthLogin: startOAuthLoginStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.startOAuthLogin('google'));
+
+      expect(startOAuthLoginStub.callCount).toStrictEqual(1);
+    });
+  });
+
   describe('#tryUnlockMetamask', () => {
     afterEach(() => {
       sinon.restore();
