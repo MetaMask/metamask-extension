@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.18.0]
 ### Added
+- Improvements in confirmation page to upgrade to smart account ([#32034](https://github.com/MetaMask/metamask-extension/pull/32034))
 - Adds the Solana banner/slide to the existing home carousel ([#32000](https://github.com/MetaMask/metamask-extension/pull/32000))
 - Update CAIP-294 wallet announcement event to include `targets` property and new `caip-348` target object ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
 - Replace `caip-x` with `caip-348` in Multichain API over externally_connectable ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
