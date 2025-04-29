@@ -73,11 +73,7 @@ export const SelectRpcUrlModal = ({
               defaultRpcEndpointIndex: index,
             };
             dispatch(updateNetwork(network));
-            dispatch(
-              setEditedNetwork({
-                chainId: network.chainId,
-              }),
-            );
+            dispatch(setEditedNetwork());
             onNetworkChange(
               toEvmCaipChainId(network.chainId),
               rpcEndpoint.networkClientId,

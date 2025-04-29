@@ -124,11 +124,7 @@ describe('SelectRpcUrlModal Component', () => {
 
     expect(mockDispatch).toHaveBeenCalledWith(updateNetwork(network));
     expect(mockDispatch).toHaveBeenCalledWith(setActiveNetwork('flashbots'));
-    expect(mockDispatch).toHaveBeenCalledWith(
-      setEditedNetwork({
-        chainId: network.chainId,
-      }),
-    );
+    expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
     expect(mockDispatch).toHaveBeenCalledWith(toggleNetworkMenu());
   });
 
@@ -185,11 +181,7 @@ describe('SelectRpcUrlModal Component', () => {
     );
 
     expect(mockDispatch).toHaveBeenCalledWith(updateNetwork(updatedNetwork));
-    expect(mockDispatch).toHaveBeenCalledWith(
-      setEditedNetwork({
-        chainId: updatedNetwork.chainId,
-      }),
-    );
+    expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
     expect(mockOnNetworkChange).toHaveBeenCalledWith(
       toEvmCaipChainId(updatedNetwork.chainId),
       'flashbots',
