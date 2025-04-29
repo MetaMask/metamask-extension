@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { CaipAssetType, Hex } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
@@ -26,7 +25,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { fetchHistoricalPricesForAsset } from '../../../../store/actions';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
