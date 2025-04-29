@@ -179,6 +179,7 @@ export function getAccountLabels(
       break;
     }
     ///: END:ONLY_INCLUDE_IF
+
     default: {
       break;
     }
