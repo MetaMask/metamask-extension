@@ -74,8 +74,13 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
   getHDEntropyIndex,
+  getAllChainsToPoll,
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
+import {
+  detectNfts,
+  setSelectedAccount,
+  getNetworksWithTransactionActivityByAccounts,
+} from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -260,6 +265,7 @@ export const AccountListMenu = ({
       ),
     [accounts, allowedAccountTypes],
   );
+  const allChainIds = useSelector(getAllChainsToPoll);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(
     getConnectedSubjectsForAllAddresses,
@@ -292,6 +298,7 @@ export const AccountListMenu = ({
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
+
   const handleAddWatchAccount = useCallback(async () => {
     await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -420,8 +427,16 @@ export const AccountListMenu = ({
         ],
       });
       dispatch(setSelectedAccount(account.address));
+      dispatch(detectNfts(allChainIds));
     },
-    [dispatch, onClose, trackEvent, defaultHomeActiveTabName, hdEntropyIndex],
+    [
+      dispatch,
+      onClose,
+      trackEvent,
+      defaultHomeActiveTabName,
+      hdEntropyIndex,
+      allChainIds,
+    ],
   );
 
   const accountListItems = useMemo(() => {
@@ -501,6 +516,20 @@ export const AccountListMenu = ({
   };
   ///: END:ONLY_INCLUDE_IF(multichain)
 
+  const fetchAccountsWithActivity = useCallback(async () => {
+    try {
+      await dispatch(getNetworksWithTransactionActivityByAccounts());
+    } catch (error) {
+      console.error('Failed to fetch accounts with activity:', error);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (filteredAccounts.length > 0) {
+      fetchAccountsWithActivity();
+    }
+  }, [fetchAccountsWithActivity, filteredAccounts]);
+
   return (
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
@@ -575,7 +604,7 @@ export const AccountListMenu = ({
           <Box padding={4}>
             <Text
               variant={TextVariant.bodySmMedium}
-              marginBottom={4}
+              marginBottom={2}
               color={TextColor.textAlternative}
             >
               {t('createNewAccountHeader')}
@@ -611,7 +640,7 @@ export const AccountListMenu = ({
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
                     onClick={async () => {
-                      return await handleMultichainSnapAccountCreation(
+                      await handleMultichainSnapAccountCreation(
                         solanaWalletSnapClient,
                         {
                           scope: MultichainNetworks.SOLANA,
@@ -619,6 +648,17 @@ export const AccountListMenu = ({
                         },
                         ACTION_MODES.ADD_SOLANA,
                       );
+
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Default,
+                          location: 'Main Menu',
+                          hd_entropy_index: hdEntropyIndex,
+                          chain_id_caip: MultichainNetworks.SOLANA,
+                        },
+                      });
                     }}
                     data-testid="multichain-account-menu-popover-add-solana-account"
                   >
@@ -683,7 +723,7 @@ export const AccountListMenu = ({
             <Text
               variant={TextVariant.bodySmMedium}
               marginTop={4}
-              marginBottom={4}
+              marginBottom={2}
               color={TextColor.textAlternative}
             >
               {t('importWalletOrAccountHeader')}
@@ -734,7 +774,7 @@ export const AccountListMenu = ({
             <Text
               variant={TextVariant.bodySmMedium}
               marginTop={4}
-              marginBottom={4}
+              marginBottom={2}
               color={TextColor.textAlternative}
             >
               {t('connectAnAccountHeader')}
@@ -876,11 +916,11 @@ export const AccountListMenu = ({
                 </Text>
               ) : null}
               {accountListItems}
+              {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
+              {hiddenAddresses.length > 0 ? (
+                <HiddenAccountList onClose={onClose} />
+              ) : null}
             </Box>
-            {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
-            {hiddenAddresses.length > 0 ? (
-              <HiddenAccountList onClose={onClose} />
-            ) : null}
             {/* Add / Import / Hardware button */}
             {showAccountCreation ? (
               <Box

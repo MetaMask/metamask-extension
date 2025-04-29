@@ -205,7 +205,7 @@ async function withAccountSnap(
     paymaster,
     localNodeOptions,
   }: { title?: string; paymaster?: string; localNodeOptions?: object },
-  test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
+  testCallback: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
 ) {
   await withFixtures(
     {
@@ -252,13 +252,13 @@ async function withAccountSnap(
         WINDOW_TITLES.ExtensionInFullScreenView,
       );
 
-      await test(driver, bundlerServer);
+      await testCallback(driver, bundlerServer);
     },
   );
 }
 
 describe('User Operations', function () {
-  it('from dApp transaction', async function (this: Mocha.Context) {
+  it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
       await createDappTransaction(driver, {
         from: ERC_4337_ACCOUNT,
@@ -272,7 +272,7 @@ describe('User Operations', function () {
     });
   });
 
-  it('from send transaction', async function (this: Mocha.Context) {
+  it('from send transaction', async function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
@@ -284,7 +284,7 @@ describe('User Operations', function () {
     );
   });
 
-  it('from swap', async function (this: Mocha.Context) {
+  it('from swap', async function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
@@ -295,7 +295,7 @@ describe('User Operations', function () {
     );
   });
 
-  it('with paymaster', async function (this: Mocha.Context) {
+  it('with paymaster', async function () {
     await withAccountSnap(
       {
         title: this.test?.fullTitle(),

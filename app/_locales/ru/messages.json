@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Реквизиты счета"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Переключиться назад на обычный счет"
-  },
   "accountIdenticon": {
     "message": "Идентикон счета"
   },
@@ -1028,9 +1025,6 @@
   "confirm": {
     "message": "Подтвердить"
   },
-  "confirmAccountType": {
-    "message": "Тип"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "Смарт-счет"
   },
@@ -1120,18 +1114,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Запрос транзакции"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Отменить транзакцию"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Отменить обновление и транзакцию"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Если вы не хотите обновлять свой счет, вы можете аннулировать его здесь.\n\nЧтобы завершить эту транзакцию без обновления, необходимо будет снова сделать этот запрос на сайте. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Отменить транзакцию"
   },
   "confirmationAlertDetails": {
     "message": "Чтобы защитить свои активы, рекомендуем отклонить запрос."
@@ -1323,9 +1305,6 @@
   },
   "copyAddress": {
     "message": "Скопировать адрес в буфер обмена"
-  },
-  "copyAddressShort": {
-    "message": "Копировать адрес"
   },
   "copyPrivateKey": {
     "message": "Копировать закрытый ключ"
@@ -2006,9 +1985,6 @@
   },
   "existingChainId": {
     "message": "Введенная вами информация связана с существующим ID блокчейна."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Чтобы просмотреть и подтвердить свой последний запрос, вам необходимо сначала утвердить или отклонить существующие запросы."
   },
   "expandView": {
     "message": "Открыть в новой вкладке"
@@ -2734,9 +2710,6 @@
   },
   "ledgerLocked": {
     "message": "Не удалось подключиться к Ledger. Убедитесь, что устройство разблокировано и приложение Ethereum открыто."
-  },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Несколько устройств Ledger нельзя подключить одновременно. Для подключения нового устройства Ledger сначала нужно отключить предыдущее."
   },
   "ledgerTimeout": {
     "message": "Ledger Live слишком долго не отвечает, или время ожидания подключения истекло. Убедитесь, что приложение Ledger Live открыто и устройство разблокировано."
@@ -4108,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Некоторые из этих сетей являются зависимыми от третьих сторон. Соединения могут быть менее надежными или позволять третьим сторонам отслеживать активность. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Популярные сети"

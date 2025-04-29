@@ -8,13 +8,14 @@ import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/
 import { upgradeAccountConfirmation } from '../../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../../types/confirm';
 import {
-  disableAccountUpgradeForChain,
+  disableAccountUpgrade,
   rejectPendingApproval,
 } from '../../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
 jest.mock('../../../../../../store/actions', () => ({
-  disableAccountUpgradeForChain: jest.fn(),
+  disableAccountUpgrade: jest.fn(),
+  setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
 }));
 
@@ -80,9 +81,23 @@ describe('Splash', () => {
         name: /Don’t use smart account/iu,
       }),
     );
-    expect(disableAccountUpgradeForChain).toHaveBeenCalledTimes(1);
+    expect(disableAccountUpgrade).toHaveBeenCalledTimes(1);
     await flushPromises();
     expect(rejectPendingApproval).toHaveBeenCalledTimes(1);
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not render for confirmation not coming from DAPP', () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction({
+        ...upgradeAccountConfirmation,
+        origin: 'metamask',
+      } as Confirmation),
+    );
+    const { container } = renderWithConfirmContextProvider(
+      <SmartAccountUpdate />,
+      mockStore,
+    );
+
+    expect(container.firstChild).toBeNull();
   });
 });

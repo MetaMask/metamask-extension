@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Στοιχεία λογαριασμού"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Επαναφορά σε κανονικό λογαριασμό"
-  },
   "accountIdenticon": {
     "message": "Αναγνωριστικό Λογαριασμού"
   },
@@ -1028,9 +1025,6 @@
   "confirm": {
     "message": "Επιβεβαίωση"
   },
-  "confirmAccountType": {
-    "message": "Τύπος"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "Έξυπνος λογαριασμός"
   },
@@ -1120,18 +1114,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Αίτημα συναλλαγής"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Ακύρωση συναλλαγής"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Ακύρωση αναβάθμισης & συναλλαγής"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Αν δεν θέλετε να αναβαθμίσετε τον λογαριασμό σας, μπορείτε να το ακυρώσετε εδώ.\n\nΓια να ολοκληρώσετε αυτή τη συναλλαγή χωρίς αναβάθμιση, θα πρέπει να υποβάλετε ξανά αυτό το αίτημα στον ιστότοπο. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Ακύρωση συναλλαγής"
   },
   "confirmationAlertDetails": {
     "message": "Για να προστατεύσετε τα περιουσιακά σας στοιχεία, σας προτείνουμε να απορρίψετε το αίτημα."
@@ -1323,9 +1305,6 @@
   },
   "copyAddress": {
     "message": "Αντιγραφή διεύθυνσης στο πρόχειρο"
-  },
-  "copyAddressShort": {
-    "message": "Αντιγραφή διεύθυνσης"
   },
   "copyPrivateKey": {
     "message": "Αντιγραφή ιδιωτικού κλειδιού"
@@ -2006,9 +1985,6 @@
   },
   "existingChainId": {
     "message": "Οι πληροφορίες που έχετε εισάγει συνδέονται με ένα υπάρχον αναγνωριστικό αλυσίδας."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Για να προβάλετε και να επιβεβαιώσετε το πιο πρόσφατο αίτημά σας, θα πρέπει πρώτα να εγκρίνετε ή να απορρίψετε τα υπάρχοντα αιτήματα."
   },
   "expandView": {
     "message": "Ανάπτυξη προβολής"
@@ -2734,9 +2710,6 @@
   },
   "ledgerLocked": {
     "message": "Δεν είναι δυνατή η σύνδεση με τη συσκευή Ledger. Βεβαιωθείτε ότι η συσκευή σας είναι ξεκλειδωμένη και ότι η εφαρμογή Ethereum είναι ανοιχτή."
-  },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Δεν είναι δυνατή η ταυτόχρονη σύνδεση πολλαπλών συσκευών Ledger. Για να συνδέσετε μια νέα συσκευή Ledger, θα πρέπει πρώτα να αποσυνδέσετε την προηγούμενη."
   },
   "ledgerTimeout": {
     "message": "Το Ledger Live χρειάζεται πολύ χρόνο για να ανταποκριθεί ή η σύνδεση έχει διακοπεί. Βεβαιωθείτε ότι η εφαρμογή Ledger Live είναι ανοιχτή και ότι η συσκευή σας είναι ξεκλειδωμένη."
@@ -4108,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Ορισμένα από αυτά τα δίκτυα βασίζονται σε τρίτους. Οι συνδέσεις μπορεί να είναι λιγότερο αξιόπιστες ή να επιτρέπουν σε τρίτους να παρακολουθούν τη δραστηριότητα. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Δημοφιλή δίκτυα"

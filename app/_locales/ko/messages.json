@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "계정 세부 정보"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " 일반 계정으로 전환"
-  },
   "accountIdenticon": {
     "message": "계정 식별 아이콘"
   },
@@ -1028,9 +1025,6 @@
   "confirm": {
     "message": "컨펌"
   },
-  "confirmAccountType": {
-    "message": "유형"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "스마트 계정"
   },
@@ -1120,18 +1114,6 @@
   },
   "confirmTitleTransaction": {
     "message": "트랜젝션 요청"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "트랜잭션 취소"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "업데이트 및 트랜잭션 취소"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "계정을 업데이트하고 싶지 않다면 여기에서 취소할 수 있습니다.\n\n업데이트 없이 트랜잭션을 완료하려면 사이트에서 이 요청을 다시 수행해야 합니다. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "트랜잭션 취소"
   },
   "confirmationAlertDetails": {
     "message": "자산을 보호하기 위해 요청을 거부하는 것이 좋습니다."
@@ -1323,9 +1305,6 @@
   },
   "copyAddress": {
     "message": "주소를 클립보드에 복사"
-  },
-  "copyAddressShort": {
-    "message": "주소 복사"
   },
   "copyPrivateKey": {
     "message": "개인 키 복사"
@@ -2006,9 +1985,6 @@
   },
   "existingChainId": {
     "message": "입력한 정보는 기존 체인 ID와 연결되어 있습니다."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "가장 최근 요청을 보고 확인하려면, 먼저 기존 요청을 승인하거나 거부해야 합니다."
   },
   "expandView": {
     "message": "보기 확장"
@@ -2734,9 +2710,6 @@
   },
   "ledgerLocked": {
     "message": "Ledger 장치에 연결할 수 없습니다. 장치의 잠금이 해제되어 있고 이더리움 앱이 열려 있는지 확인하세요."
-  },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "여러 Ledger 장치를 동시에 연결할 수 없습니다. 새 Ledger 장치를 연결하려면 이전 장치를 먼저 연결 해제해야 합니다."
   },
   "ledgerTimeout": {
     "message": "Ledger Live의 응답 시간이 너무 길거나 연결 시간을 초과했습니다. Ledger Live 앱이 열려 있고 장치의 잠금이 해제되어 있는지 확인하세요."
@@ -4108,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "이러한 네트워크 중 일부는 제삼자에 의존합니다. 이러한 연결은 안정성이 떨어지거나 제삼자가 활동을 추적할 수 있습니다. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "인기 네트워크"

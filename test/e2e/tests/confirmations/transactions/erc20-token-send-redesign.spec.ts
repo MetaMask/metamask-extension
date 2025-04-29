@@ -23,7 +23,7 @@ import { TestSuiteArguments } from './shared';
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC20 Token Send', function () {
-  describe('Wallet initiated', async function () {
+  describe('Wallet initiated', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
@@ -55,7 +55,7 @@ describe('Confirmation Redesign ERC20 Token Send', function () {
     });
   });
 
-  describe('dApp initiated', async function () {
+  describe('dApp initiated', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
