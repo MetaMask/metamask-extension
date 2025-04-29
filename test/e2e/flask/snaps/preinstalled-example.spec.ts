@@ -37,7 +37,7 @@ describe('Pre-install example', function () {
         await testSnaps.openPage();
         await testSnaps.scrollAndClickButton('connectPreinstalledButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await snapInstall.clickConfirmButton();
+        await snapInstall.clickConnectButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.clickButton('getSettingsStateButton');
         const jsonTextValidation = '"setting1": true';
