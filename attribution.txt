@@ -20316,7 +20316,7 @@ SOFTWARE.
 ******************************
 
 @metamask/providers
-22.0.1 <https://github.com/MetaMask/providers>
+22.1.0 <https://github.com/MetaMask/providers>
 MIT License
 
 Copyright (c) 2020 MetaMask
