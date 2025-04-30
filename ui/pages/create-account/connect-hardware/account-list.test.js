@@ -4,7 +4,12 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import AccountList from './account-list';
-import { LATTICE_HD_PATHS, LEDGER_HD_PATHS, TREZOR_HD_PATHS } from '.';
+import {
+  LATTICE_HD_PATHS,
+  LEDGER_HD_PATHS,
+  ONEKEY_HD_PATHS,
+  TREZOR_HD_PATHS,
+} from '.';
 
 const render = () => {
   const store = configureStore({
@@ -55,7 +60,7 @@ const render = () => {
       ledger: LEDGER_HD_PATHS,
       lattice: LATTICE_HD_PATHS,
       trezor: TREZOR_HD_PATHS,
-      oneKey: TREZOR_HD_PATHS,
+      oneKey: ONEKEY_HD_PATHS,
     },
     onPathChange: jest.fn(),
     onAccountChange: jest.fn(),

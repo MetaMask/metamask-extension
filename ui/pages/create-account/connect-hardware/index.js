@@ -73,11 +73,24 @@ export const TREZOR_HD_PATHS = [
   { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
 ];
 
+const ONEKEY_STANDARD_BIP44_PATH = `m/44'/60'/0'/0/x`;
+// const ONEKEY_LEDGER_LIVE_PATH = `m/44'/60'/x'/0/0`;
+export const ONEKEY_HD_PATHS = [
+  {
+    name: `Standard (${ONEKEY_STANDARD_BIP44_PATH})`,
+    value: ONEKEY_STANDARD_BIP44_PATH,
+  },
+  // {
+  //   name: `Ledger Live (${ONEKEY_LEDGER_LIVE_PATH})`,
+  //   value: ONEKEY_LEDGER_LIVE_PATH,
+  // },
+];
+
 const HD_PATHS = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
-  oneKey: TREZOR_HD_PATHS,
+  oneKey: ONEKEY_HD_PATHS,
 };
 
 const getErrorMessage = (errorCode, t) => {
@@ -153,6 +166,7 @@ class ConnectHardwareForm extends Component {
       HardwareDeviceNames.lattice,
     ]) {
       const path = this.props.defaultHdPaths[device];
+
       const unlocked = await this.props.checkHardwareStatus(device, path);
       if (unlocked && this.state.device) {
         this.setState({ unlocked: true });
@@ -161,11 +175,12 @@ class ConnectHardwareForm extends Component {
     }
   }
 
-  connectToHardwareWallet = (device) => {
+  connectToHardwareWallet = async (device) => {
     this.setState({ device });
     if (this.state.accounts.length) {
       return;
     }
+    await this.connectHardwareBeforeCheck(device);
 
     // Default values
     const deviceCount = this.getHardwareWalletKeyrings().length;
@@ -213,6 +228,10 @@ class ConnectHardwareForm extends Component {
       this.props.hideAlert();
     }, SECOND * 5);
   }
+
+  connectHardwareBeforeCheck = async (device) => {
+    this.props.connectHardwareBeforeCheck(device);
+  };
 
   getPage = (device, page, hdPath, loadHid) => {
     this.props
@@ -340,10 +359,10 @@ class ConnectHardwareForm extends Component {
       this.setState({ error: this.context.t('accountSelectionRequired') });
     }
 
-    const description =
-      MEW_PATH === path
-        ? this.context.t('hardwareWalletLegacyDescription')
-        : '';
+    let description = '';
+    if (path === MEW_PATH) {
+      description = this.context.t('hardwareWalletLegacyDescription');
+    }
 
     return unlockHardwareWalletAccounts(
       selectedAccounts,
@@ -526,6 +545,7 @@ class ConnectHardwareForm extends Component {
 
 ConnectHardwareForm.propTypes = {
   connectHardware: PropTypes.func,
+  connectHardwareBeforeCheck: PropTypes.func,
   checkHardwareStatus: PropTypes.func,
   forgetDevice: PropTypes.func,
   showAlert: PropTypes.func,
@@ -565,6 +585,9 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(
         actions.connectHardware(deviceName, page, hdPath, loadHid, t),
       );
+    },
+    connectHardwareBeforeCheck: (deviceName) => {
+      return dispatch(actions.connectHardwareBeforeCheck(deviceName));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));

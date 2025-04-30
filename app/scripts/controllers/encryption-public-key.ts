@@ -234,6 +234,14 @@ export default class EncryptionPublicKeyController extends BaseController<
         });
       }
 
+      case KeyringType.oneKey: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('OneKey does not support eth_getEncryptionPublicKey.'),
+          );
+        });
+      }
+
       case KeyringType.qr: {
         return Promise.reject(
           new Error('QR hardware does not support eth_getEncryptionPublicKey.'),

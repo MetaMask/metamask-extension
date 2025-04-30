@@ -91,7 +91,8 @@ export enum HardwareAffiliateLinks {
   DCent = 'https://dcentwallet.com/',
   Ngrave = 'https://shop.ngrave.io/',
   ImToken = 'https://token.im/',
-  OneKey = 'https://onekey.so/products/onekey-pro-hardware-wallet/',
+  OneKey = 'https://onekey.so/shop/',
+  OneKeyPro = 'https://onekey.so/products/onekey-pro-hardware-wallet/',
 }
 
 export enum HardwareAffiliateTutorialLinks {
@@ -104,7 +105,8 @@ export enum HardwareAffiliateTutorialLinks {
   DCent = 'https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f',
   Ngrave = 'https://ngrave.io/zero',
   ImToken = 'https://support.token.im/hc/en-us/articles/24652624775961/',
-  OneKey = 'https://help.onekey.so/en/articles/11461108-connect-onekey-pro-to-metamask-via-qr-codes-air-gapped',
+  OneKeyQR = 'https://help.onekey.so/articles/11461108',
+  OneKey = 'https://help.onekey.so/articles/11461106',
 }
 
 /**
@@ -117,6 +119,15 @@ export enum LedgerTransportTypes {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   u2f = 'u2f',
+}
+
+export enum OneKeyTransportTypes {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  webusb = 'webusb',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  webextension = 'webextension',
 }
 
 export enum WebHIDConnectedStatuses {

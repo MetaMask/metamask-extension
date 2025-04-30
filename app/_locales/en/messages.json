@@ -4608,6 +4608,42 @@
   "onekey": {
     "message": "OneKey"
   },
+  "onekeyBridgeInstallationRequired": {
+    "message": "Hardware requires OneKey Bridge software, $1"
+  },
+  "onekeyConnectDevice": {
+    "message": "Connect device"
+  },
+  "onekeyDownloadBridge": {
+    "message": "Download OneKey Bridge"
+  },
+  "onekeyExitBootloaderMode": {
+    "message": "OneKey needs to exit bootloader mode to use this feature."
+  },
+  "onekeyDeviceCheckPassphraseStateError": {
+    "message": "Account does not match the current device unlock address, please confirm that the device and account address are consistent and try again"
+  },
+  "onekeyDeviceOnlyOneError": {
+    "message": "Only one device can be connected at a time, please disconnect other devices first and try again"
+  },
+  "onekeyForceUpdate": {
+    "message": "OneKey firmware needs to be updated. $1"
+  },
+  "onekeyGoToUpdateFirmware": {
+    "message": "Go to update firmware"
+  },
+  "onekeyHardwareError": {
+    "message": "OneKey hardware error"
+  },
+  "onekeyHardwareHelpLink": {
+    "message": "Please visit our online tutorials for detailed guides."
+  },
+  "onekeyNeedUpdateFirmware": {
+    "message": "OneKey firmware update is required to use this feature, $1"
+  },
+  "onekeyWebUSBNotConnectedErrorMessage": {
+    "message": "User authorization is required to connect to OneKey device. If you want to connect your OneKey, please click 'Connect Device' and approve the USB connection"
+  },
   "only": {
     "message": "only"
   },
@@ -7624,6 +7660,13 @@
   "step1LedgerWalletMsg": {
     "message": "Download, set up, and enter your password to unlock $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
+  },
+  "step1OnekeyWallet": {
+    "message": "Connect your OneKey"
+  },
+  "step1OnekeyWalletMsg": {
+    "message": "Plug your OneKey directly into your computer and unlock it, only one device can be connected at a time. Make sure you are using the correct passphrase. For more detailed information about using your hardware wallet, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Connect your Trezor"
