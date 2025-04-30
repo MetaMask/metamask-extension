@@ -680,7 +680,7 @@
   },
   "engines": {
     "node": ">=20.12.0 <20.15.0 || >=20.17.0",
-    "yarn": "^4.7.0"
+    "yarn": "^4.9.1"
   },
   "lavamoat": {
     "allowScripts": {
@@ -765,7 +765,7 @@
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false
     }
   },
-  "packageManager": "yarn@4.7.0",
+  "packageManager": "yarn@4.9.1",
   "foundryup": {
     "binaries": [
       "anvil"

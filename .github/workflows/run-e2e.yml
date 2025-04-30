@@ -37,7 +37,7 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: cimg/node:22.14-browsers
+      image: cimg/node:22.15-browsers
     continue-on-error: true # soft launch
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
