@@ -577,9 +577,13 @@ export default class MetamaskController extends EventEmitter {
       name: 'NetworkController',
     });
 
+    const additionalDefaultNetworks = [ChainId['megaeth-testnet']];
+
     let initialNetworkControllerState = initState.NetworkController;
     if (!initialNetworkControllerState) {
-      initialNetworkControllerState = getDefaultNetworkControllerState();
+      initialNetworkControllerState = getDefaultNetworkControllerState(
+        additionalDefaultNetworks,
+      );
 
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
@@ -703,7 +707,7 @@ export default class MetamaskController extends EventEmitter {
           },
         };
       },
-      additionalDefaultNetworks: [ChainId['megaeth-testnet']],
+      additionalDefaultNetworks,
     });
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointUnavailable',
