@@ -2957,12 +2957,6 @@ export function getIsSolanaSupportEnabled(state) {
   return Boolean(addSolanaAccount);
 }
 
-export function getIsSolanaBuyable(state) {
-  const { isSolanaBuyable } = getRemoteFeatureFlags(state);
-  const isNativeTokenBuyable = getIsNativeTokenBuyable(state);
-  return Boolean(isSolanaBuyable && isNativeTokenBuyable);
-}
-
 export function getManageInstitutionalWallets(state) {
   return state.metamask.manageInstitutionalWallets;
 }
