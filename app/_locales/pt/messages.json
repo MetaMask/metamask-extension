@@ -2711,9 +2711,6 @@
   "ledgerLocked": {
     "message": "Não é possível conectar ao dispositivo Ledger. Certifique-se de que seu dispositivo esteja desbloqueado e que o aplicativo Ethereum esteja aberto."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Não é possível conectar vários dispositivos Ledger ao mesmo tempo. Para conectar um novo dispositivo Ledger, primeiro é necessário desconectar o anterior."
-  },
   "ledgerTimeout": {
     "message": "O Ledger Live está demorando muito para responder ou a conexão expirou. Certifique-se de que o aplicativo do Ledger Live esteja aberto e que seu dispositivo esteja desbloqueado."
   },

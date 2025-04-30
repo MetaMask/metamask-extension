@@ -401,10 +401,10 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.bridgeApproval) {
     title = t('bridgeApproval');
     category = TransactionGroupCategory.approval;
-    title = t('bridgeApproval', [primaryTransaction.sourceTokenSymbol]);
+    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-    primarySuffix = primaryTransaction.sourceTokenSymbol;
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
     title = t('bridgeToChain', [destChainName || '']);
     category = bridgeTokenDisplayData.category;
