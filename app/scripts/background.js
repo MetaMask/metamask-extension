@@ -415,7 +415,9 @@ async function restoreDatabaseFromBackup(port, backup) {
       await persistenceManager.reset();
     }
     await initBackground(backup);
-    controller.onboardingController.setFirstTimeFlowType(FirstTimeFlowType.restore);
+    controller.onboardingController.setFirstTimeFlowType(
+      FirstTimeFlowType.restore,
+    );
   } finally {
     // always reload the UI because if `initBackground` worked, the UI
     // will redirect to the login screen, and if it didn't work, it'll
