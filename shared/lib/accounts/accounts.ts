@@ -1,6 +1,6 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CaipChainId } from '@metamask/utils';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { DiscoveredAccount, KeyringAccount } from '@metamask/keyring-api';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 import {
@@ -12,11 +12,11 @@ import { Messenger } from '@metamask/base-controller';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
 import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/accounts-controller';
+import { captureException } from '@sentry/browser';
+///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
-import { captureException } from '@sentry/browser';
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Supported non-EVM Snaps.
