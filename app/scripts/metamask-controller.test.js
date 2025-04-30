@@ -4074,6 +4074,7 @@ describe('MetaMaskController', () => {
         );
         // Second call should use derivation path on index 0
         expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Solana Account'),
           derivationPath: "m/44'/501'/0'/0'",
           entropySource: expect.any(String),
         });
@@ -4086,6 +4087,7 @@ describe('MetaMaskController', () => {
 
         // Third call should use derivation path on index 1
         expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Solana Account'),
           derivationPath: "m/44'/501'/1'/0'",
           entropySource: expect.any(String),
         });
