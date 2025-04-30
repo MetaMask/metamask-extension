@@ -25,6 +25,7 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
+import OneKeyErrors from '../onekey-errors';
 
 import {
   ASSET_ROUTE,
@@ -63,6 +64,7 @@ import {
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
+  HARDWARE_ONEKEY_ERRORS_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -623,6 +625,10 @@ export default function Routes() {
           <Authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
+          />
+          <Authenticated
+            path={`${HARDWARE_ONEKEY_ERRORS_ROUTE}/:error`}
+            component={OneKeyErrors}
           />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
