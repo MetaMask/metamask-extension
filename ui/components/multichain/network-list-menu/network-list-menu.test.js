@@ -46,6 +46,7 @@ const render = ({
   origin = MOCK_ORIGIN,
   selectedTabOriginInDomainsState = true,
   isAddingNewNetwork = false,
+  isAccessedFromDappConnectedSitePopover = false,
   editedNetwork = undefined,
   nePortfolioDiscoverButton = false,
 } = {}) => {
@@ -53,6 +54,7 @@ const render = ({
     appState: {
       isAddingNewNetwork,
       editedNetwork,
+      isAccessedFromDappConnectedSitePopover,
     },
     metamask: {
       ...mockState.metamask,
@@ -435,6 +437,32 @@ describe('NetworkListMenu', () => {
       // Search should still work
       expect(queryByText(MAINNET_DISPLAY_NAME)).toBeInTheDocument();
       expect(queryByText('Chain 5')).not.toBeInTheDocument();
+    });
+
+    it('should not fire network switch when isAccessedFromDappConnectedSitePopover is false', () => {
+      const { getByText } = render({
+        isAccessedFromDappConnectedSitePopover: false,
+      });
+      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+
+      expect(mockToggleNetworkMenu).not.toHaveBeenCalled();
+      expect(mockSetActiveNetwork).not.toHaveBeenCalled();
+      expect(mockUpdateCustomNonce).not.toHaveBeenCalled();
+      expect(mockSetNextNonce).not.toHaveBeenCalled();
+      expect(mockDetectNfts).not.toHaveBeenCalled();
+    });
+
+    it('should fire network switch when isAccessedFromDappConnectedSitePopover is true', () => {
+      const { getByText } = render({
+        isAccessedFromDappConnectedSitePopover: true,
+      });
+      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+
+      expect(mockToggleNetworkMenu).toHaveBeenCalled();
+      expect(mockSetActiveNetwork).toHaveBeenCalled();
+      expect(mockUpdateCustomNonce).toHaveBeenCalled();
+      expect(mockSetNextNonce).toHaveBeenCalled();
+      expect(mockDetectNfts).toHaveBeenCalled();
     });
   });
 });
