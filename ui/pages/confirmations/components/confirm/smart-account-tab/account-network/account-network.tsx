@@ -111,7 +111,9 @@ export const AccountNetwork = ({
           <Preloader size={12} />
         </Box>
       ) : (
-        <ButtonLink onClick={onSwitch}>{t('switch')}</ButtonLink>
+        <ButtonLink onClick={onSwitch} data-testid={`switch_account-${name}`}>
+          {t('switch')}
+        </ButtonLink>
       )}
     </Box>
   );
