@@ -13,6 +13,7 @@ import { runKernel } from './ocap-kernel';
 import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
+import initOneKey from './onekey';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
@@ -42,6 +43,7 @@ async function init(): Promise<void> {
     console.error('Ocap Kernel fatal error:', error);
   });
   ///: END:ONLY_INCLUDE_IF(ocap-kernel)
+  initOneKey();
 
   try {
     const ledgerInitTimeout = new Promise((_, reject) => {
