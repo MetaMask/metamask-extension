@@ -65,6 +65,7 @@ import {
   getOrderedNetworksList,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
+  getIsAccessedFromDappConnectedSitePopover,
   getAllDomains,
   getPermittedEVMChainsForSelectedTab,
   getPermittedEVMAccountsForSelectedTab,
@@ -159,6 +160,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const isAddingNewNetwork = useSelector(getIsAddingNewNetwork);
   const isMultiRpcOnboarding = useSelector(getIsMultiRpcOnboarding);
+  const isAccessedFromDappConnectedSitePopover = useSelector(
+    getIsAccessedFromDappConnectedSitePopover,
+  );
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
@@ -192,7 +196,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     !process.env.REMOVE_GNS ||
     (Boolean(process.env.REMOVE_GNS) &&
       Boolean(selectedTabOrigin) &&
-      Boolean(domains[selectedTabOrigin]));
+      Boolean(domains[selectedTabOrigin]) &&
+      isAccessedFromDappConnectedSitePopover);
 
   useEffect(() => {
     endTrace({ name: TraceName.NetworkList });

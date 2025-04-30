@@ -207,6 +207,10 @@ export function getIsAddingNewNetwork(state) {
   return state.appState.isAddingNewNetwork;
 }
 
+export function getIsAccessedFromDappConnectedSitePopover(state) {
+  return state.appState.isAccessedFromDappConnectedSitePopover;
+}
+
 export function getIsMultiRpcOnboarding(state) {
   return state.appState.isMultiRpcOnboarding;
 }
