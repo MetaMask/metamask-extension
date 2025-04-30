@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { type BLE, WEBHID } from './constants';
 
 export type LedgerDmkState = {
-  dmk: DeviceManagementKit;
+  dmk: DeviceManagementKit | undefined;
   transportType: typeof WEBHID | typeof BLE;
   ethSigner: unknown;
   connectedDevice: unknown;
@@ -12,7 +12,7 @@ export type LedgerDmkState = {
 };
 
 const initialState = {
-  dmk: DeviceManagementKit,
+  dmk: undefined,
   transportType: WEBHID,
   ethSigner: undefined,
   connectedDevice: undefined,

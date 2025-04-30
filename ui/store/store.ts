@@ -101,6 +101,7 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
   bridge: RootReducerReturnType['bridge'];
   gas: RootReducerReturnType['gas'];
   localeMessages: RootReducerReturnType['localeMessages'];
+  ledgerDmk: RootReducerReturnType['ledgerDmk'];
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
