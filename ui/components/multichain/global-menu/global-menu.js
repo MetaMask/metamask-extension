@@ -185,7 +185,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         minWidth: 225,
       }}
       borderStyle={BorderStyle.none}
-      position={PopoverPosition.BottomEnd}
+      position={PopoverPosition.Auto}
     >
       {basicFunctionality && (
         <>
