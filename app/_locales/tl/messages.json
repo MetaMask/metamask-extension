@@ -4092,6 +4092,36 @@
   "onekey": {
     "message": "OneKey"
   },
+  "onekeyBridgeInstallationRequired": {
+    "message": "Kinakailangan ng hardware ang OneKey Bridge software, $1"
+  },
+  "onekeyConnectDevice": {
+    "message": "Ikonekta ang device"
+  },
+  "onekeyDownloadBridge": {
+    "message": "I-download ang OneKey Bridge"
+  },
+  "onekeyExitBootloaderMode": {
+    "message": "Kailangan ng OneKey na lumabas sa bootloader mode para magamit ang feature na ito."
+  },
+  "onekeyForceUpdate": {
+    "message": "Kailangan i-update ang firmware ng OneKey. $1"
+  },
+  "onekeyGoToUpdateFirmware": {
+    "message": "Pumunta sa firmware update"
+  },
+  "onekeyHardwareError": {
+    "message": "Error sa hardware ng OneKey"
+  },
+  "onekeyHardwareHelpLink": {
+    "message": "Mangyaring bisitahin ang aming online tutorial para sa detalyadong gabay."
+  },
+  "onekeyNeedUpdateFirmware": {
+    "message": "Kailangan i-update ang firmware ng OneKey para magamit ang feature na ito, $1"
+  },
+  "onekeyWebUSBNotConnectedErrorMessage": {
+    "message": "Kailangan ng pahintulot ng user para makonekta ang OneKey device. Kung gusto mong ikonekta ang iyong OneKey, pakipindot ang 'Ikonekta ang device' at aprubahan ang USB connection"
+  },
   "only": {
     "message": "lang"
   },
@@ -5990,6 +6020,13 @@
   "step1LedgerWalletMsg": {
     "message": "Mag-download, mag-set up, at maglagay ng password para ma-unlock ang $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
+  },
+  "step1OnekeyWallet": {
+    "message": "I-connect ang iyong OneKey"
+  },
+  "step1OnekeyWalletMsg": {
+    "message": "Direktang isaksak ang iyong OneKey sa computer at i-unlock ito. Siguraduhing gumagamit ka ng tamang passphrase. Para sa karagdagang impormasyon tungkol sa paggamit ng iyong hardware wallet, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1TrezorWallet": {
     "message": "Ikonekta ang iyong Trezor"

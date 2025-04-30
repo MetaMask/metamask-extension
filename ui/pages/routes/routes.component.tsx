@@ -25,6 +25,7 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
+import OneKeyErrors from '../onekey-errors';
 
 import {
   ASSET_ROUTE,
@@ -60,6 +61,7 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
+  HARDWARE_ONEKEY_ERRORS_ROUTE
 } from '../../helpers/constants/routes';
 import {
   getProviderConfig,
@@ -590,6 +592,10 @@ export default function Routes() {
             path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
             component={AddressQRCode}
             exact
+          />
+          <Authenticated
+            path={`${HARDWARE_ONEKEY_ERRORS_ROUTE}/:error`}
+            component={OneKeyErrors}
           />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
