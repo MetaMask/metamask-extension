@@ -37,7 +37,7 @@ class SnapInstallWarning {
 
   async clickConfirmButton() {
     console.log('Click confirm button');
-    await this.driver.clickElement(this.buttonConfirm);
+    await this.driver.clickElementAndWaitToDisappear(this.buttonConfirm);
   }
 }
 
