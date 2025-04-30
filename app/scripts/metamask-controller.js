@@ -629,18 +629,16 @@ export default class MetamaskController extends EventEmitter {
     });
     this.networkController.initializeProvider();
 
-    if (process.env.MULTICHAIN_API) {
-      this.multichainSubscriptionManager = new MultichainSubscriptionManager({
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+    this.multichainSubscriptionManager = new MultichainSubscriptionManager({
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
+      findNetworkClientIdByChainId:
+        this.networkController.findNetworkClientIdByChainId.bind(
           this.networkController,
         ),
-        findNetworkClientIdByChainId:
-          this.networkController.findNetworkClientIdByChainId.bind(
-            this.networkController,
-          ),
-      });
-      this.multichainMiddlewareManager = new MultichainMiddlewareManager();
-    }
+    });
+    this.multichainMiddlewareManager = new MultichainMiddlewareManager();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
@@ -2676,16 +2674,14 @@ export default class MetamaskController extends EventEmitter {
     let lastSelectedAddress;
     let lastSelectedSolanaAccountAddress;
 
-    if (process.env.MULTICHAIN_API) {
-      // this throws if there is no solana account... perhaps we should handle this better at the controller level
-      try {
-        lastSelectedSolanaAccountAddress =
-          this.accountsController.getSelectedMultichainAccount(
-            MultichainNetworks.SOLANA,
-          )?.address;
-      } catch {
-        // noop
-      }
+    // this throws if there is no solana account... perhaps we should handle this better at the controller level
+    try {
+      lastSelectedSolanaAccountAddress =
+        this.accountsController.getSelectedMultichainAccount(
+          MultichainNetworks.SOLANA,
+        )?.address;
+    } catch {
+      // noop
     }
 
     this.controllerMessenger.subscribe(
@@ -2725,214 +2721,203 @@ export default class MetamaskController extends EventEmitter {
 
     // This handles CAIP-25 authorization changes every time relevant permission state
     // changes, for any reason.
-    if (process.env.MULTICHAIN_API) {
-      // wallet_sessionChanged and eth_subscription setup/teardown
-      this.controllerMessenger.subscribe(
-        `${this.permissionController.name}:stateChange`,
-        async (currentValue, previousValue) => {
-          const changedAuthorizations = getChangedAuthorizations(
-            currentValue,
-            previousValue,
-          );
+    // wallet_sessionChanged and eth_subscription setup/teardown
+    this.controllerMessenger.subscribe(
+      `${this.permissionController.name}:stateChange`,
+      async (currentValue, previousValue) => {
+        const changedAuthorizations = getChangedAuthorizations(
+          currentValue,
+          previousValue,
+        );
 
-          const removedAuthorizations = getRemovedAuthorizations(
-            currentValue,
-            previousValue,
-          );
+        const removedAuthorizations = getRemovedAuthorizations(
+          currentValue,
+          previousValue,
+        );
 
-          // remove any existing notification subscriptions for removed authorizations
-          for (const [
-            origin,
-            authorization,
-          ] of removedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization, {
-              getNonEvmSupportedMethods:
-                this.getNonEvmSupportedMethods.bind(this),
-            });
-            // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-            // then remove middleware and unsubscribe
-            Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-              if (
-                scopeObject.notifications.includes('eth_subscription') &&
-                scopeObject.methods.includes('eth_subscribe')
-              ) {
-                this.removeMultichainApiEthSubscriptionMiddleware({
-                  scope,
-                  origin,
-                });
-              }
-            });
-          }
-
-          // add new notification subscriptions for added/changed authorizations
-          for (const [
-            origin,
-            authorization,
-          ] of changedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization, {
-              getNonEvmSupportedMethods:
-                this.getNonEvmSupportedMethods.bind(this),
-            });
-
-            // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-            // then get the subscriptionManager going for that scope
-            Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-              if (
-                scopeObject.notifications.includes('eth_subscription') &&
-                scopeObject.methods.includes('eth_subscribe')
-              ) {
-                // for each tabId
-                Object.values(this.connections[origin]).forEach(({ tabId }) => {
-                  this.addMultichainApiEthSubscriptionMiddleware({
-                    scope,
-                    origin,
-                    tabId,
-                  });
-                });
-              } else {
-                this.removeMultichainApiEthSubscriptionMiddleware({
-                  scope,
-                  origin,
-                });
-              }
-            });
-            this._notifyAuthorizationChange(origin, authorization);
-          }
-        },
-        getAuthorizedScopesByOrigin,
-      );
-
-      // wallet_notify for solana accountChanged when permission changes
-      this.controllerMessenger.subscribe(
-        `${this.permissionController.name}:stateChange`,
-        async (currentValue, previousValue) => {
-          const origins = uniq([
-            ...previousValue.keys(),
-            ...currentValue.keys(),
-          ]);
-          origins.forEach((origin) => {
-            const previousCaveatValue = previousValue.get(origin);
-            const currentCaveatValue = currentValue.get(origin);
-
-            const previousSolanaAccountChangedNotificationsEnabled = Boolean(
-              previousCaveatValue?.sessionProperties?.[
-                KnownSessionProperties.SolanaAccountChangedNotifications
-              ],
-            );
-            const currentSolanaAccountChangedNotificationsEnabled = Boolean(
-              currentCaveatValue?.sessionProperties?.[
-                KnownSessionProperties.SolanaAccountChangedNotifications
-              ],
-            );
-
+        // remove any existing notification subscriptions for removed authorizations
+        for (const [origin, authorization] of removedAuthorizations.entries()) {
+          const sessionScopes = getSessionScopes(authorization, {
+            getNonEvmSupportedMethods:
+              this.getNonEvmSupportedMethods.bind(this),
+          });
+          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+          // then remove middleware and unsubscribe
+          Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
             if (
-              !previousSolanaAccountChangedNotificationsEnabled &&
-              !currentSolanaAccountChangedNotificationsEnabled
+              scopeObject.notifications.includes('eth_subscription') &&
+              scopeObject.methods.includes('eth_subscribe')
             ) {
-              return;
-            }
-
-            const previousSolanaCaipAccountIds = previousCaveatValue
-              ? getPermittedAccountsForScopes(previousCaveatValue, [
-                  MultichainNetworks.SOLANA,
-                  MultichainNetworks.SOLANA_DEVNET,
-                  MultichainNetworks.SOLANA_TESTNET,
-                ])
-              : [];
-            const previousNonUniqueSolanaHexAccountAddresses =
-              previousSolanaCaipAccountIds.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
-            const previousSolanaHexAccountAddresses = uniq(
-              previousNonUniqueSolanaHexAccountAddresses,
-            );
-            const [previousSelectedSolanaAccountAddress] =
-              this.sortMultichainAccountsByLastSelected(
-                previousSolanaHexAccountAddresses,
-              );
-
-            const currentSolanaCaipAccountIds = currentCaveatValue
-              ? getPermittedAccountsForScopes(currentCaveatValue, [
-                  MultichainNetworks.SOLANA,
-                  MultichainNetworks.SOLANA_DEVNET,
-                  MultichainNetworks.SOLANA_TESTNET,
-                ])
-              : [];
-            const currentNonUniqueSolanaHexAccountAddresses =
-              currentSolanaCaipAccountIds.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
-            const currentSolanaHexAccountAddresses = uniq(
-              currentNonUniqueSolanaHexAccountAddresses,
-            );
-            const [currentSelectedSolanaAccountAddress] =
-              this.sortMultichainAccountsByLastSelected(
-                currentSolanaHexAccountAddresses,
-              );
-
-            if (
-              previousSelectedSolanaAccountAddress !==
-              currentSelectedSolanaAccountAddress
-            ) {
-              this._notifySolanaAccountChange(
+              this.removeMultichainApiEthSubscriptionMiddleware({
+                scope,
                 origin,
-                currentSelectedSolanaAccountAddress
-                  ? [currentSelectedSolanaAccountAddress]
-                  : [],
-              );
+              });
             }
           });
-        },
-        getAuthorizedScopesByOrigin,
-      );
+        }
 
-      // wallet_notify for solana accountChanged when selected account changes
-      this.controllerMessenger.subscribe(
-        `${this.accountsController.name}:selectedAccountChange`,
-        async (account) => {
+        // add new notification subscriptions for added/changed authorizations
+        for (const [origin, authorization] of changedAuthorizations.entries()) {
+          const sessionScopes = getSessionScopes(authorization, {
+            getNonEvmSupportedMethods:
+              this.getNonEvmSupportedMethods.bind(this),
+          });
+
+          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+          // then get the subscriptionManager going for that scope
+          Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
+            if (
+              scopeObject.notifications.includes('eth_subscription') &&
+              scopeObject.methods.includes('eth_subscribe')
+            ) {
+              // for each tabId
+              Object.values(this.connections[origin]).forEach(({ tabId }) => {
+                this.addMultichainApiEthSubscriptionMiddleware({
+                  scope,
+                  origin,
+                  tabId,
+                });
+              });
+            } else {
+              this.removeMultichainApiEthSubscriptionMiddleware({
+                scope,
+                origin,
+              });
+            }
+          });
+          this._notifyAuthorizationChange(origin, authorization);
+        }
+      },
+      getAuthorizedScopesByOrigin,
+    );
+
+    // wallet_notify for solana accountChanged when permission changes
+    this.controllerMessenger.subscribe(
+      `${this.permissionController.name}:stateChange`,
+      async (currentValue, previousValue) => {
+        const origins = uniq([...previousValue.keys(), ...currentValue.keys()]);
+        origins.forEach((origin) => {
+          const previousCaveatValue = previousValue.get(origin);
+          const currentCaveatValue = currentValue.get(origin);
+
+          const previousSolanaAccountChangedNotificationsEnabled = Boolean(
+            previousCaveatValue?.sessionProperties?.[
+              KnownSessionProperties.SolanaAccountChangedNotifications
+            ],
+          );
+          const currentSolanaAccountChangedNotificationsEnabled = Boolean(
+            currentCaveatValue?.sessionProperties?.[
+              KnownSessionProperties.SolanaAccountChangedNotifications
+            ],
+          );
+
           if (
-            account.type === SolAccountType.DataAccount &&
-            account.address !== lastSelectedSolanaAccountAddress
+            !previousSolanaAccountChangedNotificationsEnabled &&
+            !currentSolanaAccountChangedNotificationsEnabled
           ) {
-            lastSelectedSolanaAccountAddress = account.address;
+            return;
+          }
 
-            const originsWithSolanaAccountChangedNotifications =
-              getOriginsWithSessionProperty(
-                this.permissionController.state,
-                KnownSessionProperties.SolanaAccountChangedNotifications,
-              );
-
-            // returns a map of origins to permitted solana accounts
-            const solanaAccounts = getPermittedAccountsForScopesByOrigin(
-              this.permissionController.state,
-              [
+          const previousSolanaCaipAccountIds = previousCaveatValue
+            ? getPermittedAccountsForScopes(previousCaveatValue, [
                 MultichainNetworks.SOLANA,
                 MultichainNetworks.SOLANA_DEVNET,
                 MultichainNetworks.SOLANA_TESTNET,
-              ],
+              ])
+            : [];
+          const previousNonUniqueSolanaHexAccountAddresses =
+            previousSolanaCaipAccountIds.map((caipAccountId) => {
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
+            });
+          const previousSolanaHexAccountAddresses = uniq(
+            previousNonUniqueSolanaHexAccountAddresses,
+          );
+          const [previousSelectedSolanaAccountAddress] =
+            this.sortMultichainAccountsByLastSelected(
+              previousSolanaHexAccountAddresses,
             );
 
-            if (solanaAccounts.size > 0) {
-              for (const [origin, accounts] of solanaAccounts.entries()) {
-                const parsedSolanaAddresses = accounts.map((caipAccountId) => {
-                  const { address } = parseCaipAccountId(caipAccountId);
-                  return address;
-                });
+          const currentSolanaCaipAccountIds = currentCaveatValue
+            ? getPermittedAccountsForScopes(currentCaveatValue, [
+                MultichainNetworks.SOLANA,
+                MultichainNetworks.SOLANA_DEVNET,
+                MultichainNetworks.SOLANA_TESTNET,
+              ])
+            : [];
+          const currentNonUniqueSolanaHexAccountAddresses =
+            currentSolanaCaipAccountIds.map((caipAccountId) => {
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
+            });
+          const currentSolanaHexAccountAddresses = uniq(
+            currentNonUniqueSolanaHexAccountAddresses,
+          );
+          const [currentSelectedSolanaAccountAddress] =
+            this.sortMultichainAccountsByLastSelected(
+              currentSolanaHexAccountAddresses,
+            );
 
-                if (
-                  parsedSolanaAddresses.includes(account.address) &&
-                  originsWithSolanaAccountChangedNotifications[origin]
-                ) {
-                  this._notifySolanaAccountChange(origin, [account.address]);
-                }
+          if (
+            previousSelectedSolanaAccountAddress !==
+            currentSelectedSolanaAccountAddress
+          ) {
+            this._notifySolanaAccountChange(
+              origin,
+              currentSelectedSolanaAccountAddress
+                ? [currentSelectedSolanaAccountAddress]
+                : [],
+            );
+          }
+        });
+      },
+      getAuthorizedScopesByOrigin,
+    );
+
+    // wallet_notify for solana accountChanged when selected account changes
+    this.controllerMessenger.subscribe(
+      `${this.accountsController.name}:selectedAccountChange`,
+      async (account) => {
+        if (
+          account.type === SolAccountType.DataAccount &&
+          account.address !== lastSelectedSolanaAccountAddress
+        ) {
+          lastSelectedSolanaAccountAddress = account.address;
+
+          const originsWithSolanaAccountChangedNotifications =
+            getOriginsWithSessionProperty(
+              this.permissionController.state,
+              KnownSessionProperties.SolanaAccountChangedNotifications,
+            );
+
+          // returns a map of origins to permitted solana accounts
+          const solanaAccounts = getPermittedAccountsForScopesByOrigin(
+            this.permissionController.state,
+            [
+              MultichainNetworks.SOLANA,
+              MultichainNetworks.SOLANA_DEVNET,
+              MultichainNetworks.SOLANA_TESTNET,
+            ],
+          );
+
+          if (solanaAccounts.size > 0) {
+            for (const [origin, accounts] of solanaAccounts.entries()) {
+              const parsedSolanaAddresses = accounts.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+
+              if (
+                parsedSolanaAddresses.includes(account.address) &&
+                originsWithSolanaAccountChangedNotifications[origin]
+              ) {
+                this._notifySolanaAccountChange(origin, [account.address]);
               }
             }
           }
-        },
-      );
-    }
+        }
+      },
+    );
 
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
@@ -3300,7 +3285,7 @@ export default class MetamaskController extends EventEmitter {
   async getProviderState(origin) {
     const providerNetworkState = await this.getProviderNetworkState(origin);
     const metadata = {};
-    if (process.env.MULTICHAIN_API && isManifestV3) {
+    if (isManifestV3) {
       const { chrome } = globalThis;
       metadata.extensionId = chrome?.runtime?.id;
     }
@@ -6248,10 +6233,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
   setupUntrustedCommunicationCaip({ connectionStream, sender, subjectType }) {
-    if (!process.env.MULTICHAIN_API) {
-      return;
-    }
-
     let inputSubjectType;
     if (subjectType) {
       inputSubjectType = subjectType;
@@ -6552,10 +6533,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
   setupProviderConnectionCaip(outStream, sender, subjectType) {
-    if (!process.env.MULTICHAIN_API) {
-      return;
-    }
-
     let origin;
     if (subjectType === SubjectType.Internal) {
       origin = ORIGIN_METAMASK;
@@ -7104,10 +7081,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngineCaip({ origin, sender, subjectType, tabId }) {
-    if (!process.env.MULTICHAIN_API) {
-      return null;
-    }
-
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
