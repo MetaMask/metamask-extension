@@ -7,9 +7,9 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import { withTransactionEnvelopeTypeFixtures } from './helpers';
 import SignTypedData from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
 describe('Confirmation Navigation', function (this: Suite) {
   it('initiates and queues multiple signatures and confirms', async function () {
