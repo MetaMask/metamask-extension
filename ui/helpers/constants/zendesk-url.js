@@ -4,7 +4,7 @@ const ZENDESK_URLS = {
   ADD_CUSTOM_TOKENS:
     'https://support.metamask.io/managing-my-tokens/custom-tokens/how-to-display-tokens-in-metamask/',
   ADD_SOLANA_ACCOUNTS:
-    'https://support.metamask.io/configure/networks/how-to-use-non-evm-networks/',
+    'https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts',
   ADD_MISSING_ACCOUNTS:
     'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-missing-accounts-after-restoring-with-secret-recovery-phrase/',
   BASIC_SAFETY:
