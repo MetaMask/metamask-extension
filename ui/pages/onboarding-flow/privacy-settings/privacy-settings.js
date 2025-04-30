@@ -3,14 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { ButtonVariant } from '@metamask/snaps-sdk';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 
-import {
-  useEnableProfileSyncing,
-  useDisableProfileSyncing,
-} from '../../../hooks/identity/useProfileSyncing';
+import { useBackupAndSync } from '../../../hooks/identity/useBackupAndSync';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -75,7 +73,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
@@ -130,24 +128,18 @@ export default function PrivacySettings() {
     getExternalServicesOnboardingToggleState,
   );
 
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const { enableProfileSyncing, error: enableProfileSyncingError } =
-    useEnableProfileSyncing();
-  const { disableProfileSyncing, error: disableProfileSyncingError } =
-    useDisableProfileSyncing();
+  const { setIsBackupAndSyncFeatureEnabled, error: backupAndSyncError } =
+    useBackupAndSync();
 
   useEffect(() => {
     if (externalServicesOnboardingToggleState) {
-      enableProfileSyncing();
+      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);
     } else {
-      disableProfileSyncing();
+      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
     }
-  }, [
-    externalServicesOnboardingToggleState,
-    enableProfileSyncing,
-    disableProfileSyncing,
-  ]);
+  }, [externalServicesOnboardingToggleState, setIsBackupAndSyncFeatureEnabled]);
 
   const handleSubmit = () => {
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
@@ -160,9 +152,9 @@ export default function PrivacySettings() {
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     setUseExternalNameSources(turnOnExternalNameSources);
 
-    // Profile Syncing Setup
+    // Backup and sync Setup
     if (!externalServicesOnboardingToggleState) {
-      disableProfileSyncing();
+      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
     }
 
     if (ipfsURL && !ipfsError) {
@@ -175,7 +167,7 @@ export default function PrivacySettings() {
       event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
       properties: {
         settings_group: 'onboarding_advanced_configuration',
-        is_profile_syncing_enabled: isProfileSyncingEnabled,
+        is_profile_syncing_enabled: isBackupAndSyncEnabled,
         is_basic_functionality_enabled: externalServicesOnboardingToggleState,
         turnon_token_detection: turnOnTokenDetection,
       },
@@ -186,17 +178,20 @@ export default function PrivacySettings() {
   };
 
   const handleProfileSyncToggleSetValue = async () => {
-    if (isProfileSyncingEnabled) {
+    if (isBackupAndSyncEnabled) {
       dispatch(
         showModal({
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
-            disableProfileSyncing();
+            setIsBackupAndSyncFeatureEnabled(
+              BACKUPANDSYNC_FEATURES.main,
+              false,
+            );
           },
         }),
       );
     } else {
-      enableProfileSyncing();
+      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);
     }
   };
 
@@ -426,7 +421,7 @@ export default function PrivacySettings() {
                   <Setting
                     dataTestId="profile-sync-toggle"
                     disabled={!externalServicesOnboardingToggleState}
-                    value={isProfileSyncingEnabled}
+                    value={isBackupAndSyncEnabled}
                     setValue={handleProfileSyncToggleSetValue}
                     title={t('profileSync')}
                     description={t('profileSyncDescription', [
@@ -441,8 +436,7 @@ export default function PrivacySettings() {
                     ])}
                   />
 
-                  {(enableProfileSyncingError ||
-                    disableProfileSyncingError) && (
+                  {backupAndSyncError && (
                     <Box paddingBottom={4}>
                       <Text
                         as="p"

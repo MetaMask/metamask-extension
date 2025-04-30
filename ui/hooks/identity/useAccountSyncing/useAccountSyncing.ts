@@ -7,8 +7,8 @@ import {
 } from '../../../store/actions';
 import {
   selectIsAccountSyncingReadyToBeDispatched,
-  selectIsProfileSyncingEnabled,
-} from '../../../selectors/identity/profile-syncing';
+  selectIsBackupAndSyncEnabled,
+} from '../../../selectors/identity/backup-and-sync';
 import { getUseExternalServices } from '../../../selectors';
 import {
   getCompletedOnboarding,
@@ -26,7 +26,7 @@ export const useShouldDispatchAccountSyncing = () => {
   const isAccountSyncingReadyToBeDispatched = useSelector(
     selectIsAccountSyncingReadyToBeDispatched,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const basicFunctionality: boolean | undefined = useSelector(
     getUseExternalServices,
   );
@@ -38,7 +38,7 @@ export const useShouldDispatchAccountSyncing = () => {
 
   const shouldDispatchProfileSyncing: boolean = Boolean(
     basicFunctionality &&
-      isProfileSyncingEnabled &&
+      isBackupAndSyncEnabled &&
       isUnlocked &&
       isSignedIn &&
       completedOnboarding &&
@@ -87,7 +87,7 @@ export const useDeleteAccountSyncingDataFromUserStorage = () => {
     } catch {
       // Do Nothing
     }
-  }, []);
+  }, [dispatch]);
 
   return { dispatchDeleteAccountSyncingData };
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { useModalProps } from '../../../../hooks/useModalProps';
-import { useDisableProfileSyncing } from '../../../../hooks/identity/useProfileSyncing';
+import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync';
 import { I18nContext } from '../../../../contexts/i18n';
 import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
 
@@ -20,13 +20,13 @@ jest.mock('react-redux', () => ({
 const mockedUseModalProps = useModalProps as jest.MockedFunction<
   typeof useModalProps
 >;
-const mockedUseDisableProfileSyncing =
-  useDisableProfileSyncing as jest.MockedFunction<
-    typeof useDisableProfileSyncing
+const mockedUseBackupAndSync =
+  useBackupAndSync as jest.MockedFunction<
+    typeof useBackupAndSync
   >;
 
 const mockHideModal = jest.fn();
-const mockDisableProfileSyncing = jest.fn();
+const mockSetIsBackupAndSyncFeatureEnabled = jest.fn();
 
 describe('ConfirmTurnOffProfileSyncing', () => {
   beforeEach(() => {
@@ -35,8 +35,8 @@ describe('ConfirmTurnOffProfileSyncing', () => {
       hideModal: mockHideModal,
       props: {},
     });
-    mockedUseDisableProfileSyncing.mockReturnValue({
-      disableProfileSyncing: mockDisableProfileSyncing,
+    mockedUseBackupAndSync.mockReturnValue({
+      setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
       error: null,
     });
   });
@@ -60,7 +60,7 @@ describe('ConfirmTurnOffProfileSyncing', () => {
     expect(mockHideModal).toHaveBeenCalledTimes(1);
   });
 
-  it('disables profile syncing and closes the modal on confirm', async () => {
+  it('disables backup and sync and closes the modal on confirm', async () => {
     const { getByTestId } = render(
       <I18nContext.Provider value={(key) => key}>
         <ConfirmTurnOffProfileSyncing />
