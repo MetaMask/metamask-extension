@@ -268,7 +268,17 @@ describe('MetaMaskController', function () {
     it('networkClientId is used when provided', async function () {
       const callSpy = jest
         .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValue({ configuration: { chainId: '0xa' } });
+        .mockReturnValueOnce({
+          configuration: { chainId: '0xa' },
+        })
+        .mockReturnValueOnce({
+          networkConfigurationsByChainId: {
+            '0xa': {
+              nativeCurrency: 'ETH',
+              chainId: '0xa',
+            },
+          },
+        });
 
       await metamaskController.getApi().addToken({
         address,
