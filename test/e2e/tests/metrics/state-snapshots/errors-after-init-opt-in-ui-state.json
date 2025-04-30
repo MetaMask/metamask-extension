@@ -338,6 +338,7 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
+    "assetExchangeRates": "object",
     "bridgeFeatureFlags": {
       "extensionConfig": {
         "maxRefreshCount": "number",
@@ -367,7 +368,7 @@
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
     "quotesRefreshCount": 0,
-    "bridgeStatusState": { "txHistory": "object" },
+    "txHistory": "object",
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
@@ -378,7 +379,8 @@
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
     "encryptionKey": "string",
-    "encryptionSalt": "string"
+    "encryptionSalt": "string",
+    "allDeFiPositions": "object"
   },
   "ramps": "object",
   "send": "object",

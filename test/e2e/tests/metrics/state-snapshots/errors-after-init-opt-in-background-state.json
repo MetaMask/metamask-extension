@@ -62,6 +62,7 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
+    "assetExchangeRates": "object",
     "bridgeFeatureFlags": {
       "extensionConfig": {
         "maxRefreshCount": "number",
@@ -92,7 +93,7 @@
     "quoteFetchError": null,
     "quotesRefreshCount": 0
   },
-  "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
+  "BridgeStatusController": { "txHistory": "object" },
   "CronjobController": { "jobs": "object", "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
@@ -119,6 +120,7 @@
       }
     }
   },
+  "DeFiPositionsController": "object",
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0

@@ -84,7 +84,7 @@ const useLatestBalance = (
     return undefined;
   }, [currentChainId, token, selectedAddress, nonEvmBalances]);
 
-  if (token && !token.decimals) {
+  if (token && typeof token.decimals !== 'number') {
     throw new Error(
       `Failed to calculate latest balance - ${token.symbol} token is missing "decimals" value`,
     );

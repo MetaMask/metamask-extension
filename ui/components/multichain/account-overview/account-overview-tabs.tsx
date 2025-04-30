@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ASSET_ROUTE } from '../../../helpers/constants/routes';
+import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
@@ -19,6 +19,7 @@ import {
 } from '../../../../shared/constants/app-state';
 import { detectNfts } from '../../../store/actions';
 import { getAllChainsToPoll } from '../../../selectors';
+import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -26,6 +27,7 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokensLinks?: boolean;
   showNfts: boolean;
   showActivity: boolean;
+  showDefi?: boolean;
 };
 
 export const AccountOverviewTabs = ({
@@ -35,6 +37,7 @@ export const AccountOverviewTabs = ({
   showTokensLinks,
   showNfts,
   showActivity,
+  showDefi,
 }: AccountOverviewTabsProps) => {
   const history = useHistory();
   const t = useI18nContext();
@@ -67,7 +70,9 @@ export const AccountOverviewTabs = ({
           ],
         });
       }
-      trace({ name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName] });
+      trace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
+      });
     },
     [onTabClick],
   );
@@ -75,6 +80,13 @@ export const AccountOverviewTabs = ({
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
       history.push(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+    [history],
+  );
+  const onClickDeFi = useCallback(
+    (chainId: string, protocolId: string) =>
+      history.push(
+        `${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`,
+      ),
     [history],
   );
 
@@ -96,6 +108,21 @@ export const AccountOverviewTabs = ({
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
+              />
+            </Box>
+          </Tab>
+        )}
+        {showDefi && (
+          <Tab
+            name={t('defi')}
+            tabKey="defi"
+            data-testid="account-overview__defi-tab"
+            {...tabProps}
+          >
+            <Box marginTop={2}>
+              <DeFiTab
+                showTokensLinks={showTokensLinks ?? true}
+                onClickAsset={onClickDeFi}
               />
             </Box>
           </Tab>
