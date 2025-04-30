@@ -1,12 +1,13 @@
 import { strict as assert } from 'assert';
+import { until } from 'selenium-webdriver';
 import { tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { until } from 'selenium-webdriver';
 
 describe('Carousel component e2e tests', function () {
   const MAX_VISIBLE_SLIDES = 5;
   const SLIDE_IDS = [
+    'smartAccountUpgrade',
     'bridge',
     'card',
     'fund',
@@ -39,7 +40,11 @@ describe('Carousel component e2e tests', function () {
         const firstSlideSelector = `[data-testid="slide-${slideIds[0]}"]`;
         await driver.waitForSelector(firstSlideSelector);
 
-        for (let i = 0; i < Math.min(slideIds.length, MAX_VISIBLE_SLIDES); i++) {
+        for (
+          let i = 0;
+          i < Math.min(slideIds.length, MAX_VISIBLE_SLIDES);
+          i++
+        ) {
           if (i > 0) {
             const dots = await driver.findElements('.dot');
             await dots[i].click();
@@ -105,7 +110,7 @@ describe('Carousel component e2e tests', function () {
           const remainingSlides = Math.min(
             totalSlidesCount - i,
             MAX_VISIBLE_SLIDES,
-          )
+          );
 
           assert.equal(
             currentSlides.length,
@@ -119,20 +124,22 @@ describe('Carousel component e2e tests', function () {
           );
           await dismissButton.click();
 
-          const slideCountAfterOneDismissed = totalSlidesCount - i > MAX_VISIBLE_SLIDES
-            ? MAX_VISIBLE_SLIDES
-            : totalSlidesCount - i - 1;
+          const slideCountAfterOneDismissed =
+            totalSlidesCount - i > MAX_VISIBLE_SLIDES
+              ? MAX_VISIBLE_SLIDES
+              : totalSlidesCount - i - 1;
 
           await driver.wait(until.stalenessOf(dismissButton), 5e3);
 
-
           if (i < slideCountAfterOneDismissed) {
             await driver.wait(async () => {
-              const remainingSlides = await driver.findElements(
+              const remainingSlidesAfter = await driver.findElements(
                 '.mm-carousel-slide',
               );
 
-              return remainingSlides.length === slideCountAfterOneDismissed;
+              return (
+                remainingSlidesAfter.length === slideCountAfterOneDismissed
+              );
             }, 5e3);
           }
         }
