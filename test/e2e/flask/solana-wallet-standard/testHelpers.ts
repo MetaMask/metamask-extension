@@ -8,7 +8,7 @@ import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   SOLANA_DEVNET_URL,
   withSolanaAccountSnap,
-} from '../solana/common-solana';
+} from '../../tests/solana/common-solana';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
