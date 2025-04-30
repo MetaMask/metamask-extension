@@ -9,6 +9,10 @@
     }
   }
 
+  &--not-selectable {
+    cursor: default;
+  }
+
   &--disabled {
     opacity: 0.4;
 

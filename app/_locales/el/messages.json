@@ -2808,9 +2808,6 @@
   "manageDefaultSettings": {
     "message": "Διαχείριση προεπιλεγμένων ρυθμίσεων απορρήτου"
   },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
-  },
   "managePermissions": {
     "message": "Διαχείριση αδειών"
   },

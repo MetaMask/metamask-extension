@@ -2808,9 +2808,6 @@
   "manageDefaultSettings": {
     "message": "기본 개인정보 보호 설정 관리"
   },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
-  },
   "managePermissions": {
     "message": "권한 관리"
   },

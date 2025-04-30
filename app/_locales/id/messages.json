@@ -2808,9 +2808,6 @@
   "manageDefaultSettings": {
     "message": "Kelola pengaturan privasi default"
   },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
-  },
   "managePermissions": {
     "message": "Kelola izin"
   },

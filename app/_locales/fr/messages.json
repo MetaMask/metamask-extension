@@ -2808,9 +2808,6 @@
   "manageDefaultSettings": {
     "message": "Gérer les paramètres de confidentialité par défaut"
   },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
-  },
   "managePermissions": {
     "message": "Gérer les autorisations"
   },

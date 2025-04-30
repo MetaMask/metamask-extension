@@ -2808,9 +2808,6 @@
   "manageDefaultSettings": {
     "message": "Varsayılan gizlilik ayarlarını yönet"
   },
-  "manageNetworksMenuHeading": {
-    "message": "Manage networks"
-  },
   "managePermissions": {
     "message": "İzinleri yönet"
   },
