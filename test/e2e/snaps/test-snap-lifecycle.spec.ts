@@ -23,6 +23,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectLifeCycleButton',
+          { withExtraScreen: true },
         );
         // Check installation success
         await testSnaps.check_installationComplete(
