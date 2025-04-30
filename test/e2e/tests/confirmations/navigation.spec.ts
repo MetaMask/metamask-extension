@@ -92,17 +92,11 @@ describe('Confirmation Navigation', function (this: Suite) {
         await queueSignatures(driver);
 
         await confirmation.clickRejectAll();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.waitForSelector({
-          css: '.actionable-message__message',
-          text: 'User rejected the request.',
-        });
+        
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.waitForSelector({
-          css: '#result',
-          text: 'User rejected the request.',
-        });
+        await testDapp.check_failedSignTypedData('User rejected the request.');
+        await testDapp.check_failedSignTypedDataV3('User rejected the request.');
+        await testDapp.check_failedSignTypedDataV4('User rejected the request.');
       },
     );
   });
