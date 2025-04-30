@@ -4,12 +4,7 @@ import { CaipChainId, Json, JsonRpcRequest } from '@metamask/utils';
 import { SnapId } from '@metamask/snaps-sdk';
 import { useMemo } from 'react';
 import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
-import {
-  createSnapAccount,
-  handleSnapRequest,
-  multichainUpdateBalance,
-  multichainUpdateTransactions,
-} from '../../store/actions';
+import { createSnapAccount, handleSnapRequest } from '../../store/actions';
 import {
   BITCOIN_WALLET_SNAP_ID,
   BITCOIN_WALLET_NAME,
