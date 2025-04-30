@@ -1,0 +1,5 @@
+[tools]
+node = "20.19"
+
+[settings]
+idiomatic_version_file_enable_tools = ["node"]

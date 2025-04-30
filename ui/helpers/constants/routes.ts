@@ -278,6 +278,12 @@ export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 
+// Hardware OneKey
+export const HARDWARE_ONEKEY_ERRORS_ROUTE = '/onekey-errors';
+PATH_NAME_MAP[HARDWARE_ONEKEY_ERRORS_ROUTE] = 'Hardware OneKey Errors Page';
+PATH_NAME_MAP[`${HARDWARE_ONEKEY_ERRORS_ROUTE}/:error`] =
+  'Hardware OneKey Errors Page';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';

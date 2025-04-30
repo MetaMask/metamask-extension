@@ -1142,6 +1142,13 @@
     "message": "I-download, i-set up, at ilagay ang iyong password para i-unlock ang $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
+  "step1OnekeyWallet": {
+    "message": "I-connect ang iyong OneKey"
+  },
+  "step1OnekeyWalletMsg": {
+    "message": "Direktang isaksak ang iyong OneKey sa computer at i-unlock ito. Siguraduhing gumagamit ka ng tamang passphrase. Para sa karagdagang impormasyon tungkol sa paggamit ng iyong hardware wallet, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "step1TrezorWallet": {
     "message": "I-plug in ang Trezor wallet"
   },

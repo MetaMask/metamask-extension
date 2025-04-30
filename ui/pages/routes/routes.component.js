@@ -21,6 +21,7 @@ import {
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
+import OneKeyErrors from '../onekey-errors';
 
 import {
   ASSET_ROUTE,
@@ -52,6 +53,7 @@ import {
   REMOTE_ROUTE_SETUP_SWAPS,
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
   DEFI_ROUTE,
+  HARDWARE_ONEKEY_ERRORS_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -397,7 +399,10 @@ export default class Routes extends Component {
             component={RemoteModeSetupDailyAllowance}
             exact
           />
-
+          <Authenticated
+            path={`${HARDWARE_ONEKEY_ERRORS_ROUTE}/:error`}
+            component={OneKeyErrors}
+          />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
