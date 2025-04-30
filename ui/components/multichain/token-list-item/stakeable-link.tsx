@@ -73,7 +73,7 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
         paddingInlineEnd={1}
         fontWeight={FontWeight.Medium}
       >
-        {t('stake')}
+        {t('earn')}
       </Text>
       <Icon
         name={IconName.Stake}

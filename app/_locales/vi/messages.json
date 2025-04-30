@@ -1694,6 +1694,9 @@
   "duplicateContactWarning": {
     "message": "Bạn có liên hệ bị trùng"
   },
+  "earn": {
+    "message": "Earn"
+  },
   "edit": {
     "message": "Chỉnh sửa"
   },
@@ -5378,7 +5381,7 @@
     "message": "ổn định"
   },
   "stake": {
-    "message": "Earn"
+    "message": "Stake"
   },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái."

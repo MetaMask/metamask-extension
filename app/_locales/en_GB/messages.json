@@ -1790,6 +1790,9 @@
   "duplicateContactWarning": {
     "message": "You have duplicate contacts"
   },
+  "earn": {
+    "message": "Earn"
+  },
   "edit": {
     "message": "Edit"
   },
@@ -5586,7 +5589,7 @@
     "message": "stable"
   },
   "stake": {
-    "message": "Earn"
+    "message": "Stake"
   },
   "staked": {
     "message": "Staked"
