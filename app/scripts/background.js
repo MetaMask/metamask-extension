@@ -1045,7 +1045,7 @@ export function setupController(
 
       connectEip1193(portStream, remotePort.sender);
 
-      if (!isManifestV3) {
+      if (isFirefox) {
         const mux = setupMultiplex(portStream);
         mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
