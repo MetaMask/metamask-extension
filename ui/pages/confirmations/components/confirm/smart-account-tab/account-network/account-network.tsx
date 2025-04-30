@@ -33,9 +33,11 @@ export const AccountNetwork = ({
   networkConfiguration: EIP7702NetworkConfiguration;
 }) => {
   const t = useI18nContext();
-  const { downgradeAccount, upgradeAccount } = useEIP7702Account();
-  const { name, isSupported, upgradeContractAddress, chainIdHex, chainId } =
+  const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfiguration;
+  const { downgradeAccount, upgradeAccount } = useEIP7702Account({
+    chainId: chainIdHex,
+  });
   const [addressSupportSmartAccount, setAddressSupportSmartAccount] =
     useState(isSupported);
   const networkIcon = getNetworkIcon(networkConfiguration);
@@ -56,13 +58,12 @@ export const AccountNetwork = ({
 
   const onSwitch = useCallback(async () => {
     if (addressSupportSmartAccount) {
-      await downgradeAccount(address, chainId);
+      await downgradeAccount(address);
     } else if (upgradeContractAddress) {
-      await upgradeAccount(address, upgradeContractAddress, chainId);
+      await upgradeAccount(address, upgradeContractAddress);
     }
   }, [
     address,
-    chainId,
     downgradeAccount,
     addressSupportSmartAccount,
     upgradeAccount,

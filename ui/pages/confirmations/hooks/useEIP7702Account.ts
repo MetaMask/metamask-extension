@@ -10,29 +10,31 @@ import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
-import { useNetworkClientId } from './useNetworkClientId';
+import { selectDefaultRpcEndpointByChainId } from '../../../selectors';
 
 export const EIP_7702_REVOKE_ADDRESS =
   '0x0000000000000000000000000000000000000000';
 
-export function useEIP7702Account({
-  onRedirect,
-}: { onRedirect?: () => void } = {}) {
+export function useEIP7702Account(
+  { chainId, onRedirect }: { chainId: Hex; onRedirect?: () => void } = {
+    chainId: '0x',
+  },
+) {
   const dispatch = useDispatch();
   const [transactionId, setTransactionId] = useState<string | undefined>();
   const { confirmations, navigateToId } = useConfirmationNavigation();
-  const globalNetworkClientId = useSelector(getSelectedNetworkClientId);
-  const { getNetworkClientIdForChainId } = useNetworkClientId();
+  const defaultRpcEndpoint = useSelector((state) =>
+    selectDefaultRpcEndpointByChainId(state, chainId),
+  ) ?? { defaultRpcEndpoint: {} };
+  const { networkClientId } = defaultRpcEndpoint as { networkClientId: string };
 
   const isRedirectPending = confirmations.some(
     (conf) => conf.id === transactionId,
   );
 
   const downgradeAccount = useCallback(
-    async (address: Hex, chainId: CaipChainId) => {
-      const networkClientId = getNetworkClientIdForChainId(chainId);
+    async (address: Hex) => {
       const transactionMeta = (await dispatch(
         addTransactionAndRouteToConfirmationPage(
           {
@@ -54,12 +56,11 @@ export function useEIP7702Account({
 
       setTransactionId(transactionMeta?.id);
     },
-    [dispatch, globalNetworkClientId],
+    [dispatch, networkClientId],
   );
 
   const upgradeAccount = useCallback(
-    async (address: Hex, upgradeContractAddress: Hex, chainId: CaipChainId) => {
-      const networkClientId = getNetworkClientIdForChainId(chainId);
+    async (address: Hex, upgradeContractAddress: Hex) => {
       const transactionMeta = (await dispatch(
         addTransactionAndRouteToConfirmationPage(
           {
@@ -81,15 +82,15 @@ export function useEIP7702Account({
 
       setTransactionId(transactionMeta?.id);
     },
-    [dispatch, globalNetworkClientId],
+    [dispatch, networkClientId],
   );
 
   const isUpgraded = useCallback(
     async (address: Hex) => {
-      const code = await getCode(address, globalNetworkClientId);
+      const code = await getCode(address, networkClientId);
       return code?.length > 2;
     },
-    [globalNetworkClientId],
+    [networkClientId],
   );
 
   useEffect(() => {
