@@ -100,7 +100,10 @@ export enum HardwareAffiliateLinks {
   imtoken = 'https://token.im/',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  onekey = 'https://onekey.so/products/onekey-pro-hardware-wallet/',
+  onekey_pro = 'https://onekey.so/products/onekey-pro-hardware-wallet/',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  onekey = 'https://onekey.so/shop/',
 }
 
 export enum HardwareAffiliateTutorialLinks {
@@ -133,7 +136,10 @@ export enum HardwareAffiliateTutorialLinks {
   imtoken = 'https://support.token.im/hc/en-us/articles/24652624775961/',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  onekey = 'https://help.onekey.so/en/articles/11461108-connect-onekey-pro-to-metamask-via-qr-codes-air-gapped',
+  onekey_qr = 'https://help.onekey.so/articles/11461108',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  onekey = 'https://help.onekey.so/articles/11461106',
 }
 
 /**
@@ -146,6 +152,15 @@ export enum LedgerTransportTypes {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   u2f = 'u2f',
+}
+
+export enum OneKeyTransportTypes {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  webusb = 'webusb',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  webextension = 'webextension',
 }
 
 export enum WebHIDConnectedStatuses {

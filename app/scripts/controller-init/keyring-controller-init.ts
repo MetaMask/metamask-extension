@@ -20,7 +20,9 @@ import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
+import { OneKeyOffscreenBridge } from './lib/offscreen-bridge/onekey-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
+import { hardwareOneKeyKeyringBuilderFactory } from './lib/hardware-onekey-keyring-builder-factory';
 import { ControllerInitFunction } from './types';
 import {
   KeyringControllerMessenger,
@@ -97,6 +99,10 @@ export const KeyringControllerInit: ControllerInitFunction<
       hardwareKeyringBuilderFactory(
         LedgerKeyring as unknown as KeyringClass,
         keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
+      ),
+      hardwareOneKeyKeyringBuilderFactory(
+        OneKeyKeyring,
+        keyringOverrides?.oneKey || OneKeyOffscreenBridge,
       ),
       keyringBuilderFactory(LatticeKeyringOffscreen as unknown as KeyringClass),
     );
