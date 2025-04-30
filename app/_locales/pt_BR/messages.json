@@ -1610,6 +1610,13 @@
     "message": "Baixe, configure e insira sua senha para desbloquear $1.",
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
+  "step1OnekeyWallet": {
+    "message": "Conecte seu OneKey"
+  },
+  "step1OnekeyWalletMsg": {
+    "message": "Conecte seu OneKey diretamente ao computador e desbloqueie-o. Certifique-se de usar a senha correta. Para mais informações detalhadas sobre como usar sua carteira física, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "step1TrezorWallet": {
     "message": "Conecte a carteira Trezor"
   },
