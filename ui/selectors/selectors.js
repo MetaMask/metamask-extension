@@ -128,6 +128,7 @@ import { getAllScopesFromPermission } from '../../shared/lib/multichain/chain-ag
 import { getCaipAccountIdsFromCaip25CaveatValue } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { getCaip25CaveatFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import { getIsNativeTokenBuyable } from '../ducks/ramps';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -2958,7 +2959,8 @@ export function getIsSolanaSupportEnabled(state) {
 
 export function getIsSolanaBuyable(state) {
   const { isSolanaBuyable } = getRemoteFeatureFlags(state);
-  return Boolean(isSolanaBuyable);
+  const isNativeTokenBuyable = getIsNativeTokenBuyable(state);
+  return Boolean(isSolanaBuyable && isNativeTokenBuyable);
 }
 
 export function getManageInstitutionalWallets(state) {
