@@ -122,15 +122,15 @@ export type MultichainWalletSnapClientMessenger = Messenger<
 >;
 
 export class MultichainWalletSnapClient implements WalletSnapClient {
-  #snapId: SUPPORTED_WALLET_SNAP_ID;
+  readonly #snapId: SUPPORTED_WALLET_SNAP_ID;
 
-  #snapKeyring: SnapKeyring;
+  readonly #snapKeyring: SnapKeyring;
 
-  #scopes: CaipChainId[];
+  readonly #scopes: CaipChainId[];
 
-  #client: KeyringInternalSnapClient;
+  readonly #client: KeyringInternalSnapClient;
 
-  #messenger: MultichainWalletSnapClientMessenger;
+  readonly #messenger: MultichainWalletSnapClientMessenger;
 
   constructor(
     snapId: SUPPORTED_WALLET_SNAP_ID,
