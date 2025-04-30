@@ -605,7 +605,7 @@
     "message": "Turn on backup and sync"
   },
   "backupAndSyncEnableConfirmation": {
-    "message": "When you turn on backup and sync, you’re also turning on $1. Do you want to continue? ",
+    "message": "When you turn on backup and sync, you’re also turning on $1. Do you want to continue?",
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
@@ -626,7 +626,7 @@
     "message": "Manage what you sync"
   },
   "backupAndSyncManageWhatYouSyncDescription": {
-    "message": "Turn on what’s synced between your devices. "
+    "message": "Turn on what’s synced between your devices."
   },
   "backupAndSyncPrivacyLink": {
     "message": "Learn how we protect your privacy"

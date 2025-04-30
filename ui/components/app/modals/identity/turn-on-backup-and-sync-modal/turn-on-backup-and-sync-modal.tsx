@@ -89,7 +89,7 @@ export function TurnOnBackupAndSyncModal() {
         <ModalBody>
           <Box
             as="img"
-            src="./images/turn-on-metamask-notifications.png"
+            src="./images/turn-on-backup-and-sync.png"
             width={BlockSize.Full}
             borderRadius={BorderRadius.MD}
             marginBottom={4}
