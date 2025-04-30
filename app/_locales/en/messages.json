@@ -466,7 +466,7 @@
     "message": "All networks"
   },
   "allPermissions": {
-    "message": "All Permissions"
+    "message": "All permissions"
   },
   "allTimeHigh": {
     "message": "All time high"
@@ -1126,14 +1126,11 @@
   "confirmGasFeeTokenTooltip": {
     "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
-  "confirmInfoAccountCurrentType": {
-    "message": "Current Type"
+  "confirmInfoAccountNow": {
+    "message": "Now"
   },
-  "confirmInfoAccountNewType": {
-    "message": "New Type"
-  },
-  "confirmInfoAccountType": {
-    "message": "Account type"
+  "confirmInfoSwitchingTo": {
+    "message": "Switching To"
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
