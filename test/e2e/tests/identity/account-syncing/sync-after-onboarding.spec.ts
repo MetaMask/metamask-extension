@@ -8,11 +8,11 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeOnboardFlowIdentity } from '../flows';
+import { ACCOUNT_TYPE } from '../../../constants';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
-import { ACCOUNT_TYPE } from '../../../constants';
 
 describe('Account syncing - Onboarding', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -66,7 +66,7 @@ describe('Account syncing - Onboarding', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
-            ACCOUNT_TYPE.Ethereum
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,

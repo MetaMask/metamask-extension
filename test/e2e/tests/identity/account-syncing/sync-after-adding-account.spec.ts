@@ -81,7 +81,7 @@ describe('Account syncing - Add Account', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
-            ACCOUNT_TYPE.Ethereum
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -141,7 +141,7 @@ describe('Account syncing - Add Account', function () {
 
           await accountListPage.check_numberOfAvailableAccounts(
             accountSyncResponse?.length as number,
-            ACCOUNT_TYPE.Ethereum
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -193,7 +193,7 @@ describe('Account syncing - Add Account', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
-            ACCOUNT_TYPE.Ethereum
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -251,7 +251,7 @@ describe('Account syncing - Add Account', function () {
 
           await accountListPage.check_numberOfAvailableAccounts(
             accountSyncResponse?.length as number,
-            ACCOUNT_TYPE.Ethereum
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,

@@ -710,7 +710,9 @@ class AccountListPage {
     accountType?: ACCOUNT_TYPE,
   ): Promise<void> {
     console.log(
-      `Verify the number of ${accountType ? ACCOUNT_TYPE[accountType] : 'all'} accounts in the account menu is: ${expectedNumberOfAccounts}`,
+      `Verify the number of ${
+        accountType ? ACCOUNT_TYPE[accountType] : 'all'
+      } accounts in the account menu is: ${expectedNumberOfAccounts}`,
     );
 
     await this.driver.waitForSelector(this.accountListItem);
@@ -727,7 +729,10 @@ class AccountListPage {
             const accountText = await account.getText();
             switch (accountType) {
               case ACCOUNT_TYPE.Ethereum:
-                return !accountText.includes('Bitcoin') && !accountText.includes('Solana');
+                return (
+                  !accountText.includes('Bitcoin') &&
+                  !accountText.includes('Solana')
+                );
               case ACCOUNT_TYPE.Bitcoin:
                 return accountText.includes('Bitcoin');
               case ACCOUNT_TYPE.Solana:
@@ -736,12 +741,18 @@ class AccountListPage {
                 return true;
             }
           }),
-        ).then((results) => internalAccounts.filter((_, index) => results[index]));
+        ).then((results) =>
+          internalAccounts.filter((_, index) => results[index]),
+        );
       }
 
       const isValid = filteredAccounts.length === expectedNumberOfAccounts;
       console.log(
-        `Number of ${accountType ? ACCOUNT_TYPE[accountType] : 'all'} accounts: ${filteredAccounts.length} is equal to ${expectedNumberOfAccounts}? ${isValid}`,
+        `Number of ${
+          accountType ? ACCOUNT_TYPE[accountType] : 'all'
+        } accounts: ${
+          filteredAccounts.length
+        } is equal to ${expectedNumberOfAccounts}? ${isValid}`,
       );
       return isValid;
     }, 20000);

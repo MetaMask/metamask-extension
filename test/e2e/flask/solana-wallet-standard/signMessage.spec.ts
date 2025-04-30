@@ -1,6 +1,6 @@
-import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import {
   acccount1,
   assertSignedMessageIsValid,
