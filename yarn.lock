@@ -4919,7 +4919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^27.0.0":
+"@metamask/accounts-controller@npm:^27.0.0-preview-ca400074":
   version: 27.0.0
   resolution: "@metamask/accounts-controller@npm:27.0.0"
   dependencies:
@@ -29987,7 +29987,7 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.2.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.3"
-    "@metamask/accounts-controller": "npm:^27.0.0"
+    "@metamask/accounts-controller": "npm:^27.0.0-preview-ca400074"
     "@metamask/address-book-controller": "npm:^6.0.3"
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"

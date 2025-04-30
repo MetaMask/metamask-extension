@@ -258,7 +258,7 @@
     "@metamask-institutional/types": "^1.2.0",
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/account-watcher": "^4.1.3",
-    "@metamask/accounts-controller": "^27.0.0",
+    "@metamask/accounts-controller": "^27.0.0-preview-ca400074",
     "@metamask/address-book-controller": "^6.0.3",
     "@metamask/announcement-controller": "^7.0.3",
     "@metamask/approval-controller": "^7.0.0",
