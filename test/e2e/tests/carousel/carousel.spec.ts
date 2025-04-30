@@ -28,7 +28,7 @@ describe('Carousel component e2e tests', function () {
           'bridge',
           'card',
           'fund',
-          'cash',
+          'solana',
         ];
 
         const firstSlideSelector = `[data-testid="slide-${slideIds[0]}"]`;
@@ -85,7 +85,7 @@ describe('Carousel component e2e tests', function () {
         // It should be updated if the number of slides changes
         // in the carousel component.
         // Please refer to the `useCarouselManagement` hook.
-        const slideCount = 6;
+        const slideCount = 7;
         const maxVisibleSlideCount = 5;
         await loginWithBalanceValidation(driver);
         await driver.waitForSelector('.mm-carousel');
@@ -93,7 +93,6 @@ describe('Carousel component e2e tests', function () {
 
         const initialSlides = await driver.findElements('.mm-carousel-slide');
         assert.equal(initialSlides.length, maxVisibleSlideCount);
-
         for (let i = 0; i < slideCount; i++) {
           const currentSlides = await driver.findElements('.mm-carousel-slide');
           assert.equal(
@@ -103,18 +102,20 @@ describe('Carousel component e2e tests', function () {
           );
 
           await driver.delay(tinyDelayMs);
-          const dismissButton = await driver.findElement(
+          await driver.clickElement(
             '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
           );
-          await dismissButton.click();
-
           const slideCountAfterOneDismissed = slideCount - 1;
           if (i < slideCountAfterOneDismissed) {
+            console.log('waiting for remaining slides');
             await driver.wait(async () => {
               const remainingSlides = await driver.findElements(
                 '.mm-carousel-slide',
               );
-              return remainingSlides.length === slideCountAfterOneDismissed - i;
+              return (
+                Math.min(remainingSlides.length, 5) ===
+                Math.min(slideCountAfterOneDismissed - i, 5)
+              );
             }, 5e3);
           }
         }
