@@ -209,6 +209,8 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
   }
 
   async discoverAccounts(entropySource: string) {
+    // TODO: Maybe use `Promise.all` or `Promise.allSettled` instead (for now we go sequentially
+    // because of our naming logic).
     for (let index = 0; ; index++) {
       const discovered = await this.#discoverAccountsOn(entropySource, index);
 
