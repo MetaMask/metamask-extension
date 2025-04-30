@@ -9,7 +9,6 @@ import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
-import { TOP_ASSETS_API_MOCK_RESULT } from '../../../data/mock-data';
 import {
   DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
@@ -20,6 +19,12 @@ import {
   MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM,
   MOCK_BRIDGE_DAI_TO_ETH_LINEA,
   MOCK_BRIDGE_DAI_TO_USDT_LINEA,
+  MOCK_BRIDGE_NATIVE_L2_TO_MAINNET,
+  MOCK_BRIDGE_NATIVE_L2_TO_L2,
+  MOCK_BRIDGE_DAI_L2_TO_L2,
+  MOCK_BRIDGE_DAI_L2_TO_MAINNET,
+  TOP_ASSETS_API_LINEA_MOCK_RESULT,
+  TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
 } from './constants';
 
 export class BridgePage {
@@ -142,11 +147,20 @@ async function mockGetTxStatus(mockServer: Mockttp) {
   });
 }
 
-async function mockTopAssets(mockServer: Mockttp) {
-  return await mockServer.forGet(/topAssets/u).thenCallback(() => {
+async function mockTopAssetsLinea(mockServer: Mockttp) {
+  return await mockServer.forGet(/59144\/topAssets/u).thenCallback(() => {
     return {
       statusCode: 200,
-      json: TOP_ASSETS_API_MOCK_RESULT,
+      json: TOP_ASSETS_API_LINEA_MOCK_RESULT,
+    };
+  });
+}
+
+async function mockTopAssetsArbitrum(mockServer: Mockttp) {
+  return await mockServer.forGet(/42161\/topAssets/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
     };
   });
 }
@@ -236,6 +250,73 @@ async function mockDAItoUSDT(mockServer: Mockttp) {
     });
 }
 
+async function mockL2toMainnet(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcChainId: 59144,
+      destChainId: 1,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+    })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_NATIVE_L2_TO_MAINNET,
+      };
+    });
+}
+
+async function mockNativeL2toL2(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcChainId: 59144,
+      destChainId: 42161,
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+    })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_NATIVE_L2_TO_L2,
+      };
+    });
+}
+async function mockDAIL2toL2(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcChainId: 59144,
+      destChainId: 42161,
+      srcTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_DAI_L2_TO_L2,
+      };
+    });
+}
+
+async function mockDAIL2toMainnet(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcChainId: 59144,
+      destChainId: 1,
+      srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+    })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_BRIDGE_DAI_L2_TO_MAINNET,
+      };
+    });
+}
+
 export const getBridgeFixtures = (
   title?: string,
   featureFlags: Partial<FeatureFlagResponse> = {},
@@ -272,7 +353,8 @@ export const getBridgeFixtures = (
       await mockFeatureFlag(mockServer, featureFlags),
       await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
-      await mockTopAssets(mockServer),
+      await mockTopAssetsLinea(mockServer),
+      await mockTopAssetsArbitrum(mockServer),
       await mockTokensApi(mockServer),
       await mockGetTokenApi(mockServer),
       await mockETHtoETH(mockServer),
@@ -288,6 +370,46 @@ export const getBridgeFixtures = (
         options: {
           chainId: 1,
           loadState: './test/e2e/seeder/network-states/with50Dai.json',
+        },
+      },
+    ],
+    title,
+  };
+};
+
+export const getBridgeL2Fixtures = (
+  title?: string,
+  featureFlags: Partial<FeatureFlagResponse> = {},
+) => {
+  const fixtureBuilder = new FixtureBuilder({
+    inputChainId: CHAIN_IDS.MAINNET,
+  })
+    .withCurrencyController(MOCK_CURRENCY_RATES)
+    .withBridgeControllerDefaultState()
+    .withNetworkControllerOnLineaLocahost();
+
+  return {
+    fixtures: fixtureBuilder.build(),
+    testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, featureFlags),
+      await mockPortfolioPage(mockServer),
+      await mockGetTxStatus(mockServer),
+      await mockTopAssetsLinea(mockServer),
+      await mockTopAssetsArbitrum(mockServer),
+      await mockTokensApi(mockServer),
+      await mockGetTokenApi(mockServer),
+      await mockL2toMainnet(mockServer),
+      await mockNativeL2toL2(mockServer),
+      await mockDAIL2toL2(mockServer),
+      await mockDAIL2toMainnet(mockServer),
+    ],
+    ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    smartContract: SMART_CONTRACTS.HST,
+    localNodeOptions: [
+      {
+        type: 'anvil',
+        options: {
+          chainId: 59144,
         },
       },
     ],
