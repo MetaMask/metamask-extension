@@ -30,11 +30,26 @@ class BridgeQuotePage {
 
   private submitButton = { text: 'Submit', tag: 'button' };
 
+  private insufficientFundsButton = {
+    text: 'Insufficient funds',
+    tag: 'button',
+  };
+
   private backButton = '[aria-label="Back"]';
 
   private networkSelector = '[data-testid="avatar-group"]';
 
   private applyButton = { text: 'Apply', tag: 'button' };
+
+  private noOptionAvailable = {
+    text: `This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option.`,
+    css: '.mm-text--body-md',
+  };
+
+  private moreETHneededForGas = {
+    text: `You don't have enough ETH to pay the gas fee for this bridge. Enter a smaller amount or buy more ETH.`,
+    css: '.mm-text--body-md',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -43,11 +58,10 @@ class BridgeQuotePage {
   enterBridgeQuote = async (quote: BridgeQuote) => {
     // Source
     await this.driver.clickElement(this.sourceAssetPickerButton);
-    if (quote.tokenFrom === 'ETH') {
-      await this.driver.clickElement(this.networkSelector);
-      await this.driver.clickElement(this.lineaNetwork);
-      await this.driver.clickElement(this.applyButton);
-    }
+    await this.driver.clickElement(this.networkSelector);
+    await this.driver.clickElement(this.lineaNetwork);
+    await this.driver.clickElement(this.applyButton);
+
     await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
     await this.driver.clickElement({
       text: quote.tokenFrom,
@@ -77,6 +91,40 @@ class BridgeQuotePage {
     await this.driver.waitForSelector(this.backButton);
     await this.driver.clickElement(this.backButton);
   };
+
+  async check_noTradeRouteMessageIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.noOptionAvailable);
+    } catch (e) {
+      console.log(
+        `Expected message that "no trade route is available" is not present`,
+      );
+      throw e;
+    }
+    console.log('The message "no trade route is available" is displayed');
+  }
+
+  async check_insufficientFundsButtonIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.insufficientFundsButton);
+    } catch (e) {
+      console.log(`Expected button "Insufficient funds" is not present`);
+      throw e;
+    }
+    console.log('The button "Insufficient funds" is displayed');
+  }
+
+  async check_moreETHneededIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.moreETHneededForGas);
+    } catch (e) {
+      console.log(
+        `Expected message that "More ETH needed for gas" is not present`,
+      );
+      throw e;
+    }
+    console.log('The message "More ETH needed for gas" is displayed');
+  }
 }
 
 export default BridgeQuotePage;
