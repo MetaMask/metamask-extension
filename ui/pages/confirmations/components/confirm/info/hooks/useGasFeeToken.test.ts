@@ -4,6 +4,7 @@ import { GasFeeToken } from '@metamask/transaction-controller';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { GAS_FEE_TOKEN_MOCK as GAS_FEE_TOKEN_MOCK_BASE } from '../../../../../../../test/data/confirmations/gas';
 import {
   NATIVE_TOKEN_ADDRESS,
   RATE_WEI_NATIVE,
@@ -14,16 +15,9 @@ import {
 const FROM_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
+  ...GAS_FEE_TOKEN_MOCK_BASE,
   amount: toHex(1234),
-  balance: toHex(2345),
-  decimals: 3,
-  gas: '0x3',
-  maxFeePerGas: '0x4',
-  maxPriorityFeePerGas: '0x5',
-  rateWei: toHex('1798170000000000000'),
-  recipient: '0x1234567890123456789012345678901234567891',
   symbol: 'USDC',
-  tokenAddress: '0x1234567890123456789012345678901234567890',
 };
 
 const STATE_MOCK = getMockConfirmStateForTransaction(
@@ -83,7 +77,10 @@ describe('useGasFeeToken', () => {
   it('returns transfer tranasction', () => {
     const result = runHook({ tokenAddress: GAS_FEE_TOKEN_MOCK.tokenAddress });
     expect(result.transferTransaction).toStrictEqual({
-      data: '0xa9059cbb000000000000000000000000123456789012345678901234567890123456789100000000000000000000000000000000000000000000000000000000000004d2',
+      data: `0xa9059cbb000000000000000000000000${GAS_FEE_TOKEN_MOCK.recipient.slice(
+        2,
+      )}00000000000000000000000000000000000000000000000000000000000004d2`,
+      gas: GAS_FEE_TOKEN_MOCK.gasTransfer,
       maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
       maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
       to: GAS_FEE_TOKEN_MOCK.tokenAddress,
