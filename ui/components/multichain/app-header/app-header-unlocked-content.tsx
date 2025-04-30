@@ -133,7 +133,7 @@ export const AppHeaderUnlockedContent = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
-        gap={2}
+        gap={4}
       >
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -144,7 +144,7 @@ export const AppHeaderUnlockedContent = ({
                 : AvatarAccountVariant.Jazzicon
             }
             address={internalAccount.address}
-            size={AvatarAccountSize.Lg}
+            size={AvatarAccountSize.Md}
           />
           ///: END:ONLY_INCLUDE_IF
         }
@@ -196,13 +196,14 @@ export const AppHeaderUnlockedContent = ({
                 textProps={{
                   display: Display.Flex,
                   gap: 2,
+                  variant: TextVariant.bodyMdMedium,
                 }}
                 style={{ height: 'auto' }} // ButtonBase doesn't have auto size
                 data-testid="app-header-copy-button"
               >
                 <Text
                   color={TextColor.textAlternative}
-                  variant={TextVariant.bodySm}
+                  variant={TextVariant.bodySmMedium}
                   ellipsis
                   as="span"
                 >
