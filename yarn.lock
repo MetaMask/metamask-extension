@@ -6570,10 +6570,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.24.0":
-  version: 1.24.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.24.0"
-  checksum: 10/39ccfa2f1697282d483a5dca9acb48d22abb30be3cb0aed531aa8f4a752a54bd1b83c4b4e35e6c14b677f141eceb6c26d3fd3e4a9c50b145f43d628f2b511865
+"@metamask/solana-wallet-snap@npm:^1.25.0":
+  version: 1.25.0
+  resolution: "@metamask/solana-wallet-snap@npm:1.25.0"
+  checksum: 10/3f40fdfd6c87c788205b97219a4a6c707f483d1fbf8e48d4992cd3ef8bfcb405e26639d889dc15528a6ad2f9aee8ed1aa9829bc3fcba7c8e9f83e78ff7eb0b4c
   languageName: node
   linkType: hard
 
