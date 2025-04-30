@@ -80,6 +80,24 @@ export const waitForElementByText = async (text: string) => {
   });
 };
 
+/**
+ * Waits for an element with the specified text to not be present in the document.
+ *
+ * @param text - The text content of the element to wait for.
+ * @returns A promise that resolves when the element is not found in the document.
+ */
+export const waitForElementByTextToNotBePresent = async (text: string) => {
+  await waitFor(() => {
+    expect(screen.queryByText(text)).not.toBeInTheDocument();
+  });
+};
+
+/**
+ * Clicks on an element identified by the given text.
+ *
+ * @param text - The text content of the element to be clicked.
+ * @returns A promise that resolves when the click action is completed.
+ */
 export const clickElementByText = async (text: string) => {
   await act(async () => {
     fireEvent.click(await screen.findByText(text));

@@ -1,4 +1,6 @@
 import { setTimeout } from 'node:timers/promises';
+import humanizeDuration from 'humanize-duration';
+import * as xml2js from 'xml2js';
 
 // This helper function checks if version has the correct format: "x.y.z" where "x", "y" and "z" are numbers.
 export function isValidVersionFormat(str: string): boolean {
@@ -68,4 +70,49 @@ export async function retry<T extends (...args: any[]) => any>(
     }
   }
   throw new Error('Retries exhausted');
+}
+
+export function normalizeTestPath(path: string): string {
+  const normalized = path.replace(/\\/g, '/');
+  return normalized.slice(normalized.indexOf('test/'));
+}
+
+export const XML = {
+  parse: new xml2js.Parser().parseStringPromise,
+};
+
+const humanizer = humanizeDuration.humanizer({
+  language: 'shortEn',
+  languages: {
+    shortEn: {
+      y: () => 'y',
+      mo: () => 'mo',
+      w: () => 'w',
+      d: () => 'd',
+      h: () => 'h',
+      m: () => 'm',
+      s: () => 's',
+      ms: () => 'ms',
+    },
+  },
+  delimiter: ' ',
+  spacer: '',
+  round: true,
+});
+
+export function formatTime(ms: number): string {
+  if (ms < 1000) {
+    return `${Math.round(ms)}ms`;
+  }
+  return humanizer(ms);
+}
+
+/**
+ * Replaces HTML `<strong>` tags with ANSI escape codes to format
+ * text as bold in the console output.
+ */
+export function consoleBold(str: string): string {
+  return str
+    .replaceAll('<strong>', '\x1b[1m')
+    .replaceAll('</strong>', '\x1b[0m');
 }

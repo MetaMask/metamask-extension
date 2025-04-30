@@ -22,7 +22,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  Tag,
 } from '../../../../components/component-library';
 import Tooltip from '../../../../components/ui/tooltip';
 import UnitInput from '../../../../components/ui/unit-input';
@@ -55,9 +54,12 @@ import {
   getSelectedInternalAccount,
   getMetaMaskAccountsOrdered,
 } from '../../../../selectors';
-import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
-import RemoteModeDailyAllowanceCard from '../daily-allowance-card';
-import StepIndicator from '../step-indicator/step-indicator.component';
+import {
+  RemoteModeHardwareWalletConfirm,
+  RemoteModeDailyAllowanceCard,
+  StepIndicator,
+  SmartAccountUpdateInformation,
+} from '../../components';
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 
 const TOTAL_STEPS = 3;
@@ -83,7 +85,7 @@ export default function RemoteModeSetupDailyAllowance() {
     useState<boolean>(false);
   const [selectedAccount, setSelectedAccount] =
     useState<InternalAccount | null>(null);
-  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -155,6 +157,16 @@ export default function RemoteModeSetupDailyAllowance() {
   };
 
   const handleShowConfirmation = async () => {
+    // todo: replace with delegation controller integration
+    const remoteMode = localStorage.getItem('remoteMode');
+    const parsedRemoteMode = remoteMode ? JSON.parse(remoteMode) : null;
+    const updatedRemoteMode = {
+      ...parsedRemoteMode,
+      dailyAllowance: {
+        allowances: dailyAllowance,
+      },
+    };
+    localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
     setIsConfirmModalOpen(true);
   };
 
@@ -298,53 +310,9 @@ export default function RemoteModeSetupDailyAllowance() {
       case 2:
         return (
           <>
-            <Box
-              marginTop={2}
-              marginBottom={2}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.center}
-              gap={2}
-            >
-              <Tag
-                label="Includes 2 transactions"
-                style={{ padding: '0 1rem' }}
-              />
-            </Box>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>
-                  Account type <Icon name={IconName.Info} size={IconSize.Sm} />
-                </Text>
-                <Text>Smart account</Text>
-              </Box>
-            </Card>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box>
-                <Text>Estimated changes</Text>
-                <Text>
-                  Authorize {selectedAccount?.metadata.name} to swap from your{' '}
-                  {selectedHardwareAccount.metadata.name} balance.
-                </Text>
-              </Box>
-            </Card>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>Request from</Text>
-                <Text>MetaMask</Text>
-              </Box>
-            </Card>
+            <SmartAccountUpdateInformation
+              selectedHardwareAccount={selectedHardwareAccount}
+            />
 
             <Card backgroundColor={BackgroundColor.backgroundMuted}>
               <Box
@@ -531,8 +499,8 @@ export default function RemoteModeSetupDailyAllowance() {
           variant={TextVariant.headingMd}
           fontWeight={FontWeight.Bold}
         >
-          {currentStep === 1 && 'Enable Daily Allowances'}
-          {currentStep === 2 && 'Transaction Request'}
+          {currentStep === 1 && 'Set a withdrawl limit'}
+          {currentStep === 2 && 'Update to a smart account'}
           {currentStep === 3 && 'Review changes'}
         </Text>
 
@@ -560,7 +528,7 @@ export default function RemoteModeSetupDailyAllowance() {
           onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
           width={BlockSize.Half}
           size={ButtonSize.Lg}
-          disabled={!isHardwareAccount}
+          disabled={!isHardwareAccount || dailyAllowance.length === 0}
         >
           {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
         </Button>

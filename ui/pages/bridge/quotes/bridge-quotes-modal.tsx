@@ -6,7 +6,9 @@ import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
+  formatEtaInMinutes,
 } from '@metamask/bridge-controller';
+import { BigNumber } from 'bignumber.js';
 import {
   ButtonLink,
   IconSize,
@@ -23,11 +25,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  formatEtaInMinutes,
-  formatCurrencyAmount,
-  formatTokenAmount,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
 import {
@@ -207,18 +205,18 @@ export const BridgeQuotesModal = ({
                   <Column>
                     <Text variant={TextVariant.bodyMd}>
                       {cost.valueInCurrency &&
-                        formatCurrencyAmount(cost.valueInCurrency, currency, 0)}
+                        formatCurrencyAmount(cost.valueInCurrency, currency, 2)}
                     </Text>
                     {[
                       totalNetworkFee?.valueInCurrency &&
                       sentAmount?.valueInCurrency
                         ? t('quotedTotalCost', [
                             formatCurrencyAmount(
-                              totalNetworkFee.valueInCurrency.plus(
-                                sentAmount.valueInCurrency,
-                              ),
+                              new BigNumber(totalNetworkFee.valueInCurrency)
+                                .plus(sentAmount.valueInCurrency)
+                                .toString(),
                               currency,
-                              0,
+                              2,
                             ),
                           ])
                         : t('quotedTotalCost', [
@@ -232,7 +230,7 @@ export const BridgeQuotesModal = ({
                         formatCurrencyAmount(
                           toTokenAmount.valueInCurrency,
                           currency,
-                          0,
+                          2,
                         ) ??
                           formatTokenAmount(
                             locale,
