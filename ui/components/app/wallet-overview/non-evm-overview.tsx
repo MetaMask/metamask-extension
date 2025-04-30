@@ -12,7 +12,10 @@ import {
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { getIsBitcoinBuyable } from '../../../ducks/ramps';
+import {
+  getIsBitcoinBuyable,
+  getIsNativeTokenBuyable,
+} from '../../../ducks/ramps';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -22,8 +25,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getSelectedInternalAccount,
   getSwapsDefaultToken,
-  isSelectedInternalAccountSolana,
-  getIsSolanaBuyable,
 } from '../../../selectors';
 import { CoinOverview } from './coin-overview';
 
@@ -35,8 +36,7 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const { chainId } = useSelector(getSelectedMultichainNetworkConfiguration);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const account = useSelector(getSelectedInternalAccount);
-  const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
-  const isSolanaBuyable = useSelector(getIsSolanaBuyable);
+  const isNativeTokenBuyable = useSelector(getIsNativeTokenBuyable);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBtcMainnetAccount = useMultichainSelector(
@@ -48,13 +48,9 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   // TODO: Update this to add support to check if Solana is buyable when the Send flow starts
   const accountType = account.type;
   const isBtc = accountType === BtcAccountType.P2wpkh;
-  let isBuyableChain = false;
-  if (isBtc) {
-    isBuyableChain = isBtcBuyable && isBtcMainnetAccount;
-  } else if (isSolanaAccount) {
-    isBuyableChain = isSolanaBuyable;
-  }
-
+  const isBuyableChain = isBtc
+    ? isBtcBuyable && isBtcMainnetAccount
+    : isNativeTokenBuyable;
   ///: END:ONLY_INCLUDE_IF
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
