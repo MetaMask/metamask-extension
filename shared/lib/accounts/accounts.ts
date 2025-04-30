@@ -78,6 +78,9 @@ export async function getNextAvailableSnapAccountName(
       if (chainId === MultichainNetworks.BITCOIN_TESTNET) {
         return `Bitcoin Testnet Account ${accountNumber}`;
       }
+      if (chainId === MultichainNetworks.BITCOIN_SIGNET) {
+        return `Bitcoin Signet Account ${accountNumber}`;
+      }
       return `Bitcoin Account ${accountNumber}`;
     }
     case SOLANA_WALLET_SNAP_ID: {

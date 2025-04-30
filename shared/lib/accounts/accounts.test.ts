@@ -235,6 +235,20 @@ describe('accounts', () => {
         });
         expect(name).toStrictEqual(`Bitcoin Testnet Account ${index}`);
       });
+
+      it('gets the next account name for Bitcoin signet accounts', async () => {
+        const client = getBitcoinClient();
+
+        const index = '3';
+        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
+          `Account Name ${index}`,
+        );
+
+        const name = await client.getNextAvailableAccountName({
+          chainId: BtcScope.Signet,
+        });
+        expect(name).toStrictEqual(`Bitcoin Signet Account ${index}`);
+      });
     });
 
     describe('discoverAccounts', () => {
