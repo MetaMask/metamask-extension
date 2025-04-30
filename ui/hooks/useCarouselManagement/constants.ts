@@ -16,6 +16,13 @@ export const SOLANA_SLIDE = {
 };
 ///: END:ONLY_INCLUDE_IF
 
+export const SMART_ACCOUNT_UPGRADE_SLIDE = {
+  id: 'smartAccountUpgrade',
+  title: 'slideSmartAccountUpgradeTitle',
+  description: 'slideSmartAccountUpgradeDescription',
+  image: './images/smart-account-upgrade.png',
+};
+
 export const SWEEPSTAKES_SLIDE = {
   id: 'sweepStake',
   title: 'slideSweepStakeTitle',

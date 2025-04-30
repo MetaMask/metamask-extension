@@ -23,6 +23,7 @@ describe('Send flow', function (this: Suite) {
         await homePage.check_getBalance('0', 'SOL');
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
+        await sendSolanaPage.check_pageIsLoaded();
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -36,6 +37,7 @@ describe('Send flow', function (this: Suite) {
           true,
           'Invalid Solana address should appear and it does not',
         );
+        await sendSolanaPage.clearToAddress();
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('1');
         assert.equal(
@@ -90,6 +92,7 @@ describe('Send flow', function (this: Suite) {
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
+        await sendSolanaPage.check_pageIsLoaded();
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,

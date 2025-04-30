@@ -264,6 +264,7 @@ describe('PPOM Utils', () => {
       );
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([METHOD_SIGN_TYPED_DATA_V3, METHOD_SIGN_TYPED_DATA_V4])(
       'sanitizes request params if method is %s',
       async (method: string) => {

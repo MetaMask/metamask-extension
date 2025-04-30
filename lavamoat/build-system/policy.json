@@ -1034,6 +1034,7 @@
     },
     "@noble/hashes": {
       "globals": {
+        "TextDecoder": true,
         "TextEncoder": true,
         "crypto": true
       }
@@ -1720,24 +1721,23 @@
         "process.cwd": true
       }
     },
-    "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": {
+    "string.prototype.matchall>call-bind>call-bind-apply-helpers": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "browserify>has>function-bind": true
       }
     },
     "string.prototype.matchall>call-bind": {
       "packages": {
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
-        "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-map>call-bound": {
       "packages": {
-        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
@@ -2211,7 +2211,7 @@
         "process": true
       },
       "packages": {
-        "nock>debug>ms": true,
+        "mocha>ms": true,
         "mocha>supports-color": true
       }
     },
@@ -2260,7 +2260,7 @@
     "string.prototype.matchall>define-properties>define-data-property": {
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>gopd": true
       }
     },
@@ -2418,7 +2418,7 @@
     },
     "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": {
       "packages": {
-        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>es-abstract>gopd": true
       }
     },
@@ -2497,7 +2497,7 @@
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>es-object-atoms": true,
         "string.prototype.matchall>es-abstract>es-set-tostringtag": true,
         "string.prototype.matchall>es-abstract>es-to-primitive": true,
@@ -2518,7 +2518,7 @@
     },
     "string.prototype.matchall>es-abstract>es-object-atoms": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true
+        "string.prototype.matchall>es-abstract>es-errors": true
       }
     },
     "string.prototype.matchall>es-abstract>es-set-tostringtag": {
@@ -3410,12 +3410,13 @@
       "globals": {
         "AggregateError": true,
         "FinalizationRegistry": true,
+        "Float16Array": true,
         "WeakRef": true
       },
       "packages": {
-        "string.prototype.matchall>get-intrinsic>call-bind-apply-helpers": true,
+        "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>es-object-atoms": true,
         "browserify>has>function-bind": true,
         "string.prototype.matchall>get-intrinsic>get-proto": true,
@@ -3932,7 +3933,7 @@
     },
     "string.prototype.matchall>internal-slot": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
@@ -4190,6 +4191,15 @@
     "@lavamoat/lavapack>json-stable-stringify": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
+        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
+        "@lavamoat/lavapack>json-stable-stringify>jsonify": true,
+        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
+      }
+    },
+    "gulp>vinyl-fs>glob-stream>unique-stream>json-stable-stringify": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
         "@lavamoat/lavapack>json-stable-stringify>isarray": true,
         "@lavamoat/lavapack>json-stable-stringify>jsonify": true,
         "@lavamoat/lavapack>json-stable-stringify>object-keys": true
@@ -6272,7 +6282,7 @@
         "gulp>vinyl-fs>pumpify>pump": true
       }
     },
-    "mockttp>body-parser>qs": {
+    "browserify>url>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -7089,7 +7099,7 @@
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>regexp.prototype.flags>set-function-name": true
       }
     },
@@ -7563,7 +7573,7 @@
     "string.prototype.matchall>es-abstract>safe-regex-test": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>is-regex": true
       }
     },
@@ -7703,7 +7713,7 @@
     "string.prototype.matchall>call-bind>set-function-length": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true
@@ -7712,7 +7722,7 @@
     "string.prototype.matchall>regexp.prototype.flags>set-function-name": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>function.prototype.name>functions-have-names": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true
       }
@@ -7746,14 +7756,14 @@
     },
     "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
         "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
       }
@@ -7761,7 +7771,7 @@
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
         "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-map": true
@@ -7769,7 +7779,7 @@
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
-        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-list": true,
         "string.prototype.matchall>side-channel>side-channel-map": true,
@@ -8629,7 +8639,7 @@
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
         "react>object-assign": true,
-        "mockttp>body-parser>qs": true
+        "browserify>url>qs": true
       }
     },
     "gulp>vinyl-fs>glob-stream>to-absolute-glob": {
@@ -8860,7 +8870,7 @@
     },
     "gulp>vinyl-fs>glob-stream>unique-stream": {
       "packages": {
-        "@lavamoat/lavapack>json-stable-stringify": true,
+        "gulp>vinyl-fs>glob-stream>unique-stream>json-stable-stringify": true,
         "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter": true
       }
     },
