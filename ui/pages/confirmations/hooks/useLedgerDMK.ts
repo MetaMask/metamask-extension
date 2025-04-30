@@ -21,6 +21,10 @@ import {
   getLedgerTransportType,
 } from '../../../ducks/ledger-dmk/selectors';
 import type { WEBHID, BLE } from '../../../ducks/ledger-dmk/constants';
+import { useConfirmContext } from '../context/confirm';
+import type { SignatureRequestType } from '@metamask/signature-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { isAddressLedger } from '../../../ducks/metamask/metamask';
 
 const useLedgerDMK = () => {
   const dispatch = useDispatch();
@@ -30,6 +34,9 @@ const useLedgerDMK = () => {
   const dmk = useSelector(getLedgerDmk);
   const ledgerSessionId = useSelector(getLedgerSessionId);
   const ledgerTransportType = useSelector(getLedgerTransportType);
+  const { currentConfirmation } = useConfirmContext<
+    SignatureRequestType & TransactionMeta
+  >();
 
   const initLedgerDMK = () => {
     const deviceManagementKit = new DeviceManagementKitBuilder()
@@ -41,6 +48,13 @@ const useLedgerDMK = () => {
 
     dispatch(setDmk(deviceManagementKit));
   };
+
+  const from =
+    currentConfirmation?.msgParams?.from ?? currentConfirmation?.txParams?.from;
+
+  const isLedgerWallet = useSelector(
+    (state) => from && isAddressLedger(state, from),
+  );
 
   const updateTransportType = (transportType: typeof WEBHID | typeof BLE) => {
     dispatch(setTransportType(transportType));
@@ -108,12 +122,14 @@ const useLedgerDMK = () => {
   };
 
   return {
+    isLedgerWallet,
     initLedgerDMK,
     connectLedger,
     updateTransportType,
     setupDeviceStatusListener,
     connectedDevice,
     deviceStatus,
+    ledgerTransportType,
     ethSigner,
     dmk,
   };

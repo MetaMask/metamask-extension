@@ -1,15 +1,7 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-// TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { DeviceStatus } from '@ledgerhq/device-management-kit';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
-import {
-  HardwareTransportStates,
-  LEDGER_USB_VENDOR_ID,
-  LedgerTransportTypes,
-  WebHIDConnectedStatuses,
-} from '../../../../../../shared/constants/hardware-wallets';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -18,36 +10,25 @@ import {
   Text,
 } from '../../../../../components/component-library';
 import {
-  getLedgerTransportStatus,
-  getLedgerWebHidConnectedStatus,
-  setLedgerWebHidConnectedStatus,
-} from '../../../../../ducks/app/app';
-import { getLedgerTransportType } from '../../../../../ducks/metamask/metamask';
-import {
   FontWeight,
   TextAlign,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import useLedgerConnection from '../../../hooks/useLedgerConnection';
+
+import useLedgerDMK from '../../../hooks/useLedgerDMK';
 
 const LedgerInfo: React.FC = () => {
-  const { isLedgerWallet } = useLedgerConnection();
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
-  const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
-  const ledgerTransportType = useSelector(getLedgerTransportType);
-  const transportStatus = useSelector(getLedgerTransportStatus);
-  const environmentType = getEnvironmentType();
-  const environmentTypeIsFullScreen =
-    environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
+  const { isLedgerWallet, deviceStatus } = useLedgerDMK();
+
+  // Determine environment type directly instead of using the restricted import
+  const environmentTypeIsFullScreen = window.innerHeight > 600;
 
   if (!isLedgerWallet) {
     return null;
   }
-
-  const usingWebHID = ledgerTransportType === LedgerTransportTypes.webhid;
 
   return (
     <BannerAlert severity={BannerAlertSeverity.Info} style={{ marginTop: 16 }}>
@@ -66,7 +47,7 @@ const LedgerInfo: React.FC = () => {
           </Text>
         </li>
       </ul>
-      {transportStatus === HardwareTransportStates.deviceOpenFailure && (
+      {deviceStatus === DeviceStatus.NOT_CONNECTED && (
         <Button
           variant={ButtonVariant.Link}
           textAlign={TextAlign.Left}
@@ -82,38 +63,20 @@ const LedgerInfo: React.FC = () => {
           {t('ledgerConnectionInstructionCloseOtherApps')}
         </Button>
       )}
-      {usingWebHID &&
-        webHidConnectedStatus === WebHIDConnectedStatuses.notConnected && (
-          <Button
-            variant={ButtonVariant.Link}
-            textAlign={TextAlign.Left}
-            fontWeight={FontWeight.Normal}
-            onClick={async () => {
-              if (environmentTypeIsFullScreen) {
-                const connectedDevices =
-                  await window.navigator.hid.requestDevice({
-                    filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
-                  });
-                const webHidIsConnected = connectedDevices.some(
-                  (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-                );
-                dispatch(
-                  setLedgerWebHidConnectedStatus(
-                    webHidIsConnected
-                      ? WebHIDConnectedStatuses.connected
-                      : WebHIDConnectedStatuses.notConnected,
-                  ),
-                );
-              } else {
-                global.platform.openExtensionInBrowser?.(null, null, true);
-              }
-            }}
-          >
-            {environmentTypeIsFullScreen
-              ? t('clickToConnectLedgerViaWebHID')
-              : t('openFullScreenForLedgerWebHid')}
-          </Button>
-        )}
+      {deviceStatus === DeviceStatus.NOT_CONNECTED && (
+        <Button
+          variant={ButtonVariant.Link}
+          textAlign={TextAlign.Left}
+          fontWeight={FontWeight.Normal}
+          onClick={async () => {
+            //TODO
+          }}
+        >
+          {environmentTypeIsFullScreen
+            ? t('clickToConnectLedgerViaWebHID')
+            : t('openFullScreenForLedgerWebHid')}
+        </Button>
+      )}
     </BannerAlert>
   );
 };
