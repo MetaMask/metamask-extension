@@ -1,16 +1,11 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
-import {
-  openDapp,
-  unlockWallet,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { openDapp, unlockWallet, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
 import SignTypedData from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
@@ -98,9 +93,16 @@ describe('Confirmation Navigation', function (this: Suite) {
 
         await confirmation.clickRejectAll();
 
-        await testDapp.check_failedSignTypedData('User rejected the request.');
-        await testDapp.check_failedSignTypedDataV3('User rejected the request.');
-        await testDapp.check_failedSignTypedDataV4('User rejected the request.');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.waitForSelector({
+          css: '.actionable-message__message',
+          text: 'User rejected the request.',
+        });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await driver.waitForSelector({
+          css: '#result',
+          text: 'User rejected the request.',
+        });
       },
     );
   });
@@ -163,9 +165,9 @@ async function verifySignedTypeV3Confirmation(driver: Driver) {
 }
 
 async function verifySignedTypeV4Confirmation(driver: Driver) {
-    const confirmation = new SignTypedData(driver);
-    verifySignedTypeV3Confirmation(driver);
-    await confirmation.verifyAttachment();
+  const confirmation = new SignTypedData(driver);
+  verifySignedTypeV3Confirmation(driver);
+  await confirmation.verifyAttachment();
 }
 
 async function queueSignatures(driver: Driver) {

@@ -45,6 +45,7 @@ class Confirmation {
     this.rejectAllButton = '[data-testid="confirm-nav__reject-all"]';
     this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
   }
+
   async clickScrollToBottomButton() {
     await this.driver.clickElementSafe(this.scrollToBottomButton);
   }
