@@ -940,6 +940,7 @@ function setupBundlerDefaults(
             './**/node_modules/@ledgerhq/device-signer-kit-ethereum',
             './**/node_modules/@ledgerhq/device-transport-kit-web-hid',
             './**/node_modules/@ledgerhq/device-transport-kit-web-ble',
+            './**/node_modules/@ledgerhq/context-module',
             './**/node_modules/@ledgerhq/signer-utils',
             './**/node_modules/rxjs',
             './**/node_modules/axios',
