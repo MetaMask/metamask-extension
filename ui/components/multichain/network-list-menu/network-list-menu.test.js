@@ -407,7 +407,7 @@ describe('NetworkListMenu', () => {
     });
 
     it('should not switch networks when clicking network items', () => {
-      const { getByText } = render();
+      const { getByText } = render({ selectedTabOriginInDomainsState: false });
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
 
       expect(mockToggleNetworkMenu).not.toHaveBeenCalled();
@@ -418,7 +418,7 @@ describe('NetworkListMenu', () => {
     });
 
     it('should not show any networks as selected', () => {
-      render();
+      render({ selectedTabOriginInDomainsState: false });
       const selectedNodes = document.querySelectorAll(
         '.multichain-network-list-item--selected',
       );
