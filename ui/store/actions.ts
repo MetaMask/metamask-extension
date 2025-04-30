@@ -3207,16 +3207,20 @@ export function setDefaultHomeActiveTabName(
   };
 }
 
-export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
-  return setPreference('showNativeTokenAsMainBalance', value);
+export async function setShowNativeTokenAsMainBalancePreference(
+  value: boolean,
+) {
+  return await setPreference('showNativeTokenAsMainBalance', value);
 }
 
-export function setHideZeroBalanceTokens(value: boolean) {
-  return setPreference('hideZeroBalanceTokens', value);
+export async function setHideZeroBalanceTokens(value: boolean) {
+  return await setPreference('hideZeroBalanceTokens', value);
 }
 
-export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
-  return setPreference('showFiatInTestnets', value);
+export async function setShowFiatConversionOnTestnetsPreference(
+  value: boolean,
+) {
+  return await setPreference('showFiatInTestnets', value);
 }
 
 /**
@@ -3227,31 +3231,31 @@ export async function setAggregatedBalancePopoverShown() {
   return await setPreference('shouldShowAggregatedBalancePopover', false);
 }
 
-export function setShowTestNetworks(value: boolean) {
-  return setPreference('showTestNetworks', value);
+export async function setShowTestNetworks(value: boolean) {
+  return await setPreference('showTestNetworks', value);
 }
 
-export function setPrivacyMode(value: boolean) {
-  return setPreference('privacyMode', value, false);
+export async function setPrivacyMode(value: boolean) {
+  return await setPreference('privacyMode', value, false);
 }
 
-export function setFeatureNotificationsEnabled(value: boolean) {
-  return setPreference('featureNotificationsEnabled', value);
+export async function setFeatureNotificationsEnabled(value: boolean) {
+  return await setPreference('featureNotificationsEnabled', value);
 }
 
-export function setShowExtensionInFullSizeView(value: boolean) {
-  return setPreference('showExtensionInFullSizeView', value);
+export async function setShowExtensionInFullSizeView(value: boolean) {
+  return await setPreference('showExtensionInFullSizeView', value);
 }
 
-export function setTokenSortConfig(value: SortCriteria) {
-  return setPreference('tokenSortConfig', value, false);
+export async function setTokenSortConfig(value: SortCriteria) {
+  return await setPreference('tokenSortConfig', value, false);
 }
 
-export function setTokenNetworkFilter(value: Record<string, boolean>) {
-  return setPreference('tokenNetworkFilter', value, false);
+export async function setTokenNetworkFilter(value: Record<string, boolean>) {
+  return await setPreference('tokenNetworkFilter', value, false);
 }
 
-export function setSmartTransactionsPreferenceEnabled(
+export async function setSmartTransactionsPreferenceEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
@@ -3270,12 +3274,12 @@ export function setSmartTransactionsPreferenceEnabled(
   };
 }
 
-export function setShowMultiRpcModal(value: boolean) {
-  return setPreference('showMultiRpcModal', value);
+export async function setShowMultiRpcModal(value: boolean) {
+  return await setPreference('showMultiRpcModal', value);
 }
 
-export function setAutoLockTimeLimit(value: number | null) {
-  return setPreference('autoLockTimeLimit', value);
+export async function setAutoLockTimeLimit(value: number | null) {
+  return await setPreference('autoLockTimeLimit', value);
 }
 
 export function setIncomingTransactionsPreferences(
@@ -5960,8 +5964,8 @@ export function disableMetamaskNotifications(): ThunkAction<
   };
 }
 
-export function setConfirmationAdvancedDetailsOpen(value: boolean) {
-  return setPreference('showConfirmationAdvancedDetails', value);
+export async function setConfirmationAdvancedDetailsOpen(value: boolean) {
+  return await setPreference('showConfirmationAdvancedDetails', value);
 }
 
 export async function getNextAvailableAccountName(
