@@ -22,6 +22,8 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getSelectedInternalAccount,
   getSwapsDefaultToken,
+  isSelectedInternalAccountSolana,
+  getIsSolanaBuyable,
 } from '../../../selectors';
 import { CoinOverview } from './coin-overview';
 
@@ -33,6 +35,9 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const { chainId } = useSelector(getSelectedMultichainNetworkConfiguration);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const account = useSelector(getSelectedInternalAccount);
+  const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
+  const isSolanaBuyable = useSelector(getIsSolanaBuyable);
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBtcMainnetAccount = useMultichainSelector(
     getMultichainIsMainnet,
@@ -43,7 +48,13 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   // TODO: Update this to add support to check if Solana is buyable when the Send flow starts
   const accountType = account.type;
   const isBtc = accountType === BtcAccountType.P2wpkh;
-  const isBuyableChain = isBtc ? isBtcBuyable && isBtcMainnetAccount : false;
+  let isBuyableChain = false;
+  if (isBtc) {
+    isBuyableChain = isBtcBuyable && isBtcMainnetAccount;
+  } else if (isSolanaAccount) {
+    isBuyableChain = isSolanaBuyable;
+  }
+
   ///: END:ONLY_INCLUDE_IF
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 

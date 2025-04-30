@@ -770,18 +770,23 @@ function emitDappViewedMetricEvent(origin) {
   );
   const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
 
-  controller.metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.DappViewed,
-    category: MetaMetricsEventCategory.InpageProvider,
-    referrer: {
-      url: origin,
+  controller.metaMetricsController.trackEvent(
+    {
+      event: MetaMetricsEventName.DappViewed,
+      category: MetaMetricsEventCategory.InpageProvider,
+      referrer: {
+        url: origin,
+      },
+      properties: {
+        is_first_visit: false,
+        number_of_accounts: numberOfTotalAccounts,
+        number_of_accounts_connected: numberOfConnectedAccounts,
+      },
     },
-    properties: {
-      is_first_visit: false,
-      number_of_accounts: numberOfTotalAccounts,
-      number_of_accounts_connected: numberOfConnectedAccounts,
+    {
+      excludeMetaMetricsId: true,
     },
-  });
+  );
 }
 
 /**
@@ -1078,7 +1083,7 @@ export function setupController(
 
       connectEip1193(portStream, remotePort.sender);
 
-      if (process.env.MULTICHAIN_API && isFirefox) {
+      if (isFirefox) {
         const mux = setupMultiplex(portStream);
         mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
@@ -1095,7 +1100,7 @@ export function setupController(
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
 
     const isDappConnecting = remotePort.sender.tab?.id;
-    if (isDappConnecting && process.env.MULTICHAIN_API) {
+    if (isDappConnecting) {
       if (metamaskBlockedPorts.includes(remotePort.name)) {
         return;
       }
@@ -1117,10 +1122,6 @@ export function setupController(
   };
 
   connectCaipMultichain = (connectionStream, sender) => {
-    if (!process.env.MULTICHAIN_API) {
-      return;
-    }
-
     controller.setupUntrustedCommunicationCaip({
       connectionStream,
       sender,
