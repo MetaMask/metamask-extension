@@ -64,6 +64,7 @@ async function main() {
           job: {
             name: suite.properties?.[0].property?.[0]?.$.value ?? '',
             id: suite.properties?.[0].property?.[1]?.$.value ?? '',
+            runId: suite.properties?.[0].property?.[2]?.$.value ?? '',
           },
           date: new Date(suite.$.timestamp),
           tests,
