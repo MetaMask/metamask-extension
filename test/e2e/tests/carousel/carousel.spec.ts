@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { withFixtures } from '../../helpers';
+import { tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { until } from 'selenium-webdriver';
@@ -113,6 +113,7 @@ describe('Carousel component e2e tests', function () {
             `Expected ${remainingSlides} slides remaining`,
           );
 
+          await driver.delay(tinyDelayMs);
           const dismissButton = await driver.findElement(
             '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
           );

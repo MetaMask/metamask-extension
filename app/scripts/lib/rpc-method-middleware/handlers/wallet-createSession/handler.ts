@@ -299,18 +299,24 @@ async function walletCreateSessionHandler(
 
       const approvedEthAccounts = getEthAccounts(approvedCaip25CaveatValue);
 
-      hooks.sendMetrics({
-        event: MetaMetricsEventName.DappViewed,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
+      hooks.sendMetrics(
+        {
+          event: MetaMetricsEventName.DappViewed,
+          category: MetaMetricsEventCategory.InpageProvider,
+          referrer: {
+            url: origin,
+          },
+          properties: {
+            is_first_visit: isFirstVisit,
+            number_of_accounts: Object.keys(hooks.metamaskState.accounts)
+              .length,
+            number_of_accounts_connected: approvedEthAccounts.length,
+          },
         },
-        properties: {
-          is_first_visit: isFirstVisit,
-          number_of_accounts: Object.keys(hooks.metamaskState.accounts).length,
-          number_of_accounts_connected: approvedEthAccounts.length,
+        {
+          excludeMetaMetricsId: true,
         },
-      });
+      );
     }
 
     res.result = {
