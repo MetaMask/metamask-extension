@@ -17,6 +17,7 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -414,6 +415,7 @@ async function restoreDatabaseFromBackup(port, backup) {
       await persistenceManager.reset();
     }
     await initBackground(backup);
+    controller.onboardingController.setFirstTimeFlowType(FirstTimeFlowType.restore);
   } finally {
     // always reload the UI because if `initBackground` worked, the UI
     // will redirect to the login screen, and if it didn't work, it'll
