@@ -26,6 +26,10 @@ class Confirmation {
 
   private navigationTitle: RawLocator;
 
+  private rejectAllButton: RawLocator;
+
+  private confirmationHeadingTitle: RawLocator;
+
   constructor(driver: Driver) {
     this.driver = driver;
 
@@ -38,8 +42,9 @@ class Confirmation {
     this.previousPageButton =
       '[data-testid="confirm-nav__previous-confirmation"]';
     this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
+    this.rejectAllButton = '[data-testid="confirm-nav__reject-all"]';
+    this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
   }
-
   async clickScrollToBottomButton() {
     await this.driver.clickElementSafe(this.scrollToBottomButton);
   }
@@ -90,6 +95,15 @@ class Confirmation {
       console.log('Timeout while waiting for navigation page numbers', e);
       throw e;
     }
+  }
+
+  async clickRejectAll(): Promise<void> {
+    await this.driver.clickElementAndWaitForWindowToClose(this.rejectAllButton);
+  }
+
+  async verifyConfirmationHeadingTitle(): Promise<void> {
+    console.log('Verify confirmation heading title is Confirmation Dialog');
+    await this.driver.waitForSelector(this.confirmationHeadingTitle);
   }
 }
 
