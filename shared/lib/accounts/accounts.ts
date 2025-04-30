@@ -94,7 +94,7 @@ export async function getNextAvailableSnapAccountName(
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(solana,bitcoin)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export type WalletSnapOptions = {
   scope?: CaipChainId;
   derivationPath?: DiscoveredAccount['derivationPath'];
