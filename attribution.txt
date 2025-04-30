@@ -2694,7 +2694,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 call-bind
-1.0.7 <https://github.com/ljharb/call-bind>
+1.0.8 <https://github.com/ljharb/call-bind>
 MIT License
 
 Copyright (c) 2020 Jordan Harband
@@ -2721,7 +2721,7 @@ SOFTWARE.
 ******************************
 
 call-bind-apply-helpers
-1.0.1 <https://github.com/ljharb/call-bind-apply-helpers>
+1.0.2 <https://github.com/ljharb/call-bind-apply-helpers>
 MIT License
 
 Copyright (c) 2024 Jordan Harband
@@ -2748,7 +2748,7 @@ SOFTWARE.
 ******************************
 
 call-bound
-1.0.3 <https://github.com/ljharb/call-bound>
+1.0.4 <https://github.com/ljharb/call-bound>
 MIT License
 
 Copyright (c) 2024 Jordan Harband
@@ -3257,7 +3257,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 chalk
-5.3.0 <https://github.com/chalk/chalk>
+5.4.1 <https://github.com/chalk/chalk>
 MIT License
 
 Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
@@ -4105,7 +4105,7 @@ SOFTWARE.
 ******************************
 
 cross-fetch
-3.1.8 <https://github.com/lquixada/cross-fetch>
+3.2.0 <https://github.com/lquixada/cross-fetch>
 The MIT License (MIT)
 
 Copyright (c) 2017 Leonardo Quixadá
@@ -4350,7 +4350,7 @@ THE SOFTWARE.
 ******************************
 
 debug
-4.3.5 <https://github.com/debug-js/debug>
+4.3.7 <https://github.com/debug-js/debug>
 (The MIT License)
 
 Copyright (c) 2014-2017 TJ Holowaychuk <tj@vision-media.ca>
@@ -4555,7 +4555,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 detect-browser
-5.2.0 <https://github.com/DamonOehlman/detect-browser>
+5.3.0 <https://github.com/DamonOehlman/detect-browser>
 The MIT License (MIT)
 
 Copyright (c) 2019 Damon Oehlman <damon.oehlman@gmail.com>
@@ -6379,7 +6379,7 @@ eslint-visitor-keys
 ******************************
 
 es-object-atoms
-1.0.0 <https://github.com/ljharb/es-object-atoms>
+1.1.1 <https://github.com/ljharb/es-object-atoms>
 MIT License
 
 Copyright (c) 2024 Jordan Harband
@@ -10916,7 +10916,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 ******************************
 
 get-intrinsic
-1.2.7 <https://github.com/ljharb/get-intrinsic>
+1.3.0 <https://github.com/ljharb/get-intrinsic>
 MIT License
 
 Copyright (c) 2020 Jordan Harband
@@ -13681,7 +13681,7 @@ SOFTWARE.
 ******************************
 
 js-base64
-3.6.1 <https://github.com/dankogai/js-base64>
+3.7.7 <https://github.com/dankogai/js-base64>
 Copyright (c) 2014, Dan Kogai
 All rights reserved.
 
@@ -16490,7 +16490,7 @@ terms above.
 ******************************
 
 loglevel
-1.9.1 <https://github.com/pimterry/loglevel>
+1.9.2 <https://github.com/pimterry/loglevel>
 Copyright (c) 2013 Tim Perry
 
 Permission is hereby granted, free of charge, to any person
@@ -19627,7 +19627,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/multichain-api-client
-0.3.0 <https://github.com/MetaMask/multichain-api-client>
+0.5.0 <https://github.com/MetaMask/multichain-api-client>
 ISC License
 
 Copyright (c) 2021 MetaMask
@@ -20889,7 +20889,7 @@ authors: undefined
 ******************************
 
 @metamask/solana-wallet-standard
-0.1.1 <https://github.com/MetaMask/solana-wallet-standard>
+0.3.1 <https://github.com/MetaMask/solana-wallet-standard>
 ISC License
 
 Copyright (c) 2021 MetaMask
@@ -20932,7 +20932,7 @@ authors: undefined
 ******************************
 
 @metamask/transaction-controller
-54.1.0 <https://github.com/MetaMask/core>
+54.2.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -21332,33 +21332,6 @@ SOFTWARE.
 ******************************
 
 ms
-2.1.2 <https://github.com/zeit/ms>
-The MIT License (MIT)
-
-Copyright (c) 2016 Zeit, Inc.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-******************************
-
-ms
 2.1.3 <https://github.com/vercel/ms>
 The MIT License (MIT)
 
@@ -21729,7 +21702,7 @@ THE SOFTWARE.
 ******************************
 
 @noble/curves
-1.8.1 <https://github.com/paulmillr/noble-curves>
+1.9.0 <https://github.com/paulmillr/noble-curves>
 The MIT License (MIT)
 
 Copyright (c) 2022 Paul Miller (https://paulmillr.com)
@@ -21833,7 +21806,7 @@ THE SOFTWARE.
 ******************************
 
 @noble/hashes
-1.7.1 <https://github.com/paulmillr/noble-hashes>
+1.8.0 <https://github.com/paulmillr/noble-hashes>
 The MIT License (MIT)
 
 Copyright (c) 2022 Paul Miller (https://paulmillr.com)
@@ -23709,7 +23682,7 @@ SOFTWARE.
 ******************************
 
 react
-18.2.0 <https://github.com/facebook/react>
+18.3.1 <https://github.com/facebook/react>
 MIT License
 
 Copyright (c) Facebook, Inc. and its affiliates.
@@ -23823,7 +23796,7 @@ SOFTWARE.
 ******************************
 
 react-dom
-18.2.0 <https://github.com/facebook/react>
+18.3.1 <https://github.com/facebook/react>
 MIT License
 
 Copyright (c) Facebook, Inc. and its affiliates.
@@ -24327,7 +24300,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 readable-stream
-2.3.7 <https://github.com/nodejs/readable-stream>
+2.3.8 <https://github.com/nodejs/readable-stream>
 Node.js is licensed for use as follows:
 
 """
@@ -24433,7 +24406,7 @@ IN THE SOFTWARE.
 ******************************
 
 readable-stream
-4.5.2 <https://github.com/nodejs/readable-stream>
+4.7.0 <https://github.com/nodejs/readable-stream>
 Node.js is licensed for use as follows:
 
 """
@@ -26260,7 +26233,7 @@ SOFTWARE.
 ******************************
 
 safe-stable-stringify
-2.4.3 <https://github.com/BridgeAR/safe-stable-stringify>
+2.5.0 <https://github.com/BridgeAR/safe-stable-stringify>
 The MIT License (MIT)
 
 Copyright (c) Ruben Bridgewater
@@ -26361,7 +26334,7 @@ SOFTWARE.
 ******************************
 
 scheduler
-0.23.0 <https://github.com/facebook/react>
+0.23.2 <https://github.com/facebook/react>
 MIT License
 
 Copyright (c) Facebook, Inc. and its affiliates.
@@ -26417,6 +26390,33 @@ THE SOFTWARE.
 
 @scure/base
 1.1.9 <https://github.com/paulmillr/scure-base>
+The MIT License (MIT)
+
+Copyright (c) 2022 Paul Miller (https://paulmillr.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+******************************
+
+@scure/base
+1.2.5 <https://github.com/paulmillr/scure-base>
 The MIT License (MIT)
 
 Copyright (c) 2022 Paul Miller (https://paulmillr.com)
@@ -31377,7 +31377,7 @@ authors: Mohamed Hegazy <https://github.com/mhegazy>
 ******************************
 
 @types/uuid
-8.3.0 <https://github.com/DefinitelyTyped/DefinitelyTyped>
+8.3.4 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -33785,7 +33785,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 ws
-8.18.0 <https://github.com/websockets/ws>
+8.18.1 <https://github.com/websockets/ws>
 Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 Copyright (c) 2013 Arnout Kazemier and contributors
 Copyright (c) 2016 Luigi Pinca and contributors
