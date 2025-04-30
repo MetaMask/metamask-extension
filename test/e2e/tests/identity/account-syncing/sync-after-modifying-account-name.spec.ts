@@ -17,6 +17,7 @@ import {
   getAccountsSyncMockResponse,
 } from './mock-data';
 import { arrangeTestUtils } from './helpers';
+import { ACCOUNT_TYPE } from '../../../constants';
 
 describe('Account syncing - Rename Accounts', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -74,6 +75,7 @@ describe('Account syncing - Rename Accounts', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
+            ACCOUNT_TYPE.Ethereum
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -129,6 +131,7 @@ describe('Account syncing - Rename Accounts', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
+            ACCOUNT_TYPE.Ethereum
           );
           await accountListPage.check_accountIsNotDisplayedInAccountList(
             unencryptedAccounts[0].n,

@@ -56,7 +56,7 @@ describe('Account syncing - New User', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_numberOfAvailableAccounts(1, ACCOUNT_TYPE.Ethereum);
           await accountListPage.check_accountDisplayedInAccountList(
             defaultAccountOneName,
           );
@@ -127,7 +127,7 @@ describe('Account syncing - New User', function () {
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
 
-          await accountListPage.check_numberOfAvailableAccounts(2);
+          await accountListPage.check_numberOfAvailableAccounts(2, ACCOUNT_TYPE.Ethereum);
 
           await accountListPage.check_accountDisplayedInAccountList(
             defaultAccountOneName,

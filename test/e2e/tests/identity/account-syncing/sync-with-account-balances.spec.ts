@@ -126,7 +126,7 @@ describe('Account syncing - User already has balances on multiple accounts', fun
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(4);
+          await accountListPage.check_numberOfAvailableAccounts(4, ACCOUNT_TYPE.Ethereum);
 
           // Verify each initial account name
           for (const accountName of EXPECTED_ACCOUNT_NAMES.INITIAL) {
@@ -195,7 +195,7 @@ describe('Account syncing - User already has balances on multiple accounts', fun
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(6);
+          await accountListPage.check_numberOfAvailableAccounts(6, ACCOUNT_TYPE.Ethereum);
 
           for (const accountName of EXPECTED_ACCOUNT_NAMES.WITH_NEW_ACCOUNTS) {
             await accountListPage.check_accountDisplayedInAccountList(
@@ -264,7 +264,7 @@ describe('Account syncing - User already has balances on multiple accounts', fun
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(6);
+          await accountListPage.check_numberOfAvailableAccounts(6, ACCOUNT_TYPE.Ethereum);
           await accountListPage.check_accountDisplayedInAccountList(
             'My Renamed Account 6',
           );
@@ -280,7 +280,7 @@ describe('Account syncing - User already has balances on multiple accounts', fun
 
           await header.check_pageIsLoaded();
           await header.openAccountMenu();
-          await accountListPage.check_numberOfAvailableAccounts(6);
+          await accountListPage.check_numberOfAvailableAccounts(6, ACCOUNT_TYPE.Ethereum);
         },
       );
     });

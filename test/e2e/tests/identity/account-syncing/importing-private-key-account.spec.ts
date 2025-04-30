@@ -13,6 +13,7 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
+import { ACCOUNT_TYPE } from '../../../constants';
 
 describe('Account syncing - Import With Private Key', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -67,6 +68,7 @@ describe('Account syncing - Import With Private Key', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
+            ACCOUNT_TYPE.Ethereum
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -104,7 +106,7 @@ describe('Account syncing - Import With Private Key', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(2);
+          await accountListPage.check_numberOfAvailableAccounts(2, ACCOUNT_TYPE.Ethereum);
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
           );
