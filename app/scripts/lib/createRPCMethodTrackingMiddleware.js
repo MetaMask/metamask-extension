@@ -327,7 +327,7 @@ export default function createRPCMethodTrackingMiddleware({
     };
 
     if (multichainApiRequestScope) {
-      eventProperties.multichain_api_request_scope = multichainApiRequestScope;
+      eventProperties.chain_id_caip = multichainApiRequestScope;
     }
 
     let sensitiveEventProperties;
