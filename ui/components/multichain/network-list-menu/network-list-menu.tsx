@@ -188,6 +188,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
+  const canSelectNetwork: boolean =
+    !process.env.REMOVE_GNS ||
+    (Boolean(process.env.REMOVE_GNS) &&
+      Boolean(selectedTabOrigin) &&
+      Boolean(domains[selectedTabOrigin]));
 
   useEffect(() => {
     endTrace({ name: TraceName.NetworkList });
@@ -527,12 +532,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
-        selected={
-          process.env.REMOVE_GNS ? false : isCurrentNetwork && !focusSearch
-        }
-        focus={
-          process.env.REMOVE_GNS ? false : isCurrentNetwork && !focusSearch
-        }
+        selected={canSelectNetwork && isCurrentNetwork && !focusSearch}
+        focus={canSelectNetwork && isCurrentNetwork && !focusSearch}
         rpcEndpoint={
           hasMultiRpcOptions(network)
             ? getRpcDataByChainId(network.chainId, evmNetworks)
@@ -540,7 +541,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
             : undefined
         }
         onClick={async () => {
-          if (!process.env.REMOVE_GNS) {
+          if (canSelectNetwork) {
             await handleNetworkChange(network.chainId);
           }
         }}
@@ -549,6 +550,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         onDiscoverClick={onDiscoverClick}
         onRpcEndpointClick={onRpcConfigEdit}
         disabled={!isNetworkEnabled(network)}
+        notSelectable={!canSelectNetwork}
       />
     );
   };

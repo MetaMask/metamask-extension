@@ -270,9 +270,7 @@ export const NetworksForm = ({
                 ? rpcUrls?.defaultRpcEndpointIndex
                 : undefined,
           };
-          if (!process.env.REMOVE_GNS) {
-            await dispatch(updateNetwork(networkPayload, options));
-          }
+          await dispatch(updateNetwork(networkPayload, options));
           if (Object.keys(tokenNetworkFilter).length === 1) {
             await dispatch(
               setTokenNetworkFilter({
