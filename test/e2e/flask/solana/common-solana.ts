@@ -37,7 +37,12 @@ export enum SendFlowPlaceHolders {
 
 export const SIMPLEHASH_URL = 'https://api.simplehash.com';
 
+export const SOLANA_DEVNET_URL = 'https://solana-devnet.infura.io/v3/';
+
 export const SOL_BALANCE = 50000000000;
+
+// https://docs.anza.xyz/implemented-proposals/rent#two-tiered-rent-regime
+export const MINIMUM_BALANCE_FOR_RENT_EXEMPTION = 890880; // = 0.00089088 SOL
 
 export const SOL_TO_USD_RATE = 225.88;
 
@@ -673,6 +678,8 @@ export async function mockSolanaBalanceQuote(
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         context: {
           apiVersion: '2.0.18',
@@ -680,7 +687,6 @@ export async function mockSolanaBalanceQuote(
         },
         value: mockZeroBalance ? 0 : SOL_BALANCE,
       },
-      id: 1337,
     },
   };
   return await mockServer
@@ -700,6 +706,8 @@ export async function mockSolanaBalanceQuoteDevnet(
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         context: {
           apiVersion: '2.0.18',
@@ -707,7 +715,6 @@ export async function mockSolanaBalanceQuoteDevnet(
         },
         value: mockZeroBalance ? 0 : SOL_BALANCE,
       },
-      id: 1337,
     },
   };
   return await mockServer
@@ -720,17 +727,37 @@ export async function mockSolanaBalanceQuoteDevnet(
     });
 }
 
-export async function simulateSolanaTransactionFailed(
+
+export async function mockGetMinimumBalanceForRentExemptionDevnet(
   mockServer: Mockttp,
 ) {
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_DEVNET)
+    .withJsonBodyIncluding({
+      method: 'getMinimumBalanceForRentExemption',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          id: '1337',
+          jsonrpc: '2.0',
+          result: MINIMUM_BALANCE_FOR_RENT_EXEMPTION,
+        },
+      };
+    });
+}
+
+export async function simulateSolanaTransactionFailed(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
       result: {
-        "jsonrpc": "2.0",
-        "result": {
-          "context": {
-            "slot": 12345678
+        id: '1337',
+        jsonrpc: '2.0',
+        result: {
+          context: {
+            slot: 12345678,
           },
           "value": {
             "err": {
@@ -749,8 +776,7 @@ export async function simulateSolanaTransactionFailed(
             "unitsConsumed": 200000
           }
         },
-        "id": 1
-      }
+      },
     },
   };
 
@@ -772,6 +798,8 @@ export async function simulateSolanaTransaction(
     ? {
         statusCode: 200,
         json: {
+          id: '1337',
+          jsonrpc: '2.0',
           result: {
             context: {
               apiVersion: '2.0.21',
@@ -796,7 +824,6 @@ export async function simulateSolanaTransaction(
               returnData: null,
               unitsConsumed: 4794,
             },
-            id: 1337,
           },
         },
       }
@@ -840,6 +867,8 @@ export async function mockGetFailedTransaction(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         blockTime: 1741612022,
         meta: {
@@ -947,6 +976,8 @@ export async function mockGetFailedTransactionDevnet(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         blockTime: 1739988764,
         meta: {
@@ -1521,6 +1552,8 @@ export async function mockGetSuccessTransaction(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         blockTime: 1739973211,
         meta: {
@@ -1590,6 +1623,8 @@ export async function mockGetSuccessTransactionDevnet(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         blockTime: 1739973211,
         meta: {
@@ -1659,6 +1694,8 @@ export async function mockGetLatestBlockhash(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         context: {
           apiVersion: '2.0.18',
@@ -1669,7 +1706,6 @@ export async function mockGetLatestBlockhash(mockServer: Mockttp) {
           lastValidBlockHeight: 341034515,
         },
       },
-      id: 1337,
     },
   };
   return await mockServer
@@ -1685,6 +1721,8 @@ export async function mockGetLatestBlockhashDevnet(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         context: {
           apiVersion: '2.0.18',
@@ -1695,7 +1733,6 @@ export async function mockGetLatestBlockhashDevnet(mockServer: Mockttp) {
           lastValidBlockHeight: 341034515,
         },
       },
-      id: 1337,
     },
   };
   return await mockServer
@@ -1715,6 +1752,8 @@ export async function mockGetFailedSignaturesForAddress(mockServer: Mockttp) {
       return {
         statusCode: 200,
         json: {
+          id: '1337',
+          jsonrpc: '2.0',
           result: [
             {
               blockTime: 1739973211,
@@ -1740,6 +1779,8 @@ export async function mockGetFailedSignaturesForAddressDevnet(mockServer: Mocktt
       return {
         statusCode: 200,
         json: {
+          id: '1337',
+          jsonrpc: '2.0',
           result: [
             {
               blockTime: 1739973211,
@@ -1765,6 +1806,8 @@ export async function mockGetSuccessSignaturesForAddress(mockServer: Mockttp) {
       return {
         statusCode: 200,
         json: {
+          id: '1337',
+          jsonrpc: '2.0',
           result: [
             {
               blockTime: 1739973211,
@@ -1789,6 +1832,8 @@ export async function mockGetSuccessSignaturesForAddressDevnet(mockServer: Mockt
       return {
         statusCode: 200,
         json: {
+          id: '1337',
+          jsonrpc: '2.0',
           result: [
             {
               blockTime: 1739973211,
@@ -1809,7 +1854,8 @@ export async function mockSendSolanaFailedTransaction(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
-      jsonrpc: "2.0",
+      id: '1337',
+      jsonrpc: '2.0',
       error: {
         code: -32002,
         message: "Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1",
@@ -1831,7 +1877,6 @@ export async function mockSendSolanaFailedTransaction(mockServer: Mockttp) {
           returnData: null
         }
       },
-      id: 1
     },
   };
   return await mockServer
@@ -1850,7 +1895,8 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
     json: {
       result:
         '3nqGKH1ef8WkTgKXZ8q3xKsvjktWmHHhJpZMSdbB6hBqy5dA7aLVSAUjw5okezZjKMHiNg2MF5HAqtpmsesQtnpj',
-      id: 1337,
+      id: '1337',
+      jsonrpc: '2.0',
     },
   };
   return await mockServer
@@ -1869,7 +1915,8 @@ export async function mockSendSolanaTransactionDevnet(mockServer: Mockttp) {
     json: {
       result:
         '3nqGKH1ef8WkTgKXZ8q3xKsvjktWmHHhJpZMSdbB6hBqy5dA7aLVSAUjw5okezZjKMHiNg2MF5HAqtpmsesQtnpj',
-      id: 1337,
+      id: '1337',
+      jsonrpc: '2.0',
     },
   };
   return await mockServer
@@ -1893,6 +1940,8 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
       return {
         statusCode: 200,
         json: {
+          id: '1337',
+          jsonrpc: '2.0',
           result: {
             context: {
               slot: 137568828,
@@ -1938,7 +1987,8 @@ export async function mockGetFeeForMessage(mockServer: Mockttp) {
     statusCode: 200,
     json: {
       result: { context: { slot: 5068 }, value: 5000 },
-      id: 1337,
+      id: '1337',
+      jsonrpc: '2.0',
     },
   };
   return await mockServer
@@ -1956,7 +2006,8 @@ export async function mockGetFeeForMessageDevnet(mockServer: Mockttp) {
     statusCode: 200,
     json: {
       result: { context: { slot: 5068 }, value: 5000 },
-      id: 1337,
+      id: '1337',
+      jsonrpc: '2.0',
     },
   };
   return await mockServer
@@ -1989,6 +2040,8 @@ export async function mockGetTokenAccountsByOwner(mockServer: Mockttp, programId
       return {
         statusCode: 200,
         json: {
+          id: '1337',
+          jsonrpc: '2.0',
           result: {
             context: {
               slot: 137568828,
@@ -2040,6 +2093,8 @@ export async function mockGetTokenAccountsByOwnerDevnet(mockServer: Mockttp) {
       return {
         statusCode: 200,
         json: {
+          id: '1337',
+          jsonrpc: '2.0',
           result: {
             context: {
               slot: 137568828,
@@ -2086,6 +2141,8 @@ export async function mockGetAccountInfo(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         context: {
           apiVersion: '2.0.21',
@@ -2126,11 +2183,51 @@ export async function mockGetAccountInfo(mockServer: Mockttp) {
     });
 }
 
+export async function mockGetAccountInfoDevnet(mockServer: Mockttp) {
+  console.log('mockGetAccountInfoDevnet');
+  const response = {
+    statusCode: 200,
+    json: {
+      id: '1337',
+      jsonrpc: '2.0',
+      result: {
+        context: {
+          apiVersion: '2.0.21',
+          slot: 317161313,
+        },
+        value: {
+          data: [
+            'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
+            'base64',
+          ],
+          executable: false,
+          lamports: 1124837338893,
+          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+          rentEpoch: 18446744073709551615,
+          space: 82,
+        },
+      },
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_DEVNET)
+    .withJsonBodyIncluding({
+      method: 'getAccountInfo',
+    })
+    .withBodyIncluding('So11111111111111111111111111111111111111112')
+    .thenCallback(() => {
+      return response;
+    });
+}
+
 export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
   console.log('mockGetTokenAccountInfo');
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         context: {
           apiVersion: '2.0.21',
@@ -2189,6 +2286,8 @@ export async function mockGetTokenAccountInfoDevnet(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
+      id: '1337',
+      jsonrpc: '2.0',
       result: {
         context: {
           apiVersion: '2.0.21',
@@ -2248,7 +2347,7 @@ export async function withSolanaAccountSnap(
     showNativeTokenAsMainBalance,
     mockCalls,
     mockSendTransaction,
-    importAccount,
+    numberOfAccounts = 1,
     simulateTransaction,
     isNative,
     mockGetTransactionSuccess,
@@ -2256,12 +2355,13 @@ export async function withSolanaAccountSnap(
     mockZeroBalance,
     simulateFailedTransaction,
     sendFailedTransaction,
+    dappPaths,
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
     mockCalls?: boolean;
     mockSendTransaction?: boolean;
-    importAccount?: boolean;
+    numberOfAccounts?: number;
     simulateTransaction?: boolean;
     isNative?: boolean;
     mockGetTransactionSuccess?: boolean;
@@ -2269,6 +2369,7 @@ export async function withSolanaAccountSnap(
     mockZeroBalance?: boolean;
     simulateFailedTransaction?: boolean;
     sendFailedTransaction?: boolean;
+    dappPaths?: string[];
   },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
 ) {
@@ -2283,6 +2384,7 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
+      dappPaths,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList: MockedEndpoint[] = [];
 
@@ -2306,25 +2408,32 @@ export async function withSolanaAccountSnap(
           mockList.push(await mockGetSuccessTransactionDevnet(mockServer));
         }
         if (mockCalls) {
-          mockList.push(...[
-            await mockSolanaBalanceQuote(mockServer),
-            await mockSolanaBalanceQuoteDevnet(mockServer),
-            await mockGetTokenAccountsByOwner(mockServer, SOLANA_TOKEN_PROGRAM),
-            await mockGetTokenAccountsByOwnerDevnet(mockServer),
-            await mockMultiCoinPrice(mockServer),
-            await mockGetLatestBlockhash(mockServer),
-            await mockGetLatestBlockhashDevnet(mockServer),
-            await mockGetFeeForMessage(mockServer),
-            await mockGetFeeForMessageDevnet(mockServer),
-            await mockPriceApiSpotPrice(mockServer),
-            await mockPriceApiExchangeRates(mockServer),
-            await mockClientSideDetectionApi(mockServer),
-            await mockPhishingDetectionApi(mockServer),
-            await mockGetTokenAccountInfo(mockServer),
-            await mockGetAccountInfo(mockServer),
-            await mockTokenApiMainnetTest(mockServer),
-            await mockAccountsApi(mockServer),
-          ]);
+          mockList.push(
+            ...[
+              await mockSolanaBalanceQuote(mockServer),
+              await mockSolanaBalanceQuoteDevnet(mockServer),
+              await mockGetMinimumBalanceForRentExemptionDevnet(mockServer),
+              await mockGetTokenAccountsByOwner(
+                mockServer,
+                SOLANA_TOKEN_PROGRAM,
+              ),
+              await mockGetTokenAccountsByOwnerDevnet(mockServer),
+              await mockMultiCoinPrice(mockServer),
+              await mockGetLatestBlockhash(mockServer),
+              await mockGetLatestBlockhashDevnet(mockServer),
+              await mockGetFeeForMessage(mockServer),
+              await mockGetFeeForMessageDevnet(mockServer),
+              await mockPriceApiSpotPrice(mockServer),
+              await mockPriceApiExchangeRates(mockServer),
+              await mockClientSideDetectionApi(mockServer),
+              await mockPhishingDetectionApi(mockServer),
+              await mockGetTokenAccountInfo(mockServer),
+              await mockGetAccountInfo(mockServer),
+              await mockGetAccountInfoDevnet(mockServer),
+              await mockTokenApiMainnetTest(mockServer),
+              await mockAccountsApi(mockServer),
+            ],
+          );
         }
         if (mockZeroBalance) {
           mockList.push(await mockSolanaBalanceQuote(mockServer, true));
@@ -2348,15 +2457,19 @@ export async function withSolanaAccountSnap(
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithoutBalanceValidation(driver);
       const headerComponent = new HeaderNavbar(driver);
-      await headerComponent.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
-      if (!importAccount) {
+
+      for (let i = 1; i <= numberOfAccounts; i++) {
+        await headerComponent.openAccountMenu();
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Solana,
-          accountName: 'Solana 1',
+          accountName: `Solana ${i}`,
         });
       }
-      await headerComponent.check_accountLabel('Solana 1');
+
+      if (numberOfAccounts > 0) {
+        await headerComponent.check_accountLabel(`Solana ${numberOfAccounts}`);
+      }
       await test(driver, mockServer);
     },
   );
