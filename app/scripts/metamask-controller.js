@@ -26,7 +26,6 @@ import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import {
-  OneKeyKeyring,
   TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
@@ -148,7 +147,7 @@ import {
   parseCaipAccountId,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
-
+import { OneKeyKeyring, OneKeyWebBridge } from 'eth-onekey-bridge-keyring';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
 import {
@@ -423,6 +422,8 @@ import {
   onRpcEndpointDegraded,
 } from './lib/network-controller/messenger-action-handlers';
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
+import { OneKeyOffscreenBridge } from './lib/offscreen-bridge/onekey-offscreen-bridge';
+import { hardwareOneKeyKeyringBuilderFactory } from './lib/hardware-onekey-keyring-builder-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1091,10 +1092,6 @@ export default class MetamaskController extends EventEmitter {
           bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
         },
         {
-          keyring: keyringOverrides?.oneKey || OneKeyKeyring,
-          bridge: keyringOverrides?.oneKeyBridge || TrezorConnectBridge,
-        },
-        {
           keyring: keyringOverrides?.ledger || LedgerKeyring,
           bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
         },
@@ -1112,6 +1109,13 @@ export default class MetamaskController extends EventEmitter {
           ),
         ),
       );
+      additionalKeyrings.push(
+        hardwareOneKeyKeyringBuilderFactory(
+          keyringOverrides?.oneKey || OneKeyKeyring,
+          keyringOverrides?.oneKeyBridge || OneKeyWebBridge,
+          this.platform,
+        ),
+      );
     } else {
       additionalKeyrings.push(
         hardwareKeyringBuilderFactory(
@@ -1119,14 +1123,15 @@ export default class MetamaskController extends EventEmitter {
           keyringOverrides?.trezorBridge || TrezorOffscreenBridge,
         ),
         hardwareKeyringBuilderFactory(
-          OneKeyKeyring,
-          keyringOverrides?.oneKey || TrezorOffscreenBridge,
-        ),
-        hardwareKeyringBuilderFactory(
           LedgerKeyring,
           keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
         ),
         keyringBuilderFactory(LatticeKeyringOffscreen),
+        hardwareOneKeyKeyringBuilderFactory(
+          OneKeyKeyring,
+          keyringOverrides?.oneKey || OneKeyOffscreenBridge,
+          this.platform,
+        ),
       );
     }
 
@@ -5385,6 +5390,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Get hardware type that will be sent for metrics logging.
+   *
+   * @param {string} address - Address to retrieve the keyring from
+   * @returns {HardwareKeyringType} Keyring hardware type
+   */
+  async getHardwareTypeForMetric(address) {
+    return await this.keyringController.withKeyring(
+      { address },
+      ({ keyring }) => HardwareKeyringType[keyring.type],
+    );
+  }
+
+  /**
    * Check if the device is unlocked
    *
    * @param deviceName
@@ -5397,19 +5415,6 @@ export default class MetamaskController extends EventEmitter {
       async (keyring) => {
         return keyring.isUnlocked();
       },
-    );
-  }
-
-  /**
-   * Get hardware type that will be sent for metrics logging.
-   *
-   * @param {string} address - Address to retrieve the keyring from
-   * @returns {HardwareKeyringType} Keyring hardware type
-   */
-  async getHardwareTypeForMetric(address) {
-    return await this.keyringController.withKeyring(
-      { address },
-      ({ keyring }) => HardwareKeyringType[keyring.type],
     );
   }
 

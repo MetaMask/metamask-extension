@@ -2228,7 +2228,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/rlp@npm:^4.0.1":
+"@ethereumjs/rlp@npm:^4.0.0, @ethereumjs/rlp@npm:^4.0.1":
   version: 4.0.1
   resolution: "@ethereumjs/rlp@npm:4.0.1"
   bin:
@@ -7032,7 +7032,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:^1.7.1, @noble/hashes@npm:~1.8.0":
+"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:^1.7.0, @noble/hashes@npm:^1.7.1, @noble/hashes@npm:~1.8.0":
   version: 1.8.0
   resolution: "@noble/hashes@npm:1.8.0"
   checksum: 10/474b7f56bc6fb2d5b3a42132561e221b0ea4f91e590f4655312ca13667840896b34195e2b53b7f097ec080a1fdd3b58d902c2a8d0fbdf51d2e238b53808a177e
@@ -7546,6 +7546,114 @@ __metadata:
     "@octokit/request-error": "npm:^6.1.7"
     "@octokit/webhooks-methods": "npm:^5.1.1"
   checksum: 10/0ed6bc742d896a35a02a6df255d2561c8d66a6eec163bbd53b68c23fe78fac2130353f2246f8ce2751c6322c1cf4aee0394b025b8af9f727ed90f854462296d1
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/cross-inpage-provider-core@npm:^0.0.17":
+  version: 0.0.17
+  resolution: "@onekeyfe/cross-inpage-provider-core@npm:0.0.17"
+  dependencies:
+    "@onekeyfe/cross-inpage-provider-errors": "npm:^0.0.17"
+    "@onekeyfe/cross-inpage-provider-events": "npm:^0.0.17"
+    "@onekeyfe/cross-inpage-provider-types": "npm:^0.0.17"
+    events: "npm:^3.3.0"
+    lodash: "npm:^4.17.21"
+    ms: "npm:^2.1.3"
+  checksum: 10/655305db565093b245d42c65f02f951cc4f064469aa201e9acea6c4b9e14e5acc2944815134b18773865ef05afff9bb78face94e6f730ef9e9dd5b0ccd0d72b4
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/cross-inpage-provider-errors@npm:^0.0.17":
+  version: 0.0.17
+  resolution: "@onekeyfe/cross-inpage-provider-errors@npm:0.0.17"
+  dependencies:
+    fast-safe-stringify: "npm:^2.1.1"
+  checksum: 10/f9a37acaaff97581d5344651b3d72c91cdf537d88c452564db962b8cc214c32c97246de9d5adeeef225ef1ccc5d804545e84755d8c9a95e63af2fc94a90dd4fb
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/cross-inpage-provider-events@npm:^0.0.17":
+  version: 0.0.17
+  resolution: "@onekeyfe/cross-inpage-provider-events@npm:0.0.17"
+  checksum: 10/f98304e1d98c1b3fc9b2952056019dcd2123de8bf555d9039d1d93a953ceb2937a97a91c1061bd4b971d6efa3a017ed9c68915a3454a7c0b8f9bdcefa0d11d84
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/cross-inpage-provider-types@npm:^0.0.17":
+  version: 0.0.17
+  resolution: "@onekeyfe/cross-inpage-provider-types@npm:0.0.17"
+  checksum: 10/4dbf5bc6b4467a8324f2e438757fccd934573e081d88532a75d1588b32120bde3c9f39229ac6678fcc25d4970622fbec4e128f01550b4f6925b798c93ad642a5
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/hd-core@npm:1.0.27-alpha.0, @onekeyfe/hd-core@npm:^1.0.27-alpha.0":
+  version: 1.0.27-alpha.0
+  resolution: "@onekeyfe/hd-core@npm:1.0.27-alpha.0"
+  dependencies:
+    "@onekeyfe/hd-shared": "npm:^1.0.27-alpha.0"
+    "@onekeyfe/hd-transport": "npm:^1.0.27-alpha.0"
+    axios: "npm:^0.27.2"
+    bignumber.js: "npm:^9.0.2"
+    bytebuffer: "npm:^5.0.1"
+    jszip: "npm:^3.10.1"
+    parse-uri: "npm:^1.0.7"
+    semver: "npm:^7.3.7"
+  peerDependencies:
+    "@noble/hashes": ^1.1.3
+    ripple-keypairs: ^1.1.4
+  checksum: 10/f5345e72058c652b00f3467c73a69abb248627ce59ff70662ab35c6e34ab18fbb4b856f68b0c754ea2ad59144efaac5166e2b166bf5a14933f7db59ac11045ec
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/hd-shared@npm:1.0.27-alpha.0, @onekeyfe/hd-shared@npm:^1.0.27-alpha.0":
+  version: 1.0.27-alpha.0
+  resolution: "@onekeyfe/hd-shared@npm:1.0.27-alpha.0"
+  checksum: 10/425651d41121634c7cd3a9b936a2c0aefb906514934af37c7918e69e66bda79085c8a9d92c5021966932051e3c5f58619f4c82a48591c13da4104447b46e8527
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/hd-transport-http@npm:^1.0.27-alpha.0":
+  version: 1.0.27-alpha.0
+  resolution: "@onekeyfe/hd-transport-http@npm:1.0.27-alpha.0"
+  dependencies:
+    "@onekeyfe/hd-shared": "npm:^1.0.27-alpha.0"
+    "@onekeyfe/hd-transport": "npm:^1.0.27-alpha.0"
+    axios: "npm:^0.27.2"
+  checksum: 10/180500bbfc82d837b2e85bf37984080d409e3d7d17b0c65e2c461d98ed7174762a4b8c938d1b065032a17932302e80e00f38f8163d9f00259b76625e5b9d4406
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/hd-transport-webusb@npm:^1.0.27-alpha.0":
+  version: 1.0.27-alpha.0
+  resolution: "@onekeyfe/hd-transport-webusb@npm:1.0.27-alpha.0"
+  dependencies:
+    "@onekeyfe/hd-shared": "npm:^1.0.27-alpha.0"
+    "@onekeyfe/hd-transport": "npm:^1.0.27-alpha.0"
+  checksum: 10/87627f360775192b21589667711aae14aea916871f98370d87e965750c6a59b1664ad9640aef56b4e5c9accca4b5b8b28305e06e04691e2438da2b64d446a388
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/hd-transport@npm:^1.0.27-alpha.0":
+  version: 1.0.27-alpha.0
+  resolution: "@onekeyfe/hd-transport@npm:1.0.27-alpha.0"
+  dependencies:
+    bytebuffer: "npm:^5.0.1"
+    long: "npm:^4.0.0"
+    protobufjs: "npm:^6.11.2"
+  checksum: 10/5e442520f2a6635bcbe6705460c22e383503ec65c7a4bb5ad69cc67bee36e7b2d1491467a228d566b83625e42c0f08177331236021f6115ee5befdfde7f5dcb8
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/hd-web-sdk@npm:1.0.27-alpha.0, @onekeyfe/hd-web-sdk@npm:^1.0.27-alpha.0":
+  version: 1.0.27-alpha.0
+  resolution: "@onekeyfe/hd-web-sdk@npm:1.0.27-alpha.0"
+  dependencies:
+    "@onekeyfe/cross-inpage-provider-core": "npm:^0.0.17"
+    "@onekeyfe/hd-core": "npm:^1.0.27-alpha.0"
+    "@onekeyfe/hd-shared": "npm:^1.0.27-alpha.0"
+    "@onekeyfe/hd-transport-http": "npm:^1.0.27-alpha.0"
+    "@onekeyfe/hd-transport-webusb": "npm:^1.0.27-alpha.0"
+  checksum: 10/1c1a8b8a55ef2e446e686f4c9d3a31684104b36872a6fcf29617ec538cf73a75dbfb7ca38e879b9f43fc0b7d9531a86c72156c451d69d1274c4d8b5f874a87bf
   languageName: node
   linkType: hard
 
@@ -13244,6 +13352,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/long@npm:^4.0.1":
+  version: 4.0.2
+  resolution: "@types/long@npm:4.0.2"
+  checksum: 10/68afa05fb20949d88345876148a76f6ccff5433310e720db51ac5ca21cb8cc6714286dbe04713840ddbd25a8b56b7a23aa87d08472fabf06463a6f2ed4967707
+  languageName: node
+  linkType: hard
+
 "@types/lru-cache@npm:5.1.1":
   version: 5.1.1
   resolution: "@types/lru-cache@npm:5.1.1"
@@ -16710,7 +16825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1, bignumber.js@npm:^9.1.1, bignumber.js@npm:^9.1.2":
+"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1, bignumber.js@npm:^9.0.2, bignumber.js@npm:^9.1.1, bignumber.js@npm:^9.1.2":
   version: 9.1.2
   resolution: "bignumber.js@npm:9.1.2"
   checksum: 10/d89b8800a987225d2c00dcbf8a69dc08e92aa0880157c851c287b307d31ceb2fc2acb0c62c3e3a3d42b6c5fcae9b004035f13eb4386e56d529d7edac18d5c9d8
@@ -17507,6 +17622,15 @@ __metadata:
   dependencies:
     run-applescript: "npm:^7.0.0"
   checksum: 10/1d966c8d2dbf4d9d394e53b724ac756c2414c45c01340b37743621f59cc565a435024b394ddcb62b9b335d1c9a31f4640eb648c3fec7f97ee74dc0694c9beb6c
+  languageName: node
+  linkType: hard
+
+"bytebuffer@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "bytebuffer@npm:5.0.1"
+  dependencies:
+    long: "npm:~3"
+  checksum: 10/f3e9739ed9ab30e19d985fc3dadfdbd631d030874bbb313feefddac756f21ac10957257737e630fd9959744318e6e8b7d8c35b797519693bf1897be16c560970
   languageName: node
   linkType: hard
 
@@ -22033,6 +22157,23 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: 10/959e833327960f40fab8693997e071def75103a694e931ab11313e642b6958d4f2878000d91ddfd6ba3c158bdc3f381c63eae0dd26738790e2aca5004ceb0387
+  languageName: node
+  linkType: hard
+
+"eth-onekey-bridge-keyring@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "eth-onekey-bridge-keyring@npm:0.2.1"
+  dependencies:
+    "@ethereumjs/rlp": "npm:^4.0.0"
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethereumjs/util": "npm:^8.0.0"
+    "@metamask/eth-sig-util": "npm:^7.0.1"
+    "@noble/hashes": "npm:^1.7.0"
+    "@onekeyfe/hd-core": "npm:^1.0.27-alpha.0"
+    "@onekeyfe/hd-shared": "npm:^1.0.27-alpha.0"
+    "@onekeyfe/hd-web-sdk": "npm:^1.0.27-alpha.0"
+    bytebuffer: "npm:^5.0.1"
+  checksum: 10/fc8258216a012b5029fb21f53a75c6aa0768ac23473c6bbc858e10d3d80ed16550aba5143f8d56da7d545cd601a5e9b12148398a36a4a4d500674bca9c66a18e
   languageName: node
   linkType: hard
 
@@ -29255,6 +29396,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"long@npm:~3":
+  version: 3.2.0
+  resolution: "long@npm:3.2.0"
+  checksum: 10/ffc685ec458ddf71a830d6deb62ff7dc551a736d47473350d9e077c22db96ec88c8a3554c11ffce7d7f2291b0c30da36629e4d0a97c29b5360dc977533c96d28
+  languageName: node
+  linkType: hard
+
 "longest-streak@npm:^2.0.1":
   version: 2.0.3
   resolution: "longest-streak@npm:2.0.3"
@@ -30128,6 +30276,9 @@ __metadata:
     "@noble/hashes": "npm:^1.3.3"
     "@octokit/core": "npm:^3.6.0"
     "@octokit/types": "npm:^14.0.0"
+    "@onekeyfe/hd-core": "npm:1.0.27-alpha.0"
+    "@onekeyfe/hd-shared": "npm:1.0.27-alpha.0"
+    "@onekeyfe/hd-web-sdk": "npm:1.0.27-alpha.0"
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/mock-server": "npm:^1.7.5"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
@@ -30273,6 +30424,7 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     eth-lattice-keyring: "patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch"
     eth-method-registry: "npm:^4.0.0"
+    eth-onekey-bridge-keyring: "npm:^0.2.1"
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:5.7.0"
     extension-port-stream: "npm:^3.0.0"
@@ -32943,6 +33095,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse-uri@npm:^1.0.7":
+  version: 1.0.11
+  resolution: "parse-uri@npm:1.0.11"
+  checksum: 10/f1f8d6f73c00b09e297f502cab2a1ae22efa1e9edbdd45caeb95be0c89d680d9822387419377823972d5010a1d25b1a72c72b08e1a15e359fa8ad4634c7aef8e
+  languageName: node
+  linkType: hard
+
 "parse-url@npm:^8.1.0":
   version: 8.1.0
   resolution: "parse-url@npm:8.1.0"
@@ -34183,6 +34342,30 @@ __metadata:
     "@types/node": "npm:>=13.7.0"
     long: "npm:^5.0.0"
   checksum: 10/408423506610f70858d7593632f4a6aa4f05796c90fd632be9b9252457c795acc71aa6d3b54bb7f48a890141728fee4ca3906723ccea6c202ad71f21b3879b8b
+  languageName: node
+  linkType: hard
+
+"protobufjs@npm:^6.11.2":
+  version: 6.11.4
+  resolution: "protobufjs@npm:6.11.4"
+  dependencies:
+    "@protobufjs/aspromise": "npm:^1.1.2"
+    "@protobufjs/base64": "npm:^1.1.2"
+    "@protobufjs/codegen": "npm:^2.0.4"
+    "@protobufjs/eventemitter": "npm:^1.1.0"
+    "@protobufjs/fetch": "npm:^1.1.0"
+    "@protobufjs/float": "npm:^1.0.2"
+    "@protobufjs/inquire": "npm:^1.1.0"
+    "@protobufjs/path": "npm:^1.1.2"
+    "@protobufjs/pool": "npm:^1.1.0"
+    "@protobufjs/utf8": "npm:^1.1.0"
+    "@types/long": "npm:^4.0.1"
+    "@types/node": "npm:>=13.7.0"
+    long: "npm:^4.0.0"
+  bin:
+    pbjs: bin/pbjs
+    pbts: bin/pbts
+  checksum: 10/6b7fd7540d74350d65c38f69f398c9995ae019da070e79d9cd464a458c6d19b40b07c9a026be4e10704c824a344b603307745863310c50026ebd661ce4da0663
   languageName: node
   linkType: hard
 
