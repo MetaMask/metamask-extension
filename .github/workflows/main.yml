@@ -150,11 +150,11 @@ jobs:
             exit 0
           fi
 
-          if [[ "${TOTAL_COUNT}" -lt 400 ]]; then
-            echo "Using ubuntu-latest runner (count: ${TOTAL_COUNT} < 400)"
+          if [[ "${TOTAL_COUNT}" -lt 900 ]]; then
+            echo "Using ubuntu-latest runner (count: ${TOTAL_COUNT} < 900)"
             echo "runner-type=ubuntu-latest" >> "${GITHUB_OUTPUT}"
           else
-            echo "Using custom runner (count: ${TOTAL_COUNT} >= 400)"
+            echo "Using custom runner (count: ${TOTAL_COUNT} >= 900)"
             echo "runner-type=gha-mm-scale-set-ubuntu-22.04-amd64-med" >> "${GITHUB_OUTPUT}"
           fi
 
