@@ -1,5 +1,7 @@
 // Note: just some initial types (will likely be refactored to pull from contract metadata
 
+import { Delegation } from '../../../shared/lib/delegation';
+
 export enum TokenSymbol {
   ETH = 'ETH',
   USDC = 'USDC',
@@ -71,3 +73,21 @@ export type DailyAllowance = {
   amount: number;
   iconUrl: string;
 };
+
+export type RemoteModeConfig = {
+  swapAllowance: {
+    allowances: SwapAllowance[];
+    revokeId?: string;
+    delegation?: Delegation;
+  } | null;
+  dailyAllowance: {
+    allowances: DailyAllowance[];
+    revokeId?: string;
+    delegation?: Delegation;
+  } | null;
+};
+
+export enum REMOTE_MODES {
+  SWAP = 'swap',
+  DAILY_ALLOWANCE = 'daily-allowance',
+}

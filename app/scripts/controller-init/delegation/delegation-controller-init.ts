@@ -9,6 +9,7 @@ import {
 } from '../../../../shared/lib/delegation';
 import { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messenger';
 import { ControllerInitFunction, ControllerInitResult } from '../types';
+import { handleRevokeConfirmation } from '../../lib/delegation/events';
 
 const getDelegationEnvironment = (chainId: Hex) => {
   return getDeleGatorEnvironment(Number(chainId));
@@ -20,13 +21,14 @@ const getDelegationEnvironment = (chainId: Hex) => {
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
+ * @param request.initMessenger - The initialization messenger for the controller.
  * @returns The initialized controller.
  */
 export const DelegationControllerInit: ControllerInitFunction<
   DelegationController,
   DelegationControllerMessenger,
   DelegationControllerInitMessenger
-> = ({ controllerMessenger, persistedState }) => {
+> = ({ controllerMessenger, persistedState, initMessenger }) => {
   const controller = new DelegationController({
     messenger: controllerMessenger,
     state: persistedState.DelegationController,
@@ -35,6 +37,8 @@ export const DelegationControllerInit: ControllerInitFunction<
   });
 
   const api = getApi(controller);
+
+  addDelegationControllerListeners(initMessenger, controller);
 
   return {
     controller,
@@ -59,4 +63,15 @@ function getApi(
     getDelegationEntryChain: controller.chain.bind(controller),
     deleteDelegationEntry: controller.delete.bind(controller),
   };
+}
+
+function addDelegationControllerListeners(
+  initMessenger: DelegationControllerInitMessenger,
+  controller: DelegationController,
+) {
+  initMessenger.subscribe(
+    'TransactionController:transactionConfirmed',
+    (transactionMeta) =>
+      handleRevokeConfirmation({ transactionMeta }, controller),
+  );
 }

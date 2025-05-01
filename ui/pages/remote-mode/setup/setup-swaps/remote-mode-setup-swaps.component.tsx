@@ -1,8 +1,9 @@
-import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { Hex } from '@metamask/utils';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -15,39 +16,39 @@ import {
   Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonVariant,
   ButtonSize,
-  Text,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../../components/component-library';
-import Tooltip from '../../../../components/ui/tooltip';
-import UnitInput from '../../../../components/ui/unit-input';
-import Dropdown from '../../../../components/ui/dropdown';
-import {
-  AlignItems,
-  FontWeight,
-  TextVariant,
-  TextAlign,
-  BackgroundColor,
-  Display,
-  JustifyContent,
-  FlexDirection,
-  BlockSize,
-  TextColor,
-  BorderColor,
-  BorderRadius,
-} from '../../../../helpers/constants/design-system';
-import Card from '../../../../components/ui/card';
-import { AccountPicker } from '../../../../components/multichain/account-picker';
 import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
+import { AccountPicker } from '../../../../components/multichain/account-picker';
 import {
   Content,
   Footer,
   Header,
   Page,
 } from '../../../../components/multichain/pages/page';
+import Card from '../../../../components/ui/card';
+import Dropdown from '../../../../components/ui/dropdown';
+import Tooltip from '../../../../components/ui/tooltip';
+import UnitInput from '../../../../components/ui/unit-input';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 
 import {
   SwapAllowance,
@@ -61,19 +62,27 @@ import {
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import {
+  SwapAllowance,
+  TokenSymbol,
+  ToTokenOption,
+  REMOTE_MODES,
+} from '../../remote.types';
+
+import {
   RemoteModeHardwareWalletConfirm,
   RemoteModeSwapAllowanceCard,
-  StepIndicator,
   SmartAccountUpdateInformation,
+  StepIndicator,
 } from '../../components';
 
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 
-import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import {
-  getSelectedInternalAccount,
   getMetaMaskAccountsOrdered,
+  getSelectedInternalAccount,
 } from '../../../../selectors';
+import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
+import { useRemoteMode } from '../../hooks/useRemoteMode';
 
 const TOTAL_STEPS = 3;
 
@@ -114,6 +123,9 @@ export default function RemoteModeSetupSwaps() {
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+  const { enableRemoteMode } = useRemoteMode({
+    account: selectedHardwareAccount.address as Hex,
+  });
 
   useEffect(() => {
     setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
@@ -203,7 +215,18 @@ export default function RemoteModeSetupSwaps() {
     setIsConfirmModalOpen(true);
   };
 
-  const handleConfigureRemoteSwaps = () => {
+  const handleConfigureRemoteSwaps = async () => {
+    if (!selectedAccount) {
+      return;
+    }
+
+    await enableRemoteMode({
+      selectedAccount: selectedHardwareAccount,
+      authorizedAccount: selectedAccount,
+      mode: REMOTE_MODES.SWAP,
+      meta: JSON.stringify({ allowances: swapAllowance }),
+    });
+
     // todo: replace with delegation controller integration
     const remoteMode = localStorage.getItem('remoteMode');
     const parsedRemoteMode = remoteMode ? JSON.parse(remoteMode) : null;
@@ -214,6 +237,7 @@ export default function RemoteModeSetupSwaps() {
       },
     };
     localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
+
     history.replace(REMOTE_ROUTE);
   };
 

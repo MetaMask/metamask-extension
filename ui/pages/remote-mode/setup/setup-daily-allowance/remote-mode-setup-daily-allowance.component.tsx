@@ -1,14 +1,9 @@
-import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import {
-  Content,
-  Footer,
-  Header,
-  Page,
-} from '../../../../components/multichain/pages/page';
+import { Hex } from '@metamask/utils';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -16,29 +11,38 @@ import {
   Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonVariant,
   ButtonSize,
-  Text,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../../components/component-library';
+import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
+import { AccountPicker } from '../../../../components/multichain/account-picker';
+import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../../../components/multichain/pages/page';
+import Card from '../../../../components/ui/card';
+import Dropdown from '../../../../components/ui/dropdown';
 import Tooltip from '../../../../components/ui/tooltip';
 import UnitInput from '../../../../components/ui/unit-input';
-import Dropdown from '../../../../components/ui/dropdown';
 import {
   AlignItems,
-  FontWeight,
-  TextVariant,
-  TextAlign,
   BackgroundColor,
-  Display,
-  JustifyContent,
-  FlexDirection,
   BlockSize,
-  TextColor,
   BorderColor,
   BorderRadius,
+  Display,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Card from '../../../../components/ui/card';
 import { AccountPicker } from '../../../../components/multichain/account-picker';
@@ -51,17 +55,25 @@ import {
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import {
-  getSelectedInternalAccount,
+  DailyAllowance,
+  DailyAllowanceTokenTypes,
+  REMOTE_MODES,
+} from '../../remote.types';
+
+import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
+import {
   getMetaMaskAccountsOrdered,
+  getSelectedInternalAccount,
 } from '../../../../selectors';
 import {
-  RemoteModeHardwareWalletConfirm,
   RemoteModeDailyAllowanceCard,
-  StepIndicator,
+  RemoteModeHardwareWalletConfirm,
   SmartAccountUpdateInformation,
+  StepIndicator,
 } from '../../components';
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { useRemoteMode } from '../../hooks/useRemoteMode';
 
 const TOTAL_STEPS = 3;
 const DAILY_ETH_LIMIT = 10;
@@ -112,6 +124,10 @@ export default function RemoteModeSetupDailyAllowance() {
         '0',
     );
   };
+
+  const { enableRemoteMode } = useRemoteMode({
+    account: selectedHardwareAccount.address as Hex,
+  });
 
   useEffect(() => {
     setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
@@ -195,7 +211,18 @@ export default function RemoteModeSetupDailyAllowance() {
     setIsConfirmModalOpen(true);
   };
 
-  const handleConfigureRemoteSwaps = () => {
+  const handleConfigureRemoteSwaps = async () => {
+    if (!selectedAccount) {
+      return;
+    }
+
+    await enableRemoteMode({
+      selectedAccount: selectedHardwareAccount,
+      authorizedAccount: selectedAccount,
+      mode: REMOTE_MODES.DAILY_ALLOWANCE,
+      meta: JSON.stringify({ allowances: dailyAllowance }),
+    });
+    // TODO: check better way to route to remote mode if upgrade is needed
     history.replace(REMOTE_ROUTE);
   };
 

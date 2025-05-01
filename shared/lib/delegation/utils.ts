@@ -241,3 +241,18 @@ function hashSignature(fn: string) {
 export const toFunctionSelector = (fn: string): Hex => {
   return toHex(hashSignature(fn).subarray(0, 4));
 };
+
+/**
+ * Checks if two hex strings are equal.
+ *
+ * @param a - The first hex string.
+ * @param b - The second hex string.
+ * @returns True if the hex strings are equal, false otherwise.
+ */
+export function isHexEqual(a: Hex, b: Hex) {
+  return a.toLowerCase() === b.toLowerCase();
+}
+
+export const DELEGATION_TAGS = {
+  REVOKE: 'revoke',
+};
