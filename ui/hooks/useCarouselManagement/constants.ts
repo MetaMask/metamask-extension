@@ -3,7 +3,7 @@ export const REMOTE_MODE_SLIDE = {
   title: 'slideRemoteModeTitle',
   description: 'slideRemoteModeDescription',
   // TODO: Update image once we have a remote mode icon
-  image: './images/slide-fund-icon.svg',
+  image: './images/side-cold-storage.svg',
   href: '/home.html#remote',
 };
 
