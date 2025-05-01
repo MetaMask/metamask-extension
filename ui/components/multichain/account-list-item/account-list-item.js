@@ -104,7 +104,7 @@ const AccountListItem = ({
   startAccessory,
   onActionClick,
   shouldScrollToWhenSelected = true,
-  showConnectedStatus = false,
+  showConnectedStatus = true,
   privacyMode = false,
 }) => {
   const t = useI18nContext();

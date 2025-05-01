@@ -36,12 +36,12 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
 }): JSX.Element => {
   const useBlockie = useSelector(getUseBlockie);
   const tooltipContents = useMemo(() => {
-    // The badge is not shown if showConnectedStatus is false
-    const positionObj = !showConnectedStatus
-      ? undefined
-      : isConnectedAndNotActive
-      ? { bottom: 2, right: 5 }
-      : { bottom: -1, right: 2 };
+    let positionObj;
+    if (showConnectedStatus) {
+      positionObj = isConnectedAndNotActive
+        ? { bottom: 2, right: 5 }
+        : { bottom: -1, right: 2 };
+    }
 
     return (
       <BadgeWrapper
@@ -84,7 +84,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
     badgeBorderColor,
     isConnectedAndNotActive,
     useBlockie,
-    showConnectedStatus
+    showConnectedStatus,
   ]);
 
   return (
