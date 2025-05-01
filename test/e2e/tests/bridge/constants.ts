@@ -37,6 +37,40 @@ export const MOCK_CURRENCY_RATES = {
   },
 };
 
+export const TOP_ASSETS_API_LINEA_MOCK_RESULT = [
+  {
+    address: '0x0000000000000000000000000000000000000000',
+    symbol: 'ETH',
+  },
+  {
+    address: '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+    symbol: 'DAI',
+  },
+  {
+    address: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+    symbol: 'USDC',
+  },
+  {
+    address: '0xa219439258ca9da29e9cc4ce5596924745e12b93',
+    symbol: 'USDT',
+  },
+];
+
+export const TOP_ASSETS_API_ARBITRUM_MOCK_RESULT = [
+  {
+    address: '0x0000000000000000000000000000000000000000',
+    symbol: 'ETH',
+  },
+  {
+    address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+    symbol: 'DAI',
+  },
+  {
+    address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+    symbol: 'USDC',
+  },
+];
+
 export const MOCK_TOKENS_API = [
   {
     symbol: 'USDC',
@@ -130,6 +164,43 @@ export const MOCK_GET_TOKEN_API = [
       storage: {
         balance: 9,
         approval: 10,
+      },
+      erc20Permit: true,
+      description: {},
+      createdAt: '2023-10-31T21:35:04.606Z',
+    },
+  },
+  {
+    address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+    chainId: 42161,
+    assetId: 'eip155:42161/erc20:0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+    symbol: 'DAI',
+    decimals: 18,
+    name: 'Dai Stablecoin',
+    coingeckoId: 'makerdao-arbitrum-bridged-dai-arbitrum-one',
+    aggregators: [
+      'arbitrumBridge',
+      'arbitrumWhitelist',
+      'coinGecko',
+      'traderJoe',
+      'oneInch',
+      'liFi',
+      'xSwap',
+      'socket',
+      'rubic',
+      'squid',
+    ],
+    occurrences: 10,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/erc20/0xda10009cbd5d07dd0cecc66161fc93d7c9000da1.png',
+    metadata: {
+      honeypotStatus: {
+        goPlus: false,
+      },
+      isContractVerified: false,
+      storage: {
+        balance: 2,
+        approval: 3,
       },
       erc20Permit: true,
       description: {},
@@ -278,6 +349,789 @@ export const MOCK_BRIDGE_ETH_TO_ETH_LINEA = [
       gasLimit: 159131,
     },
     estimatedProcessingTimeInSeconds: 20,
+  },
+];
+
+export const MOCK_BRIDGE_NATIVE_L2_TO_MAINNET = [
+  {
+    quote: {
+      requestId: 'f7f9af6c-bb7d-4372-8142-553e9874994d',
+      srcChainId: 59144,
+      srcTokenAmount: '991250000000000000',
+      srcAsset: {
+        address: '0x0000000000000000000000000000000000000000',
+        chainId: 59144,
+        assetId: 'eip155:59144/slip44:60',
+        symbol: 'ETH',
+        decimals: 18,
+        name: 'Ether',
+        coingeckoId: 'ethereum',
+        aggregators: [],
+        occurrences: 100,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/native/60.png',
+        metadata: {
+          honeypotStatus: {},
+          erc20Permit: false,
+          description: {},
+          createdAt: '2023-10-31T21:55:26.652Z',
+        },
+        price: '1574.78',
+      },
+      destChainId: 1,
+      destTokenAmount: '990933440686599409',
+      destAsset: {
+        address: '0x0000000000000000000000000000000000000000',
+        chainId: 1,
+        assetId: 'eip155:1/slip44:60',
+        symbol: 'ETH',
+        decimals: 18,
+        name: 'Ethereum',
+        coingeckoId: 'ethereum',
+        aggregators: [],
+        occurrences: 100,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/native/60.png',
+        metadata: {
+          honeypotStatus: {},
+          isContractVerified: false,
+          erc20Permit: false,
+          description: {},
+          createdAt: '2023-10-31T22:41:58.553Z',
+        },
+        price: '1572.99',
+      },
+      feeData: {
+        metabridge: {
+          amount: '8750000000000000',
+          asset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 59144,
+            assetId: 'eip155:59144/slip44:60',
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ether',
+            coingeckoId: 'ethereum',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/native/60.png',
+            metadata: {
+              honeypotStatus: {},
+              erc20Permit: false,
+              description: {},
+              createdAt: '2023-10-31T21:55:26.652Z',
+            },
+            price: '1574.78',
+          },
+        },
+      },
+      bridgeId: 'lifi',
+      bridges: ['across'],
+      steps: [
+        {
+          action: 'bridge',
+          srcChainId: 59144,
+          destChainId: 1,
+          protocol: {
+            name: 'across',
+            displayName: 'AcrossV3',
+            icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/acrossv2.png',
+          },
+          srcAsset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 59144,
+            assetId: 'eip155:59144/slip44:60',
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ether',
+            coingeckoId: 'ethereum',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/native/60.png',
+            metadata: {
+              honeypotStatus: {},
+              erc20Permit: false,
+              description: {},
+              createdAt: '2023-10-31T21:55:26.652Z',
+            },
+          },
+          destAsset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 1,
+            assetId: 'eip155:1/slip44:60',
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ethereum',
+            coingeckoId: 'ethereum',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/native/60.png',
+            metadata: {
+              honeypotStatus: {},
+              isContractVerified: false,
+              erc20Permit: false,
+              description: {},
+              createdAt: '2023-10-31T22:41:58.553Z',
+            },
+          },
+          srcAmount: '991250000000000000',
+          destAmount: '990933440686599409',
+        },
+      ],
+      bridgePriceData: {
+        totalFromAmountUsd: '1561.0007',
+        totalToAmountUsd: '1558.7284',
+        priceImpact: '0.0014556687898987402',
+      },
+    },
+    trade: {
+      chainId: 59144,
+      to: '0xE3d0d2607182Af5B24f5C3C2E4990A053aDd64e3',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '0x0de0b6b3a7640000',
+      data: '0x3ce33bff000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e000000000000000000000000060b6710c04d44273f6f5c2f1c871aa9e856bed1200000000000000000000000060b6710c04d44273f6f5c2f1c871aa9e856bed120000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dc1a09f859b20000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000001f161421c8e000000000000000000000000000b87644b0bd6af792c022dc4958b3faaa84d74d08000000000000000000000000000000000000000000000000000000000000008cdf834e15a2aabe0039b046a85cfe73b6021e818b776b421b1c4db2474086a7e15cfe73b6021e818b776b421b1c4db2474086a7e100000001c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000dc086a6e3924f49000000000000000000000000000000000000000068068dc36806b14c00000000000000000000000000000000000000000000000073502259cbd4304dd43c206f2e3dc77a8520e57835af317a8b0e726cdfd8adc84f7aaa1461c398b2ebacd0da14227c36745609d7a6b72a682d177683c35955581b',
+      gasLimit: 158000,
+    },
+    estimatedProcessingTimeInSeconds: 8,
+  },
+];
+
+export const MOCK_BRIDGE_NATIVE_L2_TO_L2 = [
+  {
+    quote: {
+      requestId: 'c32368d4-ca4a-4235-9432-346d8ba1f29a',
+      srcChainId: 59144,
+      srcTokenAmount: '991250000000000000',
+      srcAsset: {
+        address: '0x0000000000000000000000000000000000000000',
+        chainId: 59144,
+        assetId: 'eip155:59144/slip44:60',
+        symbol: 'ETH',
+        decimals: 18,
+        name: 'Ether',
+        coingeckoId: 'ethereum',
+        aggregators: [],
+        occurrences: 100,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/native/60.png',
+        metadata: {
+          honeypotStatus: {},
+          erc20Permit: false,
+          description: {},
+          createdAt: '2023-10-31T21:55:26.652Z',
+        },
+        price: '1575.62',
+      },
+      destChainId: 42161,
+      destTokenAmount: '991144603594270178',
+      destAsset: {
+        address: '0x0000000000000000000000000000000000000000',
+        chainId: 42161,
+        assetId: 'eip155:42161/slip44:60',
+        symbol: 'ETH',
+        decimals: 18,
+        name: 'Ether',
+        coingeckoId: 'ethereum',
+        aggregators: [],
+        occurrences: 100,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/native/60.png',
+        metadata: {
+          honeypotStatus: {},
+          isContractVerified: false,
+          erc20Permit: false,
+          description: {},
+          createdAt: '2023-10-31T21:35:04.606Z',
+        },
+        price: '1570.66415883',
+      },
+      feeData: {
+        metabridge: {
+          amount: '8750000000000000',
+          asset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 59144,
+            assetId: 'eip155:59144/slip44:60',
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ether',
+            coingeckoId: 'ethereum',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/native/60.png',
+            metadata: {
+              honeypotStatus: {},
+              erc20Permit: false,
+              description: {},
+              createdAt: '2023-10-31T21:55:26.652Z',
+            },
+            price: '1575.62',
+          },
+        },
+      },
+      bridgeId: 'lifi',
+      bridges: ['celer'],
+      steps: [
+        {
+          action: 'bridge',
+          srcChainId: 59144,
+          destChainId: 42161,
+          protocol: {
+            name: 'celer',
+            displayName: 'Celer cBridge',
+            icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/cbridge.svg',
+          },
+          srcAsset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 59144,
+            assetId: 'eip155:59144/slip44:60',
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ether',
+            coingeckoId: 'ethereum',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/native/60.png',
+            metadata: {
+              honeypotStatus: {},
+              erc20Permit: false,
+              description: {},
+              createdAt: '2023-10-31T21:55:26.652Z',
+            },
+          },
+          destAsset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 42161,
+            assetId: 'eip155:42161/slip44:60',
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ether',
+            coingeckoId: 'ethereum',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/native/60.png',
+            metadata: {
+              honeypotStatus: {},
+              isContractVerified: false,
+              erc20Permit: false,
+              description: {},
+              createdAt: '2023-10-31T21:35:04.606Z',
+            },
+          },
+          srcAmount: '991250000000000000',
+          destAmount: '991144603594270178',
+        },
+      ],
+      bridgePriceData: {
+        totalFromAmountUsd: '1561.8333',
+        totalToAmountUsd: '1556.7553',
+        priceImpact: '0.0032513072938065634',
+      },
+    },
+    trade: {
+      chainId: 59144,
+      to: '0xE3d0d2607182Af5B24f5C3C2E4990A053aDd64e3',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '0x0de0b6b3a7640000',
+      data: '0x3ce33bff000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003800000000000000000000000001bdacd14bd00861ea4042d4bf151731f1b239f4a0000000000000000000000001bdacd14bd00861ea4042d4bf151731f1b239f4a000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dc1a09f859b20000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000001f161421c8e000000000000000000000000000b87644b0bd6af792c022dc4958b3faaa84d74d080000000000000000000000000000000000000000000000000000000000000224ae0b91e50000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000277a0000000000000000000000000000000000000000000000000000000059a2b9348b68e735b14d30b4ef6f945f901acf3d67278fa37e063b9fba0a2c1b77dc91d100000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000180000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005cfe73b6021e818b776b421b1c4db2474086a7e10000000000000000000000000000000000000000000000000dc1a09f859b2000000000000000000000000000000000000000000000000000000000000000a4b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000076362726964676500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f6d6574616d61736b2d62726964676500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000054031194d4b5f120644b25925956f2d0d41d4524d20cd8bcf7ec8e6a0f02f8b8655a8fbd49fac4270ba43a7f085dade1097562bc12e1627985ac003431a16a701b',
+      gasLimit: 213808,
+    },
+    estimatedProcessingTimeInSeconds: 112,
+  },
+];
+
+export const MOCK_BRIDGE_DAI_L2_TO_L2 = [
+  {
+    quote: {
+      requestId: 'e5bbe39d-043a-48d8-b862-76198b6b2d25',
+      srcChainId: 59144,
+      srcTokenAmount: '9912500000000000000',
+      srcAsset: {
+        address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+        chainId: 59144,
+        assetId:
+          'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+        symbol: 'DAI',
+        decimals: 18,
+        name: 'Dai Stablecoin',
+        coingeckoId: 'bridged-dai-stablecoin-linea',
+        aggregators: [
+          'lineaTeam',
+          'coinGecko',
+          'oneInch',
+          'liFi',
+          'xSwap',
+          'rubic',
+        ],
+        occurrences: 6,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5.png',
+        metadata: {
+          honeypotStatus: {
+            goPlus: false,
+          },
+          isContractVerified: true,
+          storage: {
+            balance: 51,
+            approval: 52,
+          },
+          erc20Permit: false,
+          createdAt: '2023-10-31T21:55:26.652Z',
+        },
+        price: '1.00003434',
+      },
+      destChainId: 42161,
+      destTokenAmount: '9904798685300566262',
+      destAsset: {
+        address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+        chainId: 42161,
+        assetId:
+          'eip155:42161/erc20:0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+        symbol: 'DAI',
+        decimals: 18,
+        name: 'Dai Stablecoin',
+        coingeckoId: 'makerdao-arbitrum-bridged-dai-arbitrum-one',
+        aggregators: [
+          'arbitrumBridge',
+          'arbitrumWhitelist',
+          'coinGecko',
+          'traderJoe',
+          'oneInch',
+          'liFi',
+          'xSwap',
+          'socket',
+          'rubic',
+          'squid',
+        ],
+        occurrences: 10,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/erc20/0xda10009cbd5d07dd0cecc66161fc93d7c9000da1.png',
+        metadata: {
+          honeypotStatus: {
+            goPlus: false,
+          },
+          isContractVerified: false,
+          storage: {
+            balance: 2,
+            approval: 3,
+          },
+          erc20Permit: true,
+          description: {},
+          createdAt: '2023-10-31T21:35:04.606Z',
+        },
+        price: '1.00003434',
+      },
+      feeData: {
+        metabridge: {
+          amount: '87500000000000000',
+          asset: {
+            address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+            chainId: 59144,
+            assetId:
+              'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+            symbol: 'DAI',
+            decimals: 18,
+            name: 'Dai Stablecoin',
+            coingeckoId: 'bridged-dai-stablecoin-linea',
+            aggregators: [
+              'lineaTeam',
+              'coinGecko',
+              'oneInch',
+              'liFi',
+              'xSwap',
+              'rubic',
+            ],
+            occurrences: 6,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5.png',
+            metadata: {
+              honeypotStatus: {
+                goPlus: false,
+              },
+              isContractVerified: true,
+              storage: {
+                balance: 51,
+                approval: 52,
+              },
+              erc20Permit: false,
+              createdAt: '2023-10-31T21:55:26.652Z',
+            },
+            price: '1.00003434',
+          },
+        },
+      },
+      bridgeId: 'lifi',
+      bridges: ['across'],
+      steps: [
+        {
+          action: 'bridge',
+          srcChainId: 59144,
+          destChainId: 42161,
+          protocol: {
+            name: 'across',
+            displayName: 'AcrossV3',
+            icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/acrossv2.png',
+          },
+          srcAsset: {
+            address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+            chainId: 59144,
+            assetId:
+              'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+            symbol: 'DAI',
+            decimals: 18,
+            name: 'Dai Stablecoin',
+            coingeckoId: 'bridged-dai-stablecoin-linea',
+            aggregators: [
+              'lineaTeam',
+              'coinGecko',
+              'oneInch',
+              'liFi',
+              'xSwap',
+              'rubic',
+            ],
+            occurrences: 6,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5.png',
+            metadata: {
+              honeypotStatus: {
+                goPlus: false,
+              },
+              isContractVerified: true,
+              storage: {
+                balance: 51,
+                approval: 52,
+              },
+              erc20Permit: false,
+              createdAt: '2023-10-31T21:55:26.652Z',
+            },
+          },
+          destAsset: {
+            address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+            chainId: 42161,
+            assetId:
+              'eip155:42161/erc20:0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+            symbol: 'DAI',
+            decimals: 18,
+            name: 'Dai Stablecoin',
+            coingeckoId: 'makerdao-arbitrum-bridged-dai-arbitrum-one',
+            aggregators: [
+              'arbitrumBridge',
+              'arbitrumWhitelist',
+              'coinGecko',
+              'traderJoe',
+              'oneInch',
+              'liFi',
+              'xSwap',
+              'socket',
+              'rubic',
+              'squid',
+            ],
+            occurrences: 10,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/erc20/0xda10009cbd5d07dd0cecc66161fc93d7c9000da1.png',
+            metadata: {
+              honeypotStatus: {
+                goPlus: false,
+              },
+              isContractVerified: false,
+              storage: {
+                balance: 2,
+                approval: 3,
+              },
+              erc20Permit: true,
+              description: {},
+              createdAt: '2023-10-31T21:35:04.606Z',
+            },
+          },
+          srcAmount: '9912500000000000000',
+          destAmount: '9904798685300566262',
+        },
+      ],
+      bridgePriceData: {
+        totalFromAmountUsd: '9.9128',
+        totalToAmountUsd: '9.9051',
+        priceImpact: '0.0007767734646115723',
+      },
+    },
+    approval: {
+      chainId: 59144,
+      to: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '0x00',
+      data: '0x095ea7b3000000000000000000000000e3d0d2607182af5b24f5c3c2e4990a053add64e30000000000000000000000000000000000000000000000008ac7230489e80000',
+      gasLimit: 33556,
+    },
+    trade: {
+      chainId: 59144,
+      to: '0xE3d0d2607182Af5B24f5C3C2E4990A053aDd64e3',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '0x00',
+      data: '0x3ce33bff00000000000000000000000000000000000000000000000000000000000000800000000000000000000000004af15ec2a0bd43db75dd04e62faa3b8ef36b00d50000000000000000000000000000000000000000000000008ac7230489e8000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c69666941646170746572563200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000060b6710c04d44273f6f5c2f1c871aa9e856bed1200000000000000000000000060b6710c04d44273f6f5c2f1c871aa9e856bed12000000000000000000000000000000000000000000000000000000000000a4b10000000000000000000000004af15ec2a0bd43db75dd04e62faa3b8ef36b00d5000000000000000000000000da10009cbd5d07dd0cecc66161fc93d7c9000da10000000000000000000000000000000000000000000000008990463b380f400000000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000136dcc951d8c000000000000000000000000000b87644b0bd6af792c022dc4958b3faaa84d74d0800000000000000000000000000000000000000000000000000000000000000b0cd48728d775ce1b8e07cbbea5cfe73b6021e818b776b421b1c4db2474086a7e15cfe73b6021e818b776b421b1c4db2474086a7e14af15ec2a0bd43db75dd04e62faa3b8ef36b00d500000000000000008990463b380f40000000a4b1da10009cbd5d07dd0cecc66161fc93d7c9000da10000000000000000000000000000000000000000000000008974e9ed2918a8f6000000000000000000000000000000000000000068070c3b68072fe60000000000000000000000000000000000000000a5751c4ac9691ddcf6fdf2be84f736ec9aeee0e4c3f4ebb81d015ab9d9aa1103165018d9cc7023fe5cec9e569bd64fbf279718d5341ca5097e242ecf29f470991b',
+      gasLimit: 207300,
+    },
+    estimatedProcessingTimeInSeconds: 3,
+  },
+];
+
+export const MOCK_BRIDGE_DAI_L2_TO_MAINNET = [
+  {
+    quote: {
+      requestId: '65e79788-4008-4391-87ed-cf95642441f6',
+      srcChainId: 59144,
+      srcTokenAmount: '9912500000000000000',
+      srcAsset: {
+        address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+        chainId: 59144,
+        assetId:
+          'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+        symbol: 'DAI',
+        decimals: 18,
+        name: 'Dai Stablecoin',
+        coingeckoId: 'bridged-dai-stablecoin-linea',
+        aggregators: [
+          'lineaTeam',
+          'coinGecko',
+          'oneInch',
+          'liFi',
+          'xSwap',
+          'rubic',
+        ],
+        occurrences: 6,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5.png',
+        metadata: {
+          honeypotStatus: {
+            goPlus: false,
+          },
+          isContractVerified: true,
+          storage: {
+            balance: 51,
+            approval: 52,
+          },
+          erc20Permit: false,
+          createdAt: '2023-10-31T21:55:26.652Z',
+        },
+        price: '1.00003434',
+      },
+      destChainId: 1,
+      destTokenAmount: '9740972812020599074',
+      destAsset: {
+        address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        chainId: 1,
+        assetId: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+        symbol: 'DAI',
+        decimals: 18,
+        name: 'Dai Stablecoin',
+        coingeckoId: 'dai',
+        aggregators: [
+          'aave',
+          'cmc',
+          'coinGecko',
+          'coinMarketCap',
+          'openSwap',
+          'zerion',
+          'oneInch',
+          'liFi',
+          'xSwap',
+          'socket',
+          'rubic',
+          'pmm',
+          'metamask',
+          'bancor',
+        ],
+        occurrences: 14,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x6b175474e89094c44da98b954eedeac495271d0f.png',
+        metadata: {
+          honeypotStatus: {
+            honeypotIs: false,
+            goPlus: false,
+          },
+          isContractVerified: true,
+          fees: {
+            avgFee: 0,
+            maxFee: 0,
+            minFee: 0,
+          },
+          storage: {
+            balance: 2,
+            approval: 3,
+          },
+          erc20Permit: true,
+          description: {
+            en: 'MakerDAO has launched Multi-collateral DAI (MCD). This token refers to the new DAI that is collaterized by multiple assets.',
+          },
+          createdAt: '2023-10-31T22:41:58.553Z',
+        },
+        price: '1.00003434',
+      },
+      feeData: {
+        metabridge: {
+          amount: '87500000000000000',
+          asset: {
+            address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+            chainId: 59144,
+            assetId:
+              'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+            symbol: 'DAI',
+            decimals: 18,
+            name: 'Dai Stablecoin',
+            coingeckoId: 'bridged-dai-stablecoin-linea',
+            aggregators: [
+              'lineaTeam',
+              'coinGecko',
+              'oneInch',
+              'liFi',
+              'xSwap',
+              'rubic',
+            ],
+            occurrences: 6,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5.png',
+            metadata: {
+              honeypotStatus: {
+                goPlus: false,
+              },
+              isContractVerified: true,
+              storage: {
+                balance: 51,
+                approval: 52,
+              },
+              erc20Permit: false,
+              createdAt: '2023-10-31T21:55:26.652Z',
+            },
+            price: '1.00003434',
+          },
+        },
+      },
+      bridgeId: 'lifi',
+      bridges: ['across'],
+      steps: [
+        {
+          action: 'bridge',
+          srcChainId: 59144,
+          destChainId: 1,
+          protocol: {
+            name: 'across',
+            displayName: 'AcrossV3',
+            icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/acrossv2.png',
+          },
+          srcAsset: {
+            address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+            chainId: 59144,
+            assetId:
+              'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+            symbol: 'DAI',
+            decimals: 18,
+            name: 'Dai Stablecoin',
+            coingeckoId: 'bridged-dai-stablecoin-linea',
+            aggregators: [
+              'lineaTeam',
+              'coinGecko',
+              'oneInch',
+              'liFi',
+              'xSwap',
+              'rubic',
+            ],
+            occurrences: 6,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5.png',
+            metadata: {
+              honeypotStatus: {
+                goPlus: false,
+              },
+              isContractVerified: true,
+              storage: {
+                balance: 51,
+                approval: 52,
+              },
+              erc20Permit: false,
+              createdAt: '2023-10-31T21:55:26.652Z',
+            },
+          },
+          destAsset: {
+            address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+            chainId: 1,
+            assetId:
+              'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+            symbol: 'DAI',
+            decimals: 18,
+            name: 'Dai Stablecoin',
+            coingeckoId: 'dai',
+            aggregators: [
+              'aave',
+              'cmc',
+              'coinGecko',
+              'coinMarketCap',
+              'openSwap',
+              'zerion',
+              'oneInch',
+              'liFi',
+              'xSwap',
+              'socket',
+              'rubic',
+              'pmm',
+              'metamask',
+              'bancor',
+            ],
+            occurrences: 14,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x6b175474e89094c44da98b954eedeac495271d0f.png',
+            metadata: {
+              honeypotStatus: {
+                honeypotIs: false,
+                goPlus: false,
+              },
+              isContractVerified: true,
+              fees: {
+                avgFee: 0,
+                maxFee: 0,
+                minFee: 0,
+              },
+              storage: {
+                balance: 2,
+                approval: 3,
+              },
+              erc20Permit: true,
+              description: {
+                en: 'MakerDAO has launched Multi-collateral DAI (MCD). This token refers to the new DAI that is collaterized by multiple assets.',
+              },
+              createdAt: '2023-10-31T22:41:58.553Z',
+            },
+          },
+          srcAmount: '9912500000000000000',
+          destAmount: '9740972812020599074',
+        },
+      ],
+      bridgePriceData: {
+        totalFromAmountUsd: '9.9128',
+        totalToAmountUsd: '9.7413',
+        priceImpact: '0.017300863529981437',
+      },
+    },
+    approval: {
+      chainId: 59144,
+      to: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '0x00',
+      data: '0x095ea7b3000000000000000000000000e3d0d2607182af5b24f5c3c2e4990a053add64e30000000000000000000000000000000000000000000000008ac7230489e80000',
+      gasLimit: 33556,
+    },
+    trade: {
+      chainId: 59144,
+      to: '0xE3d0d2607182Af5B24f5C3C2E4990A053aDd64e3',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '0x00',
+      data: '0x3ce33bff00000000000000000000000000000000000000000000000000000000000000800000000000000000000000004af15ec2a0bd43db75dd04e62faa3b8ef36b00d50000000000000000000000000000000000000000000000008ac7230489e8000000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c69666941646170746572563200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000060b6710c04d44273f6f5c2f1c871aa9e856bed1200000000000000000000000060b6710c04d44273f6f5c2f1c871aa9e856bed1200000000000000000000000000000000000000000000000000000000000000010000000000000000000000004af15ec2a0bd43db75dd04e62faa3b8ef36b00d50000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000000000000000000000000000008990463b380f400000000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000136dcc951d8c000000000000000000000000000b87644b0bd6af792c022dc4958b3faaa84d74d0800000000000000000000000000000000000000000000000000000000000000b0cd48728d7686edeff542ce7d5cfe73b6021e818b776b421b1c4db2474086a7e15cfe73b6021e818b776b421b1c4db2474086a7e14af15ec2a0bd43db75dd04e62faa3b8ef36b00d500000000000000008990463b380f4000000000016b175474e89094c44da98b954eedeac495271d0f000000000000000000000000000000000000000000000000872ee329a339c9220000000000000000000000000000000000000000680710eb6807349c000000000000000000000000000000000000000036d17c48d488239f90115d7f72817b8d4407b4a0a7b0b362a068dd0e471382de782e06b5a6e692a43e31d158dc373ad9719a1deb40095069f02e1d5c67ab5bed1b',
+      gasLimit: 207326,
+    },
+    estimatedProcessingTimeInSeconds: 10,
   },
 ];
 
