@@ -121,7 +121,6 @@ describe('Bridge functionality', function (this: Suite) {
         await bridgePage.submitQuote();
 
         await homePage.goToActivityList();
-        await driver.delay(5000);
         const activityList = new ActivityListPage(driver);
         await activityList.check_pendingBridgeTransactionActivity();
       },
@@ -147,7 +146,7 @@ describe('Bridge functionality', function (this: Suite) {
         await bridgePage.submitQuote();
 
         await homePage.goToActivityList();
-        await driver.delay(5000);
+        
         // Until bug #32266 is fixed
         // const activityList = new ActivityListPage(driver);
         // await activityList.check_failedTxNumberDisplayedInActivity();
@@ -174,7 +173,7 @@ describe('Bridge functionality', function (this: Suite) {
         await bridgePage.submitQuote();
 
         await homePage.goToActivityList();
-        await driver.delay(5000);
+
         // Until bug #32266 is fixed
         // const activityList = new ActivityListPage(driver);
         // await activityList.check_failedTxNumberDisplayedInActivity();

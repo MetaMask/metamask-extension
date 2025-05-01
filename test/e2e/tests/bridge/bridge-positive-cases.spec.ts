@@ -108,7 +108,6 @@ describe('Bridge tests', function (this: Suite) {
 
     await homePage.goToActivityList();
 
-    await driver.delay(5000);
     const activityList = new ActivityListPage(driver);
     await activityList.check_completedBridgeTransactionActivity(
       transactionsCount,
