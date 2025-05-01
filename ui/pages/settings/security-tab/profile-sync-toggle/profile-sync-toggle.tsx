@@ -1,10 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  useBackupAndSync,
-} from '../../../../hooks/identity/useBackupAndSync';
+import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -26,7 +25,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import { getUseExternalServices } from '../../../../selectors';
-import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 
 const ProfileSyncToggle = () => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -67,7 +65,10 @@ const ProfileSyncToggle = () => {
                 was_notifications_on: isMetamaskNotificationsEnabled,
               },
             });
-            setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);;
+            setIsBackupAndSyncFeatureEnabled(
+              BACKUPANDSYNC_FEATURES.main,
+              false,
+            );
           },
         }),
       );
@@ -83,7 +84,7 @@ const ProfileSyncToggle = () => {
           was_notifications_on: isMetamaskNotificationsEnabled,
         },
       });
-      await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);;
+      await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);
     }
   };
 

@@ -46,7 +46,9 @@ describe('ProfileSyncToggle', () => {
   });
 
   function arrangeMocks() {
-    const setIsBackupAndSyncFeatureEnabledMock = jest.fn(() => Promise.resolve());
+    const setIsBackupAndSyncFeatureEnabledMock = jest.fn(() =>
+      Promise.resolve(),
+    );
 
     jest.spyOn(ProfileSyncingHook, 'useBackupAndSync').mockReturnValue({
       setIsBackupAndSyncFeatureEnabled: setIsBackupAndSyncFeatureEnabledMock,
@@ -54,7 +56,7 @@ describe('ProfileSyncToggle', () => {
     });
 
     return {
-      setIsBackupAndSyncFeatureEnabledMock
+      setIsBackupAndSyncFeatureEnabledMock,
     };
   }
 });
