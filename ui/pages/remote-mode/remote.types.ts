@@ -6,6 +6,7 @@ export enum TokenSymbol {
   WETH = 'WETH',
   WBTC = 'WBTC',
   BNB = 'BNB',
+  EURC = 'EURC',
 }
 
 export type TokenInfo = {
@@ -39,6 +40,12 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     symbol: TokenSymbol.BNB,
     name: 'BNB',
     iconUrl: './images/icon-bnb.png',
+  },
+  // note: added for testing (finalized list tbd)
+  [TokenSymbol.EURC]: {
+    symbol: TokenSymbol.EURC,
+    name: 'EURC',
+    iconUrl: './images/eth_logo.png',
   },
 };
 

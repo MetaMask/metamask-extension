@@ -61,6 +61,7 @@ import {
   SmartAccountUpdateInformation,
 } from '../../components';
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 
 const TOTAL_STEPS = 3;
 const DAILY_ETH_LIMIT = 10;
@@ -81,13 +82,15 @@ export default function RemoteModeSetupDailyAllowance() {
   const [dailyAllowance, setDailyAllowance] = useState<DailyAllowance[]>([]);
   const [selectedAllowanceToken, setSelectedAllowanceToken] =
     useState<TokenSymbol>(TokenSymbol.ETH);
-  const [dailyLimit, setDailyLimit] = useState<string>('');
+  const [dailyLimit, setDailyLimit] = useState<string>('0');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
   const [selectedAccount, setSelectedAccount] =
     useState<InternalAccount | null>(null);
   const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
   const [allowanceError, setAllowanceError] = useState<boolean>(false);
+  const [storedAssets, setStoredAssets] = useState<typeof assetsWithBalance>([]);
+  const [selectedAllowanceBalance, setSelectedAllowanceBalance] = useState<string>('');
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -97,6 +100,16 @@ export default function RemoteModeSetupDailyAllowance() {
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  const { assetsWithBalance } = useMultichainBalances();
+
+  const updateSelectedTokenBalance = (value: string) => {
+    setSelectedAllowanceBalance(
+      storedAssets.find(
+        (asset) => asset.symbol.includes(value),
+      )?.balance ?? '0'
+    );
+  };
 
   useEffect(() => {
     setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
@@ -115,8 +128,12 @@ export default function RemoteModeSetupDailyAllowance() {
   }, [isRemoteModeEnabled, history]);
 
   useEffect(() => {
-    setDailyLimit(DAILY_ETH_LIMIT.toString());
-  }, []);
+    setStoredAssets(assetsWithBalance);
+  }, [assetsWithBalance]);
+
+  useEffect(() => {
+    updateSelectedTokenBalance(selectedAllowanceToken);
+  }, [storedAssets, selectedAllowanceToken]);
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -260,9 +277,10 @@ export default function RemoteModeSetupDailyAllowance() {
                   >
                     <Text>Token</Text>
                     <Dropdown
-                      onChange={(value) =>
-                        setSelectedAllowanceToken(value as TokenSymbol)
-                      }
+                      onChange={(value) => {
+                        setSelectedAllowanceToken(value as TokenSymbol);
+                        updateSelectedTokenBalance(value);
+                      }}
                       options={Object.values(TokenSymbol).map((value) => ({
                         name: value,
                         value,
@@ -299,7 +317,7 @@ export default function RemoteModeSetupDailyAllowance() {
                       flexDirection={FlexDirection.Column}
                       gap={2}
                     >
-                      <Text>Balance: {}</Text>
+                      <Text>Balance: {selectedAllowanceBalance}</Text>
                     </Box>
                     <Box
                       width={BlockSize.Half}
@@ -314,6 +332,7 @@ export default function RemoteModeSetupDailyAllowance() {
                   width={BlockSize.Full}
                   size={ButtonSize.Lg}
                   onClick={handleAddAllowance}
+                  disabled={selectedAllowanceBalance === '0'}
                 >
                   Add
                 </Button>
