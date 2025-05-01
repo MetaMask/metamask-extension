@@ -2,11 +2,33 @@ import { memoize, escape as lodashEscape } from 'lodash';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred-lang-code';
-import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../modules/i18n';
-import { switchDirectionForPreferredLocale } from './switch-direction';
+import {
+  I18NMessageDict,
+  fetchLocale,
+  loadRelativeTimeFormatLocaleData,
+} from '../modules/i18n';
+
+export type ErrorLike = {
+  message: string;
+  name: string;
+  stack?: string;
+};
+
+export type TranslateFunction = (key: string) => string;
 
 const defaultLocale = 'en';
-const _setupLocale = async (currentLocale) => {
+
+/**
+ * Returns the locale messages for the current locale and the default locale (en).
+ *
+ * @param {string} currentLocale - The current locale.
+ */
+const _setupLocale = async (
+  currentLocale: string,
+): Promise<{
+  currentLocaleMessages: I18NMessageDict;
+  enLocaleMessages: I18NMessageDict;
+}> => {
   const enRelativeTime = loadRelativeTimeFormatLocaleData(defaultLocale);
   const enLocale = fetchLocale(defaultLocale);
 
@@ -23,16 +45,24 @@ const _setupLocale = async (currentLocale) => {
     promises.push(Promise.resolve({})); // currentLocaleMessages
   }
 
-  const [, enLocaleMessages, currentLocaleMessages] = await Promise.all(
+  const [, enLocaleMessages, currentLocaleMessages] = (await Promise.all(
     promises,
-  );
+  )) as [void, I18NMessageDict, I18NMessageDict];
   return { currentLocaleMessages, enLocaleMessages };
 };
 
 export const setupLocale = memoize(_setupLocale);
 
-export const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
-  return (key) => {
+/**
+ *
+ * @param {I18NMessageDict} currentLocaleMessages - The current locale messages.
+ * @param {I18NMessageDict} enLocaleMessages - The English locale messages.
+ */
+export const getLocaleContext = (
+  currentLocaleMessages: I18NMessageDict,
+  enLocaleMessages: I18NMessageDict,
+) => {
+  return (key: string) => {
     let message = currentLocaleMessages[key]?.message;
     if (!message && enLocaleMessages[key]) {
       message = enLocaleMessages[key].message;
@@ -41,7 +71,26 @@ export const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   };
 };
 
-export function getErrorHtmlBase(errorBody) {
+/**
+ *
+ * @param locale - The locale to use. If not provided, the first preferred language code will be used.
+ */
+export const getLocaleContextFromLocale = async (locale?: string) => {
+  let response, preferredLocale;
+  if (locale) {
+    preferredLocale = locale;
+    response = await setupLocale(locale);
+  } else {
+    preferredLocale = await getFirstPreferredLangCode();
+    response = await setupLocale(preferredLocale);
+  }
+
+  const { currentLocaleMessages, enLocaleMessages } = response;
+  const translate = getLocaleContext(currentLocaleMessages, enLocaleMessages);
+  return { translate, locale: preferredLocale };
+};
+
+export function getErrorHtmlBase(errorBody: string) {
   return `
     <div class="critical-error__container">
       <div class="critical-error">
@@ -58,21 +107,11 @@ export function getErrorHtmlBase(errorBody) {
   `;
 }
 
-export async function getErrorHtml(errorKey, supportLink, metamaskState) {
-  let response, preferredLocale;
-  if (metamaskState?.currentLocale) {
-    preferredLocale = metamaskState.currentLocale;
-    response = await setupLocale(metamaskState.currentLocale);
-  } else {
-    preferredLocale = await getFirstPreferredLangCode();
-    response = await setupLocale(preferredLocale);
-  }
-
-  switchDirectionForPreferredLocale(preferredLocale);
-
-  const { currentLocaleMessages, enLocaleMessages } = response;
-  const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
-
+export function getErrorHtml(
+  errorKey: string,
+  supportLink: string,
+  t: TranslateFunction,
+) {
   const footer = supportLink
     ? `
       <p class="critical-error__footer">
