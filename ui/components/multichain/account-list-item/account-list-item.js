@@ -104,6 +104,7 @@ const AccountListItem = ({
   startAccessory,
   onActionClick,
   shouldScrollToWhenSelected = true,
+  showConnectedStatus = false,
   privacyMode = false,
 }) => {
   const t = useI18nContext();
@@ -294,7 +295,11 @@ const AccountListItem = ({
           display={[Display.Flex, Display.None]}
           data-testid="account-list-item-badge"
         >
-          <ConnectedStatus address={account.address} isActive={isActive} />
+          <ConnectedStatus
+            address={account.address}
+            isActive={isActive}
+            showConnectedStatus={showConnectedStatus}
+          />
         </Box>
         <Box display={[Display.None, Display.Flex]}>
           {
