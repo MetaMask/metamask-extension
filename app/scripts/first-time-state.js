@@ -1,7 +1,6 @@
 /**
  * @typedef {object} FirstTimeState
  * @property {object} config Initial configuration parameters
- * @property {object} NetworkController Network controller state
  */
 
 /**
