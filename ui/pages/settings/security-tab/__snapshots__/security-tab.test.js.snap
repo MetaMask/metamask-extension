@@ -77,7 +77,7 @@ exports[`Security Tab should match snapshot 1`] = `
               rel="noreferrer noopener"
               target="_blank"
             >
-              Privacy Notice
+              Privacy policy
             </a>
             .
              
@@ -490,7 +490,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 rel="noreferrer"
                 target="_blank"
               >
-                Privacy Notice
+                Privacy policy
               </a>
               
                
@@ -656,7 +656,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Privacy Notice
+                Privacy policy
               </a>
               , and for Solana accounts, 
               <a
@@ -1403,7 +1403,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Privacy Notice
+                Privacy policy
               </a>
               .
                
