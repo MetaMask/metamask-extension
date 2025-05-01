@@ -266,7 +266,7 @@ describe(`migration #${VERSION}`, () => {
     expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('assigns an empty set of failover URLs to custom RPC endpoints that use non-Infura URLs', async () => {
+  it('does not assign failover URLs to custom RPC endpoints that use non-Infura URLs', async () => {
     process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
     const oldVersionedData = {
@@ -304,7 +304,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Custom,
                   url: 'https://foo.com',
-                  failoverUrls: [],
                 },
               ],
             },
@@ -327,7 +326,7 @@ describe(`migration #${VERSION}`, () => {
     expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('assigns an empty set of failover URLs to custom RPC endpoints that contain an Infura URL but do not use our API key', async () => {
+  it('does not assign failover URLs to custom RPC endpoints that contain an Infura URL but do not use our API key', async () => {
     process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
     const oldVersionedData = {
@@ -365,7 +364,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Custom,
                   url: 'https://mainnet.infura.io/v3/some-other-api-key',
-                  failoverUrls: [],
                 },
               ],
             },
@@ -540,7 +538,7 @@ describe(`migration #${VERSION}`, () => {
     expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('assigns an empty set of failover URLs to any Infura endpoints for which the appropriate environment variable is not set', async () => {
+  it('does not assign failover URLs to any Infura endpoints for which the appropriate environment variable is not set', async () => {
     process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -617,7 +615,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Infura,
                   url: `https://mainnet.infura.io/v3/{infuraProjectId}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -626,7 +623,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Infura,
                   url: `https://linea-mainnet.infura.io/v3/{infuraProjectId}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -635,7 +631,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Infura,
                   url: `https://arbitrum.infura.io/v3/{infuraProjectId}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -644,7 +639,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Infura,
                   url: `https://avalanche.infura.io/v3/{infuraProjectId}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -653,7 +647,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Infura,
                   url: `https://optimism.infura.io/v3/{infuraProjectId}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -662,7 +655,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Infura,
                   url: `https://polygon.infura.io/v3/{infuraProjectId}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -671,7 +663,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Infura,
                   url: `https://base.infura.io/v3/{infuraProjectId}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -899,7 +890,7 @@ describe(`migration #${VERSION}`, () => {
     expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('assigns an empty set of failover URLs to custom RPC endpoints that are actually Infura RPC endpoints in disguise but for which the appropriate environment variables are not set', async () => {
+  it('does not assign failover URLs to custom RPC endpoints that are actually Infura RPC endpoints in disguise but for which the appropriate environment variables are not set', async () => {
     process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -976,7 +967,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Custom,
                   url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -985,7 +975,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Custom,
                   url: `https://linea-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -994,7 +983,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Custom,
                   url: `https://arbitrum.infura.io/v3/${INFURA_PROJECT_ID}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -1003,7 +991,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Custom,
                   url: `https://avalanche.infura.io/v3/${INFURA_PROJECT_ID}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -1012,7 +999,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Custom,
                   url: `https://optimism.infura.io/v3/${INFURA_PROJECT_ID}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -1021,7 +1007,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Custom,
                   url: `https://polygon.infura.io/v3/${INFURA_PROJECT_ID}`,
-                  failoverUrls: [],
                 },
               ],
             },
@@ -1030,7 +1015,6 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Custom,
                   url: `https://base.infura.io/v3/${INFURA_PROJECT_ID}`,
-                  failoverUrls: [],
                 },
               ],
             },

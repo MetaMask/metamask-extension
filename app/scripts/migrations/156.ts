@@ -71,7 +71,7 @@ export const INFURA_CHAINS_WITH_FAILOVERS: Map<
 
 /**
  * This migration ensures that all RPC endpoints that hit Infura and use our API
- * key are Infura RPC endpoints and not custom RPC endpoints.
+ * key are assigned failover URLs that point to Quicknode.
  *
  * @param originalVersionedData - The original MetaMask extension state.
  * @returns Updated versioned MetaMask extension state.
@@ -173,15 +173,17 @@ function transformState(state: Record<string, unknown>) {
 
         const failoverUrl = infuraChainWithFailover?.getFailoverUrl();
 
-        const failoverUrls =
+        if (
           failoverUrl &&
           (rpcEndpoint.type === RpcEndpointType.Infura || isInfuraLike)
-            ? [failoverUrl]
-            : [];
-        return {
-          ...rpcEndpoint,
-          failoverUrls,
-        };
+        ) {
+          return {
+            ...rpcEndpoint,
+            failoverUrls: [failoverUrl],
+          };
+        }
+
+        return rpcEndpoint;
       },
     );
   }

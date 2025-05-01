@@ -140,7 +140,6 @@ export const mockNetworkState = (
           networkClientId: network.id ?? uuidv4(),
           type: RpcEndpointType.Custom,
           url: rpc,
-          failoverUrls: [],
         },
       ],
       defaultRpcEndpointIndex: 0,

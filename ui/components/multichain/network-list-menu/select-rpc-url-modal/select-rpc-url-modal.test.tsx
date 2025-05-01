@@ -34,16 +34,8 @@ const networkConfiguration = {
   chainId: '0x1',
   name: 'Ethereum Mainnet',
   rpcEndpoints: [
-    {
-      url: 'https://mainnet.infura.io/v3/',
-      failoverUrls: [],
-      networkClientId: 'mainnet',
-    },
-    {
-      url: 'https://rpc.flashbots.net/',
-      failoverUrls: [],
-      networkClientId: 'flashbots',
-    },
+    { url: 'https://mainnet.infura.io/v3/', networkClientId: 'mainnet' },
+    { url: 'https://rpc.flashbots.net/', networkClientId: 'flashbots' },
   ],
   defaultRpcEndpointIndex: 0,
 } as unknown as NetworkConfiguration;

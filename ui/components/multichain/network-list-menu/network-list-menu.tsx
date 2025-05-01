@@ -719,7 +719,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               setRpcUrls({
                 rpcEndpoints: [
                   ...rpcUrls.rpcEndpoints,
-                  { url, failoverUrls: [], name, type: RpcEndpointType.Custom },
+                  { url, name, type: RpcEndpointType.Custom },
                 ],
                 defaultRpcEndpointIndex: rpcUrls.rpcEndpoints.length,
               });

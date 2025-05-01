@@ -58,7 +58,6 @@ const propNetworkDisplay = {
             network: NETWORK_TYPES.MAINNET,
             excludeProjectId: true,
           }),
-          failoverUrls: [],
         },
       ],
     },
@@ -142,7 +141,6 @@ describe('NetworkForm Component', () => {
                 network: NETWORK_TYPES.MAINNET,
                 excludeProjectId: true,
               }),
-              failoverUrls: [],
             },
           ],
         },
@@ -204,7 +202,6 @@ describe('NetworkForm Component', () => {
           rpcEndpoints: [
             {
               url: 'https://bsc-dataseed.binance.org/',
-              failoverUrls: [],
               type: 'custom',
               name: undefined,
             },
@@ -247,7 +244,6 @@ describe('NetworkForm Component', () => {
           rpcEndpoints: [
             {
               url: 'https://bsc-dataseed.binance.org/',
-              failoverUrls: [],
               type: 'custom',
               name: undefined,
             },
@@ -284,7 +280,6 @@ describe('NetworkForm Component', () => {
           rpcEndpoints: [
             {
               url: 'https://bsc-dataseed.binance.org/',
-              failoverUrls: [],
               type: 'custom',
               name: undefined,
             },
@@ -333,7 +328,6 @@ describe('NetworkForm Component', () => {
           rpcEndpoints: [
             {
               url: 'https://bsc-dataseed.binance.org/',
-              failoverUrls: [],
               type: 'custom',
               name: undefined,
             },
@@ -387,7 +381,6 @@ describe('NetworkForm Component', () => {
           rpcEndpoints: [
             {
               url: 'https://bsc-dataseed.binance.org/',
-              failoverUrls: [],
               type: 'custom',
               name: undefined,
             },
@@ -420,7 +413,6 @@ describe('NetworkForm Component', () => {
         rpcEndpoints: [
           {
             url: 'https://mainnet.infura.io/v3/',
-            failoverUrls: [],
           },
         ],
         defaultRpcEndpointIndex: 0,
@@ -447,7 +439,6 @@ describe('NetworkForm Component', () => {
           rpcEndpoints: [
             {
               url: 'https://mainnet.infura.io/v3/',
-              failoverUrls: [],
             },
           ],
           defaultRpcEndpointIndex: 0,

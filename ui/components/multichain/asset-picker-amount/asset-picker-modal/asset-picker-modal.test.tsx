@@ -366,7 +366,6 @@ describe('AssetPickerModal', () => {
             {
               networkClientId: 'test1',
               url: 'https://rpcurl',
-              failoverUrls: [],
               type: RpcEndpointType.Custom,
             },
           ],
@@ -400,7 +399,6 @@ describe('AssetPickerModal', () => {
             {
               networkClientId: 'test1',
               url: 'https://rpcurl',
-              failoverUrls: [],
               type: RpcEndpointType.Custom,
             },
           ],

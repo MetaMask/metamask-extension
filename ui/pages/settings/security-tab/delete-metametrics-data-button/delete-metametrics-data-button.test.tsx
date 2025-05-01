@@ -61,7 +61,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy Notice. "`,
+      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy policy. "`,
     );
   });
   it('should enable the data deletion button when metrics is opted in and metametrics id is available ', async () => {
@@ -77,7 +77,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy Notice. "`,
+      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy policy. "`,
     );
   });
   it('should enable the data deletion button when page mounts after a deletion task is performed and more data is recoded after the deletion', async () => {
@@ -105,7 +105,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy Notice. "`,
+      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy policy. "`,
     );
   });
 
@@ -129,7 +129,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy Notice. "`,
+      `" This will delete historical MetaMetrics data associated with your use on this device. Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 30 days. View our Privacy policy. "`,
     );
     expect(
       container.querySelector('.settings-page__content-item-col')?.textContent,
@@ -167,7 +167,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" You initiated this action on 7/06/2024. This process can take up to 30 days. View the Privacy Notice "`,
+      `" You initiated this action on 7/06/2024. This process can take up to 30 days. View the Privacy policy "`,
     );
   });
 
@@ -200,7 +200,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       container.querySelector('.settings-page__content-description')
         ?.textContent,
     ).toMatchInlineSnapshot(
-      `" You initiated this action on 7/06/2024. This process can take up to 30 days. View the Privacy Notice "`,
+      `" You initiated this action on 7/06/2024. This process can take up to 30 days. View the Privacy policy "`,
     );
   });
 

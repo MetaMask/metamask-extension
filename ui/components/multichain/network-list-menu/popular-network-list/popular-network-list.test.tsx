@@ -64,7 +64,6 @@ describe('PopularNetworkList', () => {
           rpcEndpoints: [
             {
               url: 'https://exampleEth.org/',
-              failoverUrls: [],
               type: RpcEndpointType.Custom as const,
               networkClientId: 'network1',
             },
@@ -80,7 +79,6 @@ describe('PopularNetworkList', () => {
           rpcEndpoints: [
             {
               url: 'https://example.org/',
-              failoverUrls: [],
               type: RpcEndpointType.Custom as const,
               networkClientId: 'network2',
             },
@@ -107,7 +105,6 @@ describe('PopularNetworkList', () => {
           rpcEndpoints: [
             {
               url: 'https://example.org/',
-              failoverUrls: [],
               type: RpcEndpointType.Custom as const,
               networkClientId: 'network2',
             },
