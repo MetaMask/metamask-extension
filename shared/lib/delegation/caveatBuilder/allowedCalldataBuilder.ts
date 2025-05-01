@@ -7,7 +7,7 @@ export const allowedCalldata = 'allowedCalldata';
 /**
  * Builds a caveat struct for AllowedCalldataEnforcer.
  *
- * @param environment - The DeleGator environment.\
+ * @param environment - The DeleGator environment.
  * @param startIndex - The start index of the subset of calldata bytes.
  * @param value - The expected value for the subset of calldata.
  * @returns The Caveat.

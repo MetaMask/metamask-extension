@@ -21,6 +21,7 @@ import {
   Content,
   Header,
   Page,
+  Footer,
 } from '../../../components/multichain/pages/page';
 import {
   FontWeight,
@@ -49,7 +50,7 @@ export default function RemoteModeIntroducing() {
   const [currentScreen, setCurrentScreen] = useState<RemoteScreen>(
     RemoteScreen.OVERVIEW,
   );
-  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
 
   const history = useHistory();
 
@@ -80,17 +81,21 @@ export default function RemoteModeIntroducing() {
     switch (currentScreen) {
       case RemoteScreen.OVERVIEW:
         return (
-          <Content padding={6}>
-            <RemoteModeOverview />
-            <Button
-              style={{ width: '100%' }}
-              onClick={() => setCurrentScreen(RemoteScreen.PERMISSIONS)}
-              size={ButtonSize.Lg}
-              disabled={!isHardwareAccount}
-            >
-              Get Remote Mode
-            </Button>
-          </Content>
+          <>
+            <Content padding={6}>
+              <RemoteModeOverview />
+            </Content>
+            <Footer>
+              <Button
+                style={{ width: '100%' }}
+                onClick={() => setCurrentScreen(RemoteScreen.PERMISSIONS)}
+                size={ButtonSize.Lg}
+                disabled={!isHardwareAccount}
+              >
+                Get Remote Mode
+              </Button>
+            </Footer>
+          </>
         );
 
       case RemoteScreen.PERMISSIONS:

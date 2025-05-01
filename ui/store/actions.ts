@@ -48,16 +48,11 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import {
-  type DelegationEntry,
-  type DelegationFilter,
-} from '@metamask/delegation-controller';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
-import type { UnsignedDelegation } from '../../shared/lib/delegation';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -138,6 +133,7 @@ import { EndTraceRequest } from '../../shared/lib/trace';
 import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -2731,12 +2727,12 @@ export function addToAddressBook(
   recipient: string,
   nickname = '',
   memo = '',
+  customChainId?: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
-    const { chainId } = getProviderConfig(getState());
-
+    const chainId = customChainId || getProviderConfig(getState()).chainId;
     let set;
     try {
       set = await submitRequestToBackground('setAddressBook', [
@@ -3289,8 +3285,26 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
-export function setDismissSmartAccountSuggestionEnabled(value: boolean) {
-  return setPreference('dismissSmartAccountSuggestionEnabled', value);
+export function setDismissSmartAccountSuggestionEnabled(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch, getState) => {
+    const prevDismissSmartAccountSuggestionEnabled =
+      getDismissSmartAccountSuggestionEnabled(getState());
+    trackMetaMetricsEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        dismiss_smt_acc_suggestion_enabled: value,
+        prev_dismiss_smt_acc_suggestion_enabled:
+          prevDismissSmartAccountSuggestionEnabled,
+      },
+    });
+    await dispatch(
+      setPreference('dismissSmartAccountSuggestionEnabled', value),
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 
 export function setTokenSortConfig(value: SortCriteria) {
@@ -4811,13 +4825,15 @@ export async function tokenBalancesStopPollingByPollingToken(
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
  *
- * @param chainId - The chain id to poll token rates on.
+ * @param chainIds - An array of chain ids to poll token rates on.
  * @returns polling token that can be used to stop polling
  */
-export async function tokenRatesStartPolling(chainId: string): Promise<string> {
+export async function tokenRatesStartPolling(
+  chainIds: string[],
+): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'tokenRatesStartPolling',
-    [{ chainId }],
+    [{ chainIds }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
@@ -6220,43 +6236,3 @@ export function setTransactionActive(
     ]);
   };
 }
-
-export const signDelegation = async ({
-  delegation,
-  chainId,
-}: {
-  delegation: UnsignedDelegation;
-  chainId: Hex;
-}): Promise<Hex> => {
-  return await submitRequestToBackground('signDelegation', [
-    { delegation, chainId },
-  ]);
-};
-
-export const storeDelegationEntry = async (
-  entry: DelegationEntry,
-): Promise<void> => {
-  return await submitRequestToBackground('storeDelegationEntry', [{ entry }]);
-};
-
-export const listDelegationEntries = async (
-  filter: DelegationFilter,
-): Promise<DelegationEntry[]> => {
-  return await submitRequestToBackground('listDelegationEntries', [filter]);
-};
-
-export const getDelegationEntry = async (
-  hash: Hex,
-): Promise<DelegationEntry> => {
-  return await submitRequestToBackground('getDelegationEntry', [hash]);
-};
-
-export const getDelegationEntryChain = async (
-  hash: Hex,
-): Promise<DelegationEntry[]> => {
-  return await submitRequestToBackground('getDelegationEntryChain', [hash]);
-};
-
-export const deleteDelegationEntry = async (hash: Hex) => {
-  return await submitRequestToBackground('deleteDelegationEntry', [hash]);
-};
