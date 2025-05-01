@@ -21,7 +21,7 @@ module.exports = function (api) {
           'development/build/transforms/import-meta-url.js',
         ),
         {
-          pattern: /^@metamask\/([^/]+)\/dist\/preinstalled-snap\.json(\.zst)?$/u,
+          pattern: /^@metamask\/([^/]+)\/dist\/preinstalled-snap\.json(\.gz)?$/u,
           rootPath: '/snaps/',
         },
       ],

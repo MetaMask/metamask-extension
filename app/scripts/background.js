@@ -17,6 +17,7 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { gunzipSync } from 'fflate';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -570,27 +571,19 @@ async function initialize() {
 /**
  * Loads the preinstalled snaps from urls and returns them as an array.
  * It fails if any Snap fails to load in the expected time range.
- * Supports .json.zst files using zstd decompression.
+ * Supports .json.gz files using gzip decompression.
  */
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
     const response = await fetchWithTimeout(url);
 
-    // url may be a URL object or a string. If it's a URL object, check pathname.
-    if (url.pathname && url.pathname.endsWith('.json.zst')) {
+    // If the Snap is compressed, decompress it
+    if (url.pathname && url.pathname.endsWith('.json.gz')) {
       const compressed = new Uint8Array(await response.arrayBuffer());
-
-      return await new Promise((resolve) => {
-        import('zstd-codec').then(({ ZstdCodec }) => {
-          ZstdCodec.run((zstd) => {
-            const simple = new zstd.Simple();
-            const decompressed = simple.decompress(compressed);
-            const jsonText = new TextDecoder().decode(decompressed);
-            resolve(JSON.parse(jsonText));
-          });
-        });
-      });
+      const decompressed = gunzipSync(compressed);
+      const jsonText = new TextDecoder().decode(decompressed);
+      return JSON.parse(jsonText);
     }
 
     return await response.json();

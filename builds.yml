@@ -159,8 +159,8 @@ features:
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
     assets:
-      - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json.zst
-        dest: snaps/bitcoin-wallet-snap.json.zst
+      - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json.gz
+        dest: snaps/bitcoin-wallet-snap.json.gz
   solana:
     assets:
       - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
