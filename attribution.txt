@@ -18020,7 +18020,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/base-controller
-8.0.0 <https://github.com/MetaMask/core>
+8.0.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -20932,7 +20932,7 @@ authors: undefined
 ******************************
 
 @metamask/transaction-controller
-54.2.0 <https://github.com/MetaMask/core>
+54.3.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
