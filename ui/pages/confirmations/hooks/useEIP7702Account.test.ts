@@ -14,7 +14,6 @@ import {
   EIP_7702_REVOKE_ADDRESS,
   useEIP7702Account,
 } from './useEIP7702Account';
-import { NetworkClientType } from '@metamask/network-controller';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),

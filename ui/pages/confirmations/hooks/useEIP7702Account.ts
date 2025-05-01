@@ -5,13 +5,13 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import { useConfirmationNavigation } from './useConfirmationNavigation';
 import { selectDefaultRpcEndpointByChainId } from '../../../selectors';
+import { useConfirmationNavigation } from './useConfirmationNavigation';
 
 export const EIP_7702_REVOKE_ADDRESS =
   '0x0000000000000000000000000000000000000000';
