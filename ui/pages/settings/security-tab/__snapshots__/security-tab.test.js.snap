@@ -658,7 +658,15 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Privacy Notice
               </a>
-               to learn more about how Infura handles data.
+               to learn more about how Infura handles data for EVM accounts, for Solana accounts 
+              <a
+                href="https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                click here
+              </a>
+              .
                
             </span>
           </div>
