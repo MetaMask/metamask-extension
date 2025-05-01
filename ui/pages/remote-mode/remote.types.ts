@@ -70,3 +70,8 @@ export type RemoteModeConfig = {
     delegation?: Delegation;
   } | null;
 };
+
+export enum REMOTE_MODES {
+  SWAP = 'swap',
+  DAILY_ALLOWANCE = 'daily-allowance',
+}

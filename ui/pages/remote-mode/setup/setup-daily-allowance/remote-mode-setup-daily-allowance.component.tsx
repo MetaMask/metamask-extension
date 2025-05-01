@@ -50,7 +50,11 @@ import {
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
-import { DailyAllowance, DailyAllowanceTokenTypes } from '../../remote.types';
+import {
+  DailyAllowance,
+  DailyAllowanceTokenTypes,
+  REMOTE_MODES,
+} from '../../remote.types';
 
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import {
@@ -63,7 +67,7 @@ import {
   SmartAccountUpdateInformation,
   StepIndicator,
 } from '../../components';
-import { REMOTE_MODES, useRemoteMode } from '../../hooks/useRemoteMode';
+import { useRemoteMode } from '../../hooks/useRemoteMode';
 
 const TOTAL_STEPS = 3;
 

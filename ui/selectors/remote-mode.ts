@@ -5,8 +5,10 @@ import {
 import { createSelector } from 'reselect';
 import { listDelegationEntries } from '../../shared/lib/delegation/delegation';
 import { Hex } from '../../shared/lib/delegation/utils';
-import { REMOTE_MODES } from '../pages/remote-mode/hooks/useRemoteMode';
-import { RemoteModeConfig } from '../pages/remote-mode/remote.types';
+import {
+  REMOTE_MODES,
+  RemoteModeConfig,
+} from '../pages/remote-mode/remote.types';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,

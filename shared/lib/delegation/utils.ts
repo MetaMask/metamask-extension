@@ -252,3 +252,7 @@ export const toFunctionSelector = (fn: string): Hex => {
 export function isHexEqual(a: Hex, b: Hex) {
   return a.toLowerCase() === b.toLowerCase();
 }
+
+export const DELEGATION_TAGS = {
+  REVOKE: 'revoke',
+};

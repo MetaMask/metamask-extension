@@ -27,7 +27,8 @@ import {
 
 import { getSelectedInternalAccount } from '../../../selectors';
 import { RevokeWithdrawlConfirmModalType } from '../components/revoke-withdrawl-confirm-modal';
-import { REMOTE_MODES, useRemoteMode } from '../hooks/useRemoteMode';
+import { useRemoteMode } from '../hooks/useRemoteMode';
+import { REMOTE_MODES } from '../remote.types';
 
 export default function RemoteModePermissions({
   setStartEnableRemoteSwap,

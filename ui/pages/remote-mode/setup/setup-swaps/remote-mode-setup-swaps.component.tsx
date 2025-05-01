@@ -55,7 +55,12 @@ import {
   REMOTE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
-import { SwapAllowance, TokenSymbol, ToTokenOption } from '../../remote.types';
+import {
+  SwapAllowance,
+  TokenSymbol,
+  ToTokenOption,
+  REMOTE_MODES,
+} from '../../remote.types';
 
 import {
   RemoteModeHardwareWalletConfirm,
@@ -71,7 +76,7 @@ import {
   getSelectedInternalAccount,
 } from '../../../../selectors';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
-import { useRemoteMode, REMOTE_MODES } from '../../hooks/useRemoteMode';
+import { useRemoteMode } from '../../hooks/useRemoteMode';
 
 const TOTAL_STEPS = 3;
 

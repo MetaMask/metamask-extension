@@ -8,22 +8,19 @@ import {
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
 import { encodeDisableDelegation } from '../../../../shared/lib/delegation/delegation';
+import { DELEGATION_TAGS } from '../../../../shared/lib/delegation/utils';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { getSelectedNetwork } from '../../../selectors';
 import { getRemoteModeConfig } from '../../../selectors/remote-mode';
+import { addTransaction } from '../../../store/actions';
 import {
-  addTransaction,
   listDelegationEntries,
   signDelegation,
   storeDelegationEntry,
-} from '../../../store/actions';
+} from '../../../store/controller-actions/delegation-controller';
 import { useEIP7702Account } from '../../confirmations/hooks/useEIP7702Account';
 import { useEIP7702Networks } from '../../confirmations/hooks/useEIP7702Networks';
-
-export enum REMOTE_MODES {
-  SWAP = 'swap',
-  DAILY_ALLOWANCE = 'daily-allowance',
-}
+import { REMOTE_MODES } from '../remote.types';
 
 export const useRemoteMode = ({ account }: { account: Hex }) => {
   const { upgradeAccount: upgradeAccountEIP7702 } = useEIP7702Account();
@@ -54,7 +51,6 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
   );
 
   const upgradeAccount = async (): Promise<void> => {
-    console.log('upgradeAccount', upgradeContractAddress);
     // TODO: remove this and use isSupported when it's ready
     if (networkConfig?.isSupported) {
       console.log('no upgrade needed');
@@ -124,12 +120,12 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
 
     const metaObject = meta ? JSON.parse(meta) : {};
 
-    // TODO: remove/unnistall toolkit and create a utils function
     const encodedCallData = encodeDisableDelegation({
       delegation,
     });
 
-    const { batchId: revokeId } = await addTransaction(
+    // TODO: change to addTransactionAndRouteToConfirmationPage when ID consistency is fixed
+    const transactionMeta = await addTransaction(
       {
         from: account,
         to: delegationManagerAddress,
@@ -142,9 +138,13 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
       },
     );
 
+    console.log('transactionMeta', transactionMeta);
+
+    const revokeId = transactionMeta.id;
+
     await storeDelegationEntry({
       delegation,
-      tags: [mode],
+      tags: [mode, DELEGATION_TAGS.REVOKE],
       chainId,
       meta: JSON.stringify({
         ...metaObject,
