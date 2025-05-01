@@ -48,10 +48,6 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import {
-  type DelegationEntry,
-  type DelegationFilter,
-} from '@metamask/delegation-controller';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
@@ -6241,43 +6237,3 @@ export function setTransactionActive(
     ]);
   };
 }
-
-export const signDelegation = async ({
-  delegation,
-  chainId,
-}: {
-  delegation: UnsignedDelegation;
-  chainId: Hex;
-}): Promise<Hex> => {
-  return await submitRequestToBackground('signDelegation', [
-    { delegation, chainId },
-  ]);
-};
-
-export const storeDelegationEntry = async (
-  entry: DelegationEntry,
-): Promise<void> => {
-  return await submitRequestToBackground('storeDelegationEntry', [{ entry }]);
-};
-
-export const listDelegationEntries = async (
-  filter: DelegationFilter,
-): Promise<DelegationEntry[]> => {
-  return await submitRequestToBackground('listDelegationEntries', [filter]);
-};
-
-export const getDelegationEntry = async (
-  hash: Hex,
-): Promise<DelegationEntry> => {
-  return await submitRequestToBackground('getDelegationEntry', [hash]);
-};
-
-export const getDelegationEntryChain = async (
-  hash: Hex,
-): Promise<DelegationEntry[]> => {
-  return await submitRequestToBackground('getDelegationEntryChain', [hash]);
-};
-
-export const deleteDelegationEntry = async (hash: Hex) => {
-  return await submitRequestToBackground('deleteDelegationEntry', [hash]);
-};
