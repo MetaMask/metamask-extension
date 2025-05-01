@@ -24,7 +24,7 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
-import { getSafeChainsList } from '../../../shared/lib/network-utils';
+import { getSafeChainsListFromCacheOnly } from '../../../shared/lib/network-utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -496,7 +496,7 @@ export async function initializeRpcProviderDomains(): Promise<void> {
 
   initPromise = (async () => {
     try {
-      const chainsList = await getSafeChainsList();
+      const chainsList = await getSafeChainsListFromCacheOnly();
       knownDomainsSet = new Set<string>();
 
       for (const chain of chainsList) {

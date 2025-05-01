@@ -1,6 +1,7 @@
 import { CHAIN_SPEC_URL } from '../constants/network';
-import { DAY } from '../constants/time';
-import fetchWithCache from './fetch-with-cache';
+import { getStorageItem } from './storage-helpers';
+
+const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
 
 type ChainInfo = {
   name: string;
@@ -9,11 +10,17 @@ type ChainInfo = {
   rpc?: string[];
 };
 
-export async function getSafeChainsList(): Promise<ChainInfo[]> {
-  return await fetchWithCache({
-    url: CHAIN_SPEC_URL,
-    allowStale: true,
-    cacheOptions: { cacheRefreshTime: DAY },
-    functionName: 'getSafeChainsList',
-  });
+/**
+ * Get chains list from cache only without making network requests. This
+ * function is temporary and will be replaced the work being done in PR
+ * https://github.com/MetaMask/metamask-extension/pull/32297
+ */
+export async function getSafeChainsListFromCacheOnly(): Promise<ChainInfo[]> {
+  try {
+    const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
+    return cachedResponse || [];
+  } catch (error) {
+    console.error('Error retrieving chains list from cache', error);
+    return [];
+  }
 }
