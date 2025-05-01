@@ -5002,8 +5002,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       const client = await this._getSolanaWalletSnapClient();
-      return await keyring.createAccount(
-        snapId,
+      return await client.createAccount(
         { entropySource },
         {
           displayConfirmation: false,
