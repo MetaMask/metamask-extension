@@ -146,7 +146,7 @@ describe('Bridge functionality', function (this: Suite) {
         await bridgePage.submitQuote();
 
         await homePage.goToActivityList();
-        
+
         // Until bug #32266 is fixed
         // const activityList = new ActivityListPage(driver);
         // await activityList.check_failedTxNumberDisplayedInActivity();
