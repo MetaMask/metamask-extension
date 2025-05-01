@@ -10,18 +10,17 @@ export const handleRevokeConfirmation = async (
   const { transactionMeta } = transactionEventPayload;
   const transactionId = transactionMeta.id;
 
-  const delegationEntries = controller.list({
-    chainId: transactionMeta.chainId,
-    tags: [DELEGATION_TAGS.REVOKE],
+  const { delegations } = controller.state;
+
+  const delegationEntries = Object.values(delegations).filter((entry) => {
+    return entry.tags.includes(DELEGATION_TAGS.REVOKE);
   });
 
+  // Fix This: this logic doesn't work if user speed up the transaction
   const revokeEntry = delegationEntries.find((entry) => {
     const revokeId = JSON.parse(entry.meta ?? '{}').revokeId ?? '';
-    const revokeIdAfterHyphen = revokeId.substring(revokeId.indexOf('-') + 1);
-    const transactionIdAfterHyphen = transactionId.substring(
-      transactionId.indexOf('-') + 1,
-    );
-    return revokeIdAfterHyphen === transactionIdAfterHyphen;
+
+    return revokeId === transactionId;
   });
 
   if (!revokeEntry) {
