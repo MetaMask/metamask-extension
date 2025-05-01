@@ -239,6 +239,5 @@ function hashSignature(fn: string) {
  * // 0x6352211e
  */
 export const toFunctionSelector = (fn: string): Hex => {
-  const hash = toHex(hashSignature(fn).subarray(0, 10));
-  return hash;
+  return toHex(hashSignature(fn).subarray(0, 4));
 };
