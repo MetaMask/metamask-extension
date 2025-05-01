@@ -262,7 +262,7 @@ const config = {
       { test: /\.json$/u, type: 'json' },
       // treats compressed JSON files loaded via `new URL('./file.json.zst', import.meta.url)` as assets.
       {
-        test: /\.json.zst$/u,
+        test: /\.json.gz$/u,
         dependency: 'url',
         type: 'asset/resource',
       },
