@@ -76,7 +76,7 @@ export default function RemoteModeDailyAllowanceCard({
         >
           <Text variant={TextVariant.bodyMd}>Daily limit</Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {dailyAllowance.amount}{' '}{dailyAllowance.tokenType}
+            {dailyAllowance.amount} {dailyAllowance.tokenType}
           </Text>
         </Box>
         <Box

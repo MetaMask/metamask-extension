@@ -89,8 +89,11 @@ export default function RemoteModeSetupDailyAllowance() {
     useState<InternalAccount | null>(null);
   const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
   const [allowanceError, setAllowanceError] = useState<boolean>(false);
-  const [storedAssets, setStoredAssets] = useState<typeof assetsWithBalance>([]);
-  const [selectedAllowanceBalance, setSelectedAllowanceBalance] = useState<string>('');
+  const [storedAssets, setStoredAssets] = useState<typeof assetsWithBalance>(
+    [],
+  );
+  const [selectedAllowanceBalance, setSelectedAllowanceBalance] =
+    useState<string>('');
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -105,9 +108,8 @@ export default function RemoteModeSetupDailyAllowance() {
 
   const updateSelectedTokenBalance = (value: string) => {
     setSelectedAllowanceBalance(
-      storedAssets.find(
-        (asset) => asset.symbol.includes(value),
-      )?.balance ?? '0'
+      storedAssets.find((asset) => asset.symbol.includes(value))?.balance ??
+        '0',
     );
   };
 

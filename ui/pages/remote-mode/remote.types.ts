@@ -62,7 +62,6 @@ export type SwapAllowance = {
   amount: number;
 };
 
-
 export enum DailyAllowanceTokenTypes {
   ETH = 'ETH',
 }

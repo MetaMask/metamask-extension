@@ -49,7 +49,12 @@ import {
   Page,
 } from '../../../../components/multichain/pages/page';
 
-import { SwapAllowance, TokenSymbol, ToTokenOption, BaseToTokenOption } from '../../remote.types';
+import {
+  SwapAllowance,
+  TokenSymbol,
+  ToTokenOption,
+  BaseToTokenOption,
+} from '../../remote.types';
 import {
   DEFAULT_ROUTE,
   REMOTE_ROUTE,
@@ -161,14 +166,14 @@ export default function RemoteModeSetupSwaps() {
       const existingAllowance = prevAllowances.find(
         (allowance) =>
           allowance.from === selectedFromToken &&
-          allowance.to === selectedToToken
+          allowance.to === selectedToToken,
       );
 
       if (existingAllowance) {
-        return prevAllowances.map(allowance =>
+        return prevAllowances.map((allowance) =>
           allowance === existingAllowance
             ? { ...allowance, amount: parseFloat(dailyLimit) }
-            : allowance
+            : allowance,
         );
       }
 
@@ -182,11 +187,14 @@ export default function RemoteModeSetupSwaps() {
     setSwapToError(false);
   };
 
-  const handleRemoveAllowance = (tokenSymbol: TokenSymbol, toToken: ToTokenOption) => {
+  const handleRemoveAllowance = (
+    tokenSymbol: TokenSymbol,
+    toToken: ToTokenOption,
+  ) => {
     setSwapAllowance(
       swapAllowance.filter(
         (allowance) =>
-          !(allowance.from === tokenSymbol && allowance.to === toToken)
+          !(allowance.from === tokenSymbol && allowance.to === toToken),
       ),
     );
   };
@@ -375,7 +383,9 @@ export default function RemoteModeSetupSwaps() {
                     selectedOption={selectedToToken}
                     style={{
                       width: '100%',
-                      borderColor: swapToError ? 'var(--color-error-default)' : undefined,
+                      borderColor: swapToError
+                        ? 'var(--color-error-default)'
+                        : undefined,
                     }}
                   />
                 </Box>
@@ -399,7 +409,9 @@ export default function RemoteModeSetupSwaps() {
                     <RemoteModeSwapAllowanceCard
                       key={allowance.from}
                       swapAllowance={allowance}
-                      onRemove={() => handleRemoveAllowance(allowance.from, allowance.to)}
+                      onRemove={() =>
+                        handleRemoveAllowance(allowance.from, allowance.to)
+                      }
                     />
                   ))}
                 </Box>
@@ -566,7 +578,9 @@ export default function RemoteModeSetupSwaps() {
                       <RemoteModeSwapAllowanceCard
                         key={allowance.from}
                         swapAllowance={allowance}
-                        onRemove={() => handleRemoveAllowance(allowance.from, allowance.to)}
+                        onRemove={() =>
+                          handleRemoveAllowance(allowance.from, allowance.to)
+                        }
                       />
                     ))}
                   </Box>
