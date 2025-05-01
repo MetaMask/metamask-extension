@@ -78,8 +78,8 @@ import {
 } from '../../../selectors';
 import {
   detectNfts,
-  setSelectedAccount,
   getNetworksWithTransactionActivityByAccounts,
+  setSelectedAccount,
 } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
