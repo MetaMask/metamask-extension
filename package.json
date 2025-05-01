@@ -226,8 +226,7 @@
     "gridplus-sdk/elliptic": "^6.6.1",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
-    "@trezor/connect-web": "~9.4.7",
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@21.0.4-preview-19ee5ff2"
+    "@trezor/connect-web": "~9.4.7"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -289,7 +288,7 @@
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
     "@metamask/keyring-api": "^17.5.0",
-    "@metamask/keyring-controller": "^21.0.4",
+    "@metamask/keyring-controller": "^21.0.5",
     "@metamask/keyring-internal-api": "^6.0.1",
     "@metamask/keyring-internal-snap-client": "^4.0.1",
     "@metamask/keyring-snap-client": "^4.1.0",
