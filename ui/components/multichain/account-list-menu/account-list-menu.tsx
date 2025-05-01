@@ -76,11 +76,7 @@ import {
   getHDEntropyIndex,
   getAllChainsToPoll,
 } from '../../../selectors';
-import {
-  detectNfts,
-  setSelectedAccount,
-  getNetworksWithTransactionActivityByAccounts,
-} from '../../../store/actions';
+import { detectNfts, setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -515,20 +511,6 @@ export const AccountListMenu = ({
     chainId: null,
   };
   ///: END:ONLY_INCLUDE_IF(multichain)
-
-  const fetchAccountsWithActivity = useCallback(async () => {
-    try {
-      await dispatch(getNetworksWithTransactionActivityByAccounts());
-    } catch (error) {
-      console.error('Failed to fetch accounts with activity:', error);
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (filteredAccounts.length > 0) {
-      fetchAccountsWithActivity();
-    }
-  }, [fetchAccountsWithActivity, filteredAccounts]);
 
   return (
     <Modal isOpen onClose={onClose}>

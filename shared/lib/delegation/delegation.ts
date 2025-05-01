@@ -3,13 +3,13 @@ import {
   DelegationEntry,
   DelegationFilter,
 } from '@metamask/delegation-controller';
-import { getChecksumAddress } from '@metamask/utils';
-import { keccak } from 'ethereumjs-util';
 import { Interface } from '@ethersproject/abi';
-import { getCaveatArrayPacketHash, type Caveat } from './caveat';
-import { resolveCaveats, type Caveats } from './caveatBuilder';
+import { keccak } from 'ethereumjs-util';
+import { getChecksumAddress } from '@metamask/utils';
 import { Address, isHexEqual, toHex, type Hex } from './utils';
 import { DELEGATION_MANAGER_ABI } from './abis';
+import { getCaveatArrayPacketHash, type Caveat } from './caveat';
+import { resolveCaveats, type Caveats } from './caveatBuilder';
 
 /**
  * To be used on a delegation as the root authority.
