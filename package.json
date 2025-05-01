@@ -302,7 +302,7 @@
     "@metamask/multichain-network-controller": "^0.5.1",
     "@metamask/multichain-transactions-controller": "^0.9.0",
     "@metamask/name-controller": "^8.0.3",
-    "@metamask/network-controller": "patch:@metamask-previews/network-controller@npm%3A23.2.0-preview-7f6d081#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch",
+    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.3.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch",
     "@metamask/notification-services-controller": "^6.0.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
