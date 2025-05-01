@@ -30069,7 +30069,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^12.1.0"
     "@metamask/snaps-sdk": "npm:^6.22.1"
     "@metamask/snaps-utils": "npm:^9.2.1"
-    "@metamask/solana-wallet-snap": "npm:^1.24.0"
+    "@metamask/solana-wallet-snap": "npm:^1.25.1"
     "@metamask/solana-wallet-standard": "npm:^0.4.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
