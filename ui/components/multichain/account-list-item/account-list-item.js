@@ -598,6 +598,10 @@ AccountListItem.propTypes = {
    * Determines if list balance should be obfuscated
    */
   privacyMode: PropTypes.bool,
+  /**
+   * Determines if the connected status should be shown
+   */
+  showConnectedStatus: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

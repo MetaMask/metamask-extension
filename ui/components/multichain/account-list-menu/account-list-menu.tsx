@@ -462,7 +462,6 @@ export const AccountListMenu = ({
           <AccountListItem
             onClick={onAccountListItemItemClicked}
             account={account}
-            showConnectedStatus={true}
             key={account.address}
             selected={selectedAccount.address === account.address}
             closeMenu={onClose}
