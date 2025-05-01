@@ -161,6 +161,8 @@ features:
     assets:
       - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/bitcoin-wallet-snap.json
+      - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json.zst
+        dest: snaps/bitcoin-wallet-snap.json.zst
   solana:
     assets:
       - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
