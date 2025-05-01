@@ -34,7 +34,7 @@ describe('useRamps', () => {
     });
   });
 
-  it('should use the numeric version of the chain ID for Ethereum Mainnet and Linea', () => {
+  it('should pass the numeric version of the chain ID', () => {
     const testCases = [
       { mockChainId: '0x1', numericChainId: '1' },
       { mockChainId: '0xe70', numericChainId: '59144' },
@@ -45,6 +45,7 @@ describe('useRamps', () => {
         ...mockStoreState,
         metamask: {
           ...mockStoreState.metamask,
+          // @ts-expect-error ignore the 0xString interface check
           ...mockNetworkState({ chainId: mockChainId }),
         },
       };
@@ -53,6 +54,7 @@ describe('useRamps', () => {
 
       const { result } = renderHook(() => useRamps(), { wrapper });
 
+      // @ts-expect-error ignore the 0xString interface check
       const buyURI = result.current.getBuyURI(mockChainId);
       expect(buyURI).toBe(mockBuyURI);
     });
@@ -130,6 +132,7 @@ describe('useRamps', () => {
       ...mockStoreState,
       metamask: {
         ...mockStoreState.metamask,
+        // @ts-expect-error ignore the 0xString interface check
         ...mockNetworkState({ chainId: solanaChainId }),
       },
     };
