@@ -38,15 +38,11 @@ import { initializeProvider } from '@metamask/providers/initializeInpageProvider
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { pipeline } from 'readable-stream';
 
-// this is currently equivalent to process.env.MULTICHAIN_API
-// which can't be used for conditional imports
-///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import {
   getMultichainClient,
   getDefaultTransport,
 } from '@metamask/multichain-api-client';
 import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
-///: END:ONLY_INCLUDE_IF
 
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
@@ -91,12 +87,12 @@ if (shouldInjectProvider()) {
     },
   });
 
-  // this is currently equivalent to process.env.MULTICHAIN_API
-  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
   getMultichainClient({
     transport: getDefaultTransport(),
   }).then((client) => {
-    registerSolanaWalletStandard({ client });
+    registerSolanaWalletStandard({
+      client,
+      walletName: process.env.METAMASK_BUILD_NAME,
+    });
   });
-  ///: END:ONLY_INCLUDE_IF
 }

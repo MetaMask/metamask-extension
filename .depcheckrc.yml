@@ -24,6 +24,7 @@ ignores:
   - '@metamask/phishing-warning' # statically hosted as part of some e2e tests
   - '@metamask/test-dapp'
   - '@metamask/test-dapp-multichain'
+  - '@metamask/test-dapp-solana'
   - '@metamask/design-tokens' # Only imported in index.css
   - '@tsconfig/node22' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
@@ -43,6 +44,8 @@ ignores:
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
   - 'tar' # used by foundryup.ts
   - 'minipass' # used by foundryup.ts
+  - 'tweetnacl' # used by solana-wallet-standard
+  - 'bs58' # used by solana-wallet-standard
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
