@@ -20889,7 +20889,7 @@ authors: undefined
 ******************************
 
 @metamask/solana-wallet-standard
-0.3.1 <https://github.com/MetaMask/solana-wallet-standard>
+0.4.1 <https://github.com/MetaMask/solana-wallet-standard>
 ISC License
 
 Copyright (c) 2021 MetaMask
