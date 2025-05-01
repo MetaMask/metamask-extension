@@ -466,7 +466,7 @@
     "message": "All networks"
   },
   "allPermissions": {
-    "message": "All Permissions"
+    "message": "All permissions"
   },
   "allTimeHigh": {
     "message": "All time high"
@@ -1123,14 +1123,11 @@
   "confirmGasFeeTokenTooltip": {
     "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
-  "confirmInfoAccountCurrentType": {
-    "message": "Current Type"
+  "confirmInfoAccountNow": {
+    "message": "Now"
   },
-  "confirmInfoAccountNewType": {
-    "message": "New Type"
-  },
-  "confirmInfoAccountType": {
-    "message": "Account type"
+  "confirmInfoSwitchingTo": {
+    "message": "Switching To"
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
@@ -2835,8 +2832,11 @@
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Multiple Ledger devices cannot be connected at the same time. To connect a new Ledger device, you'll need to first disconnect the previous one."
+  "ledgerMultipleDevicesUnsupportedInfoDescription": {
+    "message": "To connect a new device, disconnect the previous one."
+  },
+  "ledgerMultipleDevicesUnsupportedInfoTitle": {
+    "message": "You can only connect one Ledger at a time"
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
@@ -5103,6 +5103,12 @@
   },
   "slideRemoteModeTitle": {
     "message": "Remote mode is here!"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Same address, smarter features"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Start using smart accounts"
   },
   "slideSolanaDescription": {
     "message": "Create a Solana account to get started"

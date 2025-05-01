@@ -194,7 +194,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "aggregators": [],
-    "assetId": undefined,
+    "assetId": "eip155:1/erc20:0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "balance": "",
     "chainId": "0x1",
     "decimals": 18,
@@ -210,7 +210,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
     "aggregators": [],
-    "assetId": undefined,
+    "assetId": "eip155:1/erc20:0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
     "balance": "",
     "chainId": "0x1",
     "decimals": 18,
@@ -225,7 +225,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
     "aggregators": [],
-    "assetId": undefined,
+    "assetId": "eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7",
     "balance": "",
     "chainId": "0x1",
     "decimals": 6,
@@ -253,7 +253,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   {
     "address": "0x12652c6d93fdb6f4f37d48a8687783c782bb0d10",
     "aggregators": [],
-    "assetId": undefined,
+    "assetId": "eip155:1/erc20:0x12652c6d93fdb6f4f37d48a8687783c782bb0d10",
     "balance": "",
     "chainId": "0x1",
     "decimals": 18,
