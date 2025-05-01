@@ -1,15 +1,20 @@
 /* eslint-disable no-plusplus */
-/* eslint-disable require-unicode-regexp */
 import {
   bytesToHex,
-  getChecksumAddress,
+  isHexString,
+  isStrictHexString,
+  isValidChecksumAddress,
+  isValidHexAddress,
   numberToHex,
+  remove0x,
   stringToBytes,
+  type Hex,
 } from '@metamask/utils';
 import { keccak } from 'ethereumjs-util';
 
-export type Hex = `0x${string}`;
-export type Address = `0x${string}`;
+type Address = Hex;
+
+export type { Address, Hex };
 
 function stringToHex(value: string): Hex {
   return bytesToHex(stringToBytes(value));
@@ -41,8 +46,7 @@ export function toHex(
   const { size } = options || {};
   const res: Hex = (() => {
     if (value instanceof Uint8Array) {
-      const buf = Buffer.from(value);
-      return `0x${buf.toString('hex')}`;
+      return bytesToHex(value);
     }
     if (Buffer.isBuffer(value)) {
       return `0x${value.toString('hex')}`;
@@ -86,14 +90,7 @@ export function isHex(
   options?: IsHexOptions | undefined,
 ): value is Hex {
   const { strict = true } = options || {};
-
-  if (!value) {
-    return false;
-  }
-  if (typeof value !== 'string') {
-    return false;
-  }
-  return strict ? /^0x[0-9a-fA-F]*$/.test(value) : value.startsWith('0x');
+  return strict ? isStrictHexString(value) : isHexString(value);
 }
 
 type PadOptions = {
@@ -117,7 +114,7 @@ export function pad(value: Hex, options?: PadOptions | undefined): Hex {
     return value;
   }
 
-  const hex = value.replace('0x', '');
+  const hex = remove0x(value);
   if (hex.length > size * 2) {
     throw new Error(`Cannot pad 0x${hex} to ${size} bytes`);
   }
@@ -135,13 +132,8 @@ export function pad(value: Hex, options?: PadOptions | undefined): Hex {
  * @returns The concatenated hex string
  */
 export function concat(values: readonly Hex[]): Hex {
-  return `0x${(values as Hex[]).reduce(
-    (acc, x) => acc + x.replace('0x', ''),
-    '',
-  )}`;
+  return `0x${(values as Hex[]).reduce((acc, x) => acc + remove0x(x), '')}`;
 }
-
-const addressRegex = /^0x[a-fA-F0-9]{40}$/;
 
 type IsAddressOptions = {
   /**
@@ -165,17 +157,8 @@ export function isAddress(
   options?: IsAddressOptions | undefined,
 ): address is Address {
   const { strict = true } = options || {};
-
-  if (!addressRegex.test(address)) {
-    return false;
-  }
-  if (address.toLowerCase() === address) {
-    return true;
-  }
-  if (strict) {
-    return getChecksumAddress(address as Address) === address;
-  }
-  return true;
+  const addr = address as Hex;
+  return strict ? isValidChecksumAddress(addr) : isValidHexAddress(addr);
 }
 
 function normalizeSignature(signature: string): string {

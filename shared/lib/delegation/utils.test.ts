@@ -53,8 +53,8 @@ describe('isHex', () => {
 
   it('should handle non-strict mode', () => {
     expect(isHex('0x1234', { strict: false })).toBe(true);
-    expect(isHex('0xghij', { strict: false })).toBe(true);
-    expect(isHex('1234', { strict: false })).toBe(false);
+    expect(isHex('123abc', { strict: false })).toBe(true);
+    expect(isHex('123zzz', { strict: false })).toBe(false);
   });
 });
 

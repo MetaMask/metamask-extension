@@ -30,9 +30,9 @@ describe('redeemerBuilder', () => {
 
   it('should create a caveat with multiple valid redeemer addresses', () => {
     const redeemers = [
-      '0x1234567890123456789012345678901234567890',
-      '0x0987654321098765432109876543210987654321',
-      '0xabcdef0123456789abcdef0123456789abcdef01',
+      '0x44c7E1cbD5a7402bC31Bf637E57d27ff559c66c9',
+      '0x2f6fC5E27628158758ae4688BbA809c62713d152',
+      '0xD51891b00847cB1497399c34F6F9Ab9a952a6704',
     ] as Hex[];
 
     const caveat = redeemerBuilder(mockEnvironment, redeemers);

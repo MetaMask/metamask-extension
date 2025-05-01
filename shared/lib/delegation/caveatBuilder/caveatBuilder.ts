@@ -124,7 +124,7 @@ export class CaveatBuilder<
         ...nameOrCaveat,
       };
 
-      this.results = [...this.results, caveat];
+      this.results.push(caveat);
 
       return this;
     }
@@ -134,7 +134,7 @@ export class CaveatBuilder<
     if (typeof func === 'function') {
       const result = func(this.environment, ...args);
 
-      this.results = [...this.results, result];
+      this.results.push(result);
 
       return this;
     }
