@@ -69,7 +69,6 @@ import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import {
   getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
-  getSelectedNetwork,
 } from '../../../../selectors';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import { useRemoteMode, REMOTE_MODES } from '../../hooks/useRemoteMode';
@@ -111,10 +110,8 @@ export default function RemoteModeSetupSwaps() {
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-  const selectedNetwork = useSelector(getSelectedNetwork);
   const { enableRemoteMode } = useRemoteMode({
     account: selectedHardwareAccount.address as Hex,
-    chainId: selectedNetwork.configuration.chainId,
   });
 
   useEffect(() => {
@@ -189,6 +186,7 @@ export default function RemoteModeSetupSwaps() {
       selectedAccount: selectedHardwareAccount,
       authorizedAccount: selectedAccount,
       mode: REMOTE_MODES.SWAP,
+      meta: JSON.stringify({ allowances: swapAllowance }),
     });
 
     // todo: replace with delegation controller integration

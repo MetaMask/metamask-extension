@@ -56,7 +56,6 @@ import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import {
   getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
-  getSelectedNetwork,
 } from '../../../../selectors';
 import {
   RemoteModeDailyAllowanceCard,
@@ -99,11 +98,9 @@ export default function RemoteModeSetupDailyAllowance() {
   const history = useHistory();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-  const selectedNetwork = useSelector(getSelectedNetwork);
 
   const { enableRemoteMode } = useRemoteMode({
     account: selectedHardwareAccount.address as Hex,
-    chainId: selectedNetwork.configuration.chainId,
   });
 
   useEffect(() => {
@@ -189,8 +186,8 @@ export default function RemoteModeSetupDailyAllowance() {
       selectedAccount: selectedHardwareAccount,
       authorizedAccount: selectedAccount,
       mode: REMOTE_MODES.DAILY_ALLOWANCE,
+      meta: JSON.stringify({ allowances: dailyAllowance }),
     });
-
     // TODO: check better way to route to remote mode if upgrade is needed
     history.replace(REMOTE_ROUTE);
   };

@@ -259,3 +259,14 @@ export const toFunctionSelector = (fn: string): Hex => {
   const hash = toHex(hashSignature(fn));
   return hash.slice(0, 10) as Hex;
 };
+
+/**
+ * Checks if two hex strings are equal.
+ *
+ * @param a - The first hex string.
+ * @param b - The second hex string.
+ * @returns True if the hex strings are equal, false otherwise.
+ */
+export function isHexEqual(a: Hex, b: Hex) {
+  return a.toLowerCase() === b.toLowerCase();
+}

@@ -1,9 +1,15 @@
 import { encode } from '@metamask/abi-utils';
+import {
+  DelegationEntry,
+  DelegationFilter,
+} from '@metamask/delegation-controller';
 import { getChecksumAddress } from '@metamask/utils';
 import { keccak } from 'ethereumjs-util';
+import { Interface } from '@ethersproject/abi';
 import { getCaveatArrayPacketHash, type Caveat } from './caveat';
 import { resolveCaveats, type Caveats } from './caveatBuilder';
-import { toHex, type Hex } from './utils';
+import { Address, isHexEqual, toHex, type Hex } from './utils';
+import { DELEGATION_MANAGER_ABI } from './abis';
 
 /**
  * To be used on a delegation as the root authority.
@@ -185,7 +191,7 @@ export const createDelegation = (
     delegator: options.from,
     authority: resolveAuthority(options.parentDelegation),
     caveats: resolveCaveats(options.caveats),
-    salt: '0x',
+    salt: `0x${Math.random().toString(16).substr(2, 8)}`,
     signature: '0x',
   };
 };
@@ -207,4 +213,67 @@ export const createOpenDelegation = (
     salt: '0x',
     signature: '0x',
   };
+};
+
+type ListDelegationEntriesOptions = {
+  filter?: DelegationFilter;
+  delegations: { [hash: Hex]: DelegationEntry };
+  requester: Address;
+};
+
+/**
+ * Lists delegation entries.
+ *
+ * @param options - The options to use to list the delegation entries.
+ * @param options.filter - The filter to use to list the delegation entries.
+ * @param options.delegations - The delegations to filter.
+ * @param options.requester - The address of the requester.
+ * @returns A list of delegation entries that match the filter.
+ */
+export const listDelegationEntries = ({
+  filter,
+  delegations,
+  requester,
+}: ListDelegationEntriesOptions) => {
+  let list: DelegationEntry[] = Object.values(delegations);
+
+  if (filter?.from) {
+    list = list.filter((entry) =>
+      isHexEqual(entry.delegation.delegator, filter.from as Address),
+    );
+  }
+
+  if (!filter?.from || (filter?.from && !isHexEqual(filter.from, requester))) {
+    list = list.filter((entry) =>
+      isHexEqual(entry.delegation.delegate, requester),
+    );
+  }
+
+  const filterChainId = filter?.chainId;
+  if (filterChainId) {
+    list = list.filter((entry) => isHexEqual(entry.chainId, filterChainId));
+  }
+
+  const tags = filter?.tags;
+  if (tags && tags.length > 0) {
+    // Filter entries that contain all of the filter tags
+    list = list.filter((entry) =>
+      tags.every((tag) => entry.tags.includes(tag)),
+    );
+  }
+
+  return list;
+};
+
+export const encodeDisableDelegation = ({
+  delegation,
+}: {
+  delegation: Delegation;
+}) => {
+  const delegationStruct = toDelegationStruct(delegation);
+
+  return new Interface(DELEGATION_MANAGER_ABI).encodeFunctionData(
+    'disableDelegation',
+    [delegationStruct],
+  ) as Hex;
 };
