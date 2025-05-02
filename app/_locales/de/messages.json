@@ -955,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Wir verwenden Infura als Anbieter für ferngesteuerte Prozeduranrufe (RPC), um den verlässlichsten und vertraulichsten Zugriff auf Ethereum-Daten zu ermöglichen, den wir können. Sie können Ihren eigenen RPC auswählen, bedenken Sie aber, dass RPC Ihre IP-Adresse und Ihre Ethereum-Wallet erhalten wird, um Transaktionen durchzuführen. Lesen Sie unsere $1, um mehr darüber zu erfahren, wie Infura mit Ihren Daten umgeht.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrer Hardware-Wallet zu verbinden."
@@ -1024,9 +1024,6 @@
   },
   "confirm": {
     "message": "Bestätigen"
-  },
-  "confirmAccountType": {
-    "message": "Typ"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Smart-Konto"
@@ -2714,9 +2711,6 @@
   "ledgerLocked": {
     "message": "Keine Verbindung zum Ledger-Gerät. Bitte stellen Sie sicher, dass Ihr Gerät entsperrt ist und die Ethereum-App geöffnet ist."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Es können nicht mehrere Ledger-Geräte gleichzeitig verbunden werden. Bevor ein neues Ledger-Gerät verbunden werden kann, sollten Sie zunächst die Verbindung zum vorherigen Gerät trennen."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live braucht zu lange für eine Reaktion oder um eine Verbindung herzustellen. Stellen Sie sicher, dass die Ledger Live-App geöffnet und Ihr Gerät entsperrt ist."
   },
@@ -4087,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Einige dieser Netzwerke werden von Dritten betrieben. Die Verbindungen können weniger zuverlässig sein oder Dritten ermöglichen, Aktivitäten zu verfolgen. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Beliebte Netzwerke"

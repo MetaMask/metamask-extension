@@ -955,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "हम अपने रिमोट प्रोसीजर कॉल (RPC) प्रोवाइडर के रूप में Infura का इस्तेमाल करते हैं ताकि हम Ethereum डेटा तक सबसे विश्वसनीय और निजी ऐक्सेस प्रदान कर सकें। आप अपना स्वयं का RPC चुन सकते हैं, लेकिन याद रखें कि ट्रांसेक्शन करने के लिए कोई भी RPC आपका IP एड्रेस और Ethereum वॉलेट प्राप्त करेगा। Infura डेटा को कैसे मैनेज करता है, इस बारे में अधिक जानने के लिए हमारा $1 पढ़ें।",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "अपने hardware wallet से कनेक्ट करने के लिए आपको Google Chrome पर MetaMask का इस्तेमाल करने की आवश्यकता है।"
@@ -1024,9 +1024,6 @@
   },
   "confirm": {
     "message": "कन्फर्म करें"
-  },
-  "confirmAccountType": {
-    "message": "प्रकार"
   },
   "confirmAccountTypeSmartContract": {
     "message": "स्मार्ट अकाउंट"
@@ -2714,9 +2711,6 @@
   "ledgerLocked": {
     "message": "Ledger डिवाइस से कनेक्ट नहीं हो सकता। कृपया पक्का करें कि आपका डिवाइस अनलॉक है और Ethereum ऐप खुला है।"
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "एक ही समय में कई Ledger डिवाइस कनेक्ट नहीं किए जा सकते। एक नया Ledger डिवाइस कनेक्ट करने के लिए, आपको पहले पिछले डिवाइस को डिस्कनेक्ट करना होगा।"
-  },
   "ledgerTimeout": {
     "message": "Ledger Live जवाब देने में बहुत अधिक समय ले रहा है या कनेक्शन टाइमआउट हो गया है। पक्का करें कि Ledger Live ऐप खुला है और आपका डिवाइस अनलॉक है।"
   },
@@ -4087,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "इनमें से कुछ नेटवर्क थर्ड पार्टीज़ पर निर्भर हैं। कनेक्शन कम विश्वसनीय हो सकते हैं या गतिविधि को ट्रैक करने के लिए थर्ड पार्टीज़ को चालू कर सकते हैं। $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "पॉपुलर नेटवर्क्स"

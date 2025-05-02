@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { Anvil } from '@viem/anvil';
+import { Anvil } from '../../../seeder/anvil';
 import { Driver } from '../../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import FixtureBuilder from '../../../fixture-builder';
@@ -33,7 +33,13 @@ describe('Upgrade Account', function (this: Suite) {
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }: { driver: Driver; localNodes: Anvil }) => {
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
         await loginWithBalanceValidation(driver);
 
         // We check that we have an EOA account
@@ -110,7 +116,13 @@ describe('Upgrade Account', function (this: Suite) {
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }: { driver: Driver; localNodes: Anvil }) => {
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
         await loginWithBalanceValidation(driver);
 
         // We check that we have an EOA account
@@ -164,7 +176,13 @@ describe('Upgrade Account', function (this: Suite) {
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }: { driver: Driver; localNodes: Anvil }) => {
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
         await loginWithBalanceValidation(driver);
 
         // We check that we have an EOA account

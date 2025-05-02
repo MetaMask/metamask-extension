@@ -128,6 +128,7 @@
     "throttledOrigins": "object",
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
+    "delegations": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",
@@ -338,6 +339,7 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
+    "assetExchangeRates": "object",
     "bridgeFeatureFlags": {
       "extensionConfig": {
         "maxRefreshCount": "number",
@@ -367,7 +369,7 @@
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
     "quotesRefreshCount": 0,
-    "bridgeStatusState": { "txHistory": "object" },
+    "txHistory": "object",
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
@@ -378,7 +380,8 @@
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
     "encryptionKey": "string",
-    "encryptionSalt": "string"
+    "encryptionSalt": "string",
+    "allDeFiPositions": "object"
   },
   "ramps": "object",
   "send": "object",
