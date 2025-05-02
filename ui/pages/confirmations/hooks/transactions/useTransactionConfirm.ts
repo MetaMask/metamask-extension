@@ -59,12 +59,13 @@ export function useTransactionConfirm() {
     await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
     ///: END:ONLY_INCLUDE_IF
   }, [
+    customNonceValue,
     dispatch,
     handleGasless7702,
     handleSmartTransaction,
     isSmartTransaction,
     newTransactionMeta,
-    customNonceValue,
+    selectedGasFeeToken,
   ]);
 
   return {
