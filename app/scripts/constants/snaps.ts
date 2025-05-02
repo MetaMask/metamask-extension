@@ -29,7 +29,7 @@ export const PREINSTALLED_SNAPS_URLS = [
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   new URL(
-    '@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json.gz',
+    '@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json',
     // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
     import.meta.url,
   ),
