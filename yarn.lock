@@ -20215,14 +20215,14 @@ __metadata:
 
 "detective@patch:detective@npm%3A5.2.1#~/.yarn/patches/detective-npm-5.2.1-6417517bd5.patch":
   version: 5.2.1
-  resolution: "detective@patch:detective@npm%3A5.2.1#~/.yarn/patches/detective-npm-5.2.1-6417517bd5.patch::version=5.2.1&hash=7d05e4"
+  resolution: "detective@patch:detective@npm%3A5.2.1#~/.yarn/patches/detective-npm-5.2.1-6417517bd5.patch::version=5.2.1&hash=32b142"
   dependencies:
     acorn-node: "npm:^1.8.2"
     defined: "npm:^1.0.0"
     minimist: "npm:^1.2.6"
   bin:
     detective: bin/detective.js
-  checksum: 10/6f5964f97e127ac0c1c5dec2be1a528e9b0e22a89df71e3701d0f4a31026ff8ff477ee7aa95b7bd8d5ec2cf45343de17134bc1347f8d37233f7a00763b7e9fc1
+  checksum: 10/e54be127130e2313e50df99003bcc07a780540c87b2cd8edac58e86c21b8ac33dfaa1fa1e0833378715eef105e15b4c4c5d18372f942d698d8351a0d783d5958
   languageName: node
   linkType: hard
 

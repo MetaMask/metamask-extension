@@ -1,5 +1,5 @@
 diff --git a/index.js b/index.js
-index 6c935f06ad0e9f4d6e741fa853250da1d6186e6d..0299ebf0d5ff097bc4ede3bff6cd0214fc81e8f7 100644
+index 6c935f06ad0e9f4d6e741fa853250da1d6186e6d..39414d14151615a117f5de24c3ac72460c1a0490 100644
 --- a/index.js
 +++ b/index.js
 @@ -1,5 +1,5 @@
@@ -10,7 +10,15 @@ index 6c935f06ad0e9f4d6e741fa853250da1d6186e6d..0299ebf0d5ff097bc4ede3bff6cd0214
  var defined = require('defined');
  
  var requireRe = /\brequire\b/;
-@@ -28,24 +28,24 @@ var exports = module.exports = function (src, opts) {
+@@ -7,6 +7,7 @@ var requireRe = /\brequire\b/;
+ function parse (src, opts) {
+     if (!opts) opts = {};
+     var acornOpts = {
++        ecmaVersion: 2022,
+         ranges: defined(opts.ranges, opts.range),
+         locations: defined(opts.locations, opts.loc),
+         allowReserved: defined(opts.allowReserved, true),
+@@ -28,24 +29,24 @@ var exports = module.exports = function (src, opts) {
  
  exports.find = function (src, opts) {
      if (!opts) opts = {};
@@ -41,7 +49,7 @@ index 6c935f06ad0e9f4d6e741fa853250da1d6186e6d..0299ebf0d5ff097bc4ede3bff6cd0214
      function visit(node, st, c) {
          var hasRequire = wordRe.test(src.slice(node.start, node.end));
          if (!hasRequire) return;
-@@ -70,11 +70,11 @@ exports.find = function (src, opts) {
+@@ -70,11 +71,11 @@ exports.find = function (src, opts) {
              if (opts.nodes) modules.nodes.push(node);
          }
      }

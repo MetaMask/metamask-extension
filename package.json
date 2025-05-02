@@ -131,7 +131,6 @@
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
   },
   "resolutions": {
-    "detective": "patch:detective@npm%3A5.2.1#~/.yarn/patches/detective-npm-5.2.1-6417517bd5.patch",
     "acorn": "^8.14.1",
     "acorn-walk": "^8.3.4",
     "browserify": "^17.0.1",
@@ -226,7 +225,8 @@
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
     "@trezor/connect-web": "~9.4.7",
     "insert-module-globals@npm:^7.2.1": "patch:insert-module-globals@npm%3A7.2.1#~/.yarn/patches/insert-module-globals-npm-7.2.1-28e63ed201.patch",
-    "undeclared-identifiers@npm:^1.1.2": "patch:undeclared-identifiers@npm%3A1.1.2#~/.yarn/patches/undeclared-identifiers-npm-1.1.2-13d6792e9e.patch"
+    "undeclared-identifiers@npm:^1.1.2": "patch:undeclared-identifiers@npm%3A1.1.2#~/.yarn/patches/undeclared-identifiers-npm-1.1.2-13d6792e9e.patch",
+    "detective@npm:^5.2.0": "patch:detective@npm%3A5.2.1#~/.yarn/patches/detective-npm-5.2.1-6417517bd5.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.27.1",
