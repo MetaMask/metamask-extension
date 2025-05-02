@@ -5013,6 +5013,7 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       // Do not block the onboarding flow if this fails
       log.warn(`Failed to add Solana account. Error: ${e}`);
+      captureException(e);
       return null;
     }
   }
