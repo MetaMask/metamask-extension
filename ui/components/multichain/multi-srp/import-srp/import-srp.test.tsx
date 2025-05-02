@@ -180,7 +180,6 @@ describe('ImportSrp', () => {
   });
 
   it('clears the secret recovery phrase from clipboard after importing', async () => {
-    const onActionComplete = jest.fn();
     const render = renderWithProvider(<ImportSrp />, store);
     const { getByText } = render;
     const importButton = getByText('Import wallet');
@@ -194,7 +193,6 @@ describe('ImportSrp', () => {
       expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
         VALID_SECRET_RECOVERY_PHRASE,
       );
-      expect(onActionComplete).toHaveBeenCalledWith(true);
     });
 
     expect(mockClearClipboard).toHaveBeenCalled();
