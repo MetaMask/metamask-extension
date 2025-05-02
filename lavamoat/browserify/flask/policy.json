@@ -3976,19 +3976,6 @@
         "@metamask/snaps-utils>fast-xml-parser>strnum": true
       }
     },
-    "fflate": {
-      "globals": {
-        "Blob": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL.createObjectURL": true,
-        "Worker": true,
-        "onmessage": "write",
-        "postMessage": true,
-        "queueMicrotask": true,
-        "setTimeout": true
-      }
-    },
     "@metamask/notification-services-controller>firebase": {
       "packages": {
         "@metamask/notification-services-controller>firebase>@firebase/app": true,

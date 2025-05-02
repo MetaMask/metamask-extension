@@ -17,7 +17,6 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { gunzipSync } from 'fflate';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -580,10 +579,9 @@ async function loadPreinstalledSnaps() {
 
     // If the Snap is compressed, decompress it
     if (url.pathname && url.pathname.endsWith('.json.gz')) {
-      const compressed = new Uint8Array(await response.arrayBuffer());
-      const decompressed = gunzipSync(compressed);
-      const jsonText = new TextDecoder().decode(decompressed);
-      return JSON.parse(jsonText);
+      const ds = new DecompressionStream('gzip');
+      const decompressedStream = response.body.pipeThrough(ds);
+      return await new Response(decompressedStream).json();
     }
 
     return await response.json();
