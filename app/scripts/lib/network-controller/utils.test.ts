@@ -100,7 +100,7 @@ describe('shouldCreateRpcServiceEvents', () => {
     });
   });
 
-  it('returns true if METAMASK_ENVIRONMENT is "development"', async () => {
+  it('returns true if METAMASK_ENVIRONMENT is not "production" or "release-candidate"', async () => {
     await withChangesToEnvironmentVariables(() => {
       process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
 
@@ -112,69 +112,37 @@ describe('shouldCreateRpcServiceEvents', () => {
     });
   });
 
-  it('returns true if METAMASK_ENVIRONMENT is "testing"', async () => {
-    await withChangesToEnvironmentVariables(() => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
+  // @ts-expect-error The Mocha types are incorrect.
+  describe.each([ENVIRONMENT.PRODUCTION, ENVIRONMENT.RELEASE_CANDIDATE])(
+    'if METAMASK_ENVIRONMENT is "%s"',
+    (metamaskEnvironment: string) => {
+      it('returns false if the MetaMetrics user is not within the sample', async () => {
+        await withChangesToEnvironmentVariables(() => {
+          process.env.METAMASK_ENVIRONMENT = metamaskEnvironment;
+          generateDeterministicRandomNumberMock.mockReturnValue(0.7);
 
-      expect(
-        shouldCreateRpcServiceEvents(
-          '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
-        ),
-      ).toBe(true);
-    });
-  });
+          expect(
+            shouldCreateRpcServiceEvents(
+              '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+            ),
+          ).toBe(false);
+        });
+      });
 
-  it('returns false if METAMASK_ENVIRONMENT is "production" and the MetaMetrics user is not within the sample', async () => {
-    await withChangesToEnvironmentVariables(() => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-      generateDeterministicRandomNumberMock.mockReturnValue(0.7);
+      it('returns true if the MetaMetrics user is within the sample', async () => {
+        await withChangesToEnvironmentVariables(() => {
+          process.env.METAMASK_ENVIRONMENT = metamaskEnvironment;
+          generateDeterministicRandomNumberMock.mockReturnValue(0.09999);
 
-      expect(
-        shouldCreateRpcServiceEvents(
-          '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
-        ),
-      ).toBe(false);
-    });
-  });
-
-  it('returns true if METAMASK_ENVIRONMENT is "production" and the MetaMetrics user is within the sample', async () => {
-    await withChangesToEnvironmentVariables(() => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-      generateDeterministicRandomNumberMock.mockReturnValue(0.09999);
-
-      expect(
-        shouldCreateRpcServiceEvents(
-          '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
-        ),
-      ).toBe(true);
-    });
-  });
-
-  it('returns false if METAMASK_ENVIRONMENT is "release-candidate" and the MetaMetrics user is not within the sample', async () => {
-    await withChangesToEnvironmentVariables(() => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
-      generateDeterministicRandomNumberMock.mockReturnValue(0.7);
-
-      expect(
-        shouldCreateRpcServiceEvents(
-          '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
-        ),
-      ).toBe(false);
-    });
-  });
-
-  it('returns true if METAMASK_ENVIRONMENT is "release-candidate" and the MetaMetrics user is within the sample', async () => {
-    await withChangesToEnvironmentVariables(() => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
-      generateDeterministicRandomNumberMock.mockReturnValue(0.09999);
-
-      expect(
-        shouldCreateRpcServiceEvents(
-          '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
-        ),
-      ).toBe(true);
-    });
-  });
+          expect(
+            shouldCreateRpcServiceEvents(
+              '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
+            ),
+          ).toBe(true);
+        });
+      });
+    },
+  );
 });
 
 /**

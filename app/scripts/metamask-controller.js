@@ -1922,14 +1922,14 @@ export default class MetamaskController extends EventEmitter {
       (isRpcFailoverEnabled) => {
         if (isRpcFailoverEnabled) {
           console.log(
-            '[RemoteFeatureFlagController:stateChange] isRpcFailoverEnabled = ',
+            'isRpcFailoverEnabled = ',
             isRpcFailoverEnabled,
             ', enabling RPC failover',
           );
           this.networkController.enableRpcFailover();
         } else {
           console.log(
-            '[RemoteFeatureFlagController:stateChange] isRpcFailoverEnabled = ',
+            'isRpcFailoverEnabled = ',
             isRpcFailoverEnabled,
             ', disabling RPC failover',
           );
