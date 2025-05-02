@@ -8,6 +8,8 @@ import { getPricePrecision, localizeLargeNumber } from '../util';
 
 import { Box, Text } from '../../../components/component-library';
 import {
+  BlockSize,
+  BorderColor,
   Display,
   FlexDirection,
   JustifyContent,
@@ -107,32 +109,56 @@ export const AssetMarketDetails = ({
   }
 
   return (
-    <Box paddingLeft={4} paddingRight={4}>
-      <Text variant={TextVariant.headingMd} paddingBottom={4}>
+    <Box>
+      <Box
+        marginBottom={2}
+        borderColor={BorderColor.borderMuted}
+        width={BlockSize.Full}
+        style={{ height: '1px', borderBottomWidth: 0 }}
+      ></Box>
+      <Text
+        variant={TextVariant.headingSm}
+        paddingLeft={4}
+        paddingTop={2}
+        paddingBottom={2}
+      >
         {t('marketDetails')}
       </Text>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
+      <Box
+        paddingLeft={4}
+        paddingRight={4}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={2}
+      >
         {marketCap > 0 &&
           renderRow(
             t('marketCap'),
-            <Text data-testid="asset-market-cap">
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              data-testid="asset-market-cap"
+            >
               {localizeLargeNumber(t, marketCap)}
             </Text>,
           )}
         {totalVolume > 0 &&
           renderRow(
             t('totalVolume'),
-            <Text>{localizeLargeNumber(t, totalVolume)}</Text>,
+            <Text variant={TextVariant.bodyMdMedium}>
+              {localizeLargeNumber(t, totalVolume)}
+            </Text>,
           )}
         {circulatingSupply > 0 &&
           renderRow(
             t('circulatingSupply'),
-            <Text>{localizeLargeNumber(t, circulatingSupply)}</Text>,
+            <Text variant={TextVariant.bodyMdMedium}>
+              {localizeLargeNumber(t, circulatingSupply)}
+            </Text>,
           )}
         {allTimeHigh > 0 &&
           renderRow(
             t('allTimeHigh'),
-            <Text>
+            <Text variant={TextVariant.bodyMdMedium}>
               {formatCurrency(
                 `${allTimeHigh}`,
                 currency,
@@ -143,7 +169,7 @@ export const AssetMarketDetails = ({
         {allTimeLow > 0 &&
           renderRow(
             t('allTimeLow'),
-            <Text>
+            <Text variant={TextVariant.bodyMdMedium}>
               {formatCurrency(
                 `${allTimeLow}`,
                 currency,

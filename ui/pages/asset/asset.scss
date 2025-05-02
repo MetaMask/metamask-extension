@@ -33,13 +33,12 @@
   height: 24px;
 
   &:hover {
-    background-color: var(--color-background-default-hover);
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    background-color: var(--color-background-default-pressed);
   }
 
   &__selected {
     color: var(--color-text-default);
-    background-color: var(--color-background-default-pressed);
+    background-color: var(--color-background-default-hover);
   }
 }
 
