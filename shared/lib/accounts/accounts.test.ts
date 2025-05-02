@@ -313,7 +313,7 @@ describe('accounts', () => {
           getDiscoverAccountsSnapRequest(2),
         ); // We stop the discovery at index 2.
 
-        expect(mockSnapKeyringCreateAccount).toHaveBeenCalledTimes(2);
+        expect(mockSnapKeyringCreateAccount).toHaveBeenCalledTimes(6);
       });
     });
   });

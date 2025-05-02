@@ -4030,8 +4030,18 @@ describe('MetaMaskController', () => {
 
         const mockDiscoverAccounts = jest
           .fn()
-          .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/0'/0'" }])
-          .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/1'/0'" }])
+          .mockResolvedValueOnce([
+            {
+              derivationPath: "m/44'/501'/0'/0'",
+              scopes: [SolScope.Mainnet],
+            },
+          ])
+          .mockResolvedValueOnce([
+            {
+              derivationPath: "m/44'/501'/1'/0'",
+              scopes: [SolScope.Mainnet],
+            },
+          ])
           .mockResolvedValueOnce([]); // Return empty array on third call to stop the discovery loop
 
         jest
@@ -4078,6 +4088,7 @@ describe('MetaMaskController', () => {
           accountNameSuggestion: expect.stringContaining('Solana Account'),
           derivationPath: "m/44'/501'/0'/0'",
           entropySource: expect.any(String),
+          scope: SolScope.Mainnet,
         });
         // All calls should use the same internal options
         expect(mockCreateAccount.mock.calls[0][2]).toStrictEqual({
@@ -4091,6 +4102,7 @@ describe('MetaMaskController', () => {
           accountNameSuggestion: expect.stringContaining('Solana Account'),
           derivationPath: "m/44'/501'/1'/0'",
           entropySource: expect.any(String),
+          scope: SolScope.Mainnet,
         });
       });
       ///: END:ONLY_INCLUDE_IF

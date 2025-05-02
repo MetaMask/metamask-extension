@@ -5004,6 +5004,7 @@ export default class MetamaskController extends EventEmitter {
     return await client.createAccount(
       {
         entropySource,
+        scope: SolScope.Mainnet,
       },
       {
         displayConfirmation: false,

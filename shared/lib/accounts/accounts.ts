@@ -222,25 +222,28 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
       // NOTE: We are doing this sequentially mainly to avoid race-conditions with the
       // account naming logic.
-      for (const { derivationPath } of discovered) {
-        try {
-          const options: WalletSnapOptions = {
-            derivationPath,
-            entropySource,
-          };
+      for (const { derivationPath, scopes } of discovered) {
+        const accountOptions: WalletSnapOptions[] = scopes.map((scope) => ({
+          derivationPath,
+          entropySource,
+          scope,
+        }));
 
-          await this.createAccount(options, {
-            displayConfirmation: false,
-            displayAccountNameSuggestion: false,
-            setSelectedAccount: false,
-          });
-        } catch (error) {
-          console.warn(
-            `Unable to create discovered account: ${derivationPath}:`,
-            error,
-          );
-          // Still logging this one to sentry as this is a fairly new process for account discovery.
-          captureException(error);
+        for (const options of accountOptions) {
+          try {
+            await this.createAccount(options, {
+              displayConfirmation: false,
+              displayAccountNameSuggestion: false,
+              setSelectedAccount: false,
+            });
+          } catch (error) {
+            console.warn(
+              `Unable to create discovered account: ${derivationPath}:`,
+              error,
+            );
+            // Still logging this one to sentry as this is a fairly new process for account discovery.
+            captureException(error);
+          }
         }
       }
     }
