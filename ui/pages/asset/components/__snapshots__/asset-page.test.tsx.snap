@@ -6,7 +6,7 @@ exports[`AssetPage should render a native asset 1`] = `
     class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
   >
     <div
-      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
@@ -20,13 +20,17 @@ exports[`AssetPage should render a native asset 1`] = `
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
         </button>
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
-          data-testid="asset-name"
-        >
-          TEST
-        </p>
       </div>
+    </div>
+    <div
+      class="mm-box mm-box--padding-left-4"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+        data-testid="asset-name"
+      >
+        TEST
+      </p>
     </div>
     <div
       class="mm-box mm-box--margin-top-4"
@@ -136,7 +140,7 @@ exports[`AssetPage should render a native asset 1`] = `
       class="mm-box mm-box--padding-top-3 mm-box--display-flex mm-box--flex-direction-column"
     >
       <h4
-        class="mm-box mm-text mm-text--heading-sm mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
+        class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
       >
         Your balance
       </h4>
@@ -374,7 +378,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
     class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
   >
     <div
-      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
@@ -388,13 +392,17 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
         </button>
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
-          data-testid="asset-name"
-        >
-          TEST
-        </p>
       </div>
+    </div>
+    <div
+      class="mm-box mm-box--padding-left-4"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+        data-testid="asset-name"
+      >
+        TEST
+      </p>
     </div>
     <div
       class="mm-box mm-box--margin-top-4"
@@ -483,7 +491,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       class="mm-box mm-box--padding-top-3 mm-box--display-flex mm-box--flex-direction-column"
     >
       <h4
-        class="mm-box mm-text mm-text--heading-sm mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
+        class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
       >
         Your balance
       </h4>
@@ -767,7 +775,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
     class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
   >
     <div
-      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
@@ -781,13 +789,17 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
         </button>
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
-          data-testid="asset-name"
-        >
-          TEST
-        </p>
       </div>
+    </div>
+    <div
+      class="mm-box mm-box--padding-left-4"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
+        data-testid="asset-name"
+      >
+        TEST
+      </p>
     </div>
     <div
       class="mm-box mm-box--rounded-lg"
@@ -847,7 +859,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-top-1 mm-box--background-color-transparent"
+        class="mm-box mm-box--margin-top-4 mm-box--background-color-transparent"
         data-testid="asset-price-chart"
       >
         <div
@@ -1002,7 +1014,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
       class="mm-box mm-box--padding-top-3 mm-box--display-flex mm-box--flex-direction-column"
     >
       <h4
-        class="mm-box mm-text mm-text--heading-sm mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
+        class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
       >
         Your balance
       </h4>
