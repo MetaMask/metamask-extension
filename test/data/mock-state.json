@@ -102,7 +102,7 @@
         }
       }
     },
-    "permissionHistory": {},
+    "delegations": {},
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,
