@@ -40,11 +40,11 @@ jest.mock('../../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
-const mockOpenBuyCryptoInPdapp = jest.fn(); // Create a mock function
+const mockOpenBuyCryptoInPdapp = jest.fn();
 jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   __esModule: true,
   default: jest.fn(() => ({
-    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp, // Return the mock function
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
   })),
 }));
 
@@ -325,8 +325,6 @@ describe('NonEvmOverview', () => {
     const buyButton = queryByTestId(BUY_BUTTON);
     expect(buyButton).toBeInTheDocument();
     fireEvent.click(buyButton as HTMLElement);
-
-    // this is not defined - HELP!
     expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1);
   });
 
