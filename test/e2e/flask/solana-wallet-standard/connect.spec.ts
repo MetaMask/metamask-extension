@@ -171,6 +171,8 @@ describe('Solana Wallet Standard - Connect', function () {
               selectAllAccounts: true,
             });
 
+            await driver.delay(regularDelayMs);
+
             // Check that we're connected to the last selected account
             const header = await testDapp.getHeader();
             const account = await header.getAccount();
