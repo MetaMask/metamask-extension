@@ -3417,7 +3417,7 @@
     "string.prototype.matchall>call-bind>call-bind-apply-helpers": {
       "packages": {
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "browserify>has>function-bind": true
+        "browserify>hasown>function-bind": true
       }
     },
     "string.prototype.matchall>call-bind": {
@@ -4030,11 +4030,11 @@
         "string.prototype.matchall>call-bind>es-define-property": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>es-abstract>es-object-atoms": true,
-        "browserify>has>function-bind": true,
+        "browserify>hasown>function-bind": true,
         "string.prototype.matchall>get-intrinsic>get-proto": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>has-symbols": true,
-        "depcheck>is-core-module>hasown": true,
+        "browserify>hasown": true,
         "string.prototype.matchall>get-intrinsic>math-intrinsics": true
       }
     },
@@ -4111,9 +4111,9 @@
         "@metamask/ppom-validator>elliptic>minimalistic-assert": true
       }
     },
-    "depcheck>is-core-module>hasown": {
+    "browserify>hasown": {
       "packages": {
-        "browserify>has>function-bind": true
+        "browserify>hasown>function-bind": true
       }
     },
     "@metamask/eth-trezor-keyring>hdkey": {
@@ -4198,7 +4198,7 @@
     "string.prototype.matchall>internal-slot": {
       "packages": {
         "string.prototype.matchall>es-abstract>es-errors": true,
-        "depcheck>is-core-module>hasown": true,
+        "browserify>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
     },

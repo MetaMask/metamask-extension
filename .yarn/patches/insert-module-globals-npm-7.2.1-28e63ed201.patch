@@ -1,0 +1,94 @@
+diff --git a/index.js b/index.js
+index dfc266486f6ccb4407d7bb8aa060b8dc375d48ba..6953625a68b3747293dc46e4e79cea101925aed1 100644
+--- a/index.js
++++ b/index.js
+@@ -1,7 +1,7 @@
+ var undeclaredIdentifiers = require('undeclared-identifiers');
+ var through = require('through2');
+ var merge = require('xtend');
+-var parse = require('acorn-node').parse;
++var parse = require('acorn').parse;
+ 
+ var path = require('path');
+ var isAbsolute = path.isAbsolute || require('path-is-absolute');
+@@ -71,23 +71,23 @@ var defaultVars = {
+ module.exports = function (file, opts) {
+     if (/\.json$/i.test(file)) return through();
+     if (!opts) opts = {};
+-    
++
+     var basedir = opts.basedir || '/';
+     var vars = merge(defaultVars, opts.vars);
+     var varNames = Object.keys(vars).filter(function(name) {
+         return typeof vars[name] === 'function';
+     });
+-    
++
+     var quick = RegExp(varNames.map(function (name) {
+         return '\\b' + name + '\\b';
+     }).join('|'));
+-    
++
+     var chunks = [];
+-    
++
+     return through(write, end);
+-    
++
+     function write (chunk, enc, next) { chunks.push(chunk); next() }
+-    
++
+     function end () {
+         var self = this;
+         var source = Buffer.isBuffer(chunks[0])
+@@ -97,17 +97,17 @@ module.exports = function (file, opts) {
+         source = source
+             .replace(/^\ufeff/, '')
+             .replace(/^#![^\n]*\n/, '\n');
+-        
++
+         if (opts.always !== true && !quick.test(source)) {
+             this.push(source);
+             this.push(null);
+             return;
+         }
+-        
++
+         try {
+             var undeclared = opts.always
+                 ? { identifiers: varNames, properties: [] }
+-                : undeclaredIdentifiers(parse(source), { wildcard: true })
++                : undeclaredIdentifiers(parse(source, {ecmaVersion: 2022}), { wildcard: true })
+             ;
+         }
+         catch (err) {
+@@ -118,9 +118,9 @@ module.exports = function (file, opts) {
+             e.filename = file;
+             return this.emit('error', e);
+         }
+-        
++
+         var globals = {};
+-        
++
+         varNames.forEach(function (name) {
+             if (!/\./.test(name)) return;
+             var parts = name.split('.')
+@@ -141,7 +141,7 @@ module.exports = function (file, opts) {
+             globals[name] = value;
+             self.emit('global', name);
+         });
+-        
++
+         this.push(closeOver(globals, source, file, opts));
+         this.push(null);
+     }
+@@ -153,7 +153,7 @@ function closeOver (globals, src, file, opts) {
+     var keys = Object.keys(globals);
+     if (keys.length === 0) return src;
+     var values = keys.map(function (key) { return globals[key] });
+-    
++
+     // we double-wrap the source in IIFEs to prevent code like
+     //     (function(Buffer){ const Buffer = null }())
+     // which causes a parse error.

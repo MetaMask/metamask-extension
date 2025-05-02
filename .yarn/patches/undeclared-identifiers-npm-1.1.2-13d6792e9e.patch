@@ -1,13 +1,22 @@
 diff --git a/index.js b/index.js
-index c331176c5488e12b3e812658cc3f51347d4ff973..127765d9c85217398ef9a0f24ac9d43c7cdb54b9 100644
+index c331176c5488e12b3e812658cc3f51347d4ff973..fbc44dab83cf56be62845c5a1036658160d2de78 100644
 --- a/index.js
 +++ b/index.js
-@@ -50,7 +50,7 @@ var bindingVisitor = {
-         }
-       }
+@@ -1,6 +1,6 @@
+ var xtend = require('xtend')
+-var acorn = require('acorn-node')
+-var walk = require('acorn-node/walk')
++var acorn = require('acorn')
++var walk = require('acorn-walk')
+ var getAssignedIdentifiers = require('get-assigned-identifiers')
  
--      state.undeclared[node.name] = true
-+      Reflect.defineProperty(state.undeclared, node.name, { value: true, writable: true, enumerable: true, configurable: true })
-     }
+ function visitFunction (node, state, ancestors) {
+@@ -91,7 +91,7 @@ module.exports = function findUndeclared (src, opts) {
+   // Parse if `src` is not already an AST.
+   var ast = typeof src === 'object' && src !== null && typeof src.type === 'string'
+     ? src
+-    : acorn.parse(src)
++    : acorn.parse(src, {ecmaVersion:2022})
  
-     if (state.wildcard &&
+   walk.ancestor(ast, scopeVisitor)
+   walk.ancestor(ast, bindingVisitor, walk.base, state)
