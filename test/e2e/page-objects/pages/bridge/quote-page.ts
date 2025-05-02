@@ -48,7 +48,7 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.networkSelector);
     await this.driver.clickElement(this.selectAllButton);
     await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
-    await this.driver.clickElement(this.applyButton);
+    await this.driver.clickElementAndWaitToDisappear(this.applyButton);
 
     await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
     await this.driver.clickElement({
@@ -62,12 +62,21 @@ class BridgeQuotePage {
     // Destination
     await this.driver.waitForSelector(this.destinationAssetPickerButton);
     await this.driver.clickElement(this.destinationAssetPickerButton);
-    await this.driver.clickElement(`[data-testid="${quote.toChain}"]`);
+    await this.driver.clickElementAndWaitToDisappear(
+      `[data-testid="${quote.toChain}"]`,
+    );
     await this.driver.fill(this.assetPrickerSearchInput, quote.tokenTo);
-    await this.driver.clickElement({
+    await this.driver.clickElementAndWaitToDisappear({
       text: quote.tokenTo,
       css: this.tokenButton,
     });
+    await this.driver.assertElementNotPresent(
+      {
+        tag: 'p',
+        text: 'Fetching quotes...',
+      },
+      { waitAtLeastGuard: 5000 },
+    );
   };
 
   submitQuote = async () => {
