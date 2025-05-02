@@ -171,6 +171,10 @@ export const switchToAccount = async (
     text: accountName,
     tag: 'button',
   });
+  await driver.waitForSelector({
+    text: accountName,
+    tag: 'span',
+  });
 };
 
 /**
@@ -183,6 +187,13 @@ export const assertConnected = async (
   connectionStatus: 'Connected' | 'Disconnected' | string,
   expectedAddress?: string,
 ): Promise<void> => {
+  await driver.wait(async () => {
+    const connectionStatusElement = await driver.findElement(
+      By.css('[data-testid="connection-status"]'),
+    );
+    const connectionStatusText = await connectionStatusElement.getText();
+    return connectionStatusText === expectedAddress;
+  }, 5000);
   assert.strictEqual(
     connectionStatus,
     expectedAddress ? `${expectedAddress}` : 'Connected',
