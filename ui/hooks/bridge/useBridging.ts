@@ -57,7 +57,7 @@ const useBridging = () => {
     if (isExternalServicesEnabled) {
       dispatch(setBridgeFeatureFlags());
     }
-  }, [dispatch, setBridgeFeatureFlags]);
+  }, [dispatch, isExternalServicesEnabled]);
 
   const openBridgeExperience = useCallback(
     (
@@ -133,7 +133,6 @@ const useBridging = () => {
     [
       isBridgeSupported,
       isBridgeChain,
-      dispatch,
       history,
       metaMetricsId,
       trackEvent,

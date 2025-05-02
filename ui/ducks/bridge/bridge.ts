@@ -2,14 +2,21 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { type Hex, type CaipChainId } from '@metamask/utils';
 import {
   type BridgeToken,
-  ChainId,
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  type ChainId,
+  type GenericQuoteRequest,
+  isSolanaChainId,
+  formatChainIdToHex,
+  isNativeAddress,
 } from '@metamask/bridge-controller';
+import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
+import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { getTokenExchangeRate } from './utils';
 
 export type BridgeState = {
@@ -26,17 +33,19 @@ export type BridgeState = {
   slippage?: number;
 };
 
-type ChainIdPayload = { payload: number | Hex | CaipChainId | null };
+type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };
 type TokenPayload = {
   payload: {
-    address: string;
+    address: GenericQuoteRequest['srcTokenAddress'];
     symbol: string;
-    image: string;
     decimals: number;
-    chainId: number | Hex | ChainId | CaipChainId;
+    chainId: Exclude<ChainIdPayload['payload'], null>;
     balance?: string;
-    string?: string | undefined;
-    tokenFiatAmount?: number | null;
+    string?: string;
+    image?: string;
+    iconUrl?: string;
+    icon?: string;
+    assetId?: string;
   } | null;
 };
 
@@ -69,6 +78,31 @@ export const setDestTokenUsdExchangeRates = createAsyncThunk(
   getTokenExchangeRate,
 );
 
+const getTokenImage = (payload: TokenPayload['payload']) => {
+  if (!payload) {
+    return '';
+  }
+  const { image, iconUrl, icon, chainId, address, assetId } = payload;
+  const caipChainId = formatChainIdToCaip(chainId);
+  // If the token is native, return the SVG image asset
+  if (isNativeAddress(address)) {
+    if (isSolanaChainId(chainId)) {
+      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
+    }
+    return CHAIN_ID_TOKEN_IMAGE_MAP[
+      formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+    ];
+  }
+  // If the token is not native, return the image from the payload
+  const imageFromPayload = image ?? iconUrl ?? icon;
+  if (imageFromPayload) {
+    return imageFromPayload;
+  }
+  // If there's no image from the payload, build the asset image URL and return it
+  const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
+  return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
+};
+
 const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
@@ -83,6 +117,7 @@ const bridgeSlice = createSlice({
           balance: payload.balance ?? '0',
           string: payload.string ?? '0',
           chainId: payload.chainId,
+          image: getTokenImage(payload),
         };
       } else {
         state.fromToken = payload;
@@ -95,6 +130,7 @@ const bridgeSlice = createSlice({
           balance: payload.balance ?? '0',
           string: payload.string ?? '0',
           chainId: payload.chainId,
+          image: getTokenImage(payload),
           address:
             payload.address ||
             getNativeAssetForChainId(payload.chainId).address,
