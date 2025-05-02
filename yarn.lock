@@ -4416,6 +4416,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ledgerhq/device-transport-kit-web-ble@patch:@ledgerhq/device-transport-kit-web-ble@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-transport-kit-web-ble-npm-0.0.0-EIP7702-20250418164917-95f8b359f3.patch":
+  version: 0.0.0-EIP7702-20250418164917
+  resolution: "@ledgerhq/device-transport-kit-web-ble@patch:@ledgerhq/device-transport-kit-web-ble@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-transport-kit-web-ble-npm-0.0.0-EIP7702-20250418164917-95f8b359f3.patch::version=0.0.0-EIP7702-20250418164917&hash=ee0921"
+  dependencies:
+    "@sentry/minimal": "npm:^6.19.7"
+    purify-ts: "npm:^2.1.0"
+    uuid: "npm:^11.0.3"
+  peerDependencies:
+    "@ledgerhq/device-management-kit": 0.0.0-EIP7702-20250418164917
+    rxjs: ^7.8.2
+  checksum: 10/fed34747a53cc1049a0a51581a772921ccd602935eb1e69e73c5328968011c21c0c80f764b80d3a59639206f1ec4191d5aa5a908f011a27c26a88554ce8a41b0
+  languageName: node
+  linkType: hard
+
 "@ledgerhq/device-transport-kit-web-hid@npm:0.0.0-EIP7702-20250418164917":
   version: 0.0.0-EIP7702-20250418164917
   resolution: "@ledgerhq/device-transport-kit-web-hid@npm:0.0.0-EIP7702-20250418164917"
@@ -4427,6 +4441,20 @@ __metadata:
     "@ledgerhq/device-management-kit": 0.0.0-EIP7702-20250418164917
     rxjs: ^7.8.2
   checksum: 10/c97ce5c6b2aa0e72cb09d6b1e1f5803c3dd63c9afece9d4810a021bd073b82f3320978d5d046c47d8bba61f14763226231a81565055d08daf25a54f36281b324
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/device-transport-kit-web-hid@patch:@ledgerhq/device-transport-kit-web-hid@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-0.0.0-EIP7702-20250418164917-3d6ccb9e66.patch":
+  version: 0.0.0-EIP7702-20250418164917
+  resolution: "@ledgerhq/device-transport-kit-web-hid@patch:@ledgerhq/device-transport-kit-web-hid@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-0.0.0-EIP7702-20250418164917-3d6ccb9e66.patch::version=0.0.0-EIP7702-20250418164917&hash=67560d"
+  dependencies:
+    "@sentry/minimal": "npm:^6.19.7"
+    purify-ts: "npm:^2.1.0"
+    uuid: "npm:^11.0.3"
+  peerDependencies:
+    "@ledgerhq/device-management-kit": 0.0.0-EIP7702-20250418164917
+    rxjs: ^7.8.2
+  checksum: 10/97a1780f26e55e0bd289e231f998c336e1c6933b516bbbbad1b69a9864c1b2742f088a98ec2cc0a96d1135d540e4ac8e354adf138038f6346751dd2be95023fb
   languageName: node
   linkType: hard
 
@@ -4582,6 +4610,15 @@ __metadata:
   peerDependencies:
     "@ledgerhq/device-management-kit": 0.0.0-EIP7702-20250418164917
   checksum: 10/33f33018b2381e26505ca0ac9a27eab8a799995d3305069afbfc49cee66c47f0ff4199c6ec503f1d61dff897a30e7028cc750c7298db506e1460d58a2a2df12a
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/signer-utils@patch:@ledgerhq/signer-utils@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-signer-utils-npm-0.0.0-EIP7702-20250418164917-ca631cdc2c.patch":
+  version: 0.0.0-EIP7702-20250418164917
+  resolution: "@ledgerhq/signer-utils@patch:@ledgerhq/signer-utils@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-signer-utils-npm-0.0.0-EIP7702-20250418164917-ca631cdc2c.patch::version=0.0.0-EIP7702-20250418164917&hash=01f2de"
+  peerDependencies:
+    "@ledgerhq/device-management-kit": 0.0.0-EIP7702-20250418164917
+  checksum: 10/519d24d6d66753053e435a8a01f3de29efc1a62fa80d288eb4be01f299fc31c5ac941cda30ca29563695b477488419950efca7f0b574972bfa64c42be3184fb6
   languageName: node
   linkType: hard
 
@@ -27907,8 +27944,8 @@ __metadata:
     "@ledgerhq/context-module": "patch:@ledgerhq/context-module@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-context-module-npm-0.0.0-EIP7702-20250418164917-2312fcfbeb.patch"
     "@ledgerhq/device-management-kit": "patch:@ledgerhq/device-management-kit@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-management-kit-npm-0.0.0-EIP7702-20250418164917-14cf6a5af4.patch"
     "@ledgerhq/device-signer-kit-ethereum": "patch:@ledgerhq/device-signer-kit-ethereum@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-signer-kit-ethereum-npm-0.0.0-EIP7702-20250418164917-a863f84172.patch"
-    "@ledgerhq/device-transport-kit-web-ble": "npm:0.0.0-EIP7702-20250418164917"
-    "@ledgerhq/device-transport-kit-web-hid": "npm:0.0.0-EIP7702-20250418164917"
+    "@ledgerhq/device-transport-kit-web-ble": "patch:@ledgerhq/device-transport-kit-web-ble@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-transport-kit-web-ble-npm-0.0.0-EIP7702-20250418164917-95f8b359f3.patch"
+    "@ledgerhq/device-transport-kit-web-hid": "patch:@ledgerhq/device-transport-kit-web-hid@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-0.0.0-EIP7702-20250418164917-3d6ccb9e66.patch"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.3.0"
