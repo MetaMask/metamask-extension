@@ -4,7 +4,7 @@ index 6c935f06ad0e9f4d6e741fa853250da1d6186e6d..55e01d249c5f97391be42faa55f30f13
 +++ b/index.js
 @@ -1,4 +1,4 @@
 -var acorn = require('acorn-node');
-+var acorn = require('');
++var acorn = require('acorn');
  var walk = require('acorn-node/walk');
  var defined = require('defined');
  
