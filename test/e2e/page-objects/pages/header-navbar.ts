@@ -21,6 +21,8 @@ class HeaderNavbar {
   private readonly openAccountDetailsButton =
     '[data-testid="account-list-menu-details"]';
 
+  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
+
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
   private readonly switchNetworkDropDown = '[data-testid="network-display"]';
@@ -65,6 +67,13 @@ class HeaderNavbar {
   async openAccountMenu(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
     await this.driver.waitForSelector('.multichain-account-menu-popover__list');
+  }
+
+  async openAccountDetailsModalDetailsTab(): Promise<void> {
+    console.log('Open account details modal');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.openAccountDetailsButton);
+    await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
   async openAccountDetailsModal(): Promise<void> {

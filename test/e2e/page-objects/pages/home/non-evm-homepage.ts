@@ -32,7 +32,6 @@ class NonEvmHomepage extends HomePage {
    * Clicks the send button on the non-EVM account homepage.
    */
   async clickOnSendButton(): Promise<void> {
-    await this.driver.waitForControllersLoaded();
     await this.driver.clickElement(this.sendButton);
   }
 

@@ -43,7 +43,7 @@ type ReduxState = {
   appState: AppSliceState['appState'];
 } & Omit<RootReducerReturnType, 'activeTab' | 'metamask' | 'appState'>;
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
   const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);

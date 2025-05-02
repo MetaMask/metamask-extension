@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Στοιχεία λογαριασμού"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Επαναφορά σε κανονικό λογαριασμό"
-  },
   "accountIdenticon": {
     "message": "Αναγνωριστικό Λογαριασμού"
   },
@@ -255,8 +252,8 @@
     "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
   },
   "addNonEvmAccountFromNetworkPicker": {
-    "message": "Για να ενεργοποιήσετε το δίκτυο $1, πρέπει να δημιουργήσετε έναν λογαριασμό $1.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+    "message": "Για να ενεργοποιήσετε το δίκτυο $1, πρέπει να δημιουργήσετε έναν λογαριασμό $2.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Προσθήκη διεύθυνσης URL RPC"
@@ -958,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Χρησιμοποιούμε την Infura ως την υπηρεσία κλήσης απομακρυσμένης διαδικασίας (RPC) για να προσφέρουμε την πιο αξιόπιστη και ιδιωτική πρόσβαση στα δεδομένα του Ethereum που μπορούμε. Μπορείτε να επιλέξετε τη δική σας RPC, αλλά να θυμάστε ότι οποιαδήποτε RPC θα λαμβάνει τη διεύθυνση IP και το πορτοφόλι σας στο Ethereum για να πραγματοποιεί συναλλαγές. Διαβάστε το $1 για να μάθετε περισσότερα σχετικά με τον τρόπο με τον οποίο η Infura χειρίζεται τα δεδομένα.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Θα πρέπει να χρησιμοποιήσετε το MetaMask στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
@@ -1027,9 +1024,6 @@
   },
   "confirm": {
     "message": "Επιβεβαίωση"
-  },
-  "confirmAccountType": {
-    "message": "Τύπος"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Έξυπνος λογαριασμός"
@@ -1311,9 +1305,6 @@
   },
   "copyAddress": {
     "message": "Αντιγραφή διεύθυνσης στο πρόχειρο"
-  },
-  "copyAddressShort": {
-    "message": "Αντιγραφή διεύθυνσης"
   },
   "copyPrivateKey": {
     "message": "Αντιγραφή ιδιωτικού κλειδιού"
@@ -1994,9 +1985,6 @@
   },
   "existingChainId": {
     "message": "Οι πληροφορίες που έχετε εισάγει συνδέονται με ένα υπάρχον αναγνωριστικό αλυσίδας."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Για να προβάλετε και να επιβεβαιώσετε το πιο πρόσφατο αίτημά σας, θα πρέπει πρώτα να εγκρίνετε ή να απορρίψετε τα υπάρχοντα αιτήματα."
   },
   "expandView": {
     "message": "Ανάπτυξη προβολής"
@@ -2722,9 +2710,6 @@
   },
   "ledgerLocked": {
     "message": "Δεν είναι δυνατή η σύνδεση με τη συσκευή Ledger. Βεβαιωθείτε ότι η συσκευή σας είναι ξεκλειδωμένη και ότι η εφαρμογή Ethereum είναι ανοιχτή."
-  },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Δεν είναι δυνατή η ταυτόχρονη σύνδεση πολλαπλών συσκευών Ledger. Για να συνδέσετε μια νέα συσκευή Ledger, θα πρέπει πρώτα να αποσυνδέσετε την προηγούμενη."
   },
   "ledgerTimeout": {
     "message": "Το Ledger Live χρειάζεται πολύ χρόνο για να ανταποκριθεί ή η σύνδεση έχει διακοπεί. Βεβαιωθείτε ότι η εφαρμογή Ledger Live είναι ανοιχτή και ότι η συσκευή σας είναι ξεκλειδωμένη."
@@ -4096,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Ορισμένα από αυτά τα δίκτυα βασίζονται σε τρίτους. Οι συνδέσεις μπορεί να είναι λιγότερο αξιόπιστες ή να επιτρέπουν σε τρίτους να παρακολουθούν τη δραστηριότητα. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Δημοφιλή δίκτυα"

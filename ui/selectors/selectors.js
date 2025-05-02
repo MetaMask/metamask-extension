@@ -24,7 +24,11 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import {
+  KnownCaipNamespace,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -63,6 +67,8 @@ import {
   MOONRIVER_DISPLAY_NAME,
   TEST_NETWORK_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  NETWORK_TO_NAME_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -584,7 +590,8 @@ export function getHDEntropyIndex(state) {
  * @returns {object} A map of account addresses to account objects (which includes the account balance)
  */
 export function getMetaMaskAccountBalances(state) {
-  return state.metamask.accounts;
+  const currentChainId = getCurrentChainId(state);
+  return state.metamask?.accountsByChainId?.[currentChainId] ?? {};
 }
 
 export function getMetaMaskCachedBalances(state, networkChainId) {
@@ -792,11 +799,12 @@ export function getTokensAcrossChainsByAccountAddress(state, selectedAddress) {
  * @param {string} chainId - Chain ID
  * @returns {object} Native token information
  */
-function getNativeTokenInfo(state, chainId) {
+export function getNativeTokenInfo(state, chainId) {
   const { networkConfigurationsByChainId } = state.metamask;
 
   const networkConfig = networkConfigurationsByChainId?.[chainId];
 
+  // Fill native token info by network config (if a user has a network added)
   if (networkConfig) {
     const symbol = networkConfig.nativeCurrency || AssetType.native;
     const decimals = 18;
@@ -809,6 +817,7 @@ function getNativeTokenInfo(state, chainId) {
     };
   }
 
+  // Fill native token info by DApp provider
   const { provider } = state.metamask;
   if (provider?.chainId === chainId) {
     const symbol = provider.ticker || AssetType.native;
@@ -822,6 +831,14 @@ function getNativeTokenInfo(state, chainId) {
     };
   }
 
+  // Attempt to retried native token info from hardcoded known networks
+  const hardcodedSymbol = CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
+  const hardcodedName = NETWORK_TO_NAME_MAP[chainId];
+  if (hardcodedSymbol && hardcodedName) {
+    return { symbol: hardcodedSymbol, decimals: 18, name: hardcodedName };
+  }
+
+  // Fallback to "NATIVE" symbol as this is an unknown native token
   return { symbol: AssetType.native, decimals: 18, name: 'Native Token' };
 }
 
@@ -854,7 +871,7 @@ export const getMetaMaskAccountsConnected = createSelector(
 export function isBalanceCached(state) {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const selectedAccountBalance =
-    getMetaMaskAccountBalances(state)[selectedAddress]?.balance;
+    getMetaMaskAccountBalances(state)?.[selectedAddress]?.balance;
   const cachedBalance = getSelectedAccountCachedBalance(state);
 
   return Boolean(!selectedAccountBalance && cachedBalance);
@@ -991,6 +1008,14 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
+export function getCompleteAddressBook(state) {
+  const addresses = state.metamask.addressBook;
+  const addressWithChainId = Object.fromEntries(
+    Object.entries(addresses).filter(([key]) => key !== '*'),
+  );
+  return Object.values(addressWithChainId);
+}
+
 export function getEnsResolutionByAddress(state, address) {
   if (state.metamask.ensResolutionsByAddress[address]) {
     const ensResolution = state.metamask.ensResolutionsByAddress[address];
@@ -1007,6 +1032,22 @@ export function getEnsResolutionByAddress(state, address) {
 }
 
 export function getAddressBookEntry(state, address) {
+  if (process.env.REMOVE_GNS) {
+    const addressBook = getCompleteAddressBook(state);
+
+    for (const item of addressBook) {
+      for (const key in item) {
+        if (Object.prototype.hasOwnProperty.call(item, key)) {
+          const contact = item[key];
+          if (isEqualCaseInsensitive(contact.address, address)) {
+            return contact;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
   const addressBook = getAddressBook(state);
   const entry = addressBook.find((contact) =>
     isEqualCaseInsensitive(contact.address, address),
@@ -1207,10 +1248,6 @@ export function getSwitchedNetworkDetails(state) {
 
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
-}
-
-export function getQueuedRequestCount(state) {
-  return state.metamask.queuedRequestCount ?? 0;
 }
 
 export function getSlides(state) {
@@ -1834,8 +1871,9 @@ export const selectERC20TokensByChain = createDeepEqualSelector(
 );
 
 export const selectERC20Tokens = createDeepEqualSelector(
-  (state) => state.metamask.tokenList,
-  (erc20Tokens) => erc20Tokens,
+  getCurrentChainId,
+  (state) => state.metamask.tokensChainsCache,
+  (chainId, erc20Tokens) => erc20Tokens?.[chainId]?.data || {},
 );
 
 /**
@@ -2281,7 +2319,6 @@ export function getShowRecoveryPhraseReminder(state) {
  */
 export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
   const unapprovedTxs = getAllUnapprovedTransactions(state);
-  const queuedRequestCount = getQueuedRequestCount(state);
 
   const allUnapprovedMessages = {
     ...unapprovedTxs,
@@ -2291,7 +2328,7 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
     ...state.metamask.unapprovedTypedMessages,
   };
   const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages + queuedRequestCount;
+  return numUnapprovedMessages;
 }
 
 export const getCurrentNetwork = createDeepEqualSelector(
@@ -2919,8 +2956,23 @@ export function getIsSolanaSupportEnabled(state) {
   return Boolean(addSolanaAccount);
 }
 
+export function getIsSolanaBuyable(state) {
+  const { isSolanaBuyable } = getRemoteFeatureFlags(state);
+  return Boolean(isSolanaBuyable);
+}
+
 export function getManageInstitutionalWallets(state) {
   return state.metamask.manageInstitutionalWallets;
+}
+/**
+ * Get the state of the `defiPositionsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `defiPositionsEnabled` remote feature flag.
+ */
+export function getIsDefiPositionsEnabled(state) {
+  const { assetsDefiPositionsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(assetsDefiPositionsEnabled);
 }
 
 export function getIsCustomNetwork(state) {
@@ -2998,6 +3050,47 @@ export function getUnconnectedAccounts(state, activeTab) {
   });
   return unConnectedAccounts;
 }
+
+export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
+  (state) => state.activeTab,
+  (state) => state.metamask.permissionHistory,
+  getMetaMaskAccountsOrdered,
+  getAllPermittedAccountsForCurrentTab,
+  (activeTab, permissionHistory, orderedAccounts, connectedAccounts) => {
+    const permissionHistoryByAccount =
+      permissionHistory[activeTab.origin]?.eth_accounts?.accounts || {};
+
+    const connectedAccountsAddresses = connectedAccounts.map(
+      (caipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return address;
+      },
+    );
+
+    return orderedAccounts
+      .filter((account) => connectedAccountsAddresses.includes(account.address))
+      .map((account) => ({
+        ...account,
+        metadata: {
+          ...account.metadata,
+          lastActive: permissionHistoryByAccount?.[account.address],
+        },
+      }))
+      .sort(
+        ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
+          if (lastSelectedA === lastSelectedB) {
+            return 0;
+          } else if (lastSelectedA === undefined) {
+            return 1;
+          } else if (lastSelectedB === undefined) {
+            return -1;
+          }
+
+          return lastSelectedB - lastSelectedA;
+        },
+      );
+  },
+);
 
 export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
@@ -3570,43 +3663,6 @@ export function getAccountToConnectToActiveTab(state) {
   }
 
   return undefined;
-}
-
-export function getOrderedConnectedAccountsForActiveTab(state) {
-  const {
-    activeTab,
-    metamask: { permissionHistory },
-  } = state;
-
-  const permissionHistoryByAccount =
-    // eslint-disable-next-line camelcase
-    permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
-  const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
-
-  return orderedAccounts
-    .filter((account) => connectedAccounts.includes(account.address))
-    .filter((account) => isEvmAccountType(account.type))
-    .map((account) => ({
-      ...account,
-      metadata: {
-        ...account.metadata,
-        lastActive: permissionHistoryByAccount?.[account.address],
-      },
-    }))
-    .sort(
-      ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
-        if (lastSelectedA === lastSelectedB) {
-          return 0;
-        } else if (lastSelectedA === undefined) {
-          return 1;
-        } else if (lastSelectedB === undefined) {
-          return -1;
-        }
-
-        return lastSelectedB - lastSelectedA;
-      },
-    );
 }
 
 export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {

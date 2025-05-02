@@ -167,6 +167,7 @@ describe('Contract Interaction Confirmation', () => {
     const MINT_NFT_HEX_SIG = '0x3b4b1381';
     mock4byte(MINT_NFT_HEX_SIG);
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
