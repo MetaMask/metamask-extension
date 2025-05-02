@@ -1395,8 +1395,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
 
-    this._addBridgeStatusControllerListeners();
-
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
       messenger: this.controllerMessenger.getRestricted({
@@ -7720,58 +7718,6 @@ export default class MetamaskController extends EventEmitter {
       error.name = 'TestError';
       throw error;
     });
-  }
-
-  /**
-   * A method for setting BridgeStatusController event listeners
-   */
-  _addBridgeStatusControllerListeners() {
-    this.controllerMessenger.subscribe(
-      'BridgeStatusController:bridgeTransactionComplete',
-      (payload) =>
-        handleBridgeTransactionComplete(payload, {
-          backgroundState: this.getState(),
-          trackEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
-        }),
-    );
-
-    this.controllerMessenger.subscribe(
-      'BridgeStatusController:bridgeTransactionFailed',
-      (payload) =>
-        handleBridgeTransactionFailed(payload, {
-          backgroundState: this.getState(),
-          trackEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
-        }),
-    );
-    // Putting these TransactionController listeners here to keep it colocated with the other bridge events
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionFailed',
-      ({ transactionMeta }) => {
-        const { type, status } = transactionMeta;
-
-        const isBridgeTransaction = type === TransactionType.bridge;
-        const isIncompleteTransactionCleanup = [
-          TransactionStatus.approved,
-          TransactionStatus.signed,
-        ].includes(status);
-
-        if (isBridgeTransaction && !isIncompleteTransactionCleanup) {
-          handleTransactionFailedTypeBridge(
-            { transactionMeta },
-            {
-              backgroundState: this.getState(),
-              trackEvent: this.metaMetricsController.trackEvent.bind(
-                this.metaMetricsController,
-              ),
-            },
-          );
-        }
-      },
-    );
   }
 
   getTransactionMetricsRequest() {
