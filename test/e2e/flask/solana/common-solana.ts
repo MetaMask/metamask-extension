@@ -2418,6 +2418,7 @@ export async function withSolanaAccountSnap(
         .build(),
       title,
       dapp: true,
+      smartContract: SMART_CONTRACTS.HST,
       dappPaths,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList: MockedEndpoint[] = [];
