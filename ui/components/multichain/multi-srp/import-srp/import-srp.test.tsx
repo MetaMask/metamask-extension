@@ -62,10 +62,7 @@ describe('ImportSrp', () => {
   });
 
   it('should not show error messages until all words are provided', async () => {
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={jest.fn()} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { queryByText } = render;
 
     // Initially, no error message should be shown
@@ -105,10 +102,7 @@ describe('ImportSrp', () => {
   });
 
   it('enables the "Import wallet" button when a valid secret recovery phrase is entered', async () => {
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={jest.fn()} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { getByText } = render;
 
     const importButton = getByText('Import wallet');
@@ -121,10 +115,7 @@ describe('ImportSrp', () => {
   });
 
   it('does not enable the "Import wallet" button when the secret recovery phrase is empty', async () => {
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={jest.fn()} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { getByText } = render;
 
     const importButton = getByText('Import wallet');
@@ -135,10 +126,7 @@ describe('ImportSrp', () => {
   });
 
   it('shows 12 word seed phrase option', async () => {
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={jest.fn()} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { getByText, getByTestId } = render;
 
     const twentyFourSeedWordOption = getByTestId(
@@ -153,11 +141,7 @@ describe('ImportSrp', () => {
   });
 
   it('calls addNewMnemonicToVault and showAlert on successful import', async () => {
-    const onActionComplete = jest.fn();
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={onActionComplete} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { getByText } = render;
     const importButton = getByText('Import wallet');
 
@@ -178,16 +162,11 @@ describe('ImportSrp', () => {
         type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
         payload: true,
       });
-      expect(onActionComplete).toHaveBeenCalledWith(true);
     });
   });
 
   it('displays an error if one of the words in the srp is incorrect', async () => {
-    const onActionComplete = jest.fn();
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={onActionComplete} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { getByText } = render;
     const importButton = getByText('Import wallet');
 
@@ -202,10 +181,7 @@ describe('ImportSrp', () => {
 
   it('clears the secret recovery phrase from clipboard after importing', async () => {
     const onActionComplete = jest.fn();
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={onActionComplete} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { getByText } = render;
     const importButton = getByText('Import wallet');
 
@@ -225,11 +201,7 @@ describe('ImportSrp', () => {
   });
 
   it('clears the SRP input fields and error message when Clear button is clicked', async () => {
-    const onActionComplete = jest.fn();
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={onActionComplete} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { getByText, queryByTestId, getByTestId } = render;
 
     // Input an invalid SRP to trigger error
@@ -265,10 +237,7 @@ describe('ImportSrp', () => {
     );
 
     const onActionComplete = jest.fn();
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={onActionComplete} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { getByText } = render;
     const importButton = getByText('Import wallet');
 
@@ -286,10 +255,7 @@ describe('ImportSrp', () => {
   });
 
   it('clears validation errors when switching to 24-word seed phrase mode', async () => {
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={jest.fn()} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { getByText, getByTestId } = render;
 
     // First paste an invalid SRP to trigger validation errors
@@ -311,10 +277,7 @@ describe('ImportSrp', () => {
   });
 
   it('does not enable submit if 24 word seed was selected and 12 word seed was entered', async () => {
-    const render = renderWithProvider(
-      <ImportSrp onActionComplete={jest.fn()} />,
-      store,
-    );
+    const render = renderWithProvider(<ImportSrp />, store);
     const { getByText, getByTestId } = render;
 
     const twentyFourSeedWordOption = getByTestId(

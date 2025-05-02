@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import * as actions from '../../../../store/actions';
 import {
@@ -31,6 +32,7 @@ import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-r
 import { clearClipboard } from '../../../../helpers/utils/util';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { Header, Page } from '../../pages/page';
 
 const hasUpperCase = (draftSrp: string) => {
@@ -39,12 +41,9 @@ const hasUpperCase = (draftSrp: string) => {
 
 const defaultNumberOfWords = 12;
 
-export const ImportSrp = ({
-  onActionComplete,
-}: {
-  onActionComplete: (completed: boolean) => void;
-}) => {
+export const ImportSrp = () => {
   const t = useI18nContext();
+  const history = useHistory();
   const theme = useTheme();
   const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
@@ -377,7 +376,7 @@ export const ImportSrp = ({
               try {
                 setLoading(true);
                 await importWallet();
-                onActionComplete(true);
+                history.push(DEFAULT_ROUTE);
                 dispatch(setShowNewSrpAddedToast(true));
               } catch (e) {
                 setSrpError(
