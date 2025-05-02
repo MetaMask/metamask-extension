@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { CaipChainId } from '@metamask/utils';
-import { KeyringAccount } from '@metamask/keyring-api';
 import { CreateAccount } from '../create-account';
 import {
   WalletClientType,

@@ -1,4 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import {
   Box,
   IconName,
@@ -10,7 +12,6 @@ import {
 import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { CreateSnapAccount } from '../create-snap-account/create-snap-account';
 import { CreateEthAccount } from '../create-eth-account';
-import { useSelector } from 'react-redux';
 import { getHdKeyringOfSelectedAccountOrPrimaryKeyring } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -18,7 +19,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
 
 type EditAccountAddAccountFormProps = {
   accountType: WalletClientType | 'EVM'; // undefined is default evm.
@@ -45,9 +45,6 @@ export const EditAccountAddAccountForm: React.FC<
   }, []);
 
   const { clientType, chainId, networkName } = useMemo(() => {
-    if (accountType === 'EVM') {
-      return { clientType: null, chainId: null, networkName: null };
-    }
     switch (accountType) {
       case WalletClientType.Bitcoin:
         return {
@@ -61,6 +58,8 @@ export const EditAccountAddAccountForm: React.FC<
           chainId: SolScope.Mainnet,
           networkName: t('networkNameSolana'),
         };
+      default:
+        return { clientType: null, chainId: null, networkName: null };
     }
   }, [accountType]);
 

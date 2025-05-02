@@ -18,9 +18,10 @@ import {
   ModalContent,
   ModalHeader,
   Text,
+  Box,
 } from '../../component-library';
-import { Box } from '../../component-library';
 import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+
 type EditAccountModalAddNewAccountOptionProps = {
   setAccountTypeToAdd: (accountTypeToAdd: WalletClientType | 'EVM') => void;
 };

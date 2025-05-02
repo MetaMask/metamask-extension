@@ -1,12 +1,12 @@
 import React from 'react';
 import { CaipAccountId } from '@metamask/utils';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { SolScope } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { EditAccountsModal } from '.';
-import { SolScope } from '@metamask/keyring-api';
 
 const mockKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
 
