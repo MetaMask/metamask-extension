@@ -982,7 +982,7 @@ export enum MetaMetricsEventCategory {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IF
-  CrossChainSwaps = 'Cross Chain Swaps',
+  UnifiedSwapBridge = 'Unified Swap Bridge',
 }
 
 export enum MetaMetricsEventLinkType {

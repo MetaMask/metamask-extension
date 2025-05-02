@@ -2,12 +2,12 @@
 import {
   formatChainIdToCaip,
   BRIDGE_DEFAULT_SLIPPAGE,
+  RequestMetadata,
 } from '@metamask/bridge-controller';
 import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { getHexGasTotalUsd } from '../../../app/scripts/lib/bridge-status/metrics-utils';
 import { MetricsBackgroundState } from '../../types/bridge-status';
 import { isHardwareKeyring } from '../../../ui/helpers/utils/hardware';
-import { ActionType } from '../../../ui/hooks/bridge/events/types';
 import { formatProviderLabel } from '../../../ui/pages/bridge/utils/quote';
 import { getCurrentKeyring } from '../../../ui/selectors';
 import { getIsSmartTransaction } from '../../modules/selectors';
@@ -37,7 +37,7 @@ export const getCommonProperties = (
     bridgeHistoryItem.quote.srcChainId !== bridgeHistoryItem.quote.destChainId;
 
   return {
-    action_type: ActionType.CROSSCHAIN_V1,
+    action_type: 'crosschain_v1',
 
     slippage_limit: bridgeHistoryItem.slippagePercentage,
     custom_slippage:
@@ -46,8 +46,8 @@ export const getCommonProperties = (
     chain_id_source,
     chain_id_destination,
 
-    token_address_source: bridgeHistoryItem.quote.srcAsset.address,
-    token_address_destination: bridgeHistoryItem.quote.destAsset.address,
+    token_address_source: bridgeHistoryItem.quote.srcAsset.assetId,
+    token_address_destination: bridgeHistoryItem.quote.destAsset.assetId,
 
     token_symbol_source: bridgeHistoryItem.quote.srcAsset.symbol,
     token_symbol_destination: bridgeHistoryItem.quote.destAsset.symbol,
@@ -67,7 +67,9 @@ export const getCommonProperties = (
           60
         : 0,
 
-    swap_type: isBridgeTx ? ActionType.CROSSCHAIN_V1 : ActionType.SWAPBRIDGE_V1,
+    swap_type: (isBridgeTx
+      ? 'crosschain_v1'
+      : 'swapbridge_v1') as unknown as RequestMetadata['swap_type'],
 
     usd_amount_source: Number(bridgeHistoryItem.pricingData?.amountSentInUsd),
 

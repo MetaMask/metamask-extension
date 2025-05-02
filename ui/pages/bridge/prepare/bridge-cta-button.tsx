@@ -30,11 +30,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
-import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
-import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
-import { useTradeProperties } from '../../../hooks/bridge/events/useTradeProperties';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Row } from '../layout';
 
 export const BridgeCTAButton = ({
@@ -79,10 +74,6 @@ export const BridgeCTAButton = ({
   const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   const isTxSubmittable = useIsTxSubmittable();
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
-  const { quoteRequestProperties } = useRequestProperties();
-  const requestMetadataProperties = useRequestMetadataProperties();
-  const tradeProperties = useTradeProperties();
 
   const isInsufficientBalance = isInsufficientBalance_(balanceAmount);
 
@@ -168,18 +159,6 @@ export const BridgeCTAButton = ({
             // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page
             setIsSubmitting(true);
-
-            quoteRequestProperties &&
-              requestMetadataProperties &&
-              tradeProperties &&
-              trackCrossChainSwapsEvent({
-                event: MetaMetricsEventName.ActionSubmitted,
-                properties: {
-                  ...quoteRequestProperties,
-                  ...requestMetadataProperties,
-                  ...tradeProperties,
-                },
-              });
             await submitBridgeTransaction(activeQuote);
           } finally {
             setIsSubmitting(false);

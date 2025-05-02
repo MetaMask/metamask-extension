@@ -35,14 +35,12 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 ///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
@@ -64,19 +62,6 @@ const useBridging = () => {
       }
 
       if (isBridgeSupported) {
-        trackCrossChainSwapsEvent({
-          event: MetaMetricsEventName.ActionOpened,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            location:
-              location === 'Home'
-                ? MetaMetricsSwapsEventSource.MainView
-                : MetaMetricsSwapsEventSource.TokenView,
-            chain_id_source: formatChainIdToCaip(providerConfig.chainId),
-            token_symbol_source: token.symbol,
-            token_address_source: token.address,
-          },
-        });
         trackEvent({
           event: isSwap
             ? MetaMetricsEventName.SwapLinkClicked
@@ -144,7 +129,6 @@ const useBridging = () => {
       history,
       metaMetricsId,
       trackEvent,
-      trackCrossChainSwapsEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
       providerConfig,
