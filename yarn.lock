@@ -16494,7 +16494,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"base-x@npm:^5.0.1":
+"base-x@npm:^3.0.11, base-x@npm:^3.0.2, base-x@npm:^3.0.8":
+  version: 3.0.11
+  resolution: "base-x@npm:3.0.11"
+  dependencies:
+    safe-buffer: "npm:^5.0.1"
+  checksum: 10/c2e3c443fd07cb9b9d3e179a9e9c581daa31881005841fe8d6a834e534505890fedf03465ccf14512da60e3f7be00fe66167806b159ba076d2c03952ae7460c4
+  languageName: node
+  linkType: hard
+
+"base-x@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "base-x@npm:4.0.1"
+  checksum: 10/c9061e576f7376b2bc6b69eca131254bb16ebe1445b535a3f0d68f27524e724965b6c191dffd255bf80f9bdf5eb9d1c8d0320903e83116f2c3e09f81b5ecb6a2
+  languageName: node
+  linkType: hard
+
+"base-x@npm:^5.0.0":
   version: 5.0.1
   resolution: "base-x@npm:5.0.1"
   checksum: 10/6e4f847ef842e0a71c6b6020a6ec482a2a5e727f5a98534dbfd5d5a4e8afbc0d1bdf1fd57174b3f0455d107f10a932c3c7710bec07e2878f80178607f8f605c8
