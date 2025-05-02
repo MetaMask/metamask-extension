@@ -2,14 +2,14 @@ import {
   DelegationController,
   DelegationControllerMessenger,
 } from '@metamask/delegation-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { type Hex } from '../../../../shared/lib/delegation/utils';
 import {
   getDelegationHashOffchain,
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
 import { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messenger';
-import { ControllerInitFunction, ControllerInitResult } from '../types';
-import { handleRevokeConfirmation } from '../../lib/delegation/events';
+import { ControllerInitFunction } from '../types';
 
 const getDelegationEnvironment = (chainId: Hex) => {
   return getDeleGatorEnvironment(Number(chainId));
@@ -36,48 +36,51 @@ export const DelegationControllerInit: ControllerInitFunction<
     getDelegationEnvironment,
   });
 
-  const api = getApi(controller);
-
-  setupListeners(initMessenger, controller);
-
   return {
     controller,
-    api,
+    api: {
+      awaitDeleteDelegationEntry: awaitDeleteDelegationEntry.bind(
+        null,
+        controller,
+        initMessenger,
+      ),
+      signDelegation: controller.signDelegation.bind(controller),
+      storeDelegationEntry: controller.store.bind(controller),
+      listDelegationEntries: controller.list.bind(controller),
+      getDelegationEntry: controller.retrieve.bind(controller),
+      getDelegationEntryChain: controller.chain.bind(controller),
+      deleteDelegationEntry: controller.delete.bind(controller),
+    },
   };
 };
 
 /**
- * Get the API for the Delegation controller.
+ * Awaits for the transaction with txMeta to be confirmed, then
+ * deletes the delegation entry with `hash`.
  *
- * @param controller - The controller to get the API for.
- * @returns The API for the Delegation controller.
- */
-function getApi(
-  controller: DelegationController,
-): ControllerInitResult<DelegationController>['api'] {
-  return {
-    signDelegation: controller.signDelegation.bind(controller),
-    storeDelegationEntry: controller.store.bind(controller),
-    listDelegationEntries: controller.list.bind(controller),
-    getDelegationEntry: controller.retrieve.bind(controller),
-    getDelegationEntryChain: controller.chain.bind(controller),
-    deleteDelegationEntry: controller.delete.bind(controller),
-  };
-}
-
-/**
- * Setup listeners for the Delegation controller.
- *
- * @param initMessenger - The initialization messenger for the controller.
  * @param controller - The DelegationController.
+ * @param initMessenger - The initialization messenger for the controller.
+ * @param options
+ * @param options.hash - The hash of the delegation entry to delete.
+ * @param options.txMeta - The transaction meta of the transaction that confirmed the delegation entry.
  */
-function setupListeners(
-  initMessenger: DelegationControllerInitMessenger,
+async function awaitDeleteDelegationEntry(
   controller: DelegationController,
+  initMessenger: DelegationControllerInitMessenger,
+  { hash, txMeta }: { hash: Hex; txMeta: TransactionMeta },
 ) {
+  const handleTransactionConfirmed = (transactionMeta: TransactionMeta) => {
+    if (transactionMeta.id !== txMeta.id) {
+      return;
+    }
+    controller.delete(hash);
+    initMessenger.unsubscribe(
+      'TransactionController:transactionConfirmed',
+      handleTransactionConfirmed,
+    );
+  };
   initMessenger.subscribe(
     'TransactionController:transactionConfirmed',
-    (transactionMeta) =>
-      handleRevokeConfirmation({ transactionMeta }, controller),
+    handleTransactionConfirmed,
   );
 }

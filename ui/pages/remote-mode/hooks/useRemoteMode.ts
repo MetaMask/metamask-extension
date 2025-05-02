@@ -7,12 +7,16 @@ import {
   createDelegation,
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
-import { encodeDisableDelegation } from '../../../../shared/lib/delegation/delegation';
+import {
+  encodeDisableDelegation,
+  getDelegationHashOffchain,
+} from '../../../../shared/lib/delegation/delegation';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { getSelectedNetwork } from '../../../selectors';
 import { getRemoteModeConfig } from '../../../selectors/remote-mode';
 import { addTransaction } from '../../../store/actions';
 import {
+  awaitDeleteDelegationEntry,
   listDelegationEntries,
   signDelegation,
   storeDelegationEntry,
@@ -20,8 +24,6 @@ import {
 import { useEIP7702Account } from '../../confirmations/hooks/useEIP7702Account';
 import { useEIP7702Networks } from '../../confirmations/hooks/useEIP7702Networks';
 import { REMOTE_MODES } from '../remote.types';
-
-const REVOKE_TAG = 'revoke';
 
 export const useRemoteMode = ({ account }: { account: Hex }) => {
   const { network7702List } = useEIP7702Networks(account);
@@ -115,17 +117,15 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
   const disableRemoteMode = useCallback(
     async ({ mode }: { mode: REMOTE_MODES }): Promise<void> => {
       const delegationEntries = await listDelegationEntries({
-        tags: [mode],
         from: account,
+        tags: [mode],
       });
 
       if (delegationEntries.length === 0) {
         throw new Error('No delegation entry found');
       }
 
-      const { delegation, meta } = delegationEntries[0];
-
-      const metaObject = meta ? JSON.parse(meta) : {};
+      const { delegation } = delegationEntries[0];
 
       const encodedCallData = encodeDisableDelegation({
         delegation,
@@ -145,21 +145,12 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
         },
       );
 
-      console.log('transactionMeta', transactionMeta);
-
-      const revokeId = transactionMeta.id;
-
-      await storeDelegationEntry({
-        delegation,
-        tags: [mode, REVOKE_TAG],
-        chainId,
-        meta: JSON.stringify({
-          ...metaObject,
-          revokeId,
-        }),
+      await awaitDeleteDelegationEntry({
+        hash: getDelegationHashOffchain(delegation),
+        txMeta: transactionMeta,
       });
     },
-    [account, chainId, delegationManagerAddress, globalNetworkClientId],
+    [account, delegationManagerAddress, globalNetworkClientId],
   );
 
   return {

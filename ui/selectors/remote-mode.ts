@@ -33,19 +33,19 @@ export function getEIP7702ContractAddresses(state: RemoteFeatureFlagsState) {
 
 const getRemoteModeDelegationEntries = (
   state: DelegationState,
-  requester: Address,
+  account: Address,
   chainId: Hex,
 ) => {
   const swapEntries = listDelegationEntries(state, {
     filter: {
-      to: requester,
+      from: account,
       tags: [REMOTE_MODES.SWAP],
       chainId,
     },
   });
   const dailyEntries = listDelegationEntries(state, {
     filter: {
-      to: requester,
+      from: account,
       tags: [REMOTE_MODES.DAILY_ALLOWANCE],
       chainId,
     },
@@ -57,8 +57,8 @@ const getRemoteModeDelegationEntries = (
 };
 
 export const getRemoteModeConfig = createSelector(
-  (state, requester: Address, chainId: Hex) =>
-    getRemoteModeDelegationEntries(state, requester, chainId),
+  (state, hwAccount: Address, chainId: Hex) =>
+    getRemoteModeDelegationEntries(state, hwAccount, chainId),
   ({
     swapDelegationEntry,
     dailyDelegationEntry,
