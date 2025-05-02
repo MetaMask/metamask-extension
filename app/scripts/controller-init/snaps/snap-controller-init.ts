@@ -7,7 +7,6 @@ import {
   ExcludedSnapPermissions,
 } from '../../../../shared/constants/snaps/permissions';
 import { encryptorFactory } from '../../lib/encryptor-factory';
-import PREINSTALLED_SNAPS from '../../snaps/preinstalled-snaps';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   SnapControllerInitMessenger,
@@ -26,6 +25,7 @@ import { getBooleanFlag } from '../../lib/util';
  * @param request.persistedState - The persisted state of the extension.
  * @param request.removeAllConnections - Function to remove all connections for
  * a given origin.
+ * @param request.preinstalledSnaps - The list of preinstalled Snaps.
  * @returns The initialized controller.
  */
 export const SnapControllerInit: ControllerInitFunction<
@@ -37,6 +37,7 @@ export const SnapControllerInit: ControllerInitFunction<
   controllerMessenger,
   persistedState,
   removeAllConnections,
+  preinstalledSnaps,
 }) => {
   const allowLocalSnaps = getBooleanFlag(process.env.ALLOW_LOCAL_SNAPS);
   const requireAllowlist = getBooleanFlag(process.env.REQUIRE_SNAPS_ALLOWLIST);
@@ -44,7 +45,7 @@ export const SnapControllerInit: ControllerInitFunction<
     process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION,
   );
 
-  function getMnemonic() {
+  async function getMnemonicSeed() {
     const keyrings = initMessenger.call(
       'KeyringController:getKeyringsByType',
       KeyringType.hdKeyTree,
@@ -52,14 +53,13 @@ export const SnapControllerInit: ControllerInitFunction<
 
     if (
       !keyrings[0] ||
-      !hasProperty(keyrings[0], 'mnemonic') ||
-      !(keyrings[0].mnemonic instanceof Uint8Array)
+      !hasProperty(keyrings[0], 'seed') ||
+      !(keyrings[0].seed instanceof Uint8Array)
     ) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
-    // `SnapController` expects a promise.
-    return Promise.resolve(keyrings[0].mnemonic);
+    return keyrings[0].seed;
   }
 
   /**
@@ -105,12 +105,9 @@ export const SnapControllerInit: ControllerInitFunction<
     // TODO: Look into the type mismatch.
     encryptor: encryptorFactory(600_000),
 
-    getMnemonic,
+    getMnemonicSeed,
 
-    // @ts-expect-error: `PREINSTALLED_SNAPS` is readonly, but the controller
-    // expects a mutable array.
-    // TODO: Update the controller to accept a readonly array.
-    preinstalledSnaps: PREINSTALLED_SNAPS,
+    preinstalledSnaps,
     getFeatureFlags,
   });
 

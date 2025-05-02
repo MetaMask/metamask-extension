@@ -1,16 +1,16 @@
 /* eslint-disable import/no-restricted-paths, camelcase */
-import { getHexGasTotalUsd } from '../../../app/scripts/lib/bridge-status/metrics-utils';
 import {
-  MetricsBackgroundState,
-  BridgeHistoryItem,
-} from '../../types/bridge-status';
+  formatChainIdToCaip,
+  BRIDGE_DEFAULT_SLIPPAGE,
+} from '@metamask/bridge-controller';
+import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { getHexGasTotalUsd } from '../../../app/scripts/lib/bridge-status/metrics-utils';
+import { MetricsBackgroundState } from '../../types/bridge-status';
 import { isHardwareKeyring } from '../../../ui/helpers/utils/hardware';
 import { ActionType } from '../../../ui/hooks/bridge/events/types';
 import { formatProviderLabel } from '../../../ui/pages/bridge/utils/quote';
 import { getCurrentKeyring } from '../../../ui/selectors';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../constants/bridge';
 import { getIsSmartTransaction } from '../../modules/selectors';
-import { formatChainIdToCaip } from '../../modules/bridge-utils/caip-formatters';
 
 export const getCommonProperties = (
   bridgeHistoryItem: BridgeHistoryItem,
@@ -52,7 +52,7 @@ export const getCommonProperties = (
     token_symbol_source: bridgeHistoryItem.quote.srcAsset.symbol,
     token_symbol_destination: bridgeHistoryItem.quote.destAsset.symbol,
 
-    stx_enabled: getIsSmartTransaction(state),
+    stx_enabled: getIsSmartTransaction(state, chain_id_source),
     is_hardware_wallet,
 
     provider: formatProviderLabel(bridgeHistoryItem.quote),

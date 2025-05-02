@@ -46,14 +46,17 @@ import {
   IconColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
+import {
+  ADD_POPULAR_CUSTOM_NETWORK,
+  REVEAL_SRP_LIST_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
-import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import MetametricsToggle from './metametrics-toggle';
 import ProfileSyncToggle from './profile-sync-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
@@ -74,9 +77,6 @@ export default class SecurityTab extends PureComponent {
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
-    incomingTransactionsPreferences: PropTypes.object.isRequired,
-    networkConfigurations: PropTypes.object.isRequired,
-    setIncomingTransactionsPreferences: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
     setUse4ByteResolution: PropTypes.func.isRequired,
@@ -102,9 +102,11 @@ export default class SecurityTab extends PureComponent {
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
-    toggleExternalServices: PropTypes.func.isRequired,
+    toggleExternalServices: PropTypes.func,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
+    hdEntropyIndex: PropTypes.number,
+    hasMultipleHdKeyrings: PropTypes.bool,
   };
 
   state = {
@@ -165,6 +167,7 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
+    const { history, hasMultipleHdKeyrings } = this.props;
 
     return (
       <>
@@ -187,6 +190,7 @@ export default class SecurityTab extends PureComponent {
                 properties: {
                   key_type: MetaMetricsEventKeyType.Srp,
                   location: 'Settings',
+                  hd_entropy_index: this.props.hdEntropyIndex,
                 },
               });
               this.context.trackEvent({
@@ -197,6 +201,12 @@ export default class SecurityTab extends PureComponent {
                   location: 'Settings',
                 },
               });
+              if (hasMultipleHdKeyrings) {
+                history.push({
+                  pathname: REVEAL_SRP_LIST_ROUTE,
+                });
+                return;
+              }
               this.setState({ srpQuizModalVisible: true });
             }}
           >
@@ -261,23 +271,6 @@ export default class SecurityTab extends PureComponent {
           </Box>
         </div>
       </>
-    );
-  }
-
-  renderIncomingTransactionsOptIn() {
-    const {
-      incomingTransactionsPreferences,
-      networkConfigurations,
-      setIncomingTransactionsPreferences,
-    } = this.props;
-
-    return (
-      <IncomingTransactionToggle
-        wrapperRef={this.settingsRefs[2]}
-        networkConfigurations={networkConfigurations}
-        setIncomingTransactionsPreferences={setIncomingTransactionsPreferences}
-        incomingTransactionsPreferences={incomingTransactionsPreferences}
-      />
     );
   }
 
@@ -431,6 +424,14 @@ export default class SecurityTab extends PureComponent {
                 key="cyn-consensys-privacy-link"
               >
                 {t('privacyMsg')}
+              </a>,
+              <a
+                href={ZENDESK_URLS.SOLANA_ACCOUNTS}
+                target="_blank"
+                rel="noopener noreferrer"
+                key="cyn-consensys-privacy-link"
+              >
+                {t('chooseYourNetworkDescriptionCallToAction')}
               </a>,
             ])}
           </div>
@@ -1194,7 +1195,6 @@ export default class SecurityTab extends PureComponent {
         </span>
         <div className="settings-page__content-padded">
           {this.renderCurrencyRateCheckToggle()}
-          {this.renderIncomingTransactionsOptIn()}
           {this.renderSimulationsToggle()}
         </div>
 

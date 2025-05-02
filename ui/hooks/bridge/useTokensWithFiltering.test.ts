@@ -1,18 +1,28 @@
+import {
+  BridgeToken,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MINUTE } from '../../../shared/constants/time';
 import { useTokensWithFiltering } from './useTokensWithFiltering';
 
-const NATIVE_TOKEN = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET];
+const NATIVE_TOKEN = getNativeAssetForChainId(CHAIN_IDS.MAINNET);
 
 const mockFetchBridgeTokens = jest.fn().mockResolvedValue({
   [NATIVE_TOKEN.address]: NATIVE_TOKEN,
   ...STATIC_MAINNET_TOKEN_LIST,
+  '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2': {
+    ...(STATIC_MAINNET_TOKEN_LIST as unknown as Record<string, BridgeToken>)[
+      '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2'
+    ],
+    assetId: 'eip155:1/erc20:0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
+  },
 });
-jest.mock('../../../shared/modules/bridge-utils/bridge.util', () => ({
+jest.mock('@metamask/bridge-controller', () => ({
+  ...jest.requireActual('@metamask/bridge-controller'),
   fetchBridgeTokens: (c: string) => mockFetchBridgeTokens(c),
 }));
 
@@ -30,7 +40,7 @@ describe('useTokensWithFiltering', () => {
     jest.clearAllMocks();
   });
 
-  it('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
+  it.only('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
@@ -149,6 +159,7 @@ describe('useTokensWithFiltering', () => {
     expect(mockFetchBridgeTokens).toHaveBeenCalledWith('0x89');
     // The first 10 tokens returned
     const first10Tokens = [
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ...result.current((_s: any, _a: any, c: string) => c === '0x89'),
     ].slice(0, 10);

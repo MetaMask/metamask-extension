@@ -3,11 +3,6 @@ import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';
-import { DEFAULT_BRIDGE_STATE } from '../../app/scripts/controllers/bridge/constants';
-import { DEFAULT_BRIDGE_STATUS_STATE } from '../../app/scripts/controllers/bridge-status/constants';
-import { BRIDGE_PREFERRED_GAS_ESTIMATE } from '../../shared/constants/bridge';
-import { mockTokenData } from '../data/bridge/mock-token-data';
-import { formatChainIdToCaip } from '../../shared/modules/bridge-utils/caip-formatters';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -720,98 +715,6 @@ export const createSwapsMockStore = () => {
         },
       },
       gasLoadingAnimationIsShowing: false,
-    },
-  };
-};
-
-export const createBridgeMockStore = (
-  {
-    featureFlagOverrides = {},
-    bridgeSliceOverrides = {},
-    bridgeStateOverrides = {},
-    bridgeStatusStateOverrides = {},
-    metamaskStateOverrides = {},
-  } = {
-    featureFlagOverrides: {},
-    bridgeSliceOverrides: {},
-    bridgeStateOverrides: {},
-    bridgeStatusStateOverrides: {},
-    metamaskStateOverrides: {},
-  },
-) => {
-  const swapsStore = createSwapsMockStore();
-  return {
-    ...swapsStore,
-    // For initial state of dest asset picker
-    swaps: {
-      ...swapsStore.swaps,
-      topAssets: [],
-    },
-    bridge: {
-      toChainId: null,
-      sortOrder: 'cost_ascending',
-      ...bridgeSliceOverrides,
-    },
-    localeMessages: { currentLocale: 'es_419' },
-    metamask: {
-      ...swapsStore.metamask,
-      ...mockNetworkState(
-        { chainId: CHAIN_IDS.MAINNET },
-        { chainId: CHAIN_IDS.LINEA_MAINNET },
-      ),
-      gasFeeEstimates: {
-        estimatedBaseFee: '0.00010456',
-        [BRIDGE_PREFERRED_GAS_ESTIMATE]: {
-          suggestedMaxFeePerGas: '0.00018456',
-          suggestedMaxPriorityFeePerGas: '0.0001',
-        },
-      },
-      currencyRates: {
-        ETH: { conversionRate: 2524.25 },
-        usd: { conversionRate: 1 },
-      },
-      marketData: {
-        '0x1': {
-          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-            currency: 'usd',
-            price: 2.3,
-          },
-        },
-      },
-      ...mockTokenData,
-      ...metamaskStateOverrides,
-      bridgeState: {
-        ...DEFAULT_BRIDGE_STATE,
-        bridgeFeatureFlags: {
-          ...featureFlagOverrides,
-          extensionConfig: {
-            support: false,
-            ...featureFlagOverrides?.extensionConfig,
-            chains: {
-              [formatChainIdToCaip('0x1')]: {
-                isActiveSrc: true,
-                isActiveDest: false,
-              },
-              ...Object.fromEntries(
-                Object.entries(
-                  featureFlagOverrides?.extensionConfig?.chains ?? {},
-                ).map(([chainId, config]) => [
-                  formatChainIdToCaip(chainId),
-                  config,
-                ]),
-              ),
-            },
-          },
-        },
-        ...bridgeStateOverrides,
-      },
-      bridgeStatusState: {
-        ...DEFAULT_BRIDGE_STATUS_STATE,
-        ...bridgeStatusStateOverrides,
-      },
-    },
-    send: {
-      swapsBlockedTokens: [],
     },
   };
 };

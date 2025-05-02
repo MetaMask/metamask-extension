@@ -29,7 +29,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
       {
         title: this.test?.fullTitle(),
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
+          .withNetworkControllerTripleNode()
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },

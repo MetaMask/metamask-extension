@@ -36,11 +36,16 @@ jest.mock('../../../hooks/useAssetDetails', () => ({
   }),
 }));
 
+jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
+  useTransactionFocusEffect: jest.fn(),
+}));
+
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
 
   beforeEach(() => {
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));

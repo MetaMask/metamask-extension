@@ -2,8 +2,8 @@
 import { MockttpServer } from 'mockttp';
 import { tinyDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
+  confirmApproveTransaction,
   mocked4BytesApprove,
   openDAppWithContract,
   TestSuiteArguments,
@@ -78,7 +78,7 @@ async function mocks(server: MockttpServer) {
   return [await mocked4BytesApprove(server)];
 }
 
-export async function importTST(driver: Driver) {
+async function importTST(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="import-token-button"]');
   await driver.clickElement('[data-testid="importTokens"]');
@@ -91,6 +91,12 @@ export async function importTST(driver: Driver) {
     css: '.import-tokens-modal__button-tab',
     text: 'Custom token',
   });
+
+  await driver.clickElement(
+    '[data-testid="test-import-tokens-drop-down-custom-import"]',
+  );
+
+  await driver.clickElement('[data-testid="select-network-item-0x539"]');
 
   await driver.fill(
     '[data-testid="import-tokens-modal-custom-address"]',
@@ -110,7 +116,7 @@ export async function importTST(driver: Driver) {
   });
 }
 
-export async function createERC20ApproveTransaction(driver: Driver) {
+async function createERC20ApproveTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#approveTokens');
 }
@@ -171,18 +177,4 @@ async function assertApproveDetails(driver: Driver) {
     css: 'p',
     text: 'Spending cap',
   });
-}
-
-export async function confirmApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await scrollAndConfirmAndAssertConfirm(driver);
-
-  await driver.delay(veryLargeDelayMs);
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  await driver.clickElement({ text: 'Activity', tag: 'button' });
-  await driver.waitForSelector(
-    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-  );
 }

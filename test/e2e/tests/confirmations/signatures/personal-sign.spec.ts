@@ -12,6 +12,7 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/redesign/personal-sign-confirmation';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -37,7 +38,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
-        const publicAddress = addresses?.[0] as string;
+        const publicAddress = addresses?.[0].toLowerCase() as string;
         await initializePages(driver);
 
         await openDappAndTriggerSignature(driver, SignatureType.PersonalSign);
@@ -63,6 +64,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureApproved,
@@ -93,6 +95,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
           location: 'confirmation',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejected,

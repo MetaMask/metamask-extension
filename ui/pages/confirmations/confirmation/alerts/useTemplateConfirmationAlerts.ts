@@ -7,13 +7,14 @@ import {
   clearAlerts,
   updateAlerts,
 } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { useAddEthereumChainAlerts } from './useAddEthereumChainAlerts';
+import { useUpdateEthereumChainAlerts } from './useUpdateEthereumChainAlerts';
 
 export const useTemplateConfirmationAlerts = (
   pendingConfirmation: ApprovalRequest<{ id: string }>,
 ) => {
   const dispatch = useDispatch();
-  const addEthereumChainAlerts = useAddEthereumChainAlerts(pendingConfirmation);
+  const addEthereumChainAlerts =
+    useUpdateEthereumChainAlerts(pendingConfirmation);
   const alerts: Alert[] = useMemo(
     () => addEthereumChainAlerts,
     [addEthereumChainAlerts],

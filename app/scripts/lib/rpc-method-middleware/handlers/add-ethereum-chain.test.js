@@ -63,6 +63,7 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const mocks = {
+    isAddFlow: true,
     getCurrentChainIdForDomain: jest.fn().mockReturnValue(NON_INFURA_CHAIN_ID),
     setNetworkClientIdForDomain: jest.fn(),
     getNetworkConfigurationByChainId: jest.fn(),
@@ -186,6 +187,7 @@ describe('addEthereumChainHandler', () => {
       {
         autoApprove: true,
         getCaveat: mocks.getCaveat,
+        isAddFlow: true,
         setActiveNetwork: mocks.setActiveNetwork,
         requestPermittedChainsPermissionIncrementalForOrigin:
           mocks.requestPermittedChainsPermissionIncrementalForOrigin,
@@ -252,6 +254,7 @@ describe('addEthereumChainHandler', () => {
           {
             autoApprove: true,
             getCaveat: mocks.getCaveat,
+            isAddFlow: true,
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,
@@ -299,6 +302,7 @@ describe('addEthereumChainHandler', () => {
           {
             autoApprove: false,
             getCaveat: mocks.getCaveat,
+            isAddFlow: true,
             setActiveNetwork: mocks.setActiveNetwork,
             requestPermittedChainsPermissionIncrementalForOrigin:
               mocks.requestPermittedChainsPermissionIncrementalForOrigin,

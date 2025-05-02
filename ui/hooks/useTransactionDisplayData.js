@@ -6,9 +6,11 @@ import {
 } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
 import {
-  getDetectedTokensInCurrentNetwork,
+  getAllDetectedTokens,
+  getAllTokens,
   getKnownMethodData,
-  getTokenList,
+  getSelectedAddress,
+  selectERC20TokensByChain,
 } from '../selectors/selectors';
 import {
   getStatusKey,
@@ -31,7 +33,7 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
-import { getNfts, getTokens } from '../ducks/metamask/metamask';
+import { getNfts } from '../ducks/metamask/metamask';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -109,10 +111,12 @@ export function useTransactionDisplayData(transactionGroup) {
   const dispatch = useDispatch();
   const locale = useSelector(getIntlLocale);
   const currentAsset = useCurrentAsset();
-  const knownTokens = useSelector(getTokens);
+  const knownTokens = useSelector(getAllTokens);
+  const selectedAddress = useSelector(getSelectedAddress);
   const knownNfts = useSelector(getNfts);
-  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const tokenList = useSelector(getTokenList);
+  const allDetectedTokens = useSelector(getAllDetectedTokens);
+  const tokenListAllChains = useSelector(selectERC20TokensByChain);
+
   const t = useI18nContext();
 
   // Bridge data
@@ -163,13 +167,18 @@ export function useTransactionDisplayData(transactionGroup) {
 
   if (isTokenCategory) {
     token =
-      knownTokens.find(({ address }) =>
+      knownTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
+        selectedAddress
+      ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
       ) ||
-      detectedTokens.find(({ address }) =>
+      allDetectedTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
+        selectedAddress
+      ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
       ) ||
-      tokenList[recipientAddress.toLowerCase()];
+      tokenListAllChains?.[transactionGroup?.initialTransaction?.chainId]
+        ?.data?.[recipientAddress.toLowerCase()];
   }
   useEffect(() => {
     return () => {
@@ -332,9 +341,13 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodSetApprovalForAll) {
+    const isRevoke = !tokenData?.args?.[1];
+
     category = TransactionGroupCategory.approval;
     prefix = '';
-    title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
+    title = isRevoke
+      ? t('revokePermissionTitle', [token?.symbol || nft?.name || t('token')])
+      : t('setApprovalForAllTitle', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodIncreaseAllowance) {
@@ -345,7 +358,8 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
   } else if (
     type === TransactionType.contractInteraction ||
-    type === TransactionType.batch
+    type === TransactionType.batch ||
+    type === TransactionType.revokeDelegation
   ) {
     category = TransactionGroupCategory.interaction;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
@@ -387,10 +401,10 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.bridgeApproval) {
     title = t('bridgeApproval');
     category = TransactionGroupCategory.approval;
-    title = t('bridgeApproval', [primaryTransaction.sourceTokenSymbol]);
+    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-    primarySuffix = primaryTransaction.sourceTokenSymbol;
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
     title = t('bridgeToChain', [destChainName || '']);
     category = bridgeTokenDisplayData.category;
@@ -408,22 +422,34 @@ export function useTransactionDisplayData(transactionGroup) {
     );
   }
 
-  const primaryCurrencyPreferences = useUserPreferencedCurrency(PRIMARY);
+  const primaryCurrencyPreferences = useUserPreferencedCurrency(
+    PRIMARY,
+    {},
+    transactionGroup?.initialTransaction?.chainId,
+  );
   const secondaryCurrencyPreferences = useUserPreferencedCurrency(SECONDARY);
 
-  const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: primaryDisplayValue,
-    suffix: primarySuffix,
-    ...primaryCurrencyPreferences,
-  });
+  const [primaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: primaryDisplayValue,
+      suffix: primarySuffix,
+      ...primaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
-  const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: secondaryDisplayValue,
-    hideLabel: isTokenCategory || Boolean(swapTokenValue),
-    ...secondaryCurrencyPreferences,
-  });
+  const [secondaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: secondaryDisplayValue,
+      hideLabel: isTokenCategory || Boolean(swapTokenValue),
+      ...secondaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
   return {
     title,

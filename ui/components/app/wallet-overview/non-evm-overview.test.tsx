@@ -3,7 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import { BtcAccountType, BtcMethod, BtcScope } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
@@ -86,6 +87,7 @@ const mockBuyableChainsWithBtc = [...mockBuyableChainsWithoutBtc, mockBtcChain];
 
 const mockMetamaskStore = {
   ...mockState.metamask,
+  useExternalServices: true,
   accountsAssets: {
     [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
   },
@@ -120,6 +122,11 @@ const mockMetamaskStore = {
   // Used when clicking on some buttons
   metaMetricsId: mockMetaMetricsId,
   // Override state if provided
+  multichainNetworkConfigurationsByChainId:
+    AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+  selectedMultichainNetworkChainId: BtcScope.Mainnet,
+  isEvmSelected: false,
+  bitcoinSupportEnabled: true,
 };
 const mockRampsStore = {
   buyableChains: mockBuyableChainsWithoutBtc,
@@ -417,5 +424,24 @@ describe('NonEvmOverview', () => {
       },
       expect.any(Object),
     );
+  });
+
+  it('disables the Send and Bridge buttons if external services are disabled', () => {
+    const { queryByTestId } = renderWithProvider(
+      <NonEvmOverview />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          useExternalServices: false,
+        },
+      }),
+    );
+
+    const sendButton = queryByTestId(BTC_OVERVIEW_SEND);
+    const bridgeButton = queryByTestId(BTC_OVERVIEW_BRIDGE);
+    expect(sendButton).toBeInTheDocument();
+    expect(sendButton).toBeDisabled();
+    expect(bridgeButton).toBeInTheDocument();
+    expect(bridgeButton).toBeDisabled();
   });
 });

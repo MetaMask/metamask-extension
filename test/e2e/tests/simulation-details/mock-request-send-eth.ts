@@ -7,8 +7,6 @@ import {
 export const SEND_ETH_TRANSACTION_MOCK = {
   data: '0x',
   from: SENDER_ADDRESS_MOCK,
-  maxFeePerGas: '0x0',
-  maxPriorityFeePerGas: '0x0',
   to: RECIPIENT_ADDRESS_MOCK,
   value: '0x38d7ea4c68000',
 };
@@ -83,6 +81,6 @@ export const SEND_ETH_REQUEST_MOCK: MockRequestResponse = {
       blockNumber: '0x53afbb',
       id: '09156630-b754-4bb8-bfc4-3390d934cec6',
     },
-    id: 42,
+    id: '42',
   },
 };

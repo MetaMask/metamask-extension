@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  BRIDGE_MM_FEE_RATE,
+  formatEtaInMinutes,
+} from '@metamask/bridge-controller';
+import {
   Text,
   PopoverPosition,
   IconName,
@@ -17,11 +21,7 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  formatEtaInMinutes,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import {
   getCurrentCurrency,
   getNativeCurrency,
@@ -41,10 +41,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import {
-  BRIDGE_MM_FEE_RATE,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getImageForChainId } from '../../../selectors/multichain';

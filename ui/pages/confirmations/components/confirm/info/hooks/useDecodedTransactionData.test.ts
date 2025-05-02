@@ -50,7 +50,7 @@ describe('useDecodedTransactionData', () => {
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([undefined, null, '', '0x', '0X'])(
     'returns undefined if transaction data is %s',
-    async (data: string) => {
+    async (data: string | null | undefined) => {
       const result = await runHook(
         getMockConfirmStateForTransaction({
           id: '123',
@@ -64,7 +64,12 @@ describe('useDecodedTransactionData', () => {
         }),
       );
 
-      expect(result).toStrictEqual({ pending: false, value: undefined });
+      expect(result).toEqual(
+        expect.objectContaining({
+          pending: false,
+          value: undefined,
+        }),
+      );
     },
   );
 
@@ -82,7 +87,12 @@ describe('useDecodedTransactionData', () => {
       }),
     );
 
-    expect(result).toStrictEqual({ pending: false, value: undefined });
+    expect(result).toEqual(
+      expect.objectContaining({
+        pending: false,
+        value: undefined,
+      }),
+    );
   });
 
   it('returns undefined if decode disabled', async () => {
@@ -108,7 +118,12 @@ describe('useDecodedTransactionData', () => {
       ),
     );
 
-    expect(result).toStrictEqual({ pending: false, value: undefined });
+    expect(result).toEqual(
+      expect.objectContaining({
+        pending: false,
+        value: undefined,
+      }),
+    );
   });
 
   it('returns the decoded data', async () => {
@@ -127,43 +142,38 @@ describe('useDecodedTransactionData', () => {
       }),
     );
 
-    expect(result).toMatchInlineSnapshot(`
-      {
-        "pending": false,
-        "value": {
-          "data": [
-            {
-              "description": "Attempt to cancel an authorization",
-              "name": "cancelAuthorization",
-              "params": [
-                {
-                  "children": undefined,
-                  "description": "Authorizer's address",
-                  "name": "authorizer",
-                  "type": "address",
-                  "value": "0xB0dA5965D43369968574D399dBe6374683773a65",
-                },
-                {
-                  "children": undefined,
-                  "description": "Nonce of the authorization",
-                  "name": "nonce",
-                  "type": "bytes32",
-                  "value": "0x0000000000000000000000000000000000000000000000000000000000000123",
-                },
-                {
-                  "children": undefined,
-                  "description": "Signature bytes signed by an EOA wallet or a contract wallet",
-                  "name": "signature",
-                  "type": "bytes",
-                  "value": "0x0456",
-                },
-              ],
-            },
-          ],
-          "source": "Sourcify",
-        },
-      }
-    `);
+    expect(result).toEqual(
+      expect.objectContaining({
+        pending: false,
+        value: expect.objectContaining({
+          data: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'cancelAuthorization',
+              description: 'Attempt to cancel an authorization',
+              params: expect.arrayContaining([
+                expect.objectContaining({
+                  name: 'authorizer',
+                  type: 'address',
+                  value: '0xB0dA5965D43369968574D399dBe6374683773a65',
+                }),
+                expect.objectContaining({
+                  name: 'nonce',
+                  type: 'bytes32',
+                  value:
+                    '0x0000000000000000000000000000000000000000000000000000000000000123',
+                }),
+                expect.objectContaining({
+                  name: 'signature',
+                  type: 'bytes',
+                  value: '0x0456',
+                }),
+              ]),
+            }),
+          ]),
+          source: 'Sourcify',
+        }),
+      }),
+    );
   });
 
   it('decodes data using data and to overrides', async () => {

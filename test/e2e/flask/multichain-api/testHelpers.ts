@@ -1,6 +1,10 @@
 import * as path from 'path';
-import { By } from 'selenium-webdriver';
-import { KnownRpcMethods, KnownNotifications } from '@metamask/multichain';
+import { Browser, By } from 'selenium-webdriver';
+import {
+  KnownRpcMethods,
+  KnownNotifications,
+} from '@metamask/chain-agnostic-permission';
+import { JsonRpcRequest } from '@metamask/utils';
 import {
   convertETHToHexGwei,
   multipleGanacheOptions,
@@ -9,7 +13,12 @@ import {
   WINDOW_TITLES,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
+import {
+  CONTENT_SCRIPT,
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  METAMASK_INPAGE,
+} from '../../../../app/scripts/constants/stream';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -33,7 +42,7 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
       type: 'ganache',
       options: {
         secretKey: PRIVATE_KEY,
-        balance: convertETHToHexGwei(DEFAULT_GANACHE_ETH_BALANCE_DEC),
+        balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
         accounts: multipleGanacheOptions.accounts,
       },
     },
@@ -151,3 +160,70 @@ export const passwordLockMetamaskExtension = async (
  */
 export const escapeColon = (selector: string): string =>
   selector.replace(':', '\\:');
+
+export const sendMultichainApiRequest = ({
+  driver,
+  extensionId,
+  request,
+}: {
+  driver: Driver;
+  extensionId: string;
+  request: Omit<JsonRpcRequest, 'id'>;
+}) => {
+  const id = Math.ceil(Math.random() * 1000);
+  const requestWithNewId = {
+    ...request,
+    id,
+  };
+  let script;
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    script = `
+    const data = ${JSON.stringify(requestWithNewId)};
+    const result = new Promise((resolve) => {
+      window.addEventListener('message', (messageEvent) => {
+        const { target, data } = messageEvent.data;
+        if (
+          target !== '${METAMASK_INPAGE}' ||
+          data?.name !== '${METAMASK_CAIP_MULTICHAIN_PROVIDER}' ||
+          data?.data.id !== ${id}
+        ) {
+          return;
+        }
+
+        resolve(data.data);
+      });
+    })
+    window.postMessage(
+      {
+        target: '${CONTENT_SCRIPT}',
+        data: {
+          name: '${METAMASK_CAIP_MULTICHAIN_PROVIDER}',
+          data
+        },
+      },
+      location.origin,
+    );
+
+    return result;`;
+  } else {
+    script = `
+    const port = chrome.runtime.connect('${extensionId}');
+    const data = ${JSON.stringify(requestWithNewId)};
+    const result = new Promise((resolve) => {
+      port.onMessage.addListener((msg) => {
+        if (msg.type !== 'caip-348') {
+          return;
+        }
+        if (msg.data?.id !== ${id}) {
+          return;
+        }
+
+        resolve(msg.data);
+      })
+    })
+    port.postMessage({ type: 'caip-348', data });
+    return result;`;
+  }
+
+  return driver.executeScript(script);
+};

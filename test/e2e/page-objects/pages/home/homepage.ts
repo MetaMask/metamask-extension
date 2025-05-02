@@ -13,6 +13,16 @@ class HomePage {
     testId: 'account-overview__activity-tab',
   };
 
+  private readonly backupSecretRecoveryPhraseButton = {
+    text: 'Back up now',
+    css: '.home-notification__accept-button',
+  };
+
+  private readonly backupSecretRecoveryPhraseNotification = {
+    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
+    css: '.home-notification__text',
+  };
+
   protected readonly balance: string =
     '[data-testid="eth-overview__primary-currency"]';
 
@@ -35,6 +45,10 @@ class HomePage {
 
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
+  };
+
+  private readonly defiTab = {
+    testId: 'account-overview__defi-tab',
   };
 
   private readonly popoverBackground = '.popover-bg';
@@ -103,9 +117,22 @@ class HomePage {
     await this.driver.clickElement(this.activityTab);
   }
 
+  async goToBackupSRPPage(): Promise<void> {
+    console.log(`Go to backup secret recovery phrase on homepage`);
+    await this.driver.waitForSelector(
+      this.backupSecretRecoveryPhraseNotification,
+    );
+    await this.driver.clickElement(this.backupSecretRecoveryPhraseButton);
+  }
+
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
+  }
+
+  async goToDeFiTab(): Promise<void> {
+    console.log(`Go to DeFi tab on homepage`);
+    await this.driver.clickElement(this.defiTab);
   }
 
   async goToTokensTab(): Promise<void> {
@@ -128,6 +155,10 @@ class HomePage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async startBridgeFlow(): Promise<void> {
+    await this.driver.clickElement(this.bridgeButton);
+  }
+
   async togglePrivacyBalance(): Promise<void> {
     await this.driver.clickElement(this.privacyBalanceToggle);
   }
@@ -145,6 +176,13 @@ class HomePage {
       tag: 'h6',
       text: `“${networkName}” was successfully added!`,
     });
+  }
+
+  async check_backupReminderIsNotDisplayed(): Promise<void> {
+    console.log('Check backup reminder is not displayed on homepage');
+    await this.driver.assertElementNotPresent(
+      this.backupSecretRecoveryPhraseNotification,
+    );
   }
 
   async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
@@ -213,6 +251,22 @@ class HomePage {
   }
 
   /**
+   * Checks if the expected token balance is displayed on homepage.
+   *
+   * @param expectedTokenBalance - The expected balance to be displayed.
+   * @param symbol - The symbol of the currency or token.
+   */
+  async check_expectedTokenBalanceIsDisplayed(
+    expectedTokenBalance: string,
+    symbol: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: '[data-testid="multichain-token-list-item-value"]',
+      text: `${expectedTokenBalance} ${symbol}`,
+    });
+  }
+
+  /**
    * This function checks if account syncing has been successfully completed at least once.
    */
   async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
@@ -225,7 +279,9 @@ class HomePage {
 
   async check_ifBridgeButtonIsClickable(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.bridgeButton, 1000);
+      await this.driver.findClickableElement(this.bridgeButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Bridge button not clickable', e);
       return false;
@@ -236,7 +292,9 @@ class HomePage {
 
   async check_ifSendButtonIsClickable(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.sendButton, 1000);
+      await this.driver.findClickableElement(this.sendButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Send button not clickable', e);
       return false;
@@ -247,7 +305,9 @@ class HomePage {
 
   async check_ifSwapButtonIsClickable(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.swapButton, 1000);
+      await this.driver.findClickableElement(this.swapButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Swap button not clickable', e);
       return false;
@@ -267,6 +327,14 @@ class HomePage {
       expectedBalance = '25';
     }
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
+  }
+
+  async check_newSrpAddedToastIsDisplayed(
+    srpNumber: number = 2,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
   }
 }
 
