@@ -41,7 +41,6 @@ jobs:
     runs-on: ${{ inputs.runner-type }}
     container:
       image: cimg/node:22.14-browsers
-    continue-on-error: true # soft launch
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
