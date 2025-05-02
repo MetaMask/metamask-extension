@@ -924,6 +924,8 @@ function setupBundlerDefaults(
         babelify,
         // Run TypeScript files through Babel
         {
+          global: true,
+          presets: ["@babel/preset-env"],
           extensions,
         },
       ],
