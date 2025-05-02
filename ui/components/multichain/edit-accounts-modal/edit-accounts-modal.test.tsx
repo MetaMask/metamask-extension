@@ -194,7 +194,14 @@ describe('EditAccountsModal', () => {
         accountNameSuggestion: 'Solana Account 1',
       };
 
-      expect(mockCreateAccount).toHaveBeenCalledWith(expectedArgs);
+      const expectedInternalArgs = {
+        setSelectedAccount: true,
+      };
+
+      expect(mockCreateAccount).toHaveBeenCalledWith(
+        expectedArgs,
+        expectedInternalArgs,
+      );
     });
   });
 });

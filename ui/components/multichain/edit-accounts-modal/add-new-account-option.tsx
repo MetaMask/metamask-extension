@@ -61,7 +61,7 @@ export const EditAccountModalAddNewAccountOption: React.FC<
             {t('createNewAccountHeader')}
           </Text>
           <ButtonLink
-            marginBottom={4}
+            marginBottom={2}
             size={ButtonLinkSize.Sm}
             startIconName={IconName.Add}
             startIconProps={{ size: IconSize.Md }}

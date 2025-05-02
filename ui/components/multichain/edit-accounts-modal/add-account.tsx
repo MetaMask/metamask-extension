@@ -95,6 +95,7 @@ export const EditAccountAddAccountForm: React.FC<
               onSelectSrp={onSelectSrp}
               clientType={clientType}
               chainId={chainId}
+              setNewlyCreatedAccountAsSelected={true}
             />
           ) : (
             <CreateEthAccount
