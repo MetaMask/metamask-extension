@@ -1,10 +1,25 @@
 import { createSelector } from 'reselect';
-import { Hex } from '@metamask/utils';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type {
+  BridgeHistoryItem,
+  BridgeStatusControllerState,
+} from '@metamask/bridge-status-controller';
+import type { TransactionControllerState } from '@metamask/transaction-controller';
 import { getSelectedAddress } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
-import { BridgeStatusAppState } from '../../../shared/types/bridge-status';
+import {
+  getCurrentChainId,
+  type NetworkState,
+} from '../../../shared/modules/selectors/networks';
+import type { SmartTransactionsMetaMaskState } from '../../../shared/modules/selectors';
+
+export type BridgeStatusAppState = {
+  metamask: BridgeStatusControllerState;
+};
+
+export type MetricsBackgroundState = BridgeStatusAppState['metamask'] &
+  SmartTransactionsMetaMaskState['metamask'] &
+  NetworkState['metamask'] &
+  TransactionControllerState;
 
 export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
   state.metamask;
@@ -57,7 +72,7 @@ export const selectIncomingBridgeHistory = createSelector(
         const hexDestChainId = new Numeric(
           bridgeHistoryItem.quote.destChainId,
           10,
-        ).toPrefixedHexString() as Hex;
+        ).toPrefixedHexString();
 
         return hexDestChainId === currentChainId;
       })
