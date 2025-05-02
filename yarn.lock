@@ -26975,7 +26975,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"insert-module-globals@npm:^7.2.1":
+"insert-module-globals@npm:7.2.1":
   version: 7.2.1
   resolution: "insert-module-globals@npm:7.2.1"
   dependencies:
@@ -26992,6 +26992,26 @@ __metadata:
   bin:
     insert-module-globals: bin/cmd.js
   checksum: 10/f423d320a7ed0683fe62095bc1beee6666b33ec70aef5a0f69b6c863c0b43cb2cffd7ae46aa9e2a752d98e41577155b347957cd24bc57ea51a681fd928863469
+  languageName: node
+  linkType: hard
+
+"insert-module-globals@patch:insert-module-globals@npm%3A7.2.1#~/.yarn/patches/insert-module-globals-npm-7.2.1-28e63ed201.patch":
+  version: 7.2.1
+  resolution: "insert-module-globals@patch:insert-module-globals@npm%3A7.2.1#~/.yarn/patches/insert-module-globals-npm-7.2.1-28e63ed201.patch::version=7.2.1&hash=5f7c08"
+  dependencies:
+    JSONStream: "npm:^1.0.3"
+    acorn-node: "npm:^1.5.2"
+    combine-source-map: "npm:^0.8.0"
+    concat-stream: "npm:^1.6.1"
+    is-buffer: "npm:^1.1.0"
+    path-is-absolute: "npm:^1.0.1"
+    process: "npm:~0.11.0"
+    through2: "npm:^2.0.0"
+    undeclared-identifiers: "npm:^1.1.2"
+    xtend: "npm:^4.0.0"
+  bin:
+    insert-module-globals: bin/cmd.js
+  checksum: 10/566be21161f4ec8571fc22c15d434942d6ae12a189cfa5df45db7d1f14933845c72f904181b05aaa0bb862ae2bcc75f9e6049ebec31c7833b3a9e242ed98471d
   languageName: node
   linkType: hard
 
@@ -41403,7 +41423,7 @@ __metadata:
 
 "undeclared-identifiers@patch:undeclared-identifiers@npm%3A1.1.2#./.yarn/patches/undeclared-identifiers-npm-1.1.2-13d6792e9e.patch::locator=metamask-crx%40workspace%3A.":
   version: 1.1.2
-  resolution: "undeclared-identifiers@patch:undeclared-identifiers@npm%3A1.1.2#./.yarn/patches/undeclared-identifiers-npm-1.1.2-13d6792e9e.patch::version=1.1.2&hash=3fc121&locator=metamask-crx%40workspace%3A."
+  resolution: "undeclared-identifiers@patch:undeclared-identifiers@npm%3A1.1.2#./.yarn/patches/undeclared-identifiers-npm-1.1.2-13d6792e9e.patch::version=1.1.2&hash=9b6ac0&locator=metamask-crx%40workspace%3A."
   dependencies:
     acorn-node: "npm:^1.3.0"
     get-assigned-identifiers: "npm:^1.2.0"
@@ -41411,7 +41431,7 @@ __metadata:
     xtend: "npm:^4.0.1"
   bin:
     undeclared-identifiers: bin.js
-  checksum: 10/62443fc2a3f483895d12076e850aa917f9e110756fd2bde3629a83f89319b3ba587bb20cf702eea60d07f07d29e3cb795083df2cc9a2e8c8efae85bb3481d9ee
+  checksum: 10/da35502d897ca874a3498dbe6db64b41c0ebbeab93f4c6edcb0f49165ef45fb39d50084af46bee644e7842cd8d57592b8c696b3b198d561ee56471072cec561f
   languageName: node
   linkType: hard
 
