@@ -25,6 +25,9 @@ import {
   MOCK_BRIDGE_DAI_L2_TO_MAINNET,
   TOP_ASSETS_API_LINEA_MOCK_RESULT,
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
+  MOCK_SPOT_PRICES,
+  MOCK_ACCOUNT_TRANSACTIONS,
+  MOCK_ACCOUNT_BALANCES,
 } from './constants';
 
 export class BridgePage {
@@ -317,6 +320,39 @@ async function mockDAIL2toMainnet(mockServer: Mockttp) {
     });
 }
 
+async function mockSpotPrices(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/v2\/chains\/[0-9]+\/spot-prices/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_SPOT_PRICES,
+      };
+    });
+}
+
+async function mockAccountTransactions(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/v1\/accounts\/0x[a-fA-F0-9]{40}\/transactions/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_ACCOUNT_TRANSACTIONS,
+      };
+    });
+}
+
+async function mockAccountBalances(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/v2\/accounts\/0x[a-fA-F0-9]{40}\/balances/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_ACCOUNT_BALANCES,
+      };
+    });
+}
+
 export const getBridgeFixtures = (
   title?: string,
   featureFlags: Partial<FeatureFlagResponse> = {},
@@ -361,6 +397,9 @@ export const getBridgeFixtures = (
       await mockETHtoUSDC(mockServer),
       await mockDAItoETH(mockServer),
       await mockDAItoUSDT(mockServer),
+      await mockSpotPrices(mockServer),
+      await mockAccountTransactions(mockServer),
+      await mockAccountBalances(mockServer),
     ],
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,

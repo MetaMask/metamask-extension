@@ -2075,3 +2075,64 @@ export const MOCK_BRIDGE_DAI_TO_USDT_LINEA = [
     estimatedProcessingTimeInSeconds: 47,
   },
 ];
+
+export const MOCK_SPOT_PRICES = {
+  '0x0000000000000000000000000000000000000000': {
+    id: 'ethereum',
+    price: 1832.53,
+    marketCap: 221233700900,
+    allTimeHigh: 4878.26,
+    allTimeLow: 0.432979,
+    totalVolume: 12930013016,
+    high1d: 1867.18,
+    low1d: 1816.7,
+    circulatingSupply: 120732742.0349921,
+    dilutedMarketCap: 221233700900,
+    marketCapPercentChange1d: -0.81244,
+    priceChange1d: -16.026292927386066,
+    pricePercentChange1h: 0.47732059513923275,
+    pricePercentChange1d: -0.8669647040088386,
+    pricePercentChange7d: 3.309899724749188,
+    pricePercentChange14d: 15.708487411898128,
+    pricePercentChange30d: -2.1302777993122373,
+    pricePercentChange200d: -27.765125070463615,
+    pricePercentChange1y: -38.09548715778154,
+  },
+  '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
+    id: 'usd-coin',
+    price: 0.999892,
+    marketCap: 61385961016,
+    allTimeHigh: 1.17,
+    allTimeLow: 0.877647,
+    totalVolume: 8598503037,
+    high1d: 1,
+    low1d: 0.999707,
+    circulatingSupply: 61392581256.54969,
+    dilutedMarketCap: 61385801680,
+    marketCapPercentChange1d: -0.17555,
+    priceChange1d: -0.000071424009336352,
+    pricePercentChange1h: -0.0005197968529253771,
+    pricePercentChange1d: -0.0071426632782715,
+    pricePercentChange7d: -0.010618090801147182,
+    pricePercentChange14d: -0.008226351194972689,
+    pricePercentChange30d: -0.00017119786830904288,
+    pricePercentChange200d: 0.004059492909661415,
+    pricePercentChange1y: -0.044413793811441664,
+  },
+};
+
+export const MOCK_ACCOUNT_TRANSACTIONS = {
+  data: [],
+  unprocessedNetworks: [],
+  pageInfo: {
+    hasNextPage: false,
+    cursor: null,
+    count: 0,
+  },
+};
+
+export const MOCK_ACCOUNT_BALANCES = {
+  count: 0,
+  balances: [],
+  unprocessedNetworks: [],
+};
