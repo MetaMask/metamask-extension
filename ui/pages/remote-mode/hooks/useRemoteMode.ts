@@ -8,7 +8,6 @@ import {
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
 import { encodeDisableDelegation } from '../../../../shared/lib/delegation/delegation';
-import { DELEGATION_TAGS } from '../../../../shared/lib/delegation/utils';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { getSelectedNetwork } from '../../../selectors';
 import { getRemoteModeConfig } from '../../../selectors/remote-mode';
@@ -22,6 +21,8 @@ import { useEIP7702Account } from '../../confirmations/hooks/useEIP7702Account';
 import { useEIP7702Networks } from '../../confirmations/hooks/useEIP7702Networks';
 import { REMOTE_MODES } from '../remote.types';
 
+const REVOKE_TAG = 'revoke';
+
 export const useRemoteMode = ({ account }: { account: Hex }) => {
   const { upgradeAccount: upgradeAccountEIP7702 } = useEIP7702Account();
   const { network7702List } = useEIP7702Networks(account);
@@ -30,10 +31,7 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
   const { chainId } = selectedNetwork.configuration;
 
   const remoteModeConfig = useSelector((state) =>
-    getRemoteModeConfig(state, account, {
-      from: account,
-      chainId,
-    }),
+    getRemoteModeConfig(state, account, chainId),
   );
 
   const upgradeContractAddress = useMemo(() => {
@@ -144,7 +142,7 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
 
     await storeDelegationEntry({
       delegation,
-      tags: [mode, DELEGATION_TAGS.REVOKE],
+      tags: [mode, REVOKE_TAG],
       chainId,
       meta: JSON.stringify({
         ...metaObject,

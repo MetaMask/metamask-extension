@@ -38,7 +38,7 @@ export const DelegationControllerInit: ControllerInitFunction<
 
   const api = getApi(controller);
 
-  addDelegationControllerListeners(initMessenger, controller);
+  setupListeners(initMessenger, controller);
 
   return {
     controller,
@@ -65,7 +65,13 @@ function getApi(
   };
 }
 
-function addDelegationControllerListeners(
+/**
+ * Setup listeners for the Delegation controller.
+ *
+ * @param initMessenger - The initialization messenger for the controller.
+ * @param controller - The DelegationController.
+ */
+function setupListeners(
   initMessenger: DelegationControllerInitMessenger,
   controller: DelegationController,
 ) {
