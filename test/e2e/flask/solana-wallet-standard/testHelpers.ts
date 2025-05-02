@@ -181,10 +181,12 @@ export const switchToAccount = async (
  * Asserts that the connection status is as expected.
  *
  * @param connectionStatus
+ * @param driver
  * @param expectedAddress
  */
 export const assertConnected = async (
   connectionStatus: 'Connected' | 'Disconnected' | string,
+  driver: Driver,
   expectedAddress?: string,
 ): Promise<void> => {
   await driver.wait(async () => {

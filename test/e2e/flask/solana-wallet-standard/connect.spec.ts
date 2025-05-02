@@ -33,10 +33,10 @@ describe('Solana Wallet Standard - Connect', function () {
           const header = await testDapp.getHeader();
 
           const connectionStatus = await header.getConnectionStatus();
-          assertConnected(connectionStatus);
+          assertConnected(connectionStatus, driver);
 
           const account = await header.getAccount();
-          assertConnected(account, account1Short);
+          assertConnected(account, driver, account1Short);
         },
       );
     });
@@ -78,10 +78,10 @@ describe('Solana Wallet Standard - Connect', function () {
           // Verify successful connection
           const connectionStatusAfterConnect =
             await header.getConnectionStatus();
-          assertConnected(connectionStatusAfterConnect);
+          assertConnected(connectionStatusAfterConnect, driver);
 
           const account = await header.getAccount();
-          assertConnected(account, account1Short);
+          assertConnected(account, driver, account1Short);
         },
       );
     });
@@ -140,10 +140,10 @@ describe('Solana Wallet Standard - Connect', function () {
           const header = await testDapp.getHeader();
 
           const connectionStatus = await header.getConnectionStatus();
-          assertConnected(connectionStatus);
+          assertConnected(connectionStatus, driver);
 
           const account = await header.getAccount();
-          assertConnected(account, account1Short);
+          assertConnected(account, driver, account1Short);
 
           await header.disconnect();
 
@@ -174,7 +174,7 @@ describe('Solana Wallet Standard - Connect', function () {
             // Check that we're connected to the last selected account
             const header = await testDapp.getHeader();
             const account = await header.getAccount();
-            assertConnected(account, account2Short);
+            assertConnected(account, driver, account2Short);
 
             // Switch to the first account
             await driver.switchToWindowWithTitle(
@@ -185,7 +185,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
             // Check that we're connected to the first account
             const account2 = await header.getAccount();
-            assertConnected(account2, account1Short);
+            assertConnected(account2, driver, account1Short);
           },
         );
       });
@@ -211,7 +211,7 @@ describe('Solana Wallet Standard - Connect', function () {
             // Check that we're connected to the second account
             const header = await testDapp.getHeader();
             let account = await header.getAccount();
-            assertConnected(account, account2Short);
+            assertConnected(account, driver, account2Short);
 
             // Now switch to the first account
             await driver.switchToWindowWithTitle(
@@ -222,7 +222,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
             // Check that we're still connected to the second account
             account = await header.getAccount();
-            assertConnected(account, account2Short);
+            assertConnected(account, driver, account2Short);
 
             // Switch back to the second account
             await driver.switchToWindowWithTitle(
@@ -233,7 +233,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
             // Check that we're still connected to the second account
             account = await header.getAccount();
-            assertConnected(account, account2Short);
+            assertConnected(account, driver, account2Short);
           },
         );
       });
@@ -254,12 +254,12 @@ describe('Solana Wallet Standard - Connect', function () {
 
           const header = await testDapp.getHeader();
           const account = await header.getAccount();
-          assertConnected(account, account1Short);
+          assertConnected(account, driver, account1Short);
 
           await driver.refresh();
 
           const accountAfterRefresh = await header.getAccount();
-          assertConnected(accountAfterRefresh, account1Short);
+          assertConnected(accountAfterRefresh, driver, account1Short);
         },
       );
     });
@@ -283,7 +283,7 @@ describe('Solana Wallet Standard - Connect', function () {
 
             const header = await testDapp.getHeader();
             const account = await header.getAccount();
-            assertConnected(account, account2Short);
+            assertConnected(account, driver, account2Short);
           },
         );
       });
@@ -316,6 +316,8 @@ describe('Solana Wallet Standard - Connect', function () {
             const signMessageTest = await testDapp.getSignMessageTest();
             await signMessageTest.setMessage('Hello, world!');
             await signMessageTest.signMessage();
+
+            await driver.delay(regularDelayMs);
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
