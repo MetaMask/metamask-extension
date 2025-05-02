@@ -5003,7 +5003,7 @@ export default class MetamaskController extends EventEmitter {
 
       const client = await this._getSolanaWalletSnapClient();
       return await client.createAccount(
-        { entropySource },
+        { entropySource, scope: SolScope.Mainnet },
         {
           displayConfirmation: false,
           displayAccountNameSuggestion: false,
