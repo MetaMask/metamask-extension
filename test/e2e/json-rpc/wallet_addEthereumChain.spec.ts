@@ -306,7 +306,7 @@ describe('Add Ethereum Chain', function () {
                   decimals: 18,
                 },
                 // this matches what already exists in the NetworkController
-                rpcUrls: ['http://localhost:8545'],
+                rpcUrls: ['http://localhost:8545/1'],
                 blockExplorerUrls: [],
               },
             ],

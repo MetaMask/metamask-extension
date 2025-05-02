@@ -131,7 +131,7 @@ async function setupMocking(
     beforeRequest: ({ headers: { host }, url }) => {
       if (blocklistedHosts.includes(host)) {
         return {
-          url: 'http://localhost:8545',
+          url: 'http://localhost:8545/1',
         };
       } else if (
         ALLOWLISTED_URLS.includes(url) ||

@@ -17,7 +17,7 @@ function createAnvilClients(instance: Instance, id: number, port: number) {
     id,
     rpcUrls: {
       default: {
-        http: [`http://${instance.host}:${port}`],
+        http: [`http://${instance.host}:${port}/1`],
         webSocket: [`ws://${instance.host}:${port}`],
       },
     },
@@ -25,18 +25,18 @@ function createAnvilClients(instance: Instance, id: number, port: number) {
 
   const publicClient = createPublicClient({
     chain: anvil,
-    transport: http(`http://${instance.host}:${port}`),
+    transport: http(`http://${instance.host}:${port}/1`),
   });
 
   const testClient = createTestClient({
     chain: anvil,
     mode: 'anvil',
-    transport: http(`http://${instance.host}:${port}`),
+    transport: http(`http://${instance.host}:${port}/1`),
   });
 
   const walletClient = createWalletClient({
     chain: anvil,
-    transport: http(`http://${instance.host}:${port}`),
+    transport: http(`http://${instance.host}:${port}/1`),
   });
 
   return { publicClient, testClient, walletClient };

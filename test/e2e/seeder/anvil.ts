@@ -1,63 +1,56 @@
 import { delimiter, join } from 'path';
 import { execSync } from 'child_process';
-import { createAnvil, Anvil as AnvilType } from '@viem/anvil';
 import { createAnvilClients } from './anvil-clients';
 
-type Hardfork =
-  | 'Frontier'
-  | 'Homestead'
-  | 'Dao'
-  | 'Tangerine'
-  | 'SpuriousDragon'
-  | 'Byzantium'
-  | 'Constantinople'
-  | 'Petersburg'
-  | 'Istanbul'
-  | 'Muirglacier'
-  | 'Berlin'
-  | 'London'
-  | 'ArrowGlacier'
-  | 'GrayGlacier'
-  | 'Paris'
-  | 'Shanghai'
-  | 'Latest';
+const proolPromise = import('prool');
+const proolInstancesPromise = import('prool/instances');
+
+// Import AnvilParameters type from the main instances export with assertion
+import type { AnvilParameters } from 'prool/instances' with { 'resolution-mode': 'import' };
+
+type CreateServerType = Awaited<typeof proolPromise>['createServer'];
+type ProolServerReturnType = ReturnType<CreateServerType>;
 
 type Hex = `0x${string}`;
 
-const defaultOptions = {
+// Define a configuration type combining Anvil parameters and proxy settings
+type AnvilConfig = Pick<AnvilParameters,
+  'balance' | 'chainId' | 'gasLimit' | 'gasPrice' | 'hardfork' | 'mnemonic' | 'blockTime' | 'noMining'
+> & {
+  host: string;
+  port: number;
+};
+
+// Use the new AnvilConfig type for defaults
+const defaultOptions: AnvilConfig = {
   balance: 25,
   chainId: 1337,
   gasLimit: 30000000,
   gasPrice: 2000000000,
-  hardfork: 'Muirglacier' as Hardfork,
+  hardfork: 'Muirglacier',
   host: '127.0.0.1',
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
   port: 8545,
-  noMining: false,
+  noMining: false, // Keep for config, filter out before passing to anvil()
+  blockTime: undefined, // Explicitly undefined initially
 };
 
 export class Anvil {
-  #server: AnvilType | undefined;
+  #server: ProolServerReturnType | undefined;
+  // Use the new AnvilConfig type for the stored options
+  #options: AnvilConfig | undefined;
 
   async start(
-    opts: {
-      balance?: number;
-      blockTime?: number;
-      chainId?: number;
-      gasLimit?: number;
-      gasPrice?: number;
-      hardfork?: Hardfork;
-      host?: string;
-      mnemonic?: string;
-      port?: number;
-      noMining?: boolean;
-    } = {},
+    // Use the new AnvilConfig type for input opts
+    opts: Partial<AnvilConfig> = {},
   ): Promise<void> {
+    // Type of 'options' is now inferred as AnvilConfig
     const options = { ...defaultOptions, ...opts };
+    this.#options = options; // Store the resolved options
 
-    // Set blockTime if noMining is disabled, as those 2 options are incompatible
-    if (!opts?.noMining && !opts?.blockTime) {
+    // Set blockTime conditionally (logic remains the same)
+    if (!options.noMining && !options.blockTime) {
       options.blockTime = 2;
     }
 
@@ -79,18 +72,45 @@ export class Anvil {
       throw new Error('Anvil binary is not accessible.');
     }
 
-    this.#server = createAnvil(options);
+    const { host, port, noMining: _noMining, blockTime, ...restOptions } = options;
+    const anvilCliOptions: Partial<AnvilParameters> = { ...restOptions };
+
+    // Only add blockTime to the object if it's a number
+    if (typeof blockTime === 'number') {
+        anvilCliOptions.blockTime = blockTime;
+    }
+
+    const { createServer } = await proolPromise;
+    const { anvil } = await proolInstancesPromise;
+
+    // Pass the constructed Anvil CLI options to anvil()
+    const anvilInstance = anvil(anvilCliOptions as AnvilParameters); // Assert type
+
+    this.#server = createServer({
+      instance: anvilInstance,
+      host: host,
+      port: port,
+    });
     await this.#server.start();
+
+    // Add a brief pause to allow the server to fully initialize
+    await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
   }
 
   getProvider() {
-    if (!this.#server) {
-      throw new Error('Server not running yet');
+    if (!this.#server || !this.#options) {
+      throw new Error('Server not running or options not set yet');
     }
+    const instance = {
+      host: this.#options.host,
+      port: this.#options.port,
+    };
+
+    // Pass the correct chainId and port from stored options
     const { walletClient, publicClient, testClient } = createAnvilClients(
-      this.#server,
-      this.#server.options.chainId ?? 1337,
-      this.#server.options.port ?? 8545,
+      instance,
+      this.#options.chainId ?? 1337,
+      this.#options.port ?? 8545,
     );
 
     return { walletClient, publicClient, testClient };

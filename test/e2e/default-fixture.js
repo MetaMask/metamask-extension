@@ -91,7 +91,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
           {
             networkId: '0x539',
-            networkRpcUrl: 'http://localhost:8545',
+            networkRpcUrl: 'http://localhost:8545/1',
           },
         ],
       },
@@ -195,7 +195,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           id: 'networkConfigurationId',
           chainId: inputChainId,
           nickname: 'Localhost 8545',
-          rpcUrl: 'http://localhost:8545',
+          rpcUrl: 'http://localhost:8545/1',
           ticker: 'ETH',
           blockExplorerUrl: undefined,
         }),
