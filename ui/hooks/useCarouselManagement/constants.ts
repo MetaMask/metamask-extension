@@ -69,6 +69,7 @@ export const MULTI_SRP_SLIDE = {
   title: 'slideMultiSrpTitle',
   description: 'slideMultiSrpDescription',
   image: './images/slide-multi-srp-icon.svg',
+  href: '/home.html#import-srp',
 };
 
 export const ZERO_BALANCE = '0x0';

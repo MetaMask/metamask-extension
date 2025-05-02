@@ -240,7 +240,7 @@ export const ImportSrp = () => {
             ariaLabel="back"
             iconName={IconName.ArrowLeft}
             onClick={() => {
-              history.back();
+              history.push(DEFAULT_ROUTE);
             }}
           />
         }
@@ -249,7 +249,7 @@ export const ImportSrp = () => {
             ariaLabel="close"
             iconName={IconName.Close}
             onClick={() => {
-              history.back();
+              history.push(DEFAULT_ROUTE);
             }}
           />
         }
