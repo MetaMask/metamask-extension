@@ -1,15 +1,18 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
 import {
   regularDelayMs,
-  tinyDelayMs,
   unlockWallet,
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import EditNetworkModal from '../../page-objects/pages/dialog/edit-network';
+import HomePage from '../../page-objects/pages/home/homepage';
+import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
@@ -44,16 +47,8 @@ const inputData = {
   chainId_part2: '9',
 };
 
-async function navigateToEditNetwork(driver: Driver) {
-  await driver.clickElement('.mm-picker-network');
-  await driver.clickElement(
-    '[data-testid="network-list-item-options-button-eip155:1337"]',
-  );
-  await driver.clickElement('[data-testid="network-list-item-options-edit"]');
-}
-
 describe('Update Network:', function (this: Suite) {
-  it.only('update network details and validate the ui elements', async function () {
+  it('update network details and validate the ui elements', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -62,79 +57,53 @@ describe('Update Network:', function (this: Suite) {
 
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        throw new Error('test');
-        await navigateToEditNetwork(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.clickSwitchNetworkDropDown();
+
+        const selectNetworkDialog = new SelectNetwork(driver);
+        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.openNetworkListOptions('eip155:1337');
+        await selectNetworkDialog.openEditNetworkModal();
 
         // Verify chain id is not editable when updating a network
-        const chainIdInput = await driver.findElement(
-          selectors.chainIdInputField,
-        );
-        assert.equal(
-          await chainIdInput.isEnabled(),
-          false,
-          'chain id input should be disabled',
-        );
+        const editNetworkModal = new EditNetworkModal(driver);
+        await editNetworkModal.check_pageIsLoaded()
+        await editNetworkModal.check_chainIdInputFieldIsEnabled(false);
 
-        // Update the network name
-        await driver.fill(
-          selectors.networkNameInputField,
-          inputData.networkName,
-        );
+        // Update the network name and save the changes
+        await editNetworkModal.fillNetworkNameInputField(inputData.networkName);
+        await editNetworkModal.saveEditedNetwork();
 
-        // Save, and verify the new network name is visible
-        await driver.clickElement(selectors.saveButton);
-        const updatedNetworkNamePresent = await driver.isElementPresent(
-          selectors.updatedNetworkDropDown,
-        );
-        assert.equal(
-          updatedNetworkNamePresent,
-          true,
-          'Network name is not updated',
-        );
+        // Verify the new network name is visible
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_editNetworkMessageIsDisplayed(inputData.networkName);
+        await homePage.closeUseNetworkNotificationModal();
+        await headerNavbar.check_currentSelectedNetwork(inputData.networkName);
 
         // Start another edit
-        await navigateToEditNetwork(driver);
+        await headerNavbar.clickSwitchNetworkDropDown();
+        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.openNetworkListOptions('eip155:1337');
+        await selectNetworkDialog.openEditNetworkModal();
+        await editNetworkModal.check_pageIsLoaded()
 
         // Edit the RPC URL to something invalid
-        const rpcUrlInputDropDown = await driver.waitForSelector(
-          '[data-testid="test-add-rpc-drop-down"]',
-        );
-        await rpcUrlInputDropDown.click();
-        await driver.delay(tinyDelayMs);
-        await driver.clickElement({
-          text: 'Add RPC URL',
-          tag: 'button',
-        });
-        const rpcUrlInput = await driver.waitForSelector(
-          '[data-testid="rpc-url-input-test"]',
-        );
-        await rpcUrlInput.sendKeys(inputData.rpcUrl);
+        await editNetworkModal.openAddRpcUrlModal();
+        const addNetworkRpcUrlModal = new AddNetworkRpcUrlModal(driver);
+        await addNetworkRpcUrlModal.check_pageIsLoaded();
+        await addNetworkRpcUrlModal.fillAddRpcUrlInput(inputData.rpcUrl);
 
         // Validate the error message that appears for the invalid url format
-        const errorMessage = await driver.isElementPresent(
-          selectors.errorMessageInvalidUrl,
-        );
-        assert.equal(
-          errorMessage,
-          true,
-          'Error message for the invalid url did not appear',
-        );
+        await addNetworkRpcUrlModal.check_errorMessageInvalidUrlIsDisplayed();
 
         // Validate the Save button is disabled for the invalid url format
-        const addUrlButton = await driver.findElement({
-          text: 'Add URL',
-          tag: 'button',
-        });
-        assert.equal(
-          await addUrlButton.isEnabled(),
-          false,
-          'Add url button should not be enabled',
-        );
+        await addNetworkRpcUrlModal.check_addRpcUrlButtonIsEnabled(false);
       },
     );
   });
 
-  it('should delete added rpc url for existing network', async function () {
+  it.only('should delete added rpc url for existing network', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -204,6 +173,7 @@ describe('Update Network:', function (this: Suite) {
         // Avoid a stale element error
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="network-display"]');
+        throw new Error('test');
 
         // Go to Edit Menu
         await driver.clickElement(
