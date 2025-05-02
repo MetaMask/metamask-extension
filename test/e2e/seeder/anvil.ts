@@ -1,12 +1,12 @@
 import { delimiter, join } from 'path';
 import { execSync } from 'child_process';
 import { createAnvilClients } from './anvil-clients';
+import type { AnvilParameters } from 'prool/instances' with { 'resolution-mode': 'import' };
 
 const proolPromise = import('prool');
 const proolInstancesPromise = import('prool/instances');
 
 // Import AnvilParameters type from the main instances export with assertion
-import type { AnvilParameters } from 'prool/instances' with { 'resolution-mode': 'import' };
 
 type CreateServerType = Awaited<typeof proolPromise>['createServer'];
 type ProolServerReturnType = ReturnType<CreateServerType>;
@@ -38,6 +38,7 @@ const defaultOptions: AnvilConfig = {
 
 export class Anvil {
   #server: ProolServerReturnType | undefined;
+
   // Use the new AnvilConfig type for the stored options
   #options: AnvilConfig | undefined;
 
@@ -83,18 +84,14 @@ export class Anvil {
     const { createServer } = await proolPromise;
     const { anvil } = await proolInstancesPromise;
 
-    // Pass the constructed Anvil CLI options to anvil()
-    const anvilInstance = anvil(anvilCliOptions as AnvilParameters); // Assert type
+    const anvilInstance = anvil(anvilCliOptions as AnvilParameters);
 
     this.#server = createServer({
       instance: anvilInstance,
-      host: host,
-      port: port,
+      host,
+      port,
     });
     await this.#server.start();
-
-    // Add a brief pause to allow the server to fully initialize
-    await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
   }
 
   getProvider() {
