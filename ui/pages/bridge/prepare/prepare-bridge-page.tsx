@@ -328,7 +328,8 @@ const PrepareBridgePage = () => {
     }
   }, [
     isEstimatedReturnLow,
-    isInsufficientGasForQuote(nativeAssetBalance),
+    nativeAssetBalance,
+    isInsufficientGasForQuote,
     isLowReturnBannerOpen,
   ]);
 
