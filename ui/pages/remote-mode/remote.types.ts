@@ -75,16 +75,20 @@ export type DailyAllowance = {
 };
 
 export type RemoteModeConfig = {
-  swapAllowance: {
-    allowances: SwapAllowance[];
-    revokeId?: string;
-    delegation?: Delegation;
-  } | null;
-  dailyAllowance: {
-    allowances: DailyAllowance[];
-    revokeId?: string;
-    delegation?: Delegation;
-  } | null;
+  swapAllowance:
+    | {
+        allowances: SwapAllowance[];
+        delegation: Delegation;
+      }
+    | null
+    | undefined;
+  dailyAllowance:
+    | {
+        allowances: DailyAllowance[];
+        delegation: Delegation;
+      }
+    | null
+    | undefined;
 };
 
 export enum REMOTE_MODES {

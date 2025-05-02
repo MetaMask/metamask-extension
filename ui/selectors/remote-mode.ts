@@ -76,10 +76,8 @@ export const getRemoteModeConfig = createSelector(
         ? JSON.parse(swapDelegationEntry.meta)
         : { allowances: [] };
 
-      const revokeId = metaObject.revokeId ?? undefined;
       const allowances = metaObject.allowances ?? [];
       config.swapAllowance = {
-        revokeId,
         allowances,
         delegation: swapDelegationEntry.delegation,
       };
@@ -90,10 +88,8 @@ export const getRemoteModeConfig = createSelector(
         ? JSON.parse(dailyDelegationEntry.meta)
         : { allowances: [] };
 
-      const revokeId = metaObject.revokeId ?? undefined;
       const allowances = metaObject.allowances ?? [];
       config.dailyAllowance = {
-        revokeId,
         allowances,
         delegation: dailyDelegationEntry.delegation,
       };
