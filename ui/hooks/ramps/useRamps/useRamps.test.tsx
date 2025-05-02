@@ -37,7 +37,7 @@ describe('useRamps', () => {
   it('should pass the numeric version of the chain ID', () => {
     const testCases = [
       { mockChainId: '0x1', numericChainId: '1' },
-      { mockChainId: '0xe70', numericChainId: '59144' },
+      { mockChainId: '0x38', numericChainId: '56' },
     ];
 
     testCases.forEach(({ mockChainId, numericChainId }) => {
