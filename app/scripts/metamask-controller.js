@@ -1662,6 +1662,7 @@ export default class MetamaskController extends EventEmitter {
           url,
           fetchOptions: { method: 'GET', headers, signal },
           ...requestOptions,
+          cacheOptions: { cacheRefreshTime: 0 },
         }),
       addTransactionFn: (...args) => this.txController.addTransaction(...args),
       estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
