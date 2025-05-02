@@ -20200,7 +20200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detective@npm:^5.2.1":
+"detective@npm:5.2.1":
   version: 5.2.1
   resolution: "detective@npm:5.2.1"
   dependencies:
@@ -20210,6 +20210,19 @@ __metadata:
   bin:
     detective: bin/detective.js
   checksum: 10/61b0e758ed455cac4c6184b539fc4f71bbf5c8920e11db1f4dceaf4f3b9e983c688972a0cca70a7ab47a732ee610b2b5a74913c79883f1107c4b4eaad601a323
+  languageName: node
+  linkType: hard
+
+"detective@patch:detective@npm%3A5.2.1#~/.yarn/patches/detective-npm-5.2.1-6417517bd5.patch":
+  version: 5.2.1
+  resolution: "detective@patch:detective@npm%3A5.2.1#~/.yarn/patches/detective-npm-5.2.1-6417517bd5.patch::version=5.2.1&hash=7d05e4"
+  dependencies:
+    acorn-node: "npm:^1.8.2"
+    defined: "npm:^1.0.0"
+    minimist: "npm:^1.2.6"
+  bin:
+    detective: bin/detective.js
+  checksum: 10/6f5964f97e127ac0c1c5dec2be1a528e9b0e22a89df71e3701d0f4a31026ff8ff477ee7aa95b7bd8d5ec2cf45343de17134bc1347f8d37233f7a00763b7e9fc1
   languageName: node
   linkType: hard
 

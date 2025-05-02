@@ -6,7 +6,7 @@ index 6c935f06ad0e9f4d6e741fa853250da1d6186e6d..0299ebf0d5ff097bc4ede3bff6cd0214
 -var acorn = require('acorn-node');
 -var walk = require('acorn-node/walk');
 +var acorn = require('acorn');
-+var walk = require('acorn/walk');
++var walk = require('acorn-walk');
  var defined = require('defined');
  
  var requireRe = /\brequire\b/;
