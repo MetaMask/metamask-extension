@@ -45,6 +45,10 @@ describe('Snap Account Transfers', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
         await accountList.check_pageIsLoaded();
+
+        // check the balance of the 2 accounts are updated
+        await accountList.check_accountBalanceDisplayed('26');
+        await accountList.check_accountBalanceDisplayed('24');
       },
     );
   });
@@ -82,6 +86,10 @@ describe('Snap Account Transfers', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
         await accountList.check_pageIsLoaded();
+
+        // check the balance of the 2 accounts are updated
+        await accountList.check_accountBalanceDisplayed('26');
+        await accountList.check_accountBalanceDisplayed('24');
       },
     );
   });

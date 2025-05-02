@@ -2671,7 +2671,7 @@ export function getNetworksWithTransactionActivityByAccounts(): ThunkAction<
     } catch (error) {
       logErrorWithMessage(error);
       throw new Error(
-        'Had a problem getting networks with activity by accounts!',
+        `Failed to retrieve networks with transaction activity for accounts: ${error.message}`,
       );
     }
   };

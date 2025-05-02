@@ -58,6 +58,7 @@ describe('Privacy Mode', function () {
 
         const accountList = new AccountListPage(driver);
         await accountList.check_pageIsLoaded();
+        await accountList.check_accountBalanceDisplayed('25');
       },
     );
   });

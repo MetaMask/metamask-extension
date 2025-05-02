@@ -418,6 +418,14 @@ describe('AccountListItem', () => {
     });
 
     describe('network activity icons', () => {
+      beforeEach(() => {
+        process.env.REMOVE_GNS = 'true';
+      });
+
+      afterEach(() => {
+        process.env.REMOVE_GNS = 'false';
+      });
+
       it('should render correctly for EVM account with network activity', () => {
         const { container } = render(
           {

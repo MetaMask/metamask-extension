@@ -18,6 +18,8 @@ import {
   AvatarAccountVariant,
   AvatarNetwork,
   AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
   Box,
   ButtonIcon,
   Icon,
@@ -38,11 +40,12 @@ import {
   JustifyContent,
   Size,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY } from '../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -69,9 +72,7 @@ import {
   getMultichainNetwork,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
-///: END:ONLY_INCLUDE_IF
 import { ConnectedStatus } from '../connected-status';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 // TODO: Remove restricted import
@@ -154,10 +155,8 @@ const AccountListItem = ({
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const multichainAggregatedBalance = useSelector((state) =>
@@ -183,13 +182,13 @@ const AccountListItem = ({
     account,
     formattedTokensWithBalancesPerChain,
   );
-  const chainsWithTransactionActivity = useSelector(
+  const networksWithTransactionActivity = useSelector(
     getNetworksWithTransactionActivity,
   );
 
   const sortedNetworkIcons = useMemo(() => {
     const chainsWithActivityByAddress =
-      chainsWithTransactionActivity?.[account.address]?.activeChains;
+      networksWithTransactionActivity?.[account.address]?.activeChains;
 
     if (!chainsWithActivityByAddress?.length) {
       return [];
@@ -206,8 +205,16 @@ const AccountListItem = ({
     });
 
     return chainsWithActivity;
-  }, [chainsWithTransactionActivity, account.address]);
+  }, [networksWithTransactionActivity, account.address]);
 
+  // cross chain agg balance
+  const mappedOrderedTokenList = useMemo(
+    () =>
+      accountTotalFiatBalances.orderedTokenList.map((item) => ({
+        avatarValue: item.iconUrl,
+      })),
+    [accountTotalFiatBalances.orderedTokenList],
+  );
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate =
@@ -272,6 +279,17 @@ const AccountListItem = ({
       !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat;
     ///: END:ONLY_INCLUDE_IF
     return isAggregatedFiatOverviewBalance;
+  };
+
+  const getPreferredCurrencyValue = () => {
+    let value;
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    value = account.balance;
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+    value = isEvmNetwork ? account.balance : balanceToTranslate;
+    ///: END:ONLY_INCLUDE_IF
+    return value;
   };
 
   return (
@@ -429,15 +447,17 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {sortedNetworkIcons.length > 0 && isEvmNetwork && (
-            <AvatarGroup
-              avatarType={AvatarType.NETWORK}
-              members={sortedNetworkIcons}
-              limit={4}
-              renderTag={false}
-            />
-          )}
-          {!isEvmNetwork && primaryTokenImage && (
+          {process.env.REMOVE_GNS &&
+            sortedNetworkIcons.length > 0 &&
+            isEvmNetwork && (
+              <AvatarGroup
+                avatarType={AvatarType.NETWORK}
+                members={sortedNetworkIcons}
+                limit={4}
+                renderTag={false}
+              />
+            )}
+          {process.env.REMOVE_GNS && !isEvmNetwork && primaryTokenImage && (
             <Box
               display={Display.Flex}
               alignItems={AlignItems.center}
@@ -451,6 +471,43 @@ const AccountListItem = ({
                 size={AvatarNetworkSize.Xs}
                 borderColor={BorderColor.borderDefault}
               />
+            </Box>
+          )}
+
+          {!process.env.REMOVE_GNS && mappedOrderedTokenList.length > 1 && (
+            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
+          )}
+
+          {!process.env.REMOVE_GNS && mappedOrderedTokenList.length === 1 && (
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              gap={1}
+              className="multichain-account-list-item__avatar-currency"
+            >
+              <AvatarToken
+                src={primaryTokenImage}
+                name={nativeCurrency}
+                size={AvatarTokenSize.Xs}
+                borderColor={BorderColor.borderDefault}
+              />
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                textAlign={TextAlign.End}
+                as="div"
+              >
+                <UserPreferencedCurrencyDisplay
+                  account={account}
+                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                  value={getPreferredCurrencyValue()}
+                  type={SECONDARY}
+                  showNative
+                  data-testid="second-currency-display"
+                  privacyMode={privacyMode}
+                />
+              </Text>
             </Box>
           )}
         </Box>

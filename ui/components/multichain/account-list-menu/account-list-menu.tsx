@@ -519,7 +519,7 @@ export const AccountListMenu = ({
   ///: END:ONLY_INCLUDE_IF(multichain)
 
   useEffect(() => {
-    if (filteredAccounts.length > 0) {
+    if (process.env.REMOVE_GNS && filteredAccounts.length > 0) {
       dispatch(getNetworksWithTransactionActivityByAccounts());
     }
   }, [dispatch, filteredAccounts.length]);

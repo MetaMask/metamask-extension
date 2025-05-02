@@ -23,6 +23,8 @@ import {
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 
+// Selector types
+
 export type MultichainNetworkControllerState = {
   metamask: InternalMultichainNetworkState;
 };
@@ -58,6 +60,7 @@ export type MultichainNetworkConfigState =
     NetworksWithTransactionActivityByAccountsState;
 
 // Selectors
+
 export const getNonEvmMultichainNetworkConfigurationsByChainId = (
   state: MultichainNetworkConfigurationsByChainIdState,
 ) => state.metamask.multichainNetworkConfigurationsByChainId;
