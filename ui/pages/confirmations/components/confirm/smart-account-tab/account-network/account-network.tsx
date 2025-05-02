@@ -33,9 +33,11 @@ export const AccountNetwork = ({
   networkConfiguration: EIP7702NetworkConfiguration;
 }) => {
   const t = useI18nContext();
-  const { downgradeAccount, upgradeAccount } = useEIP7702Account();
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfiguration;
+  const { downgradeAccount, upgradeAccount } = useEIP7702Account({
+    chainId: chainIdHex,
+  });
   const [addressSupportSmartAccount, setAddressSupportSmartAccount] =
     useState(isSupported);
   const networkIcon = getNetworkIcon(networkConfiguration);
