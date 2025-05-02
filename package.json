@@ -224,7 +224,10 @@
     "gridplus-sdk/elliptic": "^6.6.1",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
-    "@trezor/connect-web": "~9.4.7"
+    "@trezor/connect-web": "~9.4.7",
+    "detective@npm:^5.2.0": "patch:detective@npm%3A5.2.1#~/.yarn/patches/detective-npm-5.2.1-6417517bd5.patch",
+    "insert-module-globals@npm:^7.2.1": "patch:insert-module-globals@npm%3A7.2.1#~/.yarn/patches/insert-module-globals-npm-7.2.1-28e63ed201.patch",
+    "undeclared-identifiers@npm:^1.1.2": "patch:undeclared-identifiers@npm%3A1.1.2#~/.yarn/patches/undeclared-identifiers-npm-1.1.2-13d6792e9e.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.27.1",

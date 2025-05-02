@@ -1,0 +1,63 @@
+diff --git a/index.js b/index.js
+index 6c935f06ad0e9f4d6e741fa853250da1d6186e6d..55e01d249c5f97391be42faa55f30f13f9f362af 100644
+--- a/index.js
++++ b/index.js
+@@ -1,4 +1,4 @@
+-var acorn = require('acorn-node');
++var acorn = require('');
+ var walk = require('acorn-node/walk');
+ var defined = require('defined');
+ 
+@@ -7,6 +7,7 @@ var requireRe = /\brequire\b/;
+ function parse (src, opts) {
+     if (!opts) opts = {};
+     var acornOpts = {
++        ecmaVersion: 2022,
+         ranges: defined(opts.ranges, opts.range),
+         locations: defined(opts.locations, opts.loc),
+         allowReserved: defined(opts.allowReserved, true),
+@@ -28,24 +29,24 @@ var exports = module.exports = function (src, opts) {
+ 
+ exports.find = function (src, opts) {
+     if (!opts) opts = {};
+-    
++
+     var word = opts.word === undefined ? 'require' : opts.word;
+     if (typeof src !== 'string') src = String(src);
+-    
++
+     var isRequire = opts.isRequire || function (node) {
+         return node.callee.type === 'Identifier'
+             && node.callee.name === word
+         ;
+     };
+-    
++
+     var modules = { strings : [], expressions : [] };
+     if (opts.nodes) modules.nodes = [];
+-    
++
+     var wordRe = word === 'require' ? requireRe : RegExp('\\b' + word + '\\b');
+     if (!wordRe.test(src)) return modules;
+-    
++
+     var ast = parse(src, opts.parse);
+-    
++
+     function visit(node, st, c) {
+         var hasRequire = wordRe.test(src.slice(node.start, node.end));
+         if (!hasRequire) return;
+@@ -70,11 +71,11 @@ exports.find = function (src, opts) {
+             if (opts.nodes) modules.nodes.push(node);
+         }
+     }
+-    
++
+     walk.recursive(ast, null, {
+         Statement: visit,
+         Expression: visit
+     });
+-    
++
+     return modules;
+ };
