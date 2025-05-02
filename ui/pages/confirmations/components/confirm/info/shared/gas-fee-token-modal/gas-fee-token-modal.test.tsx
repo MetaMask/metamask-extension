@@ -12,6 +12,7 @@ import {
   updateBatchTransactions,
   updateSelectedGasFeeToken,
 } from '../../../../../../../store/controller-actions/transaction-controller';
+import { GAS_FEE_TOKEN_MOCK as GAS_FEE_TOKEN_MOCK_BASE } from '../../../../../../../../test/data/confirmations/gas';
 import { GasFeeTokenModal } from './gas-fee-token-modal';
 
 jest.mock(
@@ -19,16 +20,8 @@ jest.mock(
 );
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
-  amount: toHex(1000),
-  balance: toHex(2345),
-  decimals: 3,
-  gas: '0x3',
-  maxFeePerGas: '0x4',
-  maxPriorityFeePerGas: '0x5',
-  rateWei: toHex('1798170000000000000'),
-  recipient: '0x1234567890123456789012345678901234567891',
+  ...GAS_FEE_TOKEN_MOCK_BASE,
   symbol: 'USDC',
-  tokenAddress: '0x1234567890123456789012345678901234567892',
 };
 
 const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
@@ -36,6 +29,7 @@ const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
   balance: toHex(43210),
   decimals: 4,
   gas: '0x3',
+  gasTransfer: '0x3a',
   maxFeePerGas: '0x4',
   maxPriorityFeePerGas: '0x5',
   rateWei: toHex('1798170000000000000'),
