@@ -2,12 +2,12 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import {
   getBridgeStatusKey,
   isBridgeComplete,
   isBridgeFailed,
 } from '../../../../shared/lib/bridge-status/utils';
-import { StatusTypes } from '../../../../shared/types/bridge-status';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
@@ -118,6 +118,8 @@ const MultichainBridgeTransactionListItem: React.FC<
   let title = capitalize(type);
   if (transaction.isBridgeTx && bridgeInfo) {
     const { destChainName, provider, destChainId } = bridgeInfo;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const displayChainName = destChainName || destChainId;
     title = `${t('bridge')} ${t('to')} ${displayChainName}`;
     if (provider) {

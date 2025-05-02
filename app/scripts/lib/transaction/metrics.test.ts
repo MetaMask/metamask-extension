@@ -1,6 +1,5 @@
 import { Provider } from '@metamask/network-controller';
 import {
-  GasFeeToken,
   TransactionMeta,
   TransactionStatus,
   TransactionType,
@@ -37,6 +36,7 @@ import {
   TransactionMetaEventPayload,
   TransactionMetricsRequest,
 } from '../../../../shared/types/metametrics';
+import { GAS_FEE_TOKEN_MOCK } from '../../../../test/data/confirmations/gas';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -53,19 +53,6 @@ const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
 const ADDRESS_3_MOCK = '0x1234567890123456789012345678901234567892';
 const METHOD_NAME_MOCK = 'testMethod1';
 const METHOD_NAME_2_MOCK = 'testMethod2';
-
-const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
-  amount: toHex(1000),
-  balance: toHex(2345),
-  decimals: 3,
-  gas: '0x3',
-  maxFeePerGas: '0x4',
-  maxPriorityFeePerGas: '0x5',
-  rateWei: toHex('1798170000000000000'),
-  recipient: '0x1234567890123456789012345678901234567890',
-  symbol: 'TEST',
-  tokenAddress: '0x1234567890123456789012345678901234567890',
-};
 
 const providerResultStub = {
   eth_getCode: '0x123',
@@ -100,7 +87,7 @@ const mockTransactionMetricsRequest = {
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
   provider: provider as Provider,
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapAndHardwareMessenger: jest.fn() as any,
   trackEvent: jest.fn(),
@@ -116,16 +103,16 @@ describe('Transaction metrics', () => {
     mockChainId,
     mockNetworkId,
     mockTransactionMeta: TransactionMeta,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockTransactionMetaWithBlockaid: any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expectedProperties: any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expectedSensitiveProperties: any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockActionId: any;
 
@@ -219,7 +206,7 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionAdded', () => {
     it('should return if transaction meta is not defined', async () => {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionAdded(mockTransactionMetricsRequest, {} as any);
       expect(
@@ -229,7 +216,7 @@ describe('Transaction metrics', () => {
 
     it('should create event fragment', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
@@ -258,7 +245,7 @@ describe('Transaction metrics', () => {
       };
 
       await handleTransactionAdded(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
@@ -289,7 +276,7 @@ describe('Transaction metrics', () => {
 
     it('should create event fragment with blockaid', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMetaWithBlockaid as any,
         actionId: mockActionId,
@@ -324,7 +311,7 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionApproved', () => {
     it('should return if transaction meta is not defined', async () => {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionApproved(mockTransactionMetricsRequest, {} as any);
       expect(
@@ -340,7 +327,7 @@ describe('Transaction metrics', () => {
 
     it('should create, update, finalize event fragment', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
@@ -383,7 +370,7 @@ describe('Transaction metrics', () => {
 
     it('should create, update, finalize event fragment with blockaid', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMetaWithBlockaid as any,
         actionId: mockActionId,
@@ -447,7 +434,7 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionFailed', () => {
     it('should return if transaction meta is not defined', async () => {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionFailed(mockTransactionMetricsRequest, {} as any);
       expect(
@@ -473,7 +460,7 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
         error: mockErrorMessage,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -529,7 +516,7 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
         error: mockErrorMessage,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -600,7 +587,7 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
         error: mockErrorMessage,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -649,7 +636,7 @@ describe('Transaction metrics', () => {
     it('should return if transaction meta is not defined', async () => {
       await handleTransactionConfirmed(
         mockTransactionMetricsRequest,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as any,
       );
@@ -674,7 +661,7 @@ describe('Transaction metrics', () => {
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMeta,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -732,7 +719,7 @@ describe('Transaction metrics', () => {
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -833,7 +820,7 @@ describe('Transaction metrics', () => {
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMeta,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -878,7 +865,7 @@ describe('Transaction metrics', () => {
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMeta,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -931,7 +918,7 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionDropped', () => {
     it('should return if transaction meta is not defined', async () => {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionDropped(mockTransactionMetricsRequest, {} as any);
       expect(
@@ -949,7 +936,7 @@ describe('Transaction metrics', () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -999,7 +986,7 @@ describe('Transaction metrics', () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -1068,7 +1055,7 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionRejected', () => {
     it('should return if transaction meta is not defined', async () => {
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionRejected(mockTransactionMetricsRequest, {} as any);
       expect(
@@ -1086,7 +1073,7 @@ describe('Transaction metrics', () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -1131,7 +1118,7 @@ describe('Transaction metrics', () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
@@ -1221,7 +1208,7 @@ describe('Transaction metrics', () => {
     it('should return if transaction meta is not defined', async () => {
       await handleTransactionSubmitted(
         mockTransactionMetricsRequest,
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as any,
       );
@@ -1232,7 +1219,7 @@ describe('Transaction metrics', () => {
 
     it('should only create event fragment', async () => {
       await handleTransactionSubmitted(mockTransactionMetricsRequest, {
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
@@ -1261,6 +1248,7 @@ describe('Transaction metrics', () => {
     });
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   describe.each([
     ['if added', handleTransactionAdded],
     ['if approved', handleTransactionApproved],
@@ -1276,7 +1264,8 @@ describe('Transaction metrics', () => {
           args.transactionMeta as TransactionMetaEventPayload,
         ),
     ],
-  ])('%s', (_title, fn) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ])('%s', (_title: string, fn: any) => {
     it('includes batch properties', async () => {
       const transactionMeta = {
         ...mockTransactionMeta,
