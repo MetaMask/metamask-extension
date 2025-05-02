@@ -39,6 +39,8 @@ class BridgeQuotePage {
 
   private networkSelector = '[data-testid="avatar-group"]';
 
+  private networkFees = '[data-testid="network-fees"]';
+
   private applyButton = { text: 'Apply', tag: 'button' };
 
   private selectAllButton = { text: 'Select all', tag: 'button' };
@@ -94,8 +96,11 @@ class BridgeQuotePage {
     );
   };
 
-  submitQuote = async () => {
+  waitForQuote = async () => {
     await this.driver.waitForSelector(this.submitButton, { timeout: 60000 });
+  };
+
+  submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
   };
 
@@ -136,6 +141,26 @@ class BridgeQuotePage {
       throw e;
     }
     console.log('The message "More ETH needed for gas" is displayed');
+  }
+
+  async check_expectedNetworkFeeIsDisplayed(
+    expectedFees: string,
+  ): Promise<void> {
+    try {
+      await this.driver.waitForSelector({
+        css: this.networkFees,
+        text: expectedFees,
+      });
+    } catch (e) {
+      const balance = await this.driver.waitForSelector(this.networkFees);
+      const currentBalance = parseFloat(await balance.getText());
+      const errorMessage = `Expected network fees ${expectedFees}, got  ${currentBalance}`;
+      console.log(errorMessage, e);
+      throw e;
+    }
+    console.log(
+      `Expected network fees ${expectedFees} is displayed on bridge quote page`,
+    );
   }
 }
 

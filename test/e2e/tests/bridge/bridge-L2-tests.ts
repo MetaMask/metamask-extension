@@ -86,8 +86,6 @@ describe('Bridge tests', function (this: Suite) {
           6,
           '22.9997',
         );
-
-        await driver.delay(10000);
       },
     );
   });
@@ -104,12 +102,11 @@ describe('Bridge tests', function (this: Suite) {
 
     const bridgePage = new BridgeQuotePage(driver);
     await bridgePage.enterBridgeQuote(quote);
-    await driver.delay(1500);
+    await bridgePage.waitForQuote();
     await bridgePage.submitQuote();
 
     await homePage.goToActivityList();
 
-    await driver.delay(5000);
     const activityList = new ActivityListPage(driver);
     await activityList.check_completedBridgeTransactionActivity(
       transactionsCount,

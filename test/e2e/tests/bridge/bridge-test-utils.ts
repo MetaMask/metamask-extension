@@ -9,12 +9,13 @@ import { Driver } from '../../webdriver/driver';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
-  MOCK_TOKENS_API,
-  MOCK_GET_TOKEN_API,
+  MOCK_TOKENS_ETHEREUM,
+  MOCK_TOKENS_LINEA,
+  MOCK_GET_TOKEN_ARBITRUM,
   MOCK_BRIDGE_ETH_TO_ETH_LINEA,
   MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM,
   MOCK_BRIDGE_DAI_TO_ETH_LINEA,
-  MOCK_BRIDGE_DAI_TO_USDT_LINEA,
+  MOCK_BRIDGE_USDC_TO_DAI_LINEA,
   MOCK_BRIDGE_NATIVE_L2_TO_MAINNET,
   MOCK_BRIDGE_NATIVE_L2_TO_L2,
   MOCK_BRIDGE_DAI_L2_TO_L2,
@@ -139,23 +140,36 @@ async function mockTopAssetsArbitrum(mockServer: Mockttp) {
   });
 }
 
-async function mockTokensApi(mockServer: Mockttp) {
-  return await mockServer.forGet(/tokens/u).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: MOCK_TOKENS_API,
-    };
-  });
+async function mockTokensEthereum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://token.api.cx.metamask.io/tokens/1`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_ETHEREUM,
+      };
+    });
 }
 
-async function mockGetTokenApi(mockServer: Mockttp) {
+async function mockTokensLinea(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://token.api.cx.metamask.io/tokens/59144`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_LINEA,
+      };
+    });
+}
+
+async function mockGetTokenArbitrum(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getTokens/u)
     .withQuery({ chainId: 42161 })
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: MOCK_GET_TOKEN_API,
+        json: MOCK_GET_TOKEN_ARBITRUM,
       };
     });
 }
@@ -224,18 +238,18 @@ async function mockDAItoETH(mockServer: Mockttp) {
     });
 }
 
-async function mockDAItoUSDT(mockServer: Mockttp) {
+async function mockUSDCtoDAI(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getQuote/u)
     .withQuery({
-      srcTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-      destTokenAddress: '0xA219439258ca9da29E9Cc4cE5596924745e12B93',
+      srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
     })
     .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: MOCK_BRIDGE_DAI_TO_USDT_LINEA,
+        json: MOCK_BRIDGE_USDC_TO_DAI_LINEA,
       };
     });
 }
@@ -303,7 +317,8 @@ async function mockDAIL2toL2(mockServer: Mockttp) {
     .withQuery({
       srcChainId: 59144,
       destChainId: 42161,
-      srcTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+      destTokenAddress: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
     })
     .always()
     .thenCallback(() => {
@@ -321,6 +336,7 @@ async function mockDAIL2toMainnet(mockServer: Mockttp) {
       srcChainId: 59144,
       destChainId: 1,
       srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+      destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     })
     .always()
     .thenCallback(() => {
@@ -368,12 +384,13 @@ export const getBridgeFixtures = (
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockTopAssetsArbitrum(mockServer),
-      await mockTokensApi(mockServer),
-      await mockGetTokenApi(mockServer),
+      await mockTokensEthereum(mockServer),
+      await mockTokensLinea(mockServer),
+      await mockGetTokenArbitrum(mockServer),
       await mockETHtoETH(mockServer),
       await mockETHtoUSDC(mockServer),
       await mockDAItoETH(mockServer),
-      await mockDAItoUSDT(mockServer),
+      await mockUSDCtoDAI(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {
@@ -522,8 +539,9 @@ export const getBridgeL2Fixtures = (
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockTopAssetsArbitrum(mockServer),
-      await mockTokensApi(mockServer),
-      await mockGetTokenApi(mockServer),
+      await mockTokensEthereum(mockServer),
+      await mockTokensLinea(mockServer),
+      await mockGetTokenArbitrum(mockServer),
       await mockL2toMainnet(mockServer),
       await mockNativeL2toL2(mockServer),
       await mockDAIL2toL2(mockServer),

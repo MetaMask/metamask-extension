@@ -1,7 +1,10 @@
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import {
+  switchToNetworkFlow,
+  searchAndSwitchToNetworkFlow,
+} from '../../page-objects/flows/network.flow';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage, {
   BridgeQuote,
@@ -39,6 +42,7 @@ describe('Bridge tests', function (this: Suite) {
             unapproved: true,
           },
           2,
+          '$200.88',
           '24.9',
         );
 
@@ -56,6 +60,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           3,
+          '$37.91',
           '23.9',
         );
 
@@ -69,23 +74,26 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           4,
+          '$10.27',
           '22.9',
         );
 
-        // Switch to Linea Mainnet to set it as the selected network
+        // Switch to Arbitrum One to set it as the selected network
         // in the network-controller
-        await switchToNetworkFlow(driver, 'Linea Mainnet');
+        await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
 
         await bridgeTransaction(
           driver,
           {
             amount: '10',
-            tokenFrom: 'DAI',
-            tokenTo: 'USDT',
+            tokenFrom: 'USDC',
+            tokenTo: 'DAI',
             fromChain: 'Ethereum',
             toChain: 'Linea',
+            unapproved: true,
           },
-          5,
+          6,
+          '$34.33',
           '22.9',
         );
       },
@@ -96,7 +104,8 @@ describe('Bridge tests', function (this: Suite) {
     driver: Driver,
     quote: BridgeQuote,
     transactionsCount: number,
-    expectedAmount: string,
+    expectedNetworkFees: string,
+    expectedWalletBalance: string,
   ) {
     // Navigate to Bridge page
     const homePage = new HomePage(driver);
@@ -104,6 +113,8 @@ describe('Bridge tests', function (this: Suite) {
 
     const bridgePage = new BridgeQuotePage(driver);
     await bridgePage.enterBridgeQuote(quote);
+    await bridgePage.waitForQuote();
+    await bridgePage.check_expectedNetworkFeeIsDisplayed(expectedNetworkFees);
     await bridgePage.submitQuote();
 
     await homePage.goToActivityList();
@@ -129,6 +140,8 @@ describe('Bridge tests', function (this: Suite) {
 
     // Check the wallet ETH balance is correct
     const accountListPage = new AccountListPage(driver);
-    await accountListPage.check_accountValueAndSuffixDisplayed(expectedAmount);
+    await accountListPage.check_accountValueAndSuffixDisplayed(
+      expectedWalletBalance,
+    );
   }
 });
