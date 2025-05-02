@@ -8,6 +8,7 @@ import {
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { ThemeType } from '../../../shared/constants/preferences';
 import {
+  ASSET_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
@@ -204,6 +205,18 @@ export function hideAppHeader(props) {
     }),
   );
   if (isCrossChainSwapsPage) {
+    return true;
+  }
+
+
+  const isAssetsPage = Boolean(
+    matchPath(location.pathname, {
+      path: ASSET_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isAssetsPage) {
     return true;
   }
 

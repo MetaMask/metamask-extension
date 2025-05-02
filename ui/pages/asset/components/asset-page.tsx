@@ -256,9 +256,10 @@ const AssetPage = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        paddingTop={1}
+        paddingBottom={3}
         paddingLeft={2}
         paddingRight={4}
-        paddingBottom={1}
       >
         <Box display={Display.Flex}>
           <ButtonIcon
@@ -269,17 +270,19 @@ const AssetPage = ({
             iconName={IconName.ArrowLeft}
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
-          <Text
-            data-testid="asset-name"
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternative}
-          >
-            {name && symbol && name !== symbol
-              ? `${name} (${symbol})`
-              : name ?? symbol}
-          </Text>
         </Box>
         {optionsButton}
+      </Box>
+      <Box paddingLeft={4}>
+        <Text
+          data-testid="asset-name"
+          variant={TextVariant.bodyMdMedium}
+          color={TextColor.textAlternative}
+        >
+          {name && symbol && name !== symbol
+            ? `${name} (${symbol})`
+            : (name ?? symbol)}
+        </Text>
       </Box>
       <AssetChart
         chainId={chainId}
@@ -310,7 +313,12 @@ const AssetPage = ({
         flexDirection={FlexDirection.Column}
         paddingTop={3}
       >
-        <Text variant={TextVariant.headingSm} paddingBottom={1} paddingLeft={4}>
+        <Text
+          variant={TextVariant.headingSm}
+          paddingBottom={1}
+          paddingTop={1}
+          paddingLeft={4}
+        >
           {t('yourBalance')}
         </Text>
         {[AssetType.token, AssetType.native].includes(type) && (

@@ -49,7 +49,7 @@ Chart.register(
 const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   normalized: true,
   parsing: false,
-  aspectRatio: 2.9,
+  aspectRatio: 2.6,
   layout: { autoPadding: false, padding: 0 },
   animation: { duration: 0 },
   fill: true,
@@ -132,7 +132,7 @@ const AssetChart = ({
       />
       <Box
         data-testid="asset-price-chart"
-        marginTop={1}
+        marginTop={4}
         backgroundColor={
           loading && !prices
             ? BackgroundColor.backgroundMuted
