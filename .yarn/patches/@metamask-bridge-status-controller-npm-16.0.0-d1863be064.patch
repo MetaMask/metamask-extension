@@ -1,0 +1,13 @@
+diff --git a/dist/utils/transaction.cjs b/dist/utils/transaction.cjs
+index e5d3a8d59d5c42afdc33194d7d7681e22a7a9153..73ad743c402479a26dbeca0f2e845428a1c03a82 100644
+--- a/dist/utils/transaction.cjs
++++ b/dist/utils/transaction.cjs
+@@ -101,7 +101,7 @@ const getKeyringRequest = (quoteResponse, selectedAccount) => {
+                     params: {
+                         account: { address: selectedAccount.address },
+                         transaction: quoteResponse.trade,
+-                        scope: selectedAccount.options.scope,
++                        scope: keyring_api_1.SolScope.Mainnet,
+                     },
+                     method: 'signAndSendTransaction',
+                 },
