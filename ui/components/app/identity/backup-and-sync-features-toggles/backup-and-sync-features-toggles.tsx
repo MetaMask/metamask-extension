@@ -76,11 +76,10 @@ const FeatureToggle = ({
           <Preloader size={36} />
         </Box>
       ) : (
-        <div className="privacy-settings__setting__toggle">
+        <div className="privacy-settings__setting__toggle" data-testid={section.toggleButtonTestId}>
           <ToggleButton
             value={isFeatureEnabled}
             disabled={!isBackupAndSyncEnabled}
-            dataTestId={section.toggleButtonTestId}
             onToggle={handleToggleFeature}
             offLabel={t('off')}
             onLabel={t('on')}
