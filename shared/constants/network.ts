@@ -182,6 +182,9 @@ export const CHAIN_IDS = {
   XRPLEVM_TESTNET: '0x161c28',
   LENS: '0xe8',
   PLUME: '0x18232',
+  ASSET_HUB: '0x190f1b43',
+  ASSET_HUB_KSM: '0x190f1b42',
+  ASSET_HUB_WESTEND: '0x190f1b45',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -316,6 +319,9 @@ export const SHAPE_DISPLAY_NAME = 'Shape';
 export const XRPLEVM_TESTNET_DISPLAY_NAME = 'XRPL EVM Testnet';
 export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
+export const ASSET_HUB_DISPLAY_NAME = 'Polkadot';
+export const ASSET_HUB_KSM_DISPLAY_NAME = 'Kusama';
+export const ASSET_HUB_WESTEND_DISPLAY_NAME = 'Westend Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -553,6 +559,8 @@ export const LENS_IMAGE_URL = './images/lens.png';
 export const LENS_NATIVE_TOKEN_IMAGE_URL = './images/lens-native.svg';
 export const PLUME_IMAGE_URL = './images/plume.svg';
 export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
+export const KUSAMA_IMAGE_URL = './images/kusama.svg';
+export const POLKADOT_IMAGE_URL = './images/polkadot.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -680,6 +688,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.LENS]: LENS_DISPLAY_NAME,
   [CHAIN_IDS.PLUME]: PLUME_DISPLAY_NAME,
+  [CHAIN_IDS.ASSET_HUB]: ASSET_HUB_DISPLAY_NAME,
+  [CHAIN_IDS.ASSET_HUB_KSM]: ASSET_HUB_KSM_DISPLAY_NAME,
+  [CHAIN_IDS.ASSET_HUB_WESTEND]: ASSET_HUB_WESTEND_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -950,6 +961,9 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
+  [CHAIN_IDS.ASSET_HUB_WESTEND]: POLKADOT_IMAGE_URL,
+  [CHAIN_IDS.ASSET_HUB]: POLKADOT_IMAGE_URL,
+  [CHAIN_IDS.ASSET_HUB_KSM]: KUSAMA_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1112,6 +1126,9 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
   [CHAIN_IDS.OPTIMISM]: 1,
   [CHAIN_IDS.OPTIMISM_TESTNET]: 1,
+  [CHAIN_IDS.ASSET_HUB_WESTEND]: 1,
+  [CHAIN_IDS.ASSET_HUB_KSM]: 1,
+  [CHAIN_IDS.ASSET_HUB]: 1,
 };
 
 /**
