@@ -1,5 +1,6 @@
 import {
   selectIsBackupAndSyncEnabled,
+  selectIsAccountSyncingEnabled,
   selectIsAccountSyncingReadyToBeDispatched,
   selectIsBackupAndSyncUpdateLoading,
 } from './backup-and-sync';
@@ -18,6 +19,10 @@ describe('Backup And Sync Selectors', () => {
 
   it('selects the Backup And Sync status', () => {
     expect(selectIsBackupAndSyncEnabled(mockState)).toBe(true);
+  });
+
+  it('selects the Account Syncing status', () => {
+    expect(selectIsAccountSyncingEnabled(mockState)).toBe(true);
   });
 
   it('selects the Account Syncing ready to be dispatched status', () => {
