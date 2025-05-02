@@ -171,16 +171,14 @@ const mockGetSelectedAccountCachedBalance = jest.fn();
 const mockGetIsRemoteModeEnabled = jest.fn();
 
 describe('useCarouselManagement', () => {
-  let validTestDate: string;
-  let invalidTestDate: string;
+  let validTestDate: number;
+  let invalidTestDate: number;
 
   beforeEach(() => {
     delete process.env.IN_TEST;
     // Test dates
-    validTestDate = new Date(SWEEPSTAKES_START.getTime() + 1000).toISOString(); // 1 day after
-    invalidTestDate = new Date(
-      SWEEPSTAKES_START.getTime() - 1000,
-    ).toISOString(); // 1 day before
+    validTestDate = SWEEPSTAKES_START + 1000; // the day after
+    invalidTestDate = SWEEPSTAKES_START - 1000; // the day before
     // Mocks
     mockUseDispatch.mockReturnValue(jest.fn());
     mockUseSelector.mockImplementation((selector) => {
@@ -209,24 +207,24 @@ describe('useCarouselManagement', () => {
 
   describe('getSweepstakesCampaignActive', () => {
     it('returns true when date is within the sweepstakes period', () => {
-      const testDate = new Date(SWEEPSTAKES_START.getTime() + 1000); // 1 second after start
+      const testDate = SWEEPSTAKES_START + 1000; // 1 second after start
       expect(getSweepstakesCampaignActive(testDate)).toBe(true);
     });
 
     it('returns false when date is before the sweepstakes period', () => {
-      const testDate = new Date(SWEEPSTAKES_START.getTime() - 1000); // 1 second before start
+      const testDate = SWEEPSTAKES_START - 1000; // 1 second before start
       expect(getSweepstakesCampaignActive(testDate)).toBe(false);
     });
 
     it('returns false when date is after the sweepstakes period', () => {
-      const testDate = new Date(SWEEPSTAKES_END.getTime() + 1000); // 1 second after end
-      expect(getSweepstakesCampaignActive(testDate)).toBe(false);
+      const testDate = SWEEPSTAKES_END + 1000; // 1 second after end
+      expect(getSweepstakesCampaignActive(testDate).toBe(false);
     });
   });
 
   describe('zero funds, remote off, sweepstakes off', () => {
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement({ start: invalidTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -236,7 +234,7 @@ describe('useCarouselManagement', () => {
     });
 
     it('should mark fund slide as undismissable', () => {
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement({ start: invalidTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -250,7 +248,7 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement({ start: invalidTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -262,7 +260,7 @@ describe('useCarouselManagement', () => {
 
   describe('zero funds, remote off, sweepstakes on', () => {
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+      renderHook(() => useCarouselManagement({ start: validTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -278,7 +276,7 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+      renderHook(() => useCarouselManagement({ start: validTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -294,7 +292,7 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement({ start: invalidTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -311,7 +309,7 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
+      renderHook(() => useCarouselManagement({ start: invalidTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -327,7 +325,7 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+      renderHook(() => useCarouselManagement({ start: validTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -344,7 +342,7 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+      renderHook(() => useCarouselManagement({ start: validTestDate }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -359,7 +357,7 @@ describe('useCarouselManagement', () => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
 
       const { rerender } = renderHook((props) => useCarouselManagement(props), {
-        initialProps: { testDate: invalidTestDate },
+        initialProps: { start: invalidTestDate },
       });
 
       expect(mockUpdateSlides).toHaveBeenCalled();
@@ -371,7 +369,7 @@ describe('useCarouselManagement', () => {
       mockGetSelectedAccountCachedBalance.mockReturnValue(ZERO_BALANCE);
       mockUpdateSlides.mockClear();
 
-      rerender({ testDate: invalidTestDate });
+      rerender({ start: invalidTestDate });
 
       expect(mockUpdateSlides).toHaveBeenCalled();
 
@@ -384,7 +382,7 @@ describe('useCarouselManagement', () => {
 
     it('should update slides when testDate changes', () => {
       const { rerender } = renderHook((props) => useCarouselManagement(props), {
-        initialProps: { hasZeroBalance: false, testDate: invalidTestDate },
+        initialProps: { hasZeroBalance: false, start: invalidTestDate },
       });
 
       expect(mockUpdateSlides).toHaveBeenCalled();
@@ -396,7 +394,7 @@ describe('useCarouselManagement', () => {
 
       mockUpdateSlides.mockClear();
 
-      rerender({ hasZeroBalance: false, testDate: validTestDate });
+      rerender({ hasZeroBalance: false, start: validTestDate });
 
       expect(mockUpdateSlides).toHaveBeenCalled();
       updatedSlides = mockUpdateSlides.mock.calls[0][0];
@@ -408,11 +406,11 @@ describe('useCarouselManagement', () => {
 
   describe('edge cases', () => {
     it('should handle exactly at SWEEPSTAKES_START time', () => {
-      const testDate = SWEEPSTAKES_START.toISOString();
+      const start = SWEEPSTAKES_START;
 
       renderHook(() =>
         useCarouselManagement({
-          testDate,
+          start,
         }),
       );
 
@@ -422,11 +420,11 @@ describe('useCarouselManagement', () => {
     });
 
     it('should handle exactly at SWEEPSTAKES_END time', () => {
-      const testDate = SWEEPSTAKES_END.toISOString();
+      const start = SWEEPSTAKES_END;
 
       renderHook(() =>
         useCarouselManagement({
-          testDate,
+          start,
         }),
       );
 
@@ -436,12 +434,12 @@ describe('useCarouselManagement', () => {
     });
 
     it('should handle invalid testDate gracefully', () => {
-      const testDate = 'invalid-date';
+      const start = 'invalid-date' as unknown as number;
 
       expect(() =>
         renderHook(() =>
           useCarouselManagement({
-            testDate,
+            start,
           }),
         ),
       ).not.toThrow();
