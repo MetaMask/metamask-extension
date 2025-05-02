@@ -23,7 +23,7 @@ type Address = Hex;
  */
 export function getIsRemoteModeEnabled(state: RemoteFeatureFlagsState) {
   const { vaultRemoteMode } = getRemoteFeatureFlags(state);
-  return vaultRemoteMode;
+  return Boolean(vaultRemoteMode);
 }
 
 export function getEIP7702ContractAddresses(state: RemoteFeatureFlagsState) {
