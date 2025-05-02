@@ -15,6 +15,7 @@ import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 
 describe('Bridge tests', function (this: Suite) {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
   it('Execute multiple bridge transactions', async function () {
     await withFixtures(
       getBridgeFixtures(
