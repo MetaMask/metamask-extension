@@ -35,9 +35,9 @@ export function getSweepstakesCampaignActive(currentDate: number = Date.now()) {
 /**
  * Checks if a time‑bounded campaign is active.
  *
- * @param start timestamp for the campaign's start (inclusive)
- * @param end   timestamp for the campaign's end (inclusive)
- * @param now the current date in milliseconds since the epoch
+ * @param start - timestamp for the campaign's start (inclusive)
+ * @param end - timestamp for the campaign's end (inclusive)
+ * @param now - the current date in milliseconds since the epoch
  * @returns `true` if the sweepstakes campaign is active, `false` otherwise
  */
 export function getCampaignActive(
@@ -52,8 +52,8 @@ export function getCampaignActive(
  * Tracks whether a time‑bounded campaign is active, waking precisely at the
  * campaign start and end boundaries.
  *
- * @param start timestamp for the campaign's start (inclusive)
- * @param end   timestamp for the campaign's end (inclusive)
+ * @param start - timestamp for the campaign's start (inclusive)
+ * @param end - timestamp for the campaign's end (inclusive)
  * @returns `true` while the campaign is active
  */
 function useCampaignClock(start: number, end: number): boolean {
@@ -62,14 +62,20 @@ function useCampaignClock(start: number, end: number): boolean {
 
   // compute how long until the next "boundary" (start or end)?
   const nextWake = useMemo(() => {
-    if (now < start) return start - now; // wake when campaign starts
-    if (now < end) return end - now; // wake when campaign ends
+    if (now < start) {
+      return start - now;
+    } // wake when campaign starts
+    if (now < end) {
+      return end - now;
+    } // wake when campaign ends
     return null; // campaign finished
   }, [start, end, now]);
 
   // maybe start a single timer, depending on the `nextWake` time
   useEffect(() => {
-    if (nextWake === null) return; // nothing left to do
+    if (nextWake === null) {
+      return undefined; // campaign finished, nothing left to do
+    }
     const id = setTimeout(() => setNow(Date.now()), nextWake + 1000);
     // return a cleanup function to clear the timer when the component unmounts
     return () => clearTimeout(id);
@@ -97,12 +103,12 @@ export const useCarouselManagement = (
   // boundary
   const isSweepstakesActive = useCampaignClock(start, SWEEPSTAKES_END);
 
-  // important: *compute defaultSlides only when its inputs change*
+  // important: *compute slides only when its inputs change*
   const defaultSlides = useMemo(() => {
     const hasZeroBalance = totalBalance === ZERO_BALANCE;
     const fundSlide = { ...FUND_SLIDE, undismissable: hasZeroBalance };
 
-    const defaultSlides: CarouselSlide[] = [
+    const baseSlides: CarouselSlide[] = [
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       SMART_ACCOUNT_UPGRADE_SLIDE,
       BRIDGE_SLIDE,
@@ -115,10 +121,10 @@ export const useCarouselManagement = (
       ///: END:ONLY_INCLUDE_IF
     ];
 
-    defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
+    baseSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 
     if (isRemoteModeEnabled) {
-      defaultSlides.unshift(REMOTE_MODE_SLIDE);
+      baseSlides.unshift(REMOTE_MODE_SLIDE);
     }
 
     // Handle sweepstakes slide
@@ -137,7 +143,7 @@ export const useCarouselManagement = (
         ...SWEEPSTAKES_SLIDE,
         dismissed: false,
       };
-      defaultSlides.unshift(newSweepstakesSlide);
+      baseSlides.unshift(newSweepstakesSlide);
     } else if (isSweepstakesSlideDismissed) {
       // Add the sweepstakes slide with the dismissed state preserved
       // We need this to maintain the persisted dismissed state
@@ -146,17 +152,18 @@ export const useCarouselManagement = (
         dismissed: true,
       };
 
-      defaultSlides.push(dismissedSweepstakesSlide);
+      baseSlides.push(dismissedSweepstakesSlide);
     }
 
-    return defaultSlides;
+    return baseSlides;
   }, [totalBalance, isRemoteModeEnabled, isSweepstakesActive, slides, inTest]);
 
   const lastPayload = useRef<CarouselSlide[] | null>(null);
   useEffect(() => {
     // finally, and *most importantly*, dispatch only when the payload is
-    // *actually*different from the last one. This is important to avoid
-    // unnecessary calls to `updateSlides`, which will cause the carousel to re-render
+    // *actually* different from the last one. This is important to avoid
+    // unnecessary calls to `updateSlides`, which will cause the carousel to
+    // re-render
     if (!isEqual(lastPayload.current, defaultSlides)) {
       dispatch(updateSlides(defaultSlides));
       lastPayload.current = defaultSlides;

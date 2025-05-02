@@ -218,7 +218,7 @@ describe('useCarouselManagement', () => {
 
     it('returns false when date is after the sweepstakes period', () => {
       const testDate = SWEEPSTAKES_END + 1000; // 1 second after end
-      expect(getSweepstakesCampaignActive(testDate).toBe(false);
+      expect(getSweepstakesCampaignActive(testDate)).toBe(false);
     });
   });
 
