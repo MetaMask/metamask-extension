@@ -5597,6 +5597,12 @@
   "standardAccountLabel": {
     "message": "Standard Account"
   },
+  "stateCorruptionDetectedErrorMessage": {
+    "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"
+  },
+  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
+    "message": "If you want to try to recover your secret recovery phrase yourself, follow these instructions."
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -6467,6 +6473,9 @@
   },
   "unapproved": {
     "message": "Unapproved"
+  },
+  "unexpectedBehavior": {
+    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored properly. Use the link below to send MetaMask a bug report."
   },
   "units": {
     "message": "units"

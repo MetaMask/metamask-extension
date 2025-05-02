@@ -129,6 +129,7 @@
     "connectedStatusPopoverHasBeenShown": true,
     "conversionRates": "object",
     "defaultHomeActiveTabName": null,
+    "delegations": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",
