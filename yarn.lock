@@ -5013,7 +5013,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^8.0.0":
+"@metamask/base-controller@npm:^8.0.0, @metamask/base-controller@npm:^8.0.1":
   version: 8.0.1
   resolution: "@metamask/base-controller@npm:8.0.1"
   dependencies:
