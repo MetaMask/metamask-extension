@@ -3228,6 +3228,9 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
+  "networkNameBitcoinTestnet": {
+    "message": "Bitcoin Testnet"
+  },
   "networkNameDefinition": {
     "message": "The name associated with this network."
   },

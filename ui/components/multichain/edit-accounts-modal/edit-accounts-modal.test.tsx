@@ -1,11 +1,57 @@
 import React from 'react';
 import { CaipAccountId } from '@metamask/utils';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { EditAccountsModal } from '.';
+import { SolScope } from '@metamask/keyring-api';
+
+const mockKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
+
+const goToAddNewAccount = (
+  getByTestId: (testId: string) => HTMLElement,
+  accountType: 'solana' | 'evm',
+) => {
+  const addNewAccountButton = getByTestId('add-new-account-button');
+  fireEvent.click(addNewAccountButton);
+
+  if (accountType === 'evm') {
+    const addEvmAccountButton = getByTestId(
+      'multichain-account-menu-popover-add-account',
+    );
+    fireEvent.click(addEvmAccountButton);
+  } else {
+    const addSolanaAccountButton = getByTestId(
+      'multichain-account-menu-popover-add-solana-account',
+    );
+    fireEvent.click(addSolanaAccountButton);
+  }
+};
+
+const mockCreateAccount = jest.fn();
+
+jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
+  ...jest.requireActual(
+    '../../../hooks/accounts/useMultichainWalletSnapClient',
+  ),
+  useMultichainWalletSnapClient: jest.fn().mockImplementation(() => {
+    return {
+      getNextAvailableAccountName: jest
+        .fn()
+        .mockResolvedValue('Solana Account 1'),
+      createAccount: mockCreateAccount,
+    };
+  }),
+}));
+
+const mockAddNewAccount = jest.fn();
+jest.mock('../../../store/actions.ts', () => ({
+  ...jest.requireActual('../../../store/actions.ts'),
+  addNewAccount: (keyringId: string) => mockAddNewAccount(keyringId),
+  setAccountLabel: jest.fn(),
+}));
 
 const render = (
   props: {
@@ -99,5 +145,56 @@ describe('EditAccountsModal', () => {
     expect(getByTestId('disconnect-accounts-button')).toHaveTextContent(
       'Disconnect',
     );
+  });
+
+  describe('adding accounts', () => {
+    it('shows evm and solana account options', () => {
+      const { getByTestId } = render();
+
+      const addNewAccountButton = getByTestId('add-new-account-button');
+      fireEvent.click(addNewAccountButton);
+
+      expect(
+        getByTestId('multichain-account-menu-popover-add-account'),
+      ).toBeInTheDocument();
+      expect(
+        getByTestId('multichain-account-menu-popover-add-solana-account'),
+      ).toBeInTheDocument();
+    });
+
+    it('adds a new evm account', async () => {
+      const { getByTestId } = render();
+      goToAddNewAccount(getByTestId, 'evm');
+
+      await waitFor(() =>
+        expect(getByTestId('account-name-input')).toBeInTheDocument(),
+      );
+
+      const addAccountButton = getByTestId('submit-add-account-with-name');
+      fireEvent.click(addAccountButton);
+
+      await waitFor(() =>
+        expect(mockAddNewAccount).toHaveBeenCalledWith(mockKeyringId),
+      );
+    });
+    it('adds a new solana account', async () => {
+      const { getByTestId } = render();
+      goToAddNewAccount(getByTestId, 'solana');
+
+      await waitFor(() =>
+        expect(getByTestId('account-name-input')).toBeInTheDocument(),
+      );
+
+      const addAccountButton = getByTestId('submit-add-account-with-name');
+      fireEvent.click(addAccountButton);
+
+      const expectedArgs = {
+        scope: SolScope.Mainnet,
+        entropySource: mockKeyringId,
+        accountNameSuggestion: 'Solana Account 1',
+      };
+
+      expect(mockCreateAccount).toHaveBeenCalledWith(expectedArgs);
+    });
   });
 });
