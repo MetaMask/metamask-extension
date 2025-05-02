@@ -103,6 +103,7 @@ export function isHex(
 export function isHexEqual(a: Hex, b: Hex) {
   return a.toLowerCase() === b.toLowerCase();
 }
+
 type PadOptions = {
   dir?: 'left' | 'right' | undefined;
   size?: number | null | undefined;
