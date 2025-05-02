@@ -1,9 +1,9 @@
 import { DelegationEntry } from '@metamask/delegation-controller';
-import { listDelegationEntries, type DelegationState } from './delegation';
 import {
   createDelegation,
   getDelegationHashOffchain,
 } from '../../shared/lib/delegation';
+import { listDelegationEntries, type DelegationState } from './delegation';
 
 const MOCK_CHAIN_ID = '0x1';
 

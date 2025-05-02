@@ -1,20 +1,9 @@
 import { encode } from '@metamask/abi-utils';
-import {
-  DelegationEntry,
-  DelegationFilter,
-} from '@metamask/delegation-controller';
 import { getChecksumAddress } from '@metamask/utils';
 import { keccak } from 'ethereumjs-util';
 import { getCaveatArrayPacketHash, type Caveat } from './caveat';
 import { resolveCaveats, type Caveats } from './caveatBuilder';
-import {
-  concat,
-  isHexEqual,
-  toFunctionSelector,
-  toHex,
-  type Address,
-  type Hex,
-} from './utils';
+import { concat, toFunctionSelector, toHex, type Hex } from './utils';
 
 /**
  * To be used on a delegation as the root authority.
@@ -219,8 +208,6 @@ export const createOpenDelegation = (
     signature: '0x',
   };
 };
-
-
 
 /**
  * Encodes the calldata for a disableDelegation(delegation) call.
