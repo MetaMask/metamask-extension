@@ -1252,7 +1252,6 @@
     },
     "browserify>syntax-error>acorn-node": {
       "packages": {
-        "ts-node>acorn-walk": true,
         "terser>acorn": true,
         "watchify>xtend": true
       }
@@ -2355,7 +2354,7 @@
     },
     "browserify>module-deps>detective": {
       "packages": {
-        "browserify>syntax-error>acorn-node": true,
+        "ts-node>acorn-walk": true,
         "terser>acorn": true,
         "watchify>defined": true
       }
