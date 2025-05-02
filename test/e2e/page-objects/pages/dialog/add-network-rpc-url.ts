@@ -9,10 +9,13 @@ class AddNetworkRpcUrlModal {
     tag: 'button',
   };
 
+  private readonly addRpcNameInput = {
+    testId: 'rpc-name-input-test',
+  };
+
   private readonly addRpcUrlInput = {
     testId: 'rpc-url-input-test',
   };
-
 
   private readonly errorMessageInvalidUrl = {
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
@@ -40,34 +43,57 @@ class AddNetworkRpcUrlModal {
   }
 
   /**
-   * Fill the add RPC URL input field in the add network RPC URL modal.
+   * Fill the add RPC name input field.
+   *
+   * @param rpcName - The RPC name to fill in the input field.
+   */
+  async fillAddRpcNameInput(rpcName: string): Promise<void> {
+    console.log(
+      `Fill RPC name input with ${rpcName} in add network RPC URL modal`,
+    );
+    const rpcNameInput = await this.driver.findElement(this.addRpcNameInput);
+    await rpcNameInput.sendKeys(rpcName);
+  }
+
+  /**
+   * Fill the add RPC URL input field.
    *
    * @param rpcUrl - The RPC URL to fill in the input field.
    */
   async fillAddRpcUrlInput(rpcUrl: string): Promise<void> {
-    console.log(`Fill add RPC URL input with ${rpcUrl} in add network RPC URL modal`);
+    console.log(
+      `Fill RPC URL input with ${rpcUrl} in add network RPC URL modal`,
+    );
     const rpcUrlInput = await this.driver.findElement(this.addRpcUrlInput);
     await rpcUrlInput.sendKeys(rpcUrl);
   }
 
-    /**
+  async saveAddRpcUrl(): Promise<void> {
+    console.log('Confirm added RPC URL');
+    await this.driver.clickElementAndWaitToDisappear(this.addRpcUrlButton);
+  }
+
+  /**
    * Checks if the add RPC URL button is enabled on add network RPC URL modal.
    *
    * @param shouldBeEnabled - Whether the add RPC URL button should be enabled.
    */
-    async check_addRpcUrlButtonIsEnabled(shouldBeEnabled: boolean): Promise<void> {
-      console.log(`Check that add RPC URL button is ${shouldBeEnabled ? 'enabled' : 'disabled'}`);
-      const addRpcUrlButton = await this.driver.findElement(
-        this.addRpcUrlButton,
-      );
-      assert.equal(await addRpcUrlButton.isEnabled(), shouldBeEnabled);
-    }
+  async check_addRpcUrlButtonIsEnabled(
+    shouldBeEnabled: boolean,
+  ): Promise<void> {
+    console.log(
+      `Check that add RPC URL button is ${
+        shouldBeEnabled ? 'enabled' : 'disabled'
+      }`,
+    );
+    const addRpcUrlButton = await this.driver.findElement(this.addRpcUrlButton);
+    assert.equal(await addRpcUrlButton.isEnabled(), shouldBeEnabled);
+  }
 
   async check_errorMessageInvalidUrlIsDisplayed(): Promise<void> {
     console.log('Check that error message invalid URL is displayed');
     await this.driver.waitForSelector(this.errorMessageInvalidUrl);
   }
-
 }
 
 export default AddNetworkRpcUrlModal;

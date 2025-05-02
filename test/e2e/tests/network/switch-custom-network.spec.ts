@@ -37,9 +37,7 @@ describe('Switch ethereum chain', function (this: Suite) {
         await testDapp.clickAddNetworkButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.check_pageIsLoaded(
-          'Localhost 8546',
-        );
+        await addNetworkConfirmation.check_pageIsLoaded('Localhost 8546');
         await addNetworkConfirmation.approveAddNetwork();
 
         await driver.switchToWindowWithTitle(
