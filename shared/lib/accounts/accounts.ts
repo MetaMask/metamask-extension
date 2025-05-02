@@ -1,7 +1,12 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { DiscoveredAccount, KeyringAccount } from '@metamask/keyring-api';
+import {
+  BtcScope,
+  DiscoveredAccount,
+  KeyringAccount,
+  SolScope,
+} from '@metamask/keyring-api';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 import {
   SnapKeyring,
@@ -24,6 +29,12 @@ import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 type SUPPORTED_WALLET_SNAP_ID =
   | typeof SOLANA_WALLET_SNAP_ID
   | typeof BITCOIN_WALLET_SNAP_ID;
+
+const SNAP_ID_TO_MAINNET_SCOPE: Record<SUPPORTED_WALLET_SNAP_ID, CaipChainId> =
+  {
+    [SOLANA_WALLET_SNAP_ID]: SolScope.Mainnet,
+    [BITCOIN_WALLET_SNAP_ID]: BtcScope.Mainnet,
+  };
 
 /**
  * Get the next available account name based on the suggestion and the list of
@@ -222,28 +233,26 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
       // NOTE: We are doing this sequentially mainly to avoid race-conditions with the
       // account naming logic.
-      for (const { derivationPath, scopes } of discovered) {
-        const accountOptions: WalletSnapOptions[] = scopes.map((scope) => ({
+      for (const { derivationPath } of discovered) {
+        const accountOptions: WalletSnapOptions = {
           derivationPath,
           entropySource,
-          scope,
-        }));
+          scope: SNAP_ID_TO_MAINNET_SCOPE[this.#snapId],
+        };
 
-        for (const options of accountOptions) {
-          try {
-            await this.createAccount(options, {
-              displayConfirmation: false,
-              displayAccountNameSuggestion: false,
-              setSelectedAccount: false,
-            });
-          } catch (error) {
-            console.warn(
-              `Unable to create discovered account: ${derivationPath}:`,
-              error,
-            );
-            // Still logging this one to sentry as this is a fairly new process for account discovery.
-            captureException(error);
-          }
+        try {
+          await this.createAccount(accountOptions, {
+            displayConfirmation: false,
+            displayAccountNameSuggestion: false,
+            setSelectedAccount: false,
+          });
+        } catch (error) {
+          console.warn(
+            `Unable to create discovered account: ${derivationPath}:`,
+            error,
+          );
+          // Still logging this one to sentry as this is a fairly new process for account discovery.
+          captureException(error);
         }
       }
     }
