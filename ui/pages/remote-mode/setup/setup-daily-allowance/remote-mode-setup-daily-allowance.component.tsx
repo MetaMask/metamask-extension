@@ -137,7 +137,7 @@ export default function RemoteModeSetupDailyAllowance() {
     if (authorizedAccounts.length > 0) {
       setSelectedAccount(authorizedAccounts[0]);
     }
-  }, []);
+  }, [authorizedAccounts]);
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {

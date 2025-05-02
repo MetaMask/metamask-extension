@@ -1,7 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Hex, hexToNumber } from '@metamask/utils';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   createDelegation,
@@ -24,11 +24,14 @@ import { REMOTE_MODES } from '../remote.types';
 const REVOKE_TAG = 'revoke';
 
 export const useRemoteMode = ({ account }: { account: Hex }) => {
-  const { upgradeAccount: upgradeAccountEIP7702 } = useEIP7702Account();
   const { network7702List } = useEIP7702Networks(account);
   const globalNetworkClientId = useSelector(getSelectedNetworkClientId);
   const selectedNetwork = useSelector(getSelectedNetwork);
   const { chainId } = selectedNetwork.configuration;
+
+  const { upgradeAccount: upgradeAccountEIP7702 } = useEIP7702Account({
+    chainId,
+  });
 
   const remoteModeConfig = useSelector((state) =>
     getRemoteModeConfig(state, account, chainId),
@@ -48,7 +51,7 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
     [network7702List, chainId],
   );
 
-  const upgradeAccount = async (): Promise<void> => {
+  const upgradeAccount = useCallback(async () => {
     // TODO: remove this and use isSupported when it's ready
     if (networkConfig?.isSupported) {
       console.log('no upgrade needed');
@@ -67,89 +70,97 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
     } else {
       await upgradeAccountEIP7702(account, upgradeContractAddress);
     }
-  };
+  }, [
+    account,
+    networkConfig?.isSupported,
+    networkConfig?.upgradeContractAddress,
+    upgradeAccountEIP7702,
+    upgradeContractAddress,
+  ]);
 
-  const enableRemoteMode = async ({
-    selectedAccount,
-    authorizedAccount,
-    mode,
-    meta,
-  }: {
-    selectedAccount: InternalAccount;
-    authorizedAccount: InternalAccount;
-    mode: REMOTE_MODES;
-    meta?: string;
-  }) => {
-    await upgradeAccount();
-
-    const delegation = createDelegation({
-      caveats: [],
-      from: selectedAccount.address as `0x${string}`,
-      to: authorizedAccount.address as `0x${string}`,
-    });
-
-    const signature = await signDelegation({ delegation, chainId });
-
-    delegation.signature = signature;
-
-    storeDelegationEntry({
-      delegation,
-      tags: [mode],
-      chainId,
+  const enableRemoteMode = useCallback(
+    async ({
+      selectedAccount,
+      authorizedAccount,
+      mode,
       meta,
-    });
-  };
+    }: {
+      selectedAccount: InternalAccount;
+      authorizedAccount: InternalAccount;
+      mode: REMOTE_MODES;
+      meta?: string;
+    }) => {
+      await upgradeAccount();
 
-  const disableRemoteMode = async ({
-    mode,
-  }: {
-    mode: REMOTE_MODES;
-  }): Promise<void> => {
-    const delegationEntries = await listDelegationEntries({
-      tags: [mode],
-      from: account,
-    });
+      const delegation = createDelegation({
+        caveats: [],
+        from: selectedAccount.address as `0x${string}`,
+        to: authorizedAccount.address as `0x${string}`,
+      });
 
-    if (delegationEntries.length === 0) {
-      throw new Error('No delegation entry found');
-    }
+      const signature = await signDelegation({ delegation, chainId });
 
-    const { delegation, meta } = delegationEntries[0];
+      delegation.signature = signature;
 
-    const metaObject = meta ? JSON.parse(meta) : {};
+      storeDelegationEntry({
+        delegation,
+        tags: [mode],
+        chainId,
+        meta,
+      });
+    },
+    [chainId, upgradeAccount],
+  );
 
-    const encodedCallData = encodeDisableDelegation({
-      delegation,
-    });
-
-    // TODO: change to addTransactionAndRouteToConfirmationPage when ID consistency is fixed
-    const transactionMeta = await addTransaction(
-      {
+  const disableRemoteMode = useCallback(
+    async ({ mode }: { mode: REMOTE_MODES }): Promise<void> => {
+      const delegationEntries = await listDelegationEntries({
+        tags: [mode],
         from: account,
-        to: delegationManagerAddress,
-        data: encodedCallData,
-        value: '0x0',
-      },
-      {
-        networkClientId: globalNetworkClientId,
-        type: TransactionType.contractInteraction,
-      },
-    );
+      });
 
-    console.log('transactionMeta', transactionMeta);
+      if (delegationEntries.length === 0) {
+        throw new Error('No delegation entry found');
+      }
 
-    const revokeId = transactionMeta.id;
+      const { delegation, meta } = delegationEntries[0];
 
-    await storeDelegationEntry({
-      delegation,
-      tags: [mode, REVOKE_TAG],
-      chainId,
-      meta: JSON.stringify({
-        ...metaObject,
-        revokeId,
-      }),
-    });
-  };
+      const metaObject = meta ? JSON.parse(meta) : {};
+
+      const encodedCallData = encodeDisableDelegation({
+        delegation,
+      });
+
+      // TODO: change to addTransactionAndRouteToConfirmationPage when ID consistency is fixed
+      const transactionMeta = await addTransaction(
+        {
+          from: account,
+          to: delegationManagerAddress,
+          data: encodedCallData,
+          value: '0x0',
+        },
+        {
+          networkClientId: globalNetworkClientId,
+          type: TransactionType.contractInteraction,
+        },
+      );
+
+      console.log('transactionMeta', transactionMeta);
+
+      const revokeId = transactionMeta.id;
+
+      await storeDelegationEntry({
+        delegation,
+        tags: [mode, REVOKE_TAG],
+        chainId,
+        meta: JSON.stringify({
+          ...metaObject,
+          revokeId,
+        }),
+      });
+    },
+    [account, chainId, delegationManagerAddress, globalNetworkClientId],
+  );
 
   return {
     enableRemoteMode,
