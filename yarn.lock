@@ -4892,52 +4892,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/assets-controllers@npm:60.0.0-preview-5a5b4df5":
-  version: 60.0.0-preview-5a5b4df5
-  resolution: "@metamask-previews/assets-controllers@npm:60.0.0-preview-5a5b4df5"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/address": "npm:^5.7.0"
-    "@ethersproject/bignumber": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/abi-utils": "npm:^2.0.3"
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/contract-metadata": "npm:^2.4.0"
-    "@metamask/controller-utils": "npm:^11.7.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/keyring-api": "npm:^17.4.0"
-    "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/polling-controller": "npm:^13.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/snaps-utils": "npm:^9.2.0"
-    "@metamask/utils": "npm:^11.2.0"
-    "@types/bn.js": "npm:^5.1.5"
-    "@types/uuid": "npm:^8.3.0"
-    async-mutex: "npm:^0.5.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-    bn.js: "npm:^5.2.1"
-    immer: "npm:^9.0.6"
-    lodash: "npm:^4.17.21"
-    multiformats: "npm:^13.1.0"
-    single-call-balance-checker-abi: "npm:^1.0.0"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/accounts-controller": ^27.0.0
-    "@metamask/approval-controller": ^7.0.0
-    "@metamask/keyring-controller": ^21.0.0
-    "@metamask/network-controller": ^23.0.0
-    "@metamask/permission-controller": ^11.0.0
-    "@metamask/preferences-controller": ^17.0.0
-    "@metamask/providers": ^21.0.0
-    "@metamask/snaps-controllers": ^11.0.0
-    "@metamask/transaction-controller": ^54.0.0
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/9ef0a9c8116413939217335cfc31de68c97edafa49e51ae78003d62c1cf3130e5ec8d66186670b5dd525fb71bf91923281856212b1a2ed78dc33d46763baad76
-  languageName: node
-  linkType: hard
-
 "@metamask/abi-utils@npm:^2.0.2, @metamask/abi-utils@npm:^2.0.3, @metamask/abi-utils@npm:^2.0.4":
   version: 2.0.4
   resolution: "@metamask/abi-utils@npm:2.0.4"
@@ -30074,11 +30028,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-<<<<<<< HEAD
-    "@metamask/assets-controllers": "patch:@metamask-previews/assets-controllers@60.0.0-preview-5a5b4df5#.yarn/patches/@metamask-assets-controllers-npm-59.0.0-98709ca958.patch"
-=======
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A60.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-60.0.0-7fc404c3fc.patch"
->>>>>>> main
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
