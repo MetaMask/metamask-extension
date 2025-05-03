@@ -114,6 +114,7 @@ import {
   getImageForChainId,
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
+  getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
@@ -205,7 +206,7 @@ const PrepareBridgePage = () => {
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
 
-  const ticker = useSelector(getNativeCurrency);
+  const ticker = useMultichainSelector(getMultichainNativeCurrency);
   const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
