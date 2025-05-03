@@ -27,6 +27,7 @@
 
     &:hover {
       background: var(--color-background-muted-hover);
+      transition: background 200ms ease;
     }
   }
 
