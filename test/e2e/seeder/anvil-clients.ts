@@ -18,7 +18,7 @@ function createAnvilClients(instance: Instance, id: number, port: number) {
     rpcUrls: {
       default: {
         http: [`http://${instance.host}:${port}/1`],
-        webSocket: [`ws://${instance.host}:${port}`],
+        webSocket: [`ws://${instance.host}:${port}/1`],
       },
     },
   };

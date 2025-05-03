@@ -6,8 +6,6 @@ import type { AnvilParameters } from 'prool/instances' with { 'resolution-mode':
 const proolPromise = import('prool');
 const proolInstancesPromise = import('prool/instances');
 
-// Import AnvilParameters type from the main instances export with assertion
-
 type CreateServerType = Awaited<typeof proolPromise>['createServer'];
 type ProolServerReturnType = ReturnType<CreateServerType>;
 
