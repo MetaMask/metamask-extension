@@ -1,7 +1,7 @@
+import type { AnvilParameters } from 'prool/instances' with { 'resolution-mode': 'import' };
 import { delimiter, join } from 'path';
 import { execSync } from 'child_process';
 import { createAnvilClients } from './anvil-clients';
-import type { AnvilParameters } from 'prool/instances' with { 'resolution-mode': 'import' };
 
 const proolPromise = import('prool');
 const proolInstancesPromise = import('prool/instances');
@@ -11,20 +11,25 @@ type ProolServerReturnType = ReturnType<CreateServerType>;
 
 type Hex = `0x${string}`;
 
+const PORT = 8545;
+const HOST = '127.0.0.1';
+const CHAIN_ID = 1337;
+
 const defaultOptions: Partial<AnvilParameters> = {
   balance: 25,
-  chainId: 1337,
+  chainId: CHAIN_ID,
   gasLimit: 30000000,
   gasPrice: 2000000000,
   hardfork: 'Muirglacier',
-  host: '127.0.0.1',
+  host: HOST,
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
-  port: 8545,
+  port: PORT,
 };
 
 export class Anvil {
   #server: ProolServerReturnType | undefined;
+
   #options: AnvilParameters | undefined;
 
   async start(
@@ -67,8 +72,8 @@ export class Anvil {
 
     this.#server = createServer({
       instance: anvilInstance,
-      host: this.#options.host!,
-      port: this.#options.port!,
+      host: this.#options.host ?? HOST,
+      port: this.#options.port ?? PORT,
     });
     await this.#server.start();
   }
@@ -78,15 +83,15 @@ export class Anvil {
       throw new Error('Server not running or options not set yet');
     }
     const instance = {
-      host: this.#options.host!,
-      port: this.#options.port!,
+      host: this.#options.host ?? defaultOptions.host!,
+      port: this.#options.port ?? defaultOptions.port!,
     };
 
     // Pass the correct chainId and port from stored options
     const { walletClient, publicClient, testClient } = createAnvilClients(
       instance,
-      this.#options.chainId ?? 1337,
-      instance.port ?? 8545,
+      this.#options.chainId ?? CHAIN_ID,
+      instance.port ?? PORT,
     );
 
     return { walletClient, publicClient, testClient };
