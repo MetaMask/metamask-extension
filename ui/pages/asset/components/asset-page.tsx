@@ -332,7 +332,7 @@ const AssetPage = ({
           marginTop={2}
           marginBottom={2}
           borderColor={BorderColor.borderMuted}
-          width={BlockSize.Full}
+          marginInline={4}
           style={{ height: '1px', borderBottomWidth: 0 }}
         ></Box>
         <Box
@@ -429,13 +429,12 @@ const AssetPage = ({
           <AssetMarketDetails asset={asset} address={address} />
           <Box
             borderColor={BorderColor.borderMuted}
-            width={BlockSize.Full}
+            marginInline={4}
             style={{ height: '1px', borderBottomWidth: 0 }}
           ></Box>
           <Box marginBottom={4}>
             <Text
-              paddingLeft={4}
-              paddingRight={4}
+              paddingInline={4}
               variant={TextVariant.headingSm}
             >
               {t('yourActivity')}

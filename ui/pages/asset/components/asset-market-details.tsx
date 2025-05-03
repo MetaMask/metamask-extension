@@ -113,20 +113,19 @@ export const AssetMarketDetails = ({
       <Box
         marginBottom={2}
         borderColor={BorderColor.borderMuted}
-        width={BlockSize.Full}
+        marginInline={4}
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <Text
         variant={TextVariant.headingSm}
-        paddingLeft={4}
+        paddingInline={4}
         paddingTop={2}
         paddingBottom={2}
       >
         {t('marketDetails')}
       </Text>
       <Box
-        paddingLeft={4}
-        paddingRight={4}
+        paddingInline={4}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         gap={2}
