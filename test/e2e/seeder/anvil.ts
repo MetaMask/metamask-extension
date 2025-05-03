@@ -13,16 +13,7 @@ type ProolServerReturnType = ReturnType<CreateServerType>;
 
 type Hex = `0x${string}`;
 
-// Define a configuration type combining Anvil parameters and proxy settings
-type AnvilConfig = Pick<AnvilParameters,
-  'balance' | 'chainId' | 'gasLimit' | 'gasPrice' | 'hardfork' | 'mnemonic' | 'blockTime' | 'noMining'
-> & {
-  host: string;
-  port: number;
-};
-
-// Use the new AnvilConfig type for defaults
-const defaultOptions: AnvilConfig = {
+const defaultOptions: Partial<AnvilParameters> = {
   balance: 25,
   chainId: 1337,
   gasLimit: 30000000,
@@ -32,24 +23,26 @@ const defaultOptions: AnvilConfig = {
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
   port: 8545,
-  noMining: false,
 };
 
 export class Anvil {
   #server: ProolServerReturnType | undefined;
-
-  #options: AnvilConfig | undefined;
+  #options: AnvilParameters | undefined;
 
   async start(
-    opts: Partial<AnvilConfig> = {},
+    opts: Partial<AnvilParameters> = {},
   ): Promise<void> {
-    const options = { ...defaultOptions, ...opts };
-    this.#options = options;
+    const options: AnvilParameters = {
+      ...defaultOptions,
+      ...opts,
+    };
 
     // Set blockTime if noMining is disabled, as those 2 options are incompatible
-    if (!options.noMining && !options.blockTime) {
+    if (!opts.noMining && !opts.blockTime) {
       options.blockTime = 2;
     }
+
+    this.#options = options;
 
     // Determine the path to the anvil binary directory
     const anvilBinaryDir = join(process.cwd(), 'node_modules', '.bin');
@@ -62,25 +55,22 @@ export class Anvil {
       const versionOutput = execSync('anvil --version', { encoding: 'utf-8' });
       console.log(`Anvil version: ${versionOutput}`);
       console.log(
-        `Anvil server started on port: ${options.port} with chainId: ${options.chainId}`,
+        `Anvil server started on port: ${this.#options.port} with chainId: ${this.#options.chainId}`,
       );
     } catch (error) {
       console.error('Failed to execute anvil:', error);
       throw new Error('Anvil binary is not accessible.');
     }
 
-    const { host, port, noMining: _noMining, ...restOptions } = options;
-    const anvilCliOptions: Partial<AnvilParameters> = { ...restOptions };
-
     const { createServer } = await proolPromise;
     const { anvil } = await proolInstancesPromise;
 
-    const anvilInstance = anvil(anvilCliOptions as AnvilParameters);
+    const anvilInstance = anvil(this.#options);
 
     this.#server = createServer({
       instance: anvilInstance,
-      host,
-      port,
+      host: this.#options.host!,
+      port: this.#options.port!,
     });
     await this.#server.start();
   }
@@ -90,15 +80,15 @@ export class Anvil {
       throw new Error('Server not running or options not set yet');
     }
     const instance = {
-      host: this.#options.host,
-      port: this.#options.port,
+      host: this.#options.host!,
+      port: this.#options.port!,
     };
 
     // Pass the correct chainId and port from stored options
     const { walletClient, publicClient, testClient } = createAnvilClients(
       instance,
       this.#options.chainId ?? 1337,
-      this.#options.port ?? 8545,
+      instance.port ?? 8545,
     );
 
     return { walletClient, publicClient, testClient };
