@@ -269,7 +269,7 @@
     "@metamask/base-controller": "^8.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.9.0",
     "@metamask/bridge-controller": "^18.0.0",
-    "@metamask/bridge-status-controller": "^16.0.0",
+    "@metamask/bridge-status-controller": "file:../core-1/packages/bridge-status-controller",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
