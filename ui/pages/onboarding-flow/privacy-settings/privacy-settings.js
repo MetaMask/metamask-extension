@@ -173,7 +173,6 @@ export default function PrivacySettings() {
       },
     });
 
-    console.log('go back man');
     history.push(ONBOARDING_COMPLETION_ROUTE);
   };
 
