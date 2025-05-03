@@ -40,7 +40,7 @@ describe('useTokensWithFiltering', () => {
     jest.clearAllMocks();
   });
 
-  it.only('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
+  it('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,

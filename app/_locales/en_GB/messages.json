@@ -1793,6 +1793,9 @@
   "duplicateContactWarning": {
     "message": "You have duplicate contacts"
   },
+  "earn": {
+    "message": "Earn"
+  },
   "edit": {
     "message": "Edit"
   },
