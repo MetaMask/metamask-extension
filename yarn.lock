@@ -5154,9 +5154,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@file:../core-1/packages/bridge-status-controller::locator=metamask-crx%40workspace%3A.":
-  version: 17.0.0
-  resolution: "@metamask/bridge-status-controller@file:../core-1/packages/bridge-status-controller#../core-1/packages/bridge-status-controller::hash=e87b64&locator=metamask-crx%40workspace%3A."
+"@metamask/bridge-status-controller@npm:@metamask-previews/bridge-status-controller@17.0.0-preview-20e2defb":
+  version: 17.0.0-preview-20e2defb
+  resolution: "@metamask-previews/bridge-status-controller@npm:17.0.0-preview-20e2defb"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/controller-utils": "npm:^11.7.0"
@@ -5174,7 +5174,7 @@ __metadata:
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^11.0.0
     "@metamask/transaction-controller": ^54.0.0
-  checksum: 10/85ffc314cbc02bdea96e1b35e9a5e13e6268f2e189cb52a890f9f2c8f2fa4c52f12359075760a6c194ac51040727ad33ec7c0dc3e623b4fcf112b84822c5f271
+  checksum: 10/f0a8c3eff7f118a1eb3087778e7650c03d43286a947722d75a9022aae90c5fea40dbc43b15042c67001626df73d87f7db17d92663edfd56cd393efbe0c60023c
   languageName: node
   linkType: hard
 
@@ -30018,7 +30018,7 @@ __metadata:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
     "@metamask/bridge-controller": "npm:^18.0.0"
-    "@metamask/bridge-status-controller": "file:../core-1/packages/bridge-status-controller"
+    "@metamask/bridge-status-controller": "npm:*"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
