@@ -208,7 +208,6 @@ export function hideAppHeader(props) {
     return true;
   }
 
-
   const isAssetsPage = Boolean(
     matchPath(location.pathname, {
       path: ASSET_ROUTE,
