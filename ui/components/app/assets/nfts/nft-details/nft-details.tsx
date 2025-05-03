@@ -729,7 +729,7 @@ export function NftDetailsComponent({
             <Box
               marginTop={4}
               borderColor={BorderColor.borderMuted}
-              marginInline={4}
+              width={BlockSize.Full}
               style={{ height: '1px', borderBottomWidth: 0, borderBottomStyle: 'solid' }}
             />
             <Box
@@ -795,7 +795,7 @@ export function NftDetailsComponent({
             <Box
               marginTop={4}
               borderColor={BorderColor.borderMuted}
-              marginInline={4}
+              width={BlockSize.Full}
               style={{ height: '1px', borderBottomWidth: 0, borderBottomStyle: 'solid' }}
             />
             <Box
@@ -869,7 +869,7 @@ export function NftDetailsComponent({
             <Box
               marginTop={4}
               borderColor={BorderColor.borderMuted}
-              marginInline={4}
+              width={BlockSize.Full}
               style={{ height: '1px', borderBottomWidth: 0, borderBottomStyle: 'solid' }}
             />
             <Box
