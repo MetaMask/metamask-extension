@@ -8,7 +8,6 @@ import { getPricePrecision, localizeLargeNumber } from '../util';
 
 import { Box, Text } from '../../../components/component-library';
 import {
-  BlockSize,
   BorderColor,
   Display,
   FlexDirection,
