@@ -199,9 +199,14 @@ describe('useCarouselManagement', () => {
     mockGetIsRemoteModeEnabled.mockReturnValue(false);
     // Reset mocks
     jest.clearAllMocks();
+
+    // allow timers to be triggered deterministically
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
+    // put timers back to real
+    jest.useRealTimers();
     process.env.IN_TEST = 'true';
   });
 
@@ -224,7 +229,8 @@ describe('useCarouselManagement', () => {
 
   describe('zero funds, remote off, sweepstakes off', () => {
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ start: invalidTestDate }));
+      const nowFn = jest.fn().mockReturnValueOnce(invalidTestDate);
+      renderHook(() => useCarouselManagement({ nowFn }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -234,7 +240,8 @@ describe('useCarouselManagement', () => {
     });
 
     it('should mark fund slide as undismissable', () => {
-      renderHook(() => useCarouselManagement({ start: invalidTestDate }));
+      const nowFn = jest.fn().mockReturnValueOnce(invalidTestDate);
+      renderHook(() => useCarouselManagement({ nowFn }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -248,7 +255,8 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ start: invalidTestDate }));
+      const nowFn = jest.fn().mockReturnValueOnce(invalidTestDate);
+      renderHook(() => useCarouselManagement({ nowFn }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -260,7 +268,8 @@ describe('useCarouselManagement', () => {
 
   describe('zero funds, remote off, sweepstakes on', () => {
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ start: validTestDate }));
+      const nowFn = jest.fn().mockReturnValueOnce(validTestDate);
+      renderHook(() => useCarouselManagement({ nowFn }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -276,7 +285,8 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ start: validTestDate }));
+      const nowFn = jest.fn().mockReturnValueOnce(validTestDate);
+      renderHook(() => useCarouselManagement({ nowFn }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -292,7 +302,8 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ start: invalidTestDate }));
+      const nowFn = jest.fn().mockReturnValueOnce(invalidTestDate);
+      renderHook(() => useCarouselManagement({ nowFn }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -309,7 +320,8 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ start: invalidTestDate }));
+      const nowFn = jest.fn().mockReturnValueOnce(invalidTestDate);
+      renderHook(() => useCarouselManagement({ nowFn }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -325,7 +337,8 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ start: validTestDate }));
+      const nowFn = jest.fn().mockReturnValueOnce(validTestDate);
+      renderHook(() => useCarouselManagement({ nowFn }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -342,7 +355,8 @@ describe('useCarouselManagement', () => {
     });
 
     it('should have correct slide order', () => {
-      renderHook(() => useCarouselManagement({ start: validTestDate }));
+      const nowFn = jest.fn().mockReturnValueOnce(validTestDate);
+      renderHook(() => useCarouselManagement({ nowFn }));
 
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -355,9 +369,9 @@ describe('useCarouselManagement', () => {
   describe('state changes', () => {
     it('should update slides when balance changes', () => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
-
+      const nowFn = jest.fn().mockReturnValue(invalidTestDate);
       const { rerender } = renderHook((props) => useCarouselManagement(props), {
-        initialProps: { start: invalidTestDate },
+        initialProps: { nowFn },
       });
 
       expect(mockUpdateSlides).toHaveBeenCalled();
@@ -369,7 +383,7 @@ describe('useCarouselManagement', () => {
       mockGetSelectedAccountCachedBalance.mockReturnValue(ZERO_BALANCE);
       mockUpdateSlides.mockClear();
 
-      rerender({ start: invalidTestDate });
+      rerender({ nowFn });
 
       expect(mockUpdateSlides).toHaveBeenCalled();
 
@@ -380,9 +394,13 @@ describe('useCarouselManagement', () => {
       );
     });
 
-    it('should update slides when testDate changes', () => {
+    it('should update slides when time changes', () => {
+      const nowFn = jest
+        .fn()
+        .mockReturnValueOnce(invalidTestDate)
+        .mockReturnValueOnce(validTestDate);
       const { rerender } = renderHook((props) => useCarouselManagement(props), {
-        initialProps: { hasZeroBalance: false, start: invalidTestDate },
+        initialProps: { hasZeroBalance: false, nowFn },
       });
 
       expect(mockUpdateSlides).toHaveBeenCalled();
@@ -393,8 +411,10 @@ describe('useCarouselManagement', () => {
       );
 
       mockUpdateSlides.mockClear();
+      jest.setSystemTime(validTestDate);
+      jest.runOnlyPendingTimers();
 
-      rerender({ hasZeroBalance: false, start: validTestDate });
+      rerender({ hasZeroBalance: false, nowFn });
 
       expect(mockUpdateSlides).toHaveBeenCalled();
       updatedSlides = mockUpdateSlides.mock.calls[0][0];
@@ -406,11 +426,10 @@ describe('useCarouselManagement', () => {
 
   describe('edge cases', () => {
     it('should handle exactly at SWEEPSTAKES_START time', () => {
-      const start = SWEEPSTAKES_START;
-
+      const nowFn = jest.fn().mockReturnValue(SWEEPSTAKES_START);
       renderHook(() =>
         useCarouselManagement({
-          start,
+          nowFn,
         }),
       );
 
@@ -420,11 +439,11 @@ describe('useCarouselManagement', () => {
     });
 
     it('should handle exactly at SWEEPSTAKES_END time', () => {
-      const start = SWEEPSTAKES_END;
+      const nowFn = jest.fn().mockReturnValue(SWEEPSTAKES_END);
 
       renderHook(() =>
         useCarouselManagement({
-          start,
+          nowFn,
         }),
       );
 
@@ -433,13 +452,15 @@ describe('useCarouselManagement', () => {
       expect(updatedSlides[0].id).toBe(SWEEPSTAKES_SLIDE.id);
     });
 
-    it('should handle invalid testDate gracefully', () => {
-      const start = 'invalid-date' as unknown as number;
+    it('should handle invalid timestamp gracefully', () => {
+      const nowFn = jest
+        .fn()
+        .mockReturnValue('invalid-timestamp' as unknown as number);
 
       expect(() =>
         renderHook(() =>
           useCarouselManagement({
-            start,
+            nowFn,
           }),
         ),
       ).not.toThrow();

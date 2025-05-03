@@ -25,7 +25,7 @@ import {
 } from './constants';
 
 type UseSlideManagementProps = {
-  start: number;
+  nowFn: () => number; // Only used in unit/e2e tests to simulate dates for sweepstakes campaign
 };
 
 export function getSweepstakesCampaignActive(currentDate: number = Date.now()) {
@@ -54,11 +54,16 @@ export function getCampaignActive(
  *
  * @param start - timestamp for the campaign's start (inclusive)
  * @param end - timestamp for the campaign's end (inclusive)
+ * @param nowFn - function to get the current date in milliseconds
  * @returns `true` while the campaign is active
  */
-function useCampaignClock(start: number, end: number): boolean {
+function useCampaignClock(
+  start: number,
+  end: number,
+  nowFn: () => number,
+): boolean {
   // current time, updated only by the timer, defaults to Date.now().
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState(() => nowFn());
 
   // compute how long until the next "boundary" (start or end)?
   const nextWake = useMemo(() => {
@@ -76,7 +81,7 @@ function useCampaignClock(start: number, end: number): boolean {
     if (nextWake === null) {
       return undefined; // campaign finished, nothing left to do
     }
-    const id = setTimeout(() => setNow(Date.now()), nextWake + 1000);
+    const id = setTimeout(() => setNow(nowFn()), nextWake);
     // return a cleanup function to clear the timer when the component unmounts
     return () => clearTimeout(id);
   }, [nextWake]);
@@ -86,11 +91,8 @@ function useCampaignClock(start: number, end: number): boolean {
 }
 
 export const useCarouselManagement = (
-  { start }: UseSlideManagementProps = {
-    // this property is used in testing and is currently only used for the
-    // sweepstakes campaign. if we want to have multiple timed campaigns running
-    // at the same time, this should be refactored
-    start: SWEEPSTAKES_START,
+  { nowFn }: UseSlideManagementProps = {
+    nowFn: Date.now,
   },
 ) => {
   const inTest = Boolean(process.env.IN_TEST);
@@ -101,7 +103,11 @@ export const useCarouselManagement = (
 
   // create a campaign clock for the sweepstakes with *one* wake‑up per start/end
   // boundary
-  const isSweepstakesActive = useCampaignClock(start, SWEEPSTAKES_END);
+  const isSweepstakesActive = useCampaignClock(
+    SWEEPSTAKES_START,
+    SWEEPSTAKES_END,
+    nowFn,
+  );
 
   // important: *compute slides only when its inputs change*
   const defaultSlides = useMemo(() => {
