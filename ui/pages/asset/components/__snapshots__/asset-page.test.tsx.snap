@@ -241,7 +241,7 @@ exports[`AssetPage should render a native asset 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--width-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
         style="height: 1px; border-bottom-width: 0;"
       />
       <div
@@ -310,14 +310,14 @@ exports[`AssetPage should render a native asset 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--width-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
           style="height: 1px; border-bottom-width: 0;"
         />
         <div
           class="mm-box mm-box--margin-bottom-4"
         >
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-sm mm-box--padding-inline-4 mm-box--color-text-default"
           >
             Your activity
           </h4>
@@ -570,7 +570,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--width-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
         style="height: 1px; border-bottom-width: 0;"
       />
       <div
@@ -707,14 +707,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--width-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
           style="height: 1px; border-bottom-width: 0;"
         />
         <div
           class="mm-box mm-box--margin-bottom-4"
         >
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-sm mm-box--padding-inline-4 mm-box--color-text-default"
           >
             Your activity
           </h4>
@@ -1093,7 +1093,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--width-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
         style="height: 1px; border-bottom-width: 0;"
       />
       <div
@@ -1233,16 +1233,16 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           class="mm-box"
         >
           <div
-            class="mm-box mm-box--margin-bottom-2 mm-box--width-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+            class="mm-box mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
             style="height: 1px; border-bottom-width: 0;"
           />
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-2 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-2 mm-box--padding-bottom-2 mm-box--padding-inline-4 mm-box--color-text-default"
           >
             Market details
           </h4>
           <div
-            class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+            class="mm-box mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
@@ -1262,14 +1262,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--width-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          class="mm-box mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
           style="height: 1px; border-bottom-width: 0;"
         />
         <div
           class="mm-box mm-box--margin-bottom-4"
         >
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-sm mm-box--padding-inline-4 mm-box--color-text-default"
           >
             Your activity
           </h4>
