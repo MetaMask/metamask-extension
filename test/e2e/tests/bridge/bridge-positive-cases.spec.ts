@@ -13,6 +13,8 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
+import { getBridgeFixtures, bridgeTransaction } from './bridge-test-utils';
+import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -99,49 +101,4 @@ describe('Bridge tests', function (this: Suite) {
       },
     );
   });
-
-  async function bridgeTransaction(
-    driver: Driver,
-    quote: BridgeQuote,
-    transactionsCount: number,
-    expectedNetworkFees: string,
-    expectedWalletBalance: string,
-  ) {
-    // Navigate to Bridge page
-    const homePage = new HomePage(driver);
-    await homePage.startBridgeFlow();
-
-    const bridgePage = new BridgeQuotePage(driver);
-    await bridgePage.enterBridgeQuote(quote);
-    await bridgePage.waitForQuote();
-    await bridgePage.check_expectedNetworkFeeIsDisplayed(expectedNetworkFees);
-    await bridgePage.submitQuote();
-
-    await homePage.goToActivityList();
-
-    const activityList = new ActivityListPage(driver);
-    await activityList.check_completedBridgeTransactionActivity(
-      transactionsCount,
-    );
-
-    if (quote.unapproved) {
-      await activityList.check_txAction(`Bridge to ${quote.toChain}`);
-      await activityList.check_txAction(
-        `Approve ${quote.tokenFrom} for bridge`,
-        2,
-      );
-    } else {
-      await activityList.check_txAction(`Bridge to ${quote.toChain}`);
-    }
-    // Check the amount of ETH deducted in the activity is correct
-    await activityList.check_txAmountInActivity(
-      `-${quote.amount} ${quote.tokenFrom}`,
-    );
-
-    // Check the wallet ETH balance is correct
-    const accountListPage = new AccountListPage(driver);
-    await accountListPage.check_accountValueAndSuffixDisplayed(
-      expectedWalletBalance,
-    );
-  }
 });

@@ -13,6 +13,8 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { getBridgeL2Fixtures } from './bridge-test-utils';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
+import { getBridgeL2Fixtures, bridgeTransaction } from './bridge-test-utils';
+import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 
 describe('Bridge tests', function (this: Suite) {
   it('should execete bridge transactions on L2 networks', async function () {
@@ -39,6 +41,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Ethereum',
           },
           1,
+          '$0.00',
           '23.9999',
         );
 
@@ -52,6 +55,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           2,
+          '$0.00',
           '22.9999',
         );
 
@@ -68,6 +72,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           4,
+          '$0.00',
           '22.9998',
         );
 
@@ -84,50 +89,10 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Ethereum',
           },
           6,
+          '$0.00',
           '22.9997',
         );
       },
     );
   });
-
-  async function bridgeTransaction(
-    driver: Driver,
-    quote: BridgeQuote,
-    transactionsCount: number,
-    expectedAmount: string,
-  ) {
-    // Navigate to Bridge page
-    const homePage = new HomePage(driver);
-    await homePage.startBridgeFlow();
-
-    const bridgePage = new BridgeQuotePage(driver);
-    await bridgePage.enterBridgeQuote(quote);
-    await bridgePage.waitForQuote();
-    await bridgePage.submitQuote();
-
-    await homePage.goToActivityList();
-
-    const activityList = new ActivityListPage(driver);
-    await activityList.check_completedBridgeTransactionActivity(
-      transactionsCount,
-    );
-
-    if (quote.unapproved) {
-      await activityList.check_txAction(`Bridge to ${quote.toChain}`);
-      await activityList.check_txAction(
-        `Approve ${quote.tokenFrom} for bridge`,
-        2,
-      );
-    } else {
-      await activityList.check_txAction(`Bridge to ${quote.toChain}`);
-    }
-    // Check the amount of ETH deducted in the activity is correct
-    await activityList.check_txAmountInActivity(
-      `-${quote.amount} ${quote.tokenFrom}`,
-    );
-
-    // Check the wallet ETH balance is correct
-    const accountListPage = new AccountListPage(driver);
-    await accountListPage.check_accountValueAndSuffixDisplayed(expectedAmount);
-  }
 });
