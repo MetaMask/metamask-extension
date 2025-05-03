@@ -869,7 +869,7 @@ export function NftDetailsComponent({
             <Box
               marginTop={4}
               borderColor={BorderColor.borderMuted}
-              width={BlockSize.Full}
+              marginInline={4}
               style={{ height: '1px', borderBottomWidth: 0, borderBottomStyle: 'solid' }}
             />
             <Box
