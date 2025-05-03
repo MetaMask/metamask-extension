@@ -726,24 +726,28 @@ export function NftDetailsComponent({
           />
           {hasPriceSection ? (
             <>
-            <Box
-              marginTop={4}
-              borderColor={BorderColor.borderMuted}
-              width={BlockSize.Full}
-              style={{ height: '1px', borderBottomWidth: 0, borderBottomStyle: 'solid' }}
-            />
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              marginTop={4}
-            >
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingSm}
+              <Box
+                marginTop={4}
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{
+                  height: '1px',
+                  borderBottomWidth: 0,
+                  borderBottomStyle: 'solid',
+                }}
+              />
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                marginTop={4}
               >
-                {t('price')}
-              </Text>
-            </Box>
+                <Text
+                  color={TextColor.textDefault}
+                  variant={TextVariant.headingSm}
+                >
+                  {t('price')}
+                </Text>
+              </Box>
             </>
           ) : null}
           <NftDetailInformationRow
@@ -792,24 +796,28 @@ export function NftDetailsComponent({
           />
           {hasCollectionSection ? (
             <>
-            <Box
-              marginTop={4}
-              borderColor={BorderColor.borderMuted}
-              width={BlockSize.Full}
-              style={{ height: '1px', borderBottomWidth: 0, borderBottomStyle: 'solid' }}
-            />
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              marginTop={4}
-            >
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingSm}
+              <Box
+                marginTop={4}
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{
+                  height: '1px',
+                  borderBottomWidth: 0,
+                  borderBottomStyle: 'solid',
+                }}
+              />
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                marginTop={4}
               >
-                {t('notificationItemCollection')}
-              </Text>
-            </Box>
+                <Text
+                  color={TextColor.textDefault}
+                  variant={TextVariant.headingSm}
+                >
+                  {t('notificationItemCollection')}
+                </Text>
+              </Box>
             </>
           ) : null}
           <NftDetailInformationRow
@@ -866,24 +874,28 @@ export function NftDetailsComponent({
           />
           {hasAttributesSection ? (
             <>
-            <Box
-              marginTop={4}
-              borderColor={BorderColor.borderMuted}
-              width={BlockSize.Full}
-              style={{ height: '1px', borderBottomWidth: 0, borderBottomStyle: 'solid' }}
-            />
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              marginTop={4}
-            >
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingSm}
+              <Box
+                marginTop={4}
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{
+                  height: '1px',
+                  borderBottomWidth: 0,
+                  borderBottomStyle: 'solid',
+                }}
+              />
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                marginTop={4}
               >
-                {t('attributes')}
-              </Text>
-            </Box>
+                <Text
+                  color={TextColor.textDefault}
+                  variant={TextVariant.headingSm}
+                >
+                  {t('attributes')}
+                </Text>
+              </Box>
             </>
           ) : null}
           <Box
