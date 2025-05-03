@@ -28,7 +28,6 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import {
   AlignItems,
-  BlockSize,
   Display,
   FlexDirection,
   IconColor,
