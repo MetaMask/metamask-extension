@@ -141,7 +141,7 @@ describe('Remove Network:', function (this: Suite) {
               networkConfigurationId: {
                 chainId: '0x539',
                 nickname: 'Localhost 8545',
-                rpcUrl: 'http:///1',
+                rpcUrl: 'http://localhost:8545/1',
                 ticker: 'ETH',
                 rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
               },
