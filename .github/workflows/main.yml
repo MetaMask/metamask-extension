@@ -163,6 +163,7 @@ jobs:
   run-benchmarks:
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
+      - needs-e2e
       - prep-build-test-browserify
       - prep-build-test-webpack
     permissions:
