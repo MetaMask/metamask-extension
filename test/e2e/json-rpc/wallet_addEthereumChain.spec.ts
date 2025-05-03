@@ -77,7 +77,7 @@ describe('Add Ethereum Chain', function () {
                   symbol: 'ETH',
                   decimals: 18,
                 },
-                rpcUrls: ['http://localhost:8546'],
+                rpcUrls: ['http://localhost:8546/1'],
                 blockExplorerUrls: [],
               },
             ],
@@ -203,7 +203,7 @@ describe('Add Ethereum Chain', function () {
                   decimals: 18,
                 },
                 // this matches what already exists in the NetworkController
-                rpcUrls: ['http://localhost:8546'],
+                rpcUrls: ['http://localhost:8546/1'],
                 blockExplorerUrls: [],
               },
             ],
@@ -451,7 +451,7 @@ describe('Add Ethereum Chain', function () {
                   decimals: 18,
                 },
                 // this matches what already exists in the NetworkController
-                rpcUrls: ['http://localhost:8546'],
+                rpcUrls: ['http://localhost:8546/1'],
                 blockExplorerUrls: [],
               },
             ],

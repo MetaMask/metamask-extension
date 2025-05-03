@@ -355,7 +355,7 @@ class FixtureBuilder {
   withNetworkControllerDoubleNode() {
     const secondNode = mockNetworkStateOld({
       id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
-      rpcUrl: 'http://localhost:8546',
+      rpcUrl: 'http://localhost:8546/1',
       chainId: '0x53a',
       ticker: 'ETH',
       nickname: 'Localhost 8546',
@@ -367,7 +367,7 @@ class FixtureBuilder {
   withNetworkControllerTripleNode() {
     this.withNetworkControllerDoubleNode();
     const thirdNode = mockNetworkStateOld({
-      rpcUrl: 'http://localhost:7777',
+      rpcUrl: 'http://localhost:7777/1',
       chainId: '0x3e8',
       ticker: 'ETH',
       nickname: 'Localhost 7777',
