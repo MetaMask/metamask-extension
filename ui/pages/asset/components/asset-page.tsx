@@ -432,10 +432,7 @@ const AssetPage = ({
             style={{ height: '1px', borderBottomWidth: 0 }}
           ></Box>
           <Box marginBottom={4}>
-            <Text
-              paddingInline={4}
-              variant={TextVariant.headingSm}
-            >
+            <Text paddingInline={4} variant={TextVariant.headingSm}>
               {t('yourActivity')}
             </Text>
             {type === AssetType.native ? (
