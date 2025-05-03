@@ -32,7 +32,7 @@ import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../modals/identit
 
 export const backupAndSyncToggleTestIds = {
   container: 'backup-and-sync-toggle-container',
-  toggle: 'backup-and-sync-toggle-toggle',
+  toggle: 'backup-and-sync-toggle-button',
 };
 
 export const BackupAndSyncToggle = () => {
@@ -143,13 +143,12 @@ export const BackupAndSyncToggle = () => {
             <Preloader size={36} />
           </Box>
         ) : (
-          <div className="privacy-settings__setting__toggle">
+          <div className="privacy-settings__setting__toggle" data-testid={backupAndSyncToggleTestIds.toggle}>
             <ToggleButton
               value={isBackupAndSyncEnabled}
               onToggle={handleBackupAndSyncToggleSetValue}
               offLabel={t('off')}
               onLabel={t('on')}
-              dataTestId={backupAndSyncToggleTestIds.toggle}
             />
           </div>
         )}
