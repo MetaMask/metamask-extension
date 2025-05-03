@@ -6,6 +6,12 @@ import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
+import BridgeQuotePage, {
+  BridgeQuote,
+} from '../../page-objects/pages/bridge/quote-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HomePage from '../../page-objects/pages/home/homepage';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
@@ -24,12 +30,6 @@ import {
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
 } from './constants';
-import BridgeQuotePage, {
-  BridgeQuote,
-} from '../../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HomePage from '../../page-objects/pages/home/homepage';
 
 export class BridgePage {
   driver: Driver;
