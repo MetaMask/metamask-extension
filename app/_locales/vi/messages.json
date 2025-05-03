@@ -955,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Chúng tôi sử dụng Infura làm nhà cung cấp dịch vụ gọi hàm từ xa (RPC) để cung cấp quyền truy cập riêng tư và đáng tin cậy nhất vào dữ liệu Ethereum mà chúng tôi có thể. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ thu thập địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Đọc $1 của chúng tôi để tìm hiểu thêm về cách Infura xử lý dữ liệu.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Bạn cần sử dụng MetaMask trên Google Chrome để kết nối với Ví cứng của bạn."
@@ -1693,6 +1693,9 @@
   },
   "duplicateContactWarning": {
     "message": "Bạn có liên hệ bị trùng"
+  },
+  "earn": {
+    "message": "Earn"
   },
   "edit": {
     "message": "Chỉnh sửa"
