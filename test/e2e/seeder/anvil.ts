@@ -32,25 +32,21 @@ const defaultOptions: AnvilConfig = {
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
   port: 8545,
-  noMining: false, // Keep for config, filter out before passing to anvil()
-  blockTime: undefined, // Explicitly undefined initially
+  noMining: false,
 };
 
 export class Anvil {
   #server: ProolServerReturnType | undefined;
 
-  // Use the new AnvilConfig type for the stored options
   #options: AnvilConfig | undefined;
 
   async start(
-    // Use the new AnvilConfig type for input opts
     opts: Partial<AnvilConfig> = {},
   ): Promise<void> {
-    // Type of 'options' is now inferred as AnvilConfig
     const options = { ...defaultOptions, ...opts };
-    this.#options = options; // Store the resolved options
+    this.#options = options;
 
-    // Set blockTime conditionally (logic remains the same)
+    // Set blockTime if noMining is disabled, as those 2 options are incompatible
     if (!options.noMining && !options.blockTime) {
       options.blockTime = 2;
     }
@@ -73,13 +69,8 @@ export class Anvil {
       throw new Error('Anvil binary is not accessible.');
     }
 
-    const { host, port, noMining: _noMining, blockTime, ...restOptions } = options;
+    const { host, port, noMining: _noMining, ...restOptions } = options;
     const anvilCliOptions: Partial<AnvilParameters> = { ...restOptions };
-
-    // Only add blockTime to the object if it's a number
-    if (typeof blockTime === 'number') {
-        anvilCliOptions.blockTime = blockTime;
-    }
 
     const { createServer } = await proolPromise;
     const { anvil } = await proolInstancesPromise;
