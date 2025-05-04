@@ -4,10 +4,10 @@ class BackupAndSyncSettings {
   private readonly driver: Driver;
 
   private readonly accountSyncToggle =
-    '[data-testid="account-syncing-toggle-button"]';
+    '[data-testid="account-syncing-toggle-container"]';
 
   private readonly backupAndSyncToggle =
-    '[data-testid="backup-and-sync-toggle-button"]';
+    '[data-testid="backup-and-sync-toggle-container"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
