@@ -300,6 +300,8 @@ jobs:
       - prep-build-test-webpack
       - run-tests
       - needs-e2e
+      - e2e-chrome
+      - e2e-firefox
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta

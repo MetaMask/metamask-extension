@@ -2149,9 +2149,7 @@
         }
       }
     },
-    "bridgeStatusState": {
-      "txHistory": {}
-    },
+    "txHistory": {},
     "throttledOrigins": {}
   },
   "ramps": {
