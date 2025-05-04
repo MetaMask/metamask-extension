@@ -53,6 +53,7 @@ describe('Approval Utils', () => {
       );
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ApprovalType.SnapDialogAlert,
       ApprovalType.SnapDialogPrompt,
@@ -68,6 +69,7 @@ describe('Approval Utils', () => {
       expect(approvalController.accept).toHaveBeenCalledWith(ID_MOCK, null);
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ApprovalType.SnapDialogConfirmation,
       SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
@@ -84,6 +86,7 @@ describe('Approval Utils', () => {
       expect(approvalController.accept).toHaveBeenCalledWith(ID_MOCK, false);
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ApprovalType.SnapDialogAlert,
       ApprovalType.SnapDialogPrompt,
