@@ -129,6 +129,9 @@
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
   },
   "resolutions": {
+    "base-x@^3.0.x": "^3.0.11",
+    "base-x@3.0.9": "^3.0.11",
+    "base-x@^5.0.x": "^5.0.1",
     "chokidar": "^3.6.0",
     "@types/react": "^16.9.53",
     "bn.js": "^5.2.1",
