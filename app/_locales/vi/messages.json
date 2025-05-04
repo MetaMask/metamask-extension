@@ -1694,6 +1694,9 @@
   "duplicateContactWarning": {
     "message": "Bạn có liên hệ bị trùng"
   },
+  "earn": {
+    "message": "Earn"
+  },
   "edit": {
     "message": "Chỉnh sửa"
   },

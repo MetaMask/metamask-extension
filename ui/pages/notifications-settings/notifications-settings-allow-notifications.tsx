@@ -118,8 +118,8 @@ export function NotificationsSettingsAllowNotifications({
     disableNotifications,
     enableNotifications,
     toggleValue,
-    trackEvent,
     isBackupAndSyncEnabled,
+    trackEvent,
   ]);
 
   const privacyLink = useMemo(

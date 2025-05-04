@@ -60,7 +60,7 @@ describe('Account syncing - Opt-out Backup and sync', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            // Setting up this mock to ensure that no User Storage requests are made when Backup And Sync is off.
+            // Setting up this mock to ensure that no User Storage requests are made when Backup and sync is off.
             // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
             userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.accounts,
@@ -122,7 +122,7 @@ describe('Account syncing - Opt-out Backup and sync', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            // Setting up this mock to ensure that no User Storage requests are made when Backup And Sync is off.
+            // Setting up this mock to ensure that no User Storage requests are made when Backup and sync is off.
             // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
             userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.accounts,
@@ -190,7 +190,7 @@ describe('Account syncing - Opt-out Backup and sync', function () {
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
-          // Setting up this mock to ensure that no User Storage requests are made when Backup And Sync is off.
+          // Setting up this mock to ensure that no User Storage requests are made when Backup and sync is off.
           // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(

@@ -17,19 +17,19 @@ describe('Backup And Sync Selectors', () => {
     },
   };
 
-  it('should select the Backup And Sync status', () => {
+  it('selects the Backup And Sync status', () => {
     expect(selectIsBackupAndSyncEnabled(mockState)).toBe(true);
   });
 
-  it('should select the Account Syncing status', () => {
+  it('selects the Account Syncing status', () => {
     expect(selectIsAccountSyncingEnabled(mockState)).toBe(true);
   });
 
-  it('should select the Account Syncing ready to be dispatched status', () => {
+  it('selects the Account Syncing ready to be dispatched status', () => {
     expect(selectIsAccountSyncingReadyToBeDispatched(mockState)).toBe(false);
   });
 
-  it('should select the Backup And Sync update loading status', () => {
+  it('selects the Backup And Sync update loading status', () => {
     expect(selectIsBackupAndSyncUpdateLoading(mockState)).toBe(false);
   });
 });
