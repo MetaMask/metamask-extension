@@ -90,11 +90,11 @@ export const useDeleteAccountSyncDataProps = () => {
   };
 };
 
-export const ProfileSyncDevSettings = () => {
+export const BackupAndSyncDevSettings = () => {
   return (
     <>
       <Text className="settings-page__security-tab-sub-header__bold">
-        Profile Sync
+        Backup and sync
       </Text>
       <DeleteSyncedData {...useDeleteAccountSyncDataProps()} />
     </>
