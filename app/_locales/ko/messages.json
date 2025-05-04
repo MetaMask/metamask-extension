@@ -955,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "가능한 가장 안정적인 비공개 이더리움 액세스를 위해 Infura를 원격 프로시저 호출(RPC) 공급업체로 선정하였습니다. 사용자는 개인적으로 원하는 RPC를 선택할 수 있습니다. 하지만, 모든 RPC가 트랜잭션을 위해 사용자의 IP 주소와 이더리움 지갑을 받게된다는 점을 잊지 말아야 합니다. Infura의 데이터 처리 방법은 $1에서 상세히 확인할 수 있습니다.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 MetaMask를 사용해야 합니다."
@@ -1024,9 +1024,6 @@
   },
   "confirm": {
     "message": "컨펌"
-  },
-  "confirmAccountType": {
-    "message": "유형"
   },
   "confirmAccountTypeSmartContract": {
     "message": "스마트 계정"
@@ -2714,9 +2711,6 @@
   "ledgerLocked": {
     "message": "Ledger 장치에 연결할 수 없습니다. 장치의 잠금이 해제되어 있고 이더리움 앱이 열려 있는지 확인하세요."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "여러 Ledger 장치를 동시에 연결할 수 없습니다. 새 Ledger 장치를 연결하려면 이전 장치를 먼저 연결 해제해야 합니다."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live의 응답 시간이 너무 길거나 연결 시간을 초과했습니다. Ledger Live 앱이 열려 있고 장치의 잠금이 해제되어 있는지 확인하세요."
   },
@@ -4087,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "이러한 네트워크 중 일부는 제삼자에 의존합니다. 이러한 연결은 안정성이 떨어지거나 제삼자가 활동을 추적할 수 있습니다. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "인기 네트워크"

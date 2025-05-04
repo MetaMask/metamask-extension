@@ -12,11 +12,15 @@ import {
   CARD_SLIDE,
   CASH_SLIDE,
   REMOTE_MODE_SLIDE,
-  SWEEPSTAKES_SLIDE,
+  SMART_ACCOUNT_UPGRADE_SLIDE,
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
   ZERO_BALANCE,
   MULTI_SRP_SLIDE,
+  SWEEPSTAKES_SLIDE,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  SOLANA_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
 } from './constants';
 
 type UseSlideManagementProps = {
@@ -52,11 +56,15 @@ export const useCarouselManagement = ({
     };
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
     defaultSlides.push(BRIDGE_SLIDE);
     ///: END:ONLY_INCLUDE_IF
     defaultSlides.push(CARD_SLIDE);
     defaultSlides.push(CASH_SLIDE);
     defaultSlides.push(MULTI_SRP_SLIDE);
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
+    defaultSlides.push(SOLANA_SLIDE);
+    ///: END:ONLY_INCLUDE_IF
 
     defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 

@@ -955,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Nous utilisons Infura comme fournisseur de RPC (Remote Procedure Call) pour vous fournir l’accès le plus fiable et le plus privé possible aux données Ethereum. Vous pouvez choisir votre propre RPC, mais n’oubliez pas que tout RPC a besoin d’accéder à votre adresse IP et à l’adresse de votre portefeuille Ethereum pour valider les transactions. Lisez notre $1 pour en savoir plus sur la façon dont Infura traite les données personnelles.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Pour connecter votre portefeuille matériel, vous devez utiliser MetaMask pour Google Chrome."
@@ -1024,9 +1024,6 @@
   },
   "confirm": {
     "message": "Confirmer"
-  },
-  "confirmAccountType": {
-    "message": "Type"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Compte intelligent"
@@ -2714,9 +2711,6 @@
   "ledgerLocked": {
     "message": "Impossible de se connecter au dispositif Ledger. Veuillez vous assurer que votre périphérique est déverrouillé et que l’application Ethereum est ouverte."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Il n’est pas possible de connecter plusieurs dispositifs Ledger en même temps. Vous devez d’abord déconnecter le dispositif actuel avant d’en connecter un autre."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’application Ledger Live est bien ouverte et que votre appareil est déverrouillé."
   },
@@ -4087,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Certains de ces réseaux dépendent de services tiers. Ils peuvent être moins fiables ou permettre à des tiers de suivre l’activité des utilisateurs. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Réseaux populaires"

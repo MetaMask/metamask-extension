@@ -955,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Ethereum verilerine mümkün olan en güvenilir ve gizli erişimi sunmak amacıyla uzak yordam çağrısı (RPC) sağlayıcısı olarak Infura kullanırız. Kendi RPC'nizi seçebilirsiniz ancak tüm RPC'lerin işlemleri gerçekleştirmek için IP adresinizi ve Ethereum cüzdanınızı alacağını unutmayın. Infura'nın verileri nasıl kullandığı hakkında daha fazla bilgi edinmek için $1 bölümümüzü okuyun.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Donanım Cüzdanınıza bağlamak için MetaMask'ı Google Chrome'da kullanmanız gerekir."
@@ -1024,9 +1024,6 @@
   },
   "confirm": {
     "message": "Onayla"
-  },
-  "confirmAccountType": {
-    "message": "Tür"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Akıllı hesap"
@@ -2714,9 +2711,6 @@
   "ledgerLocked": {
     "message": "Ledger cihazına bağlanılamıyor. Lütfen cihazınızın kilidinin açık ve Ethereum uygulamasının açık olduğundan emin olun."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Aynı anda birden fazla Ledger cihazı bağlanabilir. Yeni bir Ledger cihazı bağlamak için önceki cihazın bağlantısını kesmeniz gerekecek."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live'ın yanıt vermesi çok uzun sürdü ya da bağlantı zaman aşımına uğradı. Ledger Live uygulamasının açık olduğundan ve cihazınızın kilidinin açık olduğundan emin olun."
   },
@@ -4087,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Bu ağların bazıları üçüncü taraflara dayalıdır. Bağlantılar daha az güvenilir olabilir veya üçüncü tarafların aktiviteleri takip etmesine olanak sağlayabilir. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Popüler ağlar"

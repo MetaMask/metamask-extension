@@ -955,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "我们使用 Infura 作为我们的远程过程调用（RPC）提供商，以提供最可靠和最私密的以太坊数据访问。您可以选择自己的 RPC，但请谨记，任何 RPC 都可以接收您的 IP 地址和以太坊钱包以进行交易。请阅读我们的 $1，进一步了解 Infura 如何处理数据。",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
@@ -1024,9 +1024,6 @@
   },
   "confirm": {
     "message": "确认"
-  },
-  "confirmAccountType": {
-    "message": "类型"
   },
   "confirmAccountTypeSmartContract": {
     "message": "智能账户"
@@ -2714,9 +2711,6 @@
   "ledgerLocked": {
     "message": "无法连接到 Ledger 设备。请确保您的设备已解锁并打开 Etherum 应用程序。"
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "无法同时连接多个 Ledger 设备。如需连接新的 Ledger 设备，需先断开原有设备。"
-  },
   "ledgerTimeout": {
     "message": "Ledger Live 响应时间过长或连接超时。请确保 Ledger Live 应用程序已打开且您的设备已解锁。"
   },
@@ -4087,7 +4081,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "这些网络中的其中一些依赖于第三方。此连接可能不太可靠，或使第三方可进行活动跟踪。$1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "热门网络"
