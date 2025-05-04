@@ -44,7 +44,9 @@ const ChartTooltip = ({
       <Text
         marginLeft={4}
         marginRight={4}
-        variant={TextVariant.bodySmMedium}
+        marginBottom={1}
+        marginTop={1}
+        variant={TextVariant.bodyXsMedium}
         color={TextColor.textAlternative}
         textAlign={TextAlign.Center}
       >

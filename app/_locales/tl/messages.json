@@ -3050,7 +3050,7 @@
     "message": "Hindi maaaring magpadala ng negatibo o zero na halaga ng asset."
   },
   "network": {
-    "message": "Network:"
+    "message": "Network"
   },
   "networkChanged": {
     "message": "Nagbago ang network"
