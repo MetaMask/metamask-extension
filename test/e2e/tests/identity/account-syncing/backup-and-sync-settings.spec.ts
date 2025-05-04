@@ -13,12 +13,12 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { completeOnboardFlowIdentity } from '../flows';
+import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
 import { arrangeTestUtils } from './helpers';
-import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 
 describe('Backup and Sync Settings', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -95,18 +95,17 @@ describe('Backup and Sync Settings', function () {
 
           // Go back to accounts and add a new account
           await header.openAccountMenu();
-          await accountListPage.addAccount(
-            {
-              accountType: ACCOUNT_TYPE.Ethereum
-            }
-          )
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+          });
           const { prepareEventsEmittedCounter } = arrangeTestUtils(
             driver,
             userStorageMockttpController,
           );
-          const { waitUntilEventsEmittedNumberEquals } = prepareEventsEmittedCounter(
-            UserStorageMockttpControllerEvents.PUT_SINGLE,
-          );
+          const { waitUntilEventsEmittedNumberEquals } =
+            prepareEventsEmittedCounter(
+              UserStorageMockttpControllerEvents.PUT_SINGLE,
+            );
           await waitUntilEventsEmittedNumberEquals(0);
         },
       );
