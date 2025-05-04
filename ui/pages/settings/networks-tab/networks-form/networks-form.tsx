@@ -68,7 +68,10 @@ import {
   DropdownEditorStyle,
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
 import { getTokenNetworkFilter } from '../../../../selectors';
-import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
+import {
+  useWellKnownChains,
+  rpcIdentifierUtility,
+} from './use-well-known-chains';
 import { useNetworkFormState } from './networks-form-state';
 
 export const NetworksForm = ({
@@ -101,7 +104,7 @@ export const NetworksForm = ({
     setBlockExplorers,
   } = networkFormState;
 
-  const { safeChains } = useSafeChains();
+  const { wellKnownChains } = useWellKnownChains();
 
   const [errors, setErrors] = useState<
     Record<string, { key: string; msg: string } | undefined>
@@ -127,7 +130,9 @@ export const NetworksForm = ({
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedName = chainIdHex
       ? NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
-        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name
+        wellKnownChains?.find(
+          (chain) => `0x${decimalToHex(chain.chainId)}` === chainIdHex,
+        )?.name
       : undefined;
 
     const mismatch = expectedName && expectedName !== name;
@@ -141,7 +146,7 @@ export const NetworksForm = ({
           }
         : undefined,
     }));
-  }, [chainId, name, safeChains]);
+  }, [chainId, name, wellKnownChains]);
 
   // Validate the ticker when it changes
   useEffect(() => {
@@ -150,8 +155,9 @@ export const NetworksForm = ({
       ? CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
           chainIdHex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
         ] ??
-        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)
-          ?.nativeCurrency?.symbol
+        wellKnownChains?.find(
+          (chain) => `0x${decimalToHex(chain.chainId)}` === chainIdHex,
+        )?.nativeCurrency?.symbol
       : undefined;
 
     const mismatch = expectedSymbol && expectedSymbol !== ticker;
@@ -165,7 +171,7 @@ export const NetworksForm = ({
           }
         : undefined,
     }));
-  }, [chainId, ticker, safeChains]);
+  }, [chainId, ticker, wellKnownChains]);
 
   // Validate the chain ID when it changes
   useEffect(() => {
@@ -299,7 +305,7 @@ export const NetworksForm = ({
           sensitiveProperties: {
             rpcUrl: rpcIdentifierUtility(
               rpcUrls?.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex ?? -1]?.url,
-              safeChains ?? [],
+              wellKnownChains ?? [],
             ),
           },
         });

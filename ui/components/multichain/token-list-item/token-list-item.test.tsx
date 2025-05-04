@@ -6,7 +6,10 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import {
+  type WellKnownChain,
+  useWellKnownChains,
+} from '../../../pages/settings/networks-tab/networks-form/use-well-known-chains';
 import {
   getCurrencyRates,
   getNetworkConfigurationIdByChainId,
@@ -39,11 +42,13 @@ const state = {
   },
 };
 
-const safeChainDetails = {
-  chainId: '1',
+const wellKnownChainDetails: WellKnownChain = {
+  chainId: 1,
   nativeCurrency: {
     symbol: 'ETH',
   },
+  name: 'Ethereum Mainnet',
+  rpc: [],
 };
 
 let openTabSpy: jest.SpyInstance<void, [opts: { url: string }], unknown>;
@@ -53,10 +58,10 @@ jest.mock('../../../ducks/locale/locale', () => ({
 }));
 
 jest.mock(
-  '../../../pages/settings/networks-tab/networks-form/use-safe-chains',
+  '../../../pages/settings/networks-tab/networks-form/use-well-known-chains',
   () => ({
-    useSafeChains: jest.fn().mockReturnValue({
-      safeChains: [safeChainDetails],
+    useWellKnownChains: jest.fn().mockReturnValue({
+      wellKnownChains: [wellKnownChainDetails],
     }),
   }),
 );
@@ -69,7 +74,7 @@ jest.mock('react-redux', () => {
 });
 
 const mockGetIntlLocale = getIntlLocale;
-const mockGetSafeChains = useSafeChains;
+const mockGetWellKnownChains = useWellKnownChains;
 
 describe('TokenListItem', () => {
   beforeAll(() => {
@@ -169,8 +174,8 @@ describe('TokenListItem', () => {
     ).toBeInTheDocument();
   });
 
-  it('should display warning scam modal fallback when safechains fails to resolve correctly', () => {
-    (mockGetSafeChains as unknown as jest.Mock).mockReturnValue([]);
+  it('should display warning scam modal fallback when well-known chains fails to resolve correctly', () => {
+    (mockGetWellKnownChains as unknown as jest.Mock).mockReturnValue([]);
     const store = configureMockStore()(state);
     const propsToUse = {
       primary: '11.9751 ETH',

@@ -36,7 +36,6 @@ import {
   LedgerIframeBridge,
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
-import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import { nanoid } from 'nanoid';
 import { captureException } from '@sentry/browser';
@@ -184,6 +183,7 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
 import { TokenStandard } from '../../shared/constants/transaction';
+import { preSeedWellKnownChains } from '../../shared/modules/well-known-chains';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -191,7 +191,6 @@ import {
 } from '../../shared/constants/swaps';
 import {
   CHAIN_IDS,
-  CHAIN_SPEC_URL,
   NETWORK_TYPES,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
@@ -223,11 +222,6 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { LOG_EVENT } from '../../shared/constants/logs';
-
-import {
-  getStorageItem,
-  setStorageItem,
-} from '../../shared/lib/storage-helpers';
 import {
   getTokenIdParam,
   fetchTokenBalance,
@@ -491,7 +485,9 @@ export default class MetamaskController extends EventEmitter {
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
-    this.initializeChainlist();
+    // fire this async method and forget - we don't want to wait for the list
+    // to update, as this will slow down the extension startup
+    preSeedWellKnownChains();
 
     this.controllerMessenger = new Messenger();
 
@@ -7672,23 +7668,6 @@ export default class MetamaskController extends EventEmitter {
     return this.smartTransactionsController.getTransactions({
       addressFrom: address,
       status: 'pending',
-    });
-  }
-
-  /**
-   * The chain list is fetched live at runtime, falling back to a cache.
-   * This preseeds the cache at startup with a static list provided at build.
-   */
-  async initializeChainlist() {
-    const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
-    const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
-    if (cachedResponse) {
-      return;
-    }
-    await setStorageItem(cacheKey, {
-      cachedResponse: rawChainData(),
-      // Cached value is immediately invalidated
-      cachedTime: 0,
     });
   }
 

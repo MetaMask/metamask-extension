@@ -210,7 +210,9 @@ export const shouldEnableDirectWrapping = (
  * Given and object where all values are strings, returns the same object with all values
  * now prefixed with '0x'
  *
- * @param obj
+ * @template T
+ * @param {T} obj
+ * @returns {T}
  */
 export function addHexPrefixToObjectValues(obj) {
   return Object.keys(obj).reduce((newObj, key) => {

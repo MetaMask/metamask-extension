@@ -75,6 +75,19 @@ type Network = {
   ethersProvider: Web3Provider;
 };
 
+type SwapsNetworkConfig = {
+  refreshRates?: {
+    quotes: number;
+    quotesPrefetching: number;
+    stxGetTransactions: number;
+    stxBatchStatus: number;
+    stxStatusDeadline: number;
+  };
+  parameters: {
+    stxMaxFeeMultiplier: number;
+  };
+};
+
 const metadata: StateMetadata<SwapsControllerState> = {
   swapsState: {
     persist: false,
@@ -941,13 +954,13 @@ export default class SwapsController extends BaseController<
 
   // Private Methods
   private async _fetchSwapsNetworkConfig(network: Network) {
-    const response = await fetchWithCache({
+    const response = await fetchWithCache<SwapsNetworkConfig>({
       url: getBaseApi('network', network.chainId),
       fetchOptions: { method: 'GET' },
       cacheOptions: { cacheRefreshTime: 600000 },
       functionName: '_fetchSwapsNetworkConfig',
     });
-    const { refreshRates, parameters = {} } = response || {};
+    const { refreshRates, parameters } = response || {};
     if (
       !refreshRates ||
       typeof refreshRates.quotes !== 'number' ||
@@ -964,7 +977,7 @@ export default class SwapsController extends BaseController<
       stxGetTransactions: refreshRates.stxGetTransactions * 1000,
       stxBatchStatus: refreshRates.stxBatchStatus * 1000,
       stxStatusDeadline: refreshRates.stxStatusDeadline,
-      stxMaxFeeMultiplier: parameters.stxMaxFeeMultiplier,
+      stxMaxFeeMultiplier: parameters?.stxMaxFeeMultiplier,
     };
   }
 
@@ -1070,14 +1083,7 @@ export default class SwapsController extends BaseController<
 
   // Sets the network config from the MetaSwap API.
   private async _setSwapsNetworkConfig(network: Network) {
-    let swapsNetworkConfig: {
-      quotes: number;
-      quotesPrefetching: number;
-      stxGetTransactions: number;
-      stxBatchStatus: number;
-      stxStatusDeadline: number;
-      stxMaxFeeMultiplier: number;
-    } | null = null;
+    let swapsNetworkConfig = null;
 
     try {
       swapsNetworkConfig = await this._fetchSwapsNetworkConfig(network);
@@ -1086,32 +1092,20 @@ export default class SwapsController extends BaseController<
     }
     this.update((_state) => {
       _state.swapsState.swapsQuoteRefreshTime =
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        swapsNetworkConfig?.quotes || FALLBACK_QUOTE_REFRESH_TIME;
+        swapsNetworkConfig?.quotes ?? FALLBACK_QUOTE_REFRESH_TIME;
       _state.swapsState.swapsQuotePrefetchingRefreshTime =
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        swapsNetworkConfig?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME;
+        swapsNetworkConfig?.quotesPrefetching ?? FALLBACK_QUOTE_REFRESH_TIME;
       _state.swapsState.swapsStxGetTransactionsRefreshTime =
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        swapsNetworkConfig?.stxGetTransactions ||
+        swapsNetworkConfig?.stxGetTransactions ??
         FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME;
       _state.swapsState.swapsStxBatchStatusRefreshTime =
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        swapsNetworkConfig?.stxBatchStatus ||
+        swapsNetworkConfig?.stxBatchStatus ??
         FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME;
       _state.swapsState.swapsStxMaxFeeMultiplier =
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        swapsNetworkConfig?.stxMaxFeeMultiplier ||
+        swapsNetworkConfig?.stxMaxFeeMultiplier ??
         FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER;
       _state.swapsState.swapsStxStatusDeadline =
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        swapsNetworkConfig?.stxStatusDeadline ||
+        swapsNetworkConfig?.stxStatusDeadline ??
         FALLBACK_SMART_TRANSACTIONS_DEADLINE;
     });
   }

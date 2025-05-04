@@ -300,7 +300,7 @@ describe('NetworkForm Component', () => {
   });
 
   it('should not show suggested ticker and duplicating the exact symbol', async () => {
-    const safeChainsList = [
+    const wellKnownChains = [
       {
         chainId: 42161,
         nativeCurrency: {
@@ -309,10 +309,10 @@ describe('NetworkForm Component', () => {
       },
     ];
 
-    // Mock the fetchWithCache function to return the safeChainsList
+    // Mock the fetchWithCache function to return the wellKnownChains
     jest
       .spyOn(fetchWithCacheModule, 'default')
-      .mockResolvedValue(safeChainsList);
+      .mockResolvedValue(wellKnownChains);
 
     renderComponent({
       ...propNetworkDisplay,
@@ -353,7 +353,7 @@ describe('NetworkForm Component', () => {
   });
 
   it('should validate currency symbol field for ZYN network', async () => {
-    const safeChainsList = [
+    const wellKnownChains = [
       {
         chainId: 78,
         nativeCurrency: {
@@ -362,10 +362,10 @@ describe('NetworkForm Component', () => {
       },
     ];
 
-    // Mock the fetchWithCache function to return the safeChainsList
+    // Mock the fetchWithCache function to return the wellKnownChains
     jest
       .spyOn(fetchWithCacheModule, 'default')
-      .mockResolvedValue(safeChainsList);
+      .mockResolvedValue(wellKnownChains);
 
     renderComponent({
       ...propNetworkDisplay,

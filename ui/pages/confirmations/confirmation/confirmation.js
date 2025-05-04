@@ -15,8 +15,7 @@ import { produce } from 'immer';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { getWellKnownChains } from '../../../../shared/modules/well-known-chains';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -31,7 +30,7 @@ import {
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
-  useSafeChainsListValidationSelector,
+  useExternalWellKnownChainsValidationSelector,
   getSnapsMetadata,
   getHideSnapBranding,
 } from '../../../selectors';
@@ -44,7 +43,6 @@ import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
-import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
@@ -234,7 +232,7 @@ export default function ConfirmationPage({
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    useExternalWellKnownChainsValidationSelector,
   );
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
@@ -379,39 +377,35 @@ export default function ConfirmationPage({
   }, [approvalFlows]);
 
   useEffect(() => {
-    async function fetchSafeChainsList(_pendingConfirmation) {
+    async function fetchWellKnownChainsList(_pendingConfirmation) {
       try {
-        if (useSafeChainsListValidation) {
-          const response = await fetchWithCache({
-            url: CHAIN_SPEC_URL,
-            allowStale: true,
-            cacheOptions: { cacheRefreshTime: DAY },
-            functionName: 'getSafeChainsList',
-          });
-          const safeChainsList = response;
-          const _matchedChain = safeChainsList.find(
-            (chain) =>
-              chain.chainId ===
-              parseInt(_pendingConfirmation.requestData.chainId, 16),
+        const wellKnownChains = await getWellKnownChains(
+          useSafeChainsListValidation,
+        );
+        const requestId = parseInt(
+          _pendingConfirmation.requestData.chainId,
+          16,
+        );
+        const _matchedChain = wellKnownChains.find(
+          ({ chainId }) => chainId === requestId,
+        );
+        setMatchedChain(_matchedChain);
+        setChainFetchComplete(true);
+        setProviderError(null);
+        if (
+          _matchedChain?.nativeCurrency?.symbol?.toLowerCase() ===
+          _pendingConfirmation.requestData.ticker?.toLowerCase()
+        ) {
+          setCurrencySymbolWarning(null);
+        } else {
+          setCurrencySymbolWarning(
+            t('chainListReturnedDifferentTickerSymbol', [
+              _matchedChain?.nativeCurrency?.symbol,
+            ]),
           );
-          setMatchedChain(_matchedChain);
-          setChainFetchComplete(true);
-          setProviderError(null);
-          if (
-            _matchedChain?.nativeCurrency?.symbol?.toLowerCase() ===
-            _pendingConfirmation.requestData.ticker?.toLowerCase()
-          ) {
-            setCurrencySymbolWarning(null);
-          } else {
-            setCurrencySymbolWarning(
-              t('chainListReturnedDifferentTickerSymbol', [
-                _matchedChain?.nativeCurrency?.symbol,
-              ]),
-            );
-          }
         }
       } catch (error) {
-        log.warn('Failed to fetch the chainList from chainid.network', error);
+        log.warn('Failed to fetch the chainList', error);
         setProviderError(error);
         setMatchedChain(null);
         setCurrencySymbolWarning(null);
@@ -420,7 +414,7 @@ export default function ConfirmationPage({
       }
     }
     if (pendingConfirmation?.type === ApprovalType.AddEthereumChain) {
-      fetchSafeChainsList(pendingConfirmation);
+      fetchWellKnownChainsList(pendingConfirmation);
     }
   }, [
     pendingConfirmation,

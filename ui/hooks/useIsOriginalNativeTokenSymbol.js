@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
-  CHAIN_SPEC_URL,
 } from '../../shared/constants/network';
-import { DAY } from '../../shared/constants/time';
-import { useSafeChainsListValidationSelector } from '../selectors';
+import { getWellKnownChains } from '../../shared/modules/well-known-chains';
+import { useExternalWellKnownChainsValidationSelector } from '../selectors';
 import {
   getMultichainIsEvm,
   getMultichainCurrentNetwork,
@@ -23,8 +21,8 @@ export function useIsOriginalNativeTokenSymbol(
   rpcUrl = '',
 ) {
   const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(false);
-  const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+  const useExternalWellKnownChainsValidation = useSelector(
+    useExternalWellKnownChainsValidationSelector,
   );
 
   const isLocalhost = (urlString) => {
@@ -47,11 +45,6 @@ export function useIsOriginalNativeTokenSymbol(
       }
 
       try {
-        if (!useSafeChainsListValidation) {
-          setIsOriginalNativeSymbol(true);
-          return;
-        }
-
         // exclude local dev network
         if (isLocalhost(rpcUrl)) {
           setIsOriginalNativeSymbol(true);
@@ -78,14 +71,11 @@ export function useIsOriginalNativeTokenSymbol(
           return;
         }
 
-        const safeChainsList = await fetchWithCache({
-          url: CHAIN_SPEC_URL,
-          allowStale: true,
-          cacheOptions: { cacheRefreshTime: DAY },
-          functionName: 'getSafeChainsList',
-        });
+        const wellKnownChains = await getWellKnownChains(
+          useExternalWellKnownChainsValidation,
+        );
 
-        const matchedChain = safeChainsList.find(
+        const matchedChain = wellKnownChains.find(
           (network) => network.chainId === parseInt(networkId, 16),
         );
 
@@ -104,7 +94,7 @@ export function useIsOriginalNativeTokenSymbol(
     ticker,
     type,
     rpcUrl,
-    useSafeChainsListValidation,
+    useExternalWellKnownChainsValidation,
   ]);
 
   return isOriginalNativeSymbol;

@@ -35,14 +35,14 @@ export const useHistoricalPrices = ({
   useEffect(() => {
     if (chainSupported) {
       setLoading(true);
-      fetchWithCache({
+      fetchWithCache<{ prices?: number[][] }>({
         url: `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
         cacheOptions: { cacheRefreshTime: 5 * MINUTE },
         functionName: 'GetAssetHistoricalPrices',
         fetchOptions: { headers: { 'X-Client-Id': 'extension' } },
       })
-        .catch(() => ({}))
-        .then((resp?: { prices?: number[][] }) => {
+        .catch(() => undefined)
+        .then((resp) => {
           const prices = resp?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] }));
 
           let edges;

@@ -20,13 +20,12 @@ import {
 } from '../../../component-library';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../../store/actions';
 import {
-  SafeChain,
-  useSafeChains,
-} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+  type WellKnownChain,
+  useWellKnownChains,
+} from '../../../../pages/settings/networks-tab/networks-form/use-well-known-chains';
 import { TokenWithFiatAmount } from '../types';
 import {
   TokenCellBadge,
@@ -57,18 +56,17 @@ export default function TokenCell({
   const history = useHistory();
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const { safeChains } = useSafeChains();
+  const { wellKnownChains } = useWellKnownChains();
+
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
+  const decimalChainId = isEvm && parseInt(token.chainId, 16);
 
-  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
-    if (typeof decimalChainId === 'number') {
-      return chain.chainId === decimalChainId.toString();
-    }
-    return undefined;
-  });
+  const wellKnownChainDetails: WellKnownChain | undefined =
+    typeof decimalChainId === 'number'
+      ? wellKnownChains?.find((chain) => chain.chainId === decimalChainId)
+      : undefined;
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
@@ -176,7 +174,7 @@ export default function TokenCell({
                 token.symbol,
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                safeChainDetails?.nativeCurrency?.symbol ||
+                wellKnownChainDetails?.nativeCurrency?.symbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
               ])}
             </ModalBody>
