@@ -211,7 +211,7 @@ export default function RemoteModeSetupDailyAllowance() {
     setIsConfirmModalOpen(true);
   };
 
-  const handleConfigureRemoteSwaps = async () => {
+  const handleConfigureDailyAllowance = async () => {
     if (!selectedAccount) {
       return;
     }
@@ -588,7 +588,7 @@ export default function RemoteModeSetupDailyAllowance() {
 
         <RemoteModeHardwareWalletConfirm
           visible={isConfirmModalOpen}
-          onConfirm={handleConfigureRemoteSwaps}
+          onConfirm={handleConfigureDailyAllowance}
           onClose={() => {
             setIsConfirmModalOpen(false);
           }}
