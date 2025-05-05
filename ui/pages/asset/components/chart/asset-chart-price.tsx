@@ -27,7 +27,7 @@ const AssetChartMainPriceLoading = () => (
 );
 
 /**
- * Empty space that replaces the main price when it's not available. It occupies
+ * Empty state that replaces the main price when it's not available. It occupies
  * the same space as the main price would, so the layout does not shift when
  * switching from price-unavailable to price-available.
  */

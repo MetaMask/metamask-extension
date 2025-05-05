@@ -1863,6 +1863,7 @@
   "durationSuffixYear": {
     "message": "Y",
     "description": "Shortened form of 'year'"
+  },
   "earn": {
     "message": "Earn"
   },
