@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.17.1]
 ### Fixed
-- Fix infinite Load on switching networks or reveal SRP ([#32391](https://github.com/MetaMask/metamask-extension/pull/32391))
-- Fix The vault encryption upgrade fails gracefully during login ([#32438](https://github.com/MetaMask/metamask-extension/pull/32438))
+- Prevent infinite Load on switching networks or reveal SRP ([#32391](https://github.com/MetaMask/metamask-extension/pull/32391))
+- Ensure vault encryption upgrade fails gracefully during login ([#32438](https://github.com/MetaMask/metamask-extension/pull/32438))
+- Prevent frequent state updates while UI is open, which was preventing state persistence ([#32482](https://github.com/MetaMask/metamask-extension/pull/32482))
 
 ## [12.17.0]
 ### Added
