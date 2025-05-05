@@ -1,8 +1,11 @@
 import { cloneDeep } from 'lodash';
-import { hasProperty, isObject } from '@metamask/utils';
+import { hasProperty, Hex, isObject } from '@metamask/utils';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { TokensControllerState } from '@metamask/assets-controllers';
+import {
+  TokenBalancesControllerState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
 
 type VersionedData = {
   meta: { version: number };
@@ -13,6 +16,8 @@ export const version = 156;
 
 /**
  * This migration removes from the TokensController state all tokens that belong to an EVM account that has been removed.
+ *
+ * Also removed from TokenBalancesController all balances that belong to an EVM account that has been removed.
  *
  * If the Tokens is not found or is not an object, the migration logs an error,
  * but otherwise leaves the state unchanged.
@@ -47,7 +52,17 @@ function transformState(
     );
     return state;
   }
+
+  if (!hasProperty(state, 'TokenBalancesController')) {
+    global.sentry?.captureException?.(
+      new Error(`Migration ${version}: TokenBalancesController not found.`),
+    );
+    return state;
+  }
+
   const tokensControllerState = state.TokensController as TokensControllerState;
+  const tokenBalancesControllerState =
+    state.TokenBalancesController as TokenBalancesControllerState;
   const accountsControllerState =
     state.AccountsController as AccountsControllerState;
 
@@ -55,6 +70,15 @@ function transformState(
     global.sentry?.captureException?.(
       new Error(
         `Migration ${version}: TokensController is type '${typeof tokensControllerState}', expected object.`,
+      ),
+    );
+    return state;
+  }
+
+  if (!isObject(tokenBalancesControllerState)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: TokenBalancesController is type '${typeof tokenBalancesControllerState}', expected object.`,
       ),
     );
     return state;
@@ -77,8 +101,7 @@ function transformState(
   );
   const evmAccountAddresses = evmAccounts.map((account) => account.address);
 
-  console.log('evmAccounts', evmAccounts);
-
+  // Check and clean up tokens in allTokens that do not belong to any EVM account
   if (hasProperty(tokensControllerState, 'allTokens')) {
     for (const chainId of Object.keys(tokensControllerState.allTokens)) {
       const tokensByAccounts =
@@ -93,6 +116,7 @@ function transformState(
     }
   }
 
+  // Check and clean up tokens in allDetectedTokens that do not belong to any EVM account
   if (hasProperty(tokensControllerState, 'allDetectedTokens')) {
     for (const chainId of Object.keys(
       tokensControllerState.allDetectedTokens,
@@ -110,6 +134,7 @@ function transformState(
     }
   }
 
+  // Check and clean up tokens in allIgnoredTokens that do not belong to any EVM account
   if (hasProperty(tokensControllerState, 'allIgnoredTokens')) {
     for (const chainId of Object.keys(tokensControllerState.allIgnoredTokens)) {
       const tokensByAccounts =
@@ -120,6 +145,19 @@ function transformState(
             chainId as `0x${string}`
           ][account];
         }
+      }
+    }
+  }
+
+  // Check and clean up balances in tokenBalancesControllerState that do not belong to any EVM account
+  if (hasProperty(tokenBalancesControllerState, 'tokenBalances')) {
+    for (const accountAddress of Object.keys(
+      tokenBalancesControllerState.tokenBalances,
+    )) {
+      if (!evmAccountAddresses.includes(accountAddress)) {
+        delete tokenBalancesControllerState.tokenBalances[
+          accountAddress as Hex
+        ];
       }
     }
   }
