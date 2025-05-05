@@ -2685,7 +2685,6 @@ describe('MetaMaskController', () => {
     describe('#setupUntrustedCommunicationCaip', () => {
       let localMetamaskController;
       beforeEach(() => {
-        process.env.MULTICHAIN_API = true;
         localMetamaskController = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
@@ -2711,7 +2710,6 @@ describe('MetaMaskController', () => {
       });
 
       afterAll(() => {
-        process.env.MULTICHAIN_API = false;
         tearDownMockMiddlewareLog();
       });
 

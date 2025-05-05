@@ -57,7 +57,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.2.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - MULTICHAIN_API: true
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -90,7 +89,6 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
-      - MULTICHAIN_API: true
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -306,14 +304,6 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
-  # Determines if Multichain API features should be used
-  # NOTE: The manifest.json for the build that sets this feature flag
-  # must also include an "externally_connectable" entry as follows:
-  # "externally_connectable": {
-  #   "matches": ["http://*/*", "https://*/*"],
-  #   "ids": ["*"]
-  # }
-  - MULTICHAIN_API: false
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
   # Determines if Portfolio View UI should be shown
