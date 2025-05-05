@@ -300,20 +300,17 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await header.setEndpoint(SOLANA_DEVNET_URL);
           await driver.clickElement({ text: 'Update', tag: 'button' });
 
-          await driver.delay(regularDelayMs);
-
           const signMessageTest = await testDapp.getSignMessageTest();
           await signMessageTest.setMessage('Hello, world!');
           await signMessageTest.signMessage();
 
-          await driver.delay(regularDelayMs);
-
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           // Check that mainnet appears in the dialog
-          const el = await driver.findElement(
-            By.xpath("//p[text()='Solana Mainnet']"),
-          );
+          const el = await driver.waitForSelector({
+            text: "Solana Mainnet",
+            tag: 'p',
+          });
           assert.ok(el);
         },
       );
