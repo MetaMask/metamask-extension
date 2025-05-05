@@ -17,6 +17,8 @@ import type { MultichainNetworkControllerState } from '@metamask/multichain-netw
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { ApprovalControllerState } from '@metamask/approval-controller';
+import type { BridgeControllerState } from '@metamask/bridge-controller';
+import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
 import type { EnsControllerState } from '@metamask/ens-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { NetworkState } from '@metamask/network-controller';
@@ -66,8 +68,6 @@ import type { OnboardingControllerState } from '../../app/scripts/controllers/on
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
-import { BridgeState } from '../../ui/ducks/bridge/bridge';
-import { BridgeStatusState } from './bridge-status';
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
@@ -130,8 +130,16 @@ export type ControllerStatePropertiesEnumerated = {
   custodianDeepLink?: AppStateControllerState['custodianDeepLink'];
   slides: AppStateControllerState['slides'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
-  bridgeState: BridgeState;
-  bridgeStatusState: BridgeStatusState;
+  bridgeFeatureFlags: BridgeControllerState['bridgeFeatureFlags'];
+  quoteRequest: BridgeControllerState['quoteRequest'];
+  quotes: BridgeControllerState['quotes'];
+  quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
+  quotesLastFetched: BridgeControllerState['quotesLastFetched'];
+  quotesLoadingStatus: BridgeControllerState['quotesLoadingStatus'];
+  quoteFetchError: BridgeControllerState['quoteFetchError'];
+  quotesRefreshCount: BridgeControllerState['quotesRefreshCount'];
+  assetExchangeRates: BridgeControllerState['assetExchangeRates'];
+  txhistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
   jobs: CronjobControllerState['jobs'];
   currentCurrency: CurrencyRateState['currentCurrency'];
@@ -303,9 +311,10 @@ type ControllerStateTypesMerged = AccountsControllerState &
   AccountOrderControllerState &
   AppMetadataControllerState &
   ApprovalControllerState &
-  AppStateControllerState & { bridgeState: BridgeState } & {
-    bridgeStatusState: BridgeStatusState;
-  } & CronjobControllerState &
+  AppStateControllerState &
+  BridgeControllerState &
+  BridgeStatusControllerState &
+  CronjobControllerState &
   CurrencyRateState &
   DecryptMessageControllerState &
   EncryptionPublicKeyControllerState &
