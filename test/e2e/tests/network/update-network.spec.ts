@@ -243,7 +243,7 @@ describe('Update Network:', function (this: Suite) {
           'https://responsive-rpc.test',
         );
         await addNetworkRpcUrlModal.fillAddRpcNameInput('testName');
-        await addNetworkRpcUrlModal.check_addRpcUrlButtonIsEnabled(true);
+        await addNetworkRpcUrlModal.check_addRpcUrlButtonIsEnabled();
         await addNetworkRpcUrlModal.saveAddRpcUrl();
         await editNetworkModal.check_rpcIsDisplayed('responsive-rpc.test');
 

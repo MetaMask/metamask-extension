@@ -76,10 +76,10 @@ class AddNetworkRpcUrlModal {
   /**
    * Checks if the add RPC URL button is enabled on add network RPC URL modal.
    *
-   * @param shouldBeEnabled - Whether the add RPC URL button should be enabled.
+   * @param shouldBeEnabled - Whether the add RPC URL button should be enabled. Defaults to true.
    */
   async check_addRpcUrlButtonIsEnabled(
-    shouldBeEnabled: boolean,
+    shouldBeEnabled: boolean = true,
   ): Promise<void> {
     console.log(
       `Check that add RPC URL button is ${

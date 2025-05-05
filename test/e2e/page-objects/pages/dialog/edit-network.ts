@@ -101,10 +101,10 @@ class EditNetworkModal {
   /**
    * Checks if the chain id input field is enabled on edit network modal.
    *
-   * @param shouldBeEnabled - Whether the chain id input field should be enabled.
+   * @param shouldBeEnabled - Whether the chain id input field should be enabled. Defaults to true.
    */
   async check_chainIdInputFieldIsEnabled(
-    shouldBeEnabled: boolean,
+    shouldBeEnabled: boolean = true,
   ): Promise<void> {
     console.log(
       `Check that chain id input field is ${
