@@ -5543,9 +5543,6 @@
   "standardAccountLabel": {
     "message": "Standard Account"
   },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "If you want to try to recover your secret recovery phrase yourself, follow these instructions."
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },

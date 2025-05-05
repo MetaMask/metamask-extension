@@ -9,6 +9,12 @@
   gap: 8px;
   line-height: 24px;
 
+  & h1 {
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+  }
+
   &__container {
     padding: 20px;
     margin: 0 auto;
@@ -48,5 +54,12 @@
     display: flex;
     margin: 8px 0 24px;
     padding: 8px 0;
+  }
+
+  & .critical-error__link-restore {
+    cursor: pointer;
+  }
+  & p {
+    margin: 1em 0;
   }
 }

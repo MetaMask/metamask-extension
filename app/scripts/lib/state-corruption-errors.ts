@@ -5,17 +5,14 @@ import {
   SUPPORT_LINK,
   VAULT_RECOVERY_LINK,
 } from '../../../shared/lib/ui-utils';
-import {
-  getErrorHtmlBase,
-  getLocaleContext,
-  setupLocale,
-} from '../../../shared/lib/error-utils';
+import { getErrorHtmlBase } from '../../../shared/lib/error-utils';
 import {
   MISSING_VAULT_ERROR,
   CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
 } from '../../../shared/constants/errors';
 import { switchDirectionForPreferredLocale } from '../../../shared/lib/switch-direction';
 import getFirstPreferredLangCode from './get-first-preferred-lang-code';
+import { updateCurrentLocale, t } from '../translate';
 
 export type ErrorLike = {
   message: string;
@@ -39,57 +36,58 @@ export async function getStateCorruptionErrorHtml(
   currentLocale?: string,
   supportLink?: string,
 ) {
-  let response, preferredLocale: string;
+  let preferredLocale: string;
   if (currentLocale) {
     preferredLocale = currentLocale;
-    response = await setupLocale(currentLocale);
+    await updateCurrentLocale(currentLocale);
   } else {
     preferredLocale = await getFirstPreferredLangCode();
-    response = await setupLocale(preferredLocale);
+    await updateCurrentLocale(preferredLocale);
   }
 
   switchDirectionForPreferredLocale(preferredLocale);
-  const { currentLocaleMessages, enLocaleMessages } = response;
-  const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
 
-  const header = `<p>
-  ${
-    hasBackup
-      ? t('stateCorruptionDetectedWithBackup')
-      : t('stateCorruptionDetectedNoBackup')
+  const instructionsLink = `<a href="${lodashEscape(
+    vaultRecoveryLink,
+  )}" class="critical-error__link" target="_blank">${lodashEscape(
+    t('stateCorruptionTheseInstructions') ?? '',
+  )}</a>`;
+
+  let corruptionDetectedMessage: string,
+    copyAndRestoreMessage: string,
+    restoreOrResetMessage: string;
+  if (hasBackup) {
+    corruptionDetectedMessage = t('stateCorruptionDetectedWithBackup') ?? '';
+    copyAndRestoreMessage =
+      t('stateCorruptionCopyAndRestoreBeforeRecovery', instructionsLink) ?? '';
+    restoreOrResetMessage = t('restoreAccountsFromBackup') ?? '';
+  } else {
+    corruptionDetectedMessage = t('stateCorruptionDetectedNoBackup') ?? '';
+    copyAndRestoreMessage =
+      t('stateCorruptionCopyAndRestoreBeforeReset', instructionsLink) ?? '';
+    restoreOrResetMessage = t('resetMetaMaskState') ?? '';
   }
-    </p>
-    <div id="critical-error-button" class="critical-error__link critical-error__link-restore"
-    data-confirm="${lodashEscape(
+
+  const header = `
+    <h1>${t('stateCorruptionMetamaskDatabaseCannotBeAccessed')}</h1>
+    <p>${lodashEscape(corruptionDetectedMessage)}</p>
+    <p>${lodashEscape(copyAndRestoreMessage)}</p>
+    <div id="critical-error-button" class="critical-error__link-restore button btn-danger" data-confirm="${lodashEscape(
       'Are you sure? This action is irreversible!',
     )}">
-      ${lodashEscape(
-        hasBackup === true
-          ? t('restoreAccountsFromBackup')
-          : t('resetMetaMaskState'),
-      )}
+      ${restoreOrResetMessage}
     </div>
-    <p>
-      <a
-        href="${lodashEscape(vaultRecoveryLink)}"
-        class="critical-error__link"
-        target="_blank"
-        rel="noopener noreferrer">
-          ${lodashEscape(
-            t('stateCorruptionDetectedErrorMessageVaultRecoveryLink'),
-          )}
-      </a>
-    </p>`;
+  `;
 
   const footer = supportLink
     ? `<p class="critical-error__footer">
-      <span>${lodashEscape(t('unexpectedBehavior'))}</span>
+      <span>${lodashEscape(t('unexpectedBehavior') ?? '')}</span>
       <a
         href="${lodashEscape(supportLink)}"
         class="critical-error__link"
         target="_blank"
         rel="noopener noreferrer">
-          ${lodashEscape(t('sendBugReport'))}
+          ${lodashEscape(t('sendBugReport') ?? '')}
       </a>
     </p>`
     : '';

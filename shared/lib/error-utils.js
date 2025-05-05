@@ -31,16 +31,6 @@ const _setupLocale = async (currentLocale) => {
 
 export const setupLocale = memoize(_setupLocale);
 
-export const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
-  return (key) => {
-    let message = currentLocaleMessages[key]?.message;
-    if (!message && enLocaleMessages[key]) {
-      message = enLocaleMessages[key].message;
-    }
-    return message;
-  };
-};
-
 export function getErrorHtmlBase(errorBody) {
   return `
     <div class="critical-error__container">

@@ -4537,7 +4537,7 @@
     "message": "Restore"
   },
   "restoreAccountsFromBackup": {
-    "message": "Restore Accounts From Backup"
+    "message": "Restore Accounts"
   },
   "restoreUserData": {
     "message": "Restore user data"
@@ -5549,14 +5549,25 @@
   "standardAccountLabel": {
     "message": "Standard Account"
   },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "If you want to try to recover your secret recovery phrase yourself, follow these instructions."
-  },
   "stateCorruptionDetectedNoBackup": {
-    "message": "MetaMask's state file is damaged. This can happen when the browser database directs us to a state file that doesn't exist. The location of the file depends on your operating system and browser. Visit our support page for more information.\n\nYou can restore your MetaMask wallet, but doing so will erase your settings and preferences. This will also delete your state file if it still exists. You can try to back up or restore your state file manually before you decide to restore your wallet. Learn more."
+    "message": "Your vault cannot be automatically recovered."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "MetaMask's database cannot be accessed"
   },
   "stateCorruptionDetectedWithBackup": {
-    "message": "MetaMask's state file is damaged. This usually happens when the browser database directs us to a state file that doesn't exist. The location of the file depends on your operating system and browser.\n\n A copy of your vault can be found in a secondary location. You can use it to restore your accounts, but you'll need to set up your preferences and settings again.\n\nWhen you restore your accounts, the old MetaMask files in your browser will be deleted. If you want to keep those files, back them up before you restore your accounts."
+    "message": "You vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "these instructions"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
