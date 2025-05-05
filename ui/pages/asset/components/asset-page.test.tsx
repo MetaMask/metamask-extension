@@ -369,10 +369,10 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify no chart is rendered
+    // Verify we show the loading state
     await waitFor(() => {
-      const chart = queryByTestId('asset-price-chart');
-      expect(chart).toBeNull();
+      const chart = queryByTestId('asset-chart-loading');
+      expect(chart).toBeInTheDocument();
     });
 
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
@@ -419,7 +419,7 @@ describe('AssetPage', () => {
     // Verify chart is rendered
     await waitFor(() => {
       const chart = queryByTestId('asset-price-chart');
-      expect(chart).toHaveClass('mm-box--background-color-transparent');
+      expect(chart).toBeInTheDocument();
     });
 
     // Verify market data is rendered
