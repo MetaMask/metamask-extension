@@ -131,6 +131,9 @@
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
   },
   "resolutions": {
+    "base-x@^3.0.x": "^3.0.11",
+    "base-x@3.0.9": "^3.0.11",
+    "base-x@^5.0.x": "^5.0.1",
     "chokidar": "^3.6.0",
     "@types/react": "^16.9.53",
     "bn.js": "^5.2.1",
@@ -290,7 +293,7 @@
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
     "@metamask/keyring-api": "^17.5.0",
-    "@metamask/keyring-controller": "^21.0.4",
+    "@metamask/keyring-controller": "^21.0.5",
     "@metamask/keyring-internal-api": "^6.0.1",
     "@metamask/keyring-internal-snap-client": "^4.0.1",
     "@metamask/keyring-snap-client": "^4.1.0",
@@ -329,7 +332,7 @@
     "@metamask/snaps-rpc-methods": "^12.1.0",
     "@metamask/snaps-sdk": "^6.22.1",
     "@metamask/snaps-utils": "^9.2.1",
-    "@metamask/solana-wallet-snap": "^1.24.0",
+    "@metamask/solana-wallet-snap": "^1.25.1",
     "@metamask/solana-wallet-standard": "^0.4.1",
     "@metamask/transaction-controller": "^54.3.0",
     "@metamask/user-operation-controller": "^31.0.0",
@@ -684,7 +687,7 @@
   },
   "engines": {
     "node": ">=20.12.0 <20.15.0 || >=20.17.0",
-    "yarn": "^4.7.0"
+    "yarn": "^4.9.1"
   },
   "lavamoat": {
     "allowScripts": {
@@ -769,7 +772,7 @@
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false
     }
   },
-  "packageManager": "yarn@4.7.0",
+  "packageManager": "yarn@4.9.1",
   "foundryup": {
     "binaries": [
       "anvil"

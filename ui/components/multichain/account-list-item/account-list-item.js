@@ -113,6 +113,7 @@ const AccountListItem = ({
   startAccessory,
   onActionClick,
   shouldScrollToWhenSelected = true,
+  showConnectedStatus = true,
   privacyMode = false,
 }) => {
   const t = useI18nContext();
@@ -330,7 +331,11 @@ const AccountListItem = ({
           display={[Display.Flex, Display.None]}
           data-testid="account-list-item-badge"
         >
-          <ConnectedStatus address={account.address} isActive={isActive} />
+          <ConnectedStatus
+            address={account.address}
+            isActive={isActive}
+            showConnectedStatus={showConnectedStatus}
+          />
         </Box>
         <Box display={[Display.None, Display.Flex]}>
           {
@@ -658,6 +663,10 @@ AccountListItem.propTypes = {
    * Determines if list balance should be obfuscated
    */
   privacyMode: PropTypes.bool,
+  /**
+   * Determines if the connected status should be shown
+   */
+  showConnectedStatus: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

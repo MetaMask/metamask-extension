@@ -938,22 +938,6 @@ class TestDapp {
     );
   }
 
-  /**
-   * Sign a message with the signTypedDataV3 method.
-   */
-  async signTypedDataV3() {
-    console.log('Sign message with signTypedDataV3');
-    await this.clickSignTypedDatav3();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessage,
-    );
-    await this.driver.clickElementSafe(this.confirmDialogScrollButton, 200);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
-  }
-
   async signTypedDataV3Redesign() {
     await this.clickSignTypedDatav3();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
