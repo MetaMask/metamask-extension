@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSlides } from '../../store/actions';
@@ -99,7 +100,9 @@ export const useCarouselManagement = ({
       defaultSlides.push(dismissedSweepstakesSlide);
     }
 
-    dispatch(updateSlides(defaultSlides));
+    if (!isEqual(slides, defaultSlides)) {
+      dispatch(updateSlides(defaultSlides));
+    }
   }, [dispatch, hasZeroBalance, isRemoteModeEnabled, slides, testDate, inTest]);
 
   return { slides };
