@@ -1,5 +1,5 @@
-import { Mockttp } from 'mockttp';
 import path from 'path';
+import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { DEFAULT_FIXTURE_ACCOUNT_SHORTENED } from '../../constants';
 import { withFixtures } from '../../helpers';

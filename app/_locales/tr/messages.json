@@ -955,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Ethereum verilerine mümkün olan en güvenilir ve gizli erişimi sunmak amacıyla uzak yordam çağrısı (RPC) sağlayıcısı olarak Infura kullanırız. Kendi RPC'nizi seçebilirsiniz ancak tüm RPC'lerin işlemleri gerçekleştirmek için IP adresinizi ve Ethereum cüzdanınızı alacağını unutmayın. Infura'nın verileri nasıl kullandığı hakkında daha fazla bilgi edinmek için $1 bölümümüzü okuyun.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Donanım Cüzdanınıza bağlamak için MetaMask'ı Google Chrome'da kullanmanız gerekir."
@@ -2711,9 +2711,6 @@
   "ledgerLocked": {
     "message": "Ledger cihazına bağlanılamıyor. Lütfen cihazınızın kilidinin açık ve Ethereum uygulamasının açık olduğundan emin olun."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Aynı anda birden fazla Ledger cihazı bağlanabilir. Yeni bir Ledger cihazı bağlamak için önceki cihazın bağlantısını kesmeniz gerekecek."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live'ın yanıt vermesi çok uzun sürdü ya da bağlantı zaman aşımına uğradı. Ledger Live uygulamasının açık olduğundan ve cihazınızın kilidinin açık olduğundan emin olun."
   },
@@ -3664,22 +3661,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMask kurulumunuz tamamlandı!"
-  },
-  "oneDayAbbreviation": {
-    "message": "1G",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1A",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1H",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1Y",
-    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "Sadece güvendiğiniz sitelere bağlayın. $1",
@@ -5974,10 +5955,6 @@
   "thirdPartySoftware": {
     "message": "Üçüncü taraf yazılım uyarısı",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3A",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "Zaman"

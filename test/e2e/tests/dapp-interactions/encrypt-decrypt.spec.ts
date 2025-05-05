@@ -4,7 +4,10 @@ import FixtureBuilder from '../../fixture-builder';
 import DecryptMessageConfirmation from '../../page-objects/pages/confirmations/redesign/decrypt-message-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { decryptMessageAndVerifyResult, getEncryptionKeyInDapp } from '../../page-objects/flows/encrypt-decrypt.flow';
+import {
+  decryptMessageAndVerifyResult,
+  getEncryptionKeyInDapp,
+} from '../../page-objects/flows/encrypt-decrypt.flow';
 
 describe('Encrypt Decrypt', function (this: Suite) {
   const encryptionKey = 'fxYXfCbun026g5zcCQh7Ia+O0urAEVZWLG8H4Jzu7Xs=';
@@ -67,7 +70,9 @@ describe('Encrypt Decrypt', function (this: Suite) {
         // ------ Decrypt Message 1 on test dapp------
         await testDapp.clickDecryptButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const decryptMessageConfirmation = new DecryptMessageConfirmation(driver);
+        const decryptMessageConfirmation = new DecryptMessageConfirmation(
+          driver,
+        );
         await decryptMessageConfirmation.check_pageIsLoaded();
 
         // ------ Encrypt Message 2 ------

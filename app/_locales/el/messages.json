@@ -955,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Χρησιμοποιούμε την Infura ως την υπηρεσία κλήσης απομακρυσμένης διαδικασίας (RPC) για να προσφέρουμε την πιο αξιόπιστη και ιδιωτική πρόσβαση στα δεδομένα του Ethereum που μπορούμε. Μπορείτε να επιλέξετε τη δική σας RPC, αλλά να θυμάστε ότι οποιαδήποτε RPC θα λαμβάνει τη διεύθυνση IP και το πορτοφόλι σας στο Ethereum για να πραγματοποιεί συναλλαγές. Διαβάστε το $1 για να μάθετε περισσότερα σχετικά με τον τρόπο με τον οποίο η Infura χειρίζεται τα δεδομένα.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Θα πρέπει να χρησιμοποιήσετε το MetaMask στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
@@ -2711,9 +2711,6 @@
   "ledgerLocked": {
     "message": "Δεν είναι δυνατή η σύνδεση με τη συσκευή Ledger. Βεβαιωθείτε ότι η συσκευή σας είναι ξεκλειδωμένη και ότι η εφαρμογή Ethereum είναι ανοιχτή."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Δεν είναι δυνατή η ταυτόχρονη σύνδεση πολλαπλών συσκευών Ledger. Για να συνδέσετε μια νέα συσκευή Ledger, θα πρέπει πρώτα να αποσυνδέσετε την προηγούμενη."
-  },
   "ledgerTimeout": {
     "message": "Το Ledger Live χρειάζεται πολύ χρόνο για να ανταποκριθεί ή η σύνδεση έχει διακοπεί. Βεβαιωθείτε ότι η εφαρμογή Ledger Live είναι ανοιχτή και ότι η συσκευή σας είναι ξεκλειδωμένη."
   },
@@ -3664,22 +3661,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Η εγκατάσταση του MetaMask ολοκληρώθηκε!"
-  },
-  "oneDayAbbreviation": {
-    "message": "1Η",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1M",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1ΕΒ",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1Ε",
-    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε. $1",
@@ -5974,10 +5955,6 @@
   "thirdPartySoftware": {
     "message": "Ειδοποίηση για λογισμικό τρίτων",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3Μ",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "Ώρα"
