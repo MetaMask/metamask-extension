@@ -283,11 +283,7 @@ export type ControllerStatePropertiesEnumerated = {
   allDetectedTokens: TokensControllerState['allDetectedTokens'];
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
   allTokens: TokensControllerState['allTokens'];
-  detectedTokens: TokensControllerState['detectedTokens'];
-  ignoredTokens: TokensControllerState['ignoredTokens'];
-  tokens: TokensControllerState['tokens'];
   preventPollingOnNetworkRestart: TokenListState['preventPollingOnNetworkRestart'];
-  tokenList: TokenListState['tokenList'];
   tokensChainsCache: TokenListState['tokensChainsCache'];
   marketData: TokenRatesControllerState['marketData'];
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
