@@ -135,7 +135,13 @@ import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import { isEvmAccountType, SolAccountType } from '@metamask/keyring-api';
+import {
+  isEvmAccountType,
+  SolAccountType,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  SolScope,
+  ///: END:ONLY_INCLUDE_IF
+} from '@metamask/keyring-api';
 import {
   hasProperty,
   hexToBigInt,
@@ -249,7 +255,7 @@ import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
-import { addDiscoveredSolanaAccounts } from '../../shared/lib/accounts';
+import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -413,6 +419,7 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
+import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -496,9 +503,6 @@ export default class MetamaskController extends EventEmitter {
       }),
       state: initState.LoggingController,
     });
-
-    // instance of a class that wraps the extension's storage local API.
-    this.localStoreApiWrapper = opts.persistanceManager;
 
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
@@ -1881,6 +1885,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
+      DelegationController: DelegationControllerInit,
     };
 
     const {
@@ -1926,6 +1931,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainNetworkController;
     this.authenticationController = controllersByName.AuthenticationController;
     this.userStorageController = controllersByName.UserStorageController;
+    this.delegationController = controllersByName.DelegationController;
     this.notificationServicesController =
       controllersByName.NotificationServicesController;
     this.notificationServicesPushController =
@@ -4879,6 +4885,20 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  async _getSolanaWalletSnapClient() {
+    const keyring = await this.getSnapKeyring();
+    const messenger = this.controllerMessenger;
+
+    return new MultichainWalletSnapClient(
+      SOLANA_WALLET_SNAP_ID,
+      [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet],
+      keyring,
+      messenger,
+    );
+  }
+  ///: END:ONLY_INCLUDE_IF
+
   async _addAccountsWithBalance(keyringId) {
     try {
       // Scan accounts until we find an empty one
@@ -4949,12 +4969,8 @@ export default class MetamaskController extends EventEmitter {
         );
       }
       ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      const keyring = await this.getSnapKeyring();
-      await addDiscoveredSolanaAccounts(
-        this.controllerMessenger,
-        entropySource,
-        keyring,
-      );
+      const client = await this._getSolanaWalletSnapClient();
+      await client.discoverAccounts(entropySource);
       ///: END:ONLY_INCLUDE_IF
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
@@ -4972,30 +4988,34 @@ export default class MetamaskController extends EventEmitter {
    */
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   async _addSolanaAccount(keyringId) {
-    const snapId = SOLANA_WALLET_SNAP_ID;
     let entropySource = keyringId;
-    if (!entropySource) {
-      // Get the entropy source from the first HD keyring
-      const id = await this.keyringController.withKeyring(
-        { type: KeyringTypes.hd },
-        async ({ metadata }) => {
-          return metadata.id;
+    try {
+      if (!entropySource) {
+        // Get the entropy source from the first HD keyring
+        const id = await this.keyringController.withKeyring(
+          { type: KeyringTypes.hd },
+          async ({ metadata }) => {
+            return metadata.id;
+          },
+        );
+        entropySource = id;
+      }
+
+      const client = await this._getSolanaWalletSnapClient();
+      return await client.createAccount(
+        { entropySource },
+        {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
         },
       );
-      entropySource = id;
+    } catch (e) {
+      // Do not block the onboarding flow if this fails
+      log.warn(`Failed to add Solana account. Error: ${e}`);
+      captureException(e);
+      return null;
     }
-
-    const keyring = await this.getSnapKeyring();
-
-    return await keyring.createAccount(
-      snapId,
-      { entropySource },
-      {
-        displayConfirmation: false,
-        displayAccountNameSuggestion: false,
-        setSelectedAccount: false,
-      },
-    );
   }
   ///: END:ONLY_INCLUDE_IF
 

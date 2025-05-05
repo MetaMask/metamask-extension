@@ -1376,6 +1376,13 @@
         "eslint>fast-deep-equal": true
       }
     },
+    "@metamask/delegation-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/ens-controller": {
       "packages": {
         "@ethersproject/providers": true,
@@ -4756,6 +4763,25 @@
     "dependency-tree>precinct>detective-postcss>postcss>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "navigator.locks": {
+      "globals": {
+        "AbortSignal": true,
+        "DOMException": true,
+        "Event": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "console.log": true,
+        "define": true,
+        "document.addEventListener": true,
+        "document.dispatchEvent": true,
+        "document.removeEventListener": true,
+        "localStorage": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
       }
     },
     "node-fetch": {
