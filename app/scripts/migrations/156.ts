@@ -2,7 +2,7 @@ import { Nft } from '@metamask/assets-controllers';
 import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
-export const version = 152.2;
+export const version = 156;
 
 type AllNfts = {
   [key: string]: {

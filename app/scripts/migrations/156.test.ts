@@ -1,7 +1,7 @@
-import { migrate } from './152.2';
+import { migrate } from './156';
 
-const expectedVersion = 152.2;
-const previousVersion = 152.1;
+const expectedVersion = 156;
+const previousVersion = 155;
 
 describe(`migration #${expectedVersion}`, () => {
   it('does nothing if state has no NftController property', async () => {
