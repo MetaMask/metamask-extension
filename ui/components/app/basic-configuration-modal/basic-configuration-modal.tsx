@@ -41,7 +41,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getUseExternalServices } from '../../../selectors';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {
   hideBasicFunctionalityModal,
   onboardingToggleBasicFunctionalityOff,
@@ -54,7 +54,7 @@ export function BasicConfigurationModal() {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -160,7 +160,7 @@ export function BasicConfigurationModal() {
                         settings_type: 'basic_functionality',
                         old_value: true,
                         new_value: false,
-                        was_profile_syncing_on: isProfileSyncingEnabled,
+                        was_profile_syncing_on: isBackupAndSyncEnabled,
                       },
                     }
                   : {
@@ -172,7 +172,7 @@ export function BasicConfigurationModal() {
                         old_value: isExternalServicesEnabled,
                         new_value: !isExternalServicesEnabled,
                         was_notifications_on: isMetamaskNotificationsEnabled,
-                        was_profile_syncing_on: isProfileSyncingEnabled,
+                        was_profile_syncing_on: isBackupAndSyncEnabled,
                       },
                     };
 
