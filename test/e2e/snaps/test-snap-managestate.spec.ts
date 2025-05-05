@@ -17,10 +17,7 @@ describe('Test Snap manageState', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectstateButton',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectstateButton');
         await testSnaps.check_installationComplete(
           'connectstateButton',
           'Reconnect to State Snap',
@@ -30,7 +27,10 @@ describe('Test Snap manageState', function () {
         await testSnaps.fillMessage('setStateKeyInput', 'foo');
         await testSnaps.fillMessage('dataStateInput', '"bar"');
         await testSnaps.scrollAndClickButton('sendStateButton');
-        await testSnaps.check_messageResultSpan('encryptedStateResultSpan', JSON.stringify({ foo: 'bar' }, null, 2));
+        await testSnaps.check_messageResultSpan(
+          'encryptedStateResultSpan',
+          JSON.stringify({ foo: 'bar' }, null, 2),
+        );
 
         // Retrieve one state key and validate
         await testSnaps.fillMessage('getStateInput', 'foo');
@@ -39,20 +39,32 @@ describe('Test Snap manageState', function () {
 
         // Clear results and validate
         await testSnaps.clickButton('clearStateButton');
-        await testSnaps.check_messageResultSpan('encryptedStateResultSpan', 'null');
+        await testSnaps.check_messageResultSpan(
+          'encryptedStateResultSpan',
+          'null',
+        );
 
         // Repeat the same steps for unencrypted state management
         await testSnaps.fillMessage('setStateKeyUnencryptedInput', 'foo');
         await testSnaps.fillMessage('dataUnencryptedStateInput', '"bar"');
         await testSnaps.scrollAndClickButton('sendUnencryptedStateButton');
-        await testSnaps.check_messageResultSpan('unencryptedStateResultSpan', JSON.stringify({ foo: 'bar' }, null, 2));
+        await testSnaps.check_messageResultSpan(
+          'unencryptedStateResultSpan',
+          JSON.stringify({ foo: 'bar' }, null, 2),
+        );
 
         await testSnaps.fillMessage('getUnencryptedStateInput', 'foo');
         await testSnaps.scrollAndClickButton('sendGetUnencryptedStateButton');
-        await testSnaps.check_messageResultSpan('getStateUnencryptedResultSpan', '"bar"');
+        await testSnaps.check_messageResultSpan(
+          'getStateUnencryptedResultSpan',
+          '"bar"',
+        );
 
         await testSnaps.clickButton('clearStateUnencryptedButton');
-        await testSnaps.check_messageResultSpan('unencryptedStateResultSpan', 'null');
+        await testSnaps.check_messageResultSpan(
+          'unencryptedStateResultSpan',
+          'null',
+        );
       },
     );
   });
@@ -80,20 +92,46 @@ describe('Test Snap manageState', function () {
         // enter data, click send manage state and validate results
         await testSnaps.fillMessage('dataManageStateInput', '23');
         await testSnaps.scrollAndClickButton('sendManageStateButton');
-        await testSnaps.check_messageResultSpan('sendManageStateResultSpan', 'true');
-        await testSnaps.check_messageResultSpan('retrieveManageStateResultSpan', '23');
+        await testSnaps.check_messageResultSpan(
+          'sendManageStateResultSpan',
+          'true',
+        );
+        await testSnaps.check_messageResultSpan(
+          'retrieveManageStateResultSpan',
+          '23',
+        );
         await testSnaps.clickButton('clearManageStateButton');
-        await testSnaps.check_messageResultSpan('clearManageStateResultSpan', 'true');
-        await testSnaps.check_messageResultSpan('retrieveManageStateResultSpan', '[]');
+        await testSnaps.check_messageResultSpan(
+          'clearManageStateResultSpan',
+          'true',
+        );
+        await testSnaps.check_messageResultSpan(
+          'retrieveManageStateResultSpan',
+          '[]',
+        );
 
         // check unencrypted state management and validate results
         await testSnaps.fillMessage('dataUnencryptedManageStateInput', '23');
-        await testSnaps.scrollAndClickButton('sendUnencryptedManageStateButton');
-        await testSnaps.check_messageResultSpan('sendUnencryptedManageStateResultSpan', 'true');
-        await testSnaps.check_messageResultSpan('retrieveManageStateUnencryptedResultSpan', '23');
+        await testSnaps.scrollAndClickButton(
+          'sendUnencryptedManageStateButton',
+        );
+        await testSnaps.check_messageResultSpan(
+          'sendUnencryptedManageStateResultSpan',
+          'true',
+        );
+        await testSnaps.check_messageResultSpan(
+          'retrieveManageStateUnencryptedResultSpan',
+          '23',
+        );
         await testSnaps.clickButton('clearUnencryptedManageStateButton');
-        await testSnaps.check_messageResultSpan('clearUnencryptedManageStateResultSpan', 'true');
-        await testSnaps.check_messageResultSpan('retrieveManageStateUnencryptedResultSpan', '[]');
+        await testSnaps.check_messageResultSpan(
+          'clearUnencryptedManageStateResultSpan',
+          'true',
+        );
+        await testSnaps.check_messageResultSpan(
+          'retrieveManageStateUnencryptedResultSpan',
+          '[]',
+        );
       },
     );
   });

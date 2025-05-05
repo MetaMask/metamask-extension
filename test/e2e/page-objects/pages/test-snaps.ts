@@ -100,7 +100,8 @@ const spanLocator = {
   sendManageStateResultSpan: '#sendManageStateResult',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
   retrieveManageStateResultSpan: '#retrieveManageStateResult',
-  retrieveManageStateUnencryptedResultSpan: '#retrieveManageStateUnencryptedResult',
+  retrieveManageStateUnencryptedResultSpan:
+    '#retrieveManageStateUnencryptedResult',
   rpcResultSpan: '#rpcResult',
   updateVersionSpan: '#updateSnapVersion',
   wasmResultSpan: '#wasmResult',
@@ -214,6 +215,7 @@ export class TestSnaps {
       text: expectedCount,
     });
   }
+
   /**
    * Select an entropy source from the dropdown with the given name.
    *

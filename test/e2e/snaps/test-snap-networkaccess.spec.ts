@@ -30,7 +30,10 @@ describe('Test Snap networkAccess', function () {
         // click on alert dialog and validate the message
         await testSnaps.clickButton('sendNetworkAccessTestButton');
         await driver.delay(500);
-        await testSnaps.check_messageResultSpan('networkAccessResultSpan', '"hello": "world"');
+        await testSnaps.check_messageResultSpan(
+          'networkAccessResultSpan',
+          '"hello": "world"',
+        );
       },
     );
   });
