@@ -71,7 +71,7 @@ export async function getStateCorruptionErrorHtml(
   const header = `
     <h1>${t('stateCorruptionMetamaskDatabaseCannotBeAccessed')}</h1>
     <p>${lodashEscape(corruptionDetectedMessage)}</p>
-    <p>${lodashEscape(copyAndRestoreMessage)}</p>
+    <p>${copyAndRestoreMessage}</p>
     <div id="critical-error-button" class="critical-error__link-restore button btn-danger" data-confirm="${lodashEscape(
       'Are you sure? This action is irreversible!',
     )}">
