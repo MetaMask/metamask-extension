@@ -3662,22 +3662,6 @@
   "onboardingPinExtensionTitle": {
     "message": "MetaMaskのインストールが完了しました！"
   },
-  "oneDayAbbreviation": {
-    "message": "1日",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1か月",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1週間",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1年",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続してください。$1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4147,18 +4131,6 @@
   },
   "productAnnouncements": {
     "message": "製品に関するお知らせ"
-  },
-  "profileSync": {
-    "message": "プロファイルの同期"
-  },
-  "profileSyncConfirmation": {
-    "message": "プロファイルの同期をオフにすると、通知を受け取ることができなくなります。"
-  },
-  "profileSyncDescription": {
-    "message": "MetaMaskが一部の設定をデバイス間で同期するために使用するプロファイルを作成します。これは通知の受取に必要です。$1。"
-  },
-  "profileSyncPrivacyLink": {
-    "message": "当社がどのようにユーザーのプライバシーを保護するのか、ご覧ください"
   },
   "proposedApprovalLimit": {
     "message": "提案された承認限度額"
@@ -5971,10 +5943,6 @@
   "thirdPartySoftware": {
     "message": "サードパーティソフトウェアに関する通知",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3か月",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "時間"
