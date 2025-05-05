@@ -39,17 +39,17 @@ export const DelegationControllerInit: ControllerInitFunction<
   return {
     controller,
     api: {
-      awaitDeleteDelegationEntry: awaitDeleteDelegationEntry.bind(
-        null,
-        controller,
-        initMessenger,
-      ),
       signDelegation: controller.signDelegation.bind(controller),
       storeDelegationEntry: controller.store.bind(controller),
       listDelegationEntries: controller.list.bind(controller),
       getDelegationEntry: controller.retrieve.bind(controller),
       getDelegationEntryChain: controller.chain.bind(controller),
       deleteDelegationEntry: controller.delete.bind(controller),
+      awaitDeleteDelegationEntry: awaitDeleteDelegationEntry.bind(
+        null,
+        controller,
+        initMessenger,
+      ),
     },
   };
 };
