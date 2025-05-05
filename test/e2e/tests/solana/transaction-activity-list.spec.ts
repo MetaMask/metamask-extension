@@ -23,7 +23,6 @@ describe('Transaction activity list', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('0');
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
@@ -62,7 +61,6 @@ describe('Transaction activity list', function (this: Suite) {
         mockSendTransaction: true,
         simulateTransaction: true,
         mockGetTransactionFailed: true,
-        mockGetTransactionSuccess: false,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);

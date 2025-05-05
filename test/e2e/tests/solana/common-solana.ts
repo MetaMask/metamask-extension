@@ -2024,6 +2024,7 @@ export async function mockGetFeeForMessageDevnet(mockServer: Mockttp) {
 
 export async function mockGetTokenAccountsByOwner(
   mockServer: Mockttp,
+  account: string,
   programId: string,
 ) {
   return await mockServer
@@ -2031,7 +2032,7 @@ export async function mockGetTokenAccountsByOwner(
     .withJsonBodyIncluding({
       method: 'getTokenAccountsByOwner',
       params: [
-        '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
+        account,
         {
           programId,
         },
@@ -2059,7 +2060,7 @@ export async function mockGetTokenAccountsByOwner(
                       info: {
                         isNative: false,
                         mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-                        owner: '14BLn1WLBf3coaPj1fZ5ZqJKQArEjJHvw7rvSktGv2b5',
+                        owner: account,
                         state: 'initialized',
                         tokenAmount: {
                           amount: '6000000',
@@ -2429,7 +2430,13 @@ export async function withSolanaAccountSnap(
               await mockGetMinimumBalanceForRentExemptionDevnet(mockServer),
               await mockGetTokenAccountsByOwner(
                 mockServer,
+                '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
                 SOLANA_TOKEN_PROGRAM,
+              ),
+              await mockGetTokenAccountsByOwner(
+                mockServer,
+                '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
+                'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
               ),
               await mockGetTokenAccountsByOwnerDevnet(mockServer),
               await mockMultiCoinPrice(mockServer),
@@ -2479,6 +2486,7 @@ export async function withSolanaAccountSnap(
           accountType: ACCOUNT_TYPE.Solana,
           accountName: `Solana ${i}`,
         });
+        await headerComponent.check_accountLabel(`Solana ${i}`);
       }
 
       if (numberOfAccounts > 0) {
