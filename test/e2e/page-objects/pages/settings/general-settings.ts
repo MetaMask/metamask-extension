@@ -3,26 +3,30 @@ import { Driver } from '../../../webdriver/driver';
 class GeneralSettings {
   private readonly driver: Driver;
 
-  // Page elements
+  private readonly blockiesAccountIdenticon = {
+    tag: 'h6',
+    text: 'Blockies',
+  };
+
+  private readonly blockiesIdenticonIcon =
+    '[data-testid="blockie_icon"] .settings-page__content-item__identicon__item__icon--active';
+
   private readonly generalSettingsPageTitle = {
     text: 'General',
     tag: 'h4',
   };
 
-  private readonly selectLanguageField = '[data-testid="locale-select"]';
-  private readonly loadingOverlaySpinner = '.loading-overlay__spinner';
-
-  // Identicon selectors
-  private readonly jazziconActiveSelector =
+  private readonly jazziconIdenticonIcon =
     '[data-testid="jazz_icon"] .settings-page__content-item__identicon__item__icon--active';
-  private readonly jazziconsTextSelector = {
+
+  private readonly jazziconsAccountIdenticon = {
     tag: 'h6',
     text: 'Jazzicons',
   };
-  private readonly blockiesTextSelector = {
-    tag: 'h6',
-    text: 'Blockies',
-  };
+
+  private readonly loadingOverlaySpinner = '.loading-overlay__spinner';
+
+  private readonly selectLanguageField = '[data-testid="locale-select"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -68,22 +72,35 @@ class GeneralSettings {
     await this.check_noLoadingOverlaySpinner();
   }
 
-  async check_noLoadingOverlaySpinner(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.loadingOverlaySpinner);
-  }
-
   /**
    * Verify that both Jazzicon and Blockies options are visible and Jazzicon is active
    */
-  async verifyIdenticonOptions(): Promise<void> {
-    console.log('Verifying identicon options');
+  async check_identiconOptionsAreDisplayed(): Promise<void> {
+    console.log(
+      'Checking if identicon options are displayed on general settings page',
+    );
+    await this.driver.waitForSelector(this.jazziconsAccountIdenticon);
+    await this.driver.waitForSelector(this.blockiesAccountIdenticon);
+  }
 
-    // Check if Jazzicon is active
-    await this.driver.findElement(this.jazziconActiveSelector);
+  /**
+   * Check if expected identicon icon is active
+   *
+   * @param isJazzicon - Whether the expected active identicon is jazzicon
+   */
+  async check_identiconIsActive(isJazzicon: boolean = true): Promise<void> {
+    const type = isJazzicon ? 'jazzicon' : 'blockies';
+    console.log(
+      `Checking if ${type} identicon is active on general settings page`,
+    );
+    const selector = isJazzicon
+      ? this.jazziconIdenticonIcon
+      : this.blockiesIdenticonIcon;
+      await this.driver.waitForSelector(selector);
+  }
 
-    // Check if both text elements are visible
-    await this.driver.waitForSelector(this.jazziconsTextSelector);
-    await this.driver.waitForSelector(this.blockiesTextSelector);
+  async check_noLoadingOverlaySpinner(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.loadingOverlaySpinner);
   }
 }
 

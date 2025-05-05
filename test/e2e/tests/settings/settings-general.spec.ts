@@ -1,9 +1,10 @@
-import { unlockWallet, withFixtures } from '../../helpers';
+import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { Driver } from '../../webdriver/driver';
+import { unlockWallet, withFixtures } from '../../helpers';
 
 describe('Settings', function () {
   it('checks jazzicon and blockies icons', async function () {
@@ -19,12 +20,13 @@ describe('Settings', function () {
         const headerNavbar = new HeaderNavbar(driver);
 
         // Unlock wallet and navigate to settings
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await headerNavbar.openSettingsPage();
         await settingsPage.check_pageIsLoaded();
 
         // Verify identicon options
-        await generalSettings.verifyIdenticonOptions();
+        await generalSettings.check_identiconOptionsAreDisplayed();
+        await generalSettings.check_identiconIsActive(true);
       },
     );
   });
