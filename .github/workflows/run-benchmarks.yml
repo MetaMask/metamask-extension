@@ -16,7 +16,7 @@ jobs:
   benchmarks:
     runs-on: ${{ inputs.runner-type }}
     container:
-      image: cimg/node:22.14-browsers
+      image: cimg/node:22.15-browsers
     strategy:
       fail-fast: false
       matrix:
@@ -44,6 +44,10 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+
+      # not installed by checkout-and-setup when cache is restored
+      - name: Install anvil
+        run: yarn foundryup
 
       - name: Download artifact ${{ env.ARTIFACT_NAME }}
         uses: actions/download-artifact@v4
