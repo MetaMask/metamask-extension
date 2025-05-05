@@ -216,14 +216,19 @@ export default function RemoteModeSetupDailyAllowance() {
       return;
     }
 
-    await enableRemoteMode({
-      selectedAccount: selectedHardwareAccount,
-      authorizedAccount: selectedAccount,
-      mode: REMOTE_MODES.DAILY_ALLOWANCE,
-      meta: JSON.stringify({ allowances: dailyAllowance }),
-    });
-    // TODO: check better way to route to remote mode if upgrade is needed
-    history.replace(REMOTE_ROUTE);
+    try {
+      await enableRemoteMode({
+        selectedAccount: selectedHardwareAccount,
+        authorizedAccount: selectedAccount,
+        mode: REMOTE_MODES.DAILY_ALLOWANCE,
+        meta: JSON.stringify({ allowances: dailyAllowance }),
+      });
+      // TODO: check better way to route to remote mode if upgrade is needed
+      history.replace(REMOTE_ROUTE);
+    } catch (error) {
+      // TODO: show error on UI
+      console.error(error);
+    }
   };
 
   const onCancel = () => {

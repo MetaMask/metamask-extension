@@ -220,12 +220,17 @@ export default function RemoteModeSetupSwaps() {
       return;
     }
 
-    await enableRemoteMode({
-      selectedAccount: selectedHardwareAccount,
-      authorizedAccount: selectedAccount,
-      mode: REMOTE_MODES.SWAP,
-      meta: JSON.stringify({ allowances: swapAllowance }),
-    });
+    try {
+      await enableRemoteMode({
+        selectedAccount: selectedHardwareAccount,
+        authorizedAccount: selectedAccount,
+        mode: REMOTE_MODES.SWAP,
+        meta: JSON.stringify({ allowances: swapAllowance }),
+      });
+    } catch (error) {
+      // TODO: show error on UI
+      console.error(error);
+    }
 
     // todo: replace with delegation controller integration
     const remoteMode = localStorage.getItem('remoteMode');

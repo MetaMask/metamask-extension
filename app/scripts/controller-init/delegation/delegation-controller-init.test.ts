@@ -59,6 +59,7 @@ describe('DelegationControllerInit', () => {
     const result = DelegationControllerInit(requestMock);
 
     expect(result.api).toEqual({
+      awaitDeleteDelegationEntry: expect.any(Function),
       storeDelegationEntry: expect.any(Function),
       signDelegation: expect.any(Function),
       getDelegationEntry: expect.any(Function),
