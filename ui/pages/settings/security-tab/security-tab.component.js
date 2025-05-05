@@ -58,7 +58,6 @@ import {
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import MetametricsToggle from './metametrics-toggle';
-import ProfileSyncToggle from './profile-sync-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 
 export default class SecurityTab extends PureComponent {
@@ -1163,14 +1162,6 @@ export default class SecurityTab extends PureComponent {
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
-
-        <div
-          ref={this.settingsRefs[21]}
-          className="settings-page__content-padded"
-          data-testid="profile-sync"
-        >
-          <ProfileSyncToggle />
-        </div>
 
         <div>
           <span className="settings-page__security-tab-sub-header">

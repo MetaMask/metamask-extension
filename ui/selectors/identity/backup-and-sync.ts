@@ -55,3 +55,19 @@ export const selectIsAccountSyncingReadyToBeDispatched = createSelector(
     return metamask.isAccountSyncingReadyToBeDispatched;
   },
 );
+
+/**
+ * Selector to determine if account syncing is enabled.
+ *
+ * This selector uses the `createSelector` function from 'reselect' to compute whether account syncing is enabled,
+ * based on the `hasFinishedAddingAccountsWithBalance` property of the `metamask` object in the Redux store.
+ *
+ * @param {AppState} state - The current state of the Redux store.
+ * @returns {boolean} Returns true if account syncing is enabled, false otherwise.
+ */
+export const selectIsAccountSyncingEnabled = createSelector(
+  [getMetamask],
+  (metamask) => {
+    return metamask.isAccountSyncingEnabled;
+  },
+);

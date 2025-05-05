@@ -18,6 +18,7 @@ import {
   SWEEPSTAKES_END,
   ZERO_BALANCE,
   MULTI_SRP_SLIDE,
+  BACKUPANDSYNC_SLIDE,
   SWEEPSTAKES_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
@@ -122,6 +123,7 @@ export const useCarouselManagement = (
       CARD_SLIDE,
       CASH_SLIDE,
       MULTI_SRP_SLIDE,
+      BACKUPANDSYNC_SLIDE,
       ///: BEGIN:ONLY_INCLUDE_IF(solana)
       SOLANA_SLIDE,
       ///: END:ONLY_INCLUDE_IF

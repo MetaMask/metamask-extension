@@ -1,17 +1,17 @@
-import { cloneDeep } from 'lodash';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SolScope } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { cloneDeep } from 'lodash';
 import {
   AssetsRatesState,
   AssetsState,
   getAccountAssets,
-  getTokenByAccountAndAddressAndChainId,
   getAssetsMetadata,
   getAssetsRates,
+  getHistoricalPrices,
   getMultiChainAssets,
   getMultichainNativeAssetType,
-  getHistoricalPrices,
+  getTokenByAccountAndAddressAndChainId,
 } from './assets';
 
 const mockRatesState = {
