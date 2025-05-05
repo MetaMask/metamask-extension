@@ -51,6 +51,7 @@ import {
   REMOTE_ROUTE,
   REMOTE_ROUTE_SETUP_SWAPS,
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+  DEFI_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -124,6 +125,7 @@ const NftFullImage = mmLazy(() =>
   import('../../components/app/assets/nfts/nft-details/nft-full-image'),
 );
 const Asset = mmLazy(() => import('../asset'));
+const DeFiPage = mmLazy(() => import('../defi'));
 const PermissionsPage = mmLazy(() =>
   import('../../components/multichain/pages/permissions-page/permissions-page'),
 );
@@ -365,6 +367,10 @@ export default class Routes extends Component {
             component={Asset}
           />
           <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
+          <Authenticated
+            path={`${DEFI_ROUTE}/:chainId/:protocolId`}
+            component={DeFiPage}
+          />
           <Authenticated
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
