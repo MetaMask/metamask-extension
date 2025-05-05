@@ -13,7 +13,7 @@ import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
-  CaipAssetType,
+  type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
@@ -53,7 +53,7 @@ import { Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
-import switchDirection from '../../shared/lib/switch-direction';
+import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
@@ -5695,7 +5695,7 @@ export function performSignOut(): ThunkAction<
  *
  * @param feature - The feature to enable or disable.
  * @param enabled - A boolean indicating whether to enable or disable the feature.
- * @returns A thunk action that, when dispatched, attempts to enable profile syncing.
+ * @returns A thunk action that, when dispatched, attempts to enable or disable a backup and sync feature.
  */
 export function setIsBackupAndSyncFeatureEnabled(
   feature: keyof typeof BACKUPANDSYNC_FEATURES,
