@@ -7,10 +7,10 @@ import {
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
-} from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+} from '../helpers';
+import FixtureBuilder from '../fixture-builder';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../constants';
+import TestDappMultichain from '../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   addAccountInWalletAndAuthorize,

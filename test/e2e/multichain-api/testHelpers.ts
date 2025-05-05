@@ -11,14 +11,14 @@ import {
   PRIVATE_KEY,
   regularDelayMs,
   WINDOW_TITLES,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
+} from '../helpers';
+import { Driver } from '../webdriver/driver';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../constants';
 import {
   CONTENT_SCRIPT,
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_INPAGE,
-} from '../../../../app/scripts/constants/stream';
+} from '../../../app/scripts/constants/stream';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 

@@ -8,9 +8,9 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
   unlockWallet,
-} from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+} from '../helpers';
+import FixtureBuilder from '../fixture-builder';
+import TestDappMultichain from '../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
