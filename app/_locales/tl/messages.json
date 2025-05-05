@@ -4132,18 +4132,6 @@
   "productAnnouncements": {
     "message": "Mga anunsiyo ng produkto"
   },
-  "profileSync": {
-    "message": "Pag-sync ng Profile"
-  },
-  "profileSyncConfirmation": {
-    "message": "Kapag in-off mo ang pag-sync ng profile, hindi ka makakatanggap ng mga notipikasyon."
-  },
-  "profileSyncDescription": {
-    "message": "Lumikha ng profile na gagamitin ng MetaMask upang i-sync ang ilang mga setting sa iyong mga device. Kailangan ito para makakuha ng mga notipikasyon. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Matutunan kung paano namin protektahan ang iyong pagkapribado"
-  },
   "proposedApprovalLimit": {
     "message": "Iminumungkahing Limitasyon sa Pag-apruba"
   },
