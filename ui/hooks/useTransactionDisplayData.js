@@ -406,7 +406,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
-    title = t('bridgeToChain', [destChainName || '']);
+    title = destChainName ? t('bridgeToChain', [destChainName]) : t('bridge');
     category = bridgeTokenDisplayData.category;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
     primaryDisplayValue = formatAmount(
