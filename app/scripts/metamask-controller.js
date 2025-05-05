@@ -23,7 +23,6 @@ import {
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
-
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import {
@@ -313,6 +312,7 @@ import {
   getEnvironmentType,
   getMethodDataName,
   previousValueComparator,
+  initializeRpcProviderDomains,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
@@ -4989,28 +4989,33 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   async _addSolanaAccount(keyringId) {
     let entropySource = keyringId;
-    if (!entropySource) {
-      // Get the entropy source from the first HD keyring
-      const id = await this.keyringController.withKeyring(
-        { type: KeyringTypes.hd },
-        async ({ metadata }) => {
-          return metadata.id;
+    try {
+      if (!entropySource) {
+        // Get the entropy source from the first HD keyring
+        const id = await this.keyringController.withKeyring(
+          { type: KeyringTypes.hd },
+          async ({ metadata }) => {
+            return metadata.id;
+          },
+        );
+        entropySource = id;
+      }
+
+      const client = await this._getSolanaWalletSnapClient();
+      return await client.createAccount(
+        { entropySource },
+        {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
         },
       );
-      entropySource = id;
+    } catch (e) {
+      // Do not block the onboarding flow if this fails
+      log.warn(`Failed to add Solana account. Error: ${e}`);
+      captureException(e);
+      return null;
     }
-
-    const client = await this._getSolanaWalletSnapClient();
-    return await client.createAccount(
-      {
-        entropySource,
-      },
-      {
-        displayConfirmation: false,
-        displayAccountNameSuggestion: false,
-        setSelectedAccount: false,
-      },
-    );
   }
   ///: END:ONLY_INCLUDE_IF
 
@@ -7678,6 +7683,8 @@ export default class MetamaskController extends EventEmitter {
     const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
     const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
     if (cachedResponse) {
+      // Also initialize the known domains when we have chain data cached
+      await initializeRpcProviderDomains();
       return;
     }
     await setStorageItem(cacheKey, {
@@ -7685,6 +7692,8 @@ export default class MetamaskController extends EventEmitter {
       // Cached value is immediately invalidated
       cachedTime: 0,
     });
+    // Initialize domains after setting the chainlist cache
+    await initializeRpcProviderDomains();
   }
 
   /**
@@ -7856,6 +7865,37 @@ export default class MetamaskController extends EventEmitter {
           .showConfirmationAdvancedDetails;
       },
       getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
+      getNetworkRpcUrl: (chainId) => {
+        // TODO: Move to @metamask/network-controller
+        try {
+          const networkClientId =
+            this.networkController.findNetworkClientIdByChainId(chainId);
+          const networkConfig =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+
+          // Try direct rpcUrl property first
+          if (networkConfig.rpcUrl) {
+            return networkConfig.rpcUrl;
+          }
+
+          // Try rpcEndpoints array
+          if (networkConfig.rpcEndpoints?.length > 0) {
+            const defaultEndpointIndex =
+              networkConfig.defaultRpcEndpointIndex || 0;
+            return (
+              networkConfig.rpcEndpoints[defaultEndpointIndex]?.url ||
+              networkConfig.rpcEndpoints[0].url
+            );
+          }
+
+          return 'unknown';
+        } catch (error) {
+          console.error('Error getting RPC URL:', error);
+          return 'unknown';
+        }
+      },
     };
     return {
       ...controllerActions,
