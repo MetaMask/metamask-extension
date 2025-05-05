@@ -12,6 +12,7 @@ export const LOCK_ROUTE = '/lock';
 PATH_NAME_MAP[LOCK_ROUTE] = 'Lock Page';
 
 export const ASSET_ROUTE = '/asset';
+export const DEFI_ROUTE = '/defi';
 PATH_NAME_MAP[`${ASSET_ROUTE}/:asset/:id`] = `Asset Page`;
 PATH_NAME_MAP[`${ASSET_ROUTE}/image/:asset/:id`] = `Nft Image Page`;
 
@@ -69,6 +70,10 @@ export const REVEAL_SRP_LIST_ROUTE =
   '/settings/security-and-privacy/reveal-srp-list';
 PATH_NAME_MAP[REVEAL_SRP_LIST_ROUTE] =
   'Reveal Secret Recovery Phrase List Page';
+
+export const BACKUPANDSYNC_ROUTE =
+  '/settings/security-and-privacy/backup-and-sync';
+PATH_NAME_MAP[BACKUPANDSYNC_ROUTE] = 'Backup And Sync Settings Page';
 
 export const REVEAL_SEED_ROUTE = '/seed';
 // This `:keyringId` parameter is actually optional.

@@ -37,8 +37,7 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: cimg/node:22.14-browsers
-    continue-on-error: true # soft launch
+      image: cimg/node:22.15-browsers
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
@@ -105,7 +104,7 @@ jobs:
         run: ${{ inputs.test-command }} --retries 1
         env:
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
-          PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},JOB_ID:${{ steps.get-job-id.outputs.job-id }}'
+          PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},JOB_ID:${{ steps.get-job-id.outputs.job-id }},RUN_ID:${{ env.RUN_ID }}'
 
       - name: Upload test results and artifacts
         if: ${{ !cancelled() }}
