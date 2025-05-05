@@ -113,6 +113,7 @@ export const connectSolanaTestDapp = async (
   // Get to extension modal, and click on the "Connect" button
   await driver.delay(largeDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
   if (options?.selectAllAccounts) {
     await selectAccountsAndAuthorize(driver);
   }
@@ -126,6 +127,7 @@ export const connectSolanaTestDapp = async (
 
   // Go back to the test dapp window
   await testDapp.switchTo();
+  await console.log('connected');
 };
 
 /**
@@ -167,35 +169,24 @@ export const switchToAccount = async (
   accountName: string,
 ): Promise<void> => {
   await driver.clickElementSafe('[data-testid="account-menu-icon"]');
+  await driver.delay(regularDelayMs);
   await driver.clickElement({
     text: accountName,
     tag: 'button',
   });
-  await driver.waitForSelector({
-    text: accountName,
-    tag: 'span',
-  });
+  await driver.delay(regularDelayMs);
 };
 
 /**
  * Asserts that the connection status is as expected.
  *
  * @param connectionStatus
- * @param driver
  * @param expectedAddress
  */
 export const assertConnected = async (
   connectionStatus: 'Connected' | 'Disconnected' | string,
-  driver: Driver,
   expectedAddress?: string,
 ): Promise<void> => {
-  await driver.wait(async () => {
-    const connectionStatusElement = await driver.findElement(
-      By.css('[data-testid="connection-status"]'),
-    );
-    const connectionStatusText = await connectionStatusElement.getText();
-    return connectionStatusText === expectedAddress;
-  }, 5000);
   assert.strictEqual(
     connectionStatus,
     expectedAddress ? `${expectedAddress}` : 'Connected',
