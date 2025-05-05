@@ -93,7 +93,7 @@ function transformState(
     return state;
   }
 
-  const internalAccounts = accountsControllerState.internalAccounts;
+  const { internalAccounts } = accountsControllerState;
 
   const accounts = Object.values(internalAccounts.accounts);
   const evmAccounts = accounts.filter((account) =>
