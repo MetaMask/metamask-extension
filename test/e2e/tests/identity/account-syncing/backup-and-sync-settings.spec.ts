@@ -73,6 +73,7 @@ describe('Backup and Sync Settings', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
+            ACCOUNT_TYPE.Ethereum
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -139,6 +140,7 @@ describe('Backup and Sync Settings', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
+            ACCOUNT_TYPE.Ethereum,
           );
         },
       );
