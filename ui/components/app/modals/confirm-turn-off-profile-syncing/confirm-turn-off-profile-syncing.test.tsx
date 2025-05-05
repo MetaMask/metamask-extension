@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { useModalProps } from '../../../../hooks/useModalProps';
-import { useDisableProfileSyncing } from '../../../../hooks/identity/useProfileSyncing';
 import { I18nContext } from '../../../../contexts/i18n';
 import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
 
@@ -9,24 +8,23 @@ jest.mock('../../../../hooks/useModalProps', () => ({
   useModalProps: jest.fn(),
 }));
 
-jest.mock('../../../../hooks/identity/useProfileSyncing', () => ({
-  useDisableProfileSyncing: jest.fn(),
-}));
-
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
+}));
+
+const mockSetIsBackupAndSyncFeatureEnabled = jest.fn();
+jest.mock('../../../../hooks/identity/useBackupAndSync', () => ({
+  useBackupAndSync: jest.fn(() => ({
+    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
+    error: null,
+  })),
 }));
 
 const mockedUseModalProps = useModalProps as jest.MockedFunction<
   typeof useModalProps
 >;
-const mockedUseDisableProfileSyncing =
-  useDisableProfileSyncing as jest.MockedFunction<
-    typeof useDisableProfileSyncing
-  >;
 
 const mockHideModal = jest.fn();
-const mockDisableProfileSyncing = jest.fn();
 
 describe('ConfirmTurnOffProfileSyncing', () => {
   beforeEach(() => {
@@ -34,10 +32,6 @@ describe('ConfirmTurnOffProfileSyncing', () => {
     mockedUseModalProps.mockReturnValue({
       hideModal: mockHideModal,
       props: {},
-    });
-    mockedUseDisableProfileSyncing.mockReturnValue({
-      disableProfileSyncing: mockDisableProfileSyncing,
-      error: null,
     });
   });
 
@@ -60,7 +54,7 @@ describe('ConfirmTurnOffProfileSyncing', () => {
     expect(mockHideModal).toHaveBeenCalledTimes(1);
   });
 
-  it('disables profile syncing and closes the modal on confirm', async () => {
+  it('disables backup and sync and closes the modal on confirm', async () => {
     const { getByTestId } = render(
       <I18nContext.Provider value={(key) => key}>
         <ConfirmTurnOffProfileSyncing />

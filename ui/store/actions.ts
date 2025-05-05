@@ -5695,7 +5695,7 @@ export function performSignOut(): ThunkAction<
  *
  * @param feature - The feature to enable or disable.
  * @param enabled - A boolean indicating whether to enable or disable the feature.
- * @returns A thunk action that, when dispatched, attempts to enable profile syncing.
+ * @returns A thunk action that, when dispatched, attempts to enable or disable a backup and sync feature.
  */
 export function setIsBackupAndSyncFeatureEnabled(
   feature: keyof typeof BACKUPANDSYNC_FEATURES,
