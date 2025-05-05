@@ -38,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !cancelled() }}
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       # For a `pull_request` event, the branch is `github.head_ref`.
