@@ -66,6 +66,7 @@ export type TransactionMetricsRequest = {
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
   getHDEntropyIndex: () => number;
+  getNetworkRpcUrl: (chainId: Hex) => string;
 };
 
 export type TransactionEventPayload = {

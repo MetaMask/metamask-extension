@@ -13,6 +13,7 @@ import {
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
+  BACKUPANDSYNC_ROUTE,
 } from './routes';
 
 /**
@@ -160,6 +161,20 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
     icon: 'fas fa-sliders-h',
     hidden: getPlatform() !== PLATFORM_FIREFOX,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncEnable'),
+    descriptionMessage: (t) => t('backupAndSyncEnable'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-toggle`,
+    iconName: IconName.SecurityTime,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncFeatureAccounts'),
+    descriptionMessage: (t) => t('backupAndSyncFeatureAccounts'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-account-syncing`,
+    iconName: IconName.SecurityTime,
   },
   {
     tabMessage: (t) => t('contacts'),
@@ -328,14 +343,6 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('deleteMetaMetricsData'),
     descriptionMessage: (t) => t('deleteMetaMetricsDataDescription'),
     route: `${SECURITY_ROUTE}#delete-metametrics-data`,
-    icon: 'fa fa-lock',
-  },
-  // securityAndPrivacy settingsRefs[21]
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('profileSync'),
-    descriptionMessage: (t) => t('profileSyncDescription'),
-    route: `${SECURITY_ROUTE}#profile-sync`,
     icon: 'fa fa-lock',
   },
   {
