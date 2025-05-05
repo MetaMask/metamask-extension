@@ -13,7 +13,7 @@ describe('Carousel component e2e tests', function () {
     'card',
     'cash',
     'multiSrp',
-    'backupAndSync'
+    'backupAndSync',
   ];
 
   it('should display correct slides with expected content', async function () {
@@ -115,13 +115,19 @@ describe('Carousel component e2e tests', function () {
             remainingSlides,
             `Expected ${remainingSlides} slides remaining`,
           );
-          console.log(`[data-testid="slide-${SLIDE_IDS[i]}"] button`);
           await driver.delay(tinyDelayMs);
           const dismissButton = await driver.waitForSelector(
             `[data-testid="slide-${SLIDE_IDS[i]}"] button`,
           );
           await dismissButton.click();
-
+          await driver.wait(async () => {
+            try {
+              const isDisplayed = await dismissButton.isDisplayed();
+              return !isDisplayed;
+            } catch (e) {
+              return true;
+            }
+          }, 1000);
           const slideCountAfterOneDismissed =
             totalSlidesCount - i > MAX_VISIBLE_SLIDES
               ? MAX_VISIBLE_SLIDES

@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
 import {
   SOLANA_DEVNET_URL,
   withSolanaAccountSnap,
@@ -308,7 +307,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Check that mainnet appears in the dialog
           const el = await driver.waitForSelector({
-            text: "Solana Mainnet",
+            text: 'Solana Mainnet',
             tag: 'p',
           });
           assert.ok(el);
