@@ -393,43 +393,59 @@ function maybeDetectPhishing(theController) {
  * Restores a given backup to the primary database and reinitializes the
  * background script and UI.
  *
- * @param {chrome.runtime.Port} port - The port for the UI
+ * @param {Set<chrome.runtime.Port>} ports - The port for the UI
  * @param {Backup} backup - The backup to restore.
  */
-async function restoreDatabaseFromBackup(port, backup) {
-  const deferred = deferredPromise();
-  // we are going to reinitialize the background script, so we need to
-  // reset the initialization promises. this is gross since it is
-  // possible the original references could have been passed to other
-  // functions, and we can't update those references from here.
-  // right now, that isn't the case though.
-  isInitialized = deferred.promise;
-  resolveInitialization = deferred.resolve;
-  rejectInitialization = deferred.reject;
+async function restoreDatabaseFromBackup(ports, backup) {
+  await navigator.locks
+    .query('restoreDatabaseFromBackup')
+    .then(async (locks) => {
+      if (locks.length > 0) {
+        // never ever restore the database from a backup if we are already in the
+        // process of restoring the database from a backup. I don't know what
+        // would actually happen, but I'm quite sure it would be really bad.
+        throw new Error('restoreDatabaseFromBackup lock already held');
+      } else {
+        await navigator.locks.request('restoreDatabaseFromBackup', async () => {
+          await new Promise((r) => setTimeout(r, 5000));
+          const deferred = deferredPromise();
+          // we are going to reinitialize the background script, so we need to
+          // reset the initialization promises. this is gross since it is
+          // possible the original references could have been passed to other
+          // functions, and we can't update those references from here.
+          // right now, that isn't the case though.
+          isInitialized = deferred.promise;
+          resolveInitialization = deferred.resolve;
+          rejectInitialization = deferred.reject;
 
-  try {
-    if (!backup) {
-      // if we don't have a backup we need to make sure we clear the state
-      // from the database, and then reinitialize the background script
-      // with the first time state.
-      await persistenceManager.reset();
-    }
-    await initBackground(backup);
-    controller.onboardingController.setFirstTimeFlowType(
-      FirstTimeFlowType.restore,
-    );
-  } finally {
-    // always reload the UI because if `initBackground` worked, the UI
-    // will redirect to the login screen, and if it didn't work, it'll
-    // show them a new error message (which could be the same as the
-    // vault error that sent them here in the first place, but hopefully
-    // not!)
-    tryPostMessage(port, {
-      data: {
-        method: 'RELOAD',
-      },
+          try {
+            if (!backup) {
+              // if we don't have a backup we need to make sure we clear the state
+              // from the database, and then reinitialize the background script
+              // with the first time state.
+              await persistenceManager.reset();
+            }
+            await initBackground(backup);
+            controller.onboardingController.setFirstTimeFlowType(
+              FirstTimeFlowType.restore,
+            );
+          } finally {
+            // always reload the UI because if `initBackground` worked, the UI
+            // will redirect to the login screen, and if it didn't work, it'll
+            // show them a new error message (which could be the same as the
+            // vault error that sent them here in the first place, but hopefully
+            // not!)
+            ports.forEach((port) => {
+              tryPostMessage(port, {
+                data: {
+                  method: 'RELOAD',
+                },
+              });
+            });
+          }
+        });
+      }
     });
-  }
 }
 
 /**
@@ -496,6 +512,10 @@ let connectEip1193;
 /** @type {ConnectCaipMultichain} */
 let connectCaipMultichain;
 
+/**
+ * @type {Set<chrome.runtime.Port>}
+ */
+const brokenUIPorts = new Set();
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   try {
@@ -519,12 +539,12 @@ browser.runtime.onConnect.addListener(async (...args) => {
         // if it does, we can use it without reading from the DB again.
         error.backup ||
         (await persistenceManager.getBackup().catch((_) => {
-          // ignore errors here since we're already in an error state, we we
-          // really only care about the error that got us here.
+          // ignore errors here since we're already in an error state, we really
+          // only care about the error that got us here.
           return null;
         }));
 
-      // send the `error` to the ui
+      // send the `error` to the UI for this port
       const sent = tryPostMessage(port, {
         data: {
           method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
@@ -541,12 +561,28 @@ browser.runtime.onConnect.addListener(async (...args) => {
           },
         },
       });
+      // if we successfully sent the error to the UI, listen for a "restore"
+      // method call back to us
       if (sent) {
+        // we handle multiple open UIs by keeping track of the ports that are
+        // open, and only allowing the restore process to happen once.
+        brokenUIPorts.add(port);
+        port.onDisconnect.addListener(() => brokenUIPorts.delete(port));
         port.onMessage.addListener(async function restoreVaultListener(
           message,
         ) {
           if (message?.data?.method === METHOD_RESTORE_DATABASE_FROM_BACKUP) {
-            await restoreDatabaseFromBackup(port, backup);
+            // only allow the restore process once, unregister
+            // `restoreVaultListener` listeners from any other UI windows
+            brokenUIPorts.forEach((brokenPort) =>
+              brokenPort.onMessage.removeListener(restoreVaultListener),
+            );
+
+            try {
+              await restoreDatabaseFromBackup(brokenUIPorts, backup);
+            } finally {
+              brokenUIPorts.clear();
+            }
           }
         });
       }
