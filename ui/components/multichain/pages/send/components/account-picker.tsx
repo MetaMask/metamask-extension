@@ -2,14 +2,16 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EthAccountType } from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../../selectors';
-import { Label } from '../../../../component-library';
+import { Box, Label, Text } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
 import {
+  AlignItems,
   BlockSize,
   BorderColor,
   Display,
   JustifyContent,
   TextAlign,
+  TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
@@ -18,7 +20,13 @@ import { SendPageRow } from './send-page-row';
 
 const AccountListItemProps = { showOptions: false };
 
-export const SendPageAccountPicker = () => {
+type SendPageAccountPickerProps = {
+  isRemoteModeEnabled?: boolean;
+};
+
+export const SendPageAccountPicker = ({
+  isRemoteModeEnabled = false,
+}: SendPageAccountPickerProps) => {
   const t = useContext(I18nContext);
   const internalAccount = useSelector(getSelectedInternalAccount);
 
@@ -32,7 +40,17 @@ export const SendPageAccountPicker = () => {
 
   return (
     <SendPageRow>
-      <Label paddingBottom={2}>{t('from')}</Label>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
+      >
+        <Label paddingBottom={2}>{t('from')}</Label>
+        {isRemoteModeEnabled && (
+          // TODO: Implement tooltip
+          <Text color={TextColor.textMuted}>Remote mode: On</Text>
+        )}
+      </Box>
       <AccountPicker
         className="multichain-send-page__account-picker"
         address={internalAccount.address}

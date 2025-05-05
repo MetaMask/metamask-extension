@@ -130,30 +130,33 @@ export const getRemoteModeConfig = createSelector(
   },
 );
 
-type GetIsRemoteSendPossibleParams = {
+type GetRemoteSendAllowanceParams = {
   from: Address;
-  to: Address;
   chainId: Hex;
   asset: Asset;
 };
 
-export const getIsRemoteSendPossible = (
-  state: DelegationState,
-  params: GetIsRemoteSendPossibleParams,
+export const getRemoteSendAllowance = (
+  state: RemoteModeState,
+  params: GetRemoteSendAllowanceParams,
 ) => {
-  const { from, to, chainId, asset } = params;
+  // Check feature flag
+  if (!getIsRemoteModeEnabled(state)) {
+    return null;
+  }
+
+  const { from, chainId, asset } = params;
 
   const entry = listDelegationEntries(state, {
     filter: {
       from,
-      to,
       chainId,
       tags: [REMOTE_MODES.DAILY_ALLOWANCE],
     },
   })[0];
 
   if (!entry?.meta) {
-    return false;
+    return null;
   }
 
   const meta = JSON.parse(entry.meta) as {
@@ -161,7 +164,7 @@ export const getIsRemoteSendPossible = (
   };
 
   if (meta.allowances.length === 0) {
-    return false;
+    return null;
   }
 
   const symbol = asset.details?.symbol ?? 'ETH';
@@ -169,8 +172,8 @@ export const getIsRemoteSendPossible = (
   const allowance = meta.allowances.find((a) => a.tokenType === symbol);
 
   if (!allowance) {
-    return false;
+    return null;
   }
 
-  return true;
+  return allowance;
 };
