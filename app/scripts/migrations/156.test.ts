@@ -116,7 +116,34 @@ describe(`migration #${version}`, () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
-          TokensController: {},
+          TokenBalancesController: {
+            tokenBalances: {
+              [mockInternalAccount.address]: {
+                '0x1': {
+                  '0x6B175474E89094C44Da98b954EedeAC495271d0F': {
+                    balance: '0x5',
+                  },
+                },
+              },
+            },
+          },
+          TokensController: {
+            allTokens: {
+              '0x1': {
+                [mockInternalAccount.address]: [
+                  {
+                    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+                    aggregators: [],
+                    decimals: 18,
+                    image:
+                      'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png',
+                    name: 'Dai',
+                    symbol: 'DAI',
+                  },
+                ],
+              },
+            },
+          },
           AccountsController: {
             internalAccounts: {
               accounts: {
