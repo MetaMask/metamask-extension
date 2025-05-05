@@ -17,17 +17,10 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonLink,
-  ButtonLinkSize,
   IconName,
-  Popover,
-  PopoverPosition,
-  Text,
 } from '../../component-library';
 import {
-  AlignItems,
-  Display,
   JustifyContent,
-  TextAlign,
   TextVariant,
   IconColor,
 } from '../../../helpers/constants/design-system';
@@ -218,16 +211,8 @@ export const CoinOverview = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   ///: END:ONLY_INCLUDE_IF
-
-  const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
-    t,
-    t('general'),
-    t('showNativeTokenAsMainBalance'),
-  );
-  const theme = useTheme();
   const dispatch = useDispatch();
 
-  const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
   const isTestnet = useSelector(getIsTestnet);
   const { showFiatInTestnets, privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
