@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { BtcScope, SolScope } from '@metamask/keyring-api';
 import {
@@ -19,6 +19,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { SrpList } from '../multi-srp/srp-list';
 
 type EditAccountAddAccountFormProps = {
   accountType: WalletClientType | 'EVM'; // undefined is default evm.
@@ -32,16 +33,21 @@ export const EditAccountAddAccountForm: React.FC<
 > = ({ accountType, onActionComplete, onBack, onClose }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
+  const [showSrpSelection, setShowSrpSelection] = useState(false);
 
   // Here we are getting the keyring of the last selected account
   // if it is not an hd keyring, we will use the primary keyring
   const hdKeyring = useSelector(getHdKeyringOfSelectedAccountOrPrimaryKeyring);
+  const [selectedKeyringId, setSelectedKeyringId] = useState<string>(
+    hdKeyring.metadata.id,
+  );
 
   const onSelectSrp = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
     });
+    setShowSrpSelection((previous) => !previous);
   }, []);
 
   const { clientType, chainId, networkName } = useMemo(() => {
@@ -87,10 +93,17 @@ export const EditAccountAddAccountForm: React.FC<
       </ModalHeader>
       <ModalBody>
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-          {accountType && clientType && chainId ? (
+          {showSrpSelection ? (
+            <SrpList
+              onActionComplete={(keyringId: string) => {
+                setSelectedKeyringId(keyringId);
+                setShowSrpSelection(false);
+              }}
+            />
+          ) : clientType && chainId ? (
             <CreateSnapAccount
               onActionComplete={onActionComplete}
-              selectedKeyringId={hdKeyring.metadata.id}
+              selectedKeyringId={selectedKeyringId}
               onSelectSrp={onSelectSrp}
               clientType={clientType}
               chainId={chainId}
@@ -99,7 +112,7 @@ export const EditAccountAddAccountForm: React.FC<
           ) : (
             <CreateEthAccount
               onActionComplete={onActionComplete}
-              selectedKeyringId={hdKeyring.metadata.id}
+              selectedKeyringId={selectedKeyringId}
               onSelectSrp={onSelectSrp}
             />
           )}
