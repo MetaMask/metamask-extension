@@ -41,12 +41,21 @@ async function main() {
     if (jobsCache[runId]) {
       return jobsCache[runId];
     }
-    const jobs = await github.paginate(
-      github.rest.actions.listJobsForWorkflowRun,
-      { owner: env.OWNER, repo: env.REPOSITORY, run_id: runId, per_page: 100 },
-    );
-    jobsCache[runId] = jobs;
-    return jobsCache[runId];
+    try {
+      const jobs = await github.paginate(
+        github.rest.actions.listJobsForWorkflowRun,
+        {
+          owner: env.OWNER,
+          repo: env.REPOSITORY,
+          run_id: runId,
+          per_page: 100,
+        },
+      );
+      jobsCache[runId] = jobs;
+      return jobsCache[runId];
+    } catch (error) {
+      return [];
+    }
   }
 
   async function getJobId(runId: number, jobName: string) {
