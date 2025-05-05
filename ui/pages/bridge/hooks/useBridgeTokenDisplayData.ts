@@ -44,7 +44,10 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
 
   return {
     category: TransactionGroupCategory.bridge,
-    displayCurrencyAmount,
+    displayCurrencyAmount:
+      primaryTransaction.chainId === chainId
+        ? displayCurrencyAmount
+        : undefined,
     sourceTokenSymbol:
       bridgeHistoryItem?.quote.srcAsset.symbol ??
       primaryTransaction.sourceTokenSymbol,
