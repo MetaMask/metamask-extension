@@ -59,7 +59,7 @@ export const commonSolanaTxConfirmedDetailsFixture = {
   amount: '0.00708 SOL',
   networkFee: '0.000005 SOL',
   fromAddress: 'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
-  toAddress: 'AL9Z5JgZdeCKnaYg6jduy9PQGzo3moo7vZYVSTJwnSEq',
+  toAddress: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
   txHash:
     '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
 };
@@ -1580,7 +1580,7 @@ export async function mockGetSuccessTransaction(mockServer: Mockttp) {
           message: {
             accountKeys: [
               'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
-              'AL9Z5JgZdeCKnaYg6jduy9PQGzo3moo7vZYVSTJwnSEq',
+              '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
               '11111111111111111111111111111111',
             ],
             addressTableLookups: [],
