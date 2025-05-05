@@ -1,29 +1,26 @@
-const { resolve } = require('path');
-const { promises: fs } = require('fs');
-const { strict: assert } = require('assert');
-const { get, has, set, unset, cloneDeep } = require('lodash');
-const { Browser } = require('selenium-webdriver');
-const { format } = require('prettier');
-const { isObject } = require('@metamask/utils');
-const {
-  SENTRY_UI_STATE,
-} = require('../../../../app/scripts/constants/sentry-state');
-const FixtureBuilder = require('../../fixture-builder');
-const {
-  logInWithBalanceValidation,
-  withFixtures,
-  sentryRegEx,
-} = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
-const { MOCK_META_METRICS_ID } = require('../../constants');
+import { resolve } from 'path';
+import { promises as fs } from 'fs';
+import { strict as assert } from 'assert';
+import { get, has, set, unset, cloneDeep } from 'lodash';
+import { Browser } from 'selenium-webdriver';
+import { format } from 'prettier';
+import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
+import { Mockttp } from 'mockttp';
+import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
+import FixtureBuilder from '../../fixture-builder';
+import { withFixtures, sentryRegEx } from '../../helpers';
+import { PAGES } from '../../webdriver/driver';
+import { MOCK_META_METRICS_ID } from '../../constants';
+import LoginPage from '../../page-objects/pages/login-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 /**
  * Derive a UI state field from a background state field.
  *
- * @param {string} backgroundField - The path of a background field.
- * @returns {string} The path for the corresponding UI field.
+ * @param backgroundField - The path of a background field.
+ * @returns The path for the corresponding UI field.
  */
-function backgroundToUiField(backgroundField) {
+function backgroundToUiField(backgroundField: string): string {
   // The controller name is lost in the UI due to state flattening
   const [, ...rest] = backgroundField.split('.');
   const flattenedBackgroundField = rest.join('.');
@@ -76,9 +73,11 @@ const WAIT_FOR_SENTRY_MS = 10000;
 /**
  * Transform background state to make it consistent between test runs.
  *
- * @param {unknown} data - The data to transform
+ * @param data - The data to transform
  */
-function transformBackgroundState(data) {
+function transformBackgroundState(
+  data: JsonRpcResponse<Json>,
+): JsonRpcResponse<Json> {
   const clonedData = cloneDeep(data);
   for (const field of maskedBackgroundFields) {
     if (has(clonedData, field)) {
@@ -96,9 +95,9 @@ function transformBackgroundState(data) {
 /**
  * Transform UI state to make it consistent between test runs.
  *
- * @param {unknown} data - The data to transform
+ * @param data - The data to transform
  */
-function transformUiState(data) {
+function transformUiState(data: JsonRpcResponse<Json>): JsonRpcResponse<Json> {
   for (const field of maskedUiFields) {
     if (has(data, field)) {
       set(data, field, typeof get(data, field));
@@ -115,16 +114,20 @@ function transformUiState(data) {
 /**
  * Check that the data provided matches the snapshot.
  *
- * @param {object }args - Function arguments.
- * @param {any} args.data - The data to compare with the snapshot.
- * @param {string} args.snapshot - The name of the snapshot.
- * @param {boolean} [args.update] - Whether to update the snapshot if it doesn't match.
+ * @param args - Function arguments.
+ * @param args.data - The data to compare with the snapshot.
+ * @param args.snapshot - The name of the snapshot.
+ * @param [args.update] - Whether to update the snapshot if it doesn't match.
  */
 async function matchesSnapshot({
   data,
   snapshot,
   update = process.env.UPDATE_SNAPSHOTS === 'true',
-}) {
+}: {
+  data: JsonRpcResponse<Json>;
+  snapshot: string;
+  update?: boolean;
+}): Promise<void> {
   const snapshotPath = resolve(__dirname, `./state-snapshots/${snapshot}.json`);
   const rawSnapshotData = await fs.readFile(snapshotPath, {
     encoding: 'utf-8',
@@ -155,17 +158,18 @@ async function matchesSnapshot({
  * Get an object consisting of all properties in the complete
  * object that are missing from the given object.
  *
- * @param {object} complete - The complete object to compare to.
- * @param {object} object - The object to test for missing properties.
+ * @param complete - The complete object to compare to.
+ * @param object - The object to test for missing properties.
  */
-function getMissingProperties(complete, object) {
-  const missing = {};
+function getMissingProperties(complete: object, object: object): object {
+  const missing: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(complete)) {
     if (key in object) {
-      if (isObject(value) && isObject(object[key])) {
+      const objectValue = (object as Record<string, unknown>)[key];
+      if (isObject(value) && isObject(objectValue)) {
         const missingNestedProperties = getMissingProperties(
           value,
-          object[key],
+          objectValue as object,
         );
         if (Object.keys(missingNestedProperties).length > 0) {
           missing[key] = missingNestedProperties;
@@ -188,7 +192,7 @@ describe('Sentry errors', function () {
     process.env.SELENIUM_BROWSER === Browser.CHROME
       ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
       : 'meta is undefined';
-  async function mockSentryMigratorError(mockServer) {
+  async function mockSentryMigratorError(mockServer: Mockttp) {
     return await mockServer
       .forPost(sentryRegEx)
       .withBodyIncluding(migrationError)
@@ -200,7 +204,7 @@ describe('Sentry errors', function () {
       });
   }
 
-  async function mockSentryInvariantMigrationError(mockServer) {
+  async function mockSentryInvariantMigrationError(mockServer: Mockttp) {
     return await mockServer
       .forPost(sentryRegEx)
       .withBodyIncluding('typeof state.PreferencesController is number')
@@ -212,7 +216,7 @@ describe('Sentry errors', function () {
       });
   }
 
-  async function mockSentryTestError(mockServer) {
+  async function mockSentryTestError(mockServer: Mockttp) {
     return await mockServer
       .forPost(sentryRegEx)
       .withBodyIncluding('Test Error')
@@ -238,7 +242,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -268,7 +272,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -276,7 +280,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.findElement('#password');
+          await new LoginPage(driver).check_pageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -308,7 +312,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -353,7 +357,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryMigratorError,
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -413,7 +417,7 @@ describe('Sentry errors', function () {
               .withBadPreferencesControllerState()
               .build(),
           },
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryInvariantMigrationError,
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -432,12 +436,14 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const breadcrumbs = mockJsonBody?.breadcrumbs ?? [];
-          const migrationLogBreadcrumbs = breadcrumbs.filter((breadcrumb) => {
-            return breadcrumb.message?.match(/Running migration \d+/u);
-          });
+          const migrationLogBreadcrumbs = breadcrumbs.filter(
+            (breadcrumb: { message?: string }) => {
+              return breadcrumb.message?.match(/Running migration \d+/u);
+            },
+          );
           const migrationLogMessages = migrationLogBreadcrumbs.map(
-            (breadcrumb) =>
-              breadcrumb.message.match(/(Running migration \d+)/u)[1],
+            (breadcrumb: { message?: string }) =>
+              breadcrumb.message?.match(/(Running migration \d+)/u)?.[1] ?? '',
           );
 
           const firstMigrationLog = migrationLogMessages[0];
@@ -460,7 +466,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
@@ -469,7 +475,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.findElement('#password');
+          await new LoginPage(driver).check_pageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -505,7 +511,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
@@ -514,7 +520,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.findElement('#password');
+          await new LoginPage(driver).check_pageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -569,7 +575,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -577,7 +583,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.findElement('#password');
+          await new LoginPage(driver).check_pageIsLoaded();
 
           // Trigger error
           await driver.executeScript(
@@ -603,7 +609,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
@@ -612,7 +618,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.findElement('#password');
+          await new LoginPage(driver).check_pageIsLoaded();
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -638,7 +644,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
             sentry: { forceEnable: false },
@@ -646,7 +652,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.findElement('#password');
+          await new LoginPage(driver).check_pageIsLoaded();
 
           // Trigger error
           await driver.executeScript(
@@ -683,14 +689,14 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           manifestFlags: {
             sentry: { forceEnable: false },
           },
         },
         async ({ driver, mockedEndpoint }) => {
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           await driver.delay(2000);
           // Trigger error
@@ -745,7 +751,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
@@ -754,7 +760,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.findElement('#password');
+          await new LoginPage(driver).check_pageIsLoaded();
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -788,7 +794,7 @@ describe('Sentry errors', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
           manifestFlags: {
@@ -796,7 +802,7 @@ describe('Sentry errors', function () {
           },
         },
         async ({ driver, mockedEndpoint }) => {
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           await driver.delay(2000);
 
@@ -907,17 +913,19 @@ describe('Sentry errors', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         manifestFlags: {
           sentry: { forceEnable: false },
         },
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.findElement('#password');
+        await new LoginPage(driver).check_pageIsLoaded();
 
         const fullUiState = await driver.executeScript(() =>
-          window.stateHooks?.getCleanAppState?.(),
+          (
+            window as { stateHooks?: { getCleanAppState?: () => unknown } }
+          ).stateHooks?.getCleanAppState?.(),
         );
 
         const extraMaskProperties = getMissingProperties(
