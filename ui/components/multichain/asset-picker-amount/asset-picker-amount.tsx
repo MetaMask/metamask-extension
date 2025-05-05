@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
+import { type Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
 import {
@@ -27,6 +28,7 @@ import {
 import {
   getCurrentDraftTransaction,
   getIsNativeSendPossible,
+  getRecipient,
   getSendMaxModeState,
   type Amount,
   type Asset,
@@ -35,6 +37,8 @@ import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmatio
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getIsRemoteSendPossible } from '../../../selectors/remote-mode';
+import { type DelegationState } from '../../../selectors/delegation';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -90,6 +94,16 @@ export const AssetPickerAmount = ({
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   const ipfsGateway = useSelector(getIpfsGateway);
+
+  const recipient = useSelector(getRecipient);
+  const isRemoteSendPossible = useSelector((state) =>
+    getIsRemoteSendPossible(state as DelegationState, {
+      from: selectedAccount.address as Hex,
+      to: recipient.address as Hex,
+      chainId: currentChainId,
+      asset,
+    }),
+  );
 
   useEffect(() => {
     // if this input is immutable – avoids double fire
@@ -245,9 +259,10 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange && isNativeSendPossible && !isSwapAndSendFromNative && (
-          <MaxClearButton asset={asset} />
-        )}
+        {onAmountChange &&
+          isNativeSendPossible &&
+          !isSwapAndSendFromNative &&
+          !isRemoteSendPossible && <MaxClearButton asset={asset} />}
       </Box>
     </Box>
   );
