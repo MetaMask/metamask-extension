@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
 import {
+  showModal,
   removeSlide,
   setAccountDetailsAddress,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
@@ -30,8 +31,10 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
+import { TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../app/modals/identity';
 import {
   useCarouselManagement,
+  BACKUPANDSYNC_SLIDE,
   SMART_ACCOUNT_UPGRADE_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
@@ -87,6 +90,10 @@ export const AccountOverviewLayout = ({
       );
     }
     ///: END:ONLY_INCLUDE_IF
+
+    if (id === BACKUPANDSYNC_SLIDE.id) {
+      dispatch(showModal({ name: TURN_ON_BACKUP_AND_SYNC_MODAL_NAME }));
+    }
 
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     if (id === SOLANA_SLIDE.id) {
