@@ -11,15 +11,15 @@ const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u;
 const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
 const SOLANA_SPOT_PRICE_API =
-  /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
+  /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
 const SOLANA_EXCHANGE_RATES_PRICE_API =
-  /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v[1-9]\/exchange-rates\/fiat/u;
+  /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/exchange-rates\/fiat/u;
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/u;
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX_DEVNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/EtWTRABZaYq6iMfeYKouRu166VU2xqa1/u;
 const SOLANA_BITCOIN_MIN_API =
-  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti\?fsyms=btc/u;
+  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti\?fsyms=btc&sol&tsyms=usd/u;
 export const SOLANA_TOKEN_API =
   /^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u;
 export const METAMASK_PHISHING_DETECTION_API =
@@ -2355,6 +2355,7 @@ export async function withSolanaAccountSnap(
     mockSendTransaction,
     numberOfAccounts = 1,
     simulateTransaction,
+    simulateTransactionFailed,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockZeroBalance,
@@ -2367,6 +2368,7 @@ export async function withSolanaAccountSnap(
     mockSendTransaction?: boolean;
     numberOfAccounts?: number;
     simulateTransaction?: boolean;
+    simulateTransactionFailed?: boolean;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
     mockZeroBalance?: boolean;
@@ -2453,12 +2455,16 @@ export async function withSolanaAccountSnap(
               await mockGetAccountInfoDevnet(mockServer),
               await mockTokenApiMainnetTest(mockServer),
               await mockAccountsApi(mockServer),
+              await mockGetTokenAccountInfoDevnet(mockServer),
             ],
           );
         }
         if (mockZeroBalance) {
           mockList.push(await mockSolanaBalanceQuote(mockServer, true));
           mockList.push(await mockSolanaBalanceQuoteDevnet(mockServer, true));
+        }
+        if (simulateTransactionFailed) {
+          mockList.push(await simulateSolanaTransactionFailed(mockServer));
         }
         if (mockSendTransaction || simulateTransaction) {
           mockList.push(await simulateSolanaTransaction(mockServer));

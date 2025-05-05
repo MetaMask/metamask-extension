@@ -64,7 +64,7 @@ describe('Transaction activity list', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('0');
+        await homePage.check_pageIsLoaded('50');
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.check_failedTxNumberDisplayedInActivity(1);
