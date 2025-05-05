@@ -95,7 +95,6 @@ import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
