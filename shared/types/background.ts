@@ -41,7 +41,6 @@ import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { SignatureControllerState } from '@metamask/signature-controller';
 import type { PPOMState } from '@metamask/ppom-validator';
 import type { NameControllerState } from '@metamask/name-controller';
-import type { QueuedRequestControllerState } from '@metamask/queued-request-controller';
 import type { UserOperationControllerState } from '@metamask/user-operation-controller';
 import type { TransactionControllerState } from '@metamask/transaction-controller';
 import type {
@@ -250,7 +249,6 @@ export type ControllerStatePropertiesEnumerated = {
   useExternalServices: PreferencesControllerState['useExternalServices'];
   textDirection?: PreferencesControllerState['textDirection'];
   manageInstitutionalWallets: PreferencesControllerState['manageInstitutionalWallets'];
-  queuedRequestCount: QueuedRequestControllerState['queuedRequestCount'];
   remoteFeatureFlags: RemoteFeatureFlagControllerState['remoteFeatureFlags'];
   cacheTimestamp: RemoteFeatureFlagControllerState['cacheTimestamp'];
   fiatCurrency: RatesControllerState['fiatCurrency'];
@@ -334,7 +332,6 @@ type ControllerStateTypesMerged = AccountsControllerState &
   PermissionLogControllerState &
   PPOMState &
   PreferencesControllerState &
-  QueuedRequestControllerState &
   RemoteFeatureFlagControllerState &
   RatesControllerState &
   SelectedNetworkControllerState &
