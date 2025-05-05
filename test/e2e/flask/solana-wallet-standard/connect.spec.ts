@@ -303,6 +303,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await signMessageTest.setMessage('Hello, world!');
           await signMessageTest.signMessage();
 
+          await driver.delay(regularDelayMs);
+
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           // Check that mainnet appears in the dialog
