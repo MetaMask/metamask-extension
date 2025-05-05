@@ -199,30 +199,46 @@ export class TestSnaps {
    * Validate the preferences result span JSON response.
    *
    * @param expectedPreferences - The expected preferences object to validate against.
+   * @param expectedPreferences.locale
+   * @param expectedPreferences.currency
+   * @param expectedPreferences.hideBalances
+   * @param expectedPreferences.useSecurityAlerts
+   * @param expectedPreferences.useExternalPricingData
+   * @param expectedPreferences.simulateOnChainActions
+   * @param expectedPreferences.useTokenDetection
+   * @param expectedPreferences.batchCheckBalances
+   * @param expectedPreferences.displayNftMedia
+   * @param expectedPreferences.useNftDetection
    */
-    async check_preferencesResult(expectedPreferences: {
-      locale: string;
-      currency: string;
-      hideBalances: boolean;
-      useSecurityAlerts: boolean;
-      useExternalPricingData: boolean;
-      simulateOnChainActions: boolean;
-      useTokenDetection: boolean;
-      batchCheckBalances: boolean;
-      displayNftMedia: boolean;
-      useNftDetection: boolean;
-    }) {
+  async check_preferencesResult(expectedPreferences: {
+    locale: string;
+    currency: string;
+    hideBalances: boolean;
+    useSecurityAlerts: boolean;
+    useExternalPricingData: boolean;
+    simulateOnChainActions: boolean;
+    useTokenDetection: boolean;
+    batchCheckBalances: boolean;
+    displayNftMedia: boolean;
+    useNftDetection: boolean;
+  }) {
     console.log('Validating preferences result span JSON response');
 
-    const element = await this.driver.findElement(spanLocator.preferencesResultSpan);
-    const spanText= await element.getAttribute("textContent")
+    const element = await this.driver.findElement(
+      spanLocator.preferencesResultSpan,
+    );
+    const spanText = await element.getAttribute('textContent');
     const actualPreferences = JSON.parse(spanText);
 
     console.log(`Actual preferences: ${JSON.stringify(actualPreferences)}`);
     console.log(`Expected preferences: ${JSON.stringify(expectedPreferences)}`);
 
-    if (JSON.stringify(actualPreferences) !== JSON.stringify(expectedPreferences)) {
-      throw new Error('Preferences result span JSON does not match expected values');
+    if (
+      JSON.stringify(actualPreferences) !== JSON.stringify(expectedPreferences)
+    ) {
+      throw new Error(
+        'Preferences result span JSON does not match expected values',
+      );
     }
     console.log('Preferences result span JSON is valid');
   }
