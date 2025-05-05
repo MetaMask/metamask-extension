@@ -1339,10 +1339,6 @@
   "creatorAddress": {
     "message": "创建者地址"
   },
-  "crossChainAggregatedBalancePopover": {
-    "message": "这反映了您在所有网络上拥有的所有代币的价值。如果您更愿意看到以 ETH 或其他货币反映代币价值，请转到 $1。",
-    "description": "$1 represents the settings page"
-  },
   "crossChainSwapsLink": {
     "message": "使用 MetaMask Portfolio 跨网络兑换"
   },
@@ -6492,9 +6488,6 @@
   },
   "yourBalance": {
     "message": "您的余额"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "您的余额已汇总"
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"

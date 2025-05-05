@@ -374,65 +374,6 @@ export const CoinOverview = ({
                 </span>
               )}
             </div>
-            {shouldShowPopover &&
-            (!isTestnet || (isTestnet && showFiatInTestnets)) &&
-            !showNativeTokenAsMainBalance ? (
-              <Popover
-                referenceElement={referenceElement}
-                isOpen={isOpen}
-                position={PopoverPosition.BottomStart}
-                hasArrow
-                flip
-                data-theme={theme === 'light' ? 'dark' : 'light'}
-                className="balance-popover__container"
-                padding={3}
-                onClickOutside={handleClick}
-                onPressEscKey={handleClick}
-                preventOverflow
-              >
-                <Box>
-                  <Box
-                    display={Display.Flex}
-                    justifyContent={JustifyContent.spaceBetween}
-                  >
-                    <Text
-                      variant={TextVariant.bodySmBold}
-                      textAlign={TextAlign.Left}
-                      alignItems={AlignItems.flexStart}
-                    >
-                      {t('yourBalanceIsAggregated')}
-                    </Text>
-                    <ButtonIcon
-                      size={ButtonIconSize.Sm}
-                      onClick={handleClick}
-                      iconName={IconName.Close}
-                      justifyContent={JustifyContent.center}
-                      ariaLabel="close"
-                      data-testid="popover-close"
-                    />
-                  </Box>
-
-                  <Text variant={TextVariant.bodySm}>
-                    {t('crossChainAggregatedBalancePopover', [
-                      <ButtonLink
-                        size={ButtonLinkSize.Inherit}
-                        textProps={{
-                          variant: TextVariant.bodyMd,
-                          alignItems: AlignItems.flexStart,
-                        }}
-                        as="a"
-                        href={`#${showNativeTokenAsMainBalanceRoute.route}`}
-                        rel="noopener noreferrer"
-                        onClick={handleClick}
-                      >
-                        {t('settings')}
-                      </ButtonLink>,
-                    ])}
-                  </Text>
-                </Box>
-              </Popover>
-            ) : null}
-
             {renderPercentageAndAmountChange()}
           </div>
         </Tooltip>

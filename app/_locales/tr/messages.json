@@ -1339,10 +1339,6 @@
   "creatorAddress": {
     "message": "Oluşturucu adresi"
   },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Bu, tüm ağlarda sahip olduğunuz tüm token'lerin değerini yansıtır. Bu değeri ETH olarak veya diğer para birimlerinde görmeyi tercih ediyorsanız şuraya gidin: $1.",
-    "description": "$1 represents the settings page"
-  },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolio ile ağlar arasında swap gerçekleştirin"
   },
@@ -6492,9 +6488,6 @@
   },
   "yourBalance": {
     "message": "Bakiyeniz"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Bakiyeniz toplanıyor"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"

@@ -1339,10 +1339,6 @@
   "creatorAddress": {
     "message": "크리에이터 주소"
   },
-  "crossChainAggregatedBalancePopover": {
-    "message": "이는 모든 네트워크에서 소유한 모든 토큰의 가치를 반영합니다. ETH나 다른 통화로 이 가치를 보고 싶으면 $1(으)로 이동하세요.",
-    "description": "$1 represents the settings page"
-  },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolio로 네트워크 간 스왑"
   },
@@ -6492,9 +6488,6 @@
   },
   "yourBalance": {
     "message": "내 잔액"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "잔액이 집계되었습니다."
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT가 위험할 수 있습니다"

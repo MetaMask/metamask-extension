@@ -1339,10 +1339,6 @@
   "creatorAddress": {
     "message": "Alamat pembuat"
   },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Ini mencerminkan nilai seluruh token yang Anda miliki di semua jaringan. Jika Anda lebih suka melihat nilai ini dalam ETH atau mata uang lainnya, pilih $1.",
-    "description": "$1 represents the settings page"
-  },
   "crossChainSwapsLink": {
     "message": "Bertukar antar jaringan dengan Portfolio MetaMask"
   },
@@ -6492,9 +6488,6 @@
   },
   "yourBalance": {
     "message": "Saldo Anda"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Saldo Anda diagregasi"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"
