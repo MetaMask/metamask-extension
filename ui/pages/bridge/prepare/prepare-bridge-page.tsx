@@ -128,6 +128,7 @@ import {
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -498,6 +499,10 @@ const PrepareBridgePage = () => {
 
   // Set the default destination token and slippage for swaps
   useEffect(() => {
+    endTrace({
+      name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+      timestamp: Date.now(),
+    });
     if (isSwap) {
       dispatch(setSlippage(undefined));
       if (fromChain && !toToken) {

@@ -16,6 +16,7 @@ export enum TraceName {
   AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  BridgeViewLoaded = 'Bridge View Loaded',
   ConnectPage = 'Connect Page',
   CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
@@ -36,6 +37,7 @@ export enum TraceName {
   ReceiveModal = 'Receive Modal',
   SetupStore = 'Setup Store',
   Signature = 'Signature',
+  SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
 }

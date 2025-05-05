@@ -33,6 +33,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { trace, TraceName } from '../../../shared/lib/trace';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 ///: END:ONLY_INCLUDE_IF
 
@@ -61,6 +62,10 @@ const useBridging = () => {
       }
 
       if (isBridgeSupported) {
+        trace({
+          name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+          startTime: Date.now(),
+        });
         trackCrossChainSwapsEvent({
           event: MetaMetricsEventName.ActionOpened,
           category: MetaMetricsEventCategory.Navigation,
