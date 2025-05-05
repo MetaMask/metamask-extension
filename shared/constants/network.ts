@@ -386,7 +386,7 @@ export const CURRENCY_SYMBOLS = {
   LENS: 'GHO',
   PLUME: 'PLUME',
   FLOW: 'FLOW',
-  DOS: 'DOS',
+  DOSCHAIN: 'DOS',
 } as const;
 
 // Non-EVM currency symbols
