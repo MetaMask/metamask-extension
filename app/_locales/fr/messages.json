@@ -3662,22 +3662,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Votre installation de MetaMask est terminée !"
   },
-  "oneDayAbbreviation": {
-    "message": "1 j",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1 mois",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1 sem.",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1 an",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4147,18 +4131,6 @@
   },
   "productAnnouncements": {
     "message": "Annonces de produits"
-  },
-  "profileSync": {
-    "message": "Synchronisation du profil"
-  },
-  "profileSyncConfirmation": {
-    "message": "Si vous désactivez la synchronisation du profil, vous ne pourrez plus recevoir de notifications."
-  },
-  "profileSyncDescription": {
-    "message": "Crée un profil que MetaMask utilise pour synchroniser certains paramètres entre vos appareils. Ceci est nécessaire pour activer des notifications. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Découvrez comment nous protégeons vos données personnelles"
   },
   "proposedApprovalLimit": {
     "message": "Limite d’approbation proposée"
@@ -5971,10 +5943,6 @@
   "thirdPartySoftware": {
     "message": "Avis sur les logiciels développés par des tiers",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3 mois",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "Temps"
