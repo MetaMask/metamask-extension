@@ -42,7 +42,6 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getIsTestnet,
-  getShouldShowAggregatedBalancePopover,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -60,11 +59,8 @@ import {
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
 import {
-  setAggregatedBalancePopoverShown,
   setPrivacyMode,
 } from '../../../store/actions';
-import { useTheme } from '../../../hooks/useTheme';
-import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 
@@ -228,11 +224,6 @@ export const CoinOverview = ({
 
   const handleMouseEnter = () => {
     setIsOpen(true);
-  };
-
-  const handleClick = () => {
-    setIsOpen(!isOpen);
-    dispatch(setAggregatedBalancePopoverShown());
   };
 
   const handleSensitiveToggle = () => {
