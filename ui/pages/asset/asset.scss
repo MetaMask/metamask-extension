@@ -80,6 +80,13 @@
   height: 100%;
 }
 
+.asset-chart__empty-state-illustration {
+  max-width: 134px;
+  max-height: 106px;
+  width: 21%;
+  height: 47%;
+}
+
 .asset-chart__skeleton-container {
   aspect-ratio: 2.9;
   margin-top: 22px;
@@ -88,4 +95,6 @@
 
 .asset-chart__skeleton {
   aspect-ratio: 2.9;
+  margin-right: 1rem;
+  margin-left: 1rem;
 }
