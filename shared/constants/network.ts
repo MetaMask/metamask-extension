@@ -3,6 +3,7 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
+import { CHAIN_ID } from '../../test/data/confirmations/contract-interaction';
 
 /**
  * A type representing built-in network types, used as an identifier.
@@ -184,6 +185,8 @@ export const CHAIN_IDS = {
   PLUME: '0x18232',
   MATCHAIN: '0x2ba',
   FLOW: '0x2eb',
+  DOSCHAIN: '0x1f2b',
+  DOSCHAIN_TESTNET: '0xf63',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -255,6 +258,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
   XRPLEVM_TESTNET: '0x161c28',
+  DOSCHAIN: '0x1f2b',
+  DOSCHAIN_TESTNET: '0xf63',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -320,6 +325,8 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
+export const DOSCHAIN_DISPLAY_NAME = 'DOSChain';
+export const DOSCHAIN_TESTNET_DISPLAY_NAME = 'DOSChain Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -379,6 +386,7 @@ export const CURRENCY_SYMBOLS = {
   LENS: 'GHO',
   PLUME: 'PLUME',
   FLOW: 'FLOW',
+  DOS: 'DOS',
 } as const;
 
 // Non-EVM currency symbols
@@ -455,6 +463,8 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
   XRPLEVM_TESTNET: 'XRP',
+  DOSCHAIN: 'DOS',
+  DOSCHAIN_TESTNET: 'DOST'
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -560,6 +570,8 @@ export const PLUME_IMAGE_URL = './images/plume.svg';
 export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
+export const DOSCHAIN_IMAGE_URL = './images/doschain.svg';
+export const DOSCHAIN_TESTNET_IMAGE_URL = './images/doschain.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -689,6 +701,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_DISPLAY_NAME,
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
   [CHAIN_IDS.FLOW]: FLOW_DISPLAY_NAME,
+  [CHAIN_IDS.DOSCHAIN]: DOSCHAIN_DISPLAY_NAME,
+  [CHAIN_IDS.DOSCHAIN_TESTNET]: DOSCHAIN_DISPLAY_NAME,
+
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -823,6 +838,9 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.PLUME]: CURRENCY_SYMBOLS.PLUME,
   [CHAIN_IDS.MATCHAIN]: CURRENCY_SYMBOLS.BNB,
   [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
+  [CHAINLIST_CHAIN_IDS_MAP.DOSCHAIN]: CHAINLIST_CURRENCY_SYMBOLS_MAP.DOSCHAIN,
+  [CHAINLIST_CHAIN_IDS_MAP.DOSCHAIN_TESTNET]: CHAINLIST_CURRENCY_SYMBOLS_MAP.DOSCHAIN_TESTNET,
+
 } as const;
 
 /**
@@ -963,6 +981,9 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.DOSCHAIN]: DOSCHAIN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.DOSCHAIN_TESTNET]: DOSCHAIN_IMAGE_URL,
+
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1019,6 +1040,9 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.DOSCHAIN]: DOSCHAIN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.DOSCHAIN_TESTNET]: DOSCHAIN_IMAGE_URL,
+
 } as const;
 
 /**
@@ -1278,6 +1302,7 @@ export const infuraChainIdsTestNets: string[] = [
   CHAIN_IDS.OPBNB_TESTNET,
   CHAIN_IDS.SCROLL_SEPOLIA,
   CHAIN_IDS.UNICHAIN_SEPOLIA,
+  CHAIN_IDS.DOSCHAIN_TESTNET,
 ];
 
 export const allowedInfuraHosts = [
