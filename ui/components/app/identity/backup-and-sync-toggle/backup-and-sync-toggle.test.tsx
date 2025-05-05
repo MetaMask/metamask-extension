@@ -58,7 +58,7 @@ describe('BackupAndSyncToggle', () => {
         <BackupAndSyncToggle />
       </Redux.Provider>,
     );
-    fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggle));
+    fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggleButton));
     expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
       BACKUPANDSYNC_FEATURES.main,
       true,
@@ -75,7 +75,7 @@ describe('BackupAndSyncToggle', () => {
         <BackupAndSyncToggle />
       </Redux.Provider>,
     );
-    fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggle));
+    fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggleButton));
     expect(setIsBackupAndSyncFeatureEnabledMock).not.toHaveBeenCalled();
     expect(mockDispatch).toHaveBeenCalledWith(
       showModal({

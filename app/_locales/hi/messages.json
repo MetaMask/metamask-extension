@@ -4132,18 +4132,6 @@
   "productAnnouncements": {
     "message": "प्रॉडक्ट घोषणाएं"
   },
-  "profileSync": {
-    "message": "प्रोफ़ाइल सिंक"
-  },
-  "profileSyncConfirmation": {
-    "message": "यदि आप प्रोफ़ाइल सिंक बंद कर देते हैं, तो आप नोटिफिकेशंस प्राप्त नहीं कर पाएंगे।"
-  },
-  "profileSyncDescription": {
-    "message": "एक प्रोफ़ाइल बनाता है जिसका उपयोग MetaMask आपके डिवाइसों के बीच कुछ सेटिंग्स को सिंक करने के लिए करता है। नोटिफिकेशंस प्राप्त करने के लिए यह आवश्यक है। $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "जानें कि हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं"
-  },
   "proposedApprovalLimit": {
     "message": "प्रस्तावित एप्रूवल सीमा"
   },

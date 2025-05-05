@@ -16,8 +16,7 @@ export const AssetChartEmptyState = () => {
       <Box className="asset-chart__empty-state-content">
         <img
           src="./images/asset-chart-empty-state-illustration.png"
-          width="134"
-          height="106"
+          className="asset-chart__empty-state-illustration"
         />
         <Text
           textAlign={TextAlign.Center}
