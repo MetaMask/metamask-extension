@@ -40,17 +40,17 @@ class AdvancedSettings {
     await this.driver.clickElement(this.downloadStateLogsButton);
   }
 
+  async toggleShowConversionOnTestnets(): Promise<void> {
+    console.log('Toggling show conversion on testnets in advanced settings');
+    await this.driver.clickElement(this.showConversionOnTestnetsToggle);
+  }
+
   async toggleSmartTransactions(): Promise<void> {
     console.log('Toggling Smart Transactions setting');
     const stxToggle = await this.driver.findElement(
       this.smartTransactionsToggle,
     );
     stxToggle.sendKeys(Key.ENTER);
-  }
-
-  async toggleShowConversionOnTestnets(): Promise<void> {
-    console.log('Toggling show conversion on testnets in advanced settings');
-    await this.driver.clickElement(this.showConversionOnTestnetsToggle);
   }
 }
 
