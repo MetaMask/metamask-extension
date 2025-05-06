@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.17.1",
+  "version": "12.17.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -330,7 +330,7 @@
     "@metamask/snaps-utils": "^9.2.0",
     "@metamask/solana-wallet-snap": "^1.24.0",
     "@metamask/solana-wallet-standard": "^0.1.1",
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A54.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-54.0.0-ccc4668363.patch",
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@patch%3A@metamask/transaction-controller@npm%253A54.0.0%23~/.yarn/patches/@metamask-transaction-controller-npm-54.0.0-ccc4668363.patch%3A%3Aversion=54.0.0&hash=38d6b9#~/.yarn/patches/@metamask-transaction-controller-patch-47fbbc917e.patch",
     "@metamask/user-operation-controller": "^31.0.0",
     "@metamask/utils": "^11.1.0",
     "@ngraveio/bc-ur": "^1.1.13",
