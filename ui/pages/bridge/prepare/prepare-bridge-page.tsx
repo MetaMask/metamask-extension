@@ -19,11 +19,7 @@ import {
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
-  formatChainIdToHex,
-} from '@metamask/bridge-controller';
-import type {
-  BridgeController,
-  BridgeToken,
+  type BridgeController,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -113,7 +109,6 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
-  getImageForChainId,
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
   getMultichainNativeCurrency,
@@ -127,16 +122,15 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 import {
   fetchAssetMetadata,
-  getAssetImageUrl,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
-import { TmpBridgeToken } from './types';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -148,7 +142,7 @@ const PrepareBridgePage = () => {
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
 
-  const toToken = useSelector(getToToken) as TmpBridgeToken;
+  const toToken = useSelector(getToToken);
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
@@ -294,18 +288,12 @@ const PrepareBridgePage = () => {
           setToToken({
             ...destAsset,
             chainId: destChainId,
-            image: srcAsset.icon ?? destAsset.iconUrl ?? '',
-            address: destAsset.address,
           }),
         );
         dispatch(
           setFromToken({
             ...srcAsset,
             chainId: srcChainId,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            image: srcAsset.icon || srcAsset.iconUrl || '',
-            address: srcAsset.address,
           }),
         );
       }
@@ -471,7 +459,6 @@ const PrepareBridgePage = () => {
           setFromToken({
             ...tokenMetadata,
             chainId: fromChain.chainId,
-            image: tokenMetadata.image || '',
           }),
         );
         removeTokenFromUrl();
@@ -493,7 +480,6 @@ const PrepareBridgePage = () => {
           dispatch(
             setFromToken({
               ...matchedToken,
-              image: matchedToken.iconUrl,
               chainId: fromChain.chainId,
             }),
           );
@@ -734,22 +720,7 @@ const PrepareBridgePage = () => {
                       const destNativeAsset = getNativeAssetForChainId(
                         networkConfig.chainId,
                       );
-                      dispatch(
-                        setToToken({
-                          ...destNativeAsset,
-                          image:
-                            getImageForChainId(
-                              isSolanaChainId(networkConfig.chainId)
-                                ? formatChainIdToCaip(networkConfig.chainId)
-                                : formatChainIdToHex(networkConfig.chainId),
-                            ) ??
-                            getAssetImageUrl(
-                              destNativeAsset.assetId,
-                              networkConfig.chainId,
-                            ) ??
-                            '',
-                        }),
-                      );
+                      dispatch(setToToken(destNativeAsset));
                     },
                     header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
                     shouldDisableNetwork: ({ chainId }) =>

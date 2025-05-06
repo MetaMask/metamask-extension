@@ -75,12 +75,14 @@ const useBridging = () => {
           },
         });
         trackEvent({
-          event: MetaMetricsEventName.BridgeLinkClicked,
+          event: isSwap
+            ? MetaMetricsEventName.SwapLinkClicked
+            : MetaMetricsEventName.BridgeLinkClicked,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
             token_symbol: token.symbol,
             location,
-            text: 'Bridge',
+            text: isSwap ? 'Swap' : 'Bridge',
             chain_id: providerConfig.chainId,
           },
         });
