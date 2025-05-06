@@ -23,10 +23,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
 - Update security and privacy policy description to reflect Solana account handling ([#32231](https://github.com/MetaMask/metamask-extension/pull/32231))
 - Updates the Solana modal by adding a learn more link, UI tweaks and auto selects a solana account when it exists. ([#32087](https://github.com/MetaMask/metamask-extension/pull/32087))
+- Hide failed transaction retry button ([#32024](https://github.com/MetaMask/metamask-extension/pull/32024))
 
 ### Fixed
 - updates display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
 - Add Multichain API analytics support ([#32013](https://github.com/MetaMask/metamask-extension/pull/32013))
+
+## [12.17.1]
+### Fixed
+- Prevent infinite Load on switching networks or reveal SRP ([#32391](https://github.com/MetaMask/metamask-extension/pull/32391))
+- Ensure vault encryption upgrade fails gracefully during login ([#32438](https://github.com/MetaMask/metamask-extension/pull/32438))
+- Prevent frequent state updates while UI is open, which was preventing state persistence ([#32482](https://github.com/MetaMask/metamask-extension/pull/32482))
 
 ## [12.17.0]
 ### Added
@@ -6100,7 +6107,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.1...HEAD
+[12.17.1]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...v12.17.1
 [12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.2...v12.17.0
 [12.16.2]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...v12.16.2
 [12.16.1]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...v12.16.1
