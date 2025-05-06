@@ -573,7 +573,7 @@ export default function reduceApp(
     case actionConstants.HIDE_WARNING:
       return {
         ...appState,
-        warning: null,
+        warning: undefined,
       };
 
     case actionConstants.SHOW_PRIVATE_KEY:

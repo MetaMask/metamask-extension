@@ -283,7 +283,7 @@ describe('App State', () => {
       type: actions.HIDE_WARNING,
     });
 
-    expect(state.warning).toBeNull();
+    expect(state.warning).toBeUndefined();
   });
 
   it('shows private key', () => {
