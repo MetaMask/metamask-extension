@@ -831,6 +831,11 @@
   "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
   "previousMigrationVersion": 112,
+  "remoteFeatureFlags": {
+    "bridgeConfig": {
+      "support": true
+    }
+  },
   "securityAlertsEnabled": true,
   "seedPhraseBackedUp": true,
   "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
