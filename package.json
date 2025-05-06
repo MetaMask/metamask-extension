@@ -332,7 +332,7 @@
     "@metamask/snaps-utils": "^9.2.0",
     "@metamask/solana-wallet-snap": "^1.24.0",
     "@metamask/solana-wallet-standard": "^0.4.1",
-    "@metamask/transaction-controller": "^54.3.0",
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm:54.0.0#~/.yarn/patches/@metamask-transaction-controller-patch-47fbbc917e.patch",
     "@metamask/user-operation-controller": "^31.0.0",
     "@metamask/utils": "^11.1.0",
     "@ngraveio/bc-ur": "^1.1.13",
