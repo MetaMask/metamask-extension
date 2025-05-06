@@ -1,12 +1,16 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+const {
+  mockNetworkExampleSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 
 describe('Test Snap networkAccess', function () {
   it('test the network-access endowment', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockNetworkExampleSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
