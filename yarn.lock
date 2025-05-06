@@ -6157,7 +6157,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^12.3.2, @metamask/phishing-controller@npm:^12.5.0":
+"@metamask/phishing-controller@npm:^12.5.0":
   version: 12.5.0
   resolution: "@metamask/phishing-controller@npm:12.5.0"
   dependencies:
@@ -30071,7 +30071,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/permission-log-controller": "npm:^3.0.3"
-    "@metamask/phishing-controller": "npm:^12.3.2"
+    "@metamask/phishing-controller": "npm:^12.5.0"
     "@metamask/phishing-warning": "npm:^4.1.0"
     "@metamask/post-message-stream": "npm:^9.0.0"
     "@metamask/ppom-validator": "npm:0.36.0"
