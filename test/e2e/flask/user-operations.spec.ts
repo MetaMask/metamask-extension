@@ -317,7 +317,6 @@ describe('User Operations', function () {
             },
           },
         ],
-        testSpecificMock: mockSnapAndSwaps,
       },
       async (driver, bundlerServer) => {
         await createDappTransaction(driver, {

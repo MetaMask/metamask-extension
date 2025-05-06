@@ -67,6 +67,50 @@ export async function mockClientStatusSnap(mockServer: Mockttp) {
     });
 }
 
+export async function mockCronjobExampleSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/cronjob-example-snap-3.0.0.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/cronjob-example-snap/-/cronjob-example-snap-3.0.0.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '14697',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"19f44e9e1a7ae62f4d036c5b76d585b7"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
+export async function mockEthereumProviderExampleSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/ethereum-provider-example-snap-2.2.1.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/ethereum-provider-example-snap/-/ethereum-provider-example-snap-2.2.1.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '13766',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"2334ecd5d580bb940c25991210f3f063"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
 export async function mockGetFileSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/get-file-example-snap-1.1.3.txt';
@@ -127,6 +171,28 @@ export async function mockLifecycleHooksSnap(mockServer: Mockttp) {
           'Content-Length': '10583',
           'Content-Type': 'application/octet-stream',
           Etag: '"78ffe86713ef9421d920913e2dedfad9"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
+export async function mockLocalizationExampleSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/localization-example-snap-1.1.4.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/localization-example-snap/-/localization-example-snap-1.1.4.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '13008',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"82048841ad547da41853302e04c4998b"',
           Vary: 'Accept-Encoding',
         },
       };

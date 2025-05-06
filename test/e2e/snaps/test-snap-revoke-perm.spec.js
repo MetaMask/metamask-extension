@@ -1,5 +1,8 @@
 const { withFixtures, WINDOW_TITLES, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockEthereumProviderExampleSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap revoke permission', function () {
@@ -7,6 +10,7 @@ describe('Test Snap revoke permission', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockEthereumProviderExampleSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
