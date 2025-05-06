@@ -14,14 +14,14 @@ import { ImportSrp } from './import-srp';
 
 const mockClearClipboard = jest.fn();
 
-jest.mock('../../../../helpers/utils/util', () => ({
+jest.mock('../../../helpers/utils/util', () => ({
   clearClipboard: () => mockClearClipboard(),
 }));
 
 const VALID_SECRET_RECOVERY_PHRASE =
   'input turtle oil scorpion exile useless dry foster vessel knee area label';
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../store/actions', () => ({
   importMnemonicToVault: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue(null)),
