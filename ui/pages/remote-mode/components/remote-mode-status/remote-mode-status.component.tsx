@@ -1,5 +1,4 @@
 import React from 'react';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 
 import {
   Display,
@@ -15,12 +14,12 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 
-export default function RemoteModeStatus(internalAccount: InternalAccount) {
-  // todo: add check (and maybe replace this) that account the has valid delegation
-  const isRemoteMode = isRemoteModeSupported(internalAccount);
+type RemoteModeStatusProps = {
+  enabled?: boolean;
+};
 
+export default function RemoteModeStatus({ enabled }: RemoteModeStatusProps) {
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
       <Icon
@@ -31,7 +30,7 @@ export default function RemoteModeStatus(internalAccount: InternalAccount) {
         marginTop={1}
       />
       <Text color={TextColor.textAlternativeSoft} variant={TextVariant.bodySm}>
-        Remote Mode: {isRemoteMode ? 'On' : 'Off'}
+        Remote Mode: {enabled ? 'On' : 'Off'}
       </Text>
     </Box>
   );

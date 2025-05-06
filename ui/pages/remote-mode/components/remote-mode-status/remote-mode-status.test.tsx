@@ -12,16 +12,7 @@ const renderComponent = () => {
       isRemoteModeEnabled: true,
     },
   });
-  return renderWithProvider(
-    <RemoteModeStatus
-      {...mockState.metamask.internalAccounts.accounts[
-        '07c2cfec-36c9-46c4-8115-3836d3ac9047'
-      ]}
-      type="eip155:eoa"
-      scopes={['eip155:1']}
-    />,
-    store,
-  );
+  return renderWithProvider(<RemoteModeStatus enabled />, store);
 };
 
 describe('RemoteModeStatus Component', () => {

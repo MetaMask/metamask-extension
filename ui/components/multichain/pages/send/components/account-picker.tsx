@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EthAccountType } from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../../selectors';
-import { Box, Label, Text } from '../../../../component-library';
+import { Box, Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
 import {
   AlignItems,
@@ -11,11 +11,11 @@ import {
   Display,
   JustifyContent,
   TextAlign,
-  TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
 import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
+import { RemoteModeStatus } from '../../../../../pages/remote-mode/components';
 import { SendPageRow } from './send-page-row';
 
 const AccountListItemProps = { showOptions: false };
@@ -46,10 +46,7 @@ export const SendPageAccountPicker = ({
         justifyContent={JustifyContent.spaceBetween}
       >
         <Label paddingBottom={2}>{t('from')}</Label>
-        {isRemoteModeEnabled && (
-          // TODO: Implement tooltip
-          <Text color={TextColor.textMuted}>Remote mode: On</Text>
-        )}
+        {isRemoteModeEnabled && <RemoteModeStatus enabled />}
       </Box>
       <AccountPicker
         className="multichain-send-page__account-picker"
