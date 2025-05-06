@@ -20,6 +20,7 @@ import {
 } from './mock-data';
 import { arrangeTestUtils } from './helpers';
 
+// eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('Backup and Sync Settings', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
