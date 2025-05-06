@@ -69,6 +69,8 @@ async function awaitDeleteDelegationEntry(
   initMessenger: DelegationControllerInitMessenger,
   { hash, txMeta }: { hash: Hex; txMeta: TransactionMeta },
 ) {
+  let timer: NodeJS.Timeout | null = null;
+
   const handleTransactionConfirmed = (transactionMeta: TransactionMeta) => {
     if (
       transactionMeta.id !== txMeta.id &&
@@ -88,9 +90,22 @@ async function awaitDeleteDelegationEntry(
       'TransactionController:transactionConfirmed',
       handleTransactionConfirmed,
     );
+    if (timer) {
+      clearTimeout(timer);
+    }
   };
+
   initMessenger.subscribe(
     'TransactionController:transactionConfirmed',
     handleTransactionConfirmed,
   );
+
+  // In case the transaction is not confirmed, we still want to unsubscribe
+  // from the event, regardless of the status, to avoid leaking subscriptions
+  timer = setTimeout(() => {
+    initMessenger.unsubscribe(
+      'TransactionController:transactionConfirmed',
+      handleTransactionConfirmed,
+    );
+  }, 60000);
 }
