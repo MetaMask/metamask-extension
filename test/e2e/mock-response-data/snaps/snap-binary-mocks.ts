@@ -89,6 +89,28 @@ export async function mockCronjobExampleSnap(mockServer: Mockttp) {
     });
 }
 
+export async function mockDialogSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/dialog-example-snap-2.3.1.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/dialog-example-snap/-/dialog-example-snap-2.3.1.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '14985',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"2ba3e0bc12c6102b0b8364df36d35fee"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
 export async function mockEthereumProviderExampleSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/ethereum-provider-example-snap-2.2.1.txt';
@@ -133,6 +155,28 @@ export async function mockGetFileSnap(mockServer: Mockttp) {
     });
 }
 
+export async function mockHomePageSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/home-page-example-snap-1.1.3.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/home-page-example-snap/-/home-page-example-snap-1.1.3.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '9131',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"ef9fb3f99546cae9626e2ab39861daeb"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
 export async function mockImagesExampleSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/images-example-snap-1.1.1.txt';
@@ -149,6 +193,28 @@ export async function mockImagesExampleSnap(mockServer: Mockttp) {
           'Content-Length': '21020',
           'Content-Type': 'application/octet-stream',
           Etag: '"f6d5fc4b24eb5e111ff7fbd88a29f305"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
+export async function mockJsonRpcSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/json-rpc-example-snap-2.1.3.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/json-rpc-example-snap/-/json-rpc-example-snap-2.1.3.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '12621',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"d83c6bec2ed39981ad7f84b36d055564"',
           Vary: 'Accept-Encoding',
         },
       };
