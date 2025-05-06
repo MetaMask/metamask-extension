@@ -77,8 +77,13 @@ async function awaitDeleteDelegationEntry(
       // Not our transaction
       return;
     }
-    // Delete the delegation entry and unsubscribe
-    controller.delete(hash);
+    if (
+      transactionMeta.type === 'contractInteraction' ||
+      transactionMeta.type === 'retry'
+    ) {
+      // Delegation got disabled on-chain, delete the delegation entry
+      controller.delete(hash);
+    }
     initMessenger.unsubscribe(
       'TransactionController:transactionConfirmed',
       handleTransactionConfirmed,
