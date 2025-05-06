@@ -16,6 +16,11 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
+  private readonly noMatchingResultsFoundMessage = {
+    text: 'No matching results found',
+    tag: 'span',
+  };
+
   private readonly privacySettingsButton = {
     text: 'Security & privacy',
     css: '.tab-bar__tab__content__title',
@@ -25,6 +30,11 @@ class SettingsPage {
     text: 'Preinstalled Example Snap',
     css: '.tab-bar__tab__content__title',
   };
+
+  private readonly searchResultItem =
+    '.settings-page__header__search__list__item__tab';
+
+  private readonly searchSettingsInput = '#search-settings';
 
   private readonly settingsPageTitle = {
     text: 'Settings',
@@ -56,6 +66,11 @@ class SettingsPage {
       css: '.tab-bar__tab__content__title',
       text: 'Advanced',
     });
+  }
+
+  async fillSearchSettingsInput(text: string): Promise<void> {
+    console.log(`Filling search settings input with ${text}`);
+    await this.driver.fill(this.searchSettingsInput, text);
   }
 
   async toggleShowFiatOnTestnets(): Promise<void> {
@@ -112,6 +127,21 @@ class SettingsPage {
   async goToBackupAndSyncSettings(): Promise<void> {
     console.log('Navigating to Backup & Sync Settings page');
     await this.driver.clickElement(this.backupAndSyncSettingsButton);
+  }
+
+  async goToSearchResultPage(page: string): Promise<void> {
+    console.log(`Navigating to ${page} settings page from search results`);
+    await this.driver.clickElement({
+      css: this.searchResultItem,
+      text: page,
+    });
+  }
+
+  async check_noMatchingResultsFoundMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Checking no matching results found message is displayed on settings page',
+    );
+    await this.driver.waitForSelector(this.noMatchingResultsFoundMessage);
   }
 }
 
