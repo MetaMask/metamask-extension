@@ -58,9 +58,7 @@ import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import {
-  setPrivacyMode,
-} from '../../../store/actions';
+import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 
