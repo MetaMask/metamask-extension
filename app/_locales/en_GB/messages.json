@@ -5659,11 +5659,34 @@
   "standardAccountLabel": {
     "message": "Standard Account"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "If you want to try to recover your secret recovery phrase yourself, follow these instructions."
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "Your vault cannot be automatically recovered."
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "You vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "Internal Error: Database cannot be accessed"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "Resetting database…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Restoring database…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "these instructions"
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "How to recover your Secret Recovery Phrase"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."

@@ -50,11 +50,9 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
-import {
-  METHOD_RESTORE_DATABASE_FROM_BACKUP,
-  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-  KNOWN_STATE_CORRUPTION_ERRORS,
-} from './lib/state-corruption-errors';
+import { isStateCorruptionError } from '../../shared/constants/errors';
+import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
+import { handleStateCorruptionError } from './lib/state-corruption/state-corruption-recovery';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -70,7 +68,6 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -200,11 +197,30 @@ if (!isManifestV3) {
  * called once initialization has completed, and that `rejectInitialization` is
  * called if initialization fails in an unrecoverable way.
  */
-let {
-  promise: isInitialized,
-  resolve: resolveInitialization,
-  reject: rejectInitialization,
-} = deferredPromise();
+/**
+ * @type {Promise<void>}
+ */
+let isInitialized;
+/**
+ * @type {() => void}
+ */
+let resolveInitialization;
+/**
+ * @type {() => void}
+ */
+let rejectInitialization;
+
+/**
+ * Creates a deferred Promise and sets the global variables to track the
+ * state of application initialization (or re-initialization).
+ */
+function setGlobalInitializers() {
+  const deferred = deferredPromise();
+  isInitialized = deferred.promise;
+  resolveInitialization = deferred.resolve;
+  rejectInitialization = deferred.reject;
+}
+setGlobalInitializers();
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -248,8 +264,11 @@ const sendReadyMessageToTabs = async () => {
         checkForLastErrorAndLog();
       })
       .catch(() => {
-        // An error may happen if the contentscript is blocked from loading,
-        // and thus there is no runtime.onMessage handler to listen to the message.
+        // An error may happen if:
+        //  * a contentscript is blocked from loading, and thus there is no
+        // `runtime.onMessage` handlers to listen to the message, or
+        //  * if MetaMask reloads/installs while tabs are already open, as these
+        // tabs won't have a valid Port to send the message to.
         checkForLastErrorAndLog();
       });
   }
@@ -389,86 +408,6 @@ function maybeDetectPhishing(theController) {
   );
 }
 
-/**
- * Restores a given backup to the primary database and reinitializes the
- * background script and UI.
- *
- * @param {Set<chrome.runtime.Port>} ports - The port for the UI
- * @param {Backup} backup - The backup to restore.
- */
-async function restoreDatabaseFromBackup(ports, backup) {
-  await navigator.locks
-    .query('restoreDatabaseFromBackup')
-    .then(async (locks) => {
-      if (locks.length > 0) {
-        // never ever restore the database from a backup if we are already in the
-        // process of restoring the database from a backup. I don't know what
-        // would actually happen, but I'm quite sure it would be really bad.
-        throw new Error('restoreDatabaseFromBackup lock already held');
-      } else {
-        await navigator.locks.request('restoreDatabaseFromBackup', async () => {
-          const deferred = deferredPromise();
-          // we are going to reinitialize the background script, so we need to
-          // reset the initialization promises. this is gross since it is
-          // possible the original references could have been passed to other
-          // functions, and we can't update those references from here.
-          // right now, that isn't the case though.
-          isInitialized = deferred.promise;
-          resolveInitialization = deferred.resolve;
-          rejectInitialization = deferred.reject;
-
-          try {
-            if (!backup) {
-              // if we don't have a backup we need to make sure we clear the state
-              // from the database, and then reinitialize the background script
-              // with the first time state.
-              await persistenceManager.reset();
-            }
-            await initBackground(backup);
-            controller.onboardingController.setFirstTimeFlowType(
-              FirstTimeFlowType.restore,
-            );
-          } finally {
-            // always reload the UI because if `initBackground` worked, the UI
-            // will redirect to the login screen, and if it didn't work, it'll
-            // show them a new error message (which could be the same as the
-            // vault error that sent them here in the first place, but hopefully
-            // not!)
-            ports.forEach((port) => {
-              tryPostMessage(port, {
-                data: {
-                  method: 'RELOAD',
-                },
-              });
-            });
-          }
-        });
-      }
-    });
-}
-
-/**
- * Attempts to post a `message` to the given `port` via `port.postMessage`. If
- * the postMessage call fails due to an exception it will ignore it by catching
- * and then logging it.
- *
- * @param {chrome.runtime.Port} port - The port to post the message to.
- * @param {any} message - The message to post.
- */
-function tryPostMessage(port, message) {
-  try {
-    port.postMessage(message);
-    return true;
-  } catch (e) {
-    // an exception can occur here if the Window has since disconnected from
-    // the background, this might be expected, for example, if the UI is closed
-    // while we are still initializing the background (like during a call to
-    // `await isInitialized;`)
-    log.error('MetaMask - Failed to message to port', e, message);
-    return false;
-  }
-}
-
 // These are set after initialization
 /**
  * Connects a WindowPostMessage Port to the MetaMask controller.
@@ -511,10 +450,6 @@ let connectEip1193;
 /** @type {ConnectCaipMultichain} */
 let connectCaipMultichain;
 
-/**
- * @type {Set<chrome.runtime.Port>}
- */
-const brokenUIPorts = new Set();
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   try {
@@ -525,66 +460,35 @@ browser.runtime.onConnect.addListener(async (...args) => {
   } catch (error) {
     sentry?.captureException(error);
 
-    const port = args[0];
-
     // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
     // restore from a backup, if we have one.
-    if (KNOWN_STATE_CORRUPTION_ERRORS.has(error.message)) {
-      /**
-       * @type {Backup | null}
-       */
-      const backup =
-        // a STATE_CORRUPTION_ERROR may have a `backup` property already on it,
-        // if it does, we can use it without reading from the DB again.
-        error.backup ||
-        (await persistenceManager.getBackup().catch((_) => {
-          // ignore errors here since we're already in an error state, we really
-          // only care about the error that got us here.
-          return null;
-        }));
+    if (isStateCorruptionError(error)) {
+      await handleStateCorruptionError(
+        args[0],
+        error,
+        persistenceManager,
+        async (backup) => {
+          // we are going to reinitialize the background script, so we need to
+          // reset the initialization promises. this is gross since it is
+          // possible the original references could have been passed to other
+          // functions, and we can't update those references from here.
+          // right now, that isn't the case though.
+          setGlobalInitializers();
 
-      // send the `error` to the UI for this port
-      const sent = tryPostMessage(port, {
-        data: {
-          method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-          params: {
-            error: {
-              message: error.message,
-              name: error.name,
-              stack: error.stack,
-            },
-            currentLocale: backup?.PreferencesController?.currentLocale,
-            // it is not worth claiming we have a backup if the vault doesn't
-            // actually exist
-            hasBackup: Boolean(backup?.KeyringController?.vault),
-          },
-        },
-      });
-      // if we successfully sent the error to the UI, listen for a "restore"
-      // method call back to us
-      if (sent) {
-        // we handle multiple open UIs by keeping track of the ports that are
-        // open, and only allowing the restore process to happen once.
-        brokenUIPorts.add(port);
-        port.onDisconnect.addListener(() => brokenUIPorts.delete(port));
-        port.onMessage.addListener(async function restoreVaultListener(
-          message,
-        ) {
-          if (message?.data?.method === METHOD_RESTORE_DATABASE_FROM_BACKUP) {
-            // only allow the restore process once, unregister
-            // `restoreVaultListener` listeners from any other UI windows
-            brokenUIPorts.forEach((brokenPort) =>
-              brokenPort.onMessage.removeListener(restoreVaultListener),
+          if (backup) {
+            await initBackground(backup);
+            controller.onboardingController.setFirstTimeFlowType(
+              FirstTimeFlowType.restore,
             );
-
-            try {
-              await restoreDatabaseFromBackup(brokenUIPorts, backup);
-            } finally {
-              brokenUIPorts.clear();
-            }
+          } else {
+            // if we don't have a backup we need to make sure we clear the state
+            // from the database, and then reinitialize the background script
+            // with the first time state.
+            await persistenceManager.reset();
+            await initBackground();
           }
-        });
-      }
+        },
+      );
     }
   }
 });

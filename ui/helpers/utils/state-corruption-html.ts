@@ -6,29 +6,11 @@ import {
   VAULT_RECOVERY_LINK,
 } from '../../../shared/lib/ui-utils';
 import { getErrorHtmlBase } from '../../../shared/lib/error-utils';
-import {
-  MISSING_VAULT_ERROR,
-  CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
-} from '../../../shared/constants/errors';
+import type { ErrorLike } from '../../../shared/constants/errors';
 import { switchDirectionForPreferredLocale } from '../../../shared/lib/switch-direction';
-import getFirstPreferredLangCode from './get-first-preferred-lang-code';
-import { updateCurrentLocale, t } from '../translate';
-
-export type ErrorLike = {
-  message: string;
-  name: string;
-  stack?: string;
-};
-
-export const METHOD_RESTORE_DATABASE_FROM_BACKUP = 'restoreDatabaseFromBackup';
-
-export const METHOD_DISPLAY_STATE_CORRUPTION_ERROR =
-  'displayStateCorruptionError';
-
-export const KNOWN_STATE_CORRUPTION_ERRORS = new Set([
-  MISSING_VAULT_ERROR,
-  CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
-]);
+import getFirstPreferredLangCode from '../../../shared/lib/get-first-preferred-lang-code';
+import { METHOD_REPAIR_DATABASE } from '../../../shared/lib/state-corruption-utils';
+import { t, updateCurrentLocale } from '../../../shared/lib/translate';
 
 export async function getStateCorruptionErrorHtml(
   vaultRecoveryLink: string,
@@ -121,7 +103,7 @@ export async function displayStateCorruptionError(
 
     port.postMessage({
       data: {
-        method: METHOD_RESTORE_DATABASE_FROM_BACKUP,
+        method: METHOD_REPAIR_DATABASE,
       },
     });
   }

@@ -1,8 +1,4 @@
-import {
-  getMessage,
-  fetchLocale,
-  FALLBACK_LOCALE,
-} from '../../shared/modules/i18n';
+import { getMessage, fetchLocale, FALLBACK_LOCALE } from '../modules/i18n';
 import { t, updateCurrentLocale } from './translate';
 
 const localeCodeMock = 'te';

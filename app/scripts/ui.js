@@ -18,9 +18,12 @@ import browser from 'webextension-polyfill';
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
+import launchMetaMaskUi, {
+  updateBackgroundConnection,
+  displayStateCorruptionError,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
@@ -31,10 +34,7 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
-import {
-  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-  displayStateCorruptionError,
-} from './lib/state-corruption-errors';
+import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../shared/lib/state-corruption-utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -140,7 +140,7 @@ async function start() {
   }
 
   /**
-   * @typedef {import('./lib/state-corruption-errors').ErrorLike} ErrorLike
+   * @typedef {import('../../shared/constants/errors').ErrorLike} ErrorLike
    */
 
   /**

@@ -1,8 +1,6 @@
 import { memoize, escape as lodashEscape } from 'lodash';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred-lang-code';
 import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../modules/i18n';
+import getFirstPreferredLangCode from './get-first-preferred-lang-code';
 import { switchDirectionForPreferredLocale } from './switch-direction';
 
 const defaultLocale = 'en';
@@ -30,6 +28,16 @@ const _setupLocale = async (currentLocale) => {
 };
 
 export const setupLocale = memoize(_setupLocale);
+
+export const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
+  return (key) => {
+    let message = currentLocaleMessages[key]?.message;
+    if (!message && enLocaleMessages[key]) {
+      message = enLocaleMessages[key].message;
+    }
+    return message;
+  };
+};
 
 /**
  *

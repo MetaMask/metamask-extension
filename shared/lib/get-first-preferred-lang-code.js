@@ -1,5 +1,7 @@
 import browser from 'webextension-polyfill';
-import allLocales from '../../_locales/index.json';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+// eslint-disable-next-line import/no-restricted-paths
+import allLocales from '../../app/_locales/index.json';
 
 // ensure that we default users with browser language code 'zh' to the supported 'zh_CN' language code
 const existingLocaleCodes = { zh: 'zh_CN' };

@@ -9,9 +9,7 @@ import {
 import { BackgroundColor } from '../constants/design-system';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../app/scripts/translate';
+import { t } from '../../../shared/lib/translate';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
 export function getAccountNameErrorMessage(

@@ -5665,34 +5665,34 @@
   "standardAccountLabel": {
     "message": "Standard Account"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Your vault cannot be automatically recovered."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Internal Error: Database cannot be accessed"
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "You vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  "stateCorruptionDetectedNoBackup": {
+    "message": "Your vault cannot be automatically recovered."
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "You vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "Internal Error: Database cannot be accessed"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "Resetting database…"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Restoring database…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "these instructions"
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "How to recover your Secret Recovery Phrase"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Restoring database…"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Resetting database…"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
