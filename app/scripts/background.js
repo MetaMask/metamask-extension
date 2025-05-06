@@ -610,7 +610,7 @@ async function loadPreinstalledSnaps() {
     const response = await fetchWithTimeout(url);
 
     // If the Snap is compressed, decompress it
-    if (url.pathname && url.pathname.endsWith('.json.gz')) {
+    if (url.pathname.endsWith('.json.gz')) {
       const ds = new DecompressionStream('gzip');
       const decompressedStream = response.body.pipeThrough(ds);
       return await new Response(decompressedStream).json();
