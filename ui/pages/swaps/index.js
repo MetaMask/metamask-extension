@@ -25,7 +25,10 @@ import {
   getTokenList,
   getHDEntropyIndex,
 } from '../../selectors/selectors';
-import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../shared/modules/selectors/networks';
 import {
   getQuotes,
   clearSwapsState,
@@ -147,6 +150,7 @@ export default function Swap() {
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   useEffect(() => {
     const leaveSwaps = async () => {
@@ -202,6 +206,7 @@ export default function Swap() {
           ignoreTokens({
             tokensToIgnore: latestAddedTokenTo,
             dontShowLoadingIndicator: true,
+            networkClientId,
           }),
         );
       }
@@ -213,6 +218,7 @@ export default function Swap() {
     destinationTokenInfo,
     fetchParams,
     isAwaitingSwapRoute,
+    networkClientId,
   ]);
   useEffect(() => {
     return () => {

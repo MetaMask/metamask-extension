@@ -43,7 +43,6 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
-    getNextAvailableAccountName: () => mockNextAccountName(),
     generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
     detectNfts: () => mockDetectNfts,
   };
@@ -60,6 +59,7 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   ),
   useMultichainWalletSnapClient: () => ({
     createAccount: mockBitcoinClientCreateAccount,
+    getNextAvailableAccountName: () => mockNextAccountName(),
     getSnapId: () => 'bitcoin-snap-id',
     getSnapName: () => 'bitcoin-snap-name',
   }),

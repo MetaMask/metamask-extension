@@ -19,6 +19,7 @@ import {
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -94,7 +95,6 @@ import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
@@ -110,8 +110,10 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
+  getImageForChainId,
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
+  getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
@@ -124,6 +126,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   fetchAssetMetadata,
+  getAssetImageUrl,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { BridgeInputGroup } from './bridge-input-group';
@@ -202,7 +205,7 @@ const PrepareBridgePage = () => {
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
 
-  const ticker = useSelector(getNativeCurrency);
+  const ticker = useMultichainSelector(getMultichainNativeCurrency);
   const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
@@ -325,7 +328,8 @@ const PrepareBridgePage = () => {
     }
   }, [
     isEstimatedReturnLow,
-    isInsufficientGasForQuote(nativeAssetBalance),
+    nativeAssetBalance,
+    isInsufficientGasForQuote,
     isLowReturnBannerOpen,
   ]);
 
@@ -500,7 +504,9 @@ const PrepareBridgePage = () => {
     }
   }, []);
 
-  const occurrences = Number(toToken?.occurrences ?? 0);
+  const occurrences = Number(
+    toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
+  );
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
 
@@ -708,7 +714,25 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      dispatch(setToToken(null));
+                      const destNativeAsset = getNativeAssetForChainId(
+                        networkConfig.chainId,
+                      );
+                      dispatch(
+                        setToToken({
+                          ...destNativeAsset,
+                          image:
+                            getImageForChainId(
+                              isSolanaChainId(networkConfig.chainId)
+                                ? formatChainIdToCaip(networkConfig.chainId)
+                                : formatChainIdToHex(networkConfig.chainId),
+                            ) ??
+                            getAssetImageUrl(
+                              destNativeAsset.assetId,
+                              networkConfig.chainId,
+                            ) ??
+                            '',
+                        }),
+                      );
                     },
                     header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
                     shouldDisableNetwork: ({ chainId }) =>
@@ -906,6 +930,7 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
+            toToken.address !== SOLANA_USDC_ASSET.address &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
