@@ -2480,6 +2480,7 @@ export async function withSolanaAccountSnap(
         'SES_UNHANDLED_REJECTION: 0, never, undefined, index, Array(1)',
         'SES_UNHANDLED_REJECTION: 1, never, undefined, index, Array(1)',
         'No custom network client was found with the ID',
+        'No Infura network client was found with the ID "linea-mainnet"'
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
