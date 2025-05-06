@@ -51,8 +51,7 @@ const CreateSnapAccount = ({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        paddingLeft={4}
-        paddingRight={4}
+        padding={4}
         style={{ flexGrow: 1 }}
       >
         <Box
@@ -60,7 +59,7 @@ const CreateSnapAccount = ({
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
         >
-          <Box paddingBottom={4}>
+          <Box paddingBottom={6}>
             <AvatarIcon
               iconName={IconName.UserCircleAdd}
               size={AvatarIconSize.Xl}
@@ -70,6 +69,7 @@ const CreateSnapAccount = ({
             data-testid="create-snap-account-content-title"
             textAlign={TextAlign.Center}
             variant={TextVariant.headingLg}
+            paddingBottom={2}
           >
             {t('createSnapAccountTitle')}
           </Text>

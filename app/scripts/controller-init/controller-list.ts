@@ -39,6 +39,7 @@ import { Controller as AuthenticationController } from '@metamask/profile-sync-c
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
 import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
+import { DelegationController } from '@metamask/delegation-controller';
 
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
@@ -51,6 +52,7 @@ import { InstitutionalSnapController } from '../controllers/institutional-snap/I
 export type Controller =
   | AuthenticationController
   | CronjobController
+  | DelegationController
   | DeFiPositionsController
   | ExecutionService
   | GasFeeController

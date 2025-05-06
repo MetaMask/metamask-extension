@@ -552,6 +552,9 @@
   "asset": {
     "message": "Asset"
   },
+  "assetChartNoHistoricalPrices": {
+    "message": "We could not fetch any historical data"
+  },
   "assetMultipleNFTsBalance": {
     "message": "$1 NFTs"
   },
@@ -601,6 +604,48 @@
   "back": {
     "message": "Back"
   },
+  "backupAndSync": {
+    "message": "Backup and sync"
+  },
+  "backupAndSyncBasicFunctionalityNameMention": {
+    "message": "basic functionality"
+  },
+  "backupAndSyncEnable": {
+    "message": "Turn on backup and sync"
+  },
+  "backupAndSyncEnableConfirmation": {
+    "message": "When you turn on backup and sync, you’re also turning on $1. Do you want to continue?",
+    "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
+  },
+  "backupAndSyncEnableDescription": {
+    "message": "Backup and sync lets us store encrypted data for your custom settings and features. This keeps your MetaMask experience the same across devices and restores settings and features if you ever need to reinstall MetaMask. $1.",
+    "description": "$1 is link to the backup and sync privacy policy."
+  },
+  "backupAndSyncEnableDescriptionUpdatePreferences": {
+    "message": "You can update your preferences at any time in $1",
+    "description": "$1 is a bolded text that highlights the path to the settings page."
+  },
+  "backupAndSyncEnableDescriptionUpdatePreferencesPath": {
+    "message": "Settings > Backup and sync."
+  },
+  "backupAndSyncFeatureAccounts": {
+    "message": "Accounts"
+  },
+  "backupAndSyncManageWhatYouSync": {
+    "message": "Manage what you sync"
+  },
+  "backupAndSyncManageWhatYouSyncDescription": {
+    "message": "Turn on what’s synced between your devices."
+  },
+  "backupAndSyncPrivacyLink": {
+    "message": "Learn how we protect your privacy"
+  },
+  "backupAndSyncSlideDescription": {
+    "message": "Back up your accounts and sync settings."
+  },
+  "backupAndSyncSlideTitle": {
+    "message": "Introducing backup and sync"
+  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -643,6 +688,16 @@
   },
   "basicConfigurationModalDisclaimerOff": {
     "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalText": {
+    "message": "Turning this off also disables all features within $1, and $2.",
+    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
+    "message": "security and privacy, backup and sync"
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
+    "message": "notifications"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "To optimize your time on MetaMask, you’ll need to turn on this feature. Basic functions (like token details, optimal gas settings, and others) are important to the web3 experience."
@@ -968,7 +1023,7 @@
     "message": "Busy"
   },
   "buyAndSell": {
-    "message": "Buy & Sell"
+    "message": "Buy/Sell"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -1016,8 +1071,11 @@
     "message": "Choose your network"
   },
   "chooseYourNetworkDescription": {
-    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data.",
-    "description": "$1 is a link to the privacy policy"
+    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data for EVM accounts, for Solana accounts $2.",
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
+  },
+  "chooseYourNetworkDescriptionCallToAction": {
+    "message": "click here"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
@@ -1123,14 +1181,11 @@
   "confirmGasFeeTokenTooltip": {
     "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
-  "confirmInfoAccountCurrentType": {
-    "message": "Current Type"
+  "confirmInfoAccountNow": {
+    "message": "Now"
   },
-  "confirmInfoAccountNewType": {
-    "message": "New Type"
-  },
-  "confirmInfoAccountType": {
-    "message": "Account type"
+  "confirmInfoSwitchingTo": {
+    "message": "Switching To"
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
@@ -1792,6 +1847,41 @@
   },
   "duplicateContactWarning": {
     "message": "You have duplicate contacts"
+  },
+  "durationSuffixDay": {
+    "message": "D",
+    "description": "Shortened form of 'day'"
+  },
+  "durationSuffixHour": {
+    "message": "H",
+    "description": "Shortened form of 'hour'"
+  },
+  "durationSuffixMillisecond": {
+    "message": "MS",
+    "description": "Shortened form of 'millisecond'"
+  },
+  "durationSuffixMinute": {
+    "message": "M",
+    "description": "Shortened form of 'minute'"
+  },
+  "durationSuffixMonth": {
+    "message": "M",
+    "description": "Shortened form of 'month'"
+  },
+  "durationSuffixSecond": {
+    "message": "S",
+    "description": "Shortened form of 'second'"
+  },
+  "durationSuffixWeek": {
+    "message": "W",
+    "description": "Shortened form of 'week'"
+  },
+  "durationSuffixYear": {
+    "message": "Y",
+    "description": "Shortened form of 'year'"
+  },
+  "earn": {
+    "message": "Earn"
   },
   "edit": {
     "message": "Edit"
@@ -3801,22 +3891,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
   },
-  "oneDayAbbreviation": {
-    "message": "1D",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1M",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1W",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1Y",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4286,18 +4360,6 @@
   },
   "productAnnouncements": {
     "message": "Product announcements"
-  },
-  "profileSync": {
-    "message": "Profile Sync"
-  },
-  "profileSyncConfirmation": {
-    "message": "If you turn off profile sync, you won’t be able to receive notifications."
-  },
-  "profileSyncDescription": {
-    "message": "Creates a profile that MetaMask uses to sync some settings among your devices. This is required to get notifications. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Learn how we protect your privacy"
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
@@ -5597,6 +5659,12 @@
   "standardAccountLabel": {
     "message": "Standard Account"
   },
+  "stateCorruptionDetectedErrorMessage": {
+    "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"
+  },
+  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
+    "message": "If you want to try to recover your secret recovery phrase yourself, follow these instructions."
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -6192,10 +6260,6 @@
     "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "threeMonthsAbbreviation": {
-    "message": "3M",
-    "description": "Shortened form of '3 months'"
-  },
   "time": {
     "message": "Time"
   },
@@ -6467,6 +6531,9 @@
   },
   "unapproved": {
     "message": "Unapproved"
+  },
+  "unexpectedBehavior": {
+    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored properly. Use the link below to send MetaMask a bug report."
   },
   "units": {
     "message": "units"
