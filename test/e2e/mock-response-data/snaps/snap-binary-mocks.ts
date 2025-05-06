@@ -353,6 +353,28 @@ export async function mockNotificationExampleSnap(mockServer: Mockttp) {
     });
 }
 
+export async function mockSignatureInsightsSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/signature-insights-example-snap-1.0.3.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/signature-insights-example-snap/-/signature-insights-example-snap-1.0.3.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '11114',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"ab7693d0492cea3d40df77a9dd15de4d"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
 export async function mockSimpleKeyringSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/snap-simple-keyring-snap-1.1.6.txt';
