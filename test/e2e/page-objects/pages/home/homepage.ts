@@ -192,11 +192,24 @@ class HomePage {
     await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
   }
 
-  async check_disabledButtonTooltip(tooltipText: string): Promise<void> {
-    console.log(`Check if disabled button tooltip is displayed on homepage`);
-    await this.driver.waitForSelector(
-      `.icon-button--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
+  /**
+   * Checks if popover is displayed on homepage.
+   *
+   * @param shouldBeDisplayed - Whether the popover should be displayed. Defaults to true.
+   */
+  async check_popoverIsDisplayed(
+    shouldBeDisplayed: boolean = true,
+  ): Promise<void> {
+    console.log(
+      `Checking if popover ${
+        shouldBeDisplayed ? 'is' : 'is not'
+      } displayed on homepage`,
     );
+    if (shouldBeDisplayed) {
+      await this.driver.waitForSelector(this.popoverCloseButton);
+    } else {
+      await this.driver.assertElementNotPresent(this.popoverCloseButton);
+    }
   }
 
   /**
