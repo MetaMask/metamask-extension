@@ -25,6 +25,7 @@
   min-height: 68px;
   padding-left: 24px;
   padding-right: 24px;
+
   @include design-system.screen-sm-max {
     height: $height-screen-sm-max;
   }
