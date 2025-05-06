@@ -13,7 +13,6 @@ describe('Carousel component e2e tests', function () {
     'card',
     'cash',
     'multiSrp',
-    'backupAndSync',
   ];
 
   it('should display correct slides with expected content', async function () {
