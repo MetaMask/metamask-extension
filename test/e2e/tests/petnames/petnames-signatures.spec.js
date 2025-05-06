@@ -14,11 +14,36 @@ const {
   clickName,
   rejectRedesignedSignatureOrTransactionRequest,
 } = require('./petnames-helpers');
+const fs = require('fs');
 
 const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
   TYPED_V4: 'v4',
 };
+
+async function mockLookupSnap(mockServer) {
+  const tgzPath =
+    'test/e2e/mock-response-data/snaps/name-lookup-example-snap-3.1.1.txt';
+  return [
+    await mockServer
+      .forGet(
+        'https://registry.npmjs.org/@metamask/name-lookup-example-snap/-/name-lookup-example-snap-3.1.1.tgz',
+      )
+      .thenCallback(() => {
+        return {
+          status: 200,
+          rawBody: fs.readFileSync(tgzPath),
+          headers: {
+            "Accept-Ranges": 'bytes',
+            'Content-Type': 'application/octet-stream',
+            "Content-Length": "7155",
+            "Etag": '"61ad04c85067c395d930a0f3f75cb501"',
+            'Vary': 'Accept-Encoding',
+          },
+        }
+}),
+  ];
+}
 
 async function openTestSnaps(driver) {
   const handle = await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -157,6 +182,7 @@ describe('Petnames - Signatures', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
+        testSpecificMock: mockLookupSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
