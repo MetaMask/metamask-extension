@@ -4132,18 +4132,6 @@
   "productAnnouncements": {
     "message": "Anuncios de productos"
   },
-  "profileSync": {
-    "message": "Sincronización del perfil"
-  },
-  "profileSyncConfirmation": {
-    "message": "Si desactiva la sincronización del perfil, no podrá recibir notificaciones."
-  },
-  "profileSyncDescription": {
-    "message": "Crea un perfil que MetaMask utiliza para sincronizar algunas configuraciones entre sus dispositivos. Esto es necesario para recibir notificaciones. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Obtenga información sobre cómo protegemos su privacidad"
-  },
   "proposedApprovalLimit": {
     "message": "Límite de aprobación propuesto"
   },

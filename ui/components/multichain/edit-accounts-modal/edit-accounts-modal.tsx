@@ -149,6 +149,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                   account={account}
                   key={account.caipAccountId}
                   isPinned={Boolean(account.pinned)}
+                  showConnectedStatus={false}
                   startAccessory={
                     <Checkbox
                       isChecked={selectedAccountAddresses.some(
