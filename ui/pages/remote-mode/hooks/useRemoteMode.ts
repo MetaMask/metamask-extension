@@ -14,7 +14,7 @@ import {
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import { getSelectedNetwork } from '../../../selectors';
 import { getRemoteModeConfig } from '../../../selectors/remote-mode';
-import { addTransaction } from '../../../store/actions';
+import { addTransactionAndWaitForPublish } from '../../../store/actions';
 import {
   awaitDeleteDelegationEntry,
   listDelegationEntries,
@@ -132,7 +132,7 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
       });
 
       // TODO: change to addTransactionAndRouteToConfirmationPage when ID consistency is fixed
-      const transactionMeta = await addTransaction(
+      const transactionMeta = await addTransactionAndWaitForPublish(
         {
           from: account,
           to: delegationManagerAddress,
