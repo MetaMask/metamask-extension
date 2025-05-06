@@ -71,15 +71,18 @@ async function awaitDeleteDelegationEntry(
 ) {
   const handleTransactionConfirmed = (transactionMeta: TransactionMeta) => {
     if (
-      transactionMeta.id === txMeta.id ||
-      transactionMeta.replacedById === txMeta.replacedById
+      transactionMeta.id !== txMeta.id &&
+      transactionMeta.history?.[0].id !== txMeta.id
     ) {
-      controller.delete(hash);
-      initMessenger.unsubscribe(
-        'TransactionController:transactionConfirmed',
-        handleTransactionConfirmed,
-      );
+      // Not our transaction
+      return;
     }
+    // Delete the delegation entry and unsubscribe
+    controller.delete(hash);
+    initMessenger.unsubscribe(
+      'TransactionController:transactionConfirmed',
+      handleTransactionConfirmed,
+    );
   };
   initMessenger.subscribe(
     'TransactionController:transactionConfirmed',
