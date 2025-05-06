@@ -572,8 +572,11 @@ export default class MetamaskController extends EventEmitter {
     });
 
     let initialNetworkControllerState = initState.NetworkController;
+    const additionalDefaultNetworks = [ChainId['megaeth-testnet']];
     if (!initialNetworkControllerState) {
-      initialNetworkControllerState = getDefaultNetworkControllerState();
+      initialNetworkControllerState = getDefaultNetworkControllerState(
+        additionalDefaultNetworks,
+      );
 
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
@@ -626,7 +629,7 @@ export default class MetamaskController extends EventEmitter {
         fetch: globalThis.fetch.bind(globalThis),
         btoa: globalThis.btoa.bind(globalThis),
       }),
-      additionalDefaultNetworks: [ChainId['megaeth-testnet']],
+      additionalDefaultNetworks,
     });
     this.networkController.initializeProvider();
 
