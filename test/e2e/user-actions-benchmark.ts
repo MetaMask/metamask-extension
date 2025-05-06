@@ -109,20 +109,21 @@ async function bridgeUserActions(): Promise<{
   let loadAssetPicker: number = 0;
   let searchToken: number = 0;
 
-  const fixtureBuilder = new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
-    .withRemoteFeatureFlagsControllerState({
-      bridgeConfig: {
-        ...DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
-        support: true,
-      },
-    });
+  const fixtureBuilder = new FixtureBuilder().withNetworkControllerOnMainnet();
 
   await withFixtures(
     {
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
       title: 'benchmark-userActions-bridgeUserActions',
+      manifestFlags: {
+        remoteFeatureFlags: {
+          bridgeConfig: {
+            ...DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
+            support: true,
+          },
+        },
+      },
     },
     async ({ driver }: { driver: Driver }) => {
       await logInWithBalanceValidation(driver);

@@ -300,7 +300,6 @@ export const getBridgeFixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
-    .withRemoteFeatureFlagsControllerState(featureFlags)
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -364,7 +363,6 @@ export const getBridgeL2Fixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
-    .withRemoteFeatureFlagsControllerState(featureFlags)
     .withNetworkControllerOnLineaLocahost();
 
   return {
