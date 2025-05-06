@@ -95,7 +95,7 @@ class SettingsPage {
   }
 
   async goToDeveloperOptions(): Promise<void> {
-    console.log('Navigating to Develop Options page');
+    console.log('Navigating to Developer Options page');
     await this.driver.clickElement(this.developerOptionsButton);
   }
 
