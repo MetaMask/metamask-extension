@@ -99,9 +99,7 @@ const OnboardingFlow = mmLazy(() =>
 const Lock = mmLazy(() => import('../lock'));
 const UnlockPage = mmLazy(() => import('../unlock-page'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault'));
-const ImportSrpPage = mmLazy(() =>
-  import('../../components/multichain/multi-srp/import-srp/import-srp'),
-);
+const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp'));
 const RevealSeedConfirmation = mmLazy(() => import('../keychains/reveal-seed'));
 const Settings = mmLazy(() => import('../settings'));
 const NotificationsSettings = mmLazy(() => import('../notifications-settings'));

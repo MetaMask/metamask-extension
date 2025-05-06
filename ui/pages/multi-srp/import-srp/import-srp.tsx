@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { useHistory } from 'react-router-dom';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import * as actions from '../../../../store/actions';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import * as actions from '../../../store/actions';
 import {
   Text,
   Box,
@@ -17,7 +17,7 @@ import {
   TextFieldType,
   ButtonIcon,
   IconName,
-} from '../../../component-library';
+} from '../../../components/component-library';
 import {
   TextVariant,
   BlockSize,
@@ -26,14 +26,14 @@ import {
   BorderRadius,
   BackgroundColor,
   AlignItems,
-} from '../../../../helpers/constants/design-system';
-import { setShowNewSrpAddedToast } from '../../../app/toast-master/utils';
-import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
-import { clearClipboard } from '../../../../helpers/utils/util';
-import { useTheme } from '../../../../hooks/useTheme';
-import { ThemeType } from '../../../../../shared/constants/preferences';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
-import { Header, Page } from '../../pages/page';
+} from '../../../helpers/constants/design-system';
+import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
+import { parseSecretRecoveryPhrase } from '../../../components/app/srp-input/parse-secret-recovery-phrase';
+import { clearClipboard } from '../../../helpers/utils/util';
+import { useTheme } from '../../../hooks/useTheme';
+import { ThemeType } from '../../../../shared/constants/preferences';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { Header, Page } from '../../../components/multichain/pages/page';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
