@@ -274,7 +274,7 @@
     "nameSources": "object",
     "userOperations": "object",
     "isSignedIn": "boolean",
-    "isBackupAndSyncEnabled": false,
+    "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
@@ -381,7 +381,19 @@
     "submitHistory": "object",
     "delegations": "object",
     "encryptionKey": "string",
-    "encryptionSalt": "string"
+    "encryptionSalt": "string",
+    "sessionData": {
+      "profile": {
+        "identifierId": "da9a9fc7b09edde9cc23cec9b7e11a71fb0ab4d2ddd8af8af905306f3e1456fb",
+        "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
+        "profileId": "f88227bd-b615-41a3-b0be-467dd781a4ad"
+      },
+      "token": {
+        "accessToken": "string",
+        "expiresIn": 3600,
+        "obtainedAt": 1746564183212
+      }
+    }
   },
   "ramps": "object",
   "send": "object",
