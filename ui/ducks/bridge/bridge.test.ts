@@ -167,7 +167,7 @@ describe('Ducks - Bridge', () => {
             token_symbol_destination: 'ETH',
             security_warnings: [],
           },
-        ),
+        ) as never,
       );
 
       expect(mockUpdateParams).toHaveBeenCalledTimes(1);
