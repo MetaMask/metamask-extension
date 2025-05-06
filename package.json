@@ -266,7 +266,7 @@
     "@metamask/bridge-controller": "^18.0.0",
     "@metamask/bridge-status-controller": "^16.0.0",
     "@metamask/browser-passworder": "^4.3.0",
-    "@metamask/chain-agnostic-permission": "^0.5.0",
+    "@metamask/chain-agnostic-permission": "^0.6.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.7.0",
     "@metamask/design-tokens": "^7.0.0",
