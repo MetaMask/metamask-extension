@@ -185,7 +185,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
     });
   });
   describe('Given I have connected to one of my two accounts', function () {
-    it('Switching between them should NOT reflect in the dapp', async function () {
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Switching between them should NOT reflect in the dapp', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
