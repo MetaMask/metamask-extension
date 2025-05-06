@@ -857,14 +857,16 @@ describe('Bridge selectors', () => {
 
   describe('getBridgeQuotes', () => {
     it('should return empty values when quotes are not present', () => {
-      const state = createBridgeMockStore();
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: { quotes: [] },
+      });
 
       const result = getBridgeQuotes(state as never);
 
       expect(result).toStrictEqual({
         activeQuote: null,
         isLoading: false,
-        isQuoteGoingToRefresh: false,
+        isQuoteGoingToRefresh: true,
         quotesLastFetchedMs: null,
         quotesRefreshCount: 0,
         recommendedQuote: null,

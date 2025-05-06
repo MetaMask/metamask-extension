@@ -155,11 +155,19 @@ describe('Ducks - Bridge', () => {
       } as never);
 
       store.dispatch(
-        updateQuoteRequestParams({
-          srcChainId: 1,
-          srcTokenAddress: zeroAddress(),
-          destTokenAddress: undefined,
-        }) as never,
+        updateQuoteRequestParams(
+          {
+            srcChainId: 1,
+            srcTokenAddress: zeroAddress(),
+            destTokenAddress: undefined,
+          },
+          {
+            stx_enabled: false,
+            token_symbol_source: 'ETH',
+            token_symbol_destination: 'ETH',
+            security_warnings: [],
+          },
+        ),
       );
 
       expect(mockUpdateParams).toHaveBeenCalledTimes(1);
@@ -168,6 +176,12 @@ describe('Ducks - Bridge', () => {
           srcChainId: 1,
           srcTokenAddress: zeroAddress(),
           destTokenAddress: undefined,
+        },
+        {
+          stx_enabled: false,
+          token_symbol_source: 'ETH',
+          token_symbol_destination: 'ETH',
+          security_warnings: [],
         },
         expect.anything(),
       );
@@ -192,10 +206,7 @@ describe('Ducks - Bridge', () => {
       mockStore.dispatch(resetBridgeState() as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
-      expect(mockResetBridgeState).toHaveBeenCalledWith(
-        undefined,
-        expect.anything(),
-      );
+      expect(mockResetBridgeState).toHaveBeenCalledWith(expect.anything());
       const actions = mockStore.getActions();
       expect(actions[0].type).toStrictEqual('bridge/resetInputFields');
       const newState = bridgeReducer(state, actions[0]);
