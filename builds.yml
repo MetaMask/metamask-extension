@@ -372,9 +372,6 @@ env:
   ###
   - EIP_7702_PUBLIC_KEY: '0x3c7a1cCCe462e96D186B8ca9a1BCB2010C3dABa3'
 
-  # Optional override for transaction relay API, defaults to Sentinel
-  - TRANSACTION_RELAY_API_URL: null
-
   # Address of DelegationManager smart contract
   - DELEGATION_MANAGER_ADDRESS: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3'
 

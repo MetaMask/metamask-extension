@@ -1,7 +1,8 @@
-import { AuthorizationList, CHAIN_IDS } from '@metamask/transaction-controller';
+import { AuthorizationList } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 const log = createProjectLogger('transaction-relay');
 
@@ -32,27 +33,26 @@ export enum RelayStatus {
   Success = 'SUCCESS',
 }
 
-export const RELAY_RPC_METHOD = 'eth_sendRelayTransaction';
-
-const RELAY_URL_BY_CHAIN_ID = {
-  [CHAIN_IDS.MAINNET]:
-    'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io',
-  [CHAIN_IDS.BSC]: 'https://tx-sentinel-bsc-mainnet.api.cx.metamask.io',
-  [CHAIN_IDS.BASE]: 'https://tx-sentinel-base-mainnet.api.cx.metamask.io',
-  [CHAIN_IDS.SEPOLIA]:
-    'https://tx-sentinel-ethereum-sepolia.api.cx.metamask.io',
+type RelayNetwork = {
+  network: string;
+  confirmations: boolean;
 };
 
-type SupportedChainId = keyof typeof RELAY_URL_BY_CHAIN_ID;
+type RelayNetworkResponse = {
+  [chainIdDecimal: string]: RelayNetwork;
+};
+
+const BASE_URL = 'https://tx-sentinel-{0}.api.cx.metamask.io/';
+const ENDPOINT_NETWORKS = 'networks';
+
+export const RELAY_RPC_METHOD = 'eth_sendRelayTransaction';
 
 export async function submitRelayTransaction(
   request: RelaySubmitRequest,
 ): Promise<RelaySubmitResponse> {
   const { chainId } = request;
 
-  const url =
-    process.env.TRANSACTION_RELAY_API_URL ??
-    RELAY_URL_BY_CHAIN_ID[chainId as SupportedChainId];
+  const url = await getRelayUrl(chainId);
 
   if (!url) {
     throw new Error(`Chain not supported by transaction relay - ${chainId}`);
@@ -74,9 +74,7 @@ export async function waitForRelayResult(
 ): Promise<RelayWaitResponse> {
   const { chainId, interval, uuid } = request;
 
-  const baseUrl =
-    process.env.TRANSACTION_RELAY_API_URL ??
-    RELAY_URL_BY_CHAIN_ID[chainId as SupportedChainId];
+  const baseUrl = await getRelayUrl(chainId);
 
   if (!baseUrl) {
     throw new Error(`Chain not supported by transaction relay - ${chainId}`);
@@ -99,6 +97,10 @@ export async function waitForRelayResult(
       }
     }, interval);
   });
+}
+
+export async function isRelaySupported(chainId: Hex): Promise<boolean> {
+  return Boolean(await getRelayUrl(chainId));
 }
 
 async function pollResult(url: string): Promise<RelayWaitResponse> {
@@ -124,4 +126,27 @@ async function pollResult(url: string): Promise<RelayWaitResponse> {
     status,
     transactionHash,
   };
+}
+
+async function getRelayUrl(chainId: Hex): Promise<string | undefined> {
+  const networkData = await getNetworkData();
+  const chainIdDecimal = hexToDecimal(chainId);
+  const network = networkData[chainIdDecimal];
+
+  if (!network?.confirmations) {
+    log('Chain is not supported', chainId);
+    return undefined;
+  }
+
+  return buildUrl(network.network);
+}
+
+async function getNetworkData(): Promise<RelayNetworkResponse> {
+  const url = `${buildUrl('ethereum-mainnet')}${ENDPOINT_NETWORKS}`;
+  const response = await getFetchWithTimeout()(url);
+  return response.json();
+}
+
+function buildUrl(subdomain: string): string {
+  return BASE_URL.replace('{0}', subdomain);
 }

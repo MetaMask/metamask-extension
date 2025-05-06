@@ -8,6 +8,7 @@ import {
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
+import { isRelaySupported } from '../../../../store/actions';
 
 export function useIsGaslessSupported() {
   const { currentConfirmation: transactionMeta } =
@@ -31,6 +32,14 @@ export function useIsGaslessSupported() {
     });
   }, [chainId, from, isSmartTransaction]);
 
+  const { value: relaySupportsChain } = useAsyncResult(async () => {
+    if (isSmartTransaction) {
+      return undefined;
+    }
+
+    return isRelaySupported(chainId);
+  }, [chainId, isSmartTransaction]);
+
   if (isSmartTransaction) {
     return true;
   }
@@ -39,7 +48,7 @@ export function useIsGaslessSupported() {
     (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
   );
 
-  if (!atomicBatchChainSupport) {
+  if (!atomicBatchChainSupport || !relaySupportsChain) {
     return false;
   }
 

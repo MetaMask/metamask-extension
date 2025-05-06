@@ -2,10 +2,12 @@ import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import {
   RELAY_RPC_METHOD,
   RelayStatus,
   RelaySubmitRequest,
+  isRelaySupported,
   submitRelayTransaction,
   waitForRelayResult,
 } from './transaction-relay';
@@ -37,6 +39,18 @@ describe('Transaction Relay Utils', () => {
   const fetchMock: jest.MockedFunction<ReturnType<typeof getFetchWithTimeout>> =
     jest.fn();
 
+  function mockNetworkFetchSuccess() {
+    fetchMock.mockResolvedValueOnce({
+      json: async () => ({
+        1: {
+          confirmations: true,
+          network: 'test',
+        },
+      }),
+      ok: true,
+    } as Response);
+  }
+
   function mockFetchSuccess(response: Json) {
     fetchMock.mockResolvedValueOnce({
       json: async () => response,
@@ -61,6 +75,8 @@ describe('Transaction Relay Utils', () => {
     });
 
     jest.mocked(getFetchWithTimeout).mockReturnValue(fetchMock);
+
+    mockNetworkFetchSuccess();
   });
 
   describe('submitRelayTransaction', () => {
@@ -105,6 +121,8 @@ describe('Transaction Relay Utils', () => {
       });
 
       const resultPromise = waitForRelayResult(WAIT_REQUEST_MOCK);
+      await flushPromises();
+
       jest.advanceTimersByTime(INTERVAL_MOCK);
 
       const result = await resultPromise;
@@ -125,6 +143,8 @@ describe('Transaction Relay Utils', () => {
       });
 
       const resultPromise = waitForRelayResult(WAIT_REQUEST_MOCK);
+      await flushPromises();
+
       jest.advanceTimersByTime(INTERVAL_MOCK);
 
       const result = await resultPromise;
@@ -139,6 +159,8 @@ describe('Transaction Relay Utils', () => {
       mockFetchError('Test Error', 500);
 
       const resultPromise = waitForRelayResult(WAIT_REQUEST_MOCK);
+      await flushPromises();
+
       jest.advanceTimersByTime(INTERVAL_MOCK);
 
       await expect(resultPromise).rejects.toThrow(
@@ -173,13 +195,50 @@ describe('Transaction Relay Utils', () => {
       });
 
       const resultPromise = waitForRelayResult(WAIT_REQUEST_MOCK);
+      await flushPromises();
+
       jest.advanceTimersByTime(INTERVAL_MOCK);
       jest.advanceTimersByTime(INTERVAL_MOCK);
       jest.advanceTimersByTime(INTERVAL_MOCK);
 
-      expect(fetchMock).toHaveBeenCalledTimes(3);
+      // Additional request to check network support
+      expect(fetchMock).toHaveBeenCalledTimes(4);
 
       await resultPromise;
+    });
+  });
+
+  describe('isRelaySupported', () => {
+    it('returns true if networks request includes chain', async () => {
+      const result = await isRelaySupported(CHAIN_IDS.MAINNET);
+      expect(result).toBe(true);
+    });
+
+    it('returns false if networks request does not include chain', async () => {
+      fetchMock.mockReset();
+      fetchMock.mockResolvedValueOnce({
+        json: async () => ({}),
+        ok: true,
+      } as Response);
+
+      const result = await isRelaySupported(CHAIN_IDS.MAINNET);
+      expect(result).toBe(false);
+    });
+
+    it('returns false if relay flag disabled', async () => {
+      fetchMock.mockReset();
+      fetchMock.mockResolvedValueOnce({
+        json: async () => ({
+          1: {
+            confirmations: false,
+            network: 'test',
+          },
+        }),
+        ok: true,
+      } as Response);
+
+      const result = await isRelaySupported(CHAIN_IDS.MAINNET);
+      expect(result).toBe(false);
     });
   });
 });
