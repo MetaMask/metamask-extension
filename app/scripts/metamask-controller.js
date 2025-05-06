@@ -573,7 +573,9 @@ export default class MetamaskController extends EventEmitter {
     let initialNetworkControllerState = initState.NetworkController;
     const additionalDefaultNetworks = [ChainId['megaeth-testnet']];
     if (!initialNetworkControllerState) {
-      initialNetworkControllerState = getDefaultNetworkControllerState(additionalDefaultNetworks);
+      initialNetworkControllerState = getDefaultNetworkControllerState(
+        additionalDefaultNetworks,
+      );
 
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
