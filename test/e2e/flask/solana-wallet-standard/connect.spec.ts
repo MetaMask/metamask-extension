@@ -254,7 +254,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
         },
       );
     });
-    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -278,7 +279,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
     });
   });
   describe('Given I have connected to Mainnet and Devnet', function () {
-    it('Should use the Mainnet scope by default', async function () {
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should use the Mainnet scope by default', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,

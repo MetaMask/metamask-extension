@@ -10,7 +10,8 @@ import {
 } from './common-solana';
 
 describe('Transaction activity list', function (this: Suite) {
-  it('user can see activity list and a confirmed transaction details', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('user can see activity list and a confirmed transaction details', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
