@@ -260,6 +260,16 @@ jobs:
       # id-token permission is required for uploading to s3
       id-token: write
 
+  build-ts-migration-dashboard:
+    name: Build ts migration dashboard
+    uses: ./.github/workflows/build-ts-migration-dashboard.yml
+    secrets:
+      TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
+    permissions:
+      contents: read
+      # id-token permission is required for uploading to s3
+      id-token: write
+
   build-beta:
     name: Build beta
     uses: ./.github/workflows/build-beta.yml
@@ -279,6 +289,7 @@ jobs:
       - bundle-size
       - wait-for-circleci-workflow-status
       - build-storybook
+      - build-ts-migration-dashboard
       - build-beta
     uses: ./.github/workflows/publish-prerelease.yml
     secrets:
@@ -304,6 +315,7 @@ jobs:
       - e2e-firefox
       - wait-for-circleci-workflow-status
       - build-storybook
+      - build-ts-migration-dashboard
       - build-beta
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
