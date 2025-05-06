@@ -45,6 +45,7 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/modules/selectors/networks';
 import { setActiveNetworkWithError } from '../../../store/actions';
+import { setToChainId } from '../../../ducks/bridge/actions';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -251,6 +252,7 @@ export const AssetPickerAmount = ({
                       networkConfig.rpcEndpoints[
                         networkConfig.defaultRpcEndpointIndex
                       ];
+                    dispatch(setToChainId(networkConfig.chainId));
                     dispatch(
                       setActiveNetworkWithError(
                         'networkClientId' in rpcEndpoint
