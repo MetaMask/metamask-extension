@@ -28,7 +28,7 @@ function QrCodeView({
   accountName,
 }: {
   Qr: { message: string; data: string };
-  warning: null | string;
+  warning: string | null | undefined;
   accountName?: string;
 }) {
   const { message, data } = Qr;
