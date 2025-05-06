@@ -44,12 +44,12 @@ export async function getStateCorruptionErrorHtml(
     corruptionDetectedMessage = t('stateCorruptionDetectedWithBackup') ?? '';
     copyAndRestoreMessage =
       t('stateCorruptionCopyAndRestoreBeforeRecovery', instructionsLink) ?? '';
-    restoreOrResetMessage = t('restoreAccountsFromBackup') ?? '';
+    restoreOrResetMessage = t('stateCorruptionRestoreAccountsFromBackup') ?? '';
   } else {
     corruptionDetectedMessage = t('stateCorruptionDetectedNoBackup') ?? '';
     copyAndRestoreMessage =
       t('stateCorruptionCopyAndRestoreBeforeReset', instructionsLink) ?? '';
-    restoreOrResetMessage = t('resetMetaMaskState') ?? '';
+    restoreOrResetMessage = t('stateCorruptionResetMetaMaskState') ?? '';
   }
 
   const header = `

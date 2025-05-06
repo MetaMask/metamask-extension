@@ -4613,7 +4613,7 @@
   "reset": {
     "message": "Reset"
   },
-  "resetMetaMaskState": {
+  "stateCorruptionResetMetaMaskState": {
     "message": "Reset MetaMask State"
   },
   "resetWallet": {
@@ -4633,9 +4633,6 @@
   },
   "restore": {
     "message": "Restore"
-  },
-  "restoreAccountsFromBackup": {
-    "message": "Restore Accounts"
   },
   "restoreUserData": {
     "message": "Restore user data"
@@ -5684,6 +5681,9 @@
   },
   "stateCorruptionResettingDatabase": {
     "message": "Resetting database…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "Restore Accounts"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Restoring database…"
