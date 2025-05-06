@@ -23,7 +23,8 @@
   flex-flow: column nowrap;
   z-index: 55;
   min-height: 68px;
-
+  padding-left: 24px;
+  padding-right: 24px;
   @include design-system.screen-sm-max {
     height: $height-screen-sm-max;
   }
@@ -60,13 +61,13 @@
     // This is needed to keep the button at the bottom of the screen.
     /* stylelint-disable length-zero-no-unit */
     bottom: 0;
+    left: initial;
     z-index: 99999;
+    width: 100%;
+    margin-left: -24px;
+    padding-left: 24px;
+    padding-right: 24px;
 
-    @include responsive-widths(
-      // 32px comes from the padding of the container.
-      $sm: calc($width-screen-sm-min - 32px),
-      $md: calc($width-screen-md-min - 32px),
-      $lg: calc($width-screen-lg-min - 32px)
-    );
+    @include responsive-widths();
   }
 }

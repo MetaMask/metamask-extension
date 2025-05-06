@@ -254,15 +254,13 @@ export const ImportSrp = () => {
           />
         }
       >
-        {'Import Secret Recovery Phrase'}
+        {t('importSecretRecoveryPhrase')}
       </Header>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         height={BlockSize.Max}
         data-testid="import-srp-container"
-        paddingLeft={4}
-        paddingRight={4}
       >
         <Text variant={TextVariant.bodyMd} marginTop={2}>
           {t('importSRPDescription')}
@@ -380,8 +378,11 @@ export const ImportSrp = () => {
                 dispatch(setShowNewSrpAddedToast(true));
               } catch (e) {
                 setSrpError(
-                  e instanceof Error ? e.message : 'An unknown error occurred',
+                  e instanceof Error
+                    ? e.message
+                    : t('importSecretRecoveryPhraseUnknownError'),
                 );
+              } finally {
                 setLoading(false);
               }
             }}
