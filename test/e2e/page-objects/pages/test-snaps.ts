@@ -1,6 +1,6 @@
+import { isEqual } from 'lodash';
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
-import { isEqual } from 'lodash';
 
 const inputLocator = {
   entropyMessageInput: '#entropyMessage',
@@ -234,9 +234,7 @@ export class TestSnaps {
     console.log(`Actual preferences: ${JSON.stringify(actualPreferences)}`);
     console.log(`Expected preferences: ${JSON.stringify(expectedPreferences)}`);
 
-    if (
-      !isEqual(actualPreferences, expectedPreferences)
-    ) {
+    if (!isEqual(actualPreferences, expectedPreferences)) {
       throw new Error(
         'Preferences result span JSON does not match expected values',
       );
