@@ -5234,9 +5234,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.7.0":
-  version: 11.7.0
-  resolution: "@metamask/controller-utils@npm:11.7.0"
+"@metamask/controller-utils@npm:@metamask-previews/controller-utils@11.7.0-preview-28cd3de3":
+  version: 11.7.0-preview-28cd3de3
+  resolution: "@metamask-previews/controller-utils@npm:11.7.0-preview-28cd3de3"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -5251,7 +5251,7 @@ __metadata:
     fast-deep-equal: "npm:^3.1.3"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-  checksum: 10/68e5c91d9f8a4362b6e67c15cf2887ed00b7c8903ba201b6e0262d4f57bdc0c82d356ec4a34b96d562436f7193696d20c510af035053b9860b4a764a8d3b064f
+  checksum: 10/ca6c745d5408d3b0eac248b6dd1f3ca76497716b2aa2913257607ce37a086ecc75db8a1ce7d8e1e683c5a157b0dc4378b9885c44d0a3b5f89cdb0b4b206b3afb
   languageName: node
   linkType: hard
 
@@ -30023,7 +30023,7 @@ __metadata:
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
-    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.7.0-preview-28cd3de3"
     "@metamask/delegation-controller": "npm:^0.1.0"
     "@metamask/delegation-deployments": "npm:^0.10.0"
     "@metamask/design-tokens": "npm:^7.0.0"
