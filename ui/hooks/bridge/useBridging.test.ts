@@ -147,7 +147,7 @@ describe('useBridging', () => {
       ],
     ])(
       'should open %s with the currently selected token: %p',
-      (
+      async (
         expectedUrl: string,
         token: string,
         location: string,
@@ -159,7 +159,6 @@ describe('useBridging', () => {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             metaMetricsId: MOCK_METAMETRICS_ID,
-            isBridgeEnabled: true,
             remoteFeatureFlags: {
               bridgeConfig: {
                 support: true,
@@ -182,7 +181,7 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, urlSuffix);
 
-        expect(mockDispatch.mock.calls).toHaveLength(1);
+        expect(mockDispatch.mock.calls).toHaveLength(0);
         expect(mockHistoryPush.mock.calls).toHaveLength(1);
         expect(mockHistoryPush).toHaveBeenCalledWith(expectedUrl);
         expect(openTabSpy).not.toHaveBeenCalled();
