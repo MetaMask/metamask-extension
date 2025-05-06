@@ -96,6 +96,7 @@ const mockTransactionMetricsRequest = {
   getMethodData: jest.fn(),
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
   getHDEntropyIndex: jest.fn(),
+  getNetworkRpcUrl: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -806,6 +807,7 @@ describe('Transaction metrics', () => {
         ],
         is_smart_transaction: undefined,
         transaction_advanced_view: undefined,
+        rpc_domain: 'private',
       };
       const sensitiveProperties = {
         ...expectedSensitiveProperties,
@@ -816,6 +818,10 @@ describe('Transaction metrics', () => {
         gas_used: '0.000000291',
         status: METRICS_STATUS_FAILED,
       };
+
+      (
+        mockTransactionMetricsRequest.getNetworkRpcUrl as jest.Mock
+      ).mockReturnValue('https://example.com');
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMeta,

@@ -15,4 +15,5 @@ export type DestinationAccount = InternalAccount | ExternalAccount;
 // https://github.com/MetaMask/core/pull/5572/files
 export type TmpBridgeToken = BridgeToken & {
   occurrences?: number;
+  aggregators?: string[];
 };

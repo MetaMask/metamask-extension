@@ -16,7 +16,6 @@ const rampApiBaseUrl =
 const RampAPI = {
   async getNetworks(): Promise<AggregatorNetwork[]> {
     const url = new URL('/regions/networks', rampApiBaseUrl);
-    url.searchParams.set('context', 'extension');
     const response = await fetchWithTimeout(url.toString());
     const { networks } = await response.json();
     return networks;
