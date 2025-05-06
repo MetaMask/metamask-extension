@@ -206,8 +206,7 @@ export const CoinOverview = ({
   ///: END:ONLY_INCLUDE_IF
   const dispatch = useDispatch();
 
-  const isTestnet = useSelector(getIsTestnet);
-  const { showFiatInTestnets, privacyMode, showNativeTokenAsMainBalance } =
+  const { privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
 
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
@@ -308,9 +307,7 @@ export const CoinOverview = ({
           disabled={!balanceIsCached}
         >
           <div className={`${classPrefix}-overview__balance`}>
-            <div
-              className={`${classPrefix}-overview__primary-container`}
-            >
+            <div className={`${classPrefix}-overview__primary-container`}>
               {isEvm ? (
                 <LegacyAggregatedBalance
                   classPrefix={classPrefix}
