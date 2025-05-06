@@ -304,9 +304,6 @@
     "message": "ከውጭ አስመጣ",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "መለያ አስመጣ"
-  },
   "importAccountMsg": {
     "message": "የመጡ መለያዎች በመጀመሪያ ከተፈጠረው የእርስዎ MetaMask መለያ የዘር ሐረግ ጋር አይዛመዱም። ስለሚመጡ መለያዎቸ ተጨማሪ መረጃ ያግኙ"
   },

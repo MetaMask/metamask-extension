@@ -57,10 +57,10 @@ import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { TraceName, trace } from '../../../../shared/lib/trace';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
-  isEvmNetwork: boolean;
   currentNetwork: MultichainNetworkConfiguration;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
@@ -70,7 +70,6 @@ type AppHeaderUnlockedContentProps = {
 
 export const AppHeaderUnlockedContent = ({
   popupStatus,
-  isEvmNetwork,
   currentNetwork,
   networkOpenCallback,
   disableNetworkPicker,
@@ -166,6 +165,7 @@ export const AppHeaderUnlockedContent = ({
               onClick={(e: React.MouseEvent<HTMLElement>) => {
                 e.stopPropagation();
                 e.preventDefault();
+                trace({ name: TraceName.NetworkList });
                 networkOpenCallback();
               }}
               display={[Display.Flex, Display.None]} // show on popover hide on desktop
@@ -188,6 +188,7 @@ export const AppHeaderUnlockedContent = ({
             onClick={(e: React.MouseEvent<HTMLElement>) => {
               e.stopPropagation();
               e.preventDefault();
+              trace({ name: TraceName.NetworkList });
               networkOpenCallback();
             }}
             display={[Display.None, Display.Flex]} // show on desktop hide on popover
@@ -222,8 +223,8 @@ export const AppHeaderUnlockedContent = ({
             }}
             disabled={disableAccountPicker}
             labelProps={{ fontWeight: FontWeight.Bold }}
-            paddingLeft={2}
-            paddingRight={2}
+            paddingLeft={0}
+            paddingRight={0}
           />
           <Tooltip
             position="left"
@@ -271,13 +272,7 @@ export const AppHeaderUnlockedContent = ({
           {showConnectedStatus && (
             <Box ref={menuRef}>
               <ConnectedStatusIndicator
-                onClick={() => {
-                  if (!isEvmNetwork) {
-                    return;
-                  }
-                  handleConnectionsRoute();
-                }}
-                disabled={!isEvmNetwork}
+                onClick={() => handleConnectionsRoute()}
               />
             </Box>
           )}{' '}

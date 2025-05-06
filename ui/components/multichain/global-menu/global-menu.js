@@ -24,7 +24,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {
   Box,
   IconName,
@@ -53,7 +53,7 @@ import {
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
-  getNotifySnaps,
+  getThirdPartyNotifySnaps,
   getUseExternalServices,
 } from '../../../selectors';
 import {
@@ -91,14 +91,23 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
 
-  let hasNotifySnaps = false;
+  /**
+   * This condition is used to control whether the client shows the "turn on notifications"
+   * modal. This allowed third party users with existing notifications to view their snap
+   * notifications without turning on wallet notifications
+   *
+   * It excludes users with preinstalled notify snaps (e.g. the institutional snap)
+   * which have the notify permission, so as to retain the existing workflow
+   */
+
+  let hasThirdPartyNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
-  hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
+  hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
 
   let supportText = t('support');
   let supportLink = SUPPORT_LINK;
@@ -132,7 +141,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const handleNotificationsClick = () => {
     const shouldShowEnableModal =
-      !hasNotifySnaps && !isMetamaskNotificationsEnabled;
+      !hasThirdPartyNotifySnaps && !isMetamaskNotificationsEnabled;
 
     if (shouldShowEnableModal) {
       trackEvent({
@@ -140,7 +149,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         event: MetaMetricsEventName.NotificationsActivated,
         properties: {
           action_type: 'started',
-          is_profile_syncing_enabled: isProfileSyncingEnabled,
+          is_profile_syncing_enabled: isBackupAndSyncEnabled,
         },
       });
       dispatch(showConfirmTurnOnMetamaskNotifications());
@@ -175,7 +184,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         minWidth: 225,
       }}
       borderStyle={BorderStyle.none}
-      position={PopoverPosition.BottomEnd}
+      position={PopoverPosition.Auto}
     >
       {basicFunctionality && (
         <>

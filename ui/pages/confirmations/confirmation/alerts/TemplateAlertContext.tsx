@@ -1,4 +1,3 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
 import React, {
   ReactElement,
   createContext,
@@ -6,12 +5,15 @@ import React, {
   useContext,
   useState,
 } from 'react';
+import { useSelector } from 'react-redux';
 
 import useAlerts from '../../../../hooks/useAlerts';
 import { AlertActionHandlerProvider } from '../../../../components/app/alert-system/contexts/alertActionHandler';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
-import { ConfirmAlertModal } from '../../../../components/app/alert-system/confirm-alert-modal';
+import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
+import { getMemoizedUnapprovedConfirmations } from '../../../../selectors';
 import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
+import { useAlertsActions } from './useAlertsActions';
 
 type TemplateAlertContextType = {
   hasAlerts: boolean;
@@ -26,23 +28,35 @@ export const TemplateAlertContext = createContext<
 
 export const TemplateAlertContextProvider: React.FC<{
   children: ReactElement;
-  pendingConfirmation: ApprovalRequest<{ id: string }>;
-  onCancel: () => void;
+  confirmationId: string;
   onSubmit: () => void;
-}> = ({ children, pendingConfirmation, onCancel, onSubmit }) => {
-  const [isAlertsModalVisible, setAlertsModalVisible] = useState(false);
+}> = ({ children, confirmationId, onSubmit }) => {
+  const pendingConfirmations = useSelector(getMemoizedUnapprovedConfirmations);
+
+  const pendingConfirmation =
+    pendingConfirmations?.find(
+      (confirmation) => confirmation.id === confirmationId,
+    ) ?? pendingConfirmations[0];
+
+  const [isAlertsModalVisible, setIsAlertsModalVisible] = useState(false);
   const alertOwnerId = pendingConfirmation?.id;
-  useTemplateConfirmationAlerts(alertOwnerId);
+  useTemplateConfirmationAlerts(pendingConfirmation);
   const { hasAlerts } = useAlerts(alertOwnerId);
 
-  // todo: action implementations to come here as alerts are implemented
-  const processAction = useCallback((actionKey: string) => {
-    switch (actionKey) {
-      default:
-        console.error('Unknown alert action key:', actionKey);
-        break;
-    }
-  }, []);
+  const showAlertsModal = useCallback(() => {
+    setIsAlertsModalVisible(true);
+  }, [setIsAlertsModalVisible]);
+
+  const hideAlertModal = useCallback(() => {
+    setIsAlertsModalVisible(false);
+  }, [setIsAlertsModalVisible]);
+
+  const onFinalSubmit = useCallback(() => {
+    hideAlertModal();
+    onSubmit();
+  }, [hideAlertModal, onSubmit]);
+
+  const processAction = useAlertsActions(hideAlertModal, pendingConfirmation);
 
   return (
     // AlertMetricsProvider is added as it is required for alert modals to work
@@ -58,16 +72,17 @@ export const TemplateAlertContextProvider: React.FC<{
         <TemplateAlertContext.Provider
           value={{
             hasAlerts,
-            showAlertsModal: () => setAlertsModalVisible(true),
+            showAlertsModal,
           }}
         >
           <>
             {isAlertsModalVisible && (
-              <ConfirmAlertModal
+              <MultipleAlertModal
                 ownerId={alertOwnerId}
-                onClose={() => setAlertsModalVisible(false)}
-                onCancel={onCancel}
-                onSubmit={onSubmit}
+                onFinalAcknowledgeClick={onFinalSubmit}
+                onClose={hideAlertModal}
+                showCloseIcon={false}
+                displayAllAlerts
               />
             )}
             {children}

@@ -1,5 +1,8 @@
 import {
+  AuthorizationList,
+  BatchTransactionParams,
   CHAIN_IDS,
+  GasFeeToken,
   SimulationData,
   TransactionMeta,
   TransactionStatus,
@@ -23,13 +26,21 @@ export const CHAIN_ID = CHAIN_IDS.GOERLI;
 
 export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
+  authorizationList = undefined,
   txData = DEPOSIT_METHOD_DATA,
   chainId = CHAIN_ID,
+  nestedTransactions,
   simulationData,
+  gasFeeTokens,
+  selectedGasFeeToken,
 }: {
   address?: Hex;
+  authorizationList?: AuthorizationList;
   txData?: Hex;
   chainId?: string;
+  nestedTransactions?: BatchTransactionParams[];
+  gasFeeTokens?: GasFeeToken[];
+  selectedGasFeeToken?: Hex;
   simulationData?: SimulationData;
 } = {}): Confirmation => {
   const confirmation: Confirmation = {
@@ -45,6 +56,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       maxPriorityFeePerGas: '0x59682f00',
     },
     gasFeeEstimatesLoaded: true,
+    gasFeeTokens,
     history: [
       {
         actionId: String(400855682),
@@ -68,6 +80,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
         status: TransactionStatus.unapproved,
         time: 1713534772044,
         txParams: {
+          authorizationList,
           data: txData,
           from: address,
           gas: '0xab77',
@@ -134,12 +147,14 @@ export const genUnapprovedContractInteractionConfirmation = ({
       ],
     ],
     id: '1d7c08c0-fe54-11ee-9243-91b1e533746a',
+    nestedTransactions,
     origin: 'https://metamask.github.io',
     securityAlertResponse: {
       features: [],
       reason: '',
       result_type: 'Benign',
     },
+    selectedGasFeeToken,
     sendFlowHistory: [],
     simulationData: {
       nativeBalanceChange: {
@@ -153,6 +168,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     status: TransactionStatus.unapproved,
     time: 1713534772044,
     txParams: {
+      authorizationList,
       data: txData,
       from: address,
       gas: '0xab77',

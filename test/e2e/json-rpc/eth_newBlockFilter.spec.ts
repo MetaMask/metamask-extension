@@ -1,13 +1,12 @@
 import { strict as assert } from 'assert';
-import { defaultGanacheOptions, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 
 describe('eth_newBlockFilter', function () {
-  const ganacheOptions: typeof defaultGanacheOptions & { blockTime: number } = {
+  const localNodeOptions: { blockTime: number } = {
     blockTime: 0.1,
-    ...defaultGanacheOptions,
   };
   it('executes a new block filter call', async function () {
     await withFixtures(
@@ -16,7 +15,7 @@ describe('eth_newBlockFilter', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: ganacheOptions,
+        localNodeOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

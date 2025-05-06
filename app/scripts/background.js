@@ -47,8 +47,12 @@ import {
   FakeTrezorBridge,
 } from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
-import { addNonceToCsp } from '../../shared/modules/add-nonce-to-csp';
-import { checkURLForProviderInjection } from '../../shared/modules/provider-injection';
+import { createCaipStream } from '../../shared/modules/caip-stream';
+import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
+import {
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  KNOWN_STATE_CORRUPTION_ERRORS,
+} from './lib/state-corruption-errors';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -73,12 +77,18 @@ import {
   shouldEmitDappViewedEvent,
 } from './lib/util';
 import { createOffscreen } from './offscreen';
+import { setupMultiplex } from './lib/stream-utils';
 import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
 
 /* eslint-enable import/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
+import {
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
+} from './constants/stream';
+import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -88,17 +98,20 @@ const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
-const migrator = new Migrator({
-  migrations,
-  defaultVersion: process.env.WITH_STATE
-    ? FIXTURE_STATE_METADATA_VERSION
-    : null,
-});
 
 const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
+
+/**
+ * A helper function to log the current state of the vault. Useful for debugging
+ * purposes, to, in the case of database corruption, an possible way for an end
+ * user to recover their vault. Hopefully this is never needed.
+ */
+global.logEncryptedVault = () => {
+  persistenceManager.logEncryptedVault();
+};
 
 const { sentry } = global;
 let firstTimeState = { ...rawFirstTimeState };
@@ -143,22 +156,35 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
 
-if (isFirefox) {
-  browser.runtime.onInstalled.addListener(function (details) {
+if (!isManifestV3) {
+  /**
+   * `onInstalled` event handler.
+   *
+   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
+   * is never called.
+   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
+   *
+   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
+   */
+  const onInstalledListener = (details) => {
     if (details.reason === 'install') {
-      browser.storage.session.set({ isFirstTimeInstall: true });
-    } else if (details.reason === 'update') {
-      browser.storage.session.set({ isFirstTimeInstall: false });
+      onInstall();
+      browser.runtime.onInstalled.removeListener(onInstalledListener);
     }
-  });
-} else if (!isManifestV3) {
-  browser.runtime.onInstalled.addListener(function (details) {
-    if (details.reason === 'install') {
-      global.sessionStorage.setItem('isFirstTimeInstall', true);
-    } else if (details.reason === 'update') {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
-    }
-  });
+  };
+
+  browser.runtime.onInstalled.addListener(onInstalledListener);
+
+  // This condition is for when the `onInstalled` listener in `app-init` was called before
+  // `background.js` was loaded.
+} else if (globalThis.stateHooks.metamaskWasJustInstalled) {
+  onInstall();
+  // Delete just to clean up global namespace
+  delete globalThis.stateHooks.metamaskWasJustInstalled;
+  // This condition is for when `background.js` was loaded before the `onInstalled` listener was
+  // called.
+} else {
+  globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
 }
 
 /**
@@ -272,6 +298,7 @@ function maybeDetectPhishing(theController) {
       // is shipped.
       if (
         details.initiator &&
+        details.initiator !== 'null' &&
         // compare normalized URLs
         new URL(details.initiator).host === phishingPageUrl.host
       ) {
@@ -356,63 +383,93 @@ function maybeDetectPhishing(theController) {
   );
 }
 
-/**
- * Overrides the Content-Security-Policy (CSP) header by adding a nonce to the `script-src` directive.
- * This is a workaround for [Bug #1446231](https://bugzilla.mozilla.org/show_bug.cgi?id=1446231),
- * which involves overriding the page CSP for inline script nodes injected by extension content scripts.
- */
-function overrideContentSecurityPolicyHeader() {
-  // The extension url is unique per install on Firefox, so we can safely add it as a nonce to the CSP header
-  const nonce = btoa(browser.runtime.getURL('/'));
-  browser.webRequest.onHeadersReceived.addListener(
-    ({ responseHeaders, url }) => {
-      // Check whether inpage.js is going to be injected into the page or not.
-      // There is no reason to modify the headers if we are not injecting inpage.js.
-      const isInjected = checkURLForProviderInjection(new URL(url));
-
-      // Check if the user has enabled the overrideContentSecurityPolicyHeader preference
-      const isEnabled =
-        controller.preferencesController.state
-          .overrideContentSecurityPolicyHeader;
-
-      if (isInjected && isEnabled) {
-        for (const header of responseHeaders) {
-          if (header.name.toLowerCase() === 'content-security-policy') {
-            header.value = addNonceToCsp(header.value, nonce);
-          }
-        }
-      }
-
-      return { responseHeaders };
-    },
-    { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
-    ['blocking', 'responseHeaders'],
-  );
-}
-
 // These are set after initialization
-let connectRemote;
-let connectExternalExtension;
-let connectExternalCaip;
+/**
+ * Connects a WindowPostMessage Port to the MetaMask controller.
+ * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
+ *
+ * @callback ConnectWindowPostMessage
+ * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
+ * @returns {void}
+ */
+/** @type {ConnectWindowPostMessage} */
+let connectWindowPostMessage;
+
+/**
+ * Connects a externally_connecatable Port to the MetaMask controller.
+ * This method identifies dapp clients and connects them differently from extension clients.
+ *
+ * @callback ConnectExternallyConnectable
+ * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
+ */
+/** @type {ConnectExternallyConnectable} */
+let connectExternallyConnectable;
+
+/**
+ * Connects a Duplexstream to the MetaMask controller EIP-1193 API (via a multiplexed duplex stream).
+ *
+ * @callback ConnectEip1193
+ * @param {DuplexStream} connectionStream - The duplex stream.
+ * @param {chrome.runtime.MessageSender} sender - The remote port sender.
+ */
+/** @type {ConnectEip1193} */
+let connectEip1193;
+
+/**
+ * Connects a DuplexStream to the MetaMask controller Caip Multichain API.
+ *
+ * @callback ConnectCaipMultichain
+ * @param {DuplexStream} connectionStream - The duplex stream.
+ * @param {chrome.runtime.MessageSender} sender - The remote port sender.
+ */
+/** @type {ConnectCaipMultichain} */
+let connectCaipMultichain;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
-  await isInitialized;
+  try {
+    await isInitialized;
 
-  // This is set in `setupController`, which is called as part of initialization
-  connectRemote(...args);
+    // This is set in `setupController`, which is called as part of initialization
+    connectWindowPostMessage(...args);
+  } catch (error) {
+    sentry?.captureException(error);
+
+    // if have a STATE_CORRUPTION_ERROR tell the user about it and offer to
+    // restore from a backup, if we have one.
+    if (KNOWN_STATE_CORRUPTION_ERRORS.has(error.message)) {
+      const _state = await localStore.get().catch((_) => null);
+
+      const port = args[0];
+      try {
+        // send the `error` TO THE ui
+        port.postMessage({
+          data: {
+            method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+            params: {
+              error: {
+                message: error.message,
+                name: error.name,
+                stack: error.stack,
+              },
+              currentLocale: _state?.data?.PreferencesController?.currentLocale,
+            },
+          },
+        });
+      } catch (e) {
+        // an exception can occur here if the Window has since disconnected from
+        // the background, this is expected if the UI is closed while we are
+        // still initializing the background (during `await isInitialized;`)
+        log.error('MetaMask - Failed to send state corruption error', e);
+      }
+    }
+  }
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  const port = args[0];
-
-  if (port.sender.tab?.id && process.env.BARAD_DUR) {
-    connectExternalCaip(...args);
-  } else {
-    connectExternalExtension(...args);
-  }
+  connectExternallyConnectable(...args);
 });
 
 function saveTimestamp() {
@@ -476,85 +533,84 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize() {
-  try {
-    const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+  const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
-    const initData = await loadStateFromPersistence();
+  const initData = await loadStateFromPersistence();
 
-    const initState = initData.data;
-    const initLangCode = await getFirstPreferredLangCode();
+  const initState = initData.data;
+  const initLangCode = await getFirstPreferredLangCode();
 
-    let isFirstMetaMaskControllerSetup;
+  let isFirstMetaMaskControllerSetup;
 
-    // We only want to start this if we are running a test build, not for the release build.
-    // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
-    // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
-    // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
-    if (process.env.IN_TEST && window.navigator?.webdriver) {
-      getSocketBackgroundToMocha();
-    }
-
-    if (isManifestV3) {
-      // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
-      // miliseconds. This keeps the service worker alive.
-      if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
-        const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
-
-        saveTimestamp();
-        setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
-      }
-
-      const sessionData = await browser.storage.session.get([
-        'isFirstMetaMaskControllerSetup',
-      ]);
-
-      isFirstMetaMaskControllerSetup =
-        sessionData?.isFirstMetaMaskControllerSetup === undefined;
-      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
-    }
-
-    const overrides = inTest
-      ? {
-          keyrings: {
-            trezorBridge: FakeTrezorBridge,
-            ledgerBridge: FakeLedgerBridge,
-          },
-        }
-      : {};
-
-    setupController(
-      initState,
-      initLangCode,
-      overrides,
-      isFirstMetaMaskControllerSetup,
-      initData.meta,
-      offscreenPromise,
-    );
-
-    // `setupController` sets up the `controller` object, so we can use it now:
-    maybeDetectPhishing(controller);
-
-    if (!isManifestV3) {
-      await loadPhishingWarningPage();
-      // Workaround for Bug #1446231 to override page CSP for inline script nodes injected by extension content scripts
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=1446231
-      if (isFirefox) {
-        overrideContentSecurityPolicyHeader();
-      }
-    }
-    await sendReadyMessageToTabs();
-    log.info('MetaMask initialization complete.');
-
-    if (isManifestV3 || isFirefox) {
-      browser.storage.session.set({ isFirstTimeInstall: false });
-    } else {
-      global.sessionStorage.setItem('isFirstTimeInstall', false);
-    }
-
-    resolveInitialization();
-  } catch (error) {
-    rejectInitialization(error);
+  // We only want to start this if we are running a test build, not for the release build.
+  // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+  // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+  // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+  if (process.env.IN_TEST && window.navigator?.webdriver) {
+    getSocketBackgroundToMocha();
   }
+
+  if (isManifestV3) {
+    // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
+    // miliseconds. This keeps the service worker alive.
+    if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
+      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+      saveTimestamp();
+      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+    }
+
+    const sessionData = await browser.storage.session.get([
+      'isFirstMetaMaskControllerSetup',
+    ]);
+
+    isFirstMetaMaskControllerSetup =
+      sessionData?.isFirstMetaMaskControllerSetup === undefined;
+    await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+  }
+
+  const overrides = inTest
+    ? {
+        keyrings: {
+          trezorBridge: FakeTrezorBridge,
+          ledgerBridge: FakeLedgerBridge,
+        },
+      }
+    : {};
+
+  const preinstalledSnaps = await loadPreinstalledSnaps();
+
+  setupController(
+    initState,
+    initLangCode,
+    overrides,
+    isFirstMetaMaskControllerSetup,
+    initData.meta,
+    offscreenPromise,
+    preinstalledSnaps,
+  );
+
+  // `setupController` sets up the `controller` object, so we can use it now:
+  maybeDetectPhishing(controller);
+
+  if (!isManifestV3) {
+    await loadPhishingWarningPage();
+  }
+  await sendReadyMessageToTabs();
+}
+
+/**
+ * Loads the preinstalled snaps from urls and returns them as an array.
+ * It fails if any Snap fails to load in the expected time range.
+ */
+async function loadPreinstalledSnaps() {
+  const fetchWithTimeout = getFetchWithTimeout();
+  const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
+    const response = await fetchWithTimeout(url);
+    return await response.json();
+  });
+
+  return Promise.all(promises);
 }
 
 /**
@@ -629,12 +685,9 @@ async function loadPhishingWarningPage() {
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  *
- * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
+ * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
  */
 export async function loadStateFromPersistence() {
-  // migrations
-  migrator.on('error', console.warn);
-
   if (process.env.WITH_STATE) {
     const stateOverrides = await generateWalletState();
     firstTimeState = { ...firstTimeState, ...stateOverrides };
@@ -642,12 +695,18 @@ export async function loadStateFromPersistence() {
 
   // read from disk
   // first from preferred, async API:
-  const preMigrationVersionedData =
-    (await persistenceManager.get()) ||
-    migrator.generateInitialState(firstTimeState);
+  let preMigrationVersionedData = await persistenceManager.get();
+
+  const migrator = new Migrator({
+    migrations,
+    defaultVersion: process.env.WITH_STATE
+      ? FIXTURE_STATE_METADATA_VERSION
+      : null,
+  });
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
+    console.warn(err);
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
     sentry.captureException(err, {
@@ -655,6 +714,10 @@ export async function loadStateFromPersistence() {
       extra: { vaultStructure },
     });
   });
+
+  if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
+    preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
+  }
 
   // migrate data
   const versionedData = await migrator.migrateData(preMigrationVersionedData);
@@ -678,7 +741,7 @@ export async function loadStateFromPersistence() {
   persistenceManager.setMetadata(versionedData.meta);
 
   // write to disk
-  persistenceManager.set(versionedData.data);
+  await persistenceManager.set(versionedData.data);
 
   // return just the data
   return versionedData;
@@ -707,24 +770,29 @@ function emitDappViewedMetricEvent(origin) {
   );
   const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
 
-  controller.metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.DappViewed,
-    category: MetaMetricsEventCategory.InpageProvider,
-    referrer: {
-      url: origin,
+  controller.metaMetricsController.trackEvent(
+    {
+      event: MetaMetricsEventName.DappViewed,
+      category: MetaMetricsEventCategory.InpageProvider,
+      referrer: {
+        url: origin,
+      },
+      properties: {
+        is_first_visit: false,
+        number_of_accounts: numberOfTotalAccounts,
+        number_of_accounts_connected: numberOfConnectedAccounts,
+      },
     },
-    properties: {
-      is_first_visit: false,
-      number_of_accounts: numberOfTotalAccounts,
-      number_of_accounts_connected: numberOfConnectedAccounts,
+    {
+      excludeMetaMetricsId: true,
     },
-  });
+  );
 }
 
 /**
  * Track dapp connection when loaded and permissioned
  *
- * @param {Port} remotePort - The port provided by a new context.
+ * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
  */
 function trackDappView(remotePort) {
   if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
@@ -810,6 +878,7 @@ function trackAppOpened(environment) {
  * @param isFirstMetaMaskControllerSetup
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
+ * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
  */
 export function setupController(
   initState,
@@ -818,6 +887,7 @@ export function setupController(
   isFirstMetaMaskControllerSetup,
   stateMetadata,
   offscreenPromise,
+  preinstalledSnaps,
 ) {
   //
   // MetaMask Controller
@@ -840,12 +910,12 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    persistenceManager,
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
     offscreenPromise,
+    preinstalledSnaps,
   });
 
   setupEnsIpfsResolver({
@@ -900,21 +970,7 @@ export function setupController(
     }
   };
 
-  /**
-   * A runtime.Port object, as provided by the browser:
-   *
-   * @see https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
-   * @typedef Port
-   * @type Object
-   */
-
-  /**
-   * Connects a Port to the MetaMask controller via a multiplexed duplex stream.
-   * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
-   *
-   * @param {Port} remotePort - The port provided by a new context.
-   */
-  connectRemote = async (remotePort) => {
+  connectWindowPostMessage = (remotePort) => {
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -1021,41 +1077,62 @@ export function setupController(
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
-      connectExternalExtension(remotePort);
+
+      const portStream =
+        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+      connectEip1193(portStream, remotePort.sender);
+
+      if (isFirefox) {
+        const mux = setupMultiplex(portStream);
+        mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+
+        connectCaipMultichain(
+          mux.createStream(METAMASK_CAIP_MULTICHAIN_PROVIDER),
+          remotePort.sender,
+        );
+      }
     }
   };
 
-  // communication with page or other extension
-  connectExternalExtension = (remotePort) => {
+  connectExternallyConnectable = (remotePort) => {
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+    const isDappConnecting = remotePort.sender.tab?.id;
+    if (isDappConnecting) {
+      if (metamaskBlockedPorts.includes(remotePort.name)) {
+        return;
+      }
+
+      // this is triggered when a new tab is opened, or origin(url) is changed
+      trackDappView(remotePort);
+
+      connectCaipMultichain(createCaipStream(portStream), remotePort.sender);
+    } else {
+      connectEip1193(portStream, remotePort.sender);
+    }
+  };
+
+  connectEip1193 = (connectionStream, sender) => {
     controller.setupUntrustedCommunicationEip1193({
-      connectionStream: portStream,
-      sender: remotePort.sender,
+      connectionStream,
+      sender,
     });
   };
 
-  connectExternalCaip = async (remotePort) => {
-    if (metamaskBlockedPorts.includes(remotePort.name)) {
-      return;
-    }
-
-    // this is triggered when a new tab is opened, or origin(url) is changed
-    if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
-      trackDappView(remotePort);
-    }
-
-    const portStream =
-      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-
+  connectCaipMultichain = (connectionStream, sender) => {
     controller.setupUntrustedCommunicationCaip({
-      connectionStream: portStream,
-      sender: remotePort.sender,
+      connectionStream,
+      sender,
     });
   };
 
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectRemote, connectExternalExtension);
+    overrides.registerConnectListeners(
+      connectWindowPostMessage,
+      connectEip1193,
+    );
   }
 
   //
@@ -1082,11 +1159,6 @@ export function setupController(
 
   controller.controllerMessenger.subscribe(
     METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
-    updateBadge,
-  );
-
-  controller.controllerMessenger.subscribe(
-    METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
     updateBadge,
   );
 
@@ -1163,12 +1235,9 @@ export function setupController(
 
   function getPendingApprovalCount() {
     try {
-      let pendingApprovalCount =
+      const pendingApprovalCount =
         controller.appStateController.waitingForUnlock.length +
         controller.approvalController.getTotalApprovalCount();
-
-      pendingApprovalCount +=
-        controller.queuedRequestController.state.queuedRequestCount;
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
@@ -1320,24 +1389,15 @@ const addAppInstalledEvent = () => {
   }, 500);
 };
 
-// On first install, open a new tab with MetaMask
-async function onInstall() {
-  const sessionData =
-    isManifestV3 || isFirefox
-      ? await browser.storage.session.get(['isFirstTimeInstall'])
-      : await global.sessionStorage.getItem('isFirstTimeInstall');
-
-  const isFirstTimeInstall = sessionData?.isFirstTimeInstall;
-
-  if (process.env.IN_TEST) {
-    addAppInstalledEvent();
-  } else if (!isFirstTimeInstall && !process.env.METAMASK_DEBUG) {
-    // If storeAlreadyExisted is true then this is a fresh installation
-    // and an app installed event should be tracked.
-    addAppInstalledEvent();
+/**
+ * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
+ */
+function onInstall() {
+  log.debug('First install detected');
+  addAppInstalledEvent();
+  if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
-  onNavigateToTab();
 }
 
 function onNavigateToTab() {
@@ -1368,7 +1428,7 @@ function setupSentryGetStateGlobal(store) {
 }
 
 async function initBackground() {
-  await onInstall();
+  onNavigateToTab();
   try {
     await initialize();
     if (process.env.IN_TEST) {
@@ -1383,8 +1443,12 @@ async function initBackground() {
       }
     }
     persistenceManager.cleanUpMostRecentRetrievedState();
+
+    log.info('MetaMask initialization complete.');
+    resolveInitialization();
   } catch (error) {
     log.error(error);
+    rejectInitialization(error);
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {

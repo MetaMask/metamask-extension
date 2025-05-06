@@ -572,9 +572,6 @@
     "message": "Mag-import",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Mag-import ng Account"
-  },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang Secret Recovery Phrase ng MetaMask account. Matuto pa tungkol sa mga na-import account "
   },
@@ -1083,13 +1080,6 @@
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang field ng hex data sa screen ng pagpapadala"
   },
-  "showIncomingTransactions": {
-    "message": "Ipakita ang Mga Papasok na Transaksyon"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Piliin ito para gamitin ang Etherscan sa pagpapakita ng mga papasok na transaksyon sa listahan ng mga transaksyon",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
   },
@@ -1539,7 +1529,7 @@
     "description": "$1 is a clickable link."
   },
   "welcomeBack": {
-    "message": "Welcome back!"
+    "message": "Welcome back"
   },
   "whatsThis": {
     "message": "Ano ito?"

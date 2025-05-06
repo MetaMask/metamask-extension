@@ -9,23 +9,35 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeOnboardFlowIdentity } from '../flows';
-import { IS_ACCOUNT_SYNCING_ENABLED } from './helpers';
+import { ACCOUNT_TYPE } from '../../../constants';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from './mock-data';
 
-describe('Account syncing - Import With Private Key', async function () {
-  if (!IS_ACCOUNT_SYNCING_ENABLED) {
-    return;
-  }
+describe('Account syncing - Import With Private Key', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
-  const unencryptedAccounts = accountsToMockForAccountsSync;
-  const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+  const arrange = async () => {
+    const unencryptedAccounts = accountsToMockForAccountsSync;
+    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+
+    const userStorageMockttpController = new UserStorageMockttpController();
+
+    return {
+      unencryptedAccounts,
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+    };
+  };
 
   describe('from inside MetaMask', function () {
     it('does not sync accounts imported with private keys', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
+      const {
+        unencryptedAccounts,
+        mockedAccountSyncResponse,
+        userStorageMockttpController,
+      } = await arrange();
 
       await withFixtures(
         {
@@ -56,6 +68,7 @@ describe('Account syncing - Import With Private Key', async function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -93,7 +106,10 @@ describe('Account syncing - Import With Private Key', async function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(2);
+          await accountListPage.check_numberOfAvailableAccounts(
+            2,
+            ACCOUNT_TYPE.Ethereum,
+          );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
           );

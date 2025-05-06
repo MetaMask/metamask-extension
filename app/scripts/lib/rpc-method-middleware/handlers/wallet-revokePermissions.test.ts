@@ -1,5 +1,5 @@
 import { invalidParams } from '@metamask/permission-controller';
-import { Caip25EndowmentPermissionName } from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { PermissionNames } from '../../../controllers/permissions';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
@@ -21,6 +21,7 @@ const createMockedHandler = () => {
   const next = jest.fn();
   const end = jest.fn();
   const revokePermissionsForOrigin = jest.fn();
+  const rejectApprovalRequestsForOrigin = jest.fn();
 
   const response: PendingJsonRpcResponse<Json> = {
     jsonrpc: '2.0' as const,
@@ -29,6 +30,7 @@ const createMockedHandler = () => {
   const handler = (request: JsonRpcRequest<Json[]>) =>
     revokePermissionsHandler.implementation(request, response, next, end, {
       revokePermissionsForOrigin,
+      rejectApprovalRequestsForOrigin,
     });
 
   return {
@@ -36,6 +38,7 @@ const createMockedHandler = () => {
     next,
     end,
     revokePermissionsForOrigin,
+    rejectApprovalRequestsForOrigin,
     handler,
   };
 };
@@ -139,6 +142,21 @@ describe('revokePermissionsHandler', () => {
     expect(revokePermissionsForOrigin).toHaveBeenCalledWith([
       'otherPermission',
     ]);
+  });
+
+  it('calls function rejectApprovalRequestsForOrigin to reject pending confirmations', () => {
+    const { handler, rejectApprovalRequestsForOrigin } = createMockedHandler();
+
+    handler({
+      ...baseRequest,
+      params: [
+        {
+          [Caip25EndowmentPermissionName]: {},
+          otherPermission: {},
+        },
+      ],
+    });
+    expect(rejectApprovalRequestsForOrigin).toHaveBeenCalled();
   });
 
   it('returns null', () => {

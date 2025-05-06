@@ -1,9 +1,8 @@
-import type { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
   type GenericQuoteRequest,
-} from '../../../shared/types/bridge';
+} from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
@@ -76,14 +75,4 @@ export const updateQuoteRequestParams = (
       callBridgeControllerMethod(BridgeUserAction.UPDATE_QUOTE_PARAMS, params),
     );
   };
-};
-
-export const getBridgeERC20Allowance = async (
-  contractAddress: string,
-  chainId: Hex,
-): Promise<string> => {
-  return await submitRequestToBackground(
-    BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
-    [contractAddress, chainId],
-  );
 };

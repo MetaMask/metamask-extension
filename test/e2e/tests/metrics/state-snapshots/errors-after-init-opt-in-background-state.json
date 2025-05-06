@@ -62,27 +62,38 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
-    "bridgeState": {
-      "bridgeFeatureFlags": {
-        "extensionConfig": {
-          "refreshRate": "number",
-          "maxRefreshCount": "number",
-          "support": "boolean",
-          "chains": {
-            "eip155:1": "object",
-            "eip155:42161": "object",
-            "eip155:59144": "object"
-          }
+    "assetExchangeRates": "object",
+    "bridgeFeatureFlags": {
+      "extensionConfig": {
+        "maxRefreshCount": "number",
+        "refreshRate": "number",
+        "support": "boolean",
+        "chains": {
+          "eip155:1": "object",
+          "eip155:10": "object",
+          "eip155:56": "object",
+          "eip155:137": "object",
+          "eip155:324": "object",
+          "eip155:8453": "object",
+          "eip155:42161": "object",
+          "eip155:43114": "object",
+          "eip155:59144": "object",
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "object"
         }
       },
-      "quoteRequest": {
-        "srcTokenAddress": "0x0000000000000000000000000000000000000000"
-      },
-      "quotes": {},
-      "quotesRefreshCount": 0
-    }
+      "mobileConfig": "object"
+    },
+    "quoteRequest": {
+      "srcTokenAddress": "0x0000000000000000000000000000000000000000"
+    },
+    "quotesInitialLoadTime": null,
+    "quotes": {},
+    "quotesLastFetched": null,
+    "quotesLoadingStatus": null,
+    "quoteFetchError": null,
+    "quotesRefreshCount": 0
   },
-  "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
+  "BridgeStatusController": { "txHistory": "object" },
   "CronjobController": { "jobs": "object", "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
@@ -101,13 +112,20 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
+      },
+      "MegaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       }
     }
   },
+  "DeFiPositionsController": "object",
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0
   },
+  "DelegationController": "object",
   "EncryptionPublicKeyController": {
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0
@@ -123,6 +141,7 @@
     "gasEstimateType": "none",
     "nonRPCGasFeeApisDisabled": "boolean"
   },
+  "InstitutionalSnapController": "object",
   "KeyringController": {
     "isUnlocked": true,
     "keyrings": "object",
@@ -139,13 +158,23 @@
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
-    "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
+  },
+  "MultichainAssetsController": {
+    "accountsAssets": "object",
+    "assetsMetadata": "object"
+  },
+  "MultichainAssetsRatesController": {
+    "conversionRates": "object",
+    "historicalPrices": "object"
+  },
+  "MultichainBalancesController": {
+    "balances": "object"
   },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
@@ -156,6 +185,7 @@
     },
     "cryptocurrencies": ["btc", "sol"]
   },
+  "MultichainTransactionsController": "object",
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
@@ -175,6 +205,7 @@
     "allNfts": "object",
     "ignoredNfts": "object"
   },
+  "NftDetectionController": "object",
   "NotificationServicesController": {
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
@@ -188,8 +219,8 @@
     "isCheckingAccountsPresence": "boolean"
   },
   "NotificationServicesPushController": {
-    "fcmToken": "string",
     "isPushEnabled": "boolean",
+    "fcmToken": "string",
     "isUpdatingFCMToken": "boolean"
   },
   "OnboardingController": {
@@ -224,7 +255,6 @@
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
-    "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
     "identities": "object",
@@ -237,7 +267,6 @@
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
-      "petnamesEnabled": true,
       "showMultiRpcModal": "boolean",
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
@@ -256,9 +285,10 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object"
+    "showIncomingTransactions": "object",
+    "manageInstitutionalWallets": "boolean",
+    "disabledUpgradeAccountsByChain": "object"
   },
-  "QueuedRequestController": { "queuedRequestCount": 0 },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
       "feature1": true,
@@ -329,15 +359,11 @@
   },
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
-    "tokenList": "object",
     "tokensChainsCache": { "0x539": "object" },
     "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
-    "tokens": "object",
-    "ignoredTokens": "object",
-    "detectedTokens": "object",
     "allTokens": {},
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
@@ -352,6 +378,7 @@
   "UserStorageController": {
     "isProfileSyncingEnabled": null,
     "isProfileSyncingUpdateLoading": "boolean",
+    "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
     "isAccountSyncingInProgress": "boolean"

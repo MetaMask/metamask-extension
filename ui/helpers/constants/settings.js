@@ -13,6 +13,7 @@ import {
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
+  BACKUPANDSYNC_ROUTE,
 } from './routes';
 
 /**
@@ -91,7 +92,7 @@ const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('smartTransactions'),
-    descriptionMessage: (t) => t('stxOptInEthereumBnbDescription'),
+    descriptionMessage: (t) => t('stxOptInSupportedNetworksDescription'),
     route: `${ADVANCED_ROUTE}#smart-transactions`,
     icon: 'fas fa-upload',
   },
@@ -162,6 +163,20 @@ const SETTINGS_CONSTANTS = [
     hidden: getPlatform() !== PLATFORM_FIREFOX,
   },
   {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncEnable'),
+    descriptionMessage: (t) => t('backupAndSyncEnable'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-toggle`,
+    iconName: IconName.SecurityTime,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncFeatureAccounts'),
+    descriptionMessage: (t) => t('backupAndSyncFeatureAccounts'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-account-syncing`,
+    iconName: IconName.SecurityTime,
+  },
+  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
@@ -182,14 +197,6 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('revealSeedWords'),
     descriptionMessage: (t) => t('revealSeedWords'),
     route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
-    icon: 'fa fa-lock',
-  },
-  // securityAndPrivacy settingsRefs[2]
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('showIncomingTransactions'),
-    descriptionMessage: (t) => t('showIncomingTransactionsDescription'),
-    route: `${SECURITY_ROUTE}#incoming-transaction`,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[3]
@@ -338,14 +345,6 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#delete-metametrics-data`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[21]
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('profileSync'),
-    descriptionMessage: (t) => t('profileSyncDescription'),
-    route: `${SECURITY_ROUTE}#profile-sync`,
-    icon: 'fa fa-lock',
-  },
   {
     tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('mainnet'),
@@ -465,14 +464,6 @@ const SETTINGS_CONSTANTS = [
   // experimental settingsRefs[0]
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('petnamesEnabledToggle'),
-    descriptionMessage: (t) => t('petnamesEnabledToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#nicknames`,
-    icon: 'fas fa-flask',
-  },
-  // experimental settingsRefs[1]
-  {
-    tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('notificationsFeatureToggle'),
     descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
     route: `${EXPERIMENTAL_ROUTE}#notifications`,
@@ -528,6 +519,24 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     icon: IconName.CodeCircle,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('bitcoinSupportToggleTitle'),
+    descriptionMessage: (t) => t('bitcoinSupportToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#bitcoin-support`,
+    icon: 'fas fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('watchEthereumAccountsToggle'),
+    descriptionMessage: (t) => t('watchEthereumAccountsDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#watch-only`,
+    icon: 'fas fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];
 
 export default SETTINGS_CONSTANTS;

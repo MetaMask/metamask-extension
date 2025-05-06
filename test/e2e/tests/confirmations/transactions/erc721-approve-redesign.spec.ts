@@ -10,7 +10,7 @@ import {
 } from './shared';
 
 const {
-  defaultGanacheOptionsForType2Transactions,
+  defaultOptionsForType2Transactions,
   withFixtures,
 } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -52,7 +52,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -104,7 +104,7 @@ async function createMintTransaction(driver: Driver) {
   await driver.clickElement('#mintButton');
 }
 
-export async function confirmMintTransaction(driver: Driver) {
+async function confirmMintTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({

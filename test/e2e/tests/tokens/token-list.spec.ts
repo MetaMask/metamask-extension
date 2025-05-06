@@ -4,11 +4,7 @@ import { zeroAddress } from 'ethereumjs-util';
 import { Browser } from 'selenium-webdriver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-} from '../../helpers';
+import { unlockWallet, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -30,7 +26,6 @@ describe('Token List', function () {
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
     localNodeOptions: {
-      ...defaultGanacheOptions,
       chainId: parseInt(chainId, 16),
     },
   };
@@ -53,7 +48,11 @@ describe('Token List', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomToken(tokenAddress, symbol);
+        await assetListPage.importCustomTokenByChain(
+          tokenAddress,
+          symbol,
+          chainId,
+        );
 
         await assetListPage.check_tokenGeneralChangePercentageNotPresent(
           zeroAddress(),
@@ -106,7 +105,11 @@ describe('Token List', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomToken(tokenAddress, symbol);
+        await assetListPage.importCustomTokenByChain(
+          tokenAddress,
+          symbol,
+          chainId,
+        );
 
         await assetListPage.check_tokenGeneralChangePercentage(
           zeroAddress(),

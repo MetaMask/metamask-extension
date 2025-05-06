@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+  CHAIN_IDS,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -48,11 +49,7 @@ import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
-import {
-  checkNetworkAndAccountSupports1559,
-  getCurrentNetwork,
-  getTestNetworkBackgroundColor,
-} from '../../../selectors';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import Button from '../../ui/button';
@@ -63,17 +60,22 @@ import EditGasPopover from '../../../pages/confirmations/components/edit-gas-pop
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+// import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
 } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import BridgeActivityItemTxSegments from '../../../pages/bridge/transaction-details/bridge-activity-item-tx-segments';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../shared/constants/network';
 
 function TransactionListItemInner({
   transactionGroup,
   setEditGasMode,
   isEarliestNonce = false,
+  chainId,
 }) {
   const t = useI18nContext();
   const history = useHistory();
@@ -84,8 +86,7 @@ function TransactionListItemInner({
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
+  // const isSmartTransaction = useSelector(getIsSmartTransaction);
   const dispatch = useDispatch();
 
   // Bridge transactions
@@ -96,6 +97,17 @@ function TransactionListItemInner({
       transactionGroup,
       isEarliestNonce,
     });
+
+  const getTestNetworkBackgroundColor = (networkId) => {
+    switch (true) {
+      case networkId === CHAIN_IDS.GOERLI:
+        return BackgroundColor.goerli;
+      case networkId === CHAIN_IDS.SEPOLIA:
+        return BackgroundColor.sepolia;
+      default:
+        return undefined;
+    }
+  };
 
   const {
     initialTransaction: { id },
@@ -179,10 +191,19 @@ function TransactionListItemInner({
   const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
-  const isSwap = [
-    TransactionGroupCategory.swap,
-    TransactionGroupCategory.swapAndSend,
-  ].includes(category);
+
+  /**
+   * Disabling the retry button until further notice
+   *
+   * @see {@link https://github.com/MetaMask/metamask-extension/issues/28615}
+   */
+  // const isSwap = [
+  //   TransactionGroupCategory.swap,
+  //   TransactionGroupCategory.swapAndSend,
+  // ].includes(category);
+  // const showRetry =
+  //   status === TransactionStatus.failed && !isSwap && !isSmartTransaction;
+
   const isSigning = status === TransactionStatus.approved;
   const isSubmitting = status === TransactionStatus.signed;
 
@@ -247,7 +268,6 @@ function TransactionListItemInner({
     retryTransaction,
     cancelTransaction,
   ]);
-  const currentChain = useSelector(getCurrentNetwork);
   const showCancelButton =
     !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
 
@@ -271,10 +291,10 @@ function TransactionListItemInner({
                 className="activity-tx__network-badge"
                 data-testid="activity-tx-network-badge"
                 size={AvatarNetworkSize.Xs}
-                name={currentChain?.nickname}
-                src={currentChain?.rpcPrefs?.imageUrl}
+                name={NETWORK_TO_NAME_MAP[chainId]}
+                src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
                 borderColor={BackgroundColor.backgroundDefault}
-                backgroundColor={testNetworkBackgroundColor}
+                backgroundColor={getTestNetworkBackgroundColor(chainId)}
               />
             }
           >
@@ -284,7 +304,8 @@ function TransactionListItemInner({
         subtitle={
           !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
           isBridgeTx &&
-          !isBridgeComplete ? (
+          !isBridgeComplete &&
+          bridgeTxHistoryItem ? (
             <BridgeActivityItemTxSegments
               bridgeTxHistoryItem={bridgeTxHistoryItem}
               transactionGroup={transactionGroup}
@@ -353,16 +374,10 @@ function TransactionListItemInner({
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={
-            status === TransactionStatus.failed &&
-            !isSwap &&
-            !isSmartTransaction
-          }
+          // showRetry={showRetry}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
-          showCancel={isPending && !hasCancelled && !isBridgeTx}
-          showErrorBanner={Boolean(error)}
           transactionStatus={() => (
             <TransactionStatusLabel
               isPending={isPending}
@@ -371,9 +386,9 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
               statusOnly
-              shouldShowTooltip={false}
             />
           )}
+          chainId={chainId}
         />
       )}
       {!supportsEIP1559 && showRetryEditGasPopover && (
@@ -398,6 +413,7 @@ TransactionListItemInner.propTypes = {
   transactionGroup: PropTypes.object.isRequired,
   isEarliestNonce: PropTypes.bool,
   setEditGasMode: PropTypes.func,
+  chainId: PropTypes.string,
 };
 
 const TransactionListItem = (props) => {

@@ -78,6 +78,7 @@ describe('PersonalSign Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -154,6 +155,7 @@ describe('PersonalSign Confirmation', () => {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
             signature_type: ApprovalType.PersonalSign,
+            hd_entropy_index: 0,
           },
         }),
       ]),

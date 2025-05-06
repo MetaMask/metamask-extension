@@ -1,11 +1,13 @@
 import Bowser from 'bowser';
 import BN from 'bn.js';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
 import * as util from './util';
 
 describe('util', () => {
@@ -207,56 +209,56 @@ describe('util', () => {
     });
     it('should return false when given a modern chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.2623.112 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.52',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.2623.112 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/102.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/91.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 OPR/95.0.3135.47',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/101.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.3578.98 Safari/537.36 OPR/58.0.3135.47',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.165 Safari/537.36 OPR/98.0.4759.39',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 Edg/109.0.416.68',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.126 Safari/537.36 Edg/113.0.1774.50',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.3578.98 Safari/537.36 Edge/89.0.416.68',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 Edge/109.0.416.68',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
@@ -914,9 +916,11 @@ describe('util', () => {
     it('should return a string that matches sanitizeString regex with the matched characters replaced', () => {
       expect(
         util.sanitizeString(
-          'The Quick Brown \u202EFox Jumps Over The Lazy Dog',
+          'The Quick ‭Brown \u202EFox Jumps Over \u202DThe Lazy Dog',
         ),
-      ).toStrictEqual('The Quick Brown \\u202EFox Jumps Over The Lazy Dog');
+      ).toStrictEqual(
+        'The Quick \\u202DBrown \\u202EFox Jumps Over \\u202DThe Lazy Dog',
+      );
     });
   });
 
@@ -1299,6 +1303,154 @@ describe('util', () => {
     });
   });
 
+  describe('isAbleToRevealSrp', () => {
+    const mockHDKeyring = {
+      accounts: [],
+      type: KeyringTypes.hd,
+      metadata: {
+        id: '01JKDQSHNJH3EP2N4MPR0S5RQS',
+        name: '',
+      },
+    };
+
+    const mockSnapKeyring = {
+      accounts: [],
+      type: KeyringTypes.snap,
+      metadata: {
+        id: '01JKDQSPB36DENHN7HWF8XED78',
+        name: '',
+      },
+    };
+
+    const mockLedgerKeyring = {
+      accounts: [],
+      type: KeyringTypes.ledger,
+      metadata: {
+        id: '01JKDQSWKN9AHG8DKX29QE3PGA',
+        name: '',
+      },
+    };
+
+    it('should return true for HD Key Tree accounts', () => {
+      const hdAccount = createMockInternalAccount();
+
+      expect(util.isAbleToRevealSrp(hdAccount, [mockHDKeyring])).toBe(true);
+    });
+
+    it('should return true for first party Snap accounts derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: mockHDKeyring.metadata.id,
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+          snap: {
+            id: BITCOIN_WALLET_SNAP_ID,
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(true);
+    });
+
+    it('returns true for first party Snap accounts derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: mockHDKeyring.metadata.id,
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+          snap: {
+            id: BITCOIN_WALLET_SNAP_ID,
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(true);
+    });
+
+    it('returns false for third party Snap accounts derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: mockHDKeyring.metadata.id,
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+          snap: {
+            id: 'third-party-snap-id',
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(false);
+    });
+
+    it('returns false for Snap accounts not derived from HD keyring', () => {
+      const snapAccount = {
+        address: '0x123',
+        options: {
+          entropySource: 'some-other-id',
+        },
+        metadata: {
+          keyring: {
+            type: KeyringTypes.snap,
+          },
+        },
+      };
+
+      expect(
+        util.isAbleToRevealSrp(snapAccount, [mockHDKeyring, mockSnapKeyring]),
+      ).toBe(false);
+    });
+
+    it('should return false for hardware wallet accounts', () => {
+      const ledgerAccount = {
+        type: 'Ledger Hardware',
+        address: '0x123',
+        metadata: {
+          keyring: {
+            id: mockLedgerKeyring.metadata.id,
+          },
+        },
+        options: {},
+      };
+
+      expect(util.isAbleToRevealSrp(ledgerAccount, [mockLedgerKeyring])).toBe(
+        false,
+      );
+    });
+
+    it('should return false for any other account type', () => {
+      const otherAccount = {
+        type: 'Simple Key Pair',
+        address: '0x123',
+        metadata: {
+          keyring: {
+            id: 'simple-keyring-id',
+          },
+        },
+        options: {},
+      };
+
+      expect(util.isAbleToRevealSrp(otherAccount, [mockHDKeyring])).toBe(false);
+    });
+  });
+
   describe('isIpAddress', () => {
     it('should return true for the IPv4 address', () => {
       expect(util.isIpAddress('127.0.0.1')).toBe(true);
@@ -1346,6 +1498,57 @@ describe('util', () => {
       expect(util.transformOriginToTitle('http://[fe80::1]:9011/')).toBe(
         '[fe80::1]',
       );
+    });
+  });
+
+  describe('checkExistingAllTokens', () => {
+    const tokensList = {
+      1: {
+        '0xAccount1': [{ address: '0xToken1' }, { address: '0xToken2' }],
+      },
+      2: {
+        '0xAccount2': [{ address: '0xToken3' }],
+      },
+    };
+
+    it('should return false if address is not provided', () => {
+      const result = util.checkExistingAllTokens(
+        '',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(false);
+    });
+
+    it('should return false if token is not found in the list', () => {
+      const result = util.checkExistingAllTokens(
+        '0xNonExistentToken',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(false);
+    });
+
+    it('should return true if token is found (exact match)', () => {
+      const result = util.checkExistingAllTokens(
+        '0xToken1',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(true);
+    });
+
+    it('should return true if token is found (case insensitive)', () => {
+      const result = util.checkExistingAllTokens(
+        '0xtoken2',
+        1,
+        '0xAccount1',
+        tokensList,
+      );
+      expect(result).toBe(true);
     });
   });
 });

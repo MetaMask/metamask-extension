@@ -1,5 +1,5 @@
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   EthAccountType,
   BtcMethod,
@@ -78,7 +78,7 @@ export const MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET: InternalAccount = {
 
 export const MOCK_ACCOUNT_SOLANA_MAINNET: InternalAccount = {
   id: 'a3f9c2d4-6b8e-4d3a-9b2e-7f4b8e1a9c3d',
-  address: '3yZe7d5m8V9x2Q1w4u6t8b9n7k5j3h2g1f4d6s8a9p7q2r5t8v',
+  address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
   options: {},
   methods: [SolMethod.SendAndConfirmTransaction],
   scopes: [SolScope.Mainnet],
@@ -96,4 +96,5 @@ export const MOCK_ACCOUNTS = {
   [MOCK_ACCOUNT_ERC4337.id]: MOCK_ACCOUNT_ERC4337,
   [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
   [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+  [MOCK_ACCOUNT_SOLANA_MAINNET.id]: MOCK_ACCOUNT_SOLANA_MAINNET,
 };

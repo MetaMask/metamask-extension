@@ -228,7 +228,12 @@ export const getWeb3ShimUsageAlertEnabledness = (state) =>
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
-export const getTokens = (state) => state.metamask.tokens;
+export const getTokens = (state) => {
+  const { allTokens } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const { chainId } = getProviderConfig(state);
+  return allTokens?.[chainId]?.[selectedAddress] || [];
+};
 
 export function getNftsDropdownState(state) {
   return state.metamask.nftsDropdownState;
@@ -243,6 +248,15 @@ export const getNfts = (state) => {
   const { chainId } = getProviderConfig(state);
 
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
+};
+
+export const getAllNfts = (state) => {
+  const {
+    metamask: { allNfts },
+  } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  return allNfts?.[selectedAddress] ?? [];
 };
 
 export const getNFTsByChainId = (state, chainId) => {

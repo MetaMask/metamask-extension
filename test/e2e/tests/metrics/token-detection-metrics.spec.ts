@@ -71,7 +71,7 @@ describe('Token detection event', function () {
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 3);
+        assert.equal(events.length, 2);
         assert.deepStrictEqual(events[0].properties, {
           account_type: 'metamask',
           category: 'Onboarding',
@@ -86,13 +86,7 @@ describe('Token detection event', function () {
           chain_id: '0x539',
           environment_type: 'fullscreen',
           is_profile_syncing_enabled: true,
-        });
-        assert.deepStrictEqual(events[2].properties, {
-          token_detection_enabled: true,
-          category: 'Onboarding',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
+          hd_entropy_index: 0,
         });
       },
     );
