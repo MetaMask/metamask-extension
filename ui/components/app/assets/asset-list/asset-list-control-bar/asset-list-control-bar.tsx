@@ -66,11 +66,13 @@ import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
   showTokenFiatBalance?: boolean;
+  showImportTokenButton?: boolean;
 };
 
 const AssetListControlBar = ({
   showTokensLinks,
   showTokenFiatBalance,
+  showImportTokenButton = true,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -290,14 +292,16 @@ const AssetListControlBar = ({
             />
           </Tooltip>
 
-          <ImportControl
-            showTokensLinks={showTokensLinks}
-            onClick={
-              showTokensLinks
-                ? toggleImportTokensPopover
-                : toggleImportNftPopover
-            }
-          />
+          {showImportTokenButton && (
+            <ImportControl
+              showTokensLinks={showTokensLinks}
+              onClick={
+                showTokensLinks
+                  ? toggleImportTokensPopover
+                  : toggleImportNftPopover
+              }
+            />
+          )}
         </Box>
       </Box>
 

@@ -1,6 +1,5 @@
 import { Provider } from '@metamask/network-controller';
 import {
-  GasFeeToken,
   TransactionMeta,
   TransactionStatus,
   TransactionType,
@@ -37,6 +36,7 @@ import {
   TransactionMetaEventPayload,
   TransactionMetricsRequest,
 } from '../../../../shared/types/metametrics';
+import { GAS_FEE_TOKEN_MOCK } from '../../../../test/data/confirmations/gas';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -53,19 +53,6 @@ const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
 const ADDRESS_3_MOCK = '0x1234567890123456789012345678901234567892';
 const METHOD_NAME_MOCK = 'testMethod1';
 const METHOD_NAME_2_MOCK = 'testMethod2';
-
-const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
-  amount: toHex(1000),
-  balance: toHex(2345),
-  decimals: 3,
-  gas: '0x3',
-  maxFeePerGas: '0x4',
-  maxPriorityFeePerGas: '0x5',
-  rateWei: toHex('1798170000000000000'),
-  recipient: '0x1234567890123456789012345678901234567890',
-  symbol: 'TEST',
-  tokenAddress: '0x1234567890123456789012345678901234567890',
-};
 
 const providerResultStub = {
   eth_getCode: '0x123',
@@ -109,6 +96,7 @@ const mockTransactionMetricsRequest = {
   getMethodData: jest.fn(),
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
   getHDEntropyIndex: jest.fn(),
+  getNetworkRpcUrl: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -819,6 +807,7 @@ describe('Transaction metrics', () => {
         ],
         is_smart_transaction: undefined,
         transaction_advanced_view: undefined,
+        rpc_domain: 'private',
       };
       const sensitiveProperties = {
         ...expectedSensitiveProperties,
@@ -829,6 +818,10 @@ describe('Transaction metrics', () => {
         gas_used: '0.000000291',
         status: METRICS_STATUS_FAILED,
       };
+
+      (
+        mockTransactionMetricsRequest.getNetworkRpcUrl as jest.Mock
+      ).mockReturnValue('https://example.com');
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         ...mockTransactionMeta,
@@ -1261,6 +1254,7 @@ describe('Transaction metrics', () => {
     });
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   describe.each([
     ['if added', handleTransactionAdded],
     ['if approved', handleTransactionApproved],
@@ -1276,7 +1270,8 @@ describe('Transaction metrics', () => {
           args.transactionMeta as TransactionMetaEventPayload,
         ),
     ],
-  ])('%s', (_title, fn) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ])('%s', (_title: string, fn: any) => {
     it('includes batch properties', async () => {
       const transactionMeta = {
         ...mockTransactionMeta,

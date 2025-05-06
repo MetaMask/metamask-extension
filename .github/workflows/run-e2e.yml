@@ -21,7 +21,7 @@ on:
         description: The test command to run
       test-timeout-minutes:
         type: number
-        default: 30
+        default: 40
         description: The timeout in minutes for the test command
       matrix-index:
         type: number
@@ -37,8 +37,7 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: cimg/node:22.14-browsers
-    continue-on-error: true # soft launch
+      image: cimg/node:22.15-browsers
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
@@ -46,11 +45,9 @@ jobs:
       BRANCH: ${{ github.head_ref || github.ref_name }}
       MATRIX_INDEX: ${{ inputs.matrix-index }}
       MATRIX_TOTAL: ${{ inputs.matrix-total }}
-      OWNER: ${{ github.repository_owner }}
-      REPOSITORY: ${{ github.event.repository.name }}
-      RUN_ID: ${{ github.run_id }}
       JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
-      ATTEMPT_NUMBER: ${{ github.run_attempt }}
+      RUN_ID: ${{ github.run_id }}
+      PR_NUMBER: ${{ github.event.pull_request.number || '' }}
     steps:
       - name: Install dependencies
         run: |
@@ -96,16 +93,12 @@ jobs:
       - run: yarn tsx .github/scripts/git-diff-default-branch.ts
         if: ${{ steps.download-changed-files.outcome == 'failure' }}
 
-      - name: Get job id
-        id: get-job-id
-        run: yarn tsx .github/scripts/get-job-id.ts
-
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
         env:
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
-          PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},JOB_ID:${{ steps.get-job-id.outputs.job-id }}'
+          PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
 
       - name: Upload test results and artifacts
         if: ${{ !cancelled() }}

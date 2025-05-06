@@ -151,6 +151,7 @@ describe('ImportNftsModal', () => {
       expect(ignoreTokens).toHaveBeenCalledWith({
         dontShowLoadingIndicator: true,
         tokensToIgnore: VALID_ADDRESS,
+        networkClientId: 'goerli',
       });
     });
   });

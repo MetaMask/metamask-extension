@@ -1,6 +1,6 @@
 import FixtureBuilder from '../../../fixture-builder';
 import {
-  defaultGanacheOptionsForType2Transactions,
+  defaultOptionsForType2Transactions,
   WINDOW_TITLES,
   withFixtures,
 } from '../../../helpers';
@@ -91,7 +91,7 @@ function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
       .build(),
-    localNodeOptions: defaultGanacheOptionsForType2Transactions,
+    localNodeOptions: defaultOptionsForType2Transactions,
     smartContract: SMART_CONTRACTS.HST,
     testSpecificMock: mocks,
     title: mochaContext.test?.fullTitle(),

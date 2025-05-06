@@ -11,7 +11,7 @@ import {
 } from './shared';
 
 const {
-  defaultGanacheOptionsForType2Transactions,
+  defaultOptionsForType2Transactions,
   withFixtures,
 } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -53,7 +53,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
