@@ -126,10 +126,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implement the publishBatch hook for smart transactions ([#31267](https://github.com/MetaMask/metamask-extension/pull/31267))
 - [Beta] Create Solana account automatically on wallet creation or SRP import ([#32038](https://github.com/MetaMask/metamask-extension/pull/32038))
 - Prioritize available chainId / networkClientId over selected chainId when available in transaction ([#31776](https://github.com/MetaMask/metamask-extension/pull/31776))
-- Add nested transactions tag component in the batch transaction confirmation ([#31829](https://github.com/MetaMask/metamask-extension/pull/31829))
-- Wires up the account picker (and highlight the active recipient account) enabling a remote mode user to select an authorized account ([#31857](https://github.com/MetaMask/metamask-extension/pull/31857))
-- Add "Create Solana Account" in connection flow when Solana is requested chain by dapp ([#31781](https://github.com/MetaMask/metamask-extension/pull/31781))
-- Add Remote Mode hardware wallet gating ([#32012](https://github.com/MetaMask/metamask-extension/pull/32012))
 
 ### Changed
 - Bump transaction controller version ([#31440](https://github.com/MetaMask/metamask-extension/pull/31440))
