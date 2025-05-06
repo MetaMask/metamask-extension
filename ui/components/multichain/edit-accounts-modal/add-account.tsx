@@ -93,28 +93,33 @@ export const EditAccountAddAccountForm: React.FC<
       </ModalHeader>
       <ModalBody>
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-          {showSrpSelection ? (
+          {showSrpSelection && (
             <SrpList
               onActionComplete={(keyringId: string) => {
                 setSelectedKeyringId(keyringId);
                 setShowSrpSelection(false);
               }}
             />
-          ) : clientType && chainId ? (
-            <CreateSnapAccount
-              onActionComplete={onActionComplete}
-              selectedKeyringId={selectedKeyringId}
-              onSelectSrp={onSelectSrp}
-              clientType={clientType}
-              chainId={chainId}
-              setNewlyCreatedAccountAsSelected={true}
-            />
-          ) : (
-            <CreateEthAccount
-              onActionComplete={onActionComplete}
-              selectedKeyringId={selectedKeyringId}
-              onSelectSrp={onSelectSrp}
-            />
+          )}
+          {!showSrpSelection && (
+            <>
+              {clientType && chainId ? (
+                <CreateSnapAccount
+                  onActionComplete={onActionComplete}
+                  selectedKeyringId={selectedKeyringId}
+                  onSelectSrp={onSelectSrp}
+                  clientType={clientType}
+                  chainId={chainId}
+                  setNewlyCreatedAccountAsSelected={true}
+                />
+              ) : (
+                <CreateEthAccount
+                  onActionComplete={onActionComplete}
+                  selectedKeyringId={selectedKeyringId}
+                  onSelectSrp={onSelectSrp}
+                />
+              )}
+            </>
           )}
         </Box>
       </ModalBody>

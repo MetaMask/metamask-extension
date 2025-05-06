@@ -6,7 +6,10 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { EditAccountsModal } from '.';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 
 const mockKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
 
@@ -202,6 +205,51 @@ describe('EditAccountsModal', () => {
         expectedArgs,
         expectedInternalArgs,
       );
+    });
+
+    it('shows the srp list when the srp button is clicked', async () => {
+      const hdAccount = createMockInternalAccount({
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      });
+      const hdAccount2 = createMockInternalAccount({
+        address: '0x67B2fAf7959fB61eb9746571041476Bbd0672569',
+      });
+
+      const hdKeyringMetadata = {
+        id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        name: '',
+      };
+      const hdKeyring2Metadata = {
+        id: '01JKAF3DSGM3AB87EM9N0K4444',
+        name: '',
+      };
+
+      const hdKeyring = {
+        type: KeyringTypes.hd,
+        accounts: [hdAccount.address],
+      };
+      const hdKeyring2 = {
+        type: KeyringTypes.hd,
+        accounts: [hdAccount2.address],
+      };
+
+      const { getByTestId } = render(undefined, {
+        internalAccounts: {
+          accounts: {
+            [hdAccount.id]: hdAccount,
+            [hdAccount2.id]: hdAccount2,
+          },
+          selectedAccount: hdAccount.id,
+        },
+        keyrings: [hdKeyring, hdKeyring2],
+        keyringsMetadata: [hdKeyringMetadata, hdKeyring2Metadata],
+      });
+      goToAddNewAccount(getByTestId, 'solana');
+
+      const srpButton = getByTestId('select-srp-Secret Recovery Phrase 1');
+      fireEvent.click(srpButton);
+
+      expect(getByTestId('srp-list')).toBeInTheDocument();
     });
   });
 });
