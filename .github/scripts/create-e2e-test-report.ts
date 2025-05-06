@@ -38,23 +38,26 @@ async function main() {
   const jobsCache: { [runId: number]: Job[] } = {};
 
   async function getJobs(runId: number) {
-    if (jobsCache[runId]) {
-      return jobsCache[runId];
-    }
-    try {
-      const jobs = await github.paginate(
-        github.rest.actions.listJobsForWorkflowRun,
-        {
-          owner: env.OWNER,
-          repo: env.REPOSITORY,
-          run_id: runId,
-          per_page: 100,
-        },
-      );
-      jobsCache[runId] = jobs;
-      return jobsCache[runId];
-    } catch (error) {
+    if (!runId) {
       return [];
+    } else if (jobsCache[runId]) {
+      return jobsCache[runId];
+    } else {
+      try {
+        const jobs = await github.paginate(
+          github.rest.actions.listJobsForWorkflowRun,
+          {
+            owner: env.OWNER,
+            repo: env.REPOSITORY,
+            run_id: runId,
+            per_page: 100,
+          },
+        );
+        jobsCache[runId] = jobs;
+        return jobsCache[runId];
+      } catch (error) {
+        return [];
+      }
     }
   }
 
