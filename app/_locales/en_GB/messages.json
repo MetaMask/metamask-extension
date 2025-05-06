@@ -1023,7 +1023,7 @@
     "message": "Busy"
   },
   "buyAndSell": {
-    "message": "Buy & Sell"
+    "message": "Buy/Sell"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -5213,6 +5213,9 @@
   },
   "smartAccountRequestFor": {
     "message": "Request for"
+  },
+  "smartAccountSameAccount": {
+    "message": "Same account, smarter features."
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
