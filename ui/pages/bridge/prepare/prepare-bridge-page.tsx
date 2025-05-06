@@ -21,7 +21,10 @@ import {
   isNativeAddress,
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
-import type { BridgeToken } from '@metamask/bridge-controller';
+import type {
+  BridgeController,
+  BridgeToken,
+} from '@metamask/bridge-controller';
 import {
   setFromToken,
   setFromTokenInputValue,
