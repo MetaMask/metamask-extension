@@ -244,6 +244,7 @@ export const useTokensWithFiltering = (
               };
             } else {
               yield {
+                ...token,
                 symbol: token.symbol,
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,

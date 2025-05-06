@@ -94,7 +94,6 @@ import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
@@ -112,6 +111,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
+  getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
@@ -201,7 +201,7 @@ const PrepareBridgePage = () => {
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
 
-  const ticker = useSelector(getNativeCurrency);
+  const ticker = useMultichainSelector(getMultichainNativeCurrency);
   const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
@@ -318,7 +318,8 @@ const PrepareBridgePage = () => {
     }
   }, [
     isEstimatedReturnLow,
-    isInsufficientGasForQuote(nativeAssetBalance),
+    nativeAssetBalance,
+    isInsufficientGasForQuote,
     isLowReturnBannerOpen,
   ]);
 
@@ -491,7 +492,9 @@ const PrepareBridgePage = () => {
     }
   }, []);
 
-  const occurrences = Number(toToken?.occurrences ?? 0);
+  const occurrences = Number(
+    toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
+  );
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
 
@@ -900,6 +903,7 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
+            toToken.address !== SOLANA_USDC_ASSET.address &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
