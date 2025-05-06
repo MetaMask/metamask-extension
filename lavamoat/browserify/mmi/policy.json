@@ -1787,7 +1787,7 @@
       "packages": {
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
-        "viem>ox>@noble/curves": true,
+        "viem>webauthn-p256>@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true
       }
@@ -2292,7 +2292,7 @@
       "packages": {
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "viem>ox>@noble/curves": true,
+        "viem>webauthn-p256>@noble/curves": true,
         "@noble/hashes": true
       }
     },
@@ -2522,6 +2522,14 @@
         "crypto": true
       }
     },
+    "viem>@scure/bip32>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "viem>@scure/bip32>@noble/hashes": true
+      }
+    },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -2530,12 +2538,12 @@
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "viem>ox>@noble/curves": {
+    "viem>webauthn-p256>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
       "packages": {
-        "@noble/hashes": true
+        "viem>webauthn-p256>@noble/curves>@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2546,6 +2554,18 @@
       }
     },
     "@metamask/scure-bip39>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "viem>webauthn-p256>@noble/curves>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "viem>@scure/bip32>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2703,17 +2723,17 @@
         "TextEncoder": true
       }
     },
-    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": {
+    "viem>@scure/bip32>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
       }
     },
-    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
+    "viem>@scure/bip32": {
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
+        "viem>@scure/bip32>@noble/curves": true,
+        "viem>@scure/bip32>@noble/hashes": true,
+        "viem>@scure/bip32>@scure/base": true
       }
     },
     "@segment/loosely-validate-event": {
@@ -3968,7 +3988,7 @@
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+        "viem>@scure/bip32": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
@@ -4948,11 +4968,6 @@
         "define": true
       }
     },
-    "browserify>url>punycode": {
-      "globals": {
-        "define": true
-      }
-    },
     "qrcode-generator": {
       "globals": {
         "define": true
@@ -5805,7 +5820,7 @@
     },
     "browserify>url": {
       "packages": {
-        "browserify>url>punycode": true,
+        "browserify>punycode": true,
         "browserify>url>qs": true
       }
     },
