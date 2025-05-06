@@ -2,14 +2,13 @@ import React from 'react';
 import { CaipAccountId } from '@metamask/utils';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { SolScope } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
-import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
-import { EditAccountsModal } from '.';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { EditAccountsModal } from '.';
 
 const mockKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
 
