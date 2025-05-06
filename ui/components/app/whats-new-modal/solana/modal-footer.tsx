@@ -1,30 +1,30 @@
-import React, { useContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { setSelectedAccount } from '../../../../store/actions';
 import { ModalFooterProps } from '../../../../../shared/notifications';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { hasCreatedSolanaAccount } from '../../../../selectors';
 import { getLastSelectedSolanaAccount } from '../../../../selectors/multichain';
+import { setSelectedAccount } from '../../../../store/actions';
 import {
   ModalFooter as BaseModalFooter,
+  Box,
   Button,
-  ButtonLinkSize,
   ButtonLink,
+  ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
-  Box,
 } from '../../../component-library';
-import {
-  Display,
-  FlexDirection,
-  AlignItems,
-} from '../../../../helpers/constants/design-system';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const SOLANA_FEATURE = 'solana';
 const CREATE_SOLANA_ACCOUNT_ACTION = 'create-solana-account';
@@ -36,6 +36,11 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
   const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
   const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
   const trackEvent = useContext(MetaMetricsContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   const handleCreateSolanaAccount = async () => {
     trackEvent({
@@ -65,6 +70,20 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
     }
   };
 
+  let buttonTestId = 'create-solana-account-button';
+  if (isLoading) {
+    buttonTestId = 'loading-solana-account-button';
+  } else if (hasSolanaAccount) {
+    buttonTestId = 'view-solana-account-button';
+  }
+
+  let buttonText = t('createSolanaAccount');
+  if (isLoading) {
+    buttonText = '';
+  } else if (hasSolanaAccount) {
+    buttonText = t('viewSolanaAccount');
+  }
+
   return (
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
@@ -85,18 +104,14 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
           block
           size={ButtonSize.Md}
           variant={ButtonVariant.Primary}
-          data-testid={
-            hasSolanaAccount
-              ? 'view-solana-account-button'
-              : 'create-solana-account-button'
-          }
+          data-testid={buttonTestId}
           onClick={
             hasSolanaAccount
               ? handleViewSolanaAccount
               : handleCreateSolanaAccount
           }
         >
-          {hasSolanaAccount ? t('viewSolanaAccount') : t('createSolanaAccount')}
+          {buttonText}
         </Button>
         <Button
           block

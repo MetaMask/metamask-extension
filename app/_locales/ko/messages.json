@@ -3662,22 +3662,6 @@
   "onboardingPinExtensionTitle": {
     "message": "MetaMask 설치가 완료되었습니다!"
   },
-  "oneDayAbbreviation": {
-    "message": "1일",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1개월",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1주일",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1년",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4147,18 +4131,6 @@
   },
   "productAnnouncements": {
     "message": "제품 공지"
-  },
-  "profileSync": {
-    "message": "프로필 동기화"
-  },
-  "profileSyncConfirmation": {
-    "message": "프로필 동기화를 끄면 알림을 받을 수 없게 됩니다."
-  },
-  "profileSyncDescription": {
-    "message": "MetaMask가 기기 간에 일부 설정을 동기화하는 데 사용할 프로필을 생성합니다. 알림을 받으려면 프로필이 필요합니다. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "개인 정보 보호 방법 알아보기"
   },
   "proposedApprovalLimit": {
     "message": "제안된 승인 한도"
@@ -5971,10 +5943,6 @@
   "thirdPartySoftware": {
     "message": "타사 소프트웨어 알림",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3개월",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "시간"

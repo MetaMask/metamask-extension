@@ -36,7 +36,7 @@ describe('Custom RPC history', function () {
         await unlockWallet(driver);
 
         const rpcUrl = `http://127.0.0.1:${port}`;
-        const networkName = 'Secondary Ganache Testnet';
+        const networkName = 'Secondary Local Testnet';
 
         await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement({
@@ -87,12 +87,12 @@ describe('Custom RPC history', function () {
 
         // Validate the network was added
         const networkAdded = await driver.isElementPresent({
-          text: '“Secondary Ganache Testnet” was successfully added!',
+          text: '“Secondary Local Testnet” was successfully added!',
         });
         assert.equal(
           networkAdded,
           true,
-          '“Secondary Ganache Testnet” was successfully added!',
+          '“Secondary Local Testnet” was successfully added!',
         );
       },
     );

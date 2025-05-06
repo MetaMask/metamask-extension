@@ -1,14 +1,23 @@
-const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  logInWithBalanceValidation,
-  getEventPayloads,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const { MOCK_META_METRICS_ID } = require('../../constants');
+import { strict as assert } from 'assert';
+import { Mockttp } from 'mockttp';
+import { Suite } from 'mocha';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { MOCK_META_METRICS_ID } from '../../constants';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Unlock wallet', function () {
-  async function mockSegment(mockServer) {
+type PageEvent = {
+  timestamp: string;
+  context: {
+    page: {
+      title: string;
+      path: string;
+    };
+  };
+};
+
+describe('Unlock wallet', function (this: Suite) {
+  async function mockSegment(mockServer: Mockttp) {
     return [
       await mockServer
         .forPost('https://api.segment.io/v1/batch')
@@ -31,11 +40,11 @@ describe('Unlock wallet', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint }) => {
-        await logInWithBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const events = await getEventPayloads(driver, mockedEndpoint);
         const sortedEvents = sortEventsByTime(events);
         await assert.equal(sortedEvents.length, 3);
@@ -47,17 +56,21 @@ describe('Unlock wallet', function () {
   });
 });
 
-function sortEventsByTime(events) {
+function sortEventsByTime(events: PageEvent[]): PageEvent[] {
   events.sort((event1, event2) => {
-    const timestamp1 = new Date(event1.timestamp);
-    const timestamp2 = new Date(event2.timestamp);
+    const timestamp1 = new Date(event1.timestamp).getTime();
+    const timestamp2 = new Date(event2.timestamp).getTime();
     // Compare timestamps, return -1 for earlier, 1 for later, 0 for equal
     return timestamp1 - timestamp2;
   });
   return events;
 }
 
-function assertBatchValue(event, assertedTitle, assertedPath) {
+function assertBatchValue(
+  event: PageEvent,
+  assertedTitle: string,
+  assertedPath: string,
+): void {
   const { title, path } = event.context.page;
   assert.equal(title, assertedTitle);
   assert.equal(path, assertedPath);

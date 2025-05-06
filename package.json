@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.17.0",
+  "version": "12.17.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -269,7 +269,7 @@
     "@metamask/base-controller": "^8.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.9.0",
     "@metamask/bridge-controller": "^18.0.0",
-    "@metamask/bridge-status-controller": "^16.0.0",
+    "@metamask/bridge-status-controller": "^17.0.1",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
@@ -332,7 +332,7 @@
     "@metamask/snaps-rpc-methods": "^12.1.0",
     "@metamask/snaps-sdk": "^6.22.1",
     "@metamask/snaps-utils": "^9.2.1",
-    "@metamask/solana-wallet-snap": "^1.24.0",
+    "@metamask/solana-wallet-snap": "^1.25.1",
     "@metamask/solana-wallet-standard": "^0.4.1",
     "@metamask/transaction-controller": "^54.3.0",
     "@metamask/user-operation-controller": "^31.0.0",
@@ -687,7 +687,7 @@
   },
   "engines": {
     "node": ">=20.12.0 <20.15.0 || >=20.17.0",
-    "yarn": "^4.7.0"
+    "yarn": "^4.9.1"
   },
   "lavamoat": {
     "allowScripts": {
@@ -772,7 +772,7 @@
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false
     }
   },
-  "packageManager": "yarn@4.7.0",
+  "packageManager": "yarn@4.9.1",
   "foundryup": {
     "binaries": [
       "anvil"
