@@ -39,6 +39,7 @@ jobs:
     container:
       image: cimg/node:22.15-browsers
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
