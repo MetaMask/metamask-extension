@@ -7,7 +7,6 @@ import type {
 import {
   isSolanaChainId,
   type BridgeToken,
-  BridgeFeatureFlagsKey,
   isNativeAddress,
   formatChainIdToCaip,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
@@ -15,7 +14,9 @@ import {
   type BridgeAppState as BridgeAppStateFromController,
   selectBridgeQuotes,
   selectIsQuoteExpired,
+  selectBridgeFeatureFlags,
 } from '@metamask/bridge-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { uniqBy } from 'lodash';
@@ -86,6 +87,7 @@ export type BridgeAppState = {
     MultichainAssetsControllerState &
     MultichainNetworkControllerState &
     TokenListState &
+    RemoteFeatureFlagControllerState &
     CurrencyRateState & {
       useExternalServices: boolean;
     };
@@ -134,9 +136,12 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
   },
 );
 
+const getBridgeFeatureFlags = (state: BridgeAppState) =>
+  selectBridgeFeatureFlags(state.metamask);
+
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
-  (state: BridgeAppState) => state.metamask.bridgeFeatureFlags,
+  getBridgeFeatureFlags,
   (state: BridgeAppState) => hasSolanaAccounts(state),
   (allBridgeableNetworks, bridgeFeatureFlags, hasSolanaAccount) => {
     // First filter out Solana from source chains if no Solana account exists
@@ -149,9 +154,7 @@ export const getFromChains = createDeepEqualSelector(
     // Then apply the standard filter for active source chains
     return filteredNetworks.filter(
       ({ chainId }) =>
-        bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-          formatChainIdToCaip(chainId)
-        ]?.isActiveSrc,
+        bridgeFeatureFlags.chains[formatChainIdToCaip(chainId)]?.isActiveSrc,
     );
   },
 );
@@ -168,13 +171,12 @@ export const getFromChain = createDeepEqualSelector(
 
 export const getToChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
-  (state: BridgeAppState) => state.metamask.bridgeFeatureFlags,
+  getBridgeFeatureFlags,
   (allBridgeableNetworks, bridgeFeatureFlags) =>
     uniqBy([...allBridgeableNetworks, ...FEATURED_RPCS], 'chainId').filter(
       ({ chainId }) =>
-        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]?.chains?.[
-          formatChainIdToCaip(chainId)
-        ]?.isActiveDest,
+        bridgeFeatureFlags?.chains?.[formatChainIdToCaip(chainId)]
+          ?.isActiveDest,
     ),
 );
 
@@ -185,10 +187,8 @@ export const getTopAssetsFromFeatureFlags = (
   if (!chainId) {
     return undefined;
   }
-  const { bridgeFeatureFlags } = state.metamask;
-  return bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG].chains[
-    formatChainIdToCaip(chainId)
-  ]?.topAssets;
+  const bridgeFeatureFlags = getBridgeFeatureFlags(state);
+  return bridgeFeatureFlags?.chains[formatChainIdToCaip(chainId)]?.topAssets;
 };
 
 export const getToChain = createSelector(
@@ -243,12 +243,8 @@ export const getQuoteRequest = (state: BridgeAppState) => {
   return quoteRequest;
 };
 
-export const getBridgeQuotesConfig = (state: BridgeAppState) =>
-  state.metamask.bridgeFeatureFlags[BridgeFeatureFlagsKey.EXTENSION_CONFIG] ??
-  {};
-
 export const getQuoteRefreshRate = createSelector(
-  getBridgeQuotesConfig,
+  getBridgeFeatureFlags,
   getFromChain,
   (extensionConfig, fromChain) =>
     (fromChain &&
@@ -434,12 +430,7 @@ export const getToTokenConversionRate = createDeepEqualSelector(
 export const getIsQuoteExpired = (
   { metamask }: BridgeAppState,
   currentTimeInMs: number,
-) =>
-  selectIsQuoteExpired(
-    metamask,
-    { featureFlagsKey: BridgeFeatureFlagsKey.EXTENSION_CONFIG },
-    currentTimeInMs,
-  );
+) => selectIsQuoteExpired(metamask, {}, currentTimeInMs);
 
 export const getBridgeQuotes = createSelector(
   [
@@ -451,7 +442,6 @@ export const getBridgeQuotes = createSelector(
     selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
-      featureFlagsKey: BridgeFeatureFlagsKey.EXTENSION_CONFIG,
     }),
 );
 
@@ -579,16 +569,13 @@ export const getWasTxDeclined = (state: BridgeAppState): boolean => {
  * Checks if Solana is enabled as either a fromChain or toChain for bridging
  */
 export const isBridgeSolanaEnabled = createDeepEqualSelector(
-  (state: BridgeAppState) => state.metamask.bridgeFeatureFlags,
+  getBridgeFeatureFlags,
   (bridgeFeatureFlags) => {
     const solanaChainId = MultichainNetworks.SOLANA;
     const solanaChainIdCaip = formatChainIdToCaip(solanaChainId);
 
     // Directly check if Solana is enabled as a source or destination chain
-    const solanaConfig =
-      bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]?.chains?.[
-        solanaChainIdCaip
-      ];
+    const solanaConfig = bridgeFeatureFlags?.chains?.[solanaChainIdCaip];
     return Boolean(solanaConfig?.isActiveSrc || solanaConfig?.isActiveDest);
   },
 );

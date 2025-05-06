@@ -14,7 +14,6 @@ import * as util from '../../helpers/utils/util';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import bridgeReducer from './bridge';
 import {
-  setBridgeFeatureFlags,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
@@ -122,17 +121,6 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/setFromTokenInputValue');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState.fromTokenInputValue).toStrictEqual(actionPayload);
-    });
-  });
-
-  describe('setBridgeFeatureFlags', () => {
-    it('should call setBridgeFeatureFlags in the background', async () => {
-      const mockSetBridgeFeatureFlags = jest.fn();
-      setBackgroundConnection({
-        [BridgeBackgroundAction.SET_FEATURE_FLAGS]: mockSetBridgeFeatureFlags,
-      } as never);
-      store.dispatch(setBridgeFeatureFlags() as never);
-      expect(mockSetBridgeFeatureFlags).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -29,15 +29,6 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
 
     await mockServer
-      .forGet('https://bridge.dev-api.cx.metamask.io/getAllFeatureFlags')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: JSON.parse(BRIDGE_GET_ALL_FEATURE_FLAGS.toString()),
-        };
-      }),
-
-    await mockServer
       .forGet(
         'https://accounts.api.cx.metamask.io/v2/accounts/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/balances',
       )
