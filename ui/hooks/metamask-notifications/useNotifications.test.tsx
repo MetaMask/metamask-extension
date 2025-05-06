@@ -32,7 +32,7 @@ describe('useNotifications', () => {
     store = mockStore({
       metamask: {
         isMetamaskNotificationsEnabled: false,
-        isProfileSyncingEnabled: false,
+        isBackupAndSyncEnabled: false,
         internalAccounts: {
           accounts: [
             {

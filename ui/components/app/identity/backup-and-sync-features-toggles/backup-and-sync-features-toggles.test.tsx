@@ -15,10 +15,10 @@ const initialStore = () => ({
   metamask: {
     isSignedIn: false,
     useExternalServices: true,
-    isProfileSyncingEnabled: true,
+    isBackupAndSyncEnabled: true,
     isAccountSyncingEnabled: false,
     participateInMetaMetrics: false,
-    isProfileSyncingUpdateLoading: false,
+    isBackupAndSyncUpdateLoading: false,
   },
 });
 

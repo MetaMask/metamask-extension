@@ -23,9 +23,9 @@ const initialStore = () => ({
   metamask: {
     isSignedIn: false,
     useExternalServices: true,
-    isProfileSyncingEnabled: true,
+    isBackupAndSyncEnabled: true,
     participateInMetaMetrics: false,
-    isProfileSyncingUpdateLoading: false,
+    isBackupAndSyncUpdateLoading: false,
   },
   appState: {
     externalServicesOnboardingToggleState: true,
@@ -49,7 +49,7 @@ describe('BackupAndSyncToggle', () => {
   // Logic to disable backup and sync is not tested here because it happens in confirm-turn-off-profile-syncing.test.tsx
   it('enables backup and sync when the toggle is turned on and basic functionality is already on', () => {
     const store = initialStore();
-    store.metamask.isProfileSyncingEnabled = false;
+    store.metamask.isBackupAndSyncEnabled = false;
 
     const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
 
@@ -67,7 +67,7 @@ describe('BackupAndSyncToggle', () => {
 
   it('opens the confirm modal when the toggle is turned on and basic functionality is off', () => {
     const store = initialStore();
-    store.metamask.isProfileSyncingEnabled = false;
+    store.metamask.isBackupAndSyncEnabled = false;
     store.metamask.useExternalServices = false;
     const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
     const { getByTestId } = render(

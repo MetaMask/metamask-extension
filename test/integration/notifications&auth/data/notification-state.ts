@@ -36,8 +36,8 @@ if (featureNotification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT) {
 export const getMockedNotificationsState = () => {
   return {
     ...mockMetaMaskState,
-    isProfileSyncingEnabled: true,
-    isProfileSyncingUpdateLoading: false,
+    isBackupAndSyncEnabled: true,
+    isBackupAndSyncUpdateLoading: false,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
     isAccountSyncingInProgress: false,
