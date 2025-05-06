@@ -26,7 +26,7 @@ import {
   getAccountsSyncMockResponse,
 } from './mock-data';
 
-describe('Account syncing - Opt-out Profile Sync', function () {
+describe('Account syncing - Opt-out Backup and sync', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
   const arrange = async () => {
@@ -47,7 +47,7 @@ describe('Account syncing - Opt-out Profile Sync', function () {
   describe('from inside MetaMask', function () {
     let walletSrp: string;
 
-    it('does not sync when profile sync is turned off - previously synced accounts', async function () {
+    it('does not sync when backup and sync is turned off - previously synced accounts', async function () {
       const {
         unencryptedAccounts,
         mockedAccountSyncResponse,
@@ -60,7 +60,7 @@ describe('Account syncing - Opt-out Profile Sync', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            // Setting up this mock to ensure that no User Storage requests are made when Profile Sync is off.
+            // Setting up this mock to ensure that no User Storage requests are made when Backup and sync is off.
             // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
             userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.accounts,
@@ -113,7 +113,7 @@ describe('Account syncing - Opt-out Profile Sync', function () {
       );
     });
 
-    it('does not sync when profile sync is turned off - new user', async function () {
+    it('does not sync when backup and sync is turned off - new user', async function () {
       const { userStorageMockttpController, defaultAccountOneName } =
         await arrange();
 
@@ -122,7 +122,7 @@ describe('Account syncing - Opt-out Profile Sync', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: (server: Mockttp) => {
-            // Setting up this mock to ensure that no User Storage requests are made when Profile Sync is off.
+            // Setting up this mock to ensure that no User Storage requests are made when Backup and sync is off.
             // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
             userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.accounts,
@@ -190,7 +190,7 @@ describe('Account syncing - Opt-out Profile Sync', function () {
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
-          // Setting up this mock to ensure that no User Storage requests are made when Profile Sync is off.
+          // Setting up this mock to ensure that no User Storage requests are made when Backup and sync is off.
           // If any requests are made, they will match this mock and cause the test to fail, indicating that accounts are being incorrectly synced.
           testSpecificMock: (server: Mockttp) => {
             userStorageMockttpController.setupPath(

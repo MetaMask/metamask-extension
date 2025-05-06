@@ -1029,7 +1029,7 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
+        "webpack>eslint-scope": true
       }
     },
     "@noble/hashes": {
@@ -1186,7 +1186,6 @@
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
         "@typescript-eslint/parser>@typescript-eslint": true,
         "eslint": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope": true,
         "eslint>eslint-scope": true,
         "webpack>eslint-scope": true,
         "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
@@ -2825,24 +2824,6 @@
         "process.env.NODE_ENV": true
       }
     },
-    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true
-      }
-    },
-    "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope>estraverse": true
-      }
-    },
     "eslint>eslint-scope": {
       "builtin": {
         "assert": true
@@ -3182,7 +3163,7 @@
       },
       "packages": {
         "mocha>find-up>locate-path": true,
-        "nyc>find-up>path-exists": true
+        "mocha>find-up>path-exists": true
       }
     },
     "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream": {
@@ -5003,7 +4984,7 @@
         "depcheck>cosmiconfig>parse-json>lines-and-columns": true
       }
     },
-    "nyc>find-up>path-exists": {
+    "mocha>find-up>path-exists": {
       "builtin": {
         "fs.access": true,
         "fs.accessSync": true,
