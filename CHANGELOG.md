@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Trigger Solana account discovery when importing an SRP and creates Solana accounts for all active addresses found ([#31485](https://github.com/MetaMask/metamask-extension/pull/31485))
 - Remote Mode smart account update info component ([#32123](https://github.com/MetaMask/metamask-extension/pull/32123))
 - Add support for non-EVM to the asset historical prices chart ([#32364](https://github.com/MetaMask/metamask-extension/pull/32364))
+- Use ramp api to determine solana buyability ([#32431](https://github.com/MetaMask/metamask-extension/pull/32431))
 
 ### Changed
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
@@ -93,6 +94,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use correct networkClientId when switching account ([#32359](https://github.com/MetaMask/metamask-extension/pull/32359))
 - Ensure app functions when basic Functionality turned off during onboarding flow ([#32421](https://github.com/MetaMask/metamask-extension/pull/32421))
 - Display the modal to have the choice to cancel or temporarily block the site after reject 3 all transactions ([#32466](https://github.com/MetaMask/metamask-extension/pull/32466))
+- Display MegaETH Testnet in the network list when it is a new install wallet ([#32552](https://github.com/MetaMask/metamask-extension/pull/32552))
+- Keep showing NFT in custom networks when upgrading ([#32504](https://github.com/MetaMask/metamask-extension/pull/32504))
+- Enable user to submit a solana tx after account discovery ([#32487](https://github.com/MetaMask/metamask-extension/pull/32487))
+- Prevent bridge confirmation if user doesn't have enough balance ([#32485](https://github.com/MetaMask/metamask-extension/pull/32485))
+- Fix bridge activity log doesn't update and may show incorrect token amounts ([#32387](https://github.com/MetaMask/metamask-extension/pull/32387))
+- Fix text flashing on Solana's "What's New" modal cp-12.18.0 ([#32469](https://github.com/MetaMask/metamask-extension/pull/32469))
 
 ## [12.17.0]
 ### Added

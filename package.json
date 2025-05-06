@@ -131,6 +131,9 @@
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
   },
   "resolutions": {
+    "base-x@^3.0.x": "^3.0.11",
+    "base-x@3.0.9": "^3.0.11",
+    "base-x@^5.0.x": "^5.0.1",
     "chokidar": "^3.6.0",
     "@types/react": "^16.9.53",
     "bn.js": "^5.2.1",
@@ -266,7 +269,7 @@
     "@metamask/base-controller": "^8.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.9.0",
     "@metamask/bridge-controller": "^18.0.0",
-    "@metamask/bridge-status-controller": "^16.0.0",
+    "@metamask/bridge-status-controller": "^17.0.1",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
@@ -327,7 +330,7 @@
     "@metamask/snaps-rpc-methods": "^12.1.0",
     "@metamask/snaps-sdk": "^6.22.0",
     "@metamask/snaps-utils": "^9.2.0",
-    "@metamask/solana-wallet-snap": "^1.24.0",
+    "@metamask/solana-wallet-snap": "^1.25.1",
     "@metamask/solana-wallet-standard": "^0.4.1",
     "@metamask/transaction-controller": "^54.3.0",
     "@metamask/user-operation-controller": "^31.0.0",
