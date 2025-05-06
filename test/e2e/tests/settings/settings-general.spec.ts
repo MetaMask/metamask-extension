@@ -11,7 +11,9 @@ describe('Settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
+        title:
+          this.test?.fullTitle() ??
+          'Settings - checks jazzicon and blockies icons',
       },
       async ({ driver }: { driver: Driver }) => {
         // Initialize page objects
