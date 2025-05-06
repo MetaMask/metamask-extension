@@ -28,6 +28,9 @@ class GeneralSettings {
 
   private readonly selectLanguageField = '[data-testid="locale-select"]';
 
+  private readonly blockiesIcon = '[data-testid="blockie_icon"]';
+  private readonly jazziconIcon = '[data-testid="jazz_icon"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -93,10 +96,9 @@ class GeneralSettings {
     console.log(
       `Checking if ${type} identicon is active on general settings page`,
     );
-    const selector = isJazzicon
-      ? this.jazziconActiveIcon
-      : this.blockiesActiveIcon;
-    await this.driver.waitForSelector(selector);
+    const iconSelector = isJazzicon ? this.jazziconIcon : this.blockiesIcon;
+    const activeSelector = `${iconSelector} .settings-page__content-item__identicon__item__icon--active`;
+    await this.driver.waitForSelector(activeSelector);
   }
 
   async check_noLoadingOverlaySpinner(): Promise<void> {
