@@ -283,6 +283,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     skipSetSelectedAccountStep,
     accountName,
     onceSaved,
+    defaultAccountNameChosen,
   }: {
     address: string;
     snapId: SnapId;
@@ -290,6 +291,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     skipSetSelectedAccountStep: boolean;
     onceSaved: Promise<string>;
     accountName?: string;
+    defaultAccountNameChosen: boolean;
   }) {
     const learnMoreLink =
       'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
@@ -304,6 +306,9 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           account_type: MetaMetricsEventAccountType.Snap,
           snap_id: snapId,
           snap_name: snapName,
+          ...(event === MetaMetricsEventName.AccountAdded && {
+            is_suggested_name: defaultAccountNameChosen,
+          }),
         },
       });
     };
@@ -435,6 +440,8 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       skipSetSelectedAccountStep,
       accountName,
       onceSaved,
+      defaultAccountNameChosen:
+        Boolean(accountNameSuggestion) && accountName === accountNameSuggestion,
     });
   }
 

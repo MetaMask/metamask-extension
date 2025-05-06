@@ -196,6 +196,63 @@ describe('Accounts', () => {
         getAccountLabels('unknown', mockAccount, keyringsWithMetadata),
       ).toStrictEqual([]);
     });
+
+    describe('Snap Account Label', () => {
+      const mockSnapName = 'Test Snap Name';
+      const mockSnapAccountWithName = {
+        ...mockAccount,
+        metadata: {
+          ...mockAccount.metadata,
+          type: KeyringType.snap,
+          snap: {
+            name: mockSnapName,
+            id: SOLANA_WALLET_SNAP_ID,
+          },
+        },
+      };
+      const mockSnapAccountWithoutName = {
+        ...mockAccount,
+        metadata: {
+          ...mockAccount.metadata,
+          type: KeyringType.snap,
+        },
+      };
+
+      it('should not return snap name with beta tag if snap name is provided but the snap is preinstalled', () => {
+        expect(
+          getAccountLabels(
+            KeyringType.snap,
+            mockSnapAccountWithName,
+            keyringsWithMetadata,
+            mockSnapName,
+            false,
+          ),
+        ).toStrictEqual([]);
+      });
+
+      it('should not return generic snap label with beta tag if snap name is not provided and the snap is preinstalled', () => {
+        expect(
+          getAccountLabels(
+            KeyringType.snap,
+            mockSnapAccountWithoutName,
+            keyringsWithMetadata,
+            false,
+          ),
+        ).toStrictEqual([]);
+      });
+
+      it('should return empty array if snap is preinstalled and the account does not define a entropySource', () => {
+        expect(
+          getAccountLabels(
+            KeyringType.snap,
+            mockSnapAccountWithName,
+            keyringsWithMetadata,
+            mockSnapName,
+            true,
+          ),
+        ).toStrictEqual([]);
+      });
+    });
   });
 
   describe('SRP label', () => {

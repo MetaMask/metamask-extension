@@ -9,7 +9,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
-import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import {
@@ -19,6 +18,8 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   type GenericQuoteRequest,
   getNativeAssetForChainId,
+  isNativeAddress,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import type { BridgeToken } from '@metamask/bridge-controller';
 import {
@@ -49,6 +50,8 @@ import {
   getIsToOrFromSolana,
   getQuoteRefreshRate,
   getHardwareWalletName,
+  getIsQuoteExpired,
+  BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -80,10 +83,7 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import {
-  formatTokenAmount,
-  isQuoteExpired as isQuoteExpiredUtil,
-} from '../utils/quote';
+import { formatTokenAmount } from '../utils/quote';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -111,6 +111,7 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
+  getImageForChainId,
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
   getMultichainProviderConfig,
@@ -122,8 +123,12 @@ import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import {
+  fetchAssetMetadata,
+  getAssetImageUrl,
+  toAssetId,
+} from '../../../../shared/lib/asset-utils';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -138,10 +143,6 @@ const PrepareBridgePage = () => {
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
-  const isFromTokensLoading = useMemo(
-    () => Object.keys(fromTokens).length === 0,
-    [fromTokens],
-  );
 
   const toToken = useSelector(getToToken) as TmpBridgeToken;
 
@@ -149,6 +150,14 @@ const PrepareBridgePage = () => {
   const toChains = useSelector(getToChains);
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
+
+  const isFromTokensLoading = useMemo(() => {
+    // This is an EVM token list. Solana tokens should not trigger loading state.
+    if (fromChain && isSolanaChainId(fromChain.chainId)) {
+      return false;
+    }
+    return Object.keys(fromTokens).length === 0;
+  }, [fromTokens, fromChain]);
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
@@ -161,20 +170,23 @@ const PrepareBridgePage = () => {
     isLoading,
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
-    quotesLastFetchedMs,
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
+
+  const isQuoteExpired = useSelector((state) =>
+    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   // If latest quote is expired and user has sufficient balance
   // set activeQuote to undefined to hide stale quotes but keep inputs filled
-  const isQuoteExpired = isQuoteExpiredUtil(
-    isQuoteGoingToRefresh,
-    refreshRate,
-    quotesLastFetchedMs,
-  );
   const activeQuote =
-    isQuoteExpired && !quoteRequest.insufficientBal ? undefined : activeQuote_;
+    isQuoteExpired &&
+    (!quoteRequest.insufficientBal ||
+      // insufficientBal is always true for solana
+      (fromChain && isSolanaChainId(fromChain.chainId)))
+      ? undefined
+      : activeQuote_;
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
@@ -284,6 +296,8 @@ const PrepareBridgePage = () => {
           setFromToken({
             ...srcAsset,
             chainId: srcChainId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             image: srcAsset.icon || srcAsset.iconUrl || '',
             address: srcAsset.address,
           }),
@@ -414,34 +428,68 @@ const PrepareBridgePage = () => {
       });
     };
 
-    // fromTokens is for EVM chains so it's ok to lowercase the token address
-    const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+    const handleToken = async () => {
+      if (isSolanaChainId(fromChain.chainId)) {
+        const tokenAddress = tokenAddressFromUrl;
+        const assetId = toAssetId(
+          tokenAddress,
+          formatChainIdToCaip(fromChain.chainId),
+        );
+        if (!assetId) {
+          removeTokenFromUrl();
+          return;
+        }
 
-    switch (tokenAddressFromUrl) {
-      case fromToken?.address:
-        // If the token is already set, remove the query param
-        removeTokenFromUrl();
-        break;
-      case matchedToken?.address:
-      case matchedToken?.address
-        ? toChecksumAddress(matchedToken.address)
-        : undefined: {
-        // If there is a match, set it as the fromToken
+        const tokenMetadata = await fetchAssetMetadata(
+          tokenAddress,
+          fromChain.chainId,
+        );
+        if (!tokenMetadata) {
+          removeTokenFromUrl();
+          return;
+        }
+
         dispatch(
           setFromToken({
-            ...matchedToken,
-            image: matchedToken.iconUrl,
+            ...tokenMetadata,
             chainId: fromChain.chainId,
+            image: tokenMetadata.image || '',
           }),
         );
         removeTokenFromUrl();
-        break;
+        return;
       }
-      default:
-        // Otherwise remove query param
-        removeTokenFromUrl();
-        break;
-    }
+
+      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+
+      switch (tokenAddressFromUrl) {
+        case fromToken?.address:
+          // If the token is already set, remove the query param
+          removeTokenFromUrl();
+          break;
+        case matchedToken?.address:
+        case matchedToken?.address
+          ? toChecksumAddress(matchedToken.address)
+          : undefined: {
+          // If there is a match, set it as the fromToken
+          dispatch(
+            setFromToken({
+              ...matchedToken,
+              image: matchedToken.iconUrl,
+              chainId: fromChain.chainId,
+            }),
+          );
+          removeTokenFromUrl();
+          break;
+        }
+        default:
+          // Otherwise remove query param
+          removeTokenFromUrl();
+          break;
+      }
+    };
+
+    handleToken();
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
   // Set the default destination token and slippage for swaps
@@ -456,9 +504,8 @@ const PrepareBridgePage = () => {
   }, []);
 
   const occurrences = Number(toToken?.occurrences ?? 0);
-  const toTokenIsNotDefault =
-    toToken?.address &&
-    !isSwapsDefaultTokenAddress(toToken?.address, toChain?.chainId as string);
+  const toTokenIsNotNative =
+    toToken?.address && !isNativeAddress(toToken?.address);
 
   const isSolanaBridgeEnabled = useSelector(isBridgeSolanaEnabled);
 
@@ -533,10 +580,12 @@ const PrepareBridgePage = () => {
           onMaxButtonClick={(value: string) => {
             dispatch(setFromTokenInputValue(value));
           }}
-          amountInFiat={fromAmountInCurrency.valueInCurrency}
+          amountInFiat={fromAmountInCurrency.valueInCurrency.toString()}
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             value: fromAmount || undefined,
           }}
           isTokenListLoading={isFromTokensLoading}
@@ -662,7 +711,25 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      dispatch(setToToken(null));
+                      const destNativeAsset = getNativeAssetForChainId(
+                        networkConfig.chainId,
+                      );
+                      dispatch(
+                        setToToken({
+                          ...destNativeAsset,
+                          image:
+                            getImageForChainId(
+                              isSolanaChainId(networkConfig.chainId)
+                                ? formatChainIdToCaip(networkConfig.chainId)
+                                : formatChainIdToHex(networkConfig.chainId),
+                            ) ??
+                            getAssetImageUrl(
+                              destNativeAsset.assetId,
+                              networkConfig.chainId,
+                            ) ??
+                            '',
+                        }),
+                      );
                     },
                     header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
                     shouldDisableNetwork: ({ chainId }) =>
@@ -670,9 +737,13 @@ const PrepareBridgePage = () => {
                   }
             }
             customTokenListGenerator={
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               toChain || isSwap ? toTokenListGenerator : undefined
             }
             amountInFiat={
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               activeQuote?.toTokenAmount?.valueInCurrency || undefined
             }
             amountFieldProps={{
@@ -787,7 +858,7 @@ const PrepareBridgePage = () => {
                         : t('willApproveAmountForBridging', [
                             formatTokenAmount(
                               locale,
-                              new BigNumber(fromAmount),
+                              fromAmount,
                               fromToken.symbol,
                             ),
                           ])}
@@ -855,7 +926,7 @@ const PrepareBridgePage = () => {
           {isCannotVerifyTokenBannerOpen &&
             isEvm &&
             toToken &&
-            toTokenIsNotDefault &&
+            toTokenIsNotNative &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}

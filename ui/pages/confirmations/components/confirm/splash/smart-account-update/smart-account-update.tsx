@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
-import { SMART_ACCOUNT_INFO_LINK } from '../../../../../../../shared/lib/ui-utils';
+import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
+import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
 import {
   Box,
   Button,
+  ButtonLink,
+  ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
   Text,
@@ -27,17 +30,50 @@ import Name from '../../../../../../components/app/name';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 
+const ListItem = ({
+  imgSrc,
+  title,
+  description,
+}: {
+  imgSrc: string;
+  title: string;
+  description: ReactElement;
+}) => (
+  <Box display={Display.Flex} alignItems={AlignItems.flexStart}>
+    <img width="24px" src={imgSrc} />
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      marginInlineStart={2}
+    >
+      <Text
+        color={TextColor.textDefault}
+        variant={TextVariant.bodyMd}
+        fontWeight={FontWeight.Medium}
+      >
+        {title}
+      </Text>
+      <Text
+        color={TextColor.textAlternative}
+        variant={TextVariant.bodyMd}
+        fontWeight={FontWeight.Normal}
+      >
+        {description}
+      </Text>
+    </Box>
+  </Box>
+);
+
 export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
-
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId, txParams } = currentConfirmation ?? {};
-  const { from } = txParams;
-
   const { handleRejectUpgrade } = useSmartAccountActions();
 
-  if (!currentConfirmation || acknowledged) {
+  const { chainId, txParams, origin } = currentConfirmation ?? {};
+  const { from } = txParams;
+
+  if (!currentConfirmation || acknowledged || origin === ORIGIN_METAMASK) {
     return null;
   }
 
@@ -81,83 +117,38 @@ export function SmartAccountUpdate() {
             variation={chainId}
           />
         </Box>
-        <Box display={Display.Flex} alignItems={AlignItems.flexStart}>
-          <img width="24px" src="./images/speedometer.svg" />
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            marginInlineStart={2}
-          >
-            <Text
-              color={TextColor.textDefault}
-              variant={TextVariant.bodyMd}
-              fontWeight={FontWeight.Medium}
-            >
-              {t('smartAccountBetterTransaction')}
-            </Text>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-              fontWeight={FontWeight.Normal}
-            >
-              {t('smartAccountBetterTransactionDescription')}
-            </Text>
-          </Box>
-        </Box>
-        <Box display={Display.Flex} alignItems={AlignItems.flexStart}>
-          <img width="24px" src="./images/petrol-pump.svg" />
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            marginInlineStart={2}
-          >
-            <Text
-              color={TextColor.textDefault}
-              variant={TextVariant.bodyMd}
-              fontWeight={FontWeight.Medium}
-            >
-              {t('smartAccountPayToken')}
-            </Text>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-              fontWeight={FontWeight.Normal}
-            >
-              {t('smartAccountPayTokenDescription')}
-            </Text>
-          </Box>
-        </Box>
-        <Box display={Display.Flex} alignItems={AlignItems.flexStart}>
-          <img width="24px" src="./images/sparkle.svg" />
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            marginInlineStart={2}
-          >
-            <Text
-              color={TextColor.textDefault}
-              variant={TextVariant.bodyMd}
-              fontWeight={FontWeight.Medium}
-            >
-              {t('smartAccountFeatures')}
-            </Text>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-              fontWeight={FontWeight.Normal}
-            >
-              {t('smartAccountFeaturesDescription')}{' '}
-              <a
-                key="learn_more_link"
-                href={SMART_ACCOUNT_INFO_LINK}
-                rel="noopener noreferrer"
-                target="_blank"
+        <ListItem
+          imgSrc="./images/speedometer.svg"
+          title={t('smartAccountBetterTransaction')}
+          description={t('smartAccountBetterTransactionDescription')}
+        />
+        <ListItem
+          imgSrc="./images/petrol-pump.svg"
+          title={t('smartAccountPayToken')}
+          description={t('smartAccountPayTokenDescription')}
+        />
+        <ListItem
+          imgSrc="./images/sparkle.svg"
+          title={t('smartAccountPayToken')}
+          description={
+            <>
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodyMd}
+                fontWeight={FontWeight.Normal}
               >
-                {t('learnMoreUpperCaseWithDot')}
-              </a>
-            </Text>
-          </Box>
-        </Box>
+                {t('smartAccountFeaturesDescription')}{' '}
+                <ButtonLink
+                  size={ButtonLinkSize.Inherit}
+                  href={ZENDESK_URLS.ACCOUNT_UPGRADE}
+                  externalLink
+                >
+                  {t('learnMoreUpperCaseWithDot')}
+                </ButtonLink>
+              </Text>
+            </>
+          }
+        />
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
