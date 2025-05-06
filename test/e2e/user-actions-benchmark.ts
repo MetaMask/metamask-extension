@@ -24,8 +24,10 @@ async function loadNewAccount(): Promise<number> {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: 'ganache',
       disableServerMochaToBackground: true,
+      localNodeOptions: {
+        accounts: 1,
+      },
       title: 'benchmark-userActions-loadNewAccount',
     },
     async ({ driver }: { driver: Driver }) => {
@@ -58,7 +60,6 @@ async function confirmTx(): Promise<number> {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: 'ganache',
       disableServerMochaToBackground: true,
       title: 'benchmark-userActions-confirmTx',
     },
@@ -116,7 +117,6 @@ async function bridgeUserActions(): Promise<{
     {
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
-      localNodeOptions: 'ganache',
       title: 'benchmark-userActions-bridgeUserActions',
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockFeatureFlag(mockServer, {

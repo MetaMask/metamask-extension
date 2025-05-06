@@ -6,19 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Rebrand "Profile syncing" to "Backup and sync", adding a dedicated settings menu and more ([#32129](https://github.com/MetaMask/metamask-extension/pull/32129))
 - Adding slide for smart account upgrade to home page carousel ([#32048](https://github.com/MetaMask/metamask-extension/pull/32048))
 - Improvements in confirmation page to upgrade to smart account ([#32034](https://github.com/MetaMask/metamask-extension/pull/32034))
 - When `selectedNetworkClientId` is invalid at startup, set it back to mainnet default RPC ([#31517](https://github.com/MetaMask/metamask-extension/pull/31517))
 - Adds the Solana banner/slide to the existing home carousel ([#32000](https://github.com/MetaMask/metamask-extension/pull/32000))
 - Support for Solana on Firefox ([#32104](https://github.com/MetaMask/metamask-extension/pull/32104))
+- Show error to user if vault should exist, but is missing ([#31404](https://github.com/MetaMask/metamask-extension/pull/31404))
 - Update CAIP-294 wallet announcement event to include `targets` property and new `caip-348` target object ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
 - Replace `caip-x` with `caip-348` in Multichain API over externally_connectable ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
+- Unify confirmation page styles and responsive behavior ([#31454](https://github.com/MetaMask/metamask-extension/pull/31454))
 - Integrate @metamask/bridge-status-controller@^14.0.0 and replace existing BridgeStatusController instance ([#31907](https://github.com/MetaMask/metamask-extension/pull/31907))
+- Add RPC (sub)domain tracking to transaction event metrics for RPC endpoints usage ([#32076](https://github.com/MetaMask/metamask-extension/pull/32076))
 
 ### Changed
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
 - Update security and privacy policy description to reflect Solana account handling ([#32231](https://github.com/MetaMask/metamask-extension/pull/32231))
 - Updates the Solana modal by adding a learn more link, UI tweaks and auto selects a solana account when it exists. ([#32087](https://github.com/MetaMask/metamask-extension/pull/32087))
+- Hide failed transaction retry button ([#32024](https://github.com/MetaMask/metamask-extension/pull/32024))
 
 ### Fixed
 - updates display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
