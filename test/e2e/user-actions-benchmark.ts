@@ -10,7 +10,7 @@ import FixtureBuilder from './fixture-builder';
 import HomePage from './page-objects/pages/home/homepage';
 import { mockFeatureFlag } from './tests/bridge/bridge-test-utils';
 import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
-import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './tests/bridge/constants';
+import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './tests/bridge/constants';
 import {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
@@ -111,21 +111,20 @@ async function bridgeUserActions(): Promise<{
   let loadAssetPicker: number = 0;
   let searchToken: number = 0;
 
-  const fixtureBuilder = new FixtureBuilder().withNetworkControllerOnMainnet();
+  const fixtureBuilder = new FixtureBuilder()
+    .withNetworkControllerOnMainnet()
+    .withRemoteFeatureFlagsControllerState({
+      bridgeConfig: {
+        ...DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
+        support: true,
+      },
+    });
 
   await withFixtures(
     {
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
       title: 'benchmark-userActions-bridgeUserActions',
-      testSpecificMock: async (mockServer: Mockttp) => [
-        await mockFeatureFlag(mockServer, {
-          'extension-config': {
-            ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
-            support: true,
-          },
-        }),
-      ],
     },
     async ({ driver }: { driver: Driver }) => {
       await logInWithBalanceValidation(driver);

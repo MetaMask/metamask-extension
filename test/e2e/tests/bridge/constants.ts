@@ -1,6 +1,6 @@
 import type { FeatureFlagResponse } from '@metamask/bridge-controller';
 
-export const DEFAULT_FEATURE_FLAGS_RESPONSE: {
+export const DEFAULT_BRIDGE_FEATURE_FLAGS: {
   bridgeConfig: FeatureFlagResponse;
 } = {
   bridgeConfig: {
