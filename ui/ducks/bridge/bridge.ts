@@ -1,15 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { type Hex, type CaipChainId } from '@metamask/utils';
 import {
-  type BridgeToken,
-  type QuoteMetadata,
-  type QuoteResponse,
   SortOrder,
   BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
-  type ChainId,
-  type GenericQuoteRequest,
   isSolanaChainId,
   formatChainIdToHex,
   isNativeAddress,
@@ -18,36 +12,7 @@ import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { getTokenExchangeRate } from './utils';
-
-export type BridgeState = {
-  toChainId: CaipChainId | null;
-  fromToken: BridgeToken | null;
-  toToken: BridgeToken | null;
-  fromTokenInputValue: string | null;
-  fromTokenExchangeRate: number | null; // Exchange rate from selected token to the default currency (can be fiat or crypto)
-  toTokenExchangeRate: number | null; // Exchange rate from the selected token to the default currency (can be fiat or crypto)
-  toTokenUsdExchangeRate: number | null; // Exchange rate from the selected token to the USD. This is needed for metrics
-  sortOrder: SortOrder;
-  selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
-  wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
-  slippage?: number;
-};
-
-type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };
-type TokenPayload = {
-  payload: {
-    address: GenericQuoteRequest['srcTokenAddress'];
-    symbol: string;
-    decimals: number;
-    chainId: Exclude<ChainIdPayload['payload'], null>;
-    balance?: string;
-    string?: string;
-    image?: string;
-    iconUrl?: string;
-    icon?: string;
-    assetId?: string;
-  } | null;
-};
+import type { BridgeState } from './types';
 
 const initialState: BridgeState = {
   toChainId: null,
