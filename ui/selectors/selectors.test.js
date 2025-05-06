@@ -814,14 +814,6 @@ describe('Selectors', () => {
       },
     };
 
-    beforeEach(() => {
-      process.env.PORTFOLIO_VIEW = 'true';
-    });
-
-    afterEach(() => {
-      process.env.PORTFOLIO_VIEW = undefined;
-    });
-
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getChainIdsToPoll({
         metamask: {
@@ -863,14 +855,6 @@ describe('Selectors', () => {
         rpcEndpoints: [{ networkClientId: 'linea-sepolia' }],
       },
     };
-
-    beforeEach(() => {
-      process.env.PORTFOLIO_VIEW = 'true';
-    });
-
-    afterEach(() => {
-      process.env.PORTFOLIO_VIEW = undefined;
-    });
 
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getNetworkClientIdsToPoll({
@@ -2164,14 +2148,6 @@ describe('#getConnectedSitesList', () => {
   });
 
   describe('getIsTokenNetworkFilterEqualCurrentNetwork', () => {
-    beforeEach(() => {
-      process.env.PORTFOLIO_VIEW = 'true';
-    });
-
-    afterEach(() => {
-      process.env.PORTFOLIO_VIEW = undefined;
-    });
-
     it('returns true when the token network filter is equal to the current network', () => {
       const state = {
         metamask: {
@@ -2223,17 +2199,7 @@ describe('#getConnectedSitesList', () => {
   });
 
   describe('getTokenNetworkFilter', () => {
-    beforeEach(() => {
-      process.env.PORTFOLIO_VIEW = 'true';
-    });
-
-    afterEach(() => {
-      process.env.PORTFOLIO_VIEW = undefined;
-    });
-
     it('always returns an object containing the network if portfolio view is disabled', () => {
-      process.env.PORTFOLIO_VIEW = undefined;
-
       const state = {
         metamask: {
           preferences: {

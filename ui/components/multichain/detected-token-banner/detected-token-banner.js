@@ -46,20 +46,17 @@ export const DetectedTokensBanner = ({
   );
   const chainId = useSelector(getCurrentChainId);
 
-  const detectedTokensDetails =
-    process.env.PORTFOLIO_VIEW && !isTokenNetworkFilterEqualCurrentNetwork
-      ? Object.values(detectedTokensMultichain)
-          .flat()
-          .map(({ address, symbol }) => `${symbol} - ${address}`)
-      : detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`);
-
-  const totalTokens =
-    process.env.PORTFOLIO_VIEW && !isTokenNetworkFilterEqualCurrentNetwork
-      ? Object.values(detectedTokensMultichain).reduce(
-          (count, tokenArray) => count + tokenArray.length,
-          0,
-        )
-      : detectedTokens.length;
+  const detectedTokensDetails = isTokenNetworkFilterEqualCurrentNetwork
+    ? detectedTokens.map(({ address, symbol }) => `${symbol} - ${address}`)
+    : Object.values(detectedTokensMultichain)
+        .flat()
+        .map(({ address, symbol }) => `${symbol} - ${address}`);
+  const totalTokens = isTokenNetworkFilterEqualCurrentNetwork
+    ? detectedTokens.length
+    : Object.values(detectedTokensMultichain).reduce(
+        (count, tokenArray) => count + tokenArray.length,
+        0,
+      );
 
   const handleOnClick = () => {
     actionButtonOnClick();
