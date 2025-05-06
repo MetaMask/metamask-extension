@@ -9,7 +9,7 @@ import { withSolanaAccountSnap } from './common-solana';
 describe('Multichain Asset List', function (this: Suite) {
   const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
   const LINEA_NAME_MAINNET = 'Linea Mainnet';
-  const SOLANA_NAME_MAINNET = 'Solana Mainnet';
+  const SOLANA_NAME_MAINNET = 'Solana';
 
   it('displays all assets in the asset list for the selected network', async function () {
     await withSolanaAccountSnap(
@@ -85,10 +85,8 @@ describe('Multichain Asset List', function (this: Suite) {
           accountName: 'Ethereum 1',
         });
 
-        // added due to an issue with the balance not loading in time
-        await driver.delay(25000);
-        await assetListPage.check_tokenItemNumber(1);
-        await assetListPage.check_tokenExistsInList('Ethereum', '0');
+        await assetListPage.check_tokenItemNumber(1, 25000);
+        await assetListPage.check_tokenExistsInList('Ethereum', '25');
       },
     );
   });

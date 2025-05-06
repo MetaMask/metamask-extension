@@ -28,7 +28,7 @@ export const METAMASK_PHISHING_DETECTION_API =
 export const METAMASK_CLIENT_SIDE_DETECTION_REGEX =
   /^https:\/\/client-side-detection\.api\.cx\.metamask\.io\/$/u;
 export const ACCOUNTS_API =
-  /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/0x5cfe73b6021e818b776b421b1c4db2474086a7e1\/$/u;
+  /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/0x.+\/$/u;
 export const SOLANA_TOKEN_PROGRAM =
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export enum SendFlowPlaceHolders {
@@ -537,6 +537,13 @@ export async function mockTokenApiMainnetTest(mockServer: Mockttp) {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
         name: 'PUMPKIN',
         symbol: 'PKIN',
+      },
+      {
+        decimals: 6,
+        assetId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:GkyZ3xtwoA35nTXE1t26uKGL6jjiC6zM9pGjvdtpump',
+        name: 'seek16z',
+        symbol: 'seek16z',
       },
     ],
   };
