@@ -24,11 +24,14 @@ import {
 } from '../delegation';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
+  RelayStatus,
   RelaySubmitRequest,
   submitRelayTransaction,
+  waitForRelayResult,
 } from '../transaction-relay';
 
 const EMPTY_HEX = '0x';
+const POLLING_INTERVAL_MS = 1000; // 1 Second
 
 const EMPTY_RESULT = {
   transactionHash: undefined,
@@ -145,7 +148,17 @@ export class Delegation7702PublishHook {
 
     log('Relay request', relayRequest);
 
-    const { transactionHash } = await submitRelayTransaction(relayRequest);
+    const { uuid } = await submitRelayTransaction(relayRequest);
+
+    const { transactionHash, status } = await waitForRelayResult({
+      chainId,
+      uuid,
+      interval: POLLING_INTERVAL_MS,
+    });
+
+    if (status !== RelayStatus.Success) {
+      throw new Error(`Transaction relay error - ${status}`);
+    }
 
     return {
       transactionHash,
