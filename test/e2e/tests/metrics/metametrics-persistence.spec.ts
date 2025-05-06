@@ -1,10 +1,10 @@
-const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-const {
-  withFixtures,
-  unlockWallet,
-  getCleanAppState,
-} = require('../../helpers');
+import { strict as assert } from 'assert';
+import FixtureBuilder from '../../fixture-builder';
+import { getCleanAppState, withFixtures } from '../../helpers';
+import HomePage from '../../page-objects/pages/home/homepage';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('MetaMetrics ID persistence', function () {
   it('MetaMetrics ID should persist when the user opts-out and then opts-in again of MetaMetrics collection', async function () {
@@ -18,26 +18,23 @@ describe('MetaMetrics ID persistence', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         let uiState = await getCleanAppState(driver);
 
         assert.equal(uiState.metamask.metaMetricsId, initialMetaMetricsId);
 
-        // goes to the settings screen
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
-
-        // toggle off
-        await driver.clickElement(
-          '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button',
-        );
+        // goes to the privacy settings screen and toggle off participate in metaMetrics
+        await new HomePage(driver).headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.check_pageIsLoaded();
+        await privacySettings.toggleParticipateInMetaMetrics();
 
         // wait for state to update
         await driver.delay(500);
@@ -50,10 +47,8 @@ describe('MetaMetrics ID persistence', function () {
           'Metametrics ID should be preserved when toggling off metametrics collection',
         );
 
-        // toggle back on
-        await driver.clickElement(
-          '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button',
-        );
+        // toggle back on participate in metaMetrics
+        await privacySettings.toggleParticipateInMetaMetrics();
 
         // wait for state to update
         await driver.delay(500);
