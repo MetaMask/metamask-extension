@@ -4,11 +4,12 @@ import {
   AccountsControllerAccountRemovedEvent,
   AccountsControllerListMultichainAccountsAction,
   AccountsControllerAccountBalancesUpdatesEvent,
+  AccountsControllerAccountAssetListUpdatedEvent,
 } from '@metamask/accounts-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import {
   MultichainAssetsControllerGetStateAction,
-  MultichainAssetsControllerStateChangeEvent,
+  MultichainAssetsControllerNewAccountAssetsEvent,
 } from '@metamask/assets-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
 
@@ -22,7 +23,8 @@ type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
   | AccountsControllerAccountBalancesUpdatesEvent
-  | MultichainAssetsControllerStateChangeEvent;
+  | AccountsControllerAccountAssetListUpdatedEvent
+  | MultichainAssetsControllerNewAccountAssetsEvent;
 
 export type MultichainBalancesControllerMessenger = ReturnType<
   typeof getMultichainBalancesControllerMessenger
@@ -44,7 +46,8 @@ export function getMultichainBalancesControllerMessenger(
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:accountBalancesUpdated',
-      'MultichainAssetsController:stateChange',
+      'AccountsController:accountAssetListUpdated',
+      'MultichainAssetsController:newAccountAssets',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',

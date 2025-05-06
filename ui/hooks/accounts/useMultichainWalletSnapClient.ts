@@ -112,7 +112,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     // will be added to the Snap bridge keyring (see `MultichainBalancesController:#handleOnAccountAdded`).
     // However, the balance won't be fetched right away. To workaround this, we trigger the
     // fetch explicitly here (since we are already in a `async` call) and wait for it to be updated!
-    await multichainUpdateBalance(account.id);
+    // await multichainUpdateBalance(account.id);
     // TODO: Remove this and the above line once Snap account creation flow is async
     await multichainUpdateTransactions(account.id);
 
