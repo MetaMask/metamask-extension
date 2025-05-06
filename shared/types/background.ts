@@ -139,7 +139,7 @@ export type ControllerStatePropertiesEnumerated = {
   quoteFetchError: BridgeControllerState['quoteFetchError'];
   quotesRefreshCount: BridgeControllerState['quotesRefreshCount'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
-  txhistory: BridgeStatusControllerState['txHistory'];
+  txHistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
   jobs: CronjobControllerState['jobs'];
   currentCurrency: CurrencyRateState['currentCurrency'];
@@ -177,11 +177,13 @@ export type ControllerStatePropertiesEnumerated = {
   balances: MultichainBalancesControllerState['balances'];
   nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
   conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
+  historicalPrices: MultichainAssetsRatesControllerState['historicalPrices'];
   assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
   accountsAssets: MultichainAssetsControllerState['accountsAssets'];
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
   selectedMultichainNetworkChainId: MultichainNetworkControllerState['selectedMultichainNetworkChainId'];
   isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];
+  networksWithTransactionActivity: MultichainNetworkControllerState['networksWithTransactionActivity'];
   names: NameControllerState['names'];
   nameSources: NameControllerState['nameSources'];
   networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
@@ -293,9 +295,11 @@ export type ControllerStatePropertiesEnumerated = {
   userOperations: UserOperationControllerState['userOperations'];
   isProfileSyncingEnabled: UserStorageController.UserStorageControllerState['isProfileSyncingEnabled'];
   isProfileSyncingUpdateLoading: UserStorageController.UserStorageControllerState['isProfileSyncingUpdateLoading'];
+  isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
   hasAccountSyncingSyncedAtLeastOnce: UserStorageController.UserStorageControllerState['hasAccountSyncingSyncedAtLeastOnce'];
   isAccountSyncingReadyToBeDispatched: UserStorageController.UserStorageControllerState['isAccountSyncingReadyToBeDispatched'];
   isAccountSyncingInProgress: UserStorageController.UserStorageControllerState['isAccountSyncingInProgress'];
+  hasNetworkSyncingSyncedAtLeastOnce?: UserStorageController.UserStorageControllerState['hasNetworkSyncingSyncedAtLeastOnce'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
