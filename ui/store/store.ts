@@ -2,8 +2,8 @@ import { Reducer, StoreEnhancer } from 'redux';
 import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import rootReducer from '../ducks';
-import { AppSliceState } from '../ducks/app/app';
-import { FlattenedBackgroundStateProxy } from '../../shared/types/background';
+import type { AppSliceState } from '../ducks/app/app';
+import type { FlattenedBackgroundStateProxy } from '../../shared/types/background';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file
