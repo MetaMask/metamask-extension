@@ -70,14 +70,16 @@ async function awaitDeleteDelegationEntry(
   { hash, txMeta }: { hash: Hex; txMeta: TransactionMeta },
 ) {
   const handleTransactionConfirmed = (transactionMeta: TransactionMeta) => {
-    if (transactionMeta.id !== txMeta.id) {
-      return;
+    if (
+      transactionMeta.id === txMeta.id ||
+      transactionMeta.replacedById === txMeta.replacedById
+    ) {
+      controller.delete(hash);
+      initMessenger.unsubscribe(
+        'TransactionController:transactionConfirmed',
+        handleTransactionConfirmed,
+      );
     }
-    controller.delete(hash);
-    initMessenger.unsubscribe(
-      'TransactionController:transactionConfirmed',
-      handleTransactionConfirmed,
-    );
   };
   initMessenger.subscribe(
     'TransactionController:transactionConfirmed',
