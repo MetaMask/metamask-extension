@@ -47,6 +47,7 @@ const maskedBackgroundFields = [
   'CurrencyController.currencyRates.LineaETH.conversionDate',
   'CurrencyController.currencyRates.SepoliaETH.conversionDate',
   'CurrencyController.currencyRates.MegaETH.conversionDate',
+  'CurrencyController.currencyRates.MON.conversionDate',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
