@@ -3275,8 +3275,8 @@ describe('MetaMaskController', () => {
         };
         const { provider } = createTestProviderTools({
           scaffold: providerResultStub,
-          networkId: '5',
-          chainId: '5',
+          networkId: '0x1',
+          chainId: '0x1',
         });
 
         const tokenData = {
@@ -3284,12 +3284,15 @@ describe('MetaMaskController', () => {
           symbol: 'DAI',
         };
 
-        await metamaskController.tokensController.addTokens([
-          {
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            ...tokenData,
-          },
-        ]);
+        await metamaskController.tokensController.addTokens(
+          [
+            {
+              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              ...tokenData,
+            },
+          ],
+          'networkConfigurationId1',
+        );
 
         metamaskController.provider = provider;
         const tokenDetails =
@@ -4072,6 +4075,7 @@ describe('MetaMaskController', () => {
         );
         // Second call should use derivation path on index 0
         expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Solana Account'),
           derivationPath: "m/44'/501'/0'/0'",
           entropySource: expect.any(String),
         });
@@ -4084,6 +4088,7 @@ describe('MetaMaskController', () => {
 
         // Third call should use derivation path on index 1
         expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Solana Account'),
           derivationPath: "m/44'/501'/1'/0'",
           entropySource: expect.any(String),
         });

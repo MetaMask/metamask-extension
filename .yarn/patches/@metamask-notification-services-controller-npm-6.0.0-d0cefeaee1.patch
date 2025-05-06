@@ -1,0 +1,56 @@
+diff --git a/dist/NotificationServicesController/NotificationServicesController.cjs b/dist/NotificationServicesController/NotificationServicesController.cjs
+index 2c0e69468c3bab825ca6d9e6d78d9fb3b4372081..2f6214553fc6dcfecaa8a614e05980dfd8118e10 100644
+--- a/dist/NotificationServicesController/NotificationServicesController.cjs
++++ b/dist/NotificationServicesController/NotificationServicesController.cjs
+@@ -307,8 +307,11 @@ class NotificationServicesController extends base_controller_1.BaseController {
+              * And call effects to subscribe/unsubscribe to notifications.
+              */
+             subscribe: () => {
+-                this.messagingSystem.subscribe('KeyringController:stateChange', async () => {
+-                    if (!this.state.isNotificationServicesEnabled) {
++                this.messagingSystem.subscribe('KeyringController:stateChange', async (totalAccounts, prevTotalAccounts) => {
++                    // Fixed in a release that contains https://github.com/MetaMask/core/pull/5731
++                    const hasTotalAccountsChanged = totalAccounts !== prevTotalAccounts;
++                    if (!this.state.isNotificationServicesEnabled ||
++                        !hasTotalAccountsChanged) {
+                         return;
+                     }
+                     const { accountsAdded, accountsRemoved } = await __classPrivateFieldGet(this, _NotificationServicesController_accounts, "f").listAccounts();
+@@ -320,6 +323,9 @@ class NotificationServicesController extends base_controller_1.BaseController {
+                         promises.push(this.deleteOnChainTriggersByAccount(accountsRemoved));
+                     }
+                     await Promise.all(promises);
++                }, (state) => {
++                    return (state?.keyrings?.flatMap?.((keyring) => keyring.accounts)?.length ??
++                        0);
+                 });
+             },
+         });
+diff --git a/dist/NotificationServicesController/NotificationServicesController.mjs b/dist/NotificationServicesController/NotificationServicesController.mjs
+index 1eeede947b3a8875589a81c140f001f358d8bcc1..9a1c68b32169e2e0a7574e4cc270e63d6e07f326 100644
+--- a/dist/NotificationServicesController/NotificationServicesController.mjs
++++ b/dist/NotificationServicesController/NotificationServicesController.mjs
+@@ -285,8 +285,11 @@ class NotificationServicesController extends BaseController {
+              * And call effects to subscribe/unsubscribe to notifications.
+              */
+             subscribe: () => {
+-                this.messagingSystem.subscribe('KeyringController:stateChange', async () => {
+-                    if (!this.state.isNotificationServicesEnabled) {
++                this.messagingSystem.subscribe('KeyringController:stateChange', async (totalAccounts, prevTotalAccounts) => {
++                    // Fixed in a release that contains https://github.com/MetaMask/core/pull/5731
++                    const hasTotalAccountsChanged = totalAccounts !== prevTotalAccounts;
++                    if (!this.state.isNotificationServicesEnabled ||
++                        !hasTotalAccountsChanged) {
+                         return;
+                     }
+                     const { accountsAdded, accountsRemoved } = await __classPrivateFieldGet(this, _NotificationServicesController_accounts, "f").listAccounts();
+@@ -298,6 +301,9 @@ class NotificationServicesController extends BaseController {
+                         promises.push(this.deleteOnChainTriggersByAccount(accountsRemoved));
+                     }
+                     await Promise.all(promises);
++                }, (state) => {
++                    return (state?.keyrings?.flatMap?.((keyring) => keyring.accounts)?.length ??
++                        0);
+                 });
+             },
+         });

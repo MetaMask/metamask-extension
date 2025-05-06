@@ -4,12 +4,19 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { WALLET_PASSWORD as testPassword } from '../../helpers';
-import { SECOND_TEST_E2E_SRP, withMultiSrp } from './common-multi-srp';
+import {
+  SECOND_TEST_E2E_SRP,
+  mockActiveNetworks,
+  withMultiSrp,
+} from './common-multi-srp';
 
 describe('Multi SRP - Import SRP', function (this: Suite) {
   it('successfully imports a new srp', async function () {
     await withMultiSrp(
-      { title: this.test?.fullTitle() },
+      {
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockActiveNetworks,
+      },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_accountBelongsToSrp('Account 2', 2);
@@ -19,7 +26,10 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
 
   it('successfully imports a new srp and it matches the srp imported', async function () {
     await withMultiSrp(
-      { title: this.test?.fullTitle() },
+      {
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockActiveNetworks,
+      },
       async (driver: Driver) => {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
