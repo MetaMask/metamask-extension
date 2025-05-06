@@ -115,6 +115,30 @@ export function BasicConfigurationModal() {
               ? t('basicConfigurationModalDisclaimerOff')
               : t('basicConfigurationModalDisclaimerOn')}
           </Text>
+          {isExternalServicesEnabled ? (
+            <Text variant={TextVariant.bodySm}>
+              {t('basicConfigurationModalDisclaimerOffAdditionalText', [
+                <Text
+                  key="basic-functionality-related-features-1"
+                  variant={TextVariant.bodySmBold}
+                  as="span"
+                >
+                  {t(
+                    'basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst',
+                  )}
+                </Text>,
+                <Text
+                  key="basic-functionality-related-features-2"
+                  variant={TextVariant.bodySmBold}
+                  as="span"
+                >
+                  {t(
+                    'basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast',
+                  )}
+                </Text>,
+              ])}
+            </Text>
+          ) : null}
           {isExternalServicesEnabled && (
             <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
               <Checkbox

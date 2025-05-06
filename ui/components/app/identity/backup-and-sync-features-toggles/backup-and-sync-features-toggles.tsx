@@ -21,6 +21,7 @@ import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync/us
 
 export const backupAndSyncFeaturesTogglesTestIds = {
   container: 'backup-and-sync-features-toggles-container',
+  accountSyncingToggleContainer: 'account-syncing-toggle-container',
   accountSyncingToggleButton: 'account-syncing-toggle-button',
 };
 
@@ -31,6 +32,8 @@ export const backupAndSyncFeaturesTogglesSections = [
     iconName: IconName.UserCircle,
     backupAndSyncfeatureKey: BACKUPANDSYNC_FEATURES.accountSyncing,
     featureReduxSelector: selectIsAccountSyncingEnabled,
+    toggleContainerTestId:
+      backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleContainer,
     toggleButtonTestId:
       backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleButton,
   },
@@ -76,14 +79,17 @@ const FeatureToggle = ({
           <Preloader size={36} />
         </Box>
       ) : (
-        <div className="privacy-settings__setting__toggle">
+        <div
+          className="privacy-settings__setting__toggle"
+          data-testid={section.toggleContainerTestId}
+        >
           <ToggleButton
             value={isFeatureEnabled}
             disabled={!isBackupAndSyncEnabled}
-            dataTestId={section.toggleButtonTestId}
             onToggle={handleToggleFeature}
             offLabel={t('off')}
             onLabel={t('on')}
+            dataTestId={section.toggleButtonTestId}
           />
         </div>
       )}
