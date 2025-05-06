@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updates display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
 - Add Multichain API analytics support ([#32013](https://github.com/MetaMask/metamask-extension/pull/32013))
 - Updates default bridge destination token addresses with valid values so they can trigger quote fetching ([#32353](https://github.com/MetaMask/metamask-extension/pull/32353))
+
 ## [12.17.2]
 ### Changed
 - Increasing polling interval for incoming transactions ([#32547](https://github.com/MetaMask/metamask-extension/pull/32547))
