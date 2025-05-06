@@ -44,7 +44,6 @@ import {
 } from '../../../shared/constants/multichain/networks';
 import {
   getHardwareWalletType,
-  getIsBridgeEnabled,
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
 } from '../../selectors/selectors';
@@ -67,6 +66,7 @@ import {
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
 import { toAssetId } from '../../../shared/lib/asset-utils';
+import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
@@ -136,8 +136,15 @@ export const getAllBridgeableNetworks = createDeepEqualSelector(
   },
 );
 
-const getBridgeFeatureFlags = (state: BridgeAppState) =>
-  selectBridgeFeatureFlags(state.metamask);
+const getBridgeFeatureFlags = createDeepEqualSelector(
+  [(state) => getRemoteFeatureFlags(state).bridgeConfig],
+  (bridgeConfig) => {
+    const validatedFlags = selectBridgeFeatureFlags({
+      remoteFeatureFlags: { bridgeConfig },
+    });
+    return validatedFlags;
+  },
+);
 
 export const getFromChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
@@ -448,9 +455,8 @@ export const getBridgeQuotes = createSelector(
 export const getIsBridgeTx = createDeepEqualSelector(
   getFromChain,
   getToChain,
-  (state: BridgeAppState) => getIsBridgeEnabled(state),
-  (fromChain, toChain, isBridgeEnabled: boolean) =>
-    isBridgeEnabled && toChain && fromChain?.chainId
+  (fromChain, toChain) =>
+    toChain && fromChain?.chainId
       ? fromChain.chainId !== toChain.chainId
       : false,
 );
