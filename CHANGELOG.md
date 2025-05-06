@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [12.18.0]
 ### Added
 - Adding slide for smart account upgrade to home page carousel ([#32048](https://github.com/MetaMask/metamask-extension/pull/32048))
-- Improvements in confirmation page to upgrade to smart account ([#32034](https://github.com/MetaMask/metamask-extension/pull/32034))
 - Adds the Solana banner/slide to the existing home carousel ([#32000](https://github.com/MetaMask/metamask-extension/pull/32000))
 - Update CAIP-294 wallet announcement event to include `targets` property and new `caip-348` target object ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
 - Replace `caip-x` with `caip-348` in Multichain API over externally_connectable ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
@@ -28,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Introduce a new banner for multi srp feature in account overview page ([#31782](https://github.com/MetaMask/metamask-extension/pull/31782))
 - Trigger Solana account discovery when importing an SRP and creates Solana accounts for all active addresses found ([#31485](https://github.com/MetaMask/metamask-extension/pull/31485))
 - Remote Mode smart account update info component ([#32123](https://github.com/MetaMask/metamask-extension/pull/32123))
+- Add support for non-EVM to the asset historical prices chart ([#32364](https://github.com/MetaMask/metamask-extension/pull/32364))
 
 ### Changed
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
@@ -90,7 +90,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevent address input crash on invalid CAIP account ID ([#31934](https://github.com/MetaMask/metamask-extension/pull/31934))
 - Prevent re-render of images when a user tries to watch multiple nfts ([#32031](https://github.com/MetaMask/metamask-extension/pull/32031))
 - Ensures that the toast to connect to the currently selected Solana account displays ([#32107](https://github.com/MetaMask/metamask-extension/pull/32107))
-
+- Use correct networkClientId when switching account ([#32359](https://github.com/MetaMask/metamask-extension/pull/32359))
+- Ensure app functions when basic Functionality turned off during onboarding flow ([#32421](https://github.com/MetaMask/metamask-extension/pull/32421))
+- Display the modal to have the choice to cancel or temporarily block the site after reject 3 all transactions ([#32466](https://github.com/MetaMask/metamask-extension/pull/32466))
 
 ## [12.17.0]
 ### Added
