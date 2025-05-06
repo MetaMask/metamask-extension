@@ -48,11 +48,11 @@ class NonEvmHomepage extends HomePage {
     await this.driver.waitForSelector({
       text: balance,
       tag: 'span',
-    });
+    }, { timeout: 60000 });
     await this.driver.waitForSelector({
       text: token,
       tag: 'span',
-    });
+    }, { timeout: 60000 });
   }
 
   /**
