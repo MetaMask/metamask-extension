@@ -8,7 +8,7 @@ class GeneralSettings {
     text: 'Blockies',
   };
 
-  private readonly blockiesIdenticonIcon =
+  private readonly blockiesActiveIcon =
     '[data-testid="blockie_icon"] .settings-page__content-item__identicon__item__icon--active';
 
   private readonly generalSettingsPageTitle = {
@@ -16,7 +16,7 @@ class GeneralSettings {
     tag: 'h4',
   };
 
-  private readonly jazziconIdenticonIcon =
+  private readonly jazziconActiveIcon =
     '[data-testid="jazz_icon"] .settings-page__content-item__identicon__item__icon--active';
 
   private readonly jazziconsAccountIdenticon = {
@@ -73,7 +73,7 @@ class GeneralSettings {
   }
 
   /**
-   * Verify that both Jazzicon and Blockies options are visible and Jazzicon is active
+   * Verify that both Jazzicon and Blockies options are visible
    */
   async check_identiconOptionsAreDisplayed(): Promise<void> {
     console.log(
@@ -86,7 +86,7 @@ class GeneralSettings {
   /**
    * Check if expected identicon icon is active
    *
-   * @param isJazzicon - Whether the expected active identicon is jazzicon
+   * @param isJazzicon - Whether the expected active identicon is jazzicon. Defaults to true.
    */
   async check_identiconIsActive(isJazzicon: boolean = true): Promise<void> {
     const type = isJazzicon ? 'jazzicon' : 'blockies';
@@ -94,8 +94,8 @@ class GeneralSettings {
       `Checking if ${type} identicon is active on general settings page`,
     );
     const selector = isJazzicon
-      ? this.jazziconIdenticonIcon
-      : this.blockiesIdenticonIcon;
+      ? this.jazziconActiveIcon
+      : this.blockiesActiveIcon;
     await this.driver.waitForSelector(selector);
   }
 
