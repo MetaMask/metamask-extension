@@ -62,7 +62,6 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
-    "assetExchangeRates": "object",
     "bridgeFeatureFlags": {
       "extensionConfig": {
         "maxRefreshCount": "number",
@@ -91,7 +90,8 @@
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
-    "quotesRefreshCount": 0
+    "quotesRefreshCount": 0,
+    "assetExchangeRates": "object"
   },
   "BridgeStatusController": { "txHistory": "object" },
   "CronjobController": { "jobs": "object", "events": "object" },
@@ -364,7 +364,7 @@
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
-    "isBackupAndSyncEnabled": null,
+    "isBackupAndSyncEnabled": false,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",

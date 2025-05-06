@@ -128,7 +128,6 @@
     "throttledOrigins": "object",
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
-    "delegations": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",
@@ -166,8 +165,8 @@
     "marketData": "object",
     "multichainNetworkConfigurationsByChainId": "object",
     "selectedMultichainNetworkChainId": "string",
-    "networksWithTransactionActivity": "object",
     "isEvmSelected": "boolean",
+    "networksWithTransactionActivity": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
@@ -275,7 +274,7 @@
     "nameSources": "object",
     "userOperations": "object",
     "isSignedIn": "boolean",
-    "isBackupAndSyncEnabled": null,
+    "isBackupAndSyncEnabled": false,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
@@ -300,6 +299,7 @@
       "feature3": { "name": "groupC", "value": "valueC" }
     },
     "cacheTimestamp": "number",
+    "allDeFiPositions": "object",
     "accounts": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
@@ -339,7 +339,6 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
-    "assetExchangeRates": "object",
     "bridgeFeatureFlags": {
       "extensionConfig": {
         "maxRefreshCount": "number",
@@ -369,6 +368,7 @@
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
     "quotesRefreshCount": 0,
+    "assetExchangeRates": "object",
     "txHistory": "object",
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
@@ -379,9 +379,9 @@
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
+    "delegations": "object",
     "encryptionKey": "string",
-    "encryptionSalt": "string",
-    "allDeFiPositions": "object"
+    "encryptionSalt": "string"
   },
   "ramps": "object",
   "send": "object",
