@@ -30,20 +30,20 @@ function transformState(state: VersionedData['data']) {
     return state;
   }
 
-  state.UserStorageController.isBackupAndSyncEnabled = false;
-  state.UserStorageController.isBackupAndSyncUpdateLoading = false;
-
   if (hasProperty(state.UserStorageController, 'isProfileSyncingEnabled')) {
     state.UserStorageController.isBackupAndSyncEnabled = Boolean(
       state.UserStorageController.isProfileSyncingEnabled,
     );
     delete state.UserStorageController.isProfileSyncingEnabled;
   }
+
   if (
     hasProperty(state.UserStorageController, 'isProfileSyncingUpdateInProgress')
   ) {
     delete state.UserStorageController.isProfileSyncingUpdateInProgress;
   }
+
+  state.UserStorageController.isBackupAndSyncUpdateLoading = false;
 
   return state;
 }
