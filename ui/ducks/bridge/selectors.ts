@@ -30,6 +30,7 @@ import type {
   MultichainAssetsRatesControllerState,
   MultichainBalancesControllerState,
   RatesControllerState,
+  TokenListState,
   TokenRatesControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
@@ -84,6 +85,7 @@ export type BridgeAppState = {
     MultichainTransactionsControllerState &
     MultichainAssetsControllerState &
     MultichainNetworkControllerState &
+    TokenListState &
     CurrencyRateState & {
       useExternalServices: boolean;
     };
@@ -442,12 +444,10 @@ export const getIsQuoteExpired = (
 export const getBridgeQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
-    ({ bridge: { sortOrder, selectedQuote } }: BridgeAppState) => ({
-      sortOrder,
-      selectedQuote,
-    }),
+    ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
+    ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (controllerStates, { sortOrder, selectedQuote }) =>
+  (controllerStates, sortOrder, selectedQuote) =>
     selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
@@ -499,13 +499,13 @@ export const getFromAmountInCurrency = createSelector(
     },
   ) => {
     if (fromToken?.symbol && fromChain?.chainId && validatedSrcAmount) {
-      if (fromTokenToCurrencyExchangeRate && fromTokenToUsdExchangeRate) {
+      if (fromTokenToCurrencyExchangeRate) {
         return {
           valueInCurrency: new BigNumber(validatedSrcAmount).mul(
             new BigNumber(fromTokenToCurrencyExchangeRate.toString() ?? 1),
           ),
           usd: new BigNumber(validatedSrcAmount).mul(
-            new BigNumber(fromTokenToUsdExchangeRate.toString() ?? 1),
+            new BigNumber(fromTokenToUsdExchangeRate?.toString() ?? 1),
           ),
         };
       }

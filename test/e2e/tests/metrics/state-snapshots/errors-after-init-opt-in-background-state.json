@@ -93,7 +93,7 @@
     "quoteFetchError": null,
     "quotesRefreshCount": 0
   },
-  "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
+  "BridgeStatusController": { "txHistory": "object" },
   "CronjobController": { "jobs": "object", "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
@@ -125,6 +125,7 @@
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0
   },
+  "DelegationController": "object",
   "EncryptionPublicKeyController": {
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0
@@ -164,6 +165,17 @@
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
   },
+  "MultichainAssetsController": {
+    "accountsAssets": "object",
+    "assetsMetadata": "object"
+  },
+  "MultichainAssetsRatesController": {
+    "conversionRates": "object",
+    "historicalPrices": "object"
+  },
+  "MultichainBalancesController": {
+    "balances": "object"
+  },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "fiatCurrency": "usd",
@@ -173,6 +185,7 @@
     },
     "cryptocurrencies": ["btc", "sol"]
   },
+  "MultichainTransactionsController": "object",
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
