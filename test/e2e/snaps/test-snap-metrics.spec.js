@@ -7,6 +7,10 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { MOCK_META_METRICS_ID } = require('../constants');
+const {
+  mockNotificationExampleSnap,
+  mockWebpackPluginExampleOldSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 /**
@@ -165,6 +169,7 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapInstallStarted(mockServer),
         await mockedSnapInstall(mockServer),
+        await mockNotificationExampleSnap(mockServer),
       ];
     }
 
@@ -261,6 +266,7 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapInstallStarted(mockServer),
         await mockedSnapInstallRejected(mockServer),
+        await mockNotificationExampleSnap(mockServer),
       ];
     }
 
@@ -348,6 +354,7 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapInstallStarted(mockServer),
         await mockedSnapInstallFailed(mockServer),
+        await mockNotificationExampleSnap(mockServer),
         await mockedNpmInstall(mockServer),
       ];
     }
@@ -430,7 +437,10 @@ describe('Test Snap Metrics', function () {
 
   it('tests snap uninstall metric', async function () {
     async function mockSegment(mockServer) {
-      return [await mockedSnapUninstall(mockServer)];
+      return [
+        await mockNotificationExampleSnap(mockServer),
+        await mockedSnapUninstall(mockServer),
+      ];
     }
 
     await withFixtures(
@@ -559,6 +569,7 @@ describe('Test Snap Metrics', function () {
   it('test snap update metric', async function () {
     async function mockSegment(mockServer) {
       return [
+        await mockNotificationExampleSnap(mockServer),
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdated(mockServer),
       ];
@@ -716,6 +727,7 @@ describe('Test Snap Metrics', function () {
   it('test snap update rejected metric', async function () {
     async function mockSegment(mockServer) {
       return [
+        await mockNotificationExampleSnap(mockServer),
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdateRejected(mockServer),
       ];
@@ -866,6 +878,7 @@ describe('Test Snap Metrics', function () {
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdateFailed(mockServer),
         await mockedNpmUpdate(mockServer),
+        await mockWebpackPluginExampleOldSnap(mockServer),
       ];
     }
     await withFixtures(

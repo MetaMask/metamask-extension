@@ -1,9 +1,9 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 const {
   mockImagesExampleSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
+const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Images', function () {
   it('can display images in snap ui', async function () {
