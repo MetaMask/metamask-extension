@@ -115,6 +115,7 @@ describe('SnapUIAssetSelector', () => {
       }),
       {
         state: mockInterfaceState,
+        // @ts-expect-error: intentionally passing incomplete input for testing
         metamaskState: mockState,
       },
     );
@@ -145,6 +146,7 @@ describe('SnapUIAssetSelector', () => {
       }),
       {
         state: mockInterfaceState,
+        // @ts-expect-error: intentionally passing incomplete input for testing
         metamaskState: mockState,
       },
     );
@@ -168,6 +170,7 @@ describe('SnapUIAssetSelector', () => {
       }),
       {
         state: mockInterfaceState,
+        // @ts-expect-error: intentionally passing incomplete input for testing
         metamaskState: mockState,
       },
     );
@@ -202,6 +205,7 @@ describe('SnapUIAssetSelector', () => {
       }),
       {
         state: mockInterfaceState,
+        // @ts-expect-error: intentionally passing incomplete input for testing
         metamaskState: mockState,
       },
     );
@@ -231,6 +235,7 @@ describe('SnapUIAssetSelector', () => {
       }),
       {
         state: mockInterfaceState,
+        // @ts-expect-error: intentionally passing incomplete input for testing
         metamaskState: mockState,
       },
     );
