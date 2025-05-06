@@ -71,6 +71,13 @@ export const MULTI_SRP_SLIDE = {
   image: './images/slide-multi-srp-icon.svg',
 };
 
+export const BACKUPANDSYNC_SLIDE = {
+  id: 'backupAndSync',
+  title: 'backupAndSyncSlideTitle',
+  description: 'backupAndSyncSlideDescription',
+  image: './images/slide-backup-and-sync-icon.png',
+};
+
 export const ZERO_BALANCE = '0x0';
 
 export const SWEEPSTAKES_START = new Date('2025-04-09T00:00:00Z');

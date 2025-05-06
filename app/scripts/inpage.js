@@ -90,6 +90,9 @@ if (shouldInjectProvider()) {
   getMultichainClient({
     transport: getDefaultTransport(),
   }).then((client) => {
-    registerSolanaWalletStandard({ client });
+    registerSolanaWalletStandard({
+      client,
+      walletName: process.env.METAMASK_BUILD_NAME,
+    });
   });
 }

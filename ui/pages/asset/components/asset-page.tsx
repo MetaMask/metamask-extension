@@ -41,11 +41,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import {
-  getCurrencyRates,
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsSwapsChain,
-  getMarketData,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getSelectedAccount,
@@ -64,6 +62,8 @@ import {
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { Asset } from '../types/asset';
+import { useCurrentPrice } from '../hooks/useCurrentPrice';
+import { getMultichainNativeAssetType } from '../../../selectors/assets';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 import { AssetMarketDetails } from './asset-market-details';
@@ -82,6 +82,7 @@ const AssetPage = ({
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = useMultichainSelector(getMultichainIsEvm);
+  const nativeAssetType = useSelector(getMultichainNativeAssetType);
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -106,9 +107,6 @@ const AssetPage = ({
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation) ||
     account.methods.includes(SolMethod.SignTransaction);
-
-  const marketData = useSelector(getMarketData);
-  const currencyRates = useSelector(getCurrencyRates);
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -149,8 +147,12 @@ const AssetPage = ({
     if (type === AssetType.token) {
       return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
     }
-    return getNativeTokenAddress(chainId);
+    return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
   })();
+
+  if (!address) {
+    throw new Error('Could not determine address for asset');
+  }
 
   const shouldShowContractAddress = type === AssetType.token;
   const contractAddress = (() => {
@@ -174,22 +176,11 @@ const AssetPage = ({
     selectedAccountTokenBalancesAcrossChains,
   });
 
-  // Market and conversion rate data
-  const baseCurrency = marketData[chainId]?.[address]?.currency;
-  const tokenMarketPrice = marketData[chainId]?.[address]?.price || undefined;
-  const tokenExchangeRate =
-    type === AssetType.native
-      ? currencyRates[symbol]?.conversionRate
-      : currencyRates[baseCurrency]?.conversionRate || 0;
+  const { currentPrice } = useCurrentPrice(asset);
 
-  // Calculate fiat amount
-  const tokenFiatAmount =
-    tokenMarketPrice * tokenExchangeRate * parseFloat(String(balance));
-
-  const currentPrice =
-    tokenExchangeRate !== undefined && tokenMarketPrice !== undefined
-      ? tokenExchangeRate * tokenMarketPrice
-      : undefined;
+  const tokenFiatAmount = currentPrice
+    ? currentPrice * parseFloat(String(balance))
+    : 0;
 
   // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
   asset.balance = {
@@ -226,7 +217,7 @@ const AssetPage = ({
         symbol,
         image,
         title: name ?? symbol,
-        tokenFiatAmount: showFiat && tokenMarketPrice ? tokenFiatAmount : null,
+        tokenFiatAmount: showFiat ? tokenFiatAmount : null,
         string: balance ? balance.toString() : '',
         decimals: asset.decimals,
         aggregators:
