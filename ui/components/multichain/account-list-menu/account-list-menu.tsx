@@ -713,7 +713,13 @@ export const AccountListMenu = ({
                       event:
                         MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
                     });
-                    global.platform.openExtensionInBrowser?.(IMPORT_SRP_ROUTE);
+                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                      global.platform.openExtensionInBrowser?.(
+                        IMPORT_SRP_ROUTE,
+                      );
+                    } else {
+                      history.push(IMPORT_SRP_ROUTE);
+                    }
                     onClose();
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
