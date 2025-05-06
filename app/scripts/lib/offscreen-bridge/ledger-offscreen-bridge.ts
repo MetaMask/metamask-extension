@@ -86,11 +86,7 @@ export class LedgerOffscreenBridge
           params: { transportType },
         },
         (response) => {
-          if (response.success) {
-            resolve(true);
-          } else {
-            reject(new Error('Ledger transport could not be updated'));
-          }
+          resolve(true);
         },
       );
     });

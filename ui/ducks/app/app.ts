@@ -2,18 +2,16 @@ import type {
   ContractExchangeRates,
   Token,
 } from '@metamask/assets-controllers';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Action, AnyAction } from 'redux';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { Action, AnyAction } from 'redux';
 import {
   HardwareTransportStates,
-  type WebHIDConnectedStatuses,
+  WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
 type AppState = {
   customNonceValue: string;
-  ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
-
   isAccountMenuOpen: boolean;
   isNetworkMenuOpen: boolean;
   nextNonce: string | null;
@@ -95,6 +93,8 @@ type AppState = {
   gasLoadingAnimationIsShowing: boolean;
   smartTransactionsError: string | null;
   smartTransactionsErrorMessageDismissed: boolean;
+  ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
+  ledgerTransportStatus: HardwareTransportStates;
   showBasicFunctionalityModal: boolean;
   externalServicesOnboardingToggleState: boolean;
   newNftAddedMessage: string;
@@ -198,6 +198,8 @@ const initialState: AppState = {
   gasLoadingAnimationIsShowing: false,
   smartTransactionsError: null,
   smartTransactionsErrorMessageDismissed: false,
+  ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
+  ledgerTransportStatus: HardwareTransportStates.none,
   newNftAddedMessage: '',
   removeNftMessage: '',
   newNetworkAddedName: '',
@@ -658,6 +660,18 @@ export default function reduceApp(
         ...appState,
         gasLoadingAnimationIsShowing: action.payload,
       };
+
+    case actionConstants.SET_WEBHID_CONNECTED_STATUS:
+      return {
+        ...appState,
+        ledgerWebHidConnectedStatus: action.payload,
+      };
+
+    case actionConstants.SET_LEDGER_TRANSPORT_STATUS:
+      return {
+        ...appState,
+        ledgerTransportStatus: action.payload,
+      };
     case actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH:
       return {
         ...appState,
@@ -777,6 +791,18 @@ export function toggleGasLoadingAnimation(
   return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, payload };
 }
 
+export function setLedgerWebHidConnectedStatus(
+  payload: WebHIDConnectedStatuses,
+): PayloadAction<WebHIDConnectedStatuses> {
+  return { type: actionConstants.SET_WEBHID_CONNECTED_STATUS, payload };
+}
+
+export function setLedgerTransportStatus(
+  payload: HardwareTransportStates,
+): PayloadAction<HardwareTransportStates> {
+  return { type: actionConstants.SET_LEDGER_TRANSPORT_STATUS, payload };
+}
+
 export function toggleCurrencySwitch(): Action {
   return { type: actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH };
 }
@@ -822,6 +848,16 @@ export function getQrCodeData(state: AppSliceState): {
 
 export function getGasLoadingAnimationIsShowing(state: AppSliceState): boolean {
   return state.appState.gasLoadingAnimationIsShowing;
+}
+
+export function getLedgerWebHidConnectedStatus(
+  state: AppSliceState,
+): string | null {
+  return state.appState.ledgerWebHidConnectedStatus;
+}
+
+export function getLedgerTransportStatus(state: AppSliceState): string | null {
+  return state.appState.ledgerTransportStatus;
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {
