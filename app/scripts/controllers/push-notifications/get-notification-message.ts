@@ -1,6 +1,6 @@
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { NotificationServicesPushController } from '@metamask/notification-services-controller';
-import { t as translate } from '../../translate';
+import { t as translate } from '../../../../shared/lib/translate';
 
 const t = (...args: Parameters<typeof translate>) => translate(...args) ?? '';
 

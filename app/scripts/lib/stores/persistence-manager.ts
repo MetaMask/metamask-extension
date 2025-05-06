@@ -23,6 +23,11 @@ export type Backup = {
   meta?: MetaData;
 };
 
+export const backedUpStateKeys = [
+  'KeyringController',
+  'AppMetadataController',
+] as const;
+
 /**
  * This Error represents an error that occurs during persistence operations.
  * It includes a backup of the state at the time of the error.
@@ -268,6 +273,11 @@ export class PersistenceManager {
     );
   }
 
+  /**
+   * Resets the local store and the backup database. This method is used to
+   * clear the state and metadata, effectively resetting the application to
+   * its initial state.
+   */
   async reset() {
     await navigator.locks.request(
       STATE_LOCK,
@@ -286,13 +296,12 @@ export class PersistenceManager {
     );
   }
 
+  /**
+   * Retrieves the backup object containing the state of various controllers.
+   */
   async getBackup(): Promise<Backup> {
     const [KeyringController, AppMetadataController, meta] =
-      await this.#backupDb.get([
-        'KeyringController',
-        'AppMetadataController',
-        `meta`,
-      ]);
+      await this.#backupDb.get([...backedUpStateKeys, `meta`]);
     return {
       KeyringController,
       AppMetadataController,

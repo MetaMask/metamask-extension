@@ -58,7 +58,7 @@ export async function getStateCorruptionErrorHtml(
   const body = `
     <p>${lodashEscape(corruptionDetectedMessage)}</p>
     <p>${copyAndRestoreMessage}</p>
-    <button id="critical-error-button" class="critical-error__link-restore button btn-primary">
+    <button disabled id="critical-error-button" class="critical-error__button-restore button btn-primary">
       ${restoreOrResetMessage}
     </button>
   `;
@@ -94,18 +94,21 @@ export async function displayStateCorruptionError(
 
   function handleRestoreClick(this: HTMLButtonElement) {
     this.removeEventListener('click', handleRestoreClick);
-    this.disabled = true;
-    if (hasBackup) {
-      this.innerText = t('stateCorruptionRestoringDatabase') ?? '';
-    } else {
-      this.innerText = t('stateCorruptionResettingDatabase') ?? '';
-    }
+    const theyAreSure = confirm('Are you sure you want to proceed?');
+    if (theyAreSure) {
+      this.disabled = true;
+      if (hasBackup) {
+        this.innerText = t('stateCorruptionRestoringDatabase') ?? '';
+      } else {
+        this.innerText = t('stateCorruptionResettingDatabase') ?? '';
+      }
 
-    port.postMessage({
-      data: {
-        method: METHOD_REPAIR_DATABASE,
-      },
-    });
+      port.postMessage({
+        data: {
+          method: METHOD_REPAIR_DATABASE,
+        },
+      });
+    }
   }
 
   const html = await getStateCorruptionErrorHtml(
@@ -116,6 +119,15 @@ export async function displayStateCorruptionError(
   );
   container.innerHTML = html;
 
-  const button = container.querySelector('#critical-error-button');
-  button?.addEventListener('click', handleRestoreClick);
+  const button = container.querySelector<HTMLButtonElement>(
+    '#critical-error-button',
+  );
+  if (button) {
+    button.addEventListener('click', handleRestoreClick);
+    setTimeout(() => {
+      button.disabled = false;
+      // wait a while before enabling the button to try to prevent accidental
+      // or rush clicks.
+    }, 5000);
+  }
 }

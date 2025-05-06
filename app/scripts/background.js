@@ -17,6 +17,7 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { hasProperty } from '@metamask/utils';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
 import {
@@ -53,7 +54,7 @@ import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { handleStateCorruptionError } from './lib/state-corruption/state-corruption-recovery';
-import { PersistenceManager } from './lib/stores/persistence-manager';
+import { backedUpStateKeys, PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
@@ -753,9 +754,9 @@ export async function loadStateFromPersistence(backup) {
     if (!preMigrationVersionedData?.data) {
       preMigrationVersionedData.data = {};
     }
-    for (const key in backup) {
-      // if the backup has a key that is not in the current state, add it
-      if (!(key in preMigrationVersionedData.data)) {
+
+    for (const key of backedUpStateKeys) {
+      if (hasProperty(backup, key)) {
         preMigrationVersionedData.data[key] = backup[key];
       }
     }
