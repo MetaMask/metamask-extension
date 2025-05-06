@@ -96,7 +96,7 @@ class GeneralSettings {
     const selector = isJazzicon
       ? this.jazziconIdenticonIcon
       : this.blockiesIdenticonIcon;
-      await this.driver.waitForSelector(selector);
+    await this.driver.waitForSelector(selector);
   }
 
   async check_noLoadingOverlaySpinner(): Promise<void> {
