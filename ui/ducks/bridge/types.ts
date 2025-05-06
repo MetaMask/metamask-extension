@@ -6,6 +6,7 @@ import {
   type ChainId,
   type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
+
 export type BridgeToken = {
   address: string;
   symbol: string;
