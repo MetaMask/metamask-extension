@@ -1,6 +1,5 @@
 import React, {
   useContext,
-  useState,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useCallback,
   ///: END:ONLY_INCLUDE_IF
@@ -218,22 +217,9 @@ export const CoinOverview = ({
   const isEvm = useSelector(getMultichainIsEvm);
 
   const tokensMarketData = useSelector(getTokensMarketData);
-  const [isOpen, setIsOpen] = useState(true);
-
-  const handleMouseEnter = () => {
-    setIsOpen(true);
-  };
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
-  };
-
-  const [referenceElement, setReferenceElement] =
-    useState<HTMLSpanElement | null>(null);
-  const setBoxRef = (ref: HTMLSpanElement | null) => {
-    if (ref) {
-      setReferenceElement(ref);
-    }
   };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -324,8 +310,6 @@ export const CoinOverview = ({
           <div className={`${classPrefix}-overview__balance`}>
             <div
               className={`${classPrefix}-overview__primary-container`}
-              onMouseEnter={handleMouseEnter}
-              ref={setBoxRef}
             >
               {isEvm ? (
                 <LegacyAggregatedBalance
