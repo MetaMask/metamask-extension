@@ -204,7 +204,8 @@ class ActivityListPage {
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
-    const transactionAmounts = await this.driver.findElements(
+    // old implementation
+    /* const transactionAmounts = await this.driver.findElements(
       this.transactionAmountsInActivity,
     );
     const transactionAmountsText = await transactionAmounts[
@@ -214,6 +215,22 @@ class ActivityListPage {
       transactionAmountsText,
       expectedAmount,
       `${transactionAmountsText} is displayed as transaction amount instead of ${expectedAmount} for transaction ${expectedNumber}`,
+    );
+    console.log(
+      `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
+    );*/
+
+    const txAmount = await this.driver.waitForSelector({
+      text: expectedAmount,
+      tag: 'p',
+    }, {
+      timeout: 60000,
+    });
+    const txAmountText = await txAmount.getText();
+    assert.equal(
+      txAmountText,
+      expectedAmount,
+      `${txAmountText} is displayed as transaction amount instead of ${expectedAmount} for transaction ${expectedNumber}`,
     );
     console.log(
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
