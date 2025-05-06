@@ -14,6 +14,7 @@ import {
 import {
   Display,
   IconColor,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -61,13 +62,17 @@ const MenuItem = React.forwardRef(
         <Icon
           name={iconName}
           size={IconSize.Sm}
-          marginRight={2}
+          marginRight={3}
           color={iconColor}
         />
       )}
       <div>
         <Text as="div">{children}</Text>
-        {subtitle ? <Text variant={TextVariant.bodyXs}>{subtitle}</Text> : null}
+        {subtitle ? (
+          <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
+            {subtitle}
+          </Text>
+        ) : null}
       </div>
     </button>
   ),

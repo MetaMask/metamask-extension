@@ -1,5 +1,6 @@
+import { JsonRpcParams } from '@metamask/utils';
 import { Driver } from '../../webdriver/driver';
-import  { DAPP_URL } from '../../constants'
+import { DAPP_URL } from '../../constants';
 
 class TestDappIndividualRequest {
   private readonly driver: Driver;
@@ -44,8 +45,7 @@ class TestDappIndividualRequest {
     await this.driver.openNewPage(dappUrl);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async request(method: string, params: any[]) {
+  async request(method: string, params: JsonRpcParams) {
     await this.openTestDappIndividualPage({
       url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(
         params,

@@ -23,6 +23,7 @@ describe('Send flow', function (this: Suite) {
         await homePage.check_getBalance('0', 'SOL');
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
+        await sendSolanaPage.check_pageIsLoaded();
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -36,6 +37,7 @@ describe('Send flow', function (this: Suite) {
           true,
           'Invalid Solana address should appear and it does not',
         );
+        await sendSolanaPage.clearToAddress();
         await sendSolanaPage.setToAddress(commonSolanaAddress);
         await sendSolanaPage.setAmount('1');
         assert.equal(
@@ -59,9 +61,8 @@ describe('Send flow', function (this: Suite) {
       },
     );
   });
-});
-describe('Send full flow of USD', function (this: Suite) {
-  it('with a positive balance account', async function () {
+
+  it('full flow of USD with a positive balance account', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
@@ -91,6 +92,7 @@ describe('Send full flow of USD', function (this: Suite) {
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
+        await sendSolanaPage.check_pageIsLoaded();
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -191,9 +193,8 @@ describe('Send full flow of USD', function (this: Suite) {
       },
     );
   });
-});
-describe('Send full flow of SOL', function (this: Suite) {
-  it('with a positive balance account', async function () {
+
+  it('full flow of SOL with a positive balance account', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
@@ -316,9 +317,8 @@ describe('Send full flow of SOL', function (this: Suite) {
       },
     );
   });
-});
-describe('Send flow', function (this: Suite) {
-  it('and Transaction fails', async function () {
+
+  it('and transaction fails', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
@@ -381,9 +381,8 @@ describe('Send flow', function (this: Suite) {
       },
     );
   });
-});
-describe('Send flow', function (this: Suite) {
-  it('and Transaction Simulation fails', async function () {
+
+  it('and transaction simulation fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
       {

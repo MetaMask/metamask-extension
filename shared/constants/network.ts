@@ -1,7 +1,4 @@
-import type {
-  AddNetworkFields,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
+import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
 import { Hex, hexToNumber } from '@metamask/utils';
@@ -185,6 +182,8 @@ export const CHAIN_IDS = {
   XRPLEVM_TESTNET: '0x161c28',
   LENS: '0xe8',
   PLUME: '0x18232',
+  MATCHAIN: '0x2ba',
+  FLOW: '0x2eb',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -319,6 +318,8 @@ export const SHAPE_DISPLAY_NAME = 'Shape';
 export const XRPLEVM_TESTNET_DISPLAY_NAME = 'XRPL EVM Testnet';
 export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
+export const MATCHAIN_DISPLAY_NAME = 'Matchain';
+export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -377,6 +378,7 @@ export const CURRENCY_SYMBOLS = {
   ONE: 'ONE',
   LENS: 'GHO',
   PLUME: 'PLUME',
+  FLOW: 'FLOW',
 } as const;
 
 // Non-EVM currency symbols
@@ -556,6 +558,8 @@ export const LENS_IMAGE_URL = './images/lens.png';
 export const LENS_NATIVE_TOKEN_IMAGE_URL = './images/lens-native.svg';
 export const PLUME_IMAGE_URL = './images/plume.svg';
 export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
+export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
+export const FLOW_IMAGE_URL = './images/flow.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -683,6 +687,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.LENS]: LENS_DISPLAY_NAME,
   [CHAIN_IDS.PLUME]: PLUME_DISPLAY_NAME,
+  [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
+  [CHAIN_IDS.FLOW]: FLOW_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -815,6 +821,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
   [CHAIN_IDS.LENS]: CURRENCY_SYMBOLS.LENS,
   [CHAIN_IDS.PLUME]: CURRENCY_SYMBOLS.PLUME,
+  [CHAIN_IDS.MATCHAIN]: CURRENCY_SYMBOLS.BNB,
+  [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
 } as const;
 
 /**
@@ -953,6 +961,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
+  [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
+  [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1007,6 +1017,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRP_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
 } as const;
 
 /**
@@ -1248,27 +1260,6 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];
-
-/**
- * A mapping for the default custom testnets.
- */
-export const DEFAULT_CUSTOM_TESTNET_MAP: Record<Hex, NetworkConfiguration> = {
-  [CHAIN_IDS.MEGAETH_TESTNET]: {
-    chainId: CHAIN_IDS.MEGAETH_TESTNET,
-    name: MEGAETH_TESTNET_DISPLAY_NAME,
-    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
-    blockExplorerUrls: ['https://megaexplorer.xyz'],
-    defaultRpcEndpointIndex: 0,
-    defaultBlockExplorerUrlIndex: 0,
-    rpcEndpoints: [
-      {
-        networkClientId: 'megaeth-testnet',
-        url: 'https://carrot.megaeth.com/rpc',
-        type: RpcEndpointType.Custom,
-      },
-    ],
-  },
-};
 
 export const infuraChainIdsTestNets: string[] = [
   CHAIN_IDS.SEPOLIA,

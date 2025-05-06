@@ -7,6 +7,22 @@ export const REMOTE_MODE_SLIDE = {
   href: '/home.html#remote',
 };
 
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+export const SOLANA_SLIDE = {
+  id: 'solana',
+  title: 'slideSolanaTitle',
+  description: 'slideSolanaDescription',
+  image: './images/slide-solana-icon.svg',
+};
+///: END:ONLY_INCLUDE_IF
+
+export const SMART_ACCOUNT_UPGRADE_SLIDE = {
+  id: 'smartAccountUpgrade',
+  title: 'slideSmartAccountUpgradeTitle',
+  description: 'slideSmartAccountUpgradeDescription',
+  image: './images/smart-account-upgrade.png',
+};
+
 export const SWEEPSTAKES_SLIDE = {
   id: 'sweepStake',
   title: 'slideSweepStakeTitle',
@@ -46,6 +62,20 @@ export const CASH_SLIDE = {
   description: 'slideCashOutDescription',
   image: './images/slide-sell-icon.svg',
   href: 'https://portfolio.metamask.io/sell',
+};
+
+export const MULTI_SRP_SLIDE = {
+  id: 'multiSrp',
+  title: 'slideMultiSrpTitle',
+  description: 'slideMultiSrpDescription',
+  image: './images/slide-multi-srp-icon.svg',
+};
+
+export const BACKUPANDSYNC_SLIDE = {
+  id: 'backupAndSync',
+  title: 'backupAndSyncSlideTitle',
+  description: 'backupAndSyncSlideDescription',
+  image: './images/slide-backup-and-sync-icon.png',
 };
 
 export const ZERO_BALANCE = '0x0';

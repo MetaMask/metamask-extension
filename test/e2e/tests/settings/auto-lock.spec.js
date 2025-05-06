@@ -36,7 +36,7 @@ describe('Auto-Lock Timer', function () {
         // Verify the wallet is locked
         await driver.waitForSelector({
           css: '[data-testid="unlock-page-title"]',
-          text: 'Welcome back!',
+          text: 'Welcome back',
         });
         await driver.waitForSelector('.unlock-page button');
       },

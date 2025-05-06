@@ -119,6 +119,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         },
       },
       conversionRates: {},
+      historicalPrices: {},
       assetsMetadata: {},
       accountsAssets: {},
       isEvmSelected: false,
@@ -126,6 +127,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
       bitcoinSupportEnabled: true,
+      networksWithTransactionActivity: {},
     },
   };
 }
@@ -282,6 +284,7 @@ describe('Multichain Selectors', () => {
       );
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(['usd', 'ETH'])(
       "returns current currency '%s' if account is EVM",
       (currency: string) => {
@@ -293,6 +296,7 @@ describe('Multichain Selectors', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(['usd', 'BTC'])(
       "returns current currency '%s' if account is non-EVM",
       (currency: string) => {
@@ -373,6 +377,7 @@ describe('Multichain Selectors', () => {
       expect(getMultichainIsMainnet(state)).toBe(false);
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { isMainnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH },
       { isMainnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
@@ -399,6 +404,7 @@ describe('Multichain Selectors', () => {
       expect(getMultichainIsTestnet(state)).toBe(false);
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([CHAIN_IDS.SEPOLIA, CHAIN_IDS.LINEA_SEPOLIA])(
       'returns true if account is EVM (testnet): %s',
       (chainId: Hex) => {
@@ -407,6 +413,7 @@ describe('Multichain Selectors', () => {
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { isTestnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH },
       { isTestnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
@@ -435,6 +442,7 @@ describe('Multichain Selectors', () => {
       );
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       {
         network: 'mainnet',
