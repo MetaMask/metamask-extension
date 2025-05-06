@@ -31,6 +31,11 @@ const _setupLocale = async (currentLocale) => {
 
 export const setupLocale = memoize(_setupLocale);
 
+/**
+ *
+ * @param {string} errorBody
+ * @returns {string}
+ */
 export function getErrorHtmlBase(errorBody) {
   return `
     <div class="critical-error__container">

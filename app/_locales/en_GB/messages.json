@@ -6533,7 +6533,7 @@
     "message": "Unapproved"
   },
   "unexpectedBehavior": {
-    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored properly. Use the link below to send MetaMask a bug report."
+    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
   },
   "units": {
     "message": "units"

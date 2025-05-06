@@ -407,7 +407,6 @@ async function restoreDatabaseFromBackup(ports, backup) {
         throw new Error('restoreDatabaseFromBackup lock already held');
       } else {
         await navigator.locks.request('restoreDatabaseFromBackup', async () => {
-          await new Promise((r) => setTimeout(r, 5000));
           const deferred = deferredPromise();
           // we are going to reinitialize the background script, so we need to
           // reset the initialization promises. this is gross since it is

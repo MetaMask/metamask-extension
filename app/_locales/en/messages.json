@@ -5669,7 +5669,7 @@
     "message": "Your vault cannot be automatically recovered."
   },
   "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "MetaMask's database cannot be accessed"
+    "message": "Internal Error: Database cannot be accessed"
   },
   "stateCorruptionDetectedWithBackup": {
     "message": "You vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
@@ -5684,6 +5684,15 @@
   },
   "stateCorruptionTheseInstructions": {
     "message": "these instructions"
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "How to recover your Secret Recovery Phrase"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Restoring database…"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "Resetting database…"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -6553,7 +6562,7 @@
     "message": "Unapproved"
   },
   "unexpectedBehavior": {
-    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored properly. Use the link below to send MetaMask a bug report."
+    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
   },
   "units": {
     "message": "units"

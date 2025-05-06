@@ -1,4 +1,4 @@
-import browser from 'webextension-polyfill';
+import type browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { escape as lodashEscape } from 'lodash';
 import {
@@ -49,7 +49,9 @@ export async function getStateCorruptionErrorHtml(
 
   const instructionsLink = `<a href="${lodashEscape(
     vaultRecoveryLink,
-  )}" class="critical-error__link" target="_blank">${lodashEscape(
+  )}" title="${lodashEscape(
+    t('stateCorruptionTheseInstructionsLinkTitle') ?? '',
+  )}" class="critical-error__link" target="_blank" rel="noopener noreferrer">${lodashEscape(
     t('stateCorruptionTheseInstructions') ?? '',
   )}</a>`;
 
@@ -70,19 +72,19 @@ export async function getStateCorruptionErrorHtml(
 
   const header = `
     <h1>${t('stateCorruptionMetamaskDatabaseCannotBeAccessed')}</h1>
+  `;
+  const body = `
     <p>${lodashEscape(corruptionDetectedMessage)}</p>
     <p>${copyAndRestoreMessage}</p>
-    <div id="critical-error-button" class="critical-error__link-restore button btn-danger" data-confirm="${lodashEscape(
-      'Are you sure? This action is irreversible!',
-    )}">
+    <button id="critical-error-button" class="critical-error__link-restore button btn-primary">
       ${restoreOrResetMessage}
-    </div>
+    </button>
   `;
 
   const footer = supportLink
-    ? `<p class="critical-error__footer">
-      <span>${lodashEscape(t('unexpectedBehavior') ?? '')}</span>
-      <a
+    ? `<p class="critical-error__footer small">${lodashEscape(
+        t('unexpectedBehavior') ?? '',
+      )} <a
         href="${lodashEscape(supportLink)}"
         class="critical-error__link"
         target="_blank"
@@ -94,6 +96,7 @@ export async function getStateCorruptionErrorHtml(
 
   return getErrorHtmlBase(`
     ${header}
+    ${body}
     ${footer}
   `);
 }
@@ -107,24 +110,15 @@ export async function displayStateCorruptionError(
 ) {
   log.error(err.stack);
 
-  function handleRestoreClick(this: HTMLElement) {
-    this.style.opacity = '0.5';
-    this.style.pointerEvents = 'none';
-    const confirmMessage = this.dataset.confirm;
-
-    if (confirmMessage) {
-      // TODO: not the best UI: we should talk about this
-      // eslint-disable-next-line no-alert
-      const confirmed = window.prompt(
-        `${confirmMessage}Type \`restore\` to restore.`,
-      );
-      if (confirmed !== 'restore') {
-        this.style.opacity = '1';
-        this.style.pointerEvents = 'auto';
-        return;
-      }
-    }
+  function handleRestoreClick(this: HTMLButtonElement) {
     this.removeEventListener('click', handleRestoreClick);
+    this.disabled = true;
+    if (hasBackup) {
+      this.innerText = t('stateCorruptionRestoringDatabase') ?? '';
+    } else {
+      this.innerText = t('stateCorruptionResettingDatabase') ?? '';
+    }
+
     port.postMessage({
       data: {
         method: METHOD_RESTORE_DATABASE_FROM_BACKUP,

@@ -11,7 +11,7 @@
 
   & h1 {
     font-size: 20px;
-    margin: 0;
+    margin: 4px 0;
     padding: 0;
   }
 
@@ -21,7 +21,6 @@
   }
 
   &__footer {
-    display: inline-flex;
     flex-wrap: wrap;
 
     > span {
@@ -61,5 +60,8 @@
   }
   & p {
     margin: 1em 0;
+    &.small {
+      font-size: 12px;
+    }
   }
 }
