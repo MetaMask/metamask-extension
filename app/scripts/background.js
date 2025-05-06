@@ -713,7 +713,7 @@ async function loadPhishingWarningPage() {
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  *
- * @param {object | null} backup
+ * @param {Backup | null} backup
  * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
  */
 export async function loadStateFromPersistence(backup) {
