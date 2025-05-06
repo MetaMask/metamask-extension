@@ -300,7 +300,6 @@ export const getBridgeFixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
-    .withRemoteFeatureFlagsControllerState(featureFlags)
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -335,6 +334,11 @@ export const getBridgeFixtures = (
       await mockDAItoETH(mockServer),
       await mockDAItoUSDT(mockServer),
     ],
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: featureFlags,
+      },
+    },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -359,7 +363,6 @@ export const getBridgeL2Fixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
-    .withRemoteFeatureFlagsControllerState(featureFlags)
     .withNetworkControllerOnLineaLocahost();
 
   return {
@@ -376,6 +379,11 @@ export const getBridgeL2Fixtures = (
       await mockDAIL2toL2(mockServer),
       await mockDAIL2toMainnet(mockServer),
     ],
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: featureFlags,
+      },
+    },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [

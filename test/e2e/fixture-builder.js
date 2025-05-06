@@ -491,14 +491,6 @@ class FixtureBuilder {
     return this;
   }
 
-  withRemoteFeatureFlagsControllerState(data) {
-    this.fixture.data.RemoteFeatureFlagsController = {
-      ...this.fixture.data.RemoteFeatureFlagsController,
-      ...data,
-    };
-    return this;
-  }
-
   withBridgeControllerDefaultState() {
     this.fixture.data.BridgeController = {};
     return this;
