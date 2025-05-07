@@ -29,6 +29,7 @@ class GeneralSettings {
   private readonly selectLanguageField = '[data-testid="locale-select"]';
 
   private readonly blockiesIcon = '[data-testid="blockie_icon"]';
+
   private readonly jazziconIcon = '[data-testid="jazz_icon"]';
 
   constructor(driver: Driver) {
