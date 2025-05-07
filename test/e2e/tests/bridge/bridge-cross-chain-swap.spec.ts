@@ -28,8 +28,55 @@ describe('Bridge tests', function (this: Suite) {
         },
         false,
       ),
-      async ({ driver, localNodes }) => {
+      async ({ driver }) => {
         await unlockWallet(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.check_expectedBalanceIsDisplayed();
+        // disable smart transactions
+
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.openSettingsPage();
+
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.clickAdvancedTab();
+        const advancedSettingsPage = new AdvancedSettings(driver);
+        await advancedSettingsPage.check_pageIsLoaded();
+        await advancedSettingsPage.toggleSmartTransactions();
+        await settingsPage.closeSettingsPage();
+
+        await bridgeTransaction(
+          driver,
+          {
+            amount: '25',
+            tokenFrom: 'DAI',
+            tokenTo: 'ETH',
+            fromChain: 'Ethereum',
+            toChain: 'Linea',
+            unapproved: true,
+          },
+          2,
+          '24.9998',
+        );
+
+        // Switch to Linea Mainnet to set it as the selected network
+        // in the network-controller
+        await switchToNetworkFlow(driver, 'Linea Mainnet');
+
+        await bridgeTransaction(
+          driver,
+          {
+            amount: '1',
+            tokenFrom: 'ETH',
+            tokenTo: 'USDC',
+            fromChain: 'Ethereum',
+            toChain: 'Arbitrum One',
+          },
+          3,
+          '23.9997',
+        );
 
         await bridgeTransaction(
           driver,
