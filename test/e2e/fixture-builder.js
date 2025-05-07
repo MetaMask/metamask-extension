@@ -128,7 +128,6 @@ function onboardingFixture() {
           },
         },
       },
-      UserStorageController: {},
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},
