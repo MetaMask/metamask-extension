@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { BigNumber } from 'bignumber.js';
+///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
@@ -189,9 +191,11 @@ const AccountListItem = ({
     balanceToTranslate = multichainAggregatedBalance;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    const balanceOrFallback = multichainAggregatedBalance ?? 0;
+    const balanceOrFallback = accountTotalFiatBalances?.totalBalance ?? 0;
+    const bnBalance = new BigNumber(balanceOrFallback);
+
     const formattedBalanceToTranslate = formatWithThreshold(
-      balanceOrFallback,
+      bnBalance.toNumber(),
       0.00001,
       locale,
       {
@@ -245,9 +249,7 @@ const AccountListItem = ({
   const getPreferredCurrencyValue = () => {
     let value;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    value = isEvmNetwork
-      ? new BigNumber(account.balance).toNumber()
-      : account.balance;
+    value = account.balance;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     value = isEvmNetwork ? account.balance : balanceToTranslate;
