@@ -25,7 +25,7 @@ import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { mockSimpleKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -202,7 +202,7 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
 async function mockSnapAndSwaps(mockServer: Mockttp) {
   return [
     await mockSwapsTransactionQuote(mockServer),
-    await mockSimpleKeyringSnap(mockServer),
+    await mockAccountAbstractionKeyringSnap(mockServer),
   ];
 }
 

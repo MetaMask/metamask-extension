@@ -1,6 +1,28 @@
 import fs from 'fs';
 import { Mockttp } from 'mockttp';
 
+export async function mockAccountAbstractionKeyringSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/snap-account-abstraction-keyring-0.5.0.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/snap-account-abstraction-keyring/-/snap-account-abstraction-keyring-0.5.0.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '189900',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"39d851f31a0f0cb0590f2eb4346919d6"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
 export async function mockBip32Snap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/bip32-example-snap-2.3.0.txt';
@@ -111,6 +133,28 @@ export async function mockDialogSnap(mockServer: Mockttp) {
     });
 }
 
+export async function mockErrorSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/error-example-snap-2.1.3.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/error-example-snap/-/error-example-snap-2.1.3.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '7097',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"0f020a896a5e7e71490980948e215922"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
 export async function mockEthereumProviderExampleSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/ethereum-provider-example-snap-2.2.1.txt';
@@ -193,6 +237,28 @@ export async function mockImagesExampleSnap(mockServer: Mockttp) {
           'Content-Length': '21020',
           'Content-Type': 'application/octet-stream',
           Etag: '"f6d5fc4b24eb5e111ff7fbd88a29f305"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
+export async function mockInsightsSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/insights-example-snap-2.2.3.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/insights-example-snap/-/insights-example-snap-2.2.3.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '11211',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"47aa2030cc40caa01f29c878572c93aa"',
           Vary: 'Accept-Encoding',
         },
       };

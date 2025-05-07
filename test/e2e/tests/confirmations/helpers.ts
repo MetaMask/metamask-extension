@@ -9,6 +9,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
+import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -47,6 +48,7 @@ export function withTransactionEnvelopeTypeFixtures(
           : defaultOptionsForType2Transactions,
       ...(smartContract && { smartContract }),
       ...(mocks && { testSpecificMock: mocks }),
+      testSpecificMock: mockDialogSnap,
       title,
     },
     testFunction,
