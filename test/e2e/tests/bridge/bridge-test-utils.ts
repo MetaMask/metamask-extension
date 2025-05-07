@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import { type FeatureFlagResponse } from '@metamask/bridge-controller';
+import { BridgeClientId, type FeatureFlagResponse } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
@@ -29,6 +29,7 @@ import {
   TOP_ASSETS_API_LINEA_MOCK_RESULT,
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
+  DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from './constants';
 
 export class BridgePage {
@@ -147,10 +148,10 @@ export async function mockFeatureFlag(
       return {
         statusCode: 200,
         json: {
-          ...DEFAULT_FEATURE_FLAGS_RESPONSE,
+          ...DEFAULT_BRIDGE_FEATURE_FLAGS,
           ...featureFlagOverrides,
           'extension-config': {
-            ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+            ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
             ...featureFlagOverrides['extension-config'],
           },
         },
@@ -423,7 +424,7 @@ async function mockDAIL2toMainnet(mockServer: Mockttp) {
 async function mockAccountsTransactions(mockServer: Mockttp) {
   return await mockServer
     .forGet(
-      /^https:\/\/accounts.api.cx.metamask.io\/v1\/accounts\/.*\/transactions/u,
+      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/.*\/transactions/u,
     )
     .thenCallback(() => {
       return {
@@ -442,7 +443,7 @@ async function mockAccountsTransactions(mockServer: Mockttp) {
 async function mockAccountsBalances(mockServer: Mockttp) {
   return await mockServer
     .forGet(
-      /^https:\/\/accounts.api.cx.metamask.io\/v2\/accounts\/.*\/balances/u,
+      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/accounts\/.*\/balances/u,
     )
     .thenCallback(() => {
       return {
@@ -480,7 +481,7 @@ async function mockAccountsBalances(mockServer: Mockttp) {
 async function mockPriceSpotPrices(mockServer: Mockttp) {
   return await mockServer
     .forGet(
-      /^https:\/\/price.api.cx.metamask.io\/v2\/chains\/\d+\/spot-prices/u,
+      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
     )
     .thenCallback(() => {
       return {
@@ -503,7 +504,7 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
 
 async function mockPriceSpotPricesV3(mockServer: Mockttp) {
   return await mockServer
-    .forGet(/^https:\/\/price.api.cx.metamask.io\/v3\/spot-prices/u)
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -554,6 +555,7 @@ export const getBridgeFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, featureFlags),
       await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),
@@ -607,7 +609,7 @@ export const getQuoteNegativeCasesFixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockFeatureFlag(mockServer, {
         'extension-config': {
-          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+          ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
           support: true,
         },
       }),
@@ -643,7 +645,7 @@ export const getBridgeNegativeCasesFixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockFeatureFlag(mockServer, {
         'extension-config': {
-          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+          ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
           support: true,
         },
       }),
@@ -678,7 +680,7 @@ export const getInsufficientFundsFixtures = (title?: string) => {
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockFeatureFlag(mockServer, {
         'extension-config': {
-          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+          ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
           support: true,
         },
       }),
@@ -713,6 +715,7 @@ export const getBridgeL2Fixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
+      await mockFeatureFlag(mockServer, featureFlags),
       await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),

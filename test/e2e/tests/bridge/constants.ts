@@ -1,9 +1,18 @@
-import type { FeatureFlagResponse } from '@metamask/bridge-controller';
+import { FeatureFlagResponse } from '@metamask/bridge-controller';
+import { BridgeFlag } from '@metamask/bridge-controller';
 
-export const DEFAULT_BRIDGE_FEATURE_FLAGS: {
-  bridgeConfig: FeatureFlagResponse;
-} = {
-  bridgeConfig: {
+export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse = {
+  [BridgeFlag.EXTENSION_CONFIG]: {
+    refreshRate: 30000,
+    maxRefreshCount: 5,
+    support: false,
+    chains: {
+      '1': { isActiveSrc: true, isActiveDest: true },
+      '42161': { isActiveSrc: true, isActiveDest: true },
+      '59144': { isActiveSrc: true, isActiveDest: true },
+    },
+  },
+  [BridgeFlag.MOBILE_CONFIG]: {
     refreshRate: 30000,
     maxRefreshCount: 5,
     support: false,

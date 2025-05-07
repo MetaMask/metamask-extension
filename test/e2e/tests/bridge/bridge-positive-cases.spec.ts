@@ -5,16 +5,8 @@ import {
   switchToNetworkFlow,
   searchAndSwitchToNetworkFlow,
 } from '../../page-objects/flows/network.flow';
-import { Driver } from '../../webdriver/driver';
-import BridgeQuotePage, {
-  BridgeQuote,
-} from '../../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
-import { getBridgeFixtures, bridgeTransaction } from './bridge-test-utils';
-import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
+import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -23,8 +15,10 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures(
         this.test?.fullTitle(),
         {
-          ...DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
-          support: true,
+          'extension-config': {
+            ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
+            support: true,
+          },
         },
         false,
       ),

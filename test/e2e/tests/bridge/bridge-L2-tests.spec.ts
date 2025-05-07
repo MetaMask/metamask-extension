@@ -5,23 +5,17 @@ import {
   switchToNetworkFlow,
   searchAndSwitchToNetworkFlow,
 } from '../../page-objects/flows/network.flow';
-import { Driver } from '../../webdriver/driver';
-import BridgeQuotePage, {
-  BridgeQuote,
-} from '../../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import { getBridgeL2Fixtures } from './bridge-test-utils';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
-import { getBridgeL2Fixtures, bridgeTransaction } from './bridge-test-utils';
-import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
+import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
   it('should execete bridge transactions on L2 networks', async function () {
     await withFixtures(
       getBridgeL2Fixtures(this.test?.fullTitle(), {
-        ...DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
-        support: true,
+        'extension-config': {
+          ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
+          support: true,
+        },
       }),
       async ({ driver }) => {
         await unlockWallet(driver);
