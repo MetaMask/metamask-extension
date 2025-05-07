@@ -308,7 +308,6 @@ export const ImportSrp = ({
           <Box width={BlockSize.Full} marginTop={4}>
             <ButtonLink
               width={BlockSize.Full}
-              loading={loading}
               onClick={async () => {
                 setNumberOfWords(numberOfWords === 12 ? 24 : 12);
                 setSrpError('');
