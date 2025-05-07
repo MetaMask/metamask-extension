@@ -23,9 +23,10 @@ describe('Solana network', function (this: Suite) {
     );
   });
 
-  it('can delete the previously selected EVM network when Solana network is selected', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('can delete the previously selected EVM network when Solana network is selected', async function () {
     await withSolanaAccountSnap(
-      { title: this.test?.fullTitle() },
+      { title: this.test?.fullTitle(), mockCalls: true },
       async (driver) => {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();

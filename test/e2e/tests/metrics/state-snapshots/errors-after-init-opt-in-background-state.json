@@ -175,6 +175,17 @@
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
   },
+  "MultichainAssetsController": {
+    "accountsAssets": "object",
+    "assetsMetadata": "object"
+  },
+  "MultichainAssetsRatesController": {
+    "conversionRates": "object",
+    "historicalPrices": "object"
+  },
+  "MultichainBalancesController": {
+    "balances": "object"
+  },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "fiatCurrency": "usd",
@@ -184,6 +195,7 @@
     },
     "cryptocurrencies": ["btc", "sol"]
   },
+  "MultichainTransactionsController": "object",
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",

@@ -89,6 +89,7 @@ import {
   isConfirmTransactionRoute,
   setTheme,
   showOnboardingHeader,
+  showAppHeader,
 } from './utils';
 
 // Begin Lazy Routes
@@ -520,7 +521,9 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!hideAppHeader(this.props) && <AppHeader location={location} />}
+        {process.env.REMOVE_GNS
+          ? showAppHeader(this.props) && <AppHeader location={location} />
+          : !hideAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
         {showOnboardingHeader(location) && <OnboardingAppHeader />}
         {isAccountMenuOpen ? (
