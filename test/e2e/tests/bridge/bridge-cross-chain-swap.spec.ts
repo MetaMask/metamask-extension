@@ -30,7 +30,6 @@ describe('Bridge tests', function (this: Suite) {
       ),
       async ({ driver }) => {
         await unlockWallet(driver);
-
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed();
         // disable smart transactions
