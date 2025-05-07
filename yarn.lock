@@ -5796,9 +5796,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@21.0.6-preview-dedc8739":
-  version: 21.0.6-preview-dedc8739
-  resolution: "@metamask-previews/keyring-controller@npm:21.0.6-preview-dedc8739"
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@21.0.6-preview-956e6bf8":
+  version: 21.0.6-preview-956e6bf8
+  resolution: "@metamask-previews/keyring-controller@npm:21.0.6-preview-956e6bf8"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -5815,7 +5815,7 @@ __metadata:
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/8d4c15f3f88747dce4dac9be79a15fef1fbc5da60da7700a7ae239ea0fa2e6e0ca40d8372dc19489bbf9f19ae02e3ac0161bd4620a297b1c3c6280d24ad60c2f
+  checksum: 10/0f4b5d2eb39fe1fdae5426db21057663504e0c068f7a6a171715719d126a5b7d152686f5c2238d47e0988ea88746e8e6f1eea4cb934f1ca6b672afe4b73b237d
   languageName: node
   linkType: hard
 
