@@ -61,12 +61,6 @@ import {
   REMOTE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
-import {
-  SwapAllowance,
-  TokenSymbol,
-  ToTokenOption,
-  REMOTE_MODES,
-} from '../../remote.types';
 
 import {
   RemoteModeHardwareWalletConfirm,

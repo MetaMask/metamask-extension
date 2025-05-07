@@ -18,15 +18,12 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
-import { AccountPicker } from '../../../../components/multichain/account-picker';
 import {
   Content,
   Footer,
   Header,
   Page,
 } from '../../../../components/multichain/pages/page';
-import Card from '../../../../components/ui/card';
 import Dropdown from '../../../../components/ui/dropdown';
 import Tooltip from '../../../../components/ui/tooltip';
 import UnitInput from '../../../../components/ui/unit-input';
@@ -47,7 +44,6 @@ import {
 import Card from '../../../../components/ui/card';
 import { AccountPicker } from '../../../../components/multichain/account-picker';
 import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
-import { TokenSymbol, DailyAllowance, TOKEN_DETAILS } from '../../remote.types';
 import {
   DEFAULT_ROUTE,
   REMOTE_ROUTE,
@@ -56,11 +52,12 @@ import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import {
   DailyAllowance,
-  DailyAllowanceTokenTypes,
   REMOTE_MODES,
+  TokenSymbol,
+  DailyAllowance,
+  TOKEN_DETAILS,
 } from '../../remote.types';
 
-import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import {
   getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
