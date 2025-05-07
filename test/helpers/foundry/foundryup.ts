@@ -44,35 +44,6 @@ export function getBinaryArchiveUrl(
   return `https://github.com/${repo}/releases/download/${tag}/foundry_${version}_${platform}_${arch}.${ext}`;
 }
 
-export async function verify(
-  downloadedBinaries: string[],
-  binaries: Binary[],
-  checksums: Checksums,
-  platform: Platform,
-  arch: Architecture,
-): Promise<void> {
-  assert(
-    downloadedBinaries.length === binaries.length,
-    'Failed to extract all binaries',
-  );
-  if (checksums) {
-    for (const binary of binaries) {
-      const expected = checksums.binaries[binary]?.[`${platform}-${arch}`];
-      const actual = downloadedBinaries.find((file) => file.endsWith(binary));
-      assert(actual, `Failed to find ${binary} in downloaded binaries`);
-      say(`verifying checksum for ${binary}`);
-      const hash = createHash(checksums.algorithm);
-      hash.update(actual);
-      const checksum = hash.digest('hex');
-      if (checksum === expected) {
-        say(`checksum verified for ${binary}`);
-      } else {
-        throw new Error(`Checksum verification failed for ${binary}`);
-      }
-    }
-  }
-}
-
 export async function checkAndDownloadBinaries(
   url: URL,
   binaries: Binary[],
@@ -85,7 +56,6 @@ export async function checkAndDownloadBinaries(
   try {
     say(`checking cache`);
     downloadedBinaries = await opendir(cachePath);
-    // await verify(downloadedBinaries, binaries, checksums);
     say(`found binaries in cache`);
   } catch (e: unknown) {
     say(`binaries not in cache`);
@@ -114,7 +84,7 @@ export async function installBinaries(
     const target = join(file.parentPath, file.name);
     const path = join(BIN_DIR, relative(cachePath, target));
     // clean up any existing files or symlinks
-    await unlink(path);
+    await unlink(path).catch(noop);
     try {
       // create new symlink
       await symlink(target, path);
