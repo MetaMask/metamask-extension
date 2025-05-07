@@ -19,14 +19,13 @@ describe(`migration #${version}`, () => {
         data: {
           UserStorageController: {
             isProfileSyncingEnabled: true,
-            isProfileSyncingUpdateInProgress: false,
+            isProfileSyncingUpdateLoading: false,
           },
         },
       };
       const expectedData = {
         UserStorageController: {
           isBackupAndSyncEnabled: true,
-          isBackupAndSyncUpdateLoading: false,
         },
       };
       const newStorage = await migrate(oldStorage);
@@ -40,14 +39,13 @@ describe(`migration #${version}`, () => {
         data: {
           UserStorageController: {
             isProfileSyncingEnabled: false,
-            isProfileSyncingUpdateInProgress: false,
+            isProfileSyncingUpdateLoading: false,
           },
         },
       };
       const expectedData = {
         UserStorageController: {
           isBackupAndSyncEnabled: false,
-          isBackupAndSyncUpdateLoading: false,
         },
       };
       const newStorage = await migrate(oldStorage);
@@ -61,14 +59,13 @@ describe(`migration #${version}`, () => {
         data: {
           UserStorageController: {
             isProfileSyncingEnabled: true,
-            isProfileSyncingUpdateInProgress: true,
+            isProfileSyncingUpdateLoading: true,
           },
         },
       };
       const expectedData = {
         UserStorageController: {
           isBackupAndSyncEnabled: true,
-          isBackupAndSyncUpdateLoading: false,
         },
       };
       const newStorage = await migrate(oldStorage);

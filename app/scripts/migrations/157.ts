@@ -10,7 +10,7 @@ export type VersionedData = {
     UserStorageController?: Partial<UserStorageControllerState> & {
       // These properties are not in the UserStorageControllerState type anymore
       isProfileSyncingEnabled?: boolean;
-      isProfileSyncingUpdateInProgress?: boolean;
+      isProfileSyncingUpdateLoading?: boolean;
     };
   };
 };
@@ -38,9 +38,9 @@ function transformState(state: VersionedData['data']) {
   }
 
   if (
-    hasProperty(state.UserStorageController, 'isProfileSyncingUpdateInProgress')
+    hasProperty(state.UserStorageController, 'isProfileSyncingUpdateLoading')
   ) {
-    delete state.UserStorageController.isProfileSyncingUpdateInProgress;
+    delete state.UserStorageController.isProfileSyncingUpdateLoading;
   }
 
   return state;
