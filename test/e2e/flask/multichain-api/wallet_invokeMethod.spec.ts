@@ -58,7 +58,7 @@ describe('Multichain API', function () {
             const EXPECTED_RESULTS = {
               [GANACHE_SCOPES[0]]: '0x539',
               [GANACHE_SCOPES[1]]: DEFAULT_INITIAL_BALANCE_HEX,
-              [GANACHE_SCOPES[2]]: '0x77359400',
+              [GANACHE_SCOPES[2]]: '0x49533a1b',
             };
 
             for (const scope of GANACHE_SCOPES) {

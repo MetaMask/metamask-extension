@@ -10,9 +10,9 @@ import BridgeQuotePage, {
   BridgeQuote,
 } from '../../page-objects/pages/bridge/quote-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import AccountListPage from '../../page-objects/pages/account-list-page';
 import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
+import { Anvil } from '../../seeder/anvil';
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -28,10 +28,10 @@ describe('Bridge tests', function (this: Suite) {
         },
         false,
       ),
-      async ({ driver }) => {
+      async ({ driver, localNodes }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed();
+        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
         // disable smart transactions
 
         const headerNavbar = new HeaderNavbar(driver);
@@ -57,7 +57,7 @@ describe('Bridge tests', function (this: Suite) {
             unapproved: true,
           },
           2,
-          '24.9998',
+          localNodes[0],
         );
 
         // Switch to Linea Mainnet to set it as the selected network
@@ -74,7 +74,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           3,
-          '23.9997',
+          localNodes[0],
         );
 
         await bridgeTransaction(
@@ -87,7 +87,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           4,
-          '22.9997',
+          localNodes[0],
         );
 
         // Switch to Linea Mainnet to set it as the selected network
@@ -104,7 +104,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           5,
-          '22.9996',
+          localNodes[0],
         );
       },
     );
@@ -114,7 +114,7 @@ describe('Bridge tests', function (this: Suite) {
     driver: Driver,
     quote: BridgeQuote,
     transactionsCount: number,
-    expectedAmount: string,
+    localNode: Anvil,
   ) {
     // Navigate to Bridge page
     const homePage = new HomePage(driver);
@@ -147,7 +147,6 @@ describe('Bridge tests', function (this: Suite) {
     );
 
     // Check the wallet ETH balance is correct
-    const accountListPage = new AccountListPage(driver);
-    await accountListPage.check_accountValueAndSuffixDisplayed(expectedAmount);
+    await homePage.check_localNodeBalanceIsDisplayed(localNode);
   }
 });
