@@ -5153,6 +5153,9 @@
   "smartAccountRequestFor": {
     "message": "Request for"
   },
+  "smartAccountSameAccount": {
+    "message": "Same account, smarter features."
+  },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
   },
