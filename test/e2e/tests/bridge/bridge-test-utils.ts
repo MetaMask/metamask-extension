@@ -1,8 +1,5 @@
 import { Mockttp } from 'mockttp';
-import {
-  type FeatureFlagResponse,
-  BridgeClientId,
-} from '@metamask/bridge-controller';
+import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
@@ -10,7 +7,6 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
 import {
-  DEFAULT_FEATURE_FLAGS_RESPONSE,
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
   MOCK_TOKENS_API,
@@ -85,29 +81,6 @@ export class BridgePage {
       url: 'cross-chain/swaps',
     });
   };
-}
-
-export async function mockFeatureFlag(
-  mockServer: Mockttp,
-  featureFlagOverrides: Partial<FeatureFlagResponse>,
-) {
-  return await mockServer
-    .forGet(/getAllFeatureFlags/u)
-    .withHeaders({ 'X-Client-Id': BridgeClientId.EXTENSION })
-    .always()
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          ...DEFAULT_FEATURE_FLAGS_RESPONSE,
-          ...featureFlagOverrides,
-          'extension-config': {
-            ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
-            ...featureFlagOverrides['extension-config'],
-          },
-        },
-      };
-    });
 }
 
 async function mockPortfolioPage(mockServer: Mockttp) {
@@ -350,7 +323,6 @@ export const getBridgeFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
-      await mockFeatureFlag(mockServer, featureFlags),
       await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),
@@ -362,6 +334,11 @@ export const getBridgeFixtures = (
       await mockDAItoETH(mockServer),
       await mockDAItoUSDT(mockServer),
     ],
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: featureFlags,
+      },
+    },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
@@ -391,7 +368,6 @@ export const getBridgeL2Fixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
-      await mockFeatureFlag(mockServer, featureFlags),
       await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),
@@ -403,6 +379,11 @@ export const getBridgeL2Fixtures = (
       await mockDAIL2toL2(mockServer),
       await mockDAIL2toMainnet(mockServer),
     ],
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: featureFlags,
+      },
+    },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [

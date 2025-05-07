@@ -63,6 +63,11 @@ describe('AssetPage', () => {
     },
     metamask: {
       ...mockMultichainNetworkState(),
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: true,
+        },
+      },
       tokenList: {},
       tokenBalances: {
         [selectedAccountAddress]: {
@@ -139,7 +144,6 @@ describe('AssetPage', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
       getTokenSymbol: jest.fn(),
-      setBridgeFeatureFlags: jest.fn(),
     } as never);
   });
 

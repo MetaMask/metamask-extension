@@ -1598,6 +1598,7 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:findNetworkClientIdByChainId',
         'TokenRatesController:getState',
         'MultichainAssetsRatesController:getState',
+        'RemoteFeatureFlagController:getState',
         'CurrencyRateController:getState',
       ],
       allowedEvents: [],
@@ -4121,11 +4122,6 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      [BridgeBackgroundAction.SET_FEATURE_FLAGS]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.SET_FEATURE_FLAGS}`,
-        ),
       [BridgeBackgroundAction.RESET_STATE]: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,

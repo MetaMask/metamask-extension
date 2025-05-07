@@ -12,16 +12,14 @@ import BridgeQuotePage, {
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { getBridgeL2Fixtures } from './bridge-test-utils';
-import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
+import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 
 describe('Bridge tests', function (this: Suite) {
   it('should execete bridge transactions on L2 networks', async function () {
     await withFixtures(
       getBridgeL2Fixtures(this.test?.fullTitle(), {
-        'extension-config': {
-          ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
-          support: true,
-        },
+        ...DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
+        support: true,
       }),
       async ({ driver }) => {
         await unlockWallet(driver);

@@ -270,7 +270,7 @@ export const AppHeaderUnlockedContent = ({
               </Box>
             )}
             <ButtonIcon
-              iconName={IconName.MoreVertical}
+              iconName={IconName.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
               onClick={() => {
