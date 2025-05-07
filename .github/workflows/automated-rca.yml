@@ -18,5 +18,5 @@ jobs:
       issue-number: ${{ github.event.issue.number }}
       issue-labels: '["Sev0-urgent", "Sev1-high"]'
       entry-issue: 'entry.340898780'
-      entry-team: 'entry.793489222'
-      entry-regression: 'entry.1619541279'
+      entry-team: 'entry.765806202'
+      entry-regression: 'entry.1756851972'
