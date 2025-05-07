@@ -8,7 +8,7 @@ import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   SOLANA_DEVNET_URL,
   withSolanaAccountSnap,
-} from '../solana/common-solana';
+} from '../../tests/solana/common-solana';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -113,6 +113,7 @@ export const connectSolanaTestDapp = async (
   // Get to extension modal, and click on the "Connect" button
   await driver.delay(largeDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
   if (options?.selectAllAccounts) {
     await selectAccountsAndAuthorize(driver);
   }
@@ -126,6 +127,7 @@ export const connectSolanaTestDapp = async (
 
   // Go back to the test dapp window
   await testDapp.switchTo();
+  await console.log('connected');
 };
 
 /**
@@ -167,10 +169,12 @@ export const switchToAccount = async (
   accountName: string,
 ): Promise<void> => {
   await driver.clickElementSafe('[data-testid="account-menu-icon"]');
+  await driver.delay(regularDelayMs);
   await driver.clickElement({
     text: accountName,
     tag: 'button',
   });
+  await driver.delay(regularDelayMs);
 };
 
 /**
