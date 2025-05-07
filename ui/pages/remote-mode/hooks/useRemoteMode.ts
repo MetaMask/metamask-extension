@@ -1,7 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Hex, hexToNumber } from '@metamask/utils';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   createDelegation,
@@ -24,12 +24,25 @@ import {
 import { useEIP7702Account } from '../../confirmations/hooks/useEIP7702Account';
 import { useEIP7702Networks } from '../../confirmations/hooks/useEIP7702Networks';
 import { REMOTE_MODES } from '../remote.types';
+import { useConfirmationNavigation } from '../../confirmations/hooks/useConfirmationNavigation';
 
 export const useRemoteMode = ({ account }: { account: Hex }) => {
   const { network7702List } = useEIP7702Networks(account);
   const globalNetworkClientId = useSelector(getSelectedNetworkClientId);
   const selectedNetwork = useSelector(getSelectedNetwork);
   const { chainId } = selectedNetwork.configuration;
+  const [transactionId, setTransactionId] = useState<string | undefined>();
+  const { confirmations, navigateToId } = useConfirmationNavigation();
+
+  const isRedirectPending = useMemo(() => {
+    return confirmations.some((conf) => conf.id === transactionId);
+  }, [confirmations, transactionId]);
+
+  useEffect(() => {
+    if (isRedirectPending) {
+      navigateToId(transactionId);
+    }
+  }, [isRedirectPending, navigateToId, transactionId]);
 
   const { upgradeAccount: upgradeAccountEIP7702 } = useEIP7702Account({
     chainId,
@@ -56,7 +69,6 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
   const upgradeAccount = useCallback(async () => {
     // TODO: remove this and use isSupported when it's ready
     if (networkConfig?.isSupported) {
-      console.log('no upgrade needed');
       return;
     }
 
@@ -144,6 +156,8 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
           type: TransactionType.contractInteraction,
         },
       );
+
+      setTransactionId(transactionMeta.id);
 
       await awaitDeleteDelegationEntry({
         hash: getDelegationHashOffchain(delegation),
