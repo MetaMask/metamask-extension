@@ -731,6 +731,8 @@ describe('Test Snap Metrics', function () {
         await mockNotificationSnap(mockServer),
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdateRejected(mockServer),
+        await mockWebpackPluginOldSnap(mockServer),
+        await mockWebpackPluginSnap(mockServer),
       ];
     }
     await withFixtures(

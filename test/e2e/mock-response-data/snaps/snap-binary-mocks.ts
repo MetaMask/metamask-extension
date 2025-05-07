@@ -331,6 +331,28 @@ export async function mockJsonRpcSnap(mockServer: Mockttp) {
     });
 }
 
+export async function mockJsxSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/jsx-example-snap-1.2.1.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/jsx-example-snap/-/jsx-example-snap-1.2.1.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '11962',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"c618ad778d68fb7bb01568a3f79755ad"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
 export async function mockLifecycleHooksSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/lifecycle-hooks-example-snap-2.1.3.txt';
