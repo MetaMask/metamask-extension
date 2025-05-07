@@ -242,23 +242,14 @@ const AccountListItem = ({
     return isAggregatedFiatOverviewBalance;
   };
 
-  if (account.balance === '0x01d6a931bf5431') {
-    console.log('account: ', account);
-  }
   const getPreferredCurrencyValue = () => {
     let value;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    // console.log('multichainAggregatedBalance', multichainAggregatedBalance);
-    // if (account.balance === '0x01d6a931bf5431') {
-    //   const debug = new BigNumber(account.balance).toNumber();
-    // }
     value = isEvmNetwork
       ? new BigNumber(account.balance).toNumber()
       : account.balance;
-    // console.log('build-multichain', isEvmNetwork, account.balance);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    // console.log('build-main', account.balance);
     value = isEvmNetwork ? account.balance : balanceToTranslate;
     ///: END:ONLY_INCLUDE_IF
     return value;
