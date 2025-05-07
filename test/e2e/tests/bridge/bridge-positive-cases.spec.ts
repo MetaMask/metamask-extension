@@ -15,10 +15,8 @@ describe('Bridge tests', function (this: Suite) {
       getBridgeFixtures(
         this.test?.fullTitle(),
         {
-          'extension-config': {
-            ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
-            support: true,
-          },
+          ...DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
+          support: true,
         },
         false,
       ),

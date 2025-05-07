@@ -1,5 +1,8 @@
 import { Mockttp } from 'mockttp';
-import { BridgeClientId, type FeatureFlagResponse } from '@metamask/bridge-controller';
+import {
+  BridgeClientId,
+  type FeatureFlagResponse,
+} from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
@@ -134,29 +137,6 @@ export async function bridgeTransaction(
   await accountListPage.check_accountValueAndSuffixDisplayed(
     expectedWalletBalance,
   );
-}
-
-export async function mockFeatureFlag(
-  mockServer: Mockttp,
-  featureFlagOverrides: Partial<FeatureFlagResponse>,
-) {
-  return await mockServer
-    .forGet(/getAllFeatureFlags/u)
-    .withHeaders({ 'X-Client-Id': BridgeClientId.EXTENSION })
-    .always()
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          ...DEFAULT_BRIDGE_FEATURE_FLAGS,
-          ...featureFlagOverrides,
-          'extension-config': {
-            ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
-            ...featureFlagOverrides['extension-config'],
-          },
-        },
-      };
-    });
 }
 
 async function mockPortfolioPage(mockServer: Mockttp) {
@@ -555,7 +535,6 @@ export const getBridgeFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
-      await mockFeatureFlag(mockServer, featureFlags),
       await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),
@@ -595,6 +574,7 @@ export const getBridgeFixtures = (
 
 export const getQuoteNegativeCasesFixtures = (
   options: { statusCode: number; json: unknown },
+  featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
@@ -607,15 +587,14 @@ export const getQuoteNegativeCasesFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
-      await mockFeatureFlag(mockServer, {
-        'extension-config': {
-          ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
-          support: true,
-        },
-      }),
       await mockTopAssetsLinea(mockServer),
       await mockGetQuoteInvalid(mockServer, options),
     ],
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: featureFlags,
+      },
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -631,6 +610,7 @@ export const getQuoteNegativeCasesFixtures = (
 
 export const getBridgeNegativeCasesFixtures = (
   options: { statusCode: number; json: unknown },
+  featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
@@ -643,16 +623,15 @@ export const getBridgeNegativeCasesFixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
-      await mockFeatureFlag(mockServer, {
-        'extension-config': {
-          ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
-          support: true,
-        },
-      }),
       await mockTopAssetsLinea(mockServer),
       await mockETHtoETH(mockServer),
       await mockGetTxStatusInvalid(mockServer, options),
     ],
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: featureFlags,
+      },
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -667,7 +646,10 @@ export const getBridgeNegativeCasesFixtures = (
   };
 };
 
-export const getInsufficientFundsFixtures = (title?: string) => {
+export const getInsufficientFundsFixtures = (
+  featureFlags: Partial<FeatureFlagResponse> = {},
+  title?: string,
+) => {
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
   })
@@ -678,15 +660,14 @@ export const getInsufficientFundsFixtures = (title?: string) => {
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
-      await mockFeatureFlag(mockServer, {
-        'extension-config': {
-          ...DEFAULT_BRIDGE_FEATURE_FLAGS['extension-config'],
-          support: true,
-        },
-      }),
       await mockTopAssetsLinea(mockServer),
       await mockETHtoWETH(mockServer),
     ],
+    manifestFlags: {
+      remoteFeatureFlags: {
+        bridgeConfig: featureFlags,
+      },
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -715,7 +696,6 @@ export const getBridgeL2Fixtures = (
   return {
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => [
-      await mockFeatureFlag(mockServer, featureFlags),
       await mockPortfolioPage(mockServer),
       await mockGetTxStatus(mockServer),
       await mockTopAssetsLinea(mockServer),

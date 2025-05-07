@@ -13,12 +13,16 @@ import {
   GET_QUOTE_INVALID_RESPONSE,
   FAILED_SOURCE_TRANSACTION,
   FAILED_DEST_TRANSACTION,
+  DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from './constants';
 
 describe('Bridge functionality', function (this: Suite) {
   it('should show that more funds are needed to execute the Bridge', async function () {
     await withFixtures(
-      getInsufficientFundsFixtures(this.test?.fullTitle()),
+      getInsufficientFundsFixtures(
+        DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
+        this.test?.fullTitle(),
+      ),
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
@@ -46,6 +50,7 @@ describe('Bridge functionality', function (this: Suite) {
           statusCode: 500,
           json: 'Internal server error',
         },
+        DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -67,6 +72,7 @@ describe('Bridge functionality', function (this: Suite) {
           statusCode: 200,
           json: [],
         },
+        DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -88,6 +94,7 @@ describe('Bridge functionality', function (this: Suite) {
           statusCode: 200,
           json: GET_QUOTE_INVALID_RESPONSE,
         },
+        DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -109,6 +116,7 @@ describe('Bridge functionality', function (this: Suite) {
           statusCode: 500,
           json: 'Internal server error',
         },
+        DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -133,7 +141,8 @@ describe('Bridge functionality', function (this: Suite) {
         {
           statusCode: 200,
           json: FAILED_SOURCE_TRANSACTION,
-        },
+          },
+        DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
@@ -161,6 +170,7 @@ describe('Bridge functionality', function (this: Suite) {
           statusCode: 200,
           json: FAILED_DEST_TRANSACTION,
         },
+        DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
         this.test?.fullTitle(),
       ),
       async ({ driver }) => {
