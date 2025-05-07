@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
-
 import { AccountListItemMenu } from '../account-list-item-menu';
 import { AvatarGroup } from '../avatar-group';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
@@ -38,7 +38,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY } from '../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -242,18 +242,27 @@ const AccountListItem = ({
     return isAggregatedFiatOverviewBalance;
   };
 
-  // TODO: This value is incorrect. If a single network is selected, we should be displaying the token balance for the native token of whichever chain we are on
-  // This value is incorrect for both evm and non-evm. We should also include test coverage for this case.
-  // const getPreferredCurrencyValue = () => {
-  //   let value;
-  //   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  //   value = account.balance;
-  //   ///: END:ONLY_INCLUDE_IF
-  //   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  //   value = isEvmNetwork ? account.balance : balanceToTranslate;
-  //   ///: END:ONLY_INCLUDE_IF
-  //   return value;
-  // };
+  if (account.balance === '0x01d6a931bf5431') {
+    console.log('account: ', account);
+  }
+  const getPreferredCurrencyValue = () => {
+    let value;
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    // console.log('multichainAggregatedBalance', multichainAggregatedBalance);
+    // if (account.balance === '0x01d6a931bf5431') {
+    //   const debug = new BigNumber(account.balance).toNumber();
+    // }
+    value = isEvmNetwork
+      ? new BigNumber(account.balance).toNumber()
+      : account.balance;
+    // console.log('build-multichain', isEvmNetwork, account.balance);
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+    // console.log('build-main', account.balance);
+    value = isEvmNetwork ? account.balance : balanceToTranslate;
+    ///: END:ONLY_INCLUDE_IF
+    return value;
+  };
 
   return (
     <Box
@@ -436,15 +445,17 @@ const AccountListItem = ({
                 textAlign={TextAlign.End}
                 as="div"
               >
-                {/* <UserPreferencedCurrencyDisplay
-                  account={account}
-                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={getPreferredCurrencyValue()}
-                  type={SECONDARY}
-                  showNative
-                  data-testid="second-currency-display"
-                  privacyMode={privacyMode}
-                /> */}
+                {!isEvmNetwork && (
+                  <UserPreferencedCurrencyDisplay
+                    account={account}
+                    ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                    value={getPreferredCurrencyValue()}
+                    type={SECONDARY}
+                    showNative
+                    data-testid="second-currency-display"
+                    privacyMode={privacyMode}
+                  />
+                )}
               </Text>
             </Box>
           )}
