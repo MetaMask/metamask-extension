@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  defaultGanacheOptions,
   withFixtures,
   openDapp,
   openMenuSafe,
@@ -119,9 +118,7 @@ const inputData = {
 };
 
 describe('Custom network', function () {
-  const chainID = '42161';
   const networkURL = 'https://arbitrum-mainnet.infura.io';
-  const networkNAME = 'Arbitrum One';
   const currencySYMBOL = 'ETH';
   const blockExplorerURL = 'https://explorer.arbitrum.io';
 
@@ -133,7 +130,6 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -369,13 +365,6 @@ describe('Custom network', function () {
             tag: 'button',
             text: 'Approve',
           });
-
-          const switchNetworkBtn = await driver.findElement({
-            tag: 'button',
-            text: 'Switch network',
-          });
-
-          await switchNetworkBtn.click();
         },
       );
     });
@@ -387,7 +376,6 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -447,7 +435,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -463,52 +450,29 @@ describe('Custom network', function () {
             text: 'Add',
           });
 
-          // verify network details
-          const title = await driver.findElement({
-            tag: 'span',
-            text: 'Arbitrum One',
-          });
-
-          assert.equal(
-            await title.getText(),
-            'Arbitrum One',
-            'Title of popup should be selected network',
-          );
-
-          const [networkName, networkUrl, chainIdElement, currencySymbol] =
-            await driver.findElements('.definition-list dd');
-
-          assert.equal(
-            await networkName.getText(),
-            networkNAME,
-            'Network name is not correctly displayed',
-          );
-          assert.equal(
-            await networkUrl.getText(),
-            networkURL,
-            'Network Url is not correctly displayed',
-          );
-          assert.equal(
-            await chainIdElement.getText(),
-            chainID.toString(),
-            'Chain Id is not correctly displayed',
+          const [currencySymbol, networkUrl] = await driver.findElements(
+            '.definition-list dd',
           );
           assert.equal(
             await currencySymbol.getText(),
             currencySYMBOL,
             'Currency symbol is not correctly displayed',
           );
+          assert.equal(
+            await networkUrl.getText(),
+            networkURL,
+            'Network Url is not correctly displayed',
+          );
 
-          await driver.clickElement({ tag: 'a', text: 'View all details' });
+          await driver.clickElement({ tag: 'a', text: 'See details' });
 
           const networkDetailsLabels = await driver.findElements('dd');
           assert.equal(
-            await networkDetailsLabels[8].getText(),
+            await networkDetailsLabels[4].getText(),
             blockExplorerURL,
             'Block Explorer URL is not correct',
           );
 
-          await driver.clickElement({ tag: 'button', text: 'Close' });
           await driver.clickElement({ tag: 'button', text: 'Approve' });
 
           // verify network switched
@@ -547,7 +511,6 @@ describe('Custom network', function () {
               selectedNetworkClientId: 'networkConfigurationId',
             })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -559,7 +522,7 @@ describe('Custom network', function () {
 
           // Go to Edit Menu
           const networkMenu = await driver.findElement(
-            '[data-testid="network-list-item-options-button-0xa4b1"]',
+            '[data-testid="network-list-item-options-button-eip155:42161"]',
           );
 
           await networkMenu.click();
@@ -607,7 +570,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
@@ -647,7 +609,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
@@ -682,7 +643,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
@@ -794,7 +754,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
@@ -894,7 +853,6 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },

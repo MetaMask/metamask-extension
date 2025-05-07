@@ -6,6 +6,7 @@ import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenListItem } from '../../token-list-item';
 import { AssetType } from '../../../../../shared/constants/transaction';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors/multichain';
 import Asset from './Asset';
 
 jest.mock('react-redux', () => ({
@@ -51,6 +52,10 @@ describe('Asset', () => {
         return mockState.getTokenList;
       } else if (selector === getIntlLocale) {
         return mockState.getIntlLocale;
+      } else if (selector === getMultichainNetworkConfigurationsByChainId) {
+        return {
+          '0x1': { networkName: 'Ethereum', iconUrl: 'network-icon-url' },
+        };
       }
       return undefined;
     });
@@ -69,17 +74,21 @@ describe('Asset', () => {
         balance="10000000000000000000"
         decimals={18}
         tooltipText="tooltip"
+        chainId="0x1"
       />,
     );
 
     expect(getByText('TokenListItem')).toBeInTheDocument();
     expect(TokenListItem).toHaveBeenCalledWith(
       expect.objectContaining({
-        tokenSymbol: 'WETH',
+        chainId: '0x1',
+        isPrimaryTokenSymbolHidden: true,
+        primary: '$10.10',
+        secondary: '10 WETH',
+        title: 'WETH',
+        tokenChainImage: './images/eth_logo.svg',
         tokenImage: 'token-icon-url',
-        primary: '10',
-        secondary: '$10.10',
-        title: 'Token',
+        tokenSymbol: 'WETH',
         tooltipText: 'tooltip',
       }),
       {},

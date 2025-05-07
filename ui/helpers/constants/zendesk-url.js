@@ -1,6 +1,10 @@
 const ZENDESK_URLS = {
+  ACCOUNT_UPGRADE:
+    'https://support.metamask.io/configure/accounts/what-is-a-smart-account',
   ADD_CUSTOM_TOKENS:
     'https://support.metamask.io/managing-my-tokens/custom-tokens/how-to-display-tokens-in-metamask/',
+  ADD_SOLANA_ACCOUNTS:
+    'https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts',
   ADD_MISSING_ACCOUNTS:
     'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-missing-accounts-after-restoring-with-secret-recovery-phrase/',
   BASIC_SAFETY:
@@ -8,6 +12,8 @@ const ZENDESK_URLS = {
   CUSTOMIZE_NONCE:
     'https://support.metamask.io/transactions-and-gas/transactions/how-to-customize-a-transaction-nonce/',
   GAS_FEES: 'https://support.metamask.io/transactions-and-gas/gas-fees/',
+  SWAPS_GAS_FEES:
+    'https://support.metamask.io/token-swaps/user-guide-swaps/#gas-fees',
   HARDWARE_CONNECTION:
     'https://support.metamask.io/privacy-and-security/hardware-wallet-hub/',
   IMPORT_ACCOUNTS:
@@ -47,6 +53,8 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/networks-and-sidechains/managing-networks/verifying-custom-network-information/',
   NETWORK_DEPRECATED:
     'https://support.metamask.io/networks-and-sidechains/eth-on-testnets/',
+  SOLANA_ACCOUNTS:
+    'https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts',
 };
 
 export default ZENDESK_URLS;

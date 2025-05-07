@@ -11,14 +11,15 @@ import { SignatureController } from '@metamask/signature-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
-  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+  LOADING_SECURITY_ALERT_RESPONSE,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import { AppStateController } from '../../controllers/app-state';
-import { SecurityAlertResponse } from './types';
+import { AppStateController } from '../../controllers/app-state-controller';
+import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
+import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 import {
-  getSecurityAlertsAPISupportedChainIds,
   isSecurityAlertsAPIEnabled,
   SecurityAlertsAPIRequest,
   validateWithSecurityAlertsAPI,
@@ -27,6 +28,8 @@ import {
 const { sentry } = global;
 
 const METHOD_SEND_TRANSACTION = 'eth_sendTransaction';
+export const METHOD_SIGN_TYPED_DATA_V3 = 'eth_signTypedData_v3';
+export const METHOD_SIGN_TYPED_DATA_V4 = 'eth_signTypedData_v4';
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
   result_type: BlockaidResultType.Errored,
@@ -37,18 +40,27 @@ type PPOMRequest = Omit<JsonRpcRequest, 'method' | 'params'> & {
   method: typeof METHOD_SEND_TRANSACTION;
   params: [TransactionParams];
 };
+
 export async function validateRequestWithPPOM({
   ppomController,
   request,
   securityAlertId,
   chainId,
+  updateSecurityAlertResponse: updateSecurityResponse,
 }: {
   ppomController: PPOMController;
   request: JsonRpcRequest;
   securityAlertId: string;
   chainId: Hex;
-}): Promise<SecurityAlertResponse> {
+  updateSecurityAlertResponse: UpdateSecurityAlertResponse;
+}) {
   try {
+    await updateSecurityResponse(
+      request.method,
+      securityAlertId,
+      LOADING_SECURITY_ALERT_RESPONSE,
+    );
+
     const normalizedRequest = normalizePPOMRequest(request);
 
     const ppomResponse = isSecurityAlertsAPIEnabled()
@@ -58,13 +70,13 @@ export async function validateRequestWithPPOM({
           normalizedRequest,
           chainId,
         );
-
-    return {
-      ...ppomResponse,
-      securityAlertId,
-    };
+    await updateSecurityResponse(request.method, securityAlertId, ppomResponse);
   } catch (error: unknown) {
-    return handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
+    await updateSecurityResponse(
+      request.method,
+      securityAlertId,
+      handlePPOMError(error, 'Error validating JSON RPC using PPOM: '),
+    );
   }
 }
 
@@ -97,45 +109,36 @@ export async function updateSecurityAlertResponse({
   );
 
   if (isSignatureRequest) {
-    appStateController.addSignatureSecurityAlertResponse(securityAlertResponse);
+    appStateController.addSignatureSecurityAlertResponse({
+      ...securityAlertResponse,
+      securityAlertId,
+    });
   } else {
-    transactionController.updateSecurityAlertResponse(
-      confirmation.id,
-      securityAlertResponse,
-    );
+    transactionController.updateSecurityAlertResponse(confirmation.id, {
+      ...securityAlertResponse,
+      securityAlertId,
+    } as SecurityAlertResponse);
   }
 }
 
 export function handlePPOMError(
   error: unknown,
   logMessage: string,
+  source: SecurityAlertSource = SecurityAlertSource.API,
 ): SecurityAlertResponse {
   const errorData = getErrorData(error);
   const description = getErrorMessage(error);
 
-  sentry?.captureException(error);
+  if (source === SecurityAlertSource.Local) {
+    sentry?.captureException(error);
+  }
   console.error(logMessage, errorData);
 
   return {
     ...SECURITY_ALERT_RESPONSE_ERROR,
     description,
+    source,
   };
-}
-
-export async function isChainSupported(chainId: Hex): Promise<boolean> {
-  let supportedChainIds = SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS;
-
-  try {
-    if (isSecurityAlertsAPIEnabled()) {
-      supportedChainIds = await getSecurityAlertsAPISupportedChainIds();
-    }
-  } catch (error: unknown) {
-    handlePPOMError(
-      error,
-      `Error fetching supported chains from security alerts API`,
-    );
-  }
-  return supportedChainIds.includes(chainId);
 }
 
 function normalizePPOMRequest(
@@ -146,7 +149,7 @@ function normalizePPOMRequest(
       request,
     )
   ) {
-    return request;
+    return sanitizeRequest(request);
   }
 
   const transactionParams = request.params[0];
@@ -156,6 +159,38 @@ function normalizePPOMRequest(
     ...request,
     params: [normalizedParams],
   };
+}
+
+function sanitizeRequest(request: JsonRpcRequest): JsonRpcRequest {
+  // This is a temporary fix to prevent a PPOM bypass
+  if (
+    request.method === METHOD_SIGN_TYPED_DATA_V4 ||
+    request.method === METHOD_SIGN_TYPED_DATA_V3
+  ) {
+    if (Array.isArray(request.params) && request.params[1]) {
+      const typedDataMessage = parseTypedDataMessage(
+        request.params[1].toString(),
+      );
+
+      const sanitizedMessageRecursively = sanitizeMessageRecursively(
+        typedDataMessage.message,
+        typedDataMessage.types,
+        typedDataMessage.primaryType,
+      );
+
+      return {
+        ...request,
+        params: [
+          request.params[0],
+          JSON.stringify({
+            ...typedDataMessage,
+            message: sanitizedMessageRecursively,
+          }),
+        ],
+      };
+    }
+  }
+  return request;
 }
 
 function getErrorMessage(error: unknown) {
@@ -194,6 +229,7 @@ async function findConfirmationBySecurityAlertId(
     } else {
       confirmation = transactionController.state.transactions.find(
         (meta) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (meta.securityAlertResponse as any)?.securityAlertId ===
           securityAlertId,
@@ -213,15 +249,23 @@ async function validateWithController(
   request: SecurityAlertsAPIRequest | JsonRpcRequest,
   chainId: string,
 ): Promise<SecurityAlertResponse> {
-  const response = (await ppomController.usePPOM(
-    (ppom: PPOM) => ppom.validateJsonRpc(request),
-    chainId,
-  )) as SecurityAlertResponse;
+  try {
+    const response = (await ppomController.usePPOM(
+      (ppom: PPOM) => ppom.validateJsonRpc(request),
+      chainId,
+    )) as SecurityAlertResponse;
 
-  return {
-    ...response,
-    source: SecurityAlertSource.Local,
-  };
+    return {
+      ...response,
+      source: SecurityAlertSource.Local,
+    };
+  } catch (error: unknown) {
+    return handlePPOMError(
+      error,
+      `Error validating request with PPOM controller`,
+      SecurityAlertSource.Local,
+    );
+  }
 }
 
 async function validateWithAPI(

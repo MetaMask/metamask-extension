@@ -1,16 +1,16 @@
 const { strict: assert } = require('assert');
+const { Browser } = require('selenium-webdriver');
 const {
   TEST_SEED_PHRASE_TWO,
-  defaultGanacheOptions,
-  withFixtures,
   locateAccountBalanceDOM,
+  logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
-  unlockWallet,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
-  it('Creating a new wallet @no-mmi', async function () {
+  it('Creating a new wallet', async function () {
     const driverOptions = { constrainWindowSize: true };
 
     await withFixtures(
@@ -21,14 +21,22 @@ describe('MetaMask Responsive UI', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          // metrics
+          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        }
+
         // agree to terms of use
         await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
         // welcome
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
-        // metrics
-        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          // metrics
+          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        }
 
         // create password
         await driver.fill(
@@ -72,10 +80,10 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="pin-extension-done"]');
         await driver.assertElementNotPresent('.loading-overlay__spinner');
         // assert balance
-        const balance = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
-        assert.ok(/^0\sETH$/u.test(await balance.getText()));
+        await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '0',
+        });
       },
     );
   });
@@ -89,15 +97,18 @@ describe('MetaMask Responsive UI', function () {
         driverOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await driver.navigate();
 
         // Import Secret Recovery Phrase
-        const restoreSeedLink = await driver.findClickableElement(
-          '.unlock-page__link',
-        );
-        assert.equal(await restoreSeedLink.getText(), 'Forgot password?');
-        await restoreSeedLink.click();
+        await driver.waitForSelector({
+          tag: 'p',
+          text: 'Localhost 8545',
+        });
+        await driver.clickElement({
+          css: '.unlock-page__link',
+          text: 'Forgot password?',
+        });
 
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
@@ -109,7 +120,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver);
       },
     );
   });
@@ -120,13 +131,10 @@ describe('MetaMask Responsive UI', function () {
       {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await driver.delay(1000);
+        await logInWithBalanceValidation(driver);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction
@@ -140,9 +148,13 @@ describe('MetaMask Responsive UI', function () {
 
         const inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
-
-        // confirming transcation
         await driver.clickElement({ text: 'Continue', tag: 'button' });
+
+        // wait for transaction value to be rendered and confirm
+        await driver.waitForSelector({
+          css: 'h2',
+          text: '1 ETH',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // finds the transaction in the transactions list

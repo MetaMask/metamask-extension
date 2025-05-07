@@ -1,5 +1,11 @@
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getEthAccounts,
+  getPermittedAccountsForScopes,
+  getPermittedEthChainIds,
+} from '@metamask/chain-agnostic-permission';
 import { createSelector } from 'reselect';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
 
 /**
  * This file contains selectors for PermissionController selector event
@@ -24,63 +30,131 @@ const getSubjects = (state) => state.subjects;
 export const getPermittedAccountsByOrigin = createSelector(
   getSubjects,
   (subjects) => {
-    return Object.values(subjects).reduce((originToAccountsMap, subject) => {
-      const caveats = subject.permissions?.eth_accounts?.caveats || [];
+    const originToAccountsMap = new Map();
+    Object.values(subjects).forEach((subject) => {
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
-      const caveat = caveats.find(
-        ({ type }) => type === CaveatTypes.restrictReturnedAccounts,
-      );
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
 
       if (caveat) {
-        originToAccountsMap.set(subject.origin, caveat.value);
+        const ethAccounts = getEthAccounts(caveat.value);
+        originToAccountsMap.set(subject.origin, ethAccounts);
       }
-      return originToAccountsMap;
-    }, new Map());
+    });
+    return originToAccountsMap;
   },
 );
 
 /**
- * Given the current and previous exposed accounts for each PermissionController
- * subject, returns a new map containing all accounts that have changed.
- * The values of each map must be immutable values directly from the
- * PermissionController state, or an empty array instantiated in this
- * function.
+ * Get the permitted accounts for the given scopes by origin
  *
- * @param {Map<string, string[]>} newAccountsMap - The new origin:accounts[] map.
- * @param {Map<string, string[]>} [previousAccountsMap] - The previous origin:accounts[] map.
- * @returns {Map<string, string[]>} The origin:accounts[] map of changed accounts.
+ * @param {Record<string, Record<string, unknown>>} state - The PermissionController state
+ * @param {string[]} scopes - The scopes to get the permitted accounts for
+ * @returns {Map<string, string[]>} A map of origins to permitted accounts for the given scopes
  */
-export const getChangedAccounts = (newAccountsMap, previousAccountsMap) => {
-  if (previousAccountsMap === undefined) {
-    return newAccountsMap;
-  }
+export const getPermittedAccountsForScopesByOrigin = createSelector(
+  getSubjects,
+  (_, scopes) => scopes,
+  (subjects, scopes) => {
+    const originToAccountsMap = new Map();
+    Object.values(subjects).forEach((subject) => {
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
-  const changedAccounts = new Map();
-  if (newAccountsMap === previousAccountsMap) {
-    return changedAccounts;
-  }
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
 
-  const newOrigins = new Set([...newAccountsMap.keys()]);
+      if (caveat) {
+        const scopeAccounts = getPermittedAccountsForScopes(
+          caveat.value,
+          scopes,
+        );
 
-  for (const origin of previousAccountsMap.keys()) {
-    const newAccounts = newAccountsMap.get(origin) ?? [];
+        if (scopeAccounts.length > 0) {
+          originToAccountsMap.set(subject.origin, scopeAccounts);
+        }
+      }
+    });
+    return originToAccountsMap;
+  },
+);
 
-    // The values of these maps are references to immutable values, which is why
-    // a strict equality check is enough for diffing. The values are either from
-    // PermissionController state, or an empty array initialized in the previous
-    // call to this function. `newAccountsMap` will never contain any empty
-    // arrays.
-    if (previousAccountsMap.get(origin) !== newAccounts) {
-      changedAccounts.set(origin, newAccounts);
-    }
+/**
+ * Get the origins with a given session property.
+ *
+ * @param state - The PermissionController state
+ * @param property - The property to check for
+ * @returns An object with keys of origins and values of session properties
+ */
+export const getOriginsWithSessionProperty = createSelector(
+  getSubjects,
+  (_, property) => property,
+  (subjects, property) => {
+    const result = {};
 
-    newOrigins.delete(origin);
-  }
+    Object.values(subjects).forEach((subject) => {
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
 
-  // By now, newOrigins is either empty or contains some number of previously
-  // unencountered origins, and all of their accounts have "changed".
-  for (const origin of newOrigins.keys()) {
-    changedAccounts.set(origin, newAccountsMap.get(origin));
-  }
-  return changedAccounts;
-};
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+      const sessionProperty = caveat?.value?.sessionProperties?.[property];
+      if (sessionProperty !== undefined) {
+        result[subject.origin] = sessionProperty;
+      }
+    });
+
+    return result;
+  },
+);
+
+/**
+ * Get the authorized CAIP-25 scopes for each subject, keyed by origin.
+ * The values of the returned map are immutable values from the
+ * PermissionController state.
+ *
+ * @returns {Map<string, Caip25Authorization>} The current origin:authorization map.
+ */
+export const getAuthorizedScopesByOrigin = createSelector(
+  getSubjects,
+  (subjects) => {
+    return Object.values(subjects).reduce(
+      (originToAuthorizationsMap, subject) => {
+        const caveats =
+          subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
+
+        const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+
+        if (caveat) {
+          originToAuthorizationsMap.set(subject.origin, caveat.value);
+        }
+        return originToAuthorizationsMap;
+      },
+      new Map(),
+    );
+  },
+);
+
+/**
+ * Get the permitted chains for each subject, keyed by origin.
+ * The values of the returned map are immutable values from the
+ * PermissionController state.
+ *
+ * @returns {Map<string, string[]>} The current origin:chainIds[] map.
+ */
+export const getPermittedChainsByOrigin = createSelector(
+  getSubjects,
+  (subjects) => {
+    return Object.values(subjects).reduce((originToChainsMap, subject) => {
+      const caveats =
+        subject.permissions?.[Caip25EndowmentPermissionName]?.caveats || [];
+
+      const caveat = caveats.find(({ type }) => type === Caip25CaveatType);
+
+      if (caveat) {
+        const ethChainIds = getPermittedEthChainIds(caveat.value);
+        originToChainsMap.set(subject.origin, ethChainIds);
+      }
+      return originToChainsMap;
+    }, new Map());
+  },
+);

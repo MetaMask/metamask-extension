@@ -7,4 +7,22 @@
   right: 0;
   bottom: 0;
   z-index: design-system.$modal-z-index;
+  opacity: 1;
+
+  // Don't animate for users who have reduced motion preferences
+  @media (prefers-reduced-motion: no-preference) {
+    animation: modal-overlay-fade-in 250ms linear forwards;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes modal-overlay-fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
 }

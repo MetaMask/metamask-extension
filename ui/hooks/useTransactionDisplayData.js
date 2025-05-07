@@ -4,10 +4,13 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import BigNumber from 'bignumber.js';
 import {
-  getDetectedTokensInCurrentNetwork,
+  getAllDetectedTokens,
+  getAllTokens,
   getKnownMethodData,
-  getTokenList,
+  getSelectedAddress,
+  selectERC20TokensByChain,
 } from '../selectors/selectors';
 import {
   getStatusKey,
@@ -30,11 +33,16 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
-import { getNfts, getTokens } from '../ducks/metamask/metamask';
+import { getNfts } from '../ducks/metamask/metamask';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
+import { selectBridgeHistoryForAccount } from '../ducks/bridge-status/selectors';
+import { useBridgeTokenDisplayData } from '../pages/bridge/hooks/useBridgeTokenDisplayData';
+import { formatAmount } from '../pages/confirmations/components/simulation-details/formatAmount';
+import { getIntlLocale } from '../ducks/locale/locale';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -43,6 +51,7 @@ import { useTokenDisplayValue } from './useTokenDisplayValue';
 import { useTokenData } from './useTokenData';
 import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
+import useBridgeChainInfo from './bridge/useBridgeChainInfo';
 
 /**
  *  There are seven types of transaction entries that are currently differentiated in the design:
@@ -79,6 +88,10 @@ const signatureTypes = [
  * @property {boolean} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
  * @property {string} title - the primary title of the tx that will be displayed in the activity list
  * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
+ * @property {string} date - the formatted date of the transaction
+ * @property {string} displayedStatusKey - the key representing the displayed status of the transaction
+ * @property {boolean} isPending - indicates if the transaction is pending
+ * @property {boolean} isSubmitted - indicates if the transaction has been submitted
  */
 
 /**
@@ -96,12 +109,25 @@ export function useTransactionDisplayData(transactionGroup) {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
   const dispatch = useDispatch();
+  const locale = useSelector(getIntlLocale);
   const currentAsset = useCurrentAsset();
-  const knownTokens = useSelector(getTokens);
+  const knownTokens = useSelector(getAllTokens);
+  const selectedAddress = useSelector(getSelectedAddress);
   const knownNfts = useSelector(getNfts);
-  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const tokenList = useSelector(getTokenList);
+  const allDetectedTokens = useSelector(getAllDetectedTokens);
+  const tokenListAllChains = useSelector(selectERC20TokensByChain);
+
   const t = useI18nContext();
+
+  // Bridge data
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+  const srcTxMetaId = transactionGroup.initialTransaction.id;
+  const bridgeHistoryItem = bridgeHistory[srcTxMetaId];
+  const { destNetwork } = useBridgeChainInfo({
+    bridgeHistoryItem,
+    srcTxMeta: transactionGroup.initialTransaction,
+  });
+  const destChainName = NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork?.chainId];
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
@@ -141,13 +167,18 @@ export function useTransactionDisplayData(transactionGroup) {
 
   if (isTokenCategory) {
     token =
-      knownTokens.find(({ address }) =>
+      knownTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
+        selectedAddress
+      ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
       ) ||
-      detectedTokens.find(({ address }) =>
+      allDetectedTokens?.[transactionGroup?.initialTransaction?.chainId]?.[
+        selectedAddress
+      ]?.find(({ address }) =>
         isEqualCaseInsensitive(address, recipientAddress),
       ) ||
-      tokenList[recipientAddress.toLowerCase()];
+      tokenListAllChains?.[transactionGroup?.initialTransaction?.chainId]
+        ?.data?.[recipientAddress.toLowerCase()];
   }
   useEffect(() => {
     return () => {
@@ -241,6 +272,8 @@ export function useTransactionDisplayData(transactionGroup) {
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
 
+  const bridgeTokenDisplayData = useBridgeTokenDisplayData(transactionGroup);
+
   if (signatureTypes.includes(type)) {
     category = TransactionGroupCategory.signatureRequest;
     title = t('signatureRequest');
@@ -308,9 +341,13 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodSetApprovalForAll) {
+    const isRevoke = !tokenData?.args?.[1];
+
     category = TransactionGroupCategory.approval;
     prefix = '';
-    title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
+    title = isRevoke
+      ? t('revokePermissionTitle', [token?.symbol || nft?.name || t('token')])
+      : t('setApprovalForAllTitle', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.tokenMethodIncreaseAllowance) {
@@ -319,7 +356,11 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('approveIncreaseAllowance', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (type === TransactionType.contractInteraction) {
+  } else if (
+    type === TransactionType.contractInteraction ||
+    type === TransactionType.batch ||
+    type === TransactionType.revokeDelegation
+  ) {
     category = TransactionGroupCategory.interaction;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =
@@ -357,6 +398,22 @@ export function useTransactionDisplayData(transactionGroup) {
     category = TransactionGroupCategory.send;
     title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
+  } else if (type === TransactionType.bridgeApproval) {
+    title = t('bridgeApproval');
+    category = TransactionGroupCategory.approval;
+    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+  } else if (type === TransactionType.bridge) {
+    title = destChainName ? t('bridgeToChain', [destChainName]) : t('bridge');
+    category = bridgeTokenDisplayData.category;
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+    primaryDisplayValue = formatAmount(
+      locale,
+      new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
+    );
+    secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
   } else {
     dispatch(
       captureSingleException(
@@ -365,22 +422,34 @@ export function useTransactionDisplayData(transactionGroup) {
     );
   }
 
-  const primaryCurrencyPreferences = useUserPreferencedCurrency(PRIMARY);
+  const primaryCurrencyPreferences = useUserPreferencedCurrency(
+    PRIMARY,
+    {},
+    transactionGroup?.initialTransaction?.chainId,
+  );
   const secondaryCurrencyPreferences = useUserPreferencedCurrency(SECONDARY);
 
-  const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: primaryDisplayValue,
-    suffix: primarySuffix,
-    ...primaryCurrencyPreferences,
-  });
+  const [primaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: primaryDisplayValue,
+      suffix: primarySuffix,
+      ...primaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
-  const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
-    prefix,
-    displayValue: secondaryDisplayValue,
-    hideLabel: isTokenCategory || Boolean(swapTokenValue),
-    ...secondaryCurrencyPreferences,
-  });
+  const [secondaryCurrency] = useCurrencyDisplay(
+    primaryValue,
+    {
+      prefix,
+      displayValue: secondaryDisplayValue,
+      hideLabel: isTokenCategory || Boolean(swapTokenValue),
+      ...secondaryCurrencyPreferences,
+    },
+    transactionGroup?.initialTransaction?.chainId,
+  );
 
   return {
     title,
@@ -395,7 +464,8 @@ export function useTransactionDisplayData(transactionGroup) {
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
       ([TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
-        !swapTokenFiatAmount)
+        !swapTokenFiatAmount) ||
+      (type === TransactionType.bridge && !secondaryDisplayValue)
         ? undefined
         : secondaryCurrency,
     displayedStatusKey,

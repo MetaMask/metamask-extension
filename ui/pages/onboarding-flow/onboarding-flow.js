@@ -15,20 +15,18 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI_ONBOARDING_COMPLETION_ROUTE,
-  SRP_REMINDER,
-  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../ducks/metamask/metamask';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
-  setOnboardingDate,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRouteAfterUnlock } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -42,10 +40,8 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import OnboardingSuccessful from '../institutional/onboarding-successful/onboarding-successful';
-import { RemindSRP } from '../institutional/remind-srp/remind-srp';
-///: END:ONLY_INCLUDE_IF
+import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
+import { getHDEntropyIndex } from '../../selectors/selectors';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -66,20 +62,41 @@ export default function OnboardingFlow() {
   const { pathname, search } = useLocation();
   const history = useHistory();
   const t = useI18nContext();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
+  const isUnlocked = useSelector(getIsUnlocked);
 
   useEffect(() => {
-    dispatch(setOnboardingDate());
-  }, [dispatch]);
+    setOnboardingDate();
+  }, []);
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
       history.push(DEFAULT_ROUTE);
     }
   }, [history, completedOnboarding, isFromReminder]);
+
+  useEffect(() => {
+    if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
+      const needsSRP = [
+        ONBOARDING_REVIEW_SRP_ROUTE,
+        ONBOARDING_CONFIRM_SRP_ROUTE,
+      ].some((route) => pathname.startsWith(route));
+
+      if (needsSRP) {
+        history.push(ONBOARDING_UNLOCK_ROUTE);
+      }
+    }
+  }, [
+    isUnlocked,
+    completedOnboarding,
+    secretRecoveryPhrase,
+    pathname,
+    history,
+  ]);
 
   const handleCreateNewAccount = async (password) => {
     const newSecretRecoveryPhrase = await dispatch(
@@ -169,22 +186,6 @@ export default function OnboardingFlow() {
             path={ONBOARDING_COMPLETION_ROUTE}
             component={CreationSuccessful}
           />
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          }
-          <Route
-            path={MMI_ONBOARDING_COMPLETION_ROUTE}
-            component={OnboardingSuccessful}
-          />
-          <Route
-            path={SRP_REMINDER}
-            render={() => (
-              <RemindSRP secretRecoveryPhrase={secretRecoveryPhrase} />
-            )}
-          />
-          {
-            ///: END:ONLY_INCLUDE_IF
-          }
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
             component={OnboardingWelcome}
@@ -228,6 +229,7 @@ export default function OnboardingFlow() {
                 text: t('followUsOnTwitter'),
                 location: MetaMetricsEventName.OnboardingWalletCreationComplete,
                 url: TWITTER_URL,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
           }}
@@ -239,4 +241,8 @@ export default function OnboardingFlow() {
       )}
     </div>
   );
+}
+
+function setOnboardingDate() {
+  submitRequestToBackgroundAndCatch('setOnboardingDate');
 }

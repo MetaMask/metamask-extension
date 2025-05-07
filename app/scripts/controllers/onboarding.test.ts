@@ -1,18 +1,18 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingController, {
   getDefaultOnboardingControllerState,
 } from './onboarding';
 
 function setupController(): OnboardingController {
-  const controllerMessenger = new ControllerMessenger();
-  const messenger = controllerMessenger.getRestricted({
+  const messenger = new Messenger();
+  const onboardingControllerMessenger = messenger.getRestricted({
     name: 'OnboardingController',
     allowedActions: [],
     allowedEvents: [],
   });
   const onboardingController = new OnboardingController({
-    messenger,
+    messenger: onboardingControllerMessenger,
     state: getDefaultOnboardingControllerState(),
   });
   return onboardingController;

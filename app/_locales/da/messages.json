@@ -254,9 +254,6 @@
   "from": {
     "message": "Fra"
   },
-  "functionType": {
-    "message": "Funktionstype"
-  },
   "gasLimit": {
     "message": "Gas-grænse"
   },
@@ -312,9 +309,6 @@
   "import": {
     "message": "Importer",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importer konto"
   },
   "importAccountMsg": {
     "message": "Importerede konti vil ikke blive forbundet med din oprindeligt oprettede seed-sætning for din MetaMask-konto. Få mere at vide om importerede konti"
@@ -375,9 +369,6 @@
   "loading": {
     "message": "Indlæser..."
   },
-  "loadingTokens": {
-    "message": "Indlæser tokens..."
-  },
   "lock": {
     "message": "Log ud"
   },
@@ -434,9 +425,6 @@
   "noConversionRateAvailable": {
     "message": "Ingen tilgængelig omregningskurs"
   },
-  "noTransactions": {
-    "message": "Du har ingen transaktioner"
-  },
   "noWebcamFound": {
     "message": "Din computers webkamera blev ikke fundet. Prøv venligst igen."
   },
@@ -457,9 +445,6 @@
   },
   "on": {
     "message": "Til"
-  },
-  "parameters": {
-    "message": "Parametre"
   },
   "participateInMetaMetrics": {
     "message": "Deltag i MetaMetrics"
@@ -488,12 +473,6 @@
   },
   "prev": {
     "message": "Forrige"
-  },
-  "primaryCurrencySetting": {
-    "message": "Primær Valuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Vælg lokal for fortrinsvis at vise værdier i kædens (f.eks. ETH) lokale valuta. Vælg Fiat for fortrinsvis at vise værdier i din valgte fiat valuta."
   },
   "privacyMsg": {
     "message": "Privatlivspolitik"
@@ -534,9 +513,6 @@
   },
   "removeAccountDescription": {
     "message": "Denne konto fjernes fra din pung. Sikr dig venligst, at du har den originale seedfrase eller private nøgle til denne importerede konto, inden du fortsætter. Du kan importere eller skabe konti igen via kontomenuen."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "forespørgsler der afventer anerkendelse"
   },
   "required": {
     "message": "Nødvendig"
@@ -601,9 +577,6 @@
   },
   "showHexDataDescription": {
     "message": "Vælg dette for at vise hex-datafeltet på send-skærmen"
-  },
-  "sigRequest": {
-    "message": "Signaturforespørgsel"
   },
   "sign": {
     "message": "Underskriv"
@@ -692,9 +665,6 @@
   "transactionErrored": {
     "message": "Transaktionen stødte på en fejl."
   },
-  "transactionFee": {
-    "message": "Transaktionsgebyr"
-  },
   "transactionResubmitted": {
     "message": "Transaktion genindsendt med brændstofgebyr forøget til $1 på $2"
   },
@@ -722,9 +692,6 @@
   "unknown": {
     "message": "ukendt"
   },
-  "unknownNetwork": {
-    "message": "Ukendt privat netværk"
-  },
   "unknownQrCode": {
     "message": "Fejl: Vi kunne ikke identificere QR-koden"
   },
@@ -733,9 +700,6 @@
   },
   "unlockMessage": {
     "message": "Det decentraliserede internet venter"
-  },
-  "updatedWithDate": {
-    "message": "Opdaterede $1"
   },
   "urlErrorMsg": {
     "message": "Links kræver det rette HTTP/HTTPS-præfix."
@@ -757,9 +721,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du skal tillade kameraadgang for at bruge denne funktion."
-  },
-  "youSign": {
-    "message": "Du skriver under"
   },
   "yourPrivateSeedPhrase": {
     "message": "Din private seed-sætning"

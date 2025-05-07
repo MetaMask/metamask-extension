@@ -1,36 +1,737 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Info renders info section for approve request 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__simulation_section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Estimated changes
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-11"
+              class=""
+              data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          You're giving someone else permission to withdraw NFTs from your account.
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Withdraw
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box"
+        style="margin-left: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              data-testid="simulation-token-value"
+            >
+              #0.0001
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <div
+              class="name name__clickable name__missing"
+            >
+              <span
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+              <p
+                class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              >
+                0x07614...3ad68
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__approve-details"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation__approve-spender"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Spender
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-8"
+              class=""
+              data-original-title="This is the address that will be able to withdraw your NFTs."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="confirmation__approve-spender-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0x2e0D7...5d09B
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="transaction-details-origin-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-9"
+              class=""
+              data-original-title="This is the site asking for your confirmation."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-origin-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="gas-fee-section"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="edit-gas-fees-row"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              Network fee
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-10"
+                class=""
+                data-original-title="Amount paid to process the transaction on network."
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="edit-gas-fees-row-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            data-testid="edit-gas-fee-icon"
+            style="text-decoration: none;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/edit.svg');"
+            />
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+            />
+          </button>
+          <p
+            class="mm-box mm-text mm-text--body-md"
+            data-testid="native-currency"
+          >
+            $0.08
+          </p>
+          <div
+            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            data-testid="selected-gas-fee-token"
+            style="cursor: default; padding-inline-end: 6px;"
+          >
+            <div
+              class="mm-box"
+              data-testid="native-icon"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+              >
+                E
+              </div>
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              ETH
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          data-testid="gas-fee-token-fee"
+        >
+           
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="gas-fee-details-speed"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Speed
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+          >
+            🦊 Market
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            <span
+              data-testid="gas-timing-time"
+            >
+              ~
+              0 sec
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Info renders info section for contract interaction request 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-md"
+  >
+    <div
+      class="mm-box simulation-details-layout mm-box--padding-3 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--rounded-lg mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      data-testid="simulation-details-layout"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <div
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; padding-left: 0px; padding-right: 0px;"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Estimated changes
+              </p>
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-3"
+                  class=""
+                  data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+                  data-tooltipped=""
+                  style="display: flex;"
+                  tabindex="0"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                    style="mask-image: url('./images/icons/question.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          role="progressbar"
+        >
+          <svg
+            class="preloader__icon"
+            fill="none"
+            height="20"
+            viewBox="0 0 16 16"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
+              fill="var(--color-primary-muted)"
+              fill-rule="evenodd"
+            />
+            <mask
+              height="16"
+              id="mask0"
+              mask-type="alpha"
+              maskUnits="userSpaceOnUse"
+              width="16"
+              x="0"
+              y="0"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
+                fill="var(--color-primary-default)"
+                fill-rule="evenodd"
+              />
+            </mask>
+            <g
+              mask="url(#mask0)"
+            >
+              <path
+                d="M6.85718 17.9999V11.4285V8.28564H-4.85711V17.9999H6.85718Z"
+                fill="var(--color-primary-default)"
+              />
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="transaction-details-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="transaction-details-origin-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-4"
+              class=""
+              data-original-title="This is the site asking for your confirmation."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-origin-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="transaction-details-recipient-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Interacting with
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-5"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-recipient-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0x88AA6...A5125
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="gas-fee-section"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="edit-gas-fees-row"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              Network fee
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-6"
+                class=""
+                data-original-title="Amount paid to process the transaction on network."
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="edit-gas-fees-row-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            data-testid="edit-gas-fee-icon"
+            style="text-decoration: none;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/edit.svg');"
+            />
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+            />
+          </button>
+          <p
+            class="mm-box mm-text mm-text--body-md"
+            data-testid="native-currency"
+          >
+            $0.04
+          </p>
+          <div
+            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            data-testid="selected-gas-fee-token"
+            style="cursor: default; padding-inline-end: 6px;"
+          >
+            <div
+              class="mm-box"
+              data-testid="native-icon"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+              >
+                E
+              </div>
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              ETH
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          data-testid="gas-fee-token-fee"
+        >
+           
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="gas-fee-details-speed"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Speed
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+          >
+            🦊 Market
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            <span
+              data-testid="gas-timing-time"
+            >
+              ~
+              0 sec
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Info renders info section for personal sign request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Request from
-        </p>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-1"
-            class=""
-            data-original-title="This is the site asking for your signature."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-1"
+              class=""
+              data-original-title="This is the site asking for your signature."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -49,18 +750,42 @@ exports[`Info renders info section for personal sign request 1`] = `
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <button
+        aria-label="collapse-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        data-testid="sectionCollapseButton"
+        style="cursor: pointer; position: absolute; right: 8px;"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/collapse.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Message
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Message
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -77,37 +802,400 @@ exports[`Info renders info section for personal sign request 1`] = `
 </div>
 `;
 
-exports[`Info renders info section for typed sign request 1`] = `
+exports[`Info renders info section for setApprovalForAll request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__simulation_section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Estimated changes
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-12"
+              class=""
+              data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          You're giving permission for someone else to withdraw NFTs from your account.
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Withdrawing
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box"
+        style="margin-left: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              data-testid="simulation-token-value"
+            >
+              All
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex"
+          >
+            <div
+              class="name name__clickable name__missing"
+            >
+              <span
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+              <p
+                class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              >
+                0x07614...3ad68
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation__approve-details"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="confirmation__approve-spender"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Permission for
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-13"
+              class=""
+              data-original-title="This is the address that will be able to withdraw your NFTs."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="confirmation__approve-spender-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0x2e0D7...5d09B
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="transaction-details-origin-row"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-        style="align-items: center;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-14"
+              class=""
+              data-original-title="This is the site asking for your confirmation."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                data-testid="transaction-details-origin-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
       >
         <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         >
-          Request from
+          metamask.github.io
         </p>
-        <div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="gas-fee-section"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+    >
+      <div
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+        data-testid="edit-gas-fees-row"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        >
           <div
-            aria-describedby="tippy-tooltip-2"
-            class=""
-            data-original-title="This is the site asking for your signature."
-            data-tooltipped=""
-            style="display: flex;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            >
+              Network fee
+            </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-15"
+                class=""
+                data-original-title="Amount paid to process the transaction on network."
+                data-tooltipped=""
+                style="display: flex;"
+                tabindex="0"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  data-testid="edit-gas-fees-row-tooltip"
+                  style="mask-image: url('./images/icons/question.svg');"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--text-align-center"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            data-testid="edit-gas-fee-icon"
+            style="text-decoration: none;"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-              style="mask-image: url('./images/icons/question.svg');"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/edit.svg');"
             />
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+            />
+          </button>
+          <p
+            class="mm-box mm-text mm-text--body-md"
+            data-testid="native-currency"
+          >
+            $0.08
+          </p>
+          <div
+            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            data-testid="selected-gas-fee-token"
+            style="cursor: default; padding-inline-end: 6px;"
+          >
+            <div
+              class="mm-box"
+              data-testid="native-icon"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-full"
+              >
+                E
+              </div>
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              ETH
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          data-testid="gas-fee-token-fee"
+        >
+           
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="gas-fee-details-speed"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Speed
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+          >
+            🦊 Market
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            <span
+              data-testid="gas-timing-time"
+            >
+              ~
+              0 sec
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Info renders info section for typed sign request 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_request-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-2"
+              class=""
+              data-original-title="This is the site asking for your signature."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -122,111 +1210,95 @@ exports[`Info renders info section for typed sign request 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Interacting with
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Interacting with
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          class="mm-box mm-box--display-flex"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class="name name__clickable name__missing"
           >
-            <div
-              class="mm-avatar-account__jazzicon"
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#FB1891"
-                    height="16"
-                    transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F90901"
-                    height="16"
-                    transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26A02"
-                    height="16"
-                    transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+              0xCcCCc...ccccC
+            </p>
           </div>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            data-testid="confirm-info-row-display-name"
-          >
-            0xCcCCc...ccccC
-          </p>
         </div>
       </div>
     </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    data-testid="confirmation_message-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-        style="align-items: center;"
+      <button
+        aria-label="copy-button"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/copy.svg');"
+        />
+      </button>
+      <div
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
-          Message
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Message
+          </p>
+        </div>
       </div>
       <div
         class="mm-box mm-box--width-full"
       >
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-            style="align-items: center;"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+            <div
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
-              Primary type:
-            </p>
+              <p
+                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              >
+                Primary type:
+              </p>
+            </div>
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -247,18 +1319,22 @@ exports[`Info renders info section for typed sign request 1`] = `
             class="mm-box mm-box--width-full"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-contents-index-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  Contents:
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    Contents:
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -272,35 +1348,43 @@ exports[`Info renders info section for typed sign request 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-from-index-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  From:
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    From:
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--width-full"
               >
                 <div
-                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-name-index-0"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      Name:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Name:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -314,235 +1398,143 @@ exports[`Info renders info section for typed sign request 1`] = `
                   </div>
                 </div>
                 <div
-                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-wallets-index-1"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      Wallets:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Wallets:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--width-full"
                   >
                     <div
-                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-0-index-0"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          0:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            0:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          class="mm-box mm-box--display-flex"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class="name name__clickable name__missing"
                           >
-                            <div
-                              class="mm-avatar-account__jazzicon"
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              <div
-                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(35, 98, 225);"
-                              >
-                                <svg
-                                  height="16"
-                                  width="16"
-                                  x="0"
-                                  y="0"
-                                >
-                                  <rect
-                                    fill="#FA7900"
-                                    height="16"
-                                    transform="translate(-0.1251869550000172 -0.18581992328639055) rotate(237.8 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#034F5E"
-                                    height="16"
-                                    transform="translate(5.484089776243406 -5.806818790918918) rotate(321.2 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#FB185C"
-                                    height="16"
-                                    transform="translate(4.337646399293827 10.83159092527544) rotate(190.8 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
+                              0xCD2a3...DD826
+                            </p>
                           </div>
-                          <p
-                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                            data-testid="confirm-info-row-display-name"
-                          >
-                            0xCD2a3...DD826
-                          </p>
                         </div>
                       </div>
                     </div>
                     <div
-                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-1-index-1"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          1:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            1:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          class="mm-box mm-box--display-flex"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class="name name__clickable name__missing"
                           >
-                            <div
-                              class="mm-avatar-account__jazzicon"
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              <div
-                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 183, 242);"
-                              >
-                                <svg
-                                  height="16"
-                                  width="16"
-                                  x="0"
-                                  y="0"
-                                >
-                                  <rect
-                                    fill="#F91E01"
-                                    height="16"
-                                    transform="translate(-3.031601448459508 1.44638157917772) rotate(179.5 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#FA5300"
-                                    height="16"
-                                    transform="translate(0.001001577275992914 -7.592133809870717) rotate(370.7 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#F5A300"
-                                    height="16"
-                                    transform="translate(-9.667744843805323 10.267175012988094) rotate(298.9 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
+                              0xDeaDb...DbeeF
+                            </p>
                           </div>
-                          <p
-                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                            data-testid="confirm-info-row-display-name"
-                          >
-                            0xDeaDb...DbeeF
-                          </p>
                         </div>
                       </div>
                     </div>
                     <div
-                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-2-index-2"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          2:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            2:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                          class="mm-box mm-box--display-flex"
                         >
                           <div
-                            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            class="name name__clickable name__missing"
                           >
-                            <div
-                              class="mm-avatar-account__jazzicon"
+                            <span
+                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              style="mask-image: url('./images/icons/question.svg');"
+                            />
+                            <p
+                              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              <div
-                                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 143, 0);"
-                              >
-                                <svg
-                                  height="16"
-                                  width="16"
-                                  x="0"
-                                  y="0"
-                                >
-                                  <rect
-                                    fill="#FA3E00"
-                                    height="16"
-                                    transform="translate(2.1189727229825075 3.7201589705667972) rotate(163.6 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#018E74"
-                                    height="16"
-                                    transform="translate(-3.5064720430845115 9.598091001429925) rotate(205.4 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                  <rect
-                                    fill="#238FE1"
-                                    height="16"
-                                    transform="translate(-5.001213401730692 12.04822844354251) rotate(286.5 8 8)"
-                                    width="16"
-                                    x="0"
-                                    y="0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
+                              0x06195...43896
+                            </p>
                           </div>
-                          <p
-                            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                            data-testid="confirm-info-row-display-name"
-                          >
-                            0x06195...43896
-                          </p>
                         </div>
                       </div>
                     </div>
@@ -551,52 +1543,64 @@ exports[`Info renders info section for typed sign request 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              data-testid="confirmation_data-to-index-2"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                style="align-items: center;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                <div
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                 >
-                  To:
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                  >
+                    To:
+                  </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--width-full"
               >
                 <div
-                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  data-testid="confirmation_data-0-index-0"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                    style="align-items: center;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
-                      0:
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        0:
+                      </p>
+                    </div>
                   </div>
                   <div
                     class="mm-box mm-box--width-full"
                   >
                     <div
-                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-name-index-0"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Name:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Name:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
@@ -610,235 +1614,143 @@ exports[`Info renders info section for typed sign request 1`] = `
                       </div>
                     </div>
                     <div
-                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                      data-testid="confirmation_data-wallets-index-1"
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                        style="align-items: center;"
                       >
-                        <p
-                          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                        <div
+                          class="mm-box mm-box--display-flex mm-box--align-items-center"
                         >
-                          Wallets:
-                        </p>
+                          <p
+                            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                          >
+                            Wallets:
+                          </p>
+                        </div>
                       </div>
                       <div
                         class="mm-box mm-box--width-full"
                       >
                         <div
-                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-0-index-0"
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              0:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                0:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              class="mm-box mm-box--display-flex"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class="name name__clickable name__missing"
                               >
-                                <div
-                                  class="mm-avatar-account__jazzicon"
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  <div
-                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(242, 162, 2);"
-                                  >
-                                    <svg
-                                      height="16"
-                                      width="16"
-                                      x="0"
-                                      y="0"
-                                    >
-                                      <rect
-                                        fill="#C8144A"
-                                        height="16"
-                                        transform="translate(3.3716958087807476 -1.5355449411453455) rotate(359.3 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#01878E"
-                                        height="16"
-                                        transform="translate(-4.56026532072257 -4.118767169186573) rotate(335.8 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#1897F2"
-                                        height="16"
-                                        transform="translate(-12.66850392914138 2.191919563316492) rotate(275.0 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
+                                  0xbBbBB...bBBbB
+                                </p>
                               </div>
-                              <p
-                                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                data-testid="confirm-info-row-display-name"
-                              >
-                                0xbBbBB...bBBbB
-                              </p>
                             </div>
                           </div>
                         </div>
                         <div
-                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-1-index-1"
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              1:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                1:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              class="mm-box mm-box--display-flex"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class="name name__clickable name__missing"
                               >
-                                <div
-                                  class="mm-avatar-account__jazzicon"
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  <div
-                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 54, 0);"
-                                  >
-                                    <svg
-                                      height="16"
-                                      width="16"
-                                      x="0"
-                                      y="0"
-                                    >
-                                      <rect
-                                        fill="#2395E1"
-                                        height="16"
-                                        transform="translate(-1.7353143855136905 0.5115867848025443) rotate(191.9 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#F90101"
-                                        height="16"
-                                        transform="translate(1.7169232764557802 -9.276715881533601) rotate(319.8 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#F58700"
-                                        height="16"
-                                        transform="translate(9.91414735179574 5.139720751783702) rotate(180.7 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
+                                  0xB0Bda...bEa57
+                                </p>
                               </div>
-                              <p
-                                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                data-testid="confirm-info-row-display-name"
-                              >
-                                0xB0Bda...bEa57
-                              </p>
                             </div>
                           </div>
                         </div>
                         <div
-                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                          data-testid="confirmation_data-2-index-2"
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-                            style="align-items: center;"
                           >
-                            <p
-                              class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                            <div
+                              class="mm-box mm-box--display-flex mm-box--align-items-center"
                             >
-                              2:
-                            </p>
+                              <p
+                                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                              >
+                                2:
+                              </p>
+                            </div>
                           </div>
                           <div
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                              class="mm-box mm-box--display-flex"
                             >
                               <div
-                                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                                class="name name__clickable name__missing"
                               >
-                                <div
-                                  class="mm-avatar-account__jazzicon"
+                                <span
+                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  style="mask-image: url('./images/icons/question.svg');"
+                                />
+                                <p
+                                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  <div
-                                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(200, 20, 86);"
-                                  >
-                                    <svg
-                                      height="16"
-                                      width="16"
-                                      x="0"
-                                      y="0"
-                                    >
-                                      <rect
-                                        fill="#018E8C"
-                                        height="16"
-                                        transform="translate(3.988074950687866 0.3554940504644344) rotate(177.8 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#F29202"
-                                        height="16"
-                                        transform="translate(-7.220928666254465 -2.4813555582770794) rotate(334.6 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                      <rect
-                                        fill="#236FE1"
-                                        height="16"
-                                        transform="translate(14.621768557060026 -6.282465882779628) rotate(456.1 8 8)"
-                                        width="16"
-                                        x="0"
-                                        y="0"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
+                                  0xB0B0b...00000
+                                </p>
                               </div>
-                              <p
-                                class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-                                data-testid="confirm-info-row-display-name"
-                              >
-                                0xB0B0b...00000
-                              </p>
                             </div>
                           </div>
                         </div>

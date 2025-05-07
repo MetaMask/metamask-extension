@@ -1,11 +1,17 @@
-import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { Severity } from '../../../../helpers/constants/design-system';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import * as useAlertsModule from '../../../../hooks/useAlerts';
+import {
+  BlockaidReason,
+  SecurityProvider,
+} from '../../../../../shared/constants/security-provider';
 import mockState from '../../../../../test/data/mock-state.json';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../helpers/constants/design-system';
+import * as useAlertsModule from '../../../../hooks/useAlerts';
+import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import { AlertModal } from './alert-modal';
 
 const onProcessActionMock = jest.fn();
@@ -25,6 +31,16 @@ jest.mock('../contexts/alertMetricsContext', () => ({
     trackAlertActionClicked: mockTrackAlertActionClicked,
     trackInlineAlertClicked: jest.fn(),
     trackAlertRender: mockTrackAlertRender,
+  })),
+}));
+
+jest.mock('../../../../pages/confirmations/context/confirm', () => ({
+  useConfirmContext: jest.fn(() => ({
+    currentConfirmation: {
+      securityAlertResponse: {
+        reason: '',
+      },
+    },
   })),
 }));
 
@@ -147,11 +163,14 @@ describe('AlertModal', () => {
 
   it('sets the alert as confirmed when checkbox is called', () => {
     const setAlertConfirmedMock = jest.fn();
+    const dangerAlertMock = alertsMock.find(
+      (alert) => alert.key === DATA_ALERT_KEY_MOCK,
+    );
     const useAlertsSpy = jest.spyOn(useAlertsModule, 'default');
     const newMockStore = configureMockStore([])({
       ...STATE_MOCK,
       confirmAlerts: {
-        alerts: { [OWNER_ID_MOCK]: [alertsMock[1]] },
+        alerts: { [OWNER_ID_MOCK]: [dangerAlertMock] },
         confirmed: {
           [OWNER_ID_MOCK]: {
             [DATA_ALERT_KEY_MOCK]: false,
@@ -162,10 +181,10 @@ describe('AlertModal', () => {
 
     (useAlertsSpy as jest.Mock).mockReturnValue({
       setAlertConfirmed: setAlertConfirmedMock,
-      alerts: [alertsMock[1]],
+      alerts: [dangerAlertMock],
       generalAlerts: [],
-      fieldAlerts: [alertsMock[1]],
-      getFieldAlerts: () => [],
+      fieldAlerts: [dangerAlertMock],
+      getFieldAlerts: () => [dangerAlertMock],
       isAlertConfirmed: () => false,
     });
     const { getByTestId } = renderWithProvider(
@@ -233,11 +252,11 @@ describe('AlertModal', () => {
       );
 
       expect(queryByTestId('alert-modal-acknowledge-checkbox')).toBeNull();
-      expect(queryByTestId('alert-modal-button')).toBeNull();
+      expect(queryByTestId('alert-modal-button')).toBeInTheDocument();
       expect(getByText(ACTION_LABEL_MOCK)).toBeInTheDocument();
     });
 
-    it('renders acknowledge button and checkbox for non-blocking alerts', () => {
+    it('renders checkbox for non-blocking alerts', () => {
       const { getByTestId } = renderWithProvider(
         <AlertModal
           ownerId={OWNER_ID_MOCK}
@@ -287,6 +306,133 @@ describe('AlertModal', () => {
       expect(mockTrackAlertActionClicked).toHaveBeenCalledWith(
         CONTRACT_ALERT_KEY_MOCK,
       );
+    });
+  });
+
+  describe('BlockaidAlertDetails', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    const blockaidAlertMock: Alert = {
+      key: FROM_ALERT_KEY_MOCK,
+      field: FROM_ALERT_KEY_MOCK,
+      severity: Severity.Warning,
+      message: ALERT_MESSAGE_MOCK,
+      provider: SecurityProvider.Blockaid,
+      reason: 'Reason 1',
+    };
+
+    const blockaidStateMock = {
+      ...STATE_MOCK,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: [blockaidAlertMock] },
+        confirmed: {
+          [OWNER_ID_MOCK]: {
+            [FROM_ALERT_KEY_MOCK]: false,
+          },
+        },
+      },
+    };
+    const blockaidMockStore = configureMockStore([])(blockaidStateMock);
+
+    const testCases = [
+      {
+        reason: BlockaidReason.rawSignatureFarming,
+        expectedKey: 'blockaidAlertDescriptionOthers',
+      },
+      {
+        reason: BlockaidReason.approvalFarming,
+        expectedKey: 'blockaidAlertDescriptionWithdraw',
+      },
+      {
+        reason: BlockaidReason.setApprovalForAll,
+        expectedKey: 'blockaidAlertDescriptionWithdraw',
+      },
+      {
+        reason: BlockaidReason.permitFarming,
+        expectedKey: 'blockaidAlertDescriptionWithdraw',
+      },
+      {
+        reason: BlockaidReason.transferFarming,
+        expectedKey: 'blockaidAlertDescriptionTokenTransfer',
+      },
+      {
+        reason: BlockaidReason.transferFromFarming,
+        expectedKey: 'blockaidAlertDescriptionTokenTransfer',
+      },
+      {
+        reason: BlockaidReason.rawNativeTokenTransfer,
+        expectedKey: 'blockaidAlertDescriptionTokenTransfer',
+      },
+      {
+        reason: BlockaidReason.seaportFarming,
+        expectedKey: 'blockaidAlertDescriptionOpenSea',
+      },
+      {
+        reason: BlockaidReason.blurFarming,
+        expectedKey: 'blockaidAlertDescriptionBlur',
+      },
+      {
+        reason: BlockaidReason.maliciousDomain,
+        expectedKey: 'blockaidAlertDescriptionMalicious',
+      },
+      {
+        reason: BlockaidReason.tradeOrderFarming,
+        expectedKey: 'blockaidAlertDescriptionOthers',
+      },
+      {
+        reason: BlockaidReason.other,
+        expectedKey: 'blockaidAlertDescriptionOthers',
+      },
+      {
+        reason: 'unknown reason',
+        expectedKey: 'blockaidAlertDescriptionOthers',
+      },
+    ];
+
+    testCases.forEach(({ reason, expectedKey }) => {
+      it(`displays correct message for ${reason}`, () => {
+        (useConfirmContext as jest.Mock).mockImplementation(() => ({
+          currentConfirmation: {
+            securityAlertResponse: {
+              reason,
+            },
+          },
+        }));
+
+        const { getByText } = renderWithProvider(
+          <AlertModal
+            ownerId={OWNER_ID_MOCK}
+            onAcknowledgeClick={onAcknowledgeClickMock}
+            onClose={onCloseMock}
+            alertKey={FROM_ALERT_KEY_MOCK}
+          />,
+          blockaidMockStore,
+        );
+
+        expect(getByText(tEn(expectedKey) as string)).toBeInTheDocument();
+      });
+    });
+
+    it('handles undefined securityAlertResponse', () => {
+      (useConfirmContext as jest.Mock).mockImplementation(() => ({
+        currentConfirmation: {},
+      }));
+
+      const { getByText } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={FROM_ALERT_KEY_MOCK}
+        />,
+        blockaidMockStore,
+      );
+
+      expect(
+        getByText(tEn('blockaidAlertDescriptionOthers') as string),
+      ).toBeInTheDocument();
     });
   });
 });

@@ -5,47 +5,53 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/prefe
 import { getPreferences } from '../../../selectors';
 import {
   backupUserData,
-  displayWarning,
   setAutoLockTimeLimit,
   setDismissSeedBackUpReminder,
+  setDismissSmartAccountSuggestionEnabled,
   setFeatureFlag,
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
-  setSmartTransactionsOptInStatus,
-  setUseNonceField,
+  setSmartTransactionsPreferenceEnabled,
   showModal,
+  setManageInstitutionalWallets,
 } from '../../../store/actions';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+import {
+  displayErrorInSettings,
+  hideErrorInSettings,
+} from '../../../ducks/app/app';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
   const {
-    appState: { warning },
+    appState: { errorInSettings },
     metamask,
   } = state;
   const {
     featureFlags: { sendHexData } = {},
-    useNonceField,
     dismissSeedBackUpReminder,
+    manageInstitutionalWallets,
   } = metamask;
   const {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
-    smartTransactionsOptInStatus,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
+    dismissSmartAccountSuggestionEnabled,
   } = getPreferences(state);
 
   return {
-    warning,
+    errorInSettings,
     sendHexData,
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
-    smartTransactionsOptInStatus,
+    smartTransactionsEnabled: getSmartTransactionsPreferenceEnabled(state),
     autoLockTimeLimit,
-    useNonceField,
     dismissSeedBackUpReminder,
+    manageInstitutionalWallets,
+    dismissSmartAccountSuggestionEnabled,
   };
 };
 
@@ -54,10 +60,11 @@ export const mapDispatchToProps = (dispatch) => {
     backupUserData: () => backupUserData(),
     setHexDataFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('sendHexData', shouldShow)),
-    displayWarning: (warning) => dispatch(displayWarning(warning)),
+    displayErrorInSettings: (errorInSettings) =>
+      dispatch(displayErrorInSettings(errorInSettings)),
+    hideErrorInSettings: () => dispatch(hideErrorInSettings()),
     showResetAccountConfirmationModal: () =>
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));
     },
@@ -67,14 +74,20 @@ export const mapDispatchToProps = (dispatch) => {
     setShowExtensionInFullSizeView: (value) => {
       return dispatch(setShowExtensionInFullSizeView(value));
     },
-    setSmartTransactionsOptInStatus: (value) => {
-      return dispatch(setSmartTransactionsOptInStatus(value));
+    setSmartTransactionsEnabled: (value) => {
+      return dispatch(setSmartTransactionsPreferenceEnabled(value));
     },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
+    },
+    setManageInstitutionalWallets: (value) => {
+      return dispatch(setManageInstitutionalWallets(value));
+    },
+    setDismissSmartAccountSuggestionEnabled: (value) => {
+      return dispatch(setDismissSmartAccountSuggestionEnabled(value));
     },
   };
 };

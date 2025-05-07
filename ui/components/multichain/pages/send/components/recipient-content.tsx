@@ -52,7 +52,9 @@ import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
-import { SendHexData, SendPageRow, QuoteCard } from '.';
+import { SendPageRow } from './send-page-row';
+import { QuoteCard } from './quote-card';
+import { SendHexData } from './hex';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
@@ -72,12 +74,6 @@ export const SendPageRecipientContent = ({
     isSwapQuoteLoading,
   } = useSelector(getCurrentDraftTransaction);
 
-  let isSwapAllowed;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isSwapAllowed = false;
-  ///: END:ONLY_INCLUDE_IF
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBasicFunctionality = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
@@ -95,11 +91,11 @@ export const SendPageRecipientContent = ({
   const ipfsGateway = useSelector(getIpfsGateway);
 
   const nftImageURL = useGetAssetImageUrl(
-    sendAsset.details?.image ?? null,
+    sendAsset.details?.image ?? undefined,
     ipfsGateway,
   );
 
-  isSwapAllowed =
+  const isSwapAllowed =
     isSwapsChain &&
     !isSwapAndSendDisabledForNetwork &&
     [AssetType.token, AssetType.native].includes(sendAsset.type) &&
@@ -165,6 +161,7 @@ export const SendPageRecipientContent = ({
       <SendPageRow>
         <AssetPickerAmount
           header={t('sendSelectReceiveAsset')}
+          action="receive"
           asset={isSwapAllowed ? receiveAsset : sendAsset}
           sendingAsset={
             isSwapAllowed &&
@@ -177,6 +174,8 @@ export const SendPageRecipientContent = ({
                     (nftImageURL ||
                       tokenList[sendAsset.details.address?.toLowerCase()]
                         ?.iconUrl),
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               symbol: sendAsset?.details?.symbol || nativeCurrencySymbol,
             }
           }

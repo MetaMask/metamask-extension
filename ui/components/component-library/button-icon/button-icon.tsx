@@ -10,9 +10,8 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { Box, Icon } from '..';
-import { IconSize } from '../icon';
-import { BoxProps, PolymorphicRef } from '../box';
+import { Box, BoxProps, PolymorphicRef } from '../box';
+import { Icon, IconSize } from '../icon';
 import {
   ButtonIconSize,
   ButtonIconProps,
@@ -41,6 +40,8 @@ export const ButtonIcon: ButtonIconComponent = React.forwardRef(
     }: ButtonIconProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const tag = href ? 'a' : as || 'button';
     const isDisabled = disabled && tag === 'button';
     return (

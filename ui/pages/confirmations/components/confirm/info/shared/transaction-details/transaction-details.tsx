@@ -1,7 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -16,6 +17,19 @@ import { selectPaymasterAddress } from '../../../../../../../selectors/account-a
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useFourByte } from '../../hooks/useFourByte';
+import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+import { PRIMARY } from '../../../../../../../helpers/constants/common';
+import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
+import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
+import {
+  useIsDowngradeTransaction,
+  useIsUpgradeTransaction,
+} from '../../hooks/useIsUpgradeTransaction';
+import { HEX_ZERO } from '../constants';
+import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch } from '../../utils';
+import { NetworkRow } from '../network-row/network-row';
+import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
+import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -41,32 +55,49 @@ export const OriginRow = () => {
   );
 };
 
-export const RecipientRow = () => {
+export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const isDowngrade = useIsDowngradeTransaction();
+  const { nestedTransactions, txParams, chainId, id } =
+    currentConfirmation ?? {};
+  const { from, to: txTo } = txParams ?? {};
+  const to = recipient ?? txTo;
 
-  if (
-    !currentConfirmation?.txParams?.to ||
-    !isValidAddress(currentConfirmation?.txParams?.to ?? '')
-  ) {
+  const isBatch =
+    isBatchTransaction(nestedTransactions) &&
+    to?.toLowerCase() === from.toLowerCase();
+  const showContractLogo = isBatch || isDowngrade || isUpgradeOnly;
+
+  if (!to || !isValidAddress(to)) {
     return null;
   }
 
   return (
-    <ConfirmInfoRow
+    <ConfirmInfoAlertRow
+      ownerId={id}
+      alertKey={RowAlertKey.InteractingWith}
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      <ConfirmInfoRowAddress address={currentConfirmation.txParams.to} />
-    </ConfirmInfoRow>
+      {showContractLogo ? (
+        <SmartContractWithLogo />
+      ) : (
+        <ConfirmInfoRowAddress address={to} chainId={chainId} />
+      )}
+    </ConfirmInfoAlertRow>
   );
 };
 
 export const MethodDataRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const methodData = useFourByte(currentConfirmation);
+  const { txParams } = currentConfirmation ?? {};
+  const to = txParams?.to as Hex | undefined;
+  const data = txParams?.data as Hex | undefined;
+  const methodData = useFourByte({ to, data });
 
   if (!methodData?.name) {
     return null;
@@ -83,13 +114,37 @@ export const MethodDataRow = () => {
   );
 };
 
+const AmountRow = () => {
+  const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currency } = useUserPreferencedCurrency(PRIMARY);
+
+  const value = currentConfirmation?.txParams?.value;
+
+  if (!value || value === HEX_ZERO) {
+    return null;
+  }
+
+  return (
+    <ConfirmInfoSection>
+      <ConfirmInfoRow
+        data-testid="transaction-details-amount-row"
+        label={t('amount')}
+      >
+        <ConfirmInfoRowCurrency value={value} currency={currency} />
+      </ConfirmInfoRow>
+    </ConfirmInfoSection>
+  );
+};
+
 const PaymasterRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const { id: userOperationId } = currentConfirmation ?? {};
+  const { id: userOperationId, chainId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const paymasterAddress = useSelector((state: any) =>
     selectPaymasterAddress(state, userOperationId as string),
@@ -106,7 +161,7 @@ const PaymasterRow = () => {
         label={t('confirmFieldPaymaster')}
         tooltip={t('confirmFieldTooltipPaymaster')}
       >
-        <ConfirmInfoRowAddress address={paymasterAddress} />
+        <ConfirmInfoRowAddress address={paymasterAddress} chainId={chainId} />
       </ConfirmInfoRow>
     </ConfirmInfoSection>
   );
@@ -116,14 +171,36 @@ export const TransactionDetails = () => {
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const hasValueAndNativeBalanceMismatch = useMemo(
+    () => checkValueAndNativeBalanceMismatch(currentConfirmation),
+    [currentConfirmation],
+  );
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const isDowngrade = useIsDowngradeTransaction();
+
+  if (isUpgradeOnly || isDowngrade) {
+    return null;
+  }
+  const { nestedTransactions, txParams } = currentConfirmation ?? {};
+  const { from, to } = txParams ?? {};
+
+  const isBatch =
+    isBatchTransaction(nestedTransactions) &&
+    to?.toLowerCase() === from.toLowerCase();
 
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
+        <NetworkRow isShownWithAlertsOnly />
         <OriginRow />
-        <RecipientRow />
+        {!isBatch && <RecipientRow />}
         {showAdvancedDetails && <MethodDataRow />}
+        <SigningInWithRow />
       </ConfirmInfoSection>
+      {(showAdvancedDetails || hasValueAndNativeBalanceMismatch) && (
+        <AmountRow />
+      )}
       <PaymasterRow />
     </>
   );

@@ -1,20 +1,17 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  useEnableProfileSyncing,
-  useDisableProfileSyncing,
-  useSetIsProfileSyncingEnabled,
-} from '../../../../hooks/metamask-notifications/useProfileSyncing';
+import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import {
-  selectIsProfileSyncingEnabled,
-  selectIsProfileSyncingUpdateLoading,
-} from '../../../../selectors/metamask-notifications/profile-syncing';
+  selectIsBackupAndSyncEnabled,
+  selectIsBackupAndSyncUpdateLoading,
+} from '../../../../selectors/identity/backup-and-sync';
 import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
 import { showModal } from '../../../../store/actions';
 import { Box, Text } from '../../../../components/component-library';
@@ -29,50 +26,34 @@ import {
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import { getUseExternalServices } from '../../../../selectors';
 
-function ProfileSyncBasicFunctionalitySetting() {
-  const basicFunctionality: boolean = useSelector(getUseExternalServices);
-  const { setIsProfileSyncingEnabled } = useSetIsProfileSyncingEnabled();
-
-  // Effect - toggle profile syncing off when basic functionality is off
-  useEffect(() => {
-    if (basicFunctionality === false) {
-      setIsProfileSyncingEnabled(false);
-    }
-  }, [basicFunctionality, setIsProfileSyncingEnabled]);
-
-  return {
-    isProfileSyncDisabled: !basicFunctionality,
-  };
-}
-
 const ProfileSyncToggle = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { enableProfileSyncing, error: enableProfileSyncingError } =
-    useEnableProfileSyncing();
-  const { disableProfileSyncing, error: disableProfileSyncingError } =
-    useDisableProfileSyncing();
+  const basicFunctionality: boolean = useSelector(getUseExternalServices);
+  const { error, setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
 
-  const { isProfileSyncDisabled } = ProfileSyncBasicFunctionalitySetting();
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const error = enableProfileSyncingError || disableProfileSyncingError;
-
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const isProfileSyncingUpdateLoading = useSelector(
-    selectIsProfileSyncingUpdateLoading,
+  const isBackupAndSyncUpdateLoading = useSelector(
+    selectIsBackupAndSyncUpdateLoading,
   );
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
 
-  const handleUseProfileSync = async () => {
-    if (isProfileSyncingEnabled) {
+  useEffect(() => {
+    if (basicFunctionality === false) {
+      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
+    }
+  }, [basicFunctionality, setIsBackupAndSyncFeatureEnabled]);
+
+  const handleProfileSyncToggleSetValue = async () => {
+    if (isBackupAndSyncEnabled) {
       dispatch(
         showModal({
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
           turnOffProfileSyncing: () => {
-            disableProfileSyncing();
             trackEvent({
               category: MetaMetricsEventCategory.Settings,
               event: MetaMetricsEventName.SettingsUpdated,
@@ -84,11 +65,14 @@ const ProfileSyncToggle = () => {
                 was_notifications_on: isMetamaskNotificationsEnabled,
               },
             });
+            setIsBackupAndSyncFeatureEnabled(
+              BACKUPANDSYNC_FEATURES.main,
+              false,
+            );
           },
         }),
       );
     } else {
-      await enableProfileSyncing();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
@@ -100,6 +84,7 @@ const ProfileSyncToggle = () => {
           was_notifications_on: isMetamaskNotificationsEnabled,
         },
       });
+      await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);
     }
   };
 
@@ -133,18 +118,18 @@ const ProfileSyncToggle = () => {
           </div>
         </div>
 
-        {isProfileSyncingUpdateLoading && (
+        {isBackupAndSyncUpdateLoading && (
           <Box paddingLeft={5} paddingRight={5}>
             <Preloader size={36} />
           </Box>
         )}
 
-        {!isProfileSyncingUpdateLoading && (
+        {!isBackupAndSyncUpdateLoading && (
           <div className="settings-page__content-item-col">
             <ToggleButton
-              disabled={isProfileSyncDisabled}
-              value={isProfileSyncingEnabled}
-              onToggle={handleUseProfileSync}
+              disabled={!basicFunctionality}
+              value={isBackupAndSyncEnabled}
+              onToggle={handleProfileSyncToggleSetValue}
               offLabel={t('off')}
               onLabel={t('on')}
               dataTestId="toggleButton"

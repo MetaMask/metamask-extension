@@ -39,7 +39,7 @@ const AdvancedGasFeeGasLimit = () => {
   const [gasLimitError, setGasLimitError] = useState();
 
   const updateGasLimit = (value) => {
-    setGasLimit(value);
+    setGasLimit(value || 0);
   };
 
   useEffect(() => {

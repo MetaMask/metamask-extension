@@ -11,20 +11,31 @@ import {
 import Preloader from '../../components/ui/icon/preloader/preloader-icon.component';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
 import { NotificationsListItem } from './notifications-list-item';
-import { NotificationType, TAB_KEYS } from './notifications';
+import type { Notification } from './notifications';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
 
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
-  notifications: NotificationType[];
+  notifications: Notification[];
   isLoading: boolean;
   isError: boolean;
   notificationsCount: number;
 };
+
+// NOTE - Tab filters could change once we support more notifications.
+export const enum TAB_KEYS {
+  // Shows all notifications
+  ALL = 'notifications-all-tab',
+
+  // These are only on-chain notifications (no snaps or feature announcements)
+  WALLET = 'notifications-wallet-tab',
+
+  // These are 3rd party notifications (snaps, feature announcements, web3 alerts)
+  WEB3 = 'notifications-other-tab',
+}
 
 function LoadingContent() {
   return (
@@ -62,12 +73,8 @@ function ErrorContent() {
   );
 }
 
-function NotificationItem(props: { notification: NotificationType }) {
+function NotificationItem(props: { notification: Notification }) {
   const { notification } = props;
-  if (notification.type === 'SNAP') {
-    return <SnapComponent snapNotification={notification} />;
-  }
-
   return <NotificationsListItem notification={notification} />;
 }
 

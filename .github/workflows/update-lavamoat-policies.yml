@@ -58,8 +58,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -77,8 +80,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
       - name: Update LavaMoat build policy
         run: yarn lavamoat:build:auto
       - name: Cache build policy
@@ -106,8 +112,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
       - name: Restore build policy
         uses: actions/cache/restore@v4
         with:
@@ -175,7 +184,7 @@ jobs:
           path: lavamoat/browserify/flask
           key: cache-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
-      - name: Restore mmi application policy
+      - name: Restore MMI application policy
         uses: actions/cache/restore@v4
         with:
           path: lavamoat/browserify/mmi
@@ -197,11 +206,33 @@ jobs:
           git config --global user.email 'metamaskbot@users.noreply.github.com'
           git commit -am "Update LavaMoat policies"
           git push
+      ## Yes, it would be nice to use the local diff before the commit is made, but we need to include potential multiple updates in the history of the PR
+      - name: Compare policy changes
+        run: |
+          if [[ $HAS_CHANGES == 'true' ]]
+          then
+            git fetch origin ${{ github.base_ref }}
+            main_diff=$(git diff origin/${{ github.base_ref }} lavamoat/browserify/main/policy.json | md5sum | cut -d' ' -f1)
+            for folder in lavamoat/browserify/*/; do
+              if [ "$folder" != "lavamoat/browserify/main/" ]; then
+                file="${folder}policy.json"
+                if [ -f "$file" ]; then
+                  diff=$(git diff origin/${{ github.base_ref }} "$file" | md5sum | cut -d' ' -f1)
+                  if [ "$diff" = "$main_diff" ]; then
+                    echo "✅ ${folder}policy.json changes match main/policy.json policy changes"
+                  else
+                    echo "👀 ${folder}policy.json changes **differ from** main/policy.json policy changes"
+                  fi
+                fi
+              fi
+            done > does_diff_diff.txt
+          fi
+      ## Note the use of `cat -` to include the file contents and the echo in the comment
       - name: Post comment
         run: |
           if [[ $HAS_CHANGES == 'true' ]]
           then
-            gh pr comment "${PR_NUMBER}" --body 'Policies updated'
+            echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n🧠 Learn how: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt |  gh pr comment "${PR_NUMBER}" --body-file -
           else
             gh pr comment "${PR_NUMBER}" --body 'No policy changes'
           fi
@@ -242,4 +273,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
-          ACTION_RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'

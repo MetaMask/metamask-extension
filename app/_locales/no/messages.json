@@ -251,9 +251,6 @@
   "from": {
     "message": "Fra "
   },
-  "functionType": {
-    "message": "Funksjonstype "
-  },
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
@@ -306,9 +303,6 @@
   "import": {
     "message": "Importer",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importér konto"
   },
   "importAccountMsg": {
     "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for MetaMask-kontoen din. Finn ut mer om importerte kontoer"
@@ -368,9 +362,6 @@
   },
   "loading": {
     "message": "Laster inn ..."
-  },
-  "loadingTokens": {
-    "message": "Laster tokener ..."
   },
   "localhost": {
     "message": "Lokalvert 8545"
@@ -434,9 +425,6 @@
   "noConversionRateAvailable": {
     "message": "Ingen konverteringsrate tilgjengelig "
   },
-  "noTransactions": {
-    "message": "Du har ingen transaksjoner"
-  },
   "noWebcamFound": {
     "message": "Datamaskinens webkamera ble ikke funnet. Vennligst prøv igjen."
   },
@@ -460,9 +448,6 @@
   },
   "origin": {
     "message": "Opprinnelse"
-  },
-  "parameters": {
-    "message": "Parametre"
   },
   "participateInMetaMetrics": {
     "message": "Delta i MetaMetrics "
@@ -491,12 +476,6 @@
   },
   "prev": {
     "message": "Tidligere"
-  },
-  "primaryCurrencySetting": {
-    "message": "Hovedvaluta "
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Velg nasjonal for å prioritere å vise verdier i nasjonal valuta i kjeden (f.eks. ETH). Velg Fiat for å prioritere visning av verdier i den valgte fiat-valutaen."
   },
   "privacyMsg": {
     "message": "Personvernerklæring"
@@ -537,9 +516,6 @@
   },
   "removeAccountDescription": {
     "message": "Denne kontoen blir fjernet fra lommeboken din. Forsikre deg om at du har den originale mnemoniske gjenopprettingsfrasen eller den private nøkkelen for denne importerte kontoen før du fortsetter. Du kan importere eller opprette kontoer igjen fra nedtrekksmenyen."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "forespørsler venter på godkjenning"
   },
   "required": {
     "message": "Påkrevd "
@@ -604,9 +580,6 @@
   },
   "showHexDataDescription": {
     "message": "Velg dette for å vise hex-datafeltet på sendskjermen"
-  },
-  "sigRequest": {
-    "message": "Signaturforespørsel "
   },
   "sign": {
     "message": "Undertegn"
@@ -698,9 +671,6 @@
   "transactionErrored": {
     "message": "Det oppsto en feil under transaksjonen."
   },
-  "transactionFee": {
-    "message": "Transaksjonsavgift"
-  },
   "transactionResubmitted": {
     "message": "Transaksjonen som ble sendt inn igjen med bensinavgift økte til $1 på $2"
   },
@@ -728,9 +698,6 @@
   "unknown": {
     "message": "Ukjent"
   },
-  "unknownNetwork": {
-    "message": "Ukjent privat nettverk"
-  },
   "unknownQrCode": {
     "message": "Feil: Vi kunne ikke gjenkjenne denne QR-koden"
   },
@@ -739,9 +706,6 @@
   },
   "unlockMessage": {
     "message": "Det desentraliserte internett venter deg"
-  },
-  "updatedWithDate": {
-    "message": "Oppdatert $1"
   },
   "urlErrorMsg": {
     "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."
@@ -763,9 +727,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du må gi kameratilgang for å bruke denne funksjonen."
-  },
-  "youSign": {
-    "message": "Du signerer"
   },
   "yourPrivateSeedPhrase": {
     "message": "Din private frøfrase"

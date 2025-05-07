@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
-import Box from '../box';
+import { Box } from '../../component-library';
 import {
   BackgroundColor,
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { detectNfts } from '../../../store/actions';
 
 const Tabs = ({
   defaultActiveTabKey,
   onTabClick,
   children,
-  tabsClassName,
-  subHeader,
+  tabsClassName = '',
+  subHeader = null,
+  tabListProps = {},
+  tabContentProps = {},
+  ...props
 }) => {
   // This ignores any 'null' child elements that are a result of a conditional
   // based on a feature flag setting.
   const _getValidChildren = () => {
     return React.Children.toArray(children).filter(Boolean);
   };
-  const dispatch = useDispatch();
 
   /**
    * Returns the index of the child with the given key
@@ -44,10 +44,6 @@ const Tabs = ({
       setActiveTabIndex(tabIndex);
       onTabClick?.(tabKey);
     }
-
-    if (tabKey === 'nfts') {
-      dispatch(detectNfts());
-    }
   };
 
   const renderTabs = () => {
@@ -55,12 +51,14 @@ const Tabs = ({
 
     return React.Children.map(_getValidChildren(), (child, index) => {
       const tabKey = child?.props.tabKey;
+      const isSingleTab = numberOfTabs === 1;
       return (
         child &&
         React.cloneElement(child, {
           onClick: (idx) => handleTabClick(idx, tabKey),
           tabIndex: index,
           isActive: numberOfTabs > 1 && index === activeTabIndex,
+          isSingleTab,
         })
       );
     });
@@ -81,19 +79,29 @@ const Tabs = ({
   };
 
   return (
-    <Box className="tabs">
+    <Box className="tabs" {...props}>
       <Box
         as="ul"
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.flexStart}
         backgroundColor={BackgroundColor.backgroundDefault}
-        className={classnames('tabs__list', tabsClassName)}
-        gap={1}
+        gap={0}
+        {...tabListProps}
+        className={classnames(
+          'tabs__list',
+          tabsClassName,
+          tabListProps.className,
+        )}
       >
         {renderTabs()}
       </Box>
       {subHeader}
-      <Box className="tabs__content">{renderActiveTabContent()}</Box>
+      <Box
+        {...tabContentProps}
+        className={classnames('tabs__content', tabContentProps.className)}
+      >
+        {renderActiveTabContent()}
+      </Box>
     </Box>
   );
 };
@@ -105,4 +113,6 @@ Tabs.propTypes = {
   children: PropTypes.node.isRequired,
   tabsClassName: PropTypes.string,
   subHeader: PropTypes.node,
+  tabListProps: PropTypes.object,
+  tabContentProps: PropTypes.object,
 };

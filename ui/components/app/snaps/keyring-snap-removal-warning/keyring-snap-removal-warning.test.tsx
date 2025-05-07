@@ -6,6 +6,8 @@ import userEvent from '@testing-library/user-event';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../../app/_locales/en/messages.json';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 
@@ -41,7 +43,7 @@ const defaultArgs = {
 };
 
 describe('Keyring Snap Remove Warning', () => {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let store: any;
   beforeAll(() => {

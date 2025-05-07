@@ -87,10 +87,6 @@
   "failed": {
     "message": "विफल"
   },
-  "fiat": {
-    "message": "FIAT एक्सचेंज टाइप",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "फ़ाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
@@ -120,9 +116,6 @@
   "import": {
     "message": "आयात",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "खाता आयात"
   },
   "importAccountMsg": {
     "message": "आयात किए गए खाते आपके मूल रूप से बनाए गए मेटामास्क अकाउंट सीडफ्रेज से संबद्ध नहीं होंगे। आयात किए गए खातों के बारे में और जानें"
@@ -155,9 +148,6 @@
   },
   "loading": {
     "message": "लोड हो रहा है ....."
-  },
-  "loadingTokens": {
-    "message": "टोकन लोड हो रहा है ....."
   },
   "localhost": {
     "message": "स्थानीयहोस्ट 8545"
@@ -199,9 +189,6 @@
   },
   "next": {
     "message": "अगला"
-  },
-  "noTransactions": {
-    "message": "कोई लेन-देन नहीं"
   },
   "pastePrivateKey": {
     "message": "यहां अपनी निजी कुंजी स्ट्रिंग चिपकाएं:",
@@ -260,9 +247,6 @@
   "settings": {
     "message": "सेटिंग्स"
   },
-  "sigRequest": {
-    "message": "हस्ताक्षर अनुरोध"
-  },
   "sign": {
     "message": "हस्ताक्षर"
   },
@@ -296,9 +280,6 @@
   "unknown": {
     "message": "अज्ञात नेटवर्क"
   },
-  "unknownNetwork": {
-    "message": "अज्ञात निजी नेटवर्क"
-  },
   "unlock": {
     "message": "लॉग इन करें"
   },
@@ -310,8 +291,5 @@
   },
   "visitWebSite": {
     "message": "हमारी वेब साइट पर जाएं"
-  },
-  "youSign": {
-    "message": "आप हस्ताक्षर कर रहे हैं"
   }
 }

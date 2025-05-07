@@ -11,9 +11,13 @@ import {
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import transactions from '../../test/data/transaction-data.json';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
+import { KeyringType } from '../../shared/constants/keyring';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import { mockNetworkState } from '../../test/stub/networks';
@@ -194,6 +198,15 @@ const expectedResults = [
 ];
 
 let useI18nContext, useTokenFiatAmount;
+const ADDRESS_MOCK = '0xabc';
+const NAME_MOCK = 'Account 1';
+
+const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: ADDRESS_MOCK,
+  name: NAME_MOCK,
+  keyringType: KeyringType.hd,
+  snapOptions: undefined,
+});
 
 const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
@@ -209,17 +222,48 @@ const renderHookWithRouter = (cb, tokenAddress) => {
       currentCurrency: 'ETH',
       useCurrencyRateCheck: false, // to force getShouldShowFiat to return false
       preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
         getShowFiatInTestnets: false,
       },
       allNfts: [],
-      tokens: [
-        {
-          address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-          symbol: 'ABC',
-          decimals: 18,
+      internalAccounts: {
+        accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
+        selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
+      },
+      allTokens: {
+        [CHAIN_IDS.MAINNET]: {
+          [ADDRESS_MOCK]: [
+            {
+              address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+              symbol: 'ABC',
+              decimals: 18,
+            },
+          ],
         },
-      ],
+      },
+      allDetectedTokens: {
+        [CHAIN_IDS.MAINNET]: [
+          {
+            [ADDRESS_MOCK]: [
+              {
+                address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+                symbol: 'ABC',
+                decimals: 18,
+              },
+            ],
+          },
+        ],
+      },
+      tokensChainsCache: {
+        '0x4': {
+          data: {
+            '0xabca64466f257793eaa52fcfff5066894b76a149': {
+              address: '0xabca64466f257793eaa52fcfff5066894b76a149',
+              symbol: 'ABC',
+              decimals: 18,
+            },
+          },
+        },
+      },
     },
   };
 

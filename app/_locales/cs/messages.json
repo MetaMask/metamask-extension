@@ -105,10 +105,6 @@
   "failed": {
     "message": "Neúspěšné"
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Import souboru nefunguje? Klikněte sem!",
     "description": "Helps user import their account from a JSON file"
@@ -134,9 +130,6 @@
   },
   "hideTokenPrompt": {
     "message": "Skrýt token?"
-  },
-  "importAccount": {
-    "message": "Import účtu"
   },
   "importAccountMsg": {
     "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
@@ -179,9 +172,6 @@
   "loading": {
     "message": "Načítám..."
   },
-  "loadingTokens": {
-    "message": "Načítám tokeny..."
-  },
   "lock": {
     "message": "Odhlásit"
   },
@@ -216,9 +206,6 @@
   },
   "next": {
     "message": "Další"
-  },
-  "noTransactions": {
-    "message": "Žádné transakce"
   },
   "passwordNotLongEnough": {
     "message": "Heslo není dost dlouhé"
@@ -283,9 +270,6 @@
   "settings": {
     "message": "Nastavení"
   },
-  "sigRequest": {
-    "message": "Požadavek podpisu"
-  },
   "sign": {
     "message": "Podepsat"
   },
@@ -337,9 +321,6 @@
   "unknown": {
     "message": "Neznámé"
   },
-  "unknownNetwork": {
-    "message": "Neznámá soukromá síť"
-  },
   "unlock": {
     "message": "Přihlásit"
   },
@@ -351,8 +332,5 @@
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
-  },
-  "youSign": {
-    "message": "Podepisujete"
   }
 }

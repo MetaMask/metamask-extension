@@ -1,0 +1,30 @@
+.asset-list-control-bar {
+  padding-top: 4px;
+  padding-bottom: 4px;
+
+  &__network_control {
+    justify-content: space-between;
+    width: auto;
+    min-width: auto;
+    border-radius: 8px;
+    padding: 0 8px !important;
+    gap: 4px;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: flex-end;
+
+    & .asset-list-control-bar__button {
+      width: 32px;
+      min-width: 32px;
+      margin: 0;
+      border-radius: 8px;
+      padding: 0;
+    }
+  }
+
+  &__button:hover {
+    background-color: var(--color-background-hover);
+  }
+}

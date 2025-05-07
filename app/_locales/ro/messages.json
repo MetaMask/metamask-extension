@@ -254,9 +254,6 @@
   "from": {
     "message": "De la"
   },
-  "functionType": {
-    "message": "Tip funcție"
-  },
   "gasLimit": {
     "message": "Limită gas"
   },
@@ -309,9 +306,6 @@
   "import": {
     "message": "Importă",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importare cont"
   },
   "importAccountMsg": {
     "message": "Conturile importate nu vor fi asociate cu seedphrase-ul contului dumneavoastră MetaMask creat inițial. Aflați mai multe despre conturile importate"
@@ -375,9 +369,6 @@
   "loading": {
     "message": "Se încarcă…"
   },
-  "loadingTokens": {
-    "message": "Se încarcă token-urile..."
-  },
   "lock": {
     "message": "Deconectați-vă"
   },
@@ -437,9 +428,6 @@
   "noConversionRateAvailable": {
     "message": "Nici o rată de conversie disponibilă"
   },
-  "noTransactions": {
-    "message": "Nu aveți tranzacții"
-  },
   "noWebcamFound": {
     "message": "Webcam-ul computerului dvs. nu a fost găsit. Vă rugăm să încercați din nou."
   },
@@ -463,9 +451,6 @@
   },
   "origin": {
     "message": "Origine"
-  },
-  "parameters": {
-    "message": "Parametri"
   },
   "participateInMetaMetrics": {
     "message": "Participați la MetaMetrics"
@@ -494,12 +479,6 @@
   },
   "prev": {
     "message": "Ant"
-  },
-  "primaryCurrencySetting": {
-    "message": "Moneda principală"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Selectați nativ pentru a prioritiza valorile afișate în moneda nativă a lanțului (ex. ETH). Selectați Fiat pentru a prioritiza valorile afișate în moneda selectată fiat."
   },
   "privacyMsg": {
     "message": "Politica de Confidențialitate"
@@ -540,9 +519,6 @@
   },
   "removeAccountDescription": {
     "message": "Acest cont va fi eliminat din portofelul dvs. Înainte de a continua, vă rugăm să vă asigurați că aveți expresia seed inițială sau cheia privată pentru acest cont importat. Puteți importa sau crea conturi din nou din meniul derulant al contului."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "solicitări care așteaptă să fie confirmate"
   },
   "required": {
     "message": "Obligatoriu"
@@ -610,9 +586,6 @@
   },
   "showHexDataDescription": {
     "message": "Selectați această opțiune pentru a arăta câmpul de date hexazecimale în ecranul de trimitere."
-  },
-  "sigRequest": {
-    "message": "Solicitare de semnătură"
   },
   "sign": {
     "message": "Semnați"
@@ -707,9 +680,6 @@
   "transactionErrored": {
     "message": "Tranzacția a întâlnit o eroare."
   },
-  "transactionFee": {
-    "message": "Taxa tranzacției"
-  },
   "transactionResubmitted": {
     "message": "Tranzacția a fost redepusă cu taxa gaz majorată de la $1 la $2"
   },
@@ -734,9 +704,6 @@
   "unknown": {
     "message": "Necunoscută"
   },
-  "unknownNetwork": {
-    "message": "Rețea privată necunoscută"
-  },
   "unknownQrCode": {
     "message": "Eroare: Acel cod QR nu a putut fi identificat"
   },
@@ -745,9 +712,6 @@
   },
   "unlockMessage": {
     "message": "Web-ul descentralizat așteaptă"
-  },
-  "updatedWithDate": {
-    "message": "Actualizat $1"
   },
   "urlErrorMsg": {
     "message": "URL necesită prefixul potrivit HTTP/HTTPS."
@@ -769,9 +733,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebuie să permiteți accesul la cameră pentru a folosi această funcție."
-  },
-  "youSign": {
-    "message": "Semnați"
   },
   "yourPrivateSeedPhrase": {
     "message": "Expresia dvs. seed privată"

@@ -9,6 +9,8 @@ import {
 import {
   TOKENS,
   MOCK_TRADE_RESPONSE_2,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../ui/pages/swaps/swaps-util-test-constants';
 import {
   fetchTradesInfo,
@@ -85,6 +87,7 @@ describe('Swaps Utils', () => {
           sourceDecimals: TOKENS[0].decimals,
           sourceTokenInfo: { ...TOKENS[0] },
           destinationTokenInfo: { ...TOKENS[1] },
+          enableGasIncludedQuotes: false,
         },
         { chainId: CHAIN_IDS.MAINNET },
       );

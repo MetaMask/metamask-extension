@@ -1,9 +1,4 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -12,7 +7,6 @@ describe('Test Snap JSX', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -27,15 +21,21 @@ describe('Test Snap JSX', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the jsx test and connect
+        // find and scroll to the jsx test
         const snapButton = await driver.findElement('#connectjsx');
         await driver.scrollToElement(snapButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectjsx');
         await driver.clickElement('#connectjsx');
 
-        // switch to dialog window and click connect
+        // switch to dialog window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
           tag: 'button',
@@ -45,17 +45,20 @@ describe('Test Snap JSX', function () {
           tag: 'button',
         });
 
+        // wait for confirm button
         await driver.waitForSelector({ text: 'Confirm' });
 
+        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok
         await driver.waitForSelector({ text: 'OK' });
-
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',

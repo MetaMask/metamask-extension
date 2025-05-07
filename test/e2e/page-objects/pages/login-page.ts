@@ -1,4 +1,5 @@
 import { Driver } from '../../webdriver/driver';
+import { WALLET_PASSWORD } from '../../helpers';
 
 class LoginPage {
   private driver: Driver;
@@ -17,7 +18,7 @@ class LoginPage {
     this.unlockButton = '[data-testid="unlock-submit"]';
     this.welcomeBackMessage = {
       css: '[data-testid="unlock-page-title"]',
-      text: 'Welcome back!',
+      text: 'Welcome back',
     };
     this.forgotPasswordButton = {
       text: 'Forgot password?',
@@ -39,11 +40,14 @@ class LoginPage {
     console.log('Login page is loaded');
   }
 
-  async fillPassword(password: string): Promise<void> {
+  /**
+   * This method unlocks the wallet and lands user on the homepage.
+   *
+   * @param password - The password used to unlock the wallet. Defaults to WALLET_PASSWORD.
+   */
+  async loginToHomepage(password: string = WALLET_PASSWORD): Promise<void> {
+    console.log(`On login page, Login to homepage `);
     await this.driver.fill(this.passwordInput, password);
-  }
-
-  async clickUnlockButton(): Promise<void> {
     await this.driver.clickElement(this.unlockButton);
   }
 

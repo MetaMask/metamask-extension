@@ -1,9 +1,4 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -12,7 +7,6 @@ describe('Test Snap Multi Install', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
@@ -21,14 +15,32 @@ describe('Test Snap Multi Install', function () {
 
         // navigate to test snaps page and multi-install snaps
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // scroll to multi-install snap
         const dialogButton = await driver.findElement('#multi-install-connect');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#multi-install-connect');
         await driver.clickElement('#multi-install-connect');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -57,7 +69,7 @@ describe('Test Snap Multi Install', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for anc click OK
+        // wait for and click OK
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',
@@ -90,7 +102,7 @@ describe('Test Snap Multi Install', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for anc click OK
+        // wait for and click OK
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',

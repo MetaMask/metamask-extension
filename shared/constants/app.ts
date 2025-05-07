@@ -45,7 +45,15 @@ export const MESSAGE_TYPE = {
   SEND_METADATA: 'metamask_sendDomainMetadata',
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
   TRANSACTION: 'transaction',
+  WALLET_CREATE_SESSION: 'wallet_createSession',
+  WALLET_GET_CALLS_STATUS: 'wallet_getCallsStatus',
+  WALLET_GET_CAPABILITIES: 'wallet_getCapabilities',
+  WALLET_GET_SESSION: 'wallet_getSession',
+  WALLET_INVOKE_METHOD: 'wallet_invokeMethod',
   WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
+  WALLET_REVOKE_SESSION: 'wallet_revokeSession',
+  WALLET_SEND_CALLS: 'wallet_sendCalls',
+  WALLET_SESSION_CHANGED: 'wallet_sessionChanged',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   SNAP_DIALOG_ALERT: DIALOG_APPROVAL_TYPES.alert,
@@ -64,6 +72,8 @@ export const MESSAGE_TYPE = {
   MMI_OPEN_ADD_HARDWARE_WALLET: 'metamaskinstitutional_openAddHardwareWallet',
   ///: END:ONLY_INCLUDE_IF
 } as const;
+
+export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
@@ -122,3 +132,11 @@ export const FIREFOX_BUILD_IDS = [
 ] as const;
 
 export const UNKNOWN_TICKER_SYMBOL = 'UNKNOWN';
+
+export const TRACE_ENABLED_SIGN_METHODS = [
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+  MESSAGE_TYPE.PERSONAL_SIGN,
+];

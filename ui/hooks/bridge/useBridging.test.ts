@@ -15,9 +15,16 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn().mockReturnValue(() => jest.fn()),
+  useDispatch: () => mockDispatch,
+}));
+
+const mockSetFromChain = jest.fn();
+jest.mock('../../ducks/bridge/actions', () => ({
+  ...jest.requireActual('../../ducks/bridge/actions'),
+  setFromChain: () => mockSetFromChain(),
 }));
 
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
@@ -35,11 +42,11 @@ describe('useBridging', () => {
     });
   });
 
-  describe('extensionSupport=false, chainId=1', () => {
+  describe('extensionConfig.support=false, chainId=1', () => {
     beforeEach(() => {
       nock(BRIDGE_API_BASE_URL)
         .get('/getAllFeatureFlags')
-        .reply(200, { 'extension-support': false });
+        .reply(200, { 'extension-config': { support: false } });
       jest.clearAllMocks();
     });
     // @ts-expect-error This is missing from the Mocha type definitions
@@ -82,9 +89,9 @@ describe('useBridging', () => {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             metaMetricsId: MOCK_METAMETRICS_ID,
-            bridgeState: {
-              bridgeFeatureFlags: {
-                extensionSupport: false,
+            bridgeFeatureFlags: {
+              extensionConfig: {
+                support: false,
               },
             },
             internalAccounts: {
@@ -93,6 +100,8 @@ describe('useBridging', () => {
             },
           },
         });
+
+        expect(mockDispatch.mock.calls).toHaveLength(1);
 
         expect(nock(BRIDGE_API_BASE_URL).isDone()).toBe(true);
         result.current.openBridgeExperience(location, token, urlSuffix);
@@ -104,29 +113,29 @@ describe('useBridging', () => {
     );
   });
 
-  describe('extensionSupport=true, chain=1', () => {
+  describe('extensionConfig.support=true, chain=1', () => {
     beforeEach(() => {
       nock(BRIDGE_API_BASE_URL)
         .get('/getAllFeatureFlags')
-        .reply(200, { 'extension-support': true });
+        .reply(200, { 'extension-config': { support: true } });
       jest.clearAllMocks();
     });
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        '/cross-chain/swaps/prepare-swap-page?token=0x0000000000000000000000000000000000000000',
         ETH_SWAPS_TOKEN_OBJECT,
         'Home',
         undefined,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        '/cross-chain/swaps/prepare-swap-page?token=0x0000000000000000000000000000000000000000',
         ETH_SWAPS_TOKEN_OBJECT,
         MetaMetricsSwapsEventSource.TokenView,
         '&token=native',
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        '/cross-chain/swaps/prepare-swap-page?token=0x00232f2jksdauo',
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',
@@ -151,9 +160,10 @@ describe('useBridging', () => {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             metaMetricsId: MOCK_METAMETRICS_ID,
-            bridgeState: {
-              bridgeFeatureFlags: {
-                extensionSupport: true,
+            isBridgeEnabled: true,
+            bridgeFeatureFlags: {
+              extensionConfig: {
+                support: true,
               },
             },
             internalAccounts: {
@@ -165,6 +175,7 @@ describe('useBridging', () => {
 
         result.current.openBridgeExperience(location, token, urlSuffix);
 
+        expect(mockDispatch.mock.calls).toHaveLength(1);
         expect(mockHistoryPush.mock.calls).toHaveLength(1);
         expect(mockHistoryPush).toHaveBeenCalledWith(expectedUrl);
         expect(openTabSpy).not.toHaveBeenCalled();

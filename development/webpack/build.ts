@@ -1,7 +1,7 @@
 import { webpack } from 'webpack';
 import type WebpackDevServerType from 'webpack-dev-server';
 import { noop, logStats, __HMR_READY__ } from './utils/helpers';
-import config from './webpack.config.js';
+import config from './webpack.config';
 
 // disable browserslist stats as it needlessly traverses the filesystem multiple
 // times looking for a stats file that doesn't exist.

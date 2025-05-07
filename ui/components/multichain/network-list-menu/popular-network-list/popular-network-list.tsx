@@ -27,6 +27,8 @@ import {
   requestUserApproval,
   toggleNetworkMenu,
 } from '../../../../store/actions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import {
   AlignItems,
@@ -61,6 +63,7 @@ const PopularNetworkList = ({
 
   const [referenceElement, setReferenceElement] = useState();
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setBoxRef = (ref: any) => {
     setReferenceElement(ref);
@@ -94,29 +97,35 @@ const PopularNetworkList = ({
             />
             <Popover
               referenceElement={referenceElement}
-              position={PopoverPosition.Top}
+              position={PopoverPosition.TopStart}
+              paddingTop={3}
+              paddingBottom={3}
+              offset={[16, 12]}
               isOpen={isOpen}
-              matchWidth
               flip
-              hasArrow
-              backgroundColor={BackgroundColor.backgroundAlternative}
+              backgroundColor={BackgroundColor.backgroundMuted}
               onMouseLeave={handleMouseLeave}
+              style={{
+                width: '326px',
+              }}
             >
-              {t('popularNetworkAddToolTip', [
-                <Box key="learn-more-link">
-                  <ButtonLink
-                    size={ButtonLinkSize.Inherit}
-                    externalLink
-                    onClick={() => {
-                      global.platform.openTab({
-                        url: ZENDESK_URLS.UNKNOWN_NETWORK,
-                      });
-                    }}
-                  >
-                    {t('learnMoreUpperCase')}
-                  </ButtonLink>
-                </Box>,
-              ])}
+              <Text variant={TextVariant.bodyMd}>
+                {' '}
+                {t('popularNetworkAddToolTip')}{' '}
+              </Text>
+              <Box key="learn-more-link">
+                <ButtonLink
+                  size={ButtonLinkSize.Auto}
+                  externalLink
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: ZENDESK_URLS.UNKNOWN_NETWORK,
+                    });
+                  }}
+                >
+                  {t('learnMoreUpperCase')}
+                </ButtonLink>
+              </Box>
             </Popover>
           </Box>
         </Box>

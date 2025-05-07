@@ -24,12 +24,18 @@ import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 export type MultipleAlertModalProps = {
   /** The key of the initial alert to display. */
   alertKey?: string;
+  /** If true the modal will display non-field alerts also. */
+  displayAllAlerts?: boolean;
   /** The function to be executed when the button in the alert modal is clicked. */
   onFinalAcknowledgeClick: () => void;
   /** The function to be executed when the modal needs to be closed. */
   onClose: (request?: { recursive?: boolean }) => void;
   /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
+  /** Whether to show the close icon in the modal header. */
+  showCloseIcon?: boolean;
+  /** Whether to skip the unconfirmed alerts validation and close the modal directly. */
+  skipAlertNavigation?: boolean;
 };
 
 function PreviousButton({
@@ -142,13 +148,17 @@ function PageNavigation({
 
 export function MultipleAlertModal({
   alertKey,
+  displayAllAlerts = false,
   onClose,
   onFinalAcknowledgeClick,
   ownerId,
+  showCloseIcon = true,
+  skipAlertNavigation = false,
 }: MultipleAlertModalProps) {
-  const { isAlertConfirmed, alerts } = useAlerts(ownerId);
+  const { isAlertConfirmed, fieldAlerts, alerts } = useAlerts(ownerId);
+  const alertsToDisplay = displayAllAlerts ? alerts : fieldAlerts;
 
-  const initialAlertIndex = alerts.findIndex(
+  const initialAlertIndex = alertsToDisplay.findIndex(
     (alert: Alert) => alert.key === alertKey,
   );
 
@@ -156,7 +166,9 @@ export function MultipleAlertModal({
     initialAlertIndex === -1 ? 0 : initialAlertIndex,
   );
 
-  const selectedAlert = alerts[selectedIndex];
+  // If the selected alert is not found, default to the first alert
+  const selectedAlert = alertsToDisplay[selectedIndex] ?? alertsToDisplay[0];
+
   const hasUnconfirmedAlerts = alerts.some(
     (alert: Alert) =>
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
@@ -173,7 +185,12 @@ export function MultipleAlertModal({
   }, []);
 
   const handleAcknowledgeClick = useCallback(() => {
-    if (selectedIndex + 1 === alerts.length) {
+    if (skipAlertNavigation) {
+      onFinalAcknowledgeClick();
+      return;
+    }
+
+    if (selectedIndex + 1 === alertsToDisplay.length) {
       if (!hasUnconfirmedAlerts) {
         onFinalAcknowledgeClick();
         return;
@@ -187,24 +204,26 @@ export function MultipleAlertModal({
     onFinalAcknowledgeClick,
     handleNextButtonClick,
     selectedIndex,
-    alerts.length,
+    alertsToDisplay.length,
     hasUnconfirmedAlerts,
+    skipAlertNavigation,
   ]);
 
   return (
     <AlertModal
       ownerId={ownerId}
       onAcknowledgeClick={handleAcknowledgeClick}
-      alertKey={selectedAlert.key}
+      alertKey={selectedAlert?.key}
       onClose={onClose}
       headerStartAccessory={
         <PageNavigation
-          alerts={alerts}
+          alerts={alertsToDisplay}
           onBackButtonClick={handleBackButtonClick}
           onNextButtonClick={handleNextButtonClick}
           selectedIndex={selectedIndex}
         />
       }
+      showCloseIcon={showCloseIcon}
     />
   );
 }

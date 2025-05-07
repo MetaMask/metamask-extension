@@ -16,6 +16,7 @@ export default function IconButton(props) {
     label,
     tooltipRender,
     className,
+    iconButtonClassName = '',
     ...otherProps
   } = props;
   const renderWrapper = tooltipRender ?? defaultRender;
@@ -31,7 +32,9 @@ export default function IconButton(props) {
     >
       {renderWrapper(
         <>
-          <div data-theme="light" className="icon-button__circle">
+          <div
+            className={classNames('icon-button__circle', iconButtonClassName)}
+          >
             {Icon}
           </div>
           {label.length > 10 ? (
@@ -39,7 +42,7 @@ export default function IconButton(props) {
               <Text
                 className="icon-button__label-large"
                 ellipsis
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmMedium}
               >
                 {label}
               </Text>
@@ -48,7 +51,7 @@ export default function IconButton(props) {
             <Text
               className="icon-button__label"
               ellipsis
-              variant={TextVariant.bodySm}
+              variant={TextVariant.bodySmMedium}
             >
               {label}
             </Text>
@@ -66,5 +69,6 @@ IconButton.propTypes = {
   label: PropTypes.string.isRequired,
   tooltipRender: PropTypes.func,
   className: PropTypes.string,
+  iconButtonClassName: PropTypes.string,
   'data-testid': PropTypes.string,
 };

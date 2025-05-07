@@ -10,6 +10,7 @@ import {
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
+  BannerAlert,
 } from '../../../components/component-library';
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
@@ -66,9 +67,12 @@ export default class SelectHardware extends Component {
   };
 
   connect = async () => {
-    if (this.state.selectedDevice) {
-      if (this.state.selectedDevice === 'trezor' && isUSBSupported) {
-        this.setState({ trezorRequestDevicePending: true });
+    const { selectedDevice } = this.state;
+    if (selectedDevice) {
+      if (selectedDevice === HardwareDeviceNames.trezor && isUSBSupported) {
+        this.setState({
+          trezorRequestDevicePending: true,
+        });
         try {
           await window.navigator.usb.requestDevice({
             filters: [
@@ -86,7 +90,7 @@ export default class SelectHardware extends Component {
         }
       }
 
-      this.props.connectToHardwareWallet(this.state.selectedDevice);
+      this.props.connectToHardwareWallet(selectedDevice);
     }
     return null;
   };
@@ -262,6 +266,21 @@ export default class SelectHardware extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
+        {this.state.selectedDevice === HardwareDeviceNames.ledger && (
+          <Box>
+            <BannerAlert
+              marginTop={6}
+              title={this.context.t(
+                'ledgerMultipleDevicesUnsupportedInfoTitle',
+              )}
+            >
+              {this.context.t(
+                'ledgerMultipleDevicesUnsupportedInfoDescription',
+              )}
+            </BannerAlert>
+          </Box>
+        )}
+
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
@@ -747,41 +766,6 @@ export default class SelectHardware extends Component {
                   event: 'Clicked imToken Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.imtoken);
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
-          </>
-        ),
-      },
-      {
-        message: (
-          <>
-            <p className="hw-connect__QR-subtitle">
-              {this.context.t('onekey')}
-            </p>
-            <Button
-              className="hw-connect__external-btn-first"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked OneKey Learn More',
-                });
-                openWindow(HardwareAffiliateLinks.onekey);
-              }}
-            >
-              {this.context.t('buyNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked OneKey Tutorial',
-                });
-                openWindow(HardwareAffiliateTutorialLinks.onekey);
               }}
             >
               {this.context.t('tutorial')}

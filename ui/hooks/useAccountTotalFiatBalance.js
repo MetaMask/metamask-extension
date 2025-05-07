@@ -1,10 +1,12 @@
 import { shallowEqual, useSelector } from 'react-redux';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { useMemo } from 'react';
+import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import {
   getAllTokens,
-  getCurrentChainId,
-  getCurrentCurrency,
   getMetaMaskCachedBalances,
   getTokenExchangeRates,
+  getConfirmationExchangeRates,
   getNativeCurrencyImage,
   getTokenList,
 } from '../selectors';
@@ -16,11 +18,12 @@ import {
 import {
   getConversionRate,
   getNativeCurrency,
+  getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { useTokenTracker } from './useTokenTracker';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';
+import { useTokenTracker } from './useTokenBalances';
 
 export const useAccountTotalFiatBalance = (
   account,
@@ -34,6 +37,7 @@ export const useAccountTotalFiatBalance = (
     getTokenExchangeRates,
     shallowEqual,
   );
+  const confirmationExchangeRates = useSelector(getConfirmationExchangeRates);
 
   const cachedBalances = useSelector(getMetaMaskCachedBalances);
   const balance = cachedBalances?.[account?.address] ?? 0;
@@ -45,65 +49,65 @@ export const useAccountTotalFiatBalance = (
   });
 
   const detectedTokens = useSelector(getAllTokens);
-  const tokens = detectedTokens?.[currentChainId]?.[account?.address] ?? [];
+  const tokens = useMemo(
+    () => detectedTokens?.[currentChainId]?.[account?.address] ?? [],
+    [account?.address, currentChainId, detectedTokens],
+  );
   // This selector returns all the tokens, we need it to get the image of token
   const allTokenList = useSelector(getTokenList);
-  const allTokenListValues = Object.values(allTokenList);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
 
-  const { loading, tokensWithBalances } = useTokenTracker({
+  const loading = false;
+  const { tokensWithBalances } = useTokenTracker({
+    chainId: currentChainId,
     tokens,
     address: account?.address,
-    includeFailedTokens: true,
     hideZeroBalanceTokens: shouldHideZeroBalanceTokens,
   });
 
+  const mergedRates = useMemo(
+    () => ({
+      ...contractExchangeRates,
+      ...confirmationExchangeRates,
+    }),
+    [confirmationExchangeRates, contractExchangeRates],
+  );
+
   // Create fiat values for token balances
-  const tokenFiatBalances = tokensWithBalances.map((token) => {
-    const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
-      (key) => isEqualCaseInsensitive(key, token.address),
-    );
-    const tokenExchangeRate =
-      (contractExchangeTokenKey &&
-        contractExchangeRates[contractExchangeTokenKey]) ??
-      0;
+  const tokenFiatBalances = useMemo(
+    () =>
+      tokensWithBalances.map((token) => {
+        const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
 
-    const totalFiatValue = getTokenFiatAmount(
-      tokenExchangeRate,
-      conversionRate,
-      currentCurrency,
-      token.string,
-      token.symbol,
-      false,
-      false,
-    );
+        const totalFiatValue = getTokenFiatAmount(
+          tokenExchangeRate,
+          conversionRate,
+          currentCurrency,
+          token.string,
+          token.symbol,
+          false,
+          false,
+        );
 
-    return totalFiatValue;
-  });
-
-  // Create an object with native token info. NOTE: Native token info is fetched from a separate controller
-  const nativeTokenValues = {
-    iconUrl: primaryTokenImage,
-    symbol: nativeCurrency,
-    fiatBalance: nativeFiat,
-  };
+        return totalFiatValue;
+      }),
+    [tokensWithBalances, mergedRates, conversionRate, currentCurrency],
+  );
 
   // To match the list of detected tokens with the entire token list to find the image for tokens
-  const findMatchingTokens = (array1, array2) => {
+  const findMatchingTokens = (tokenList, _tokensWithBalances) => {
     const result = [];
 
-    array2.forEach((token2) => {
-      const matchingToken = array1.find(
-        (token1) => token1.symbol === token2.symbol,
-      );
+    _tokensWithBalances.forEach((token) => {
+      const matchingToken = tokenList?.[token.address.toLowerCase()];
 
       if (matchingToken) {
         result.push({
           ...matchingToken,
-          balance: token2.balance,
-          string: token2.string,
-          balanceError: token2.balanceError,
+          balance: token.balance,
+          string: token.string,
+          balanceError: token.balanceError,
         });
       }
     });
@@ -111,23 +115,41 @@ export const useAccountTotalFiatBalance = (
     return result;
   };
 
-  const matchingTokens = findMatchingTokens(
-    allTokenListValues,
-    tokensWithBalances,
+  const matchingTokens = useMemo(
+    () => findMatchingTokens(allTokenList, tokensWithBalances),
+    [allTokenList, tokensWithBalances],
   );
 
   // Combine native token, detected token with image in an array
-  const allTokensWithFiatValues = [
-    nativeTokenValues,
-    ...matchingTokens.map((item, index) => ({
-      ...item,
-      fiatBalance: tokenFiatBalances[index],
-    })),
-  ];
+  const allTokensWithFiatValues = useMemo(() => {
+    const nativeTokenValues = {
+      iconUrl: primaryTokenImage,
+      symbol: nativeCurrency,
+      fiatBalance: nativeFiat,
+    };
+
+    return [
+      nativeTokenValues,
+      ...matchingTokens.map((item, index) => ({
+        ...item,
+        fiatBalance: tokenFiatBalances[index],
+      })),
+    ];
+  }, [
+    matchingTokens,
+    tokenFiatBalances,
+    primaryTokenImage,
+    nativeCurrency,
+    nativeFiat,
+  ]);
 
   // Order of the tokens in this array is in decreasing order based on their fiatBalance
-  const orderedTokenList = allTokensWithFiatValues.sort(
-    (a, b) => parseFloat(b.fiatBalance) - parseFloat(a.fiatBalance),
+  const orderedTokenList = useMemo(
+    () =>
+      allTokensWithFiatValues.sort(
+        (a, b) => parseFloat(b.fiatBalance) - parseFloat(a.fiatBalance),
+      ),
+    [allTokensWithFiatValues],
   );
 
   // Total native and token fiat balance as a string (ex: "8.90")
@@ -135,6 +157,30 @@ export const useAccountTotalFiatBalance = (
     nativeFiat,
     ...tokenFiatBalances,
   ).toString(10);
+
+  const formattedTokensWithBalances = useMemo(() => {
+    // we need to append some values to tokensWithBalance for UI
+    // this code was ported from asset-list
+    tokensWithBalances.forEach((token) => {
+      // token.string is the balance displayed in the TokenList UI
+      token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
+
+      // to sort by fiat balance, we need to compute this at this level
+      const tokenExchangeRate = mergedRates[toChecksumAddress(token.address)];
+      token.tokenFiatAmount =
+        getTokenFiatAmount(
+          tokenExchangeRate,
+          conversionRate,
+          currentCurrency,
+          token.string, // tokenAmount
+          token.symbol, // tokenSymbol
+          false, // no currency symbol prefix
+          false, // no ticker symbol suffix
+        ) || '0';
+    });
+
+    return tokensWithBalances;
+  }, [tokensWithBalances, mergedRates, conversionRate, currentCurrency]);
 
   // Fiat balance formatted in user's desired currency (ex: "$8.90")
   const formattedFiat = formatCurrency(totalFiatBalance, currentCurrency);
@@ -157,8 +203,9 @@ export const useAccountTotalFiatBalance = (
     formattedFiat,
     totalWeiBalance,
     totalFiatBalance,
-    tokensWithBalances,
+    tokensWithBalances: formattedTokensWithBalances,
     loading,
     orderedTokenList,
+    mergedRates,
   };
 };

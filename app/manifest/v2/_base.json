@@ -20,6 +20,7 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
+        "default": "Alt+Shift+M",
         "windows": "Alt+Shift+M",
         "mac": "Alt+Shift+M",
         "chromeos": "Alt+Shift+M",
@@ -42,7 +43,7 @@
       "all_frames": true
     },
     {
-      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
   ],
@@ -66,6 +67,8 @@
     "clipboardWrite",
     "http://*/*",
     "https://*/*",
+    "ws://*/*",
+    "wss://*/*",
     "activeTab",
     "webRequest",
     "webRequestBlocking",

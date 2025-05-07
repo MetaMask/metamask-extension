@@ -1,19 +1,33 @@
-import { AnyAction, Action } from 'redux';
+import type {
+  ContractExchangeRates,
+  Token,
+} from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { Action, AnyAction } from 'redux';
 import {
-  WebHIDConnectedStatuses,
   HardwareTransportStates,
+  WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
 type AppState = {
+  customNonceValue: string;
+  isAccountMenuOpen: boolean;
+  isNetworkMenuOpen: boolean;
+  nextNonce: string | null;
+  pendingTokens: {
+    [address: string]: Token & { isCustom?: boolean; unlisted?: boolean };
+  };
+  welcomeScreenSeen: boolean;
+  confirmationExchangeRates: ContractExchangeRates;
   shouldClose: boolean;
   menuOpen: boolean;
   modal: {
     open: boolean;
     modalState: {
       name: string | null;
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       props: Record<string, any>;
     };
@@ -34,6 +48,7 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
+  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
@@ -53,18 +68,21 @@ type AppState = {
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buyView: Record<string, any>;
   defaultHdPaths: {
     trezor: string;
+    oneKey: string;
     ledger: string;
     lattice: string;
   };
   networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
@@ -99,17 +117,28 @@ type AppState = {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
+  showDeleteMetaMetricsDataModal: boolean;
+  showDataDeletionErrorModal: boolean;
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
+  errorInSettings: string | null;
+  showNewSrpAddedToast: boolean;
 };
 
-type AppSliceState = {
+export type AppSliceState = {
   appState: AppState;
 };
 
 // default state
 const initialState: AppState = {
+  customNonceValue: '',
+  isAccountMenuOpen: false,
+  isNetworkMenuOpen: false,
+  nextNonce: null,
+  pendingTokens: {},
+  welcomeScreenSeen: false,
+  confirmationExchangeRates: {},
   shouldClose: false,
   menuOpen: false,
   modal: {
@@ -127,6 +156,7 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
+  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
@@ -152,6 +182,7 @@ const initialState: AppState = {
   buyView: {},
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
+    oneKey: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
     lattice: `m/44'/60'/0'/0`,
   },
@@ -183,9 +214,13 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
+  showDeleteMetaMetricsDataModal: false,
+  showDataDeletionErrorModal: false,
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
+  errorInSettings: null,
+  showNewSrpAddedToast: false,
 };
 
 export default function reduceApp(
@@ -198,6 +233,57 @@ export default function reduceApp(
   };
 
   switch (action.type) {
+    case actionConstants.UPDATE_CUSTOM_NONCE:
+      return {
+        ...appState,
+        customNonceValue: action.value,
+      };
+
+    case actionConstants.TOGGLE_ACCOUNT_MENU:
+      return {
+        ...appState,
+        isAccountMenuOpen: !appState.isAccountMenuOpen,
+      };
+
+    case actionConstants.SET_NEXT_NONCE: {
+      return {
+        ...appState,
+        nextNonce: action.payload,
+      };
+    }
+
+    case actionConstants.SET_PENDING_TOKENS:
+      return {
+        ...appState,
+        pendingTokens: { ...action.payload },
+      };
+
+    case actionConstants.CLEAR_PENDING_TOKENS: {
+      return {
+        ...appState,
+        pendingTokens: {},
+      };
+    }
+
+    case actionConstants.CLOSE_WELCOME_SCREEN:
+      return {
+        ...appState,
+        welcomeScreenSeen: true,
+      };
+
+    case actionConstants.SET_CONFIRMATION_EXCHANGE_RATES:
+      return {
+        ...appState,
+        confirmationExchangeRates: action.value,
+      };
+
+    case actionConstants.RESET_ONBOARDING: {
+      return {
+        ...appState,
+        welcomeScreenSeen: false,
+      };
+    }
+
     // dropdown methods
     case actionConstants.NETWORK_DROPDOWN_OPEN:
       return {
@@ -261,6 +347,18 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: true,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: false,
       };
 
     case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
@@ -423,7 +521,8 @@ export default function reduceApp(
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
       const { device, path } = action.payload;
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newDefaults = { ...appState.defaultHdPaths } as any;
       newDefaults[device] = path;
@@ -593,6 +692,37 @@ export default function reduceApp(
         ...appState,
         isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
         isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
+        isNetworkMenuOpen: !appState.isNetworkMenuOpen,
+      };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: true,
+      };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: false,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_OPEN:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: true,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: false,
+      };
+    case actionConstants.SHOW_SETTINGS_PAGE_ERROR:
+      return {
+        ...appState,
+        errorInSettings: action.payload,
+      };
+    case actionConstants.HIDE_SETTINGS_PAGE_ERROR:
+      return {
+        ...appState,
+        errorInSettings: null,
       };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
@@ -613,6 +743,11 @@ export default function reduceApp(
         },
       };
     ///: END:ONLY_INCLUDE_IF
+    case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
+      return {
+        ...appState,
+        showNewSrpAddedToast: action.payload,
+      };
 
     default:
       return appState;
@@ -682,6 +817,27 @@ export function setCustomTokenAmount(payload: string): PayloadAction<string> {
   return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
 }
 
+/**
+ * An action creator for display a error to the user in various places in the
+ * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * is called.
+ *
+ * @param payload - The warning to show.
+ * @returns The action to display the warning.
+ */
+export function displayErrorInSettings(payload: string): PayloadAction<string> {
+  return {
+    type: actionConstants.SHOW_SETTINGS_PAGE_ERROR,
+    payload,
+  };
+}
+
+export function hideErrorInSettings() {
+  return {
+    type: actionConstants.HIDE_SETTINGS_PAGE_ERROR,
+  };
+}
+
 // Selectors
 export function getQrCodeData(state: AppSliceState): {
   type?: string | null;
@@ -702,4 +858,28 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
+}
+
+export function openDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
+  };
+}
+
+export function hideDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
+  };
+}
+
+export function openDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_OPEN,
+  };
+}
+
+export function hideDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
+  };
 }

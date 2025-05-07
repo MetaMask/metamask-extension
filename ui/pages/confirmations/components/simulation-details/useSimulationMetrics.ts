@@ -67,13 +67,15 @@ export function useSimulationMetrics({
     setLoadingComplete();
   }
 
-  const displayNameRequests: UseDisplayNameRequest[] = balanceChanges.map(
-    ({ asset }) => ({
-      value: asset.address ?? '',
+  const displayNameRequests: UseDisplayNameRequest[] = balanceChanges
+    // Filter out changes with no address (e.g. ETH)
+    .filter(({ asset }) => Boolean(asset.address))
+    .map(({ asset }) => ({
+      value: asset.address as string,
       type: NameType.ETHEREUM_ADDRESS,
       preferContractSymbol: true,
-    }),
-  );
+      variation: asset.chainId,
+    }));
 
   const displayNames = useDisplayNames(displayNameRequests);
 
@@ -115,10 +117,7 @@ export function useSimulationMetrics({
     ),
   };
 
-  const sensitiveProperties = {
-    ...getSensitiveProperties(receivingAssets, 'simulation_receiving_assets_'),
-    ...getSensitiveProperties(sendingAssets, 'simulation_sending_assets_'),
-  };
+  const sensitiveProperties = {};
 
   const params = { properties, sensitiveProperties };
 
@@ -145,7 +144,9 @@ export function useSimulationMetrics({
 
 function useIncompleteAssetEvent(
   balanceChanges: BalanceChange[],
-  displayNamesByAddress: { [address: string]: UseDisplayNameResponse },
+  displayNamesByAddress: {
+    [address: string]: UseDisplayNameResponse | undefined;
+  },
 ) {
   const trackEvent = useContext(MetaMetricsContext);
   const [processedAssets, setProcessedAssets] = useState<string[]>([]);
@@ -155,6 +156,8 @@ function useIncompleteAssetEvent(
     const displayName = displayNamesByAddress[assetAddress];
 
     const isIncomplete =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       (change.asset.address && !change.fiatAmount) ||
       getPetnameType(change, displayName) === PetnameType.Unknown;
 
@@ -170,7 +173,7 @@ function useIncompleteAssetEvent(
       properties: {
         asset_address: change.asset.address,
         asset_petname: getPetnameType(change, displayName),
-        asset_symbol: displayName.contractDisplayName,
+        asset_symbol: displayName?.contractDisplayName,
         asset_type: getAssetType(change.asset.standard),
         fiat_conversion_available: change.fiatAmount
           ? FiatType.Available
@@ -206,18 +209,17 @@ function getProperties(
     ),
   );
 
-  return getPrefixProperties({ petname, quantity, type, value }, prefix);
-}
-
-function getSensitiveProperties(changes: BalanceChange[], prefix: string) {
   const fiatAmounts = changes.map((change) => change.fiatAmount);
   const totalFiat = calculateTotalFiat(fiatAmounts);
   const totalValue = totalFiat ? Math.abs(totalFiat) : undefined;
 
-  return getPrefixProperties({ total_value: totalValue }, prefix);
+  return getPrefixProperties(
+    { petname, quantity, type, value, total_value: totalValue },
+    prefix,
+  );
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getPrefixProperties(properties: Record<string, any>, prefix: string) {
   return Object.entries(properties).reduce(
@@ -244,7 +246,7 @@ function getAssetType(standard: TokenStandard) {
 
 function getPetnameType(
   balanceChange: BalanceChange,
-  displayName: UseDisplayNameResponse,
+  displayName: UseDisplayNameResponse = { name: '', hasPetname: false },
 ) {
   if (balanceChange.asset.standard === TokenStandard.none) {
     return PetnameType.Default;

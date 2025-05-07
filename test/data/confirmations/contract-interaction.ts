@@ -1,4 +1,10 @@
 import {
+  AuthorizationList,
+  BatchTransactionParams,
+  CHAIN_IDS,
+  GasFeeToken,
+  SimulationData,
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -16,18 +22,28 @@ export const CONTRACT_INTERACTION_SENDER_ADDRESS =
 
 export const DEPOSIT_METHOD_DATA = '0xd0e30db0';
 
-export const CHAIN_ID = '0xaa36a7';
+export const CHAIN_ID = CHAIN_IDS.GOERLI;
 
 export const genUnapprovedContractInteractionConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
+  authorizationList = undefined,
   txData = DEPOSIT_METHOD_DATA,
   chainId = CHAIN_ID,
+  nestedTransactions,
+  simulationData,
+  gasFeeTokens,
+  selectedGasFeeToken,
 }: {
   address?: Hex;
+  authorizationList?: AuthorizationList;
   txData?: Hex;
   chainId?: string;
-} = {}): Confirmation =>
-  ({
+  nestedTransactions?: BatchTransactionParams[];
+  gasFeeTokens?: GasFeeToken[];
+  selectedGasFeeToken?: Hex;
+  simulationData?: SimulationData;
+} = {}): Confirmation => {
+  const confirmation: Confirmation = {
     actionId: String(400855682),
     chainId,
     dappSuggestedGasFees: {
@@ -40,6 +56,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
       maxPriorityFeePerGas: '0x59682f00',
     },
     gasFeeEstimatesLoaded: true,
+    gasFeeTokens,
     history: [
       {
         actionId: String(400855682),
@@ -63,6 +80,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
         status: TransactionStatus.unapproved,
         time: 1713534772044,
         txParams: {
+          authorizationList,
           data: txData,
           from: address,
           gas: '0xab77',
@@ -129,12 +147,14 @@ export const genUnapprovedContractInteractionConfirmation = ({
       ],
     ],
     id: '1d7c08c0-fe54-11ee-9243-91b1e533746a',
+    nestedTransactions,
     origin: 'https://metamask.github.io',
     securityAlertResponse: {
       features: [],
       reason: '',
       result_type: 'Benign',
     },
+    selectedGasFeeToken,
     sendFlowHistory: [],
     simulationData: {
       nativeBalanceChange: {
@@ -148,6 +168,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     status: TransactionStatus.unapproved,
     time: 1713534772044,
     txParams: {
+      authorizationList,
       data: txData,
       from: address,
       gas: '0xab77',
@@ -156,28 +177,17 @@ export const genUnapprovedContractInteractionConfirmation = ({
       to: '0x88aa6343307ec9a652ccddda3646e62b2f1a5125',
       value: '0x3782dace9d900000',
     },
+    gasLimitNoBuffer: '0xab77',
     type: TransactionType.contractInteraction,
     userEditedGasLimit: false,
     userFeeLevel: 'medium',
     verifiedOnBlockchain: false,
-  } as SignatureRequestType);
+  } as SignatureRequestType;
 
-export const genUnapprovedApproveConfirmation = ({
-  address = CONTRACT_INTERACTION_SENDER_ADDRESS,
-  chainId = CHAIN_ID,
-}: {
-  address?: Hex;
-  chainId?: string;
-} = {}) => ({
-  ...genUnapprovedContractInteractionConfirmation({ chainId }),
-  txParams: {
-    from: address,
-    data: '0x095ea7b30000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000001',
-    gas: '0x16a92',
-    to: '0x076146c765189d51be3160a2140cf80bfc73ad68',
-    value: '0x0',
-    maxFeePerGas: '0x5b06b0c0d',
-    maxPriorityFeePerGas: '0x59682f00',
-  },
-  type: TransactionType.tokenMethodApprove,
-});
+  // Overwrite simulation data if provided
+  if (simulationData) {
+    (confirmation as TransactionMeta).simulationData = simulationData;
+  }
+
+  return confirmation;
+};

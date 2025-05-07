@@ -1,5 +1,7 @@
 import { encode } from '@metamask/abi-utils';
-
+import { isHexString } from '@metamask/utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { Numeric } from '../../../../shared/modules/Numeric';
@@ -29,7 +31,7 @@ function isBalanceSufficient({
   primaryCurrency = undefined,
 }) {
   let totalAmount = new Numeric(amount, 16).add(new Numeric(gasTotal, 16));
-  let balanceNumeric = new Numeric(balance, 16);
+  let balanceNumeric = new Numeric(balance, isHexString(balance) ? 16 : 10);
 
   if (typeof primaryCurrency !== 'undefined' && primaryCurrency !== null) {
     totalAmount = totalAmount.applyConversionRate(conversionRate);

@@ -10,9 +10,9 @@ exports[`BannerTip should render BannerTip element correctly 1`] = `
       class="mm-box mm-box--display-flex mm-box--align-items-center"
     >
       <img
-        alt="greeting"
+        alt="Fox"
         class="mm-box mm-banner-tip--logo"
-        src="images/fox-greeting.png"
+        src="images/fox.png"
       />
     </div>
     <div

@@ -4,12 +4,7 @@ import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
 import { Tag } from '../../../components/component-library';
 
-import {
-  SUPPORT_REQUEST_LINK,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI_WEB_SITE,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../helpers/constants/common';
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../helpers/utils/build-types';
 import {
   getNumberOfSettingRoutesInTab,
@@ -20,16 +15,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CONSENSYS_PRIVACY_LINK,
-  ///: END:ONLY_INCLUDE_IF
-  SUPPORT_LINK,
-} from '../../../../shared/lib/ui-utils';
+import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
 
 export default class InfoTab extends PureComponent {
   state = {
     version: process.env.METAMASK_VERSION,
+    isVisitSupportDataConsentModalOpen: false,
   };
 
   static contextTypes = {
@@ -55,19 +46,17 @@ export default class InfoTab extends PureComponent {
     handleSettingsRefs(t, t('about'), this.settingsRefs);
   }
 
+  toggleVisitSupportDataConsentModal = () => {
+    this.setState((prevState) => ({
+      isVisitSupportDataConsentModalOpen:
+        !prevState.isVisitSupportDataConsentModalOpen,
+    }));
+  };
+
   renderInfoLinks() {
     const { t } = this.context;
-    let privacyUrl, siteUrl;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    privacyUrl = CONSENSYS_PRIVACY_LINK;
-    siteUrl = MMI_WEB_SITE;
-    ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    privacyUrl = 'https://metamask.io/privacy.html';
-    siteUrl = 'https://metamask.io/';
-    ///: END:ONLY_INCLUDE_IF
+    const privacyUrl = 'https://metamask.io/privacy.html';
+    const siteUrl = 'https://metamask.io/';
 
     return (
       <div className="settings-page__content-item settings-page__content-item--without-height">
@@ -125,26 +114,10 @@ export default class InfoTab extends PureComponent {
         <div ref={this.settingsRefs[5]} className="info-tab__link-item">
           <Button
             type="link"
-            href={SUPPORT_LINK}
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
-            onClick={() => {
-              this.context.trackEvent(
-                {
-                  category: MetaMetricsEventCategory.Settings,
-                  event: MetaMetricsEventName.SupportLinkClicked,
-                  properties: {
-                    url: SUPPORT_LINK,
-                  },
-                },
-                {
-                  contextPropsIntoEventProperties: [
-                    MetaMetricsContextProp.PageTitle,
-                  ],
-                },
-              );
-            }}
+            onClick={this.toggleVisitSupportDataConsentModal}
           >
             {t('supportCenter')}
           </Button>
@@ -198,67 +171,36 @@ export default class InfoTab extends PureComponent {
       <div className="settings-page__body">
         <div className="settings-page__content-row">
           <div className="settings-page__content-item settings-page__content-item--without-height">
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              <div className="info-tab__logo-wrapper">
-                <img
-                  src="images/info-logo.png"
-                  className="info-tab__logo"
-                  alt=""
-                />
-              </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
             <div className="info-tab__item">
               <div
                 ref={this.settingsRefs[0]}
                 className="info-tab__version-header"
               >
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                  isBeta() ? t('betaMetamaskVersion') : t('metamaskVersion')
-                  ///: END:ONLY_INCLUDE_IF
-                }
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                  isBeta()
-                    ? t('betaMetamaskInstitutionalVersion')
-                    : t('metamaskInstitutionalVersion')
-                  ///: END:ONLY_INCLUDE_IF
-                }
+                {isBeta() ? t('betaMetamaskVersion') : t('metamaskVersion')}
               </div>
               <div className="info-tab__version-number">
                 {this.state.version}
               </div>
             </div>
             <div className="info-tab__item">
-              <div className="info-tab__about">
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                  t('builtAroundTheWorld')
-                  ///: END:ONLY_INCLUDE_IF
-                }
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                  t('mmiBuiltAroundTheWorld')
-                  ///: END:ONLY_INCLUDE_IF
-                }
-              </div>
+              <div className="info-tab__about">{t('builtAroundTheWorld')}</div>
             </div>
           </div>
           {this.renderInfoLinks()}
         </div>
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-          <div className="info-tab__logo-wrapper">
-            <img
-              src="./images/logo/metamask-fox.svg"
-              className="info-tab__logo"
-              alt="MetaMask Logo"
-            />
-          </div>
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <div className="info-tab__logo-wrapper">
+          <img
+            src="./images/logo/metamask-fox.svg"
+            className="info-tab__logo"
+            alt="MetaMask Logo"
+          />
+        </div>
+        {this.state.isVisitSupportDataConsentModalOpen && (
+          <VisitSupportDataConsentModal
+            isOpen={this.state.isVisitSupportDataConsentModalOpen}
+            onClose={this.toggleVisitSupportDataConsentModal}
+          />
+        )}
       </div>
     );
   }

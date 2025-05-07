@@ -1,7 +1,7 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import * as ethUtil from 'ethereumjs-util';
+import BN from 'bn.js';
 import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
@@ -13,7 +13,10 @@ import bowser from 'bowser';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { isObject, isStrictHexString } from '@metamask/utils';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
   toChecksumHexAddress,
@@ -30,7 +33,10 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
+import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
@@ -166,10 +172,10 @@ export function isOriginContractAddress(to, sendTokenAddress) {
 // Takes wei Hex, returns wei BN, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new ethUtil.BN(0, 16);
+    return new BN(0, 16);
   }
   const stripped = stripHexPrefix(balance);
-  return new ethUtil.BN(stripped, 16);
+  return new BN(stripped, 16);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
@@ -225,7 +231,11 @@ export function formatBalance(
 }
 
 export function getContractAtAddress(tokenAddress) {
-  return global.eth.contract(abi).at(tokenAddress);
+  return new Contract(
+    tokenAddress,
+    abi,
+    new Web3Provider(global.ethereumProvider),
+  );
 }
 
 export function getRandomFileName() {
@@ -299,6 +309,25 @@ export function shortenAddress(address = '') {
 
 export function getAccountByAddress(accounts = [], targetAddress) {
   return accounts.find(({ address }) => address === targetAddress);
+}
+
+/**
+ * Sort the given list of account their selecting order (descending). Meaning the
+ * first account of the sorted list will be the last selected account.
+ *
+ * @param {import('@metamask/keyring-api').InternalAccount[]} accounts - The internal accounts list.
+ * @returns {import('@metamask/keyring-api').InternalAccount[]} The sorted internal account list.
+ */
+export function sortSelectedInternalAccounts(accounts) {
+  // This logic comes from the `AccountsController`:
+  // TODO: Expose a free function from this controller and use it here
+  return accounts.sort((accountA, accountB) => {
+    // Sort by `.lastSelected` in descending order
+    return (
+      (accountB.metadata.lastSelected ?? 0) -
+      (accountA.metadata.lastSelected ?? 0)
+    );
+  });
 }
 
 /**
@@ -380,6 +409,20 @@ export function checkExistingAddresses(address, list = []) {
   };
 
   return list.some(matchesAddress);
+}
+
+export function checkExistingAllTokens(
+  address,
+  chainId,
+  accountAddress,
+  list = {},
+) {
+  if (!address) {
+    return false;
+  }
+  return list?.[chainId]?.[accountAddress]?.some(
+    (obj) => obj.address.toLowerCase() === address.toLowerCase(),
+  );
 }
 
 export function bnGreaterThan(a, b) {
@@ -661,8 +704,11 @@ export const getDedupedSnaps = (request, permissions) => {
 
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
+const REGEX_LTR_OVERRIDE = /\u202D/giu;
+const REGEX_RTL_OVERRIDE = /\u202E/giu;
+
 /**
- * The method escape RTL character in string
+ * The method escapes LTR and RTL override unicode in the string
  *
  * @param {*} value
  * @returns {(string|*)} escaped string or original param value
@@ -674,23 +720,10 @@ export const sanitizeString = (value) => {
   if (!lodash.isString(value)) {
     return value;
   }
-  const regex = /\u202E/giu;
-  return value.replace(regex, '\\u202E');
-};
 
-/**
- * This method checks current provider type and returns its string representation
- *
- * @param {*} provider
- * @param {*} t
- * @returns
- */
-
-export const getNetworkNameFromProviderType = (providerName) => {
-  if (providerName === NETWORK_TYPES.RPC) {
-    return '';
-  }
-  return providerName;
+  return value
+    .replace(REGEX_LTR_OVERRIDE, '\\u202D')
+    .replace(REGEX_RTL_OVERRIDE, '\\u202E');
 };
 
 /**
@@ -701,6 +734,36 @@ export const getNetworkNameFromProviderType = (providerName) => {
  */
 export const isAbleToExportAccount = (keyringType = '') => {
   return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
+};
+
+export const isAbleToRevealSrp = (accountToExport, keyrings) => {
+  const {
+    metadata: {
+      keyring: { type },
+      snap,
+    },
+    options: { entropySource },
+  } = accountToExport;
+
+  // All hd keyrings can reveal their srp.
+  if (type === KeyringTypes.hd) {
+    return true;
+  }
+
+  // We only consider 1st-party Snaps that have an entropy source.
+  if (
+    type === KeyringTypes.snap &&
+    isMultichainWalletSnap(snap?.id) &&
+    entropySource
+  ) {
+    const keyringId = entropySource;
+    return keyrings.some(
+      (keyring) =>
+        keyring.type === KeyringTypes.hd && keyring.metadata.id === keyringId,
+    );
+  }
+
+  return false;
 };
 
 /**
@@ -787,6 +850,49 @@ export const getAvatarFallbackLetter = (subjectName) => {
 };
 
 /**
+ * Check whether raw origin URL is an IP address.
+ *
+ * Note: IPv6 addresses are expected to be wrapped in brackets (e.g. [fe80::1])
+ * because of how URL formatting works.
+ *
+ * @param {string} rawOriginUrl - Raw origin (URL) with protocol that is potentially an IP address
+ * @returns Boolean, true if the origin is an IP address, false otherwise.
+ */
+export const isIpAddress = (rawOriginUrl) => {
+  if (typeof rawOriginUrl === 'string') {
+    return Boolean(
+      rawOriginUrl.match(/^(\d{1,3}\.){3}\d{1,3}$|^\[[0-9a-f:]+\]$/iu),
+    );
+  }
+
+  return false;
+};
+
+/**
+ * Transforms full raw URLs to something that can be used as title.
+ * Basically, it removes subdomain and protocol prefixes.
+ *
+ * Note: For IP address origins, full IP address without protocol will be returned.
+ *
+ * @param {string} rawOrigin - Raw origin (URL) with protocol.
+ * @returns User friendly title extracted from raw URL.
+ */
+export const transformOriginToTitle = (rawOrigin) => {
+  try {
+    const url = new URL(rawOrigin);
+
+    if (isIpAddress(url.hostname)) {
+      return url.hostname;
+    }
+
+    const parts = url.hostname.split('.');
+    return parts.slice(-2).join('.');
+  } catch (e) {
+    return 'Unknown Origin';
+  }
+};
+
+/**
  * Get abstracted Snap permissions filtered by weight.
  *
  * @param weightedPermissions - Set of Snap permissions that have 'weight' property assigned.
@@ -820,4 +926,19 @@ export const getFilteredSnapPermissions = (
   }
 
   return filteredPermissions;
+};
+/**
+ * Helper function to calculate the token amount 1dAgo using price percentage a day ago.
+ *
+ * @param {*} tokenFiatBalance - current token fiat balance
+ * @param {*} tokenPricePercentChange1dAgo - price percentage 1day ago
+ * @returns token amount 1day ago
+ */
+export const getCalculatedTokenAmount1dAgo = (
+  tokenFiatBalance,
+  tokenPricePercentChange1dAgo,
+) => {
+  return tokenPricePercentChange1dAgo !== undefined && tokenFiatBalance
+    ? tokenFiatBalance / (1 + tokenPricePercentChange1dAgo / 100)
+    : tokenFiatBalance ?? 0;
 };

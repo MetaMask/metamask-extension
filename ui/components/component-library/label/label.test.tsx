@@ -1,8 +1,9 @@
 /* eslint-disable jest/require-top-level-describe */
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import { Icon, IconName, TextField } from '..';
 
+import { Icon, IconName } from '../icon';
+import { TextField } from '../text-field';
 import { Label } from './label';
 
 describe('label', () => {

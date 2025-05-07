@@ -14,6 +14,7 @@ import { addToQueue } from './helpers';
 type ConfirmationsRejectRuleOptions = {
   driver: Driver;
   only: string[];
+  requiresEthAccountsPermission: string[];
 };
 // this rule makes sure that all confirmation requests are rejected.
 // it also validates that the JSON-RPC response is an error with
@@ -29,11 +30,7 @@ export class ConfirmationsRejectRule implements Rule {
     this.driver = options.driver;
     this.only = options.only;
 
-    this.requiresEthAccountsPermission = [
-      'personal_sign',
-      'eth_signTypedData_v4',
-      'eth_getEncryptionPublicKey',
-    ];
+    this.requiresEthAccountsPermission = options.requiresEthAccountsPermission;
   }
 
   getTitle() {
@@ -69,7 +66,7 @@ export class ConfirmationsRejectRule implements Rule {
               await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
               await this.driver.findClickableElements({
-                text: 'Next',
+                text: 'Connect',
                 tag: 'button',
               });
 
@@ -80,16 +77,25 @@ export class ConfirmationsRejectRule implements Rule {
               });
 
               await this.driver.clickElement({
-                text: 'Next',
-                tag: 'button',
-              });
-
-              await this.driver.clickElement({
-                text: 'Confirm',
+                text: 'Connect',
                 tag: 'button',
               });
 
               await switchToOrOpenDapp(this.driver);
+
+              const switchEthereumChainRequest = JSON.stringify({
+                jsonrpc: '2.0',
+                method: 'wallet_switchEthereumChain',
+                params: [
+                  {
+                    chainId: '0x539', // 1337
+                  },
+                ],
+              });
+
+              await this.driver.executeScript(
+                `window.ethereum.request(${switchEthereumChainRequest})`,
+              );
             }
           } catch (e) {
             console.log(e);

@@ -248,9 +248,6 @@
   "from": {
     "message": "Kutoka"
   },
-  "functionType": {
-    "message": "Aina ya Shughuli"
-  },
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
@@ -306,9 +303,6 @@
   "import": {
     "message": "Ingiza",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Ingiza Akaunti"
   },
   "importAccountMsg": {
     "message": "Akaunti zilizoingizwa hazitahusishwa na kirai chako cha kianzio cha akaunti ya MetaMask iliyoundwa awali. Pata maelezo zaidi kuhusu akaunti zilizoingizwa"
@@ -372,9 +366,6 @@
   "loading": {
     "message": "Inapakia..."
   },
-  "loadingTokens": {
-    "message": "Inapakia Vianzio..."
-  },
   "lock": {
     "message": "Toka kwenye akaunti"
   },
@@ -428,9 +419,6 @@
   "noConversionRateAvailable": {
     "message": "Hakuna Kiwango cha Ubadilishaji"
   },
-  "noTransactions": {
-    "message": "Huna miamala."
-  },
   "noWebcamFound": {
     "message": "Kamera yako ya kumpyuta haikupatikana. Tafadhali jaribu tena."
   },
@@ -454,9 +442,6 @@
   },
   "origin": {
     "message": "Asili"
-  },
-  "parameters": {
-    "message": "Vigezo"
   },
   "participateInMetaMetrics": {
     "message": "Shiriki katika MetaMetrics"
@@ -485,12 +470,6 @@
   },
   "prev": {
     "message": "Hakiki"
-  },
-  "primaryCurrencySetting": {
-    "message": "Sarafu ya Msingi"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Chagua mzawa ili kuweka kipaumbele kuonyesha thamani kwenye sarafu mzawa ya mnyororo (k.m ETH). Chagua Fiat ili uwelke kipaumbale kuonyesha thamani kwenye sarafu yako ya fiat uliyoichagua."
   },
   "privacyMsg": {
     "message": "Sera ya Faragha"
@@ -531,9 +510,6 @@
   },
   "removeAccountDescription": {
     "message": "Akaunti hii itaondolewa kwenye waleti yako. Tafadhali hakikisha una kirai kianzio cha asili au ufunguo binafsi kwa akaunti hii iliyohamishwa kabla ya kuendelea. Unaweza kuhamisha au kufungua akaunti tena kutoka kwenye menyu ya akaunti."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "maombi yanasubiriwa kutambuliwa"
   },
   "required": {
     "message": "Inahitajika"
@@ -601,9 +577,6 @@
   },
   "showHexDataDescription": {
     "message": "Chagua hii ili uonyeshe sehemu ya data ya hex kwenye skrini ya tuma"
-  },
-  "sigRequest": {
-    "message": "Ombi la Saini"
   },
   "sign": {
     "message": "Ingia kwenye akaunti"
@@ -701,9 +674,6 @@
   "transactionErrored": {
     "message": "Muamala umepata hitilafu."
   },
-  "transactionFee": {
-    "message": "Ada ya Muamala"
-  },
   "transactionResubmitted": {
     "message": "Muamala umewasilishwa tena ukiwa na ada ya gesi iliyoongezeka hadi $1 manamo $2"
   },
@@ -731,9 +701,6 @@
   "unknown": {
     "message": "Haijulikani"
   },
-  "unknownNetwork": {
-    "message": "Mtandao Binafsi Usiojulikana"
-  },
   "unknownQrCode": {
     "message": "Hitilafu: Hatukuweza kubainisha msimbo huo wa QR"
   },
@@ -742,9 +709,6 @@
   },
   "unlockMessage": {
     "message": "Wavuti uliotenganishwa unasubiri"
-  },
-  "updatedWithDate": {
-    "message": "Imesasishwa $1"
   },
   "urlErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."
@@ -766,9 +730,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Unapaswa kuruhusu kamera ili utumie kipengele hiki."
-  },
-  "youSign": {
-    "message": "Unasaini"
   },
   "yourPrivateSeedPhrase": {
     "message": "Kirai chako kianzio cha binafsi"

@@ -3,6 +3,9 @@ import React, {
   useEffect,
   MouseEvent as ReactMouseEvent,
 } from 'react';
+import classnames from 'classnames';
+import { State } from '@metamask/snaps-sdk';
+import { isObject } from '@metamask/utils';
 import {
   Box,
   ButtonBase,
@@ -31,9 +34,10 @@ import {
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUISelectorProps = {
+  className?: string;
   name: string;
   title: string;
-  options: string[];
+  options: { key?: string; value: State; disabled: boolean }[];
   optionComponents: React.ReactNode[];
   form?: string;
   label?: string;
@@ -42,15 +46,19 @@ export type SnapUISelectorProps = {
 };
 
 type SelectorItemProps = {
-  value: string;
+  value: State;
   children: React.ReactNode;
-  onSelect: (value: string) => void;
+  disabled?: boolean;
+  selected: boolean;
+  onSelect: (value: State) => void;
 };
 
 const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
   value,
   children,
+  selected,
   onSelect,
+  disabled,
 }) => {
   const handleClick = () => {
     onSelect(value);
@@ -59,7 +67,10 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
   return (
     <ButtonBase
       className="snap-ui-renderer__selector-item"
-      backgroundColor={BackgroundColor.transparent}
+      data-testid="snap-ui-renderer__selector-item"
+      backgroundColor={
+        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
+      }
       borderRadius={BorderRadius.LG}
       paddingTop={2}
       paddingBottom={2}
@@ -75,16 +86,33 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
         justifyContent: 'inherit',
         textAlign: 'inherit',
         height: 'inherit',
-        minHeight: '32px',
-        maxHeight: '64px',
+        minHeight: '48px',
+        maxHeight: '58px',
+        position: 'relative',
       }}
+      disabled={disabled}
     >
       {children}
+      {selected && (
+        <Box
+          borderRadius={BorderRadius.pill}
+          backgroundColor={BackgroundColor.primaryDefault}
+          marginRight={3}
+          style={{
+            position: 'absolute',
+            height: 'calc(100% - 8px)',
+            width: '4px',
+            top: '4px',
+            left: '4px',
+          }}
+        />
+      )}
     </ButtonBase>
   );
 };
 
 export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
+  className,
   name,
   title,
   options,
@@ -96,13 +124,13 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue(name, form) as string;
+  const initialValue = getValue(name, form);
 
   const [selectedOptionValue, setSelectedOption] = useState(initialValue);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (initialValue) {
+    if (initialValue !== undefined && initialValue !== null) {
       setSelectedOption(initialValue);
     }
   }, [initialValue]);
@@ -114,24 +142,42 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
 
   const handleModalClose = () => setIsModalOpen(false);
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (value: State) => {
     setSelectedOption(value);
     handleInputChange(name, value, form);
     handleModalClose();
   };
 
-  const selectedOptionIndex = options.findIndex(
-    (option) => option === selectedOptionValue,
+  /**
+   * Find the index of the selected option in the options array.
+   * If the option is an object, use the provided key to compare the values.
+   * If the option is a primitive, compare the values directly.
+   */
+  const selectedOptionIndex = options.findIndex((option) =>
+    option.key && isObject(option.value)
+      ? option.value[option.key as keyof typeof option.value] ===
+        selectedOptionValue?.[option.key as keyof typeof selectedOptionValue]
+      : option.value === selectedOptionValue,
   );
 
   const selectedOption = optionComponents[selectedOptionIndex];
 
   return (
     <>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        className={classnames({
+          'snap-ui-renderer__field': label !== undefined,
+        })}
+      >
         {label && <Label htmlFor={name}>{label}</Label>}
         <ButtonBase
-          className="snap-ui-renderer__selector"
+          className={
+            className
+              ? classnames('snap-ui-renderer__selector', className)
+              : 'snap-ui-renderer__selector'
+          }
           backgroundColor={BackgroundColor.backgroundDefault}
           borderRadius={BorderRadius.LG}
           paddingTop={2}
@@ -155,8 +201,8 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
             justifyContent: 'inherit',
             textAlign: 'inherit',
             height: 'inherit',
-            minHeight: '32px',
-            maxHeight: '64px',
+            minHeight: '48px',
+            maxHeight: '58px',
           }}
         >
           {selectedOption}
@@ -186,7 +232,13 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
               gap={2}
             >
               {optionComponents.map((component, index) => (
-                <SelectorItem value={options[index]} onSelect={handleSelect}>
+                <SelectorItem
+                  value={options[index].value}
+                  disabled={options[index]?.disabled}
+                  onSelect={handleSelect}
+                  selected={index === selectedOptionIndex}
+                  key={index}
+                >
                   {component}
                 </SelectorItem>
               ))}

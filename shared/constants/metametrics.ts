@@ -1,5 +1,17 @@
+import { Json } from '@metamask/utils';
 import type { EnvironmentType } from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
+
+type JsonWithUndefined =
+  | null
+  | boolean
+  | number
+  | string
+  | undefined
+  | Json[]
+  | {
+      [prop: string]: Json;
+    };
 
 /**
  * Used to attach context of where the user was at in the application when the
@@ -39,7 +51,7 @@ export type MetaMetricsReferrerObject = {
  * function, but still provides the consumer a way to override these values if
  * necessary.
  */
-type MetaMetricsContext = {
+export type MetaMetricsContext = {
   /**
    * Application metadata.
    */
@@ -65,6 +77,10 @@ type MetaMetricsContext = {
    * The dapp that triggered an interaction (MetaMask only).
    */
   referrer?: MetaMetricsReferrerObject;
+  /**
+   * The marketing campaign cookie ID.
+   */
+  marketingCampaignCookieId?: string | null;
 };
 
 export type MetaMetricsEventPayload = {
@@ -79,7 +95,7 @@ export type MetaMetricsEventPayload = {
   /**
    * The action ID to deduplicate event requests from the UI.
    */
-  actionId?: number;
+  actionId?: string;
   /**
    * The type of environment this event occurred in. Defaults to the background
    * process type.
@@ -88,13 +104,14 @@ export type MetaMetricsEventPayload = {
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
-  properties?: object;
+  properties?: Record<string, Json>;
+
   /**
    * Sensitive values to track. These properties will be sent in an additional
    * event that excludes the user's `metaMetricsId`. Keys in this object must be
    * in `snake_case`.
    */
-  sensitiveProperties?: object;
+  sensitiveProperties?: Record<string, Json>;
   /**
    * Amount of currency that the event creates in revenue for MetaMask.
    */
@@ -116,6 +133,21 @@ export type MetaMetricsEventPayload = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
+  /*
+   * The unique identifier for the event.
+   */
+  uniqueIdentifier?: string;
+  /**
+   * Whether the event is a duplicate of an anonymized event.
+   */
+  isDuplicateAnonymizedEvent?: boolean;
+};
+
+export type UnsanitizedMetaMetricsEventPayload = Omit<
+  MetaMetricsEventPayload,
+  'properties'
+> & {
+  properties?: Record<string, JsonWithUndefined>;
 };
 
 export type MetaMetricsEventOptions = {
@@ -146,6 +178,10 @@ export type MetaMetricsEventOptions = {
    * as not conforming to our schema.
    */
   matomoEvent?: boolean;
+  /**
+   * Values that can used in the "properties" tracking object as keys,
+   */
+  contextPropsIntoEventProperties?: string | string[];
 };
 
 export type MetaMetricsEventFragment = {
@@ -189,13 +225,13 @@ export type MetaMetricsEventFragment = {
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
-  properties?: object;
+  properties?: Record<string, Json>;
   /**
    * Sensitive values to track. These properties will be sent in an additional
    * event that excludes the user's `metaMetricsId`. Keys in this object must be
    * in `snake_case`.
    */
-  sensitiveProperties?: object;
+  sensitiveProperties?: Record<string, Json>;
   /**
    * Amount of currency that the event creates in revenue for MetaMask.
    */
@@ -223,6 +259,25 @@ export type MetaMetricsEventFragment = {
    * to avoid unnecessary lookups and reduce accidental duplication.
    */
   uniqueIdentifier?: string;
+  /*
+   * The event id.
+   */
+  id: string;
+  /*
+   * The environment type.
+   */
+  environmentType?: string;
+  /*
+   * The event name.
+   */
+  event?: string;
+
+  /**
+   * HACK: "transaction-submitted-<id>" fragment hack
+   * If this is true and the fragment is found as an abandoned fragment,
+   * then delete the fragment instead of finalizing it.
+   */
+  canDeleteIfAbandoned?: boolean;
 };
 
 /**
@@ -245,11 +300,38 @@ export type SegmentEventPayload = {
   /**
    * Properties to attach to the event.
    */
-  properties: object;
+  properties: {
+    params?: Record<string, string>;
+    legacy_event?: boolean;
+    locale: string;
+    chain_id: string;
+    environment_type?: string;
+    revenue?: number;
+    value?: number;
+    currency?: string;
+    category?: string;
+  };
   /**
    * The context the event occurred in.
    */
   context: MetaMetricsContext;
+  /**
+   * The message id
+   */
+  messageId?: string;
+
+  /**
+   * The timestamp of the event.
+   */
+  timestamp?: string;
+  /*
+   * The event name.
+   */
+  name?: string;
+  /*
+   * The user trais
+   */
+  traits?: MetaMetricsUserTraits;
 };
 
 /**
@@ -259,18 +341,18 @@ export type MetaMetricsPagePayload = {
   /**
    * The name of the page that was viewed.
    */
-  name: string;
+  name?: string;
   /**
    * The variadic parts of the page URL.
    *
    * Example: If the route is `/asset/:asset` and the path is `/asset/ETH`,
    * the `params` property would be `{ asset: 'ETH' }`.
    */
-  params?: object;
+  params?: Record<string, string>;
   /**
    * The environment type that the page was viewed in.
    */
-  environmentType: EnvironmentType;
+  environmentType?: EnvironmentType;
   /**
    * The details of the page.
    */
@@ -279,6 +361,10 @@ export type MetaMetricsPagePayload = {
    * The dapp that triggered the page view.
    */
   referrer?: MetaMetricsReferrerObject;
+  /**
+   * The action ID of the page view.
+   */
+  actionId?: string;
 };
 
 export type MetaMetricsPageOptions = {
@@ -315,7 +401,7 @@ export type MetaMetricsUserTraits = {
   /**
    * Does the user have the Autodetect NFTs feature enabled?
    */
-  nft_autodetection_enabled?: number;
+  nft_autodetection_enabled?: boolean;
   /**
    * A number representing the number of identities (accounts) added to the
    * user's wallet.
@@ -337,6 +423,10 @@ export type MetaMetricsUserTraits = {
    */
   number_of_tokens?: number;
   /**
+   * The number of HD Entropies the user has.
+   */
+  number_of_hd_entropies?: number;
+  /**
    * Does the user have the OpenSea API enabled?
    */
   opensea_api_enabled?: boolean;
@@ -355,9 +445,29 @@ export type MetaMetricsUserTraits = {
    */
   token_detection_enabled?: boolean;
   /**
+   * Does the user have a selected currency in the settings
+   */
+  current_currency?: string;
+  /**
+   * Does the user have show native token as main balance enabled.
+   */
+  show_native_token_as_main_balance?: boolean;
+  /**
    * Does the user have native currency enabled?
    */
   use_native_as_primary_currency?: boolean;
+  /**
+   * Does the user opt in for metrics
+   */
+  is_metrics_opted_in?: boolean;
+  /**
+   * Does the user accepted marketing consent
+   */
+  has_marketing_consent?: boolean;
+  /**
+   * The date the extension was installed.
+   */
+  install_date_ext?: string;
   /**
    * Whether the security provider feature has been enabled.
    */
@@ -366,7 +476,7 @@ export type MetaMetricsUserTraits = {
   /**
    * The address of the MMI account in question
    */
-  mmi_account_address?: string;
+  mmi_account_address?: string | null;
   /**
    * What is the MMI extension ID
    */
@@ -376,6 +486,18 @@ export type MetaMetricsUserTraits = {
    */
   mmi_is_custodian?: boolean;
   ///: END:ONLY_INCLUDE_IF
+  /**
+   * Does the user change the token sort order on the asset list
+   */
+  token_sort_preference?: string;
+  /**
+   * The number of petname addresses
+   */
+  petname_addresses_count?: number;
+  /**
+   * The profile ID of the user if they have been signed in
+   */
+  profile_id?: string;
 };
 
 export enum MetaMetricsUserTrait {
@@ -428,6 +550,10 @@ export enum MetaMetricsUserTrait {
    */
   NumberOfTokens = 'number_of_tokens',
   /**
+   * Identified when the user has HD Entropies.
+   */
+  NumberOfHDEntropies = 'number_of_hd_entropies',
+  /**
    * Identified when the OpenSea API is enabled.
    */
   OpenSeaApiEnabled = 'opensea_api_enabled',
@@ -446,9 +572,9 @@ export enum MetaMetricsUserTrait {
    */
   TokenDetectionEnabled = 'token_detection_enabled',
   /**
-   * Identified when the user enables native currency.
+   * Identified when show native token as main balance is toggled.
    */
-  UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
+  ShowNativeTokenAsMainBalance = 'show_native_token_as_main_balance',
   /**
    * Identified when the security provider feature is enabled.
    */
@@ -472,6 +598,26 @@ export enum MetaMetricsUserTrait {
    * Identified when the user selects a currency from settings
    */
   CurrentCurrency = 'current_currency',
+  /**
+   * Identified when the user changes token sort order on asset-list
+   */
+  TokenSortPreference = 'token_sort_preference',
+  /**
+   * Identifies if the Privacy Mode is enabled
+   */
+  PrivacyModeEnabled = 'privacy_mode_toggle',
+  /**
+   * Identified when the user prefers to see all tokens or current network tokens in wallet list
+   */
+  NetworkFilterPreference = 'selected_network_filter',
+  /**
+   * Identified when the user signs in
+   */
+  ProfileId = 'profile_id',
+  /**
+   * Identified when the user adds or removes configured chains (evm or non-evm)
+   */
+  ChainIdList = 'chain_id_list',
 }
 
 /**
@@ -503,21 +649,29 @@ export enum MetaMetricsEventName {
   AccountAdded = 'Account Added',
   AccountAddSelected = 'Account Add Selected',
   AccountAddFailed = 'Account Add Failed',
+  AccountImportFailed = 'Account Import Failed',
   AccountDetailsOpened = 'Account Details Opened',
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
-  AccountsSyncAccountAdded = 'Accounts Sync Account Added',
-  AccountsSyncAccountNameUpdated = 'Accounts Sync Account Name Updated',
+  AccountsSyncAdded = 'Accounts Sync Added',
+  AccountsSyncNameUpdated = 'Accounts Sync Name Updated',
+  AccountsSyncErroneousSituation = 'Accounts Sync Erroneous Situation',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
   AppInstalled = 'App Installed',
+  AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
+  BannerDisplay = 'Banner Display',
+  BannerCloseAll = 'Banner Close All',
+  BannerSelect = 'Banner Select',
+  BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
+  SwapLinkClicked = 'Swap Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
   CurrentCurrency = 'Current Currency',
@@ -527,6 +681,7 @@ export enum MetaMetricsEventName {
   DecryptionRequested = 'Decryption Requested',
   DisablingNotifications = 'Notifications Disabled',
   EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
+  EmptyBuyBannerClosed = 'Empty Buy Banner Closed',
   EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
@@ -536,7 +691,9 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
+  ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
+  ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -552,10 +709,15 @@ export enum MetaMetricsEventName {
   MarkAllNotificationsRead = 'Notifications Marked All as Read',
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
+  MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
   NavAccountMenuOpened = 'Account Menu Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
   NavPermissionsOpened = 'Permissions Opened',
+  UpdatePermissionedNetworks = 'Update Permissioned Networks',
+  UpdatePermissionedAccounts = 'Update Permissioned Accounts',
+  ViewPermissionedNetworks = 'View Permissioned Networks',
+  ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
   NavSettingsOpened = 'Settings Opened',
   NavAccountSwitched = 'Account Switched',
@@ -580,6 +742,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
+  OnboardingWalletSetupComplete = 'Wallet Setup Complete',
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
@@ -590,15 +753,22 @@ export enum MetaMetricsEventName {
   PetnameModalOpened = 'Petname Modal Opened',
   PetnameUpdated = 'Petname Updated',
   PhishingPageDisplayed = 'Phishing Page Displayed',
+  ProceedAnywayClicked = 'Proceed Anyway Clicked',
   PortfolioLinkClicked = 'Portfolio Link Clicked',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
+  SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
+  SecretRecoveryPhrasePickerDetailsClicked = 'Secret Recovery Phrase Details Clicked',
+  SecretRecoveryPhrasePickerSelected = 'Secret Recovery Phrase Picker Selected',
   SettingsUpdated = 'Settings Updated',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
+  SignatureApprovedAnon = 'Signature Approved Anon',
+  SignatureRejectedAnon = 'Signature Rejected Anon',
+  SignatureRequestedAnon = 'Signature Requested Anon',
   SimulationFails = 'Simulation Fails',
   SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
   SrpRevealStarted = 'Reveal SRP Initiated',
@@ -617,6 +787,7 @@ export enum MetaMetricsEventName {
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
   SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
   StakingEntryPointClicked = 'Stake Button Clicked',
+  SurveyToast = 'Survey Toast',
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',
@@ -624,17 +795,21 @@ export enum MetaMetricsEventName {
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
   TokenRemoved = 'Token Removed',
+  TokenSortPreference = 'Token Sort Preference',
+  TokenListRefreshed = 'Token List Refreshed',
   NFTRemoved = 'NFT Removed',
   TokenDetected = 'Token Detected',
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
-  UseNativeCurrencyAsPrimaryCurrency = 'Use Native Currency as Primary Currency',
+  ShowNativeTokenAsMainBalance = 'Show native token as main balance',
   WalletSetupStarted = 'Wallet Setup Selected',
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
+  // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
+  // END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   DeeplinkClicked = 'Deeplink Clicked',
   ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
@@ -662,6 +837,8 @@ export enum MetaMetricsEventName {
   TokenDetailsOpened = 'Token Details Opened',
   NftScreenOpened = 'NFT Screen Opened',
   NftDetailsOpened = 'NFT Details Opened',
+  DeFiScreenOpened = 'DeFi Screen Opened',
+  DeFiDetailsOpened = 'DeFi Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
@@ -678,7 +855,9 @@ export enum MetaMetricsEventName {
   TransactionFinalized = 'Transaction Finalized',
   ConfirmationQueued = 'Confirmation Queued',
   ExitedSwaps = 'Exited Swaps',
+  MakeAnotherSwap = 'Make Another Swap',
   SwapError = 'Swap Error',
+  SwapFailed = 'Swap Failed',
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
   SnapInstallRejected = 'Snap Install Rejected',
@@ -718,14 +897,28 @@ export enum MetaMetricsEventName {
   NotificationsActivated = 'Notifications Activated',
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
-
   // Send
   sendAssetSelected = 'Send Asset Selected',
   sendFlowExited = 'Send Flow Exited',
   sendRecipientSelected = 'Send Recipient Selected',
   sendSwapQuoteError = 'Send Swap Quote Error',
-  sendSwapQuoteFetched = 'Send Swap Quote Fetched',
+  sendSwapQuoteRequested = 'Send Swap Quote Requested',
+  sendSwapQuoteReceived = 'Send Swap Quote Received',
   sendTokenModalOpened = 'Send Token Modal Opened',
+  // Cross Chain Swaps
+  ActionCompleted = 'Action Completed',
+  ActionFailed = 'Action Failed',
+  ActionOpened = 'Action Opened',
+  ActionSubmitted = 'Action Submitted',
+  AllQuotesOpened = 'All Quotes Opened',
+  AllQuotesSorted = 'All Quotes Sorted',
+  InputChanged = 'Input Changed',
+  InputSourceDestinationFlipped = 'Source and Destination Flipped',
+  CrossChainSwapsQuoteError = 'Cross-chain Quote Error',
+  QuoteSelected = 'Quote Selected',
+  CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
+  CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
+  Wallet5792Called = 'EIP-5792 API Called',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -739,10 +932,10 @@ export enum MetaMetricsEventAccountType {
 
 export enum QueueType {
   NavigationHeader = 'navigation_header',
-  QueueController = 'queue_controller',
 }
 
 export enum MetaMetricsEventAccountImportType {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   Json = 'json',
   PrivateKey = 'private_key',
   Srp = 'srp',
@@ -753,12 +946,15 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
+  Banner = 'Banner',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
+  DeFi = 'DeFi',
   Footer = 'Footer',
   Home = 'Home',
   InpageProvider = 'inpage_provider',
+  MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
   Navigation = 'Navigation',
@@ -768,12 +964,15 @@ export enum MetaMetricsEventCategory {
   NotificationsActivationFlow = 'Notifications Activation Flow',
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Permissions = 'Permissions',
   Phishing = 'Phishing',
   ProfileSyncing = 'Profile Syncing',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
   Send = 'Send',
   Settings = 'Settings',
+  Feedback = 'Feedback',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
   Tokens = 'Tokens',
@@ -783,6 +982,7 @@ export enum MetaMetricsEventCategory {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI = 'Institutional',
   ///: END:ONLY_INCLUDE_IF
+  CrossChainSwaps = 'Cross Chain Swaps',
 }
 
 export enum MetaMetricsEventLinkType {
@@ -808,6 +1008,7 @@ export enum MetaMetricsNetworkEventSource {
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
   NewAddNetworkFlow = 'new_add_network_flow',
+  Bridge = 'bridge',
 }
 
 export enum MetaMetricsSwapsEventSource {
@@ -827,9 +1028,15 @@ export enum MetaMetricsTransactionEventSource {
   User = 'user',
 }
 
+export enum MetaMetricsRequestedThrough {
+  EthereumProvider = 'ethereum_provider',
+  MultichainApi = 'multichain_api',
+}
+
 export enum MetaMetricsEventLocation {
   AlertFrictionModal = 'alert_friction_modal',
   Confirmation = 'confirmation',
+  OriginThrottleModal = 'origin_throttle_modal',
   SignatureConfirmation = 'signature_confirmation',
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',
@@ -870,4 +1077,9 @@ export enum DeleteRegulationStatus {
   PartialSuccess = 'PARTIAL_SUCCESS',
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
+}
+
+export enum MetaMetricsEventTransactionEstimateType {
+  DappProposed = 'dapp_proposed',
+  DefaultEstimate = 'default_estimate',
 }

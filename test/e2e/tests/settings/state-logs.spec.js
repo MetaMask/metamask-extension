@@ -1,10 +1,10 @@
 const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
 const {
-  defaultGanacheOptions,
-  withFixtures,
   createDownloadFolder,
+  openMenuSafe,
   unlockWallet,
+  withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -30,7 +30,6 @@ describe('State logs', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -38,9 +37,8 @@ describe('State logs', function () {
         await unlockWallet(driver);
 
         // Download state logs
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
+
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({

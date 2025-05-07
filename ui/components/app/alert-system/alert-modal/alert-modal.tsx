@@ -1,7 +1,26 @@
-import React, { useCallback, useEffect } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
-
-import { SecurityProvider } from '../../../../../shared/constants/security-provider';
+import React, { useCallback, useEffect } from 'react';
+import {
+  BlockaidReason,
+  SecurityProvider,
+} from '../../../../../shared/constants/security-provider';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  IconColor,
+  Severity,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import useAlerts from '../../../../hooks/useAlerts';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import {
   Box,
   Button,
@@ -18,24 +37,7 @@ import {
   ModalOverlay,
   Text,
 } from '../../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  Severity,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import useAlerts from '../../../../hooks/useAlerts';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
-import { AlertProvider } from '../alert-provider';
 import { useAlertMetrics } from '../contexts/alertMetricsContext';
 
 export type AlertModalProps = {
@@ -60,10 +62,6 @@ export type AlertModalProps = {
    */
   customTitle?: string;
   /**
-   * The flag to enable the provider. It's enabled by default.
-   */
-  enableProvider?: boolean;
-  /**
    * The start (left) content area of ModalHeader.
    * It overrides `startAccessory` of ModalHeaderDefault and by default no content is present.
    */
@@ -80,6 +78,10 @@ export type AlertModalProps = {
    * The owner ID of the relevant alert from the `confirmAlerts` reducer.
    */
   ownerId: string;
+  /**
+   * Whether to show the close icon in the modal header.
+   */
+  showCloseIcon?: boolean;
 };
 
 function getSeverityStyle(severity?: Severity) {
@@ -138,9 +140,39 @@ function AlertHeader({
 
 function BlockaidAlertDetails() {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext();
+  const { securityAlertResponse } = currentConfirmation;
+  let copy;
+  switch (securityAlertResponse?.reason) {
+    case BlockaidReason.approvalFarming:
+    case BlockaidReason.setApprovalForAll:
+    case BlockaidReason.permitFarming:
+      copy = t('blockaidAlertDescriptionWithdraw');
+      break;
+    case BlockaidReason.transferFarming:
+    case BlockaidReason.transferFromFarming:
+    case BlockaidReason.rawNativeTokenTransfer:
+      copy = t('blockaidAlertDescriptionTokenTransfer');
+      break;
+    case BlockaidReason.seaportFarming:
+      copy = t('blockaidAlertDescriptionOpenSea');
+      break;
+    case BlockaidReason.blurFarming:
+      copy = t('blockaidAlertDescriptionBlur');
+      break;
+    case BlockaidReason.maliciousDomain:
+      copy = t('blockaidAlertDescriptionMalicious');
+      break;
+    case BlockaidReason.rawSignatureFarming:
+    case BlockaidReason.tradeOrderFarming:
+    case BlockaidReason.other:
+    default:
+      copy = t('blockaidAlertDescriptionOthers');
+  }
+
   return (
     <Text textAlign={TextAlign.Center} variant={TextVariant.bodyMd}>
-      {t('blockaidAlertInfo')}
+      {copy}
     </Text>
   );
 }
@@ -158,20 +190,22 @@ function AlertDetails({
     <Box
       key={selectedAlert.key}
       display={Display.InlineBlock}
-      padding={2}
+      padding={customDetails ? 0 : 2}
       width={BlockSize.Full}
       backgroundColor={customDetails ? undefined : severityStyle.background}
-      gap={2}
       borderRadius={BorderRadius.SM}
     >
       {customDetails ?? (
         <Box>
-          <Text
-            variant={TextVariant.bodyMd}
-            data-testid="alert-modal__selected-alert"
-          >
-            {selectedAlert.message}
-          </Text>
+          {Boolean(selectedAlert.content) && selectedAlert.content}
+          {Boolean(selectedAlert.message) && (
+            <Text
+              variant={TextVariant.bodyMd}
+              data-testid="alert-modal__selected-alert"
+            >
+              {selectedAlert.message}
+            </Text>
+          )}
           {selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
               {t('alertModalDetails')}
@@ -201,6 +235,8 @@ export function AcknowledgeCheckboxBase({
   isConfirmed: boolean;
   label?: string;
 }) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   if (selectedAlert.isBlocking || selectedAlert.severity !== Severity.Danger) {
     return null;
   }
@@ -210,12 +246,11 @@ export function AcknowledgeCheckboxBase({
   return (
     <Box
       display={Display.Flex}
-      padding={3}
+      padding={4}
       width={BlockSize.Full}
-      gap={3}
       backgroundColor={severityStyle.background}
-      marginTop={4}
       borderRadius={BorderRadius.LG}
+      marginTop={4}
     >
       <Checkbox
         label={label ?? t('alertModalAcknowledge')}
@@ -242,10 +277,6 @@ function AcknowledgeButton({
 }) {
   const t = useI18nContext();
 
-  if (isBlocking) {
-    return null;
-  }
-
   return (
     <Button
       variant={hasActions ? ButtonVariant.Secondary : ButtonVariant.Primary}
@@ -253,7 +284,7 @@ function AcknowledgeButton({
       onClick={onAcknowledgeClick}
       size={ButtonSize.Lg}
       data-testid="alert-modal-button"
-      disabled={!isConfirmed}
+      disabled={!isBlocking && !isConfirmed}
     >
       {t('gotIt')}
     </Button>
@@ -313,7 +344,7 @@ export function AlertModal({
   customDetails,
   customAcknowledgeCheckbox,
   customAcknowledgeButton,
-  enableProvider = true,
+  showCloseIcon = true,
 }: AlertModalProps) {
   const { isAlertConfirmed, setAlertConfirmed, alerts } = useAlerts(ownerId);
   const { trackAlertRender } = useAlertMetrics();
@@ -333,32 +364,40 @@ export function AlertModal({
     }
   }, [selectedAlert, trackAlertRender]);
 
+  const isConfirmed = selectedAlert
+    ? isAlertConfirmed(selectedAlert.key)
+    : false;
+  const isAlertDanger = selectedAlert
+    ? selectedAlert.severity === Severity.Danger
+    : false;
+
+  const handleCheckboxClick = useCallback(() => {
+    if (selectedAlert) {
+      setAlertConfirmed(selectedAlert.key, !isConfirmed);
+    }
+  }, [isConfirmed, selectedAlert, setAlertConfirmed]);
+
   if (!selectedAlert) {
     return null;
   }
-  const isConfirmed = isAlertConfirmed(selectedAlert.key);
-  const isAlertDanger = selectedAlert.severity === Severity.Danger;
-
-  const handleCheckboxClick = useCallback(() => {
-    return setAlertConfirmed(selectedAlert.key, !isConfirmed);
-  }, [isConfirmed, selectedAlert.key, setAlertConfirmed]);
 
   return (
     <Modal isOpen onClose={handleClose} data-testid="alert-modal">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
-          onClose={handleClose}
+          onClose={showCloseIcon ? handleClose : undefined}
           startAccessory={headerStartAccessory}
           paddingBottom={0}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
           closeButtonProps={{
             'data-testid': 'alert-modal-close-button',
           }}
+          endAccessory={showCloseIcon ? undefined : null} // Override endAccessory to omit the close icon
         />
         <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
-          {selectedAlert?.provider === SecurityProvider.Blockaid ? (
+          {selectedAlert.provider === SecurityProvider.Blockaid ? (
             <BlockaidAlertDetails />
           ) : (
             <AlertDetails
@@ -373,19 +412,13 @@ export function AlertModal({
               onCheckboxClick={handleCheckboxClick}
             />
           )}
-          {enableProvider ? (
-            <AlertProvider
-              provider={selectedAlert.provider}
-              paddingTop={2}
-              textAlign={TextAlign.Center}
-            />
-          ) : null}
         </ModalBody>
         <ModalFooter>
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             gap={4}
+            paddingTop={2}
             width={BlockSize.Full}
           >
             {customAcknowledgeButton ?? (

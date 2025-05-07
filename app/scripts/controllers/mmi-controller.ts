@@ -1,4 +1,3 @@
-import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import {
@@ -13,21 +12,26 @@ import {
 import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
+  API_REQUEST_LOG_EVENT,
 } from '@metamask-institutional/sdk';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
+import { CustodyController } from '@metamask-institutional/custody-controller';
+import { IApiCallLogEntry } from '@metamask-institutional/types';
+import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CustodyController } from '@metamask-institutional/custody-controller';
-import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
-import { SignatureController } from '@metamask/signature-controller';
+import { NetworkState } from '@metamask/network-controller';
 import {
+  MessageParamsPersonal,
+  MessageParamsTyped,
   OriginalRequest,
-  PersonalMessageParams,
-} from '@metamask/message-manager';
-import { NetworkController } from '@metamask/network-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+  SignatureController,
+} from '@metamask/signature-controller';
 import { toHex } from '@metamask/controller-utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import {
   MMIControllerOptions,
@@ -36,13 +40,11 @@ import {
   Label,
   Signature,
   ConnectionRequest,
+  MMIControllerMessenger,
 } from '../../../shared/constants/mmi-controller';
-import AccountTracker from '../lib/account-tracker';
-import { getCurrentChainId } from '../../../ui/selectors';
-import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
-import PreferencesController from './preferences-controller';
-import { AppStateController } from './app-state';
+import AccountTrackerController from './account-tracker-controller';
+import { AppStateController } from './app-state-controller';
 
 type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;
@@ -50,23 +52,22 @@ type UpdateCustodianTransactionsParameters = {
   txList: string[];
   custodyController: CustodyController;
   transactionUpdateController: TransactionUpdateController;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   txStateManager: any;
   getPendingNonce: (address: string) => Promise<number>;
   setTxHash: (txId: string, txHash: string) => void;
 };
 
-export default class MMIController extends EventEmitter {
+export class MMIController {
   public opts: MMIControllerOptions;
 
   public mmiConfigurationController: MmiConfigurationController;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public keyringController: any;
-
-  public preferencesController: PreferencesController;
 
   public appStateController: AppStateController;
 
@@ -74,35 +75,31 @@ export default class MMIController extends EventEmitter {
 
   private custodyController: CustodyController;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getState: () => any;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getPendingNonce: (address: string) => Promise<any>;
 
-  private accountTracker: AccountTracker;
+  private accountTrackerController: AccountTrackerController;
 
-  private metaMetricsController: MetaMetricsController;
+  #networkControllerState: NetworkState;
 
-  private networkController: NetworkController;
-
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private permissionController: any;
 
   private signatureController: SignatureController;
 
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private messenger: any;
+  private messagingSystem: MMIControllerMessenger;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private platform: any;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private extension: any;
 
@@ -114,39 +111,36 @@ export default class MMIController extends EventEmitter {
 
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) => void;
 
   private txStateManager: {
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];
     setTxStatusSigned: (txId: string) => void;
     setTxStatusSubmitted: (txId: string) => void;
     setTxStatusFailed: (txId: string) => void;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateTransaction: (txMeta: any) => void;
   };
 
   constructor(opts: MMIControllerOptions) {
-    super();
-
     this.opts = opts;
-    this.messenger = opts.messenger;
+    this.messagingSystem = opts.messenger;
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
-    this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
     this.transactionUpdateController = opts.transactionUpdateController;
     this.custodyController = opts.custodyController;
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
-    this.accountTracker = opts.accountTracker;
-    this.metaMetricsController = opts.metaMetricsController;
-    this.networkController = opts.networkController;
+    this.accountTrackerController = opts.accountTrackerController;
     this.permissionController = opts.permissionController;
     this.signatureController = opts.signatureController;
     this.platform = opts.platform;
@@ -207,6 +201,10 @@ export default class MMIController extends EventEmitter {
         this.setConnectionRequest(payload);
       },
     );
+
+    this.#networkControllerState = this.messagingSystem.call(
+      'NetworkController:getState',
+    );
   } // End of constructor
 
   async persistKeyringsAfterRefreshTokenChange() {
@@ -215,7 +213,8 @@ export default class MMIController extends EventEmitter {
 
   async trackTransactionEventFromCustodianEvent(
     txMeta: TransactionMeta,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) {
@@ -231,7 +230,8 @@ export default class MMIController extends EventEmitter {
   async addKeyringIfNotExists(type: KeyringTypes) {
     let keyring = await this.keyringController.getKeyringsByType(type)[0];
     if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(type);
+      await this.keyringController.addNewKeyring(type);
+      [keyring] = await this.keyringController.getKeyringsByType(type);
     }
     return keyring;
   }
@@ -300,6 +300,10 @@ export default class MMIController extends EventEmitter {
           },
         );
 
+        keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+          this.logAndStoreApiRequest(logData);
+        });
+
         // store the supported chains for this custodian type
         const accounts = await keyring.getAccounts();
         addresses = addresses.concat(...accounts);
@@ -312,7 +316,7 @@ export default class MMIController extends EventEmitter {
           }
         }
 
-        const txList = this.txStateManager.getTransactions({}, [], false); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
+        const txList = this.txStateManager.getTransactions(); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
           updateCustodianTransactions({
@@ -368,7 +372,8 @@ export default class MMIController extends EventEmitter {
       string,
       {
         name: string;
-        // TODO: Replace `any` with type
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         custodianDetails: any;
         labels: Label[];
@@ -391,7 +396,10 @@ export default class MMIController extends EventEmitter {
     // Check if any address is already added
     if (
       newAccounts.some((address) =>
-        this.messenger.call('AccountsController:getAccountByAddress', address),
+        this.messagingSystem.call(
+          'AccountsController:getAccountByAddress',
+          address,
+        ),
       )
     ) {
       throw new Error('Cannot import duplicate accounts');
@@ -414,6 +422,10 @@ export default class MMIController extends EventEmitter {
         this.appStateController.showInteractiveReplacementTokenBanner(payload);
       },
     );
+
+    keyring.on(API_REQUEST_LOG_EVENT, (logData: IApiCallLogEntry) => {
+      this.logAndStoreApiRequest(logData);
+    });
 
     if (!keyring) {
       throw new Error('Unable to get keyring');
@@ -454,7 +466,7 @@ export default class MMIController extends EventEmitter {
     const allAccounts = await this.keyringController.getAccounts();
 
     const accountsToTrack = [
-      ...new Set(
+      ...new Set<string>(
         oldAccounts.concat(allAccounts.map((a: string) => a.toLowerCase())),
       ),
     ];
@@ -487,20 +499,22 @@ export default class MMIController extends EventEmitter {
         // If the label is defined
         if (label) {
           // Set the label for the address
-          const account = this.messenger.call(
+          const account = this.messagingSystem.call(
             'AccountsController:getAccountByAddress',
             address,
           );
-          this.messenger.call(
-            'AccountsController:setAccountName',
-            account.id,
-            label,
-          );
+          if (account) {
+            this.messagingSystem.call(
+              'AccountsController:setAccountName',
+              account.id,
+              label,
+            );
+          }
         }
       }
     });
 
-    this.accountTracker.syncWithAddresses(accountsToTrack);
+    this.accountTrackerController.syncWithAddresses(accountsToTrack);
 
     for (const address of newAccounts) {
       try {
@@ -537,7 +551,7 @@ export default class MMIController extends EventEmitter {
   ) {
     let currentCustodyType: string = '';
     if (!custodianType) {
-      const { address } = this.messenger.call(
+      const { address } = this.messagingSystem.call(
         'AccountsController:getSelectedAccount',
       );
       currentCustodyType = this.custodyController.getCustodyTypeByAddress(
@@ -622,7 +636,7 @@ export default class MMIController extends EventEmitter {
 
   // Based on a custodian name, get all the tokens associated with that custodian
   async getCustodianJWTList(custodianEnvName: string) {
-    const internalAccounts = this.messenger.call(
+    const internalAccounts = this.messagingSystem.call(
       'AccountsController:listAccounts',
     );
 
@@ -721,7 +735,8 @@ export default class MMIController extends EventEmitter {
 
     const currentAddress =
       address ||
-      this.messenger.call('AccountsController:getSelectedAccount').address;
+      this.messagingSystem.call('AccountsController:getSelectedAccount')
+        .address;
     const currentCustodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(currentAddress),
     );
@@ -746,7 +761,7 @@ export default class MMIController extends EventEmitter {
 
     // TEMP: Convert internal accounts to match identities format
     // TODO: Convert handleMmiPortfolio to use internal accounts
-    const internalAccounts = this.messenger
+    const internalAccounts = this.messagingSystem
       .call('AccountsController:listAccounts')
       .map((internalAccount: InternalAccount) => {
         return {
@@ -754,14 +769,17 @@ export default class MMIController extends EventEmitter {
           name: internalAccount.metadata.name,
         };
       });
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    const { metaMetricsId } = this.messagingSystem.call(
+      'MetaMetricsController:getState',
+    );
     const getAccountDetails = (address: string) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
 
-    const networks = Object.values(
-      this.networkController.state.networkConfigurationsByChainId,
+    const { networkConfigurationsByChainId } = this.messagingSystem.call(
+      'NetworkController:getState',
     );
+    const networks = Object.values(networkConfigurationsByChainId);
 
     return handleMmiPortfolio({
       keyringAccounts,
@@ -791,14 +809,14 @@ export default class MMIController extends EventEmitter {
       req.method === 'eth_signTypedData_v4'
     ) {
       return await this.signatureController.newUnsignedTypedMessage(
-        updatedMsgParams as PersonalMessageParams,
+        updatedMsgParams as MessageParamsTyped,
         req as OriginalRequest,
         version,
         { parseJsonData: false },
       );
     } else if (req.method === 'personal_sign') {
       return await this.signatureController.newUnsignedPersonalMessage(
-        updatedMsgParams as PersonalMessageParams,
+        updatedMsgParams as MessageParamsPersonal,
         req as OriginalRequest,
       );
     }
@@ -833,30 +851,38 @@ export default class MMIController extends EventEmitter {
   async setAccountAndNetwork(origin: string, address: string, chainId: number) {
     await this.appStateController.getUnlockPromise(true);
     const addressToLowerCase = address.toLowerCase();
-    const { address: selectedAddress } = this.messenger.call(
+    const { address: selectedAddress } = this.messagingSystem.call(
       'AccountsController:getSelectedAccount',
     );
 
     if (selectedAddress.toLowerCase() !== addressToLowerCase) {
-      const internalAccount = this.messenger.call(
+      const internalAccount = this.messagingSystem.call(
         'AccountsController:getAccountByAddress',
         addressToLowerCase,
       );
-      this.messenger.call(
-        'AccountsController:setSelectedAccount',
-        internalAccount.id,
-      );
+      if (internalAccount) {
+        this.messagingSystem.call(
+          'AccountsController:setSelectedAccount',
+          internalAccount.id,
+        );
+      }
     }
 
-    const selectedChainId = getCurrentChainId({
-      metamask: this.networkController.state,
-    });
+    const { selectedNetworkClientId } = this.messagingSystem.call(
+      'NetworkController:getState',
+    );
+    const {
+      configuration: { chainId: selectedChainId },
+    } = this.messagingSystem.call(
+      'NetworkController:getNetworkClientById',
+      selectedNetworkClientId,
+    );
 
     if (selectedChainId !== toHex(chainId)) {
-      const networkConfiguration =
-        this.networkController.state.networkConfigurationsByChainId[
-          toHex(chainId)
-        ];
+      const networkConfiguration = this.messagingSystem.call(
+        'NetworkController:getNetworkConfigurationByChainId',
+        toHex(chainId),
+      );
 
       const { networkClientId } =
         networkConfiguration?.rpcEndpoints?.[
@@ -864,7 +890,10 @@ export default class MMIController extends EventEmitter {
         ] ?? {};
 
       if (networkClientId) {
-        await this.networkController.setActiveNetwork(networkClientId);
+        await this.messagingSystem.call(
+          'NetworkController:setActiveNetwork',
+          networkClientId,
+        );
       }
     }
 
@@ -879,5 +908,15 @@ export default class MMIController extends EventEmitter {
     await this.appStateController.getUnlockPromise(true);
     this.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE);
     return true;
+  }
+
+  async logAndStoreApiRequest(logData: IApiCallLogEntry) {
+    try {
+      const logs = await this.custodyController.sanitizeAndLogApiCall(logData);
+      return logs;
+    } catch (error) {
+      log.error('Error fetching extension request logs:', error);
+      throw error;
+    }
   }
 }

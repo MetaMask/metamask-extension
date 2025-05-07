@@ -3,10 +3,24 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getTokenList,
+  getPreferences,
+  getCurrencyRates,
+} from '../../../../selectors';
+import {
+  getMultichainCurrentChainId,
+  getMultichainIsEvm,
+} from '../../../../selectors/multichain';
 
 import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { TokenWithFiatAmount } from '../types';
+import { TokenCellProps } from './token-cell';
 import TokenCell from '.';
 
 jest.mock('react-redux', () => {
@@ -72,30 +86,78 @@ describe('Token Cell', () => {
   };
 
   const mockStore = configureMockStore([thunk])(mockState);
+  const propToken: Partial<TokenWithFiatAmount> & { currentCurrency: string } =
+    {
+      address: '0xAnotherToken' as Hex,
+      symbol: 'TEST',
+      string: '5.000',
+      currentCurrency: 'usd',
+      primary: '5.00',
+      image: '',
+      chainId: '0x1' as Hex,
+      tokenFiatAmount: 5,
+      aggregators: [],
+      decimals: 18,
+      isNative: false,
+    };
 
   const props = {
-    address: '0xAnotherToken',
-    symbol: 'TEST',
-    string: '5.000',
-    currentCurrency: 'usd',
-    image: '',
+    token: {
+      ...propToken,
+    },
     onClick: jest.fn(),
   };
-
-  const propsLargeAmount = {
-    address: '0xAnotherToken',
+  const propAnotherToken: Partial<TokenWithFiatAmount> & {
+    currentCurrency: string;
+  } = {
+    address: '0xAnotherToken' as Hex,
     symbol: 'TEST',
     string: '5000000',
     currentCurrency: 'usd',
     image: '',
+    chainId: '0x1' as Hex,
+    tokenFiatAmount: 5000000,
+    primary: '5000000',
+    aggregators: [],
+    decimals: 18,
+    isNative: false,
+  };
+  const propsLargeAmount = {
+    token: {
+      ...propAnotherToken,
+    },
     onClick: jest.fn(),
   };
-  (useSelector as jest.Mock).mockReturnValue(MOCK_GET_TOKEN_LIST);
+  const useSelectorMock = useSelector;
+  (useSelectorMock as jest.Mock).mockImplementation((selector) => {
+    if (selector === getPreferences) {
+      return { privacyMode: false };
+    }
+    if (selector === getTokenList) {
+      return MOCK_GET_TOKEN_LIST;
+    }
+    if (selector === getMultichainCurrentChainId) {
+      return '0x89';
+    }
+    if (selector === getMultichainIsEvm) {
+      return true;
+    }
+    if (selector === getIntlLocale) {
+      return 'en-US';
+    }
+    if (selector === getCurrentCurrency) {
+      return 'usd';
+    }
+    if (selector === getCurrencyRates) {
+      return { POL: '' };
+    }
+    return undefined;
+  });
   (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -104,7 +166,7 @@ describe('Token Cell', () => {
 
   it('calls onClick when clicked', () => {
     const { queryByTestId } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -117,7 +179,7 @@ describe('Token Cell', () => {
 
   it('should render the correct token and filter by symbol and address', () => {
     const { getByTestId, getByAltText } = renderWithProvider(
-      <TokenCell {...props} />,
+      <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
@@ -130,7 +192,7 @@ describe('Token Cell', () => {
 
   it('should render amount with the correct format', () => {
     const { getByTestId } = renderWithProvider(
-      <TokenCell {...propsLargeAmount} />,
+      <TokenCell {...(propsLargeAmount as TokenCellProps)} />,
       mockStore,
     );
 

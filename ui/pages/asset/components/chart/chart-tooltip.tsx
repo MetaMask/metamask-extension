@@ -22,12 +22,12 @@ const ChartTooltip = ({
   currency,
 }: {
   point?: Point;
-  xMin?: Point;
-  xMax?: Point;
+  xMin?: number;
+  xMax?: number;
   currency: string;
 }) => {
   const xAxisPercent =
-    point && xMin && xMax ? (point.x - xMin.x) / (xMax.x - xMin.x) : 0;
+    point && xMin && xMax ? (point.x - xMin) / (xMax - xMin) : 0;
 
   return (
     <Box
@@ -42,6 +42,8 @@ const ChartTooltip = ({
       }}
     >
       <Text
+        marginLeft={4}
+        marginRight={4}
         variant={TextVariant.bodySmMedium}
         color={TextColor.textAlternative}
         textAlign={TextAlign.Center}

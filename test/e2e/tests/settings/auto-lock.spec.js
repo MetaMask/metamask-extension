@@ -1,9 +1,4 @@
-const { strict: assert } = require('assert');
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} = require('../../helpers');
+const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Auto-Lock Timer', function () {
@@ -11,15 +6,12 @@ describe('Auto-Lock Timer', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
         // Set Auto Lock Timer
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
+        await openMenuSafe(driver);
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         const sixSecsInMins = '0.1';
@@ -42,12 +34,11 @@ describe('Auto-Lock Timer', function () {
           '[data-testid="advanced-setting-auto-lock"] button',
         );
         // Verify the wallet is locked
-        const pageTitle = await driver.findElement(
-          '[data-testid="unlock-page-title"]',
-        );
-        const unlockButton = await driver.findElement('.unlock-page button');
-        assert.equal(await pageTitle.getText(), 'Welcome back!');
-        assert.equal(await unlockButton.isDisplayed(), true);
+        await driver.waitForSelector({
+          css: '[data-testid="unlock-page-title"]',
+          text: 'Welcome back',
+        });
+        await driver.waitForSelector('.unlock-page button');
       },
     );
   });

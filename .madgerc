@@ -1,0 +1,37 @@
+{
+  "excludeRegExp": [
+    "/.[^/]*\/test\/.[^/]*/u"
+  ],
+  "fileExtensions": [
+    "js",
+    "jsx",
+    "ts",
+    "tsx"
+  ],
+  "tsConfig": "tsconfig.json",
+  "detectiveOptions": {
+    "es6": {
+      "skipTypeImports": true
+    },
+    "ts": {
+      "skipTypeImports": true,
+      "skipAsyncImports": true
+    },
+    "tsx": {
+      "skipTypeImports": true,
+      "skipAsyncImports": true
+    }
+  },
+  "allowedCircularGlob": [
+    "ui/pages/confirmations/**",
+    "ui/ducks/**",
+    "ui/selectors/**",
+    "ui/hooks/**",
+    "ui/store/**",
+    "ui/helpers/utils/token-util.js",
+    "ui/components/multichain/**",
+    "ui/components/app/**",
+    "ui/components/component-library/**",
+    "shared/modules/selectors/**"
+  ]
+}

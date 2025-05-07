@@ -3,13 +3,19 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { MetamaskNotificationsProvider } from '../../../contexts/metamask-notifications';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
+import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
 import SecurityTab from './security-tab.container';
+
+const mockOpenDeleteMetaMetricsDataModal = jest.fn();
 
 const mockSetSecurityAlertsEnabled = jest
   .fn()
@@ -34,14 +40,44 @@ jest.mock('../../../store/actions', () => ({
   setSecurityAlertsEnabled: (val) => mockSetSecurityAlertsEnabled(val),
 }));
 
-describe('Security Tab', () => {
-  mockState.appState.warning = 'warning'; // This tests an otherwise untested render branch
+jest.mock('../../../ducks/app/app.ts', () => {
+  return {
+    openDeleteMetaMetricsDataModal: () => {
+      return mockOpenDeleteMetaMetricsDataModal;
+    },
+  };
+});
 
+const mockHistoryPush = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  // eslint-disable-next-line react/display-name
+  withRouter: (Component) => (props) =>
+    (
+      <Component
+        {...props}
+        {...{
+          history: {
+            push: mockHistoryPush,
+          },
+        }}
+      />
+    ),
+}));
+
+describe('Security Tab', () => {
   const mockStore = configureMockStore([thunk])(mockState);
+
+  function renderWithProviders(ui, store) {
+    return renderWithProvider(
+      <MetamaskNotificationsProvider>{ui}</MetamaskNotificationsProvider>,
+      store,
+    );
+  }
 
   function toggleCheckbox(testId, initialState, skipRender = false) {
     if (!skipRender) {
-      renderWithProvider(<SecurityTab />, mockStore);
+      renderWithProviders(<SecurityTab />, mockStore);
     }
 
     const container = screen.getByTestId(testId);
@@ -61,7 +97,7 @@ describe('Security Tab', () => {
   }
 
   it('should match snapshot', () => {
-    const { container } = renderWithProvider(<SecurityTab />, mockStore);
+    const { container } = renderWithProviders(<SecurityTab />, mockStore);
 
     expect(container).toMatchSnapshot();
   });
@@ -79,7 +115,7 @@ describe('Security Tab', () => {
     mockState.metamask.useNftDetection = false;
 
     const localMockStore = configureMockStore([thunk])(mockState);
-    renderWithProvider(<SecurityTab />, localMockStore);
+    renderWithProviders(<SecurityTab />, localMockStore);
 
     expect(await toggleCheckbox('useNftDetection', false, true)).toBe(true);
   });
@@ -113,11 +149,13 @@ describe('Security Tab', () => {
   });
 
   it('toggles metaMetrics', async () => {
-    expect(await toggleCheckbox('participateInMetaMetrics', false)).toBe(true);
+    expect(
+      await toggleCheckbox('participate-in-meta-metrics-toggle', false),
+    ).toBe(true);
   });
 
-  it('toggles SRP Quiz', async () => {
-    renderWithProvider(<SecurityTab />, mockStore);
+  it('toggles SRP Quiz if there is only one srp', async () => {
+    renderWithProviders(<SecurityTab />, mockStore);
 
     expect(
       screen.queryByTestId(`srp_stage_introduction`),
@@ -136,9 +174,43 @@ describe('Security Tab', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('redirects to srp list if there are multiple srps', async () => {
+    const mockStoreWithMultipleSRPs = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        keyrings: [
+          ...mockState.metamask.keyrings,
+          {
+            type: 'HD Key Tree',
+            accounts: ['0x'],
+          },
+        ],
+        keyringsMetadata: [
+          ...mockState.metamask.keyringsMetadata,
+          {
+            id: '01JM1XSBQ78YXY1NNT003HT74V',
+            name: '',
+          },
+        ],
+      },
+    });
+    renderWithProviders(<SecurityTab />, mockStoreWithMultipleSRPs);
+
+    expect(
+      screen.queryByTestId(`srp_stage_introduction`),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('reveal-seed-words'));
+
+    expect(mockHistoryPush).toHaveBeenCalledWith({
+      pathname: REVEAL_SRP_LIST_ROUTE,
+    });
+  });
+
   it('sets IPFS gateway', async () => {
     const user = userEvent.setup();
-    renderWithProvider(<SecurityTab />, mockStore);
+    renderWithProviders(<SecurityTab />, mockStore);
 
     const ipfsField = screen.getByDisplayValue(mockState.metamask.ipfsGateway);
 
@@ -183,7 +255,7 @@ describe('Security Tab', () => {
     mockState.metamask.ipfsGateway = '';
 
     const localMockStore = configureMockStore([thunk])(mockState);
-    renderWithProvider(<SecurityTab />, localMockStore);
+    renderWithProviders(<SecurityTab />, localMockStore);
 
     expect(await toggleCheckbox('ipfsToggle', false, true)).toBe(true);
     expect(await toggleCheckbox('ipfsToggle', true, true)).toBe(true);
@@ -197,7 +269,7 @@ describe('Security Tab', () => {
 
   it('clicks "Add Custom Network"', async () => {
     const user = userEvent.setup();
-    renderWithProvider(<SecurityTab />, mockStore);
+    renderWithProviders(<SecurityTab />, mockStore);
 
     // Test the default path where `getEnvironmentType() === undefined`
     await user.click(screen.getByText(tEn('addCustomNetwork')));
@@ -212,7 +284,23 @@ describe('Security Tab', () => {
     await user.click(screen.getByText(tEn('addCustomNetwork')));
     expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();
   });
+  it('clicks "Delete MetaMetrics Data"', async () => {
+    mockState.metamask.participateInMetaMetrics = true;
+    mockState.metamask.metaMetricsId = 'fake-metametrics-id';
 
+    const localMockStore = configureMockStore([thunk])(mockState);
+    renderWithProviders(<SecurityTab />, localMockStore);
+
+    expect(
+      screen.queryByTestId(`delete-metametrics-data-button`),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Delete MetaMetrics data' }),
+    );
+
+    expect(mockOpenDeleteMetaMetricsDataModal).toHaveBeenCalled();
+  });
   describe('Blockaid', () => {
     afterEach(() => {
       jest.clearAllMocks();

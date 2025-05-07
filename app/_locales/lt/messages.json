@@ -244,10 +244,6 @@
   "fast": {
     "message": "Greitas"
   },
-  "fiat": {
-    "message": "Standartinė valiuta",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Failo importavimas neveikia? Spustelėkite čia!",
     "description": "Helps user import their account from a JSON file"
@@ -257,9 +253,6 @@
   },
   "from": {
     "message": "Nuo"
-  },
-  "functionType": {
-    "message": "Funkcijos tipas"
   },
   "gasLimit": {
     "message": "Dujų apribojimas"
@@ -319,9 +312,6 @@
   "import": {
     "message": "Importuoti",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importuoti paskyrą"
   },
   "importAccountMsg": {
     "message": "Importuotos paskyros nebus susietos su pirmiau sukurta „MetaMask“ paskyros atkūrimo fraze. Sužinokite daugiau apie importuotas paskyras"
@@ -385,9 +375,6 @@
   "loading": {
     "message": "Įkeliama..."
   },
-  "loadingTokens": {
-    "message": "Įkeliami žetonai..."
-  },
   "localhost": {
     "message": "Vietinis serveris 8545"
   },
@@ -450,9 +437,6 @@
   "noConversionRateAvailable": {
     "message": "Nėra keitimo kurso"
   },
-  "noTransactions": {
-    "message": "Neturite jokių operacijų"
-  },
   "noWebcamFound": {
     "message": "Jūsų kompiuterio vaizdo kamera nerasta. Bandykite dar kartą."
   },
@@ -476,9 +460,6 @@
   },
   "origin": {
     "message": "Kilmė"
-  },
-  "parameters": {
-    "message": "Parametrai"
   },
   "participateInMetaMetrics": {
     "message": "Dalyvaukite „MetaMetrics“"
@@ -507,12 +488,6 @@
   },
   "prev": {
     "message": "Peržiūra"
-  },
-  "primaryCurrencySetting": {
-    "message": "Pagrindinė valiuta"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Rinkitės vietinę, kad vertės pirmiausia būtų rodomos vietine grandinės valiuta (pvz., ETH). Rinkitės standartinę, kad vertės pirmiausia būtų rodomos jūsų pasirinkta standartine valiuta."
   },
   "privacyMsg": {
     "message": "Privatumo politika"
@@ -553,9 +528,6 @@
   },
   "removeAccountDescription": {
     "message": "Ši paskyra bus pašalinta iš jūsų piniginės. Prieš tęsdami įsitikinkite, kad turite šios importuotos paskyros pradinę atkūrimo frazę arba asmeninį raktą. Paskyras importuoti ir vėl susikurti galite paskyros išskleidžiamajame meniu."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "patvirtinimo laukiančios užklausos"
   },
   "required": {
     "message": "Reikalaujama"
@@ -623,9 +595,6 @@
   },
   "showHexDataDescription": {
     "message": "Pasirinkite tai, kad siuntimo ekrane būtų rodomas šešioliktainių duomenų laukas"
-  },
-  "sigRequest": {
-    "message": "Parašo užklausa"
   },
   "sign": {
     "message": "Prisijunkite"
@@ -723,9 +692,6 @@
   "transactionErrored": {
     "message": "Įvyko operacijos klaida"
   },
-  "transactionFee": {
-    "message": "Operacijos mokestis"
-  },
   "transactionResubmitted": {
     "message": "Operacija pakartotinai pateikta$2 su iki $1 padidintu dujų mokesčiu"
   },
@@ -753,9 +719,6 @@
   "unknown": {
     "message": "Nežinoma"
   },
-  "unknownNetwork": {
-    "message": "Nežinomas privatusis tinklas"
-  },
   "unknownQrCode": {
     "message": "Klaida: negalime identifikuoti šio QR kodo"
   },
@@ -764,9 +727,6 @@
   },
   "unlockMessage": {
     "message": "Laukiančios decentralizuotos svetainės"
-  },
-  "updatedWithDate": {
-    "message": "Atnaujinta $1"
   },
   "urlErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."
@@ -788,9 +748,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."
-  },
-  "youSign": {
-    "message": "Pasirašote"
   },
   "yourPrivateSeedPhrase": {
     "message": "Jūsų asmeninė atkūrimo frazė"

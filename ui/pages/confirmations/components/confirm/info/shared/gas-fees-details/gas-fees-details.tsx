@@ -1,7 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
-import { ConfirmInfoRowVariant } from '../../../../../../../components/app/confirm/info/row';
 import { Box } from '../../../../../../../components/component-library';
 import {
   AlignItems,
@@ -18,6 +17,7 @@ import { EditGasFeesRow } from '../edit-gas-fees-row/edit-gas-fees-row';
 import { GasFeesRow } from '../gas-fees-row/gas-fees-row';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
+import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
 
 export const GasFeesDetails = ({
   setShowCustomizeGasPopover,
@@ -25,6 +25,7 @@ export const GasFeesDetails = ({
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
 }) => {
   const t = useI18nContext();
+  useAutomaticGasFeeTokenSelect();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -37,12 +38,16 @@ export const GasFeesDetails = ({
 
   const {
     estimatedFeeFiat,
+    estimatedFeeFiatWith18SignificantDigits,
     estimatedFeeNative,
     l1FeeFiat,
+    l1FeeFiatWith18SignificantDigits,
     l1FeeNative,
     l2FeeFiat,
+    l2FeeFiatWith18SignificantDigits,
     l2FeeNative,
     maxFeeFiat,
+    maxFeeFiatWith18SignificantDigits,
     maxFeeNative,
   } = useFeeCalculations(transactionMeta);
 
@@ -58,6 +63,7 @@ export const GasFeesDetails = ({
     <>
       <EditGasFeesRow
         fiatFee={estimatedFeeFiat}
+        fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
         supportsEIP1559={supportsEIP1559}
         setShowCustomizeGasPopover={setShowCustomizeGasPopover}
@@ -69,6 +75,7 @@ export const GasFeesDetails = ({
             label={t('l1Fee')}
             tooltipText={t('l1FeeTooltip')}
             fiatFee={l1FeeFiat}
+            fiatFeeWith18SignificantDigits={l1FeeFiatWith18SignificantDigits}
             nativeFee={l1FeeNative}
           />
           <GasFeesRow
@@ -76,16 +83,16 @@ export const GasFeesDetails = ({
             label={t('l2Fee')}
             tooltipText={t('l2FeeTooltip')}
             fiatFee={l2FeeFiat}
+            fiatFeeWith18SignificantDigits={l2FeeFiatWith18SignificantDigits}
             nativeFee={l2FeeNative}
           />
         </>
       )}
-      {supportsEIP1559 && (
+      {supportsEIP1559 && !transactionMeta.selectedGasFeeToken && (
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.Speed}
           data-testid="gas-fee-details-speed"
           label={t('speed')}
-          variant={ConfirmInfoRowVariant.Default}
           ownerId={transactionMeta.id}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
@@ -96,12 +103,13 @@ export const GasFeesDetails = ({
           </Box>
         </ConfirmInfoAlertRow>
       )}
-      {showAdvancedDetails && (
+      {showAdvancedDetails && !transactionMeta.selectedGasFeeToken && (
         <GasFeesRow
           data-testid="gas-fee-details-max-fee"
           label={t('maxFee')}
           tooltipText={t('maxFeeTooltip')}
           fiatFee={maxFeeFiat}
+          fiatFeeWith18SignificantDigits={maxFeeFiatWith18SignificantDigits}
           nativeFee={maxFeeNative}
         />
       )}

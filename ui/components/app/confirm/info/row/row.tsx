@@ -1,7 +1,9 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import {
   Box,
+  ButtonIcon,
+  ButtonIconSize,
   Icon,
   IconName,
   IconSize,
@@ -21,6 +23,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { SizeNumber } from '../../../../ui/box/box';
 import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {
@@ -31,7 +34,7 @@ export enum ConfirmInfoRowVariant {
 
 export type ConfirmInfoRowProps = {
   label: string;
-  children: React.ReactNode | string;
+  children?: React.ReactNode | string;
   tooltip?: string;
   variant?: ConfirmInfoRowVariant;
   style?: React.CSSProperties;
@@ -40,6 +43,7 @@ export type ConfirmInfoRowProps = {
   copyEnabled?: boolean;
   copyText?: string;
   'data-testid'?: string;
+  collapsed?: boolean;
 };
 
 const BACKGROUND_COLORS = {
@@ -79,69 +83,105 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   labelChildren,
   color,
   copyEnabled = false,
-  copyText = undefined,
+  copyText,
   'data-testid': dataTestId,
-}) => (
-  <ConfirmInfoRowContext.Provider value={{ variant }}>
-    <Box
-      data-testid={dataTestId}
-      className="confirm-info-row"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      flexWrap={FlexWrap.Wrap}
-      backgroundColor={BACKGROUND_COLORS[variant]}
-      borderRadius={BorderRadius.LG}
-      marginTop={2}
-      marginBottom={2}
-      paddingLeft={2}
-      paddingRight={copyEnabled ? 5 : 2}
-      color={TEXT_COLORS[variant] as TextColor}
-      style={{
-        overflowWrap: OverflowWrap.Anywhere,
-        minHeight: '24px',
-        position: 'relative',
-        ...style,
-      }}
-    >
-      {copyEnabled && <CopyIcon copyText={copyText ?? ''} />}
+  collapsed,
+}) => {
+  const [expanded, setExpanded] = useState(!collapsed);
+
+  const isCollapsible = collapsed !== undefined;
+
+  const contentPaddingRight = ((copyEnabled ? 6 : 0) +
+    (isCollapsible ? 6 : 0)) as SizeNumber;
+
+  return (
+    <ConfirmInfoRowContext.Provider value={{ variant }}>
       <Box
+        data-testid={dataTestId}
+        className="confirm-info-row"
         display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.center}
+        flexDirection={isCollapsible ? FlexDirection.Column : FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        flexWrap={FlexWrap.Wrap}
         alignItems={AlignItems.flexStart}
-        color={color}
-        style={{ alignItems: AlignItems.center }}
+        backgroundColor={BACKGROUND_COLORS[variant]}
+        borderRadius={BorderRadius.LG}
+        marginTop={2}
+        marginBottom={2}
+        paddingLeft={2}
+        paddingRight={2}
+        color={TEXT_COLORS[variant] as TextColor}
+        style={{
+          overflowWrap: OverflowWrap.Anywhere,
+          minHeight: '24px',
+          position: 'relative',
+          ...style,
+        }}
       >
-        <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
-          {label}
-        </Text>
-        {labelChildren}
-        {tooltip && tooltip.length > 0 && (
-          <Tooltip
-            position="bottom"
-            title={tooltip}
-            style={{ display: 'flex' }}
-          >
-            <Icon
-              name={TOOLTIP_ICONS[variant]}
-              marginLeft={1}
-              color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
-              size={IconSize.Sm}
-              {...(dataTestId
-                ? { 'data-testid': `${dataTestId}-tooltip` }
-                : {})}
-            />
-          </Tooltip>
+        {copyEnabled && (
+          <CopyIcon
+            copyText={copyText ?? ''}
+            style={{ right: isCollapsible ? 32 : 4 }}
+            color={IconColor.iconMuted}
+          />
         )}
+        {isCollapsible && (
+          <ButtonIcon
+            color={IconColor.iconMuted}
+            iconName={expanded ? IconName.Collapse : IconName.Expand}
+            size={ButtonIconSize.Sm}
+            style={{
+              cursor: 'pointer',
+              position: 'absolute',
+              right: 8,
+            }}
+            onClick={() => setExpanded(!expanded)}
+            data-testid="sectionCollapseButton"
+            ariaLabel="collapse-button"
+          />
+        )}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.flexStart}
+          color={color}
+          paddingRight={contentPaddingRight || null}
+        >
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
+            <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
+              {label}
+            </Text>
+            {labelChildren}
+            {!labelChildren && tooltip?.length && (
+              <Tooltip
+                position="bottom"
+                title={tooltip}
+                style={{ display: 'flex' }}
+              >
+                <Icon
+                  name={TOOLTIP_ICONS[variant]}
+                  marginLeft={1}
+                  color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+                  size={IconSize.Sm}
+                  {...(dataTestId
+                    ? { 'data-testid': `${dataTestId}-tooltip` }
+                    : {})}
+                />
+              </Tooltip>
+            )}
+          </Box>
+        </Box>
+        {expanded &&
+          children &&
+          (typeof children === 'string' ? (
+            <Text marginRight={copyEnabled ? 3 : 0} color={TextColor.inherit}>
+              {children}
+            </Text>
+          ) : (
+            children
+          ))}
       </Box>
-      {typeof children === 'string' ? (
-        <Text marginRight={copyEnabled ? 3 : 0} color={TextColor.inherit}>
-          {children}
-        </Text>
-      ) : (
-        children
-      )}
-    </Box>
-  </ConfirmInfoRowContext.Provider>
-);
+    </ConfirmInfoRowContext.Provider>
+  );
+};

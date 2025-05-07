@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { isHexString } from '@metamask/utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
@@ -78,8 +80,8 @@ export default class DomainInput extends Component {
     } = this.props;
     const input = value.trim();
 
-    onChange(input);
     if (internalSearch) {
+      onChange(input);
       return null;
     }
 
@@ -90,9 +92,14 @@ export default class DomainInput extends Component {
         !isBurnAddress(input) &&
         isValidHexAddress(input, { mixedCaseUseChecksum: true })
       ) {
-        onValidAddressTyped(addHexPrefix(input));
+        const hexInput = addHexPrefix(input);
+        onChange(hexInput);
+        onValidAddressTyped(hexInput);
+      } else {
+        onChange(input);
       }
     } else {
+      onChange(input);
       lookupDomainName(input);
     }
 

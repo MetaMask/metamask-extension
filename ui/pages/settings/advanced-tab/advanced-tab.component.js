@@ -37,26 +37,29 @@ export default class AdvancedTab extends PureComponent {
   };
 
   static propTypes = {
-    setUseNonceField: PropTypes.func,
-    useNonceField: PropTypes.bool,
     setHexDataFeatureFlag: PropTypes.func,
-    displayWarning: PropTypes.func,
+    displayErrorInSettings: PropTypes.func,
+    hideErrorInSettings: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
-    warning: PropTypes.string,
+    errorInSettings: PropTypes.string,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
-    smartTransactionsOptInStatus: PropTypes.bool,
+    smartTransactionsEnabled: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    setSmartTransactionsOptInStatus: PropTypes.func.isRequired,
+    setSmartTransactionsEnabled: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
     showExtensionInFullSizeView: PropTypes.bool,
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
+    manageInstitutionalWallets: PropTypes.bool,
+    setManageInstitutionalWallets: PropTypes.func.isRequired,
+    dismissSmartAccountSuggestionEnabled: PropTypes.bool.isRequired,
+    setDismissSmartAccountSuggestionEnabled: PropTypes.func.isRequired,
   };
 
   state = {
@@ -80,7 +83,9 @@ export default class AdvancedTab extends PureComponent {
 
   componentDidMount() {
     const { t } = this.context;
+    const { hideErrorInSettings } = this.props;
     handleSettingsRefs(t, t('advanced'), this.settingsRefs);
+    hideErrorInSettings();
   }
 
   async getTextFromFile(file) {
@@ -112,7 +117,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderStateLogs() {
     const { t } = this.context;
-    const { displayWarning } = this.props;
+    const { displayErrorInSettings } = this.props;
 
     return (
       <Box
@@ -133,16 +138,21 @@ export default class AdvancedTab extends PureComponent {
             <Button
               type="secondary"
               large
+              data-testid="advanced-setting-state-logs-button"
               onClick={() => {
-                window.logStateString((err, result) => {
+                window.logStateString(async (err, result) => {
                   if (err) {
-                    displayWarning(t('stateLogError'));
+                    displayErrorInSettings(t('stateLogError'));
                   } else {
-                    exportAsFile(
-                      `${t('stateLogFileName')}.json`,
-                      result,
-                      ExportableContentType.JSON,
-                    );
+                    try {
+                      await exportAsFile(
+                        `${t('stateLogFileName')}.json`,
+                        result,
+                        ExportableContentType.JSON,
+                      );
+                    } catch (error) {
+                      displayErrorInSettings(error.message);
+                    }
                   }
                 });
               }}
@@ -197,9 +207,49 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderToggleDismissSmartAccountSuggestion() {
+    const { t } = this.context;
+    const {
+      dismissSmartAccountSuggestionEnabled,
+      setDismissSmartAccountSuggestionEnabled,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-dismiss-smart-account-suggestion-enabled"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span> {t('dismissSmartAccountSuggestionEnabledTitle')}</span>
+          <div className="settings-page__content-description">
+            {t('dismissSmartAccountSuggestionEnabledDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={dismissSmartAccountSuggestionEnabled}
+            onToggle={(oldValue) => {
+              const newValue = !oldValue;
+              setDismissSmartAccountSuggestionEnabled(newValue);
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="settings-page-dismiss-smart-account-suggestion-enabled-toggle"
+          />
+        </div>
+      </Box>
+    );
+  }
+
   renderToggleStxOptIn() {
     const { t } = this.context;
-    const { smartTransactionsOptInStatus, setSmartTransactionsOptInStatus } =
+    const { smartTransactionsEnabled, setSmartTransactionsEnabled } =
       this.props;
 
     const learMoreLink = (
@@ -231,16 +281,16 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('smartTransactions')}</span>
           <div className="settings-page__content-description">
-            {t('stxOptInDescription', [learMoreLink])}
+            {t('stxOptInSupportedNetworksDescription', [learMoreLink])}
           </div>
         </div>
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={smartTransactionsOptInStatus}
+            value={smartTransactionsEnabled}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              setSmartTransactionsOptInStatus(newValue);
+              setSmartTransactionsEnabled(newValue);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
@@ -380,40 +430,6 @@ export default class AdvancedTab extends PureComponent {
           <ToggleButton
             value={showExtensionInFullSizeView}
             onToggle={(value) => setShowExtensionInFullSizeView(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
-  renderUseNonceOptIn() {
-    const { t } = this.context;
-    const { useNonceField, setUseNonceField } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[6]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-custom-nonce"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('nonceField')}</span>
-          <div className="settings-page__content-description">
-            {t('nonceFieldDesc')}
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            className="custom-nonce-toggle"
-            value={useNonceField}
-            onToggle={(value) => setUseNonceField(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -575,20 +591,57 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderManageInstitutionalWallets() {
+    const { t } = this.context;
+    const { manageInstitutionalWallets, setManageInstitutionalWallets } =
+      this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[9]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-dismiss-reminder"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('manageInstitutionalWallets')}</span>
+          <div className="settings-page__content-description">
+            {t('manageInstitutionalWalletsDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={manageInstitutionalWallets}
+            onToggle={(value) => setManageInstitutionalWallets(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
   render() {
-    const { warning } = this.props;
+    const { errorInSettings } = this.props;
     // When adding/removing/editing the order of renders, double-check the order of the settingsRefs. This affects settings-search.js
     return (
       <div className="settings-page__body">
-        {warning ? <div className="settings-tab__error">{warning}</div> : null}
+        {errorInSettings ? (
+          <div className="settings-tab__error">{errorInSettings}</div>
+        ) : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
+        {this.renderToggleDismissSmartAccountSuggestion()}
         {this.renderToggleStxOptIn()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}
+        {this.renderManageInstitutionalWallets()}
         {this.renderToggleExtensionInFullSizeView()}
-        {this.renderUseNonceOptIn()}
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderDismissSeedBackupReminderControl()}

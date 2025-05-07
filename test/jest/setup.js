@@ -1,14 +1,13 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
 import '../helpers/setup-after-helper';
 
-jest.mock('../../ui/hooks/usePetnamesEnabled', () => ({
-  usePetnamesEnabled: () => false,
-}));
-
-jest.mock('../../app/scripts/snaps/preinstalled-snaps', () => ({
-  __esModule: true,
-  default: [],
-}));
+jest.mock('webextension-polyfill', () => {
+  return {
+    runtime: {
+      getManifest: () => ({ manifest_version: 2 }),
+    },
+  };
+});
 
 const UNRESOLVED = Symbol('timedOut');
 

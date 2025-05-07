@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PPOMController } from '@metamask/ppom-validator';
 import { PPOM } from '@blockaid/ppom_release';
 import {
@@ -6,17 +5,22 @@ import {
   TransactionParams,
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
-import { SignatureController } from '@metamask/signature-controller';
-import type { PersonalMessage } from '@metamask/message-manager';
+import {
+  SignatureController,
+  SignatureRequest,
+} from '@metamask/signature-controller';
+import { Hex, JsonRpcRequest } from '@metamask/utils';
 import {
   BlockaidReason,
   BlockaidResultType,
+  LOADING_SECURITY_ALERT_RESPONSE,
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
-import { AppStateController } from '../../controllers/app-state';
+import { AppStateController } from '../../controllers/app-state-controller';
 import {
   generateSecurityAlertId,
-  isChainSupported,
+  METHOD_SIGN_TYPED_DATA_V3,
+  METHOD_SIGN_TYPED_DATA_V4,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
@@ -30,7 +34,7 @@ jest.mock('@metamask/transaction-controller', () => ({
 
 const SECURITY_ALERT_ID_MOCK = '1234-5678';
 const TRANSACTION_ID_MOCK = '123';
-const CHAIN_ID_MOCK = '0x1';
+const CHAIN_ID_MOCK = '0x1' as Hex;
 
 const REQUEST_MOCK = {
   method: 'eth_signTypedData_v4',
@@ -43,6 +47,7 @@ const SECURITY_ALERT_RESPONSE_MOCK: SecurityAlertResponse = {
   result_type: 'success',
   reason: 'success',
   source: SecurityAlertSource.Local,
+  securityAlertId: SECURITY_ALERT_ID_MOCK,
 };
 
 const TRANSACTION_PARAMS_MOCK_1: TransactionParams = {
@@ -50,6 +55,10 @@ const TRANSACTION_PARAMS_MOCK_1: TransactionParams = {
   from: '0x123',
   value: '0x123',
 };
+
+const SIGN_TYPED_DATA_PARAMS_MOCK_1 = '0x123';
+const SIGN_TYPED_DATA_PARAMS_MOCK_2 =
+  '{"primaryType":"Permit","domain":{},"types":{}}';
 
 const TRANSACTION_PARAMS_MOCK_2: TransactionParams = {
   ...TRANSACTION_PARAMS_MOCK_1,
@@ -102,11 +111,16 @@ describe('PPOM Utils', () => {
   const normalizeTransactionParamsMock = jest.mocked(
     normalizeTransactionParams,
   );
-  const getSupportedChainIdsMock = jest.spyOn(
-    securityAlertAPI,
-    'getSecurityAlertsAPISupportedChainIds',
-  );
   let isSecurityAlertsEnabledMock: jest.SpyInstance;
+
+  const updateSecurityAlertResponseMock = jest.fn();
+
+  const validateRequestWithPPOMOptionsBase = {
+    request: REQUEST_MOCK,
+    securityAlertId: SECURITY_ALERT_ID_MOCK,
+    chainId: CHAIN_ID_MOCK,
+    updateSecurityAlertResponse: updateSecurityAlertResponseMock,
+  };
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -117,33 +131,51 @@ describe('PPOM Utils', () => {
   });
 
   describe('validateRequestWithPPOM', () => {
-    it('returns response from validation with PPOM instance via controller', async () => {
+    it('updates response from validation with PPOM instance via controller', async () => {
       const ppom = createPPOMMock();
       const ppomController = createPPOMControllerMock();
 
       ppom.validateJsonRpc.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
       ppomController.usePPOM.mockImplementation(
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (callback) => callback(ppom as any) as any,
       );
 
-      const response = await validateRequestWithPPOM({
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
-        request: REQUEST_MOCK,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
-
-      expect(response).toStrictEqual({
-        ...SECURITY_ALERT_RESPONSE_MOCK,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-      });
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
+        REQUEST_MOCK.method,
+        SECURITY_ALERT_ID_MOCK,
+        {
+          ...SECURITY_ALERT_RESPONSE_MOCK,
+          securityAlertId: SECURITY_ALERT_ID_MOCK,
+        },
+      );
 
       expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
       expect(ppom.validateJsonRpc).toHaveBeenCalledWith(REQUEST_MOCK);
     });
 
-    it('returns error response if validation with PPOM instance throws', async () => {
+    it('updates securityAlertResponse with loading state', async () => {
+      const ppomController = createPPOMControllerMock();
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+      });
+
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
+        REQUEST_MOCK.method,
+        SECURITY_ALERT_ID_MOCK,
+        LOADING_SECURITY_ALERT_RESPONSE,
+      );
+    });
+
+    it('updates error response if validation with PPOM instance throws', async () => {
       const ppom = createPPOMMock();
       const ppomController = createPPOMControllerMock();
 
@@ -151,41 +183,48 @@ describe('PPOM Utils', () => {
 
       ppomController.usePPOM.mockImplementation(
         (callback) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           callback(ppom as any) as any,
       );
 
-      const response = await validateRequestWithPPOM({
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
-        request: REQUEST_MOCK,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
-      expect(response).toStrictEqual({
-        result_type: BlockaidResultType.Errored,
-        reason: BlockaidReason.errored,
-        description: 'Test Error: Test error message',
-      });
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
+        validateRequestWithPPOMOptionsBase.request.method,
+        SECURITY_ALERT_ID_MOCK,
+        {
+          result_type: BlockaidResultType.Errored,
+          reason: BlockaidReason.errored,
+          description: 'Test Error: Test error message',
+          source: SecurityAlertSource.Local,
+        },
+      );
     });
 
-    it('returns error response if controller throws', async () => {
+    it('updates error response if controller throws', async () => {
       const ppomController = createPPOMControllerMock();
 
       ppomController.usePPOM.mockRejectedValue(createErrorMock());
 
-      const response = await validateRequestWithPPOM({
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
-        request: REQUEST_MOCK,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
-      expect(response).toStrictEqual({
-        result_type: BlockaidResultType.Errored,
-        reason: BlockaidReason.errored,
-        description: 'Test Error: Test error message',
-      });
+      expect(updateSecurityAlertResponseMock).toHaveBeenCalledWith(
+        validateRequestWithPPOMOptionsBase.request.method,
+        SECURITY_ALERT_ID_MOCK,
+        {
+          result_type: BlockaidResultType.Errored,
+          reason: BlockaidReason.errored,
+          description: 'Test Error: Test error message',
+          source: SecurityAlertSource.Local,
+        },
+      );
     });
 
     it('normalizes request if method is eth_sendTransaction', async () => {
@@ -194,6 +233,7 @@ describe('PPOM Utils', () => {
 
       ppomController.usePPOM.mockImplementation(
         (callback) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           callback(ppom as any) as any,
       );
@@ -207,10 +247,9 @@ describe('PPOM Utils', () => {
       };
 
       await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
         request,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
       expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
@@ -224,6 +263,49 @@ describe('PPOM Utils', () => {
         TRANSACTION_PARAMS_MOCK_1,
       );
     });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([METHOD_SIGN_TYPED_DATA_V3, METHOD_SIGN_TYPED_DATA_V4])(
+      'sanitizes request params if method is %s',
+      async (method: string) => {
+        const ppom = createPPOMMock();
+        const ppomController = createPPOMControllerMock();
+
+        ppomController.usePPOM.mockImplementation(
+          (callback) =>
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            callback(ppom as any) as any,
+        );
+
+        const firstTwoParams = [
+          SIGN_TYPED_DATA_PARAMS_MOCK_1,
+          SIGN_TYPED_DATA_PARAMS_MOCK_2,
+        ];
+
+        const unwantedParams = [{}, undefined, 1, null];
+
+        const params = [...firstTwoParams, ...unwantedParams];
+
+        const request = {
+          ...REQUEST_MOCK,
+          method,
+          params,
+        } as unknown as JsonRpcRequest;
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+          ...request,
+          params: firstTwoParams,
+        });
+      },
+    );
   });
 
   describe('generateSecurityAlertId', () => {
@@ -246,7 +328,7 @@ describe('PPOM Utils', () => {
             ...SECURITY_ALERT_RESPONSE_MOCK,
             securityAlertId: SECURITY_ALERT_ID_MOCK,
           },
-        } as unknown as PersonalMessage,
+        } as unknown as SignatureRequest,
       });
 
       await updateSecurityAlertResponse({
@@ -280,10 +362,14 @@ describe('PPOM Utils', () => {
       } as unknown as TransactionController['state']);
 
       await updateSecurityAlertResponse({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         appStateController: {} as any,
         method: 'eth_sendTransaction',
         securityAlertId: SECURITY_ALERT_ID_MOCK,
         securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         signatureController: {} as any,
         transactionController,
       });
@@ -316,10 +402,9 @@ describe('PPOM Utils', () => {
       const ppomController = createPPOMControllerMock();
 
       await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
         request,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
       expect(ppomController.usePPOM).not.toHaveBeenCalled();
@@ -343,10 +428,9 @@ describe('PPOM Utils', () => {
         .mockRejectedValue(new Error('Test Error'));
 
       await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
         ppomController,
         request,
-        securityAlertId: SECURITY_ALERT_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
       });
 
       expect(ppomController.usePPOM).toHaveBeenCalledTimes(1);
@@ -356,38 +440,6 @@ describe('PPOM Utils', () => {
         CHAIN_ID_MOCK,
         request,
       );
-    });
-  });
-
-  describe('isChainSupported', () => {
-    describe('when security alerts API is enabled', () => {
-      beforeEach(async () => {
-        isSecurityAlertsEnabledMock.mockReturnValue(true);
-        getSupportedChainIdsMock.mockResolvedValue([CHAIN_ID_MOCK]);
-      });
-
-      it('returns true if chain is supported', async () => {
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-
-      it('returns false if chain is not supported', async () => {
-        expect(await isChainSupported('0x2')).toStrictEqual(false);
-      });
-
-      it('returns correctly if security alerts API throws', async () => {
-        getSupportedChainIdsMock.mockRejectedValue(new Error('Test Error'));
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-    });
-
-    describe('when security alerts API is disabled', () => {
-      it('returns true if chain is supported', async () => {
-        expect(await isChainSupported(CHAIN_ID_MOCK)).toStrictEqual(true);
-      });
-
-      it('returns false if chain is not supported', async () => {
-        expect(await isChainSupported('0x2')).toStrictEqual(false);
-      });
     });
   });
 });

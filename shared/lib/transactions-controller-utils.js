@@ -36,11 +36,11 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
 
 /**
  * @param {number|string|BigNumber} value
- * @param {number} decimals
+ * @param {number=} decimals
  * @returns {BigNumber}
  */
-export function calcTokenAmount(value, decimals = 0) {
-  const divisor = new BigNumber(10).pow(decimals);
+export function calcTokenAmount(value, decimals) {
+  const divisor = new BigNumber(10).pow(decimals ?? 0);
   return new BigNumber(String(value)).div(divisor);
 }
 

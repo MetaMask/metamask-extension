@@ -1,8 +1,11 @@
+import { screen, waitFor } from '@testing-library/dom';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { useAssetDetails } from '../../../../hooks/useAssetDetails';
+import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
 import ApproveInfo from './approve';
 
 jest.mock('../../../../../../store/actions', () => ({
@@ -22,9 +25,17 @@ jest.mock(
   }),
 );
 
+jest.mock('./hooks/use-approve-token-simulation', () => ({
+  useApproveTokenSimulation: jest.fn(() => ({
+    spendingCap: '1000',
+    formattedSpendingCap: '1000',
+    value: '1000',
+  })),
+}));
+
 jest.mock('../../../../hooks/useAssetDetails', () => ({
   useAssetDetails: jest.fn(() => ({
-    decimals: 18,
+    decimals: '18',
   })),
 }));
 
@@ -62,9 +73,20 @@ jest.mock('../hooks/useDecodedTransactionData', () => ({
 
 describe('<ApproveInfo />', () => {
   const middleware = [thunk];
+  const mockedAssetDetails = jest.mocked(useAssetDetails);
+
+  beforeEach(() => {
+    mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
+  });
 
   it('renders component for approve request', async () => {
-    const state = getMockApproveConfirmState();
+    const state = getMockConfirmStateForTransaction(
+      genUnapprovedApproveConfirmation(),
+    );
 
     const mockStore = configureMockStore(middleware)(state);
 
@@ -72,6 +94,10 @@ describe('<ApproveInfo />', () => {
       <ApproveInfo />,
       mockStore,
     );
+
+    await waitFor(() => {
+      expect(screen.getByText('Speed')).toBeInTheDocument();
+    });
 
     expect(container).toMatchSnapshot();
   });

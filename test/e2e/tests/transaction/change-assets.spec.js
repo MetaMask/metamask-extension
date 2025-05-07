@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  logInWithBalanceValidation,
-} = require('../../helpers');
+const { withFixtures, logInWithBalanceValidation } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const { tEn } = require('../../../lib/i18n-helpers');
@@ -15,15 +11,11 @@ describe('Change assets', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
-
-        // Wait for balance to load
-        await driver.delay(500);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Click the Send button
         await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -36,15 +28,9 @@ describe('Change assets', function () {
         await driver.press('[data-testid="currency-input"]', '2');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Validate the send amount
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '2.000042',
-        });
-
         // Click edit
         await driver.clickElement(
-          '[data-testid="confirm-page-back-edit-button"]',
+          '[data-testid="wallet-initiated-header-back-button"]',
         );
 
         // Open the Amount modal
@@ -66,10 +52,11 @@ describe('Change assets', function () {
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
-        await driver.waitForSelector(
-          '.confirm-page-container-summary__title img',
-        );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+        await driver.waitForSelector('[data-testid="nft-default-image"]');
+        await driver.waitForSelector({
+          css: 'h2',
+          text: 'Test Dapp NFTs #1',
+        });
 
         // Send it!
         await driver.clickElement({ text: 'Confirm', css: 'button' });
@@ -93,16 +80,15 @@ describe('Change assets', function () {
           .withTokensControllerERC20()
           .withNftControllerERC721()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract: [smartContract, tokenContract],
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Click the Send button
         await driver.clickElement({
-          css: '[data-testid="multichain-token-list-button"] span',
+          css: '[data-testid="multichain-token-list-button"] p',
           text: 'TST',
         });
 
@@ -119,15 +105,9 @@ describe('Change assets', function () {
         await driver.press('[data-testid="currency-input"]', '0');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
-        // Validate the send amount
-        await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '0.00008455',
-        });
-
         // Click edit
         await driver.clickElement(
-          '[data-testid="confirm-page-back-edit-button"]',
+          '[data-testid="wallet-initiated-header-back-button"]',
         );
 
         // Open the Amount modal
@@ -149,10 +129,11 @@ describe('Change assets', function () {
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
-        await driver.waitForSelector(
-          '.confirm-page-container-summary__title img',
-        );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+        await driver.waitForSelector('[data-testid="nft-default-image"]');
+        await driver.waitForSelector({
+          css: 'h2',
+          text: 'Test Dapp NFTs #1',
+        });
 
         // Send it!
         await driver.clickElement({ text: 'Confirm', css: 'button' });
@@ -172,12 +153,11 @@ describe('Change assets', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Choose the nft
         await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
@@ -196,14 +176,15 @@ describe('Change assets', function () {
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
-        await driver.waitForSelector(
-          '.confirm-page-container-summary__title img',
-        );
-        await driver.waitForSelector({ css: 'h3', text: 'Test Dapp NFTs #1' });
+        await driver.waitForSelector('[data-testid="nft-default-image"]');
+        await driver.waitForSelector({
+          css: 'h2',
+          text: 'Test Dapp NFTs #1',
+        });
 
         // Click edit
         await driver.clickElement(
-          '[data-testid="confirm-page-back-edit-button"]',
+          '[data-testid="wallet-initiated-header-back-button"]',
         );
 
         // Open the Amount modal
@@ -229,8 +210,8 @@ describe('Change assets', function () {
 
         // Validate the send amount
         await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '2.000042',
+          css: 'h2',
+          text: '2',
         });
 
         // Send it!
@@ -259,12 +240,11 @@ describe('Change assets', function () {
             },
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Create second account
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -342,7 +322,7 @@ describe('Change assets', function () {
 
         // Make sure gas is updated by resetting amount and hex data
         // Note: this is needed until the race condition is fixed on the wallet level (issue #25243)
-        await driver.fill('[data-testid="currency-input"]', '2');
+        await driver.fill('[data-testid="currency-input"]', '2.000042');
         await hexDataLocator.fill('0x');
         await hexDataLocator.fill('');
 
@@ -351,8 +331,8 @@ describe('Change assets', function () {
 
         // Validate the send amount
         await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '2.000042',
+          css: 'h2',
+          text: '2 ETH',
         });
       },
     );

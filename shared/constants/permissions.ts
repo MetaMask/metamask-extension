@@ -3,6 +3,10 @@ export const CaveatTypes = Object.freeze({
   restrictNetworkSwitching: 'restrictNetworkSwitching' as const,
 });
 
+export const EndowmentTypes = Object.freeze({
+  permittedChains: 'endowment:permitted-chains',
+});
+
 export const RestrictedEthMethods = Object.freeze({
   eth_accounts: 'eth_accounts',
 });
@@ -56,6 +60,8 @@ export const PermissionWeight = Object.freeze({
   snap_getLocale: 4,
   wallet_snap: 4,
   endowment_networkAccess: 3,
+  endowment_assets: 3,
+  endowment_protocol: 3,
   endowment_webassembly: 4,
   endowment_transactionInsight: 4,
   endowment_cronjob: 4,

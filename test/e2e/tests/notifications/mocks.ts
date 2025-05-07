@@ -1,17 +1,15 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
 import {
-  AuthenticationController,
-  UserStorageController,
-} from '@metamask/profile-sync-controller';
-import {
   NotificationServicesController,
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 
-const AuthMocks = AuthenticationController.Mocks;
-const StorageMocks = UserStorageController.Mocks;
 const NotificationMocks = NotificationServicesController.Mocks;
 const PushMocks = NotificationServicesPushController.Mocks;
+const AuthMocks = AuthenticationController.Mocks;
 
 type MockResponse = {
   url: string | RegExp;
@@ -20,19 +18,31 @@ type MockResponse = {
 };
 
 /**
- * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications, Profile syncing)
+ * E2E mock setup for notification APIs (Notifications, Push Notifications)
  *
  * @param server - server obj used to mock our endpoints
+ * @param userStorageMockttpControllerInstance - optional instance of UserStorageMockttpController, useful if you need persisted user storage between tests
  */
-export async function mockNotificationServices(server: Mockttp) {
+export async function mockNotificationServices(
+  server: Mockttp,
+  userStorageMockttpControllerInstance: UserStorageMockttpController = new UserStorageMockttpController(),
+) {
+  // Storage
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.notifications,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.notifications,
+      server,
+    );
+  }
+
   // Auth
   mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
-
-  // Storage
-  mockAPICall(server, await StorageMocks.getMockUserStorageGetResponse());
-  mockAPICall(server, await StorageMocks.getMockUserStoragePutResponse());
 
   // Notifications
   mockAPICall(server, NotificationMocks.getMockFeatureAnnouncementResponse());

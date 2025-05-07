@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { isSnapId } from '@metamask/snaps-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Box, IconSize, Text } from '../../../../components/component-library';
 import {
@@ -20,9 +21,12 @@ import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/
 import { getDedupedSnaps } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
-import { getPermissions, getSnapMetadata } from '../../../../selectors';
+import {
+  getPermissions,
+  getPreinstalledSnaps,
+  getSnapMetadata,
+} from '../../../../selectors';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { isSnapId } from '../../../../helpers/utils/snaps';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 
 export default function SnapsConnect({
@@ -36,11 +40,22 @@ export default function SnapsConnect({
   const t = useI18nContext();
   const { origin } = targetSubjectMetadata;
   const [isLoading, setIsLoading] = useState(false);
-  const [isShowingSnapsPrivacyWarning, setIsShowingSnapsPrivacyWarning] =
-    useState(!snapsInstallPrivacyWarningShown);
+
   const currentPermissions = useSelector((state) =>
     getPermissions(state, request?.metadata?.origin),
   );
+
+  const preinstalledSnaps = useSelector(getPreinstalledSnaps);
+
+  const snaps = getDedupedSnaps(request, currentPermissions);
+  const snapId = snaps[0];
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
+  );
+
+  const isPreinstalled = Object.keys(preinstalledSnaps).includes(snapId);
+  const [isShowingSnapsPrivacyWarning, setIsShowingSnapsPrivacyWarning] =
+    useState(!isPreinstalled && !snapsInstallPrivacyWarningShown);
 
   const onCancel = useCallback(() => {
     rejectConnection(request.metadata.id);
@@ -55,8 +70,6 @@ export default function SnapsConnect({
     }
   }, [request, approveConnection]);
 
-  const snaps = getDedupedSnaps(request, currentPermissions);
-
   const SnapsConnectContent = () => {
     let trimmedOrigin = (useOriginMetadata(origin) || {})?.hostname;
     const { name } = useSelector((state) =>
@@ -67,11 +80,6 @@ export default function SnapsConnect({
     if (isSnapId(origin)) {
       trimmedOrigin = name;
     }
-
-    const snapId = snaps[0];
-    const { name: snapName } = useSelector((state) =>
-      getSnapMetadata(state, snapId),
-    );
 
     if (isLoading) {
       return (
@@ -160,7 +168,11 @@ export default function SnapsConnect({
           <Box paddingBottom={2}>
             <SnapIcon snapId={snaps[0]} avatarSize={IconSize.Xl} />
           </Box>
-          <Text paddingBottom={2} variant={TextVariant.headingMd}>
+          <Text
+            paddingBottom={2}
+            variant={TextVariant.headingMd}
+            textAlign="center"
+          >
             {t('connectionRequest')}
           </Text>
           <Text

@@ -18,6 +18,10 @@ buildTypes:
     features:
       - build-main
       - keyring-snaps
+      - multi-srp
+      - multichain
+      - solana
+      - solana-swaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -26,7 +30,8 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.7.0/index.html
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.2.2/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -39,14 +44,21 @@ buildTypes:
     features:
       - build-beta
       - keyring-snaps
+      - multichain
+      - solana
+      - solana-swaps
+      - multi-srp
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
+      - SUPPORT_LINK: https://intercom.help/internal-beta-testing/
+      - SUPPORT_REQUEST_LINK: https://intercom.help/internal-beta-testing/
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.7.0/index.html
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.2.2/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
@@ -62,12 +74,18 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
+      # - bitcoin
+      - solana
+      - multi-srp
+      - solana-swaps
+      - multichain
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.7.0/index.html
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.2.2/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -90,7 +108,8 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.7.0/index.html
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/7.2.2/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://support.metamask-institutional.io
       - SUPPORT_REQUEST_LINK: https://support.metamask-institutional.io
@@ -125,18 +144,43 @@ features:
       - ./{app,shared,ui}/**/institutional/**
   build-flask:
     assets:
+      - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
+        dest: snaps/account-watcher.json
+      - src: ./node_modules/@metamask/preinstalled-example-snap/dist/preinstalled-snap.json
+        dest: snaps/preinstalled-example-snap.json
       - src: ./app/build-types/flask/images/
         dest: images
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
     assets:
+      - src: ./node_modules/@metamask/message-signing-snap/dist/preinstalled-snap.json
+        dest: snaps/message-signing-snap.json
+      - src: ./node_modules/@metamask/ens-resolver-snap/dist/preinstalled-snap.json
+        dest: snaps/ens-resolver-snap.json
+      - src: ./node_modules/@metamask/institutional-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/institutional-wallet-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
+  bitcoin:
+    assets:
+      - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/bitcoin-wallet-snap.json
+  solana:
+    assets:
+      - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
+        dest: snaps/solana-wallet-snap.json
+  multi-srp:
+    assets:
+      # srp-list is a special case and is used in the srp recovery flow now.
+      - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
+  solana-swaps:
+  multichain:
 
 # Env variables that are required for all types of builds
 #
 # env object supports both declarations (- FOO), and definitions (- FOO: BAR).
 # Variables that were declared have to be defined somewhere in the load chain before usage
 env:
+  - ACCOUNTS_USE_DEV_APIS: false
   - BRIDGE_USE_DEV_APIS: false
   - SWAPS_USE_DEV_APIS: false
   - PORTFOLIO_URL: https://portfolio.metamask.io
@@ -156,6 +200,7 @@ env:
   - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
   # Blockaid public key for verifying signatures of data files downloaded from CDN
   - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
+  - REMOVE_GNS: ''
 
   - ENABLE_MV3: true
   # These are exclusively used for MV3
@@ -171,6 +216,12 @@ env:
   - IS_CODESIGN_BUILD: null
 
   - SENTRY_MMI_DSN: ''
+
+  ###
+  # Storybook
+  ###
+  - STORYBOOK: false
+  - INFURA_STORYBOOK_PROJECT_ID
 
   ###
   # Notifications Feature
@@ -199,13 +250,9 @@ env:
   # API keys to 3rd party services
   ###
 
-  - PUBNUB_PUB_KEY: null
-  - PUBNUB_SUB_KEY: null
   - SEGMENT_HOST: null
   - SENTRY_DSN: null
   - SENTRY_DSN_DEV: null
-  - OPENSEA_KEY: null
-  - ETHERSCAN_KEY: null
   # also INFURA_PROJECT_ID below
 
   ###
@@ -219,8 +266,8 @@ env:
   # Variables that are modified with hardcoded code
   ###
 
-  # Used to enable confirmation redesigned pages
-  - ENABLE_CONFIRMATION_REDESIGN: ''
+  # URL of the decoding API used to provide additional data from signature requests
+  - DECODING_API_URL: 'https://signature-insights.api.cx.metamask.io/v1'
   # Determines if feature flagged Settings Page - Developer Options should be used
   - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: false
   # Used for debugging changes to the phishing warning page.
@@ -260,21 +307,24 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
-  # Determines if feature flagged Multichain Transactions should be used
-  - TRANSACTION_MULTICHAIN: ''
-  # Determines if Barad Dur features should be used
-  - BARAD_DUR: ''
   # Determines if feature flagged Chain permissions
   - CHAIN_PERMISSIONS: ''
+  # Determines if Portfolio View UI should be shown
+  - PORTFOLIO_VIEW: 'true'
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
   # Temporary mechanism to enable security alerts API prior to release
-  - SECURITY_ALERTS_API_ENABLED: ''
+  - SECURITY_ALERTS_API_ENABLED: 'true'
   # URL of security alerts API used to validate dApp requests
-  - SECURITY_ALERTS_API_URL: 'http://localhost:3000'
+  - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
+  # API key to authenticate Etherscan requests to avoid rate limiting
+  - ETHERSCAN_API_KEY: ''
 
-    # Enables the notifications feature within the build:
+  # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
+
+  # This will be defined if running a unit test
+  - JEST_WORKER_ID: undefined
 
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
@@ -284,14 +334,37 @@ env:
 
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default
+  # Path to a JSON file that will be used to override the default manifest values.
+  - MANIFEST_OVERRIDES: null
 
   ###
   # Account Abstraction (EIP-4337)
   ###
-
   - EIP_4337_ENTRYPOINT: null
+
   ###
   # Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
   # This should NEVER be enabled in production since it slows down react
   ###
   - ENABLE_WHY_DID_YOU_RENDER: false
+
+  ###
+  # Unused environment variables referenced in dependencies
+  # Unset environment variables cause a build error. These are set to `null` to tell our build
+  # system that they are intentionally unset.
+  ###
+  - ETHERSCAN_KEY: null # Used by `gridplus-sdk/dist/util.js`
+
+  ###
+  # Public key used to verify EIP-7702 contract address signatures set in LaunchDarkly.
+  ###
+  - EIP_7702_PUBLIC_KEY: '0x3c7a1cCCe462e96D186B8ca9a1BCB2010C3dABa3'
+
+  # URL of transaction relay API
+  - TRANSACTION_RELAY_API_URL: null
+
+  # Address of DelegationManager smart contract
+  - DELEGATION_MANAGER_ADDRESS: null
+
+  # Address of enforcer used for gasless EIP-7702 transactions
+  - GASLESS_7702_ENFORCER_ADDRESS: null

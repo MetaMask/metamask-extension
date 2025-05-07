@@ -1,4 +1,5 @@
 const { By } = require('selenium-webdriver');
+const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -6,66 +7,50 @@ const {
   unlockWallet,
   DAPP_URL,
   DAPP_ONE_URL,
-  regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   largeDelayMs,
-  switchToNotificationWindow,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
-  it('should batch confirmation txs for different dapps on different networks.', async function () {
+  it('should put confirmation txs for different dapps on different networks in single queue', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
-
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
 
         // Connect to dapp 1
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({
-          text: 'Next',
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         await driver.switchToWindowWithTitle(
@@ -89,23 +74,13 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Connect to dapp 2
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
-        await driver.clickElement('#connectButton');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver, 4);
-
-        await driver.clickElement({
-          text: 'Next',
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'Connect',
           tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
-        });
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-          css: '[data-testid="page-container-footer-next"]',
         });
 
         // Dapp one send tx
@@ -122,38 +97,42 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.clickElement('#sendButton');
         await driver.clickElement('#sendButton');
 
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.findElement(
-          By.xpath("//div[normalize-space(.)='1 of 2']"),
+        await driver.waitForSelector(
+          By.xpath("//p[normalize-space(.)='1 of 4']"),
         );
 
-        // Check correct network on confirm tx.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8545',
         });
 
-        // Reject All Transactions
-        await driver.clickElement('.page-container__footer-secondary a');
-
-        await driver.clickElement({ text: 'Reject all', tag: 'button' }); // TODO: Do we want to confirm here?
-
-        // Wait for confirmation to close
-        await driver.waitUntilXWindowHandles(3);
-
-        // Wait for new confirmations queued from second dapp to open
-        await switchToNotificationWindow(driver, 4);
-
-        await driver.findElement(
-          By.xpath("//div[normalize-space(.)='1 of 2']"),
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
+        );
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
         );
 
-        // Check correct network on confirm tx.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
+
+        if (isManifestV3) {
+          await driver.clickElement({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        } else {
+          await driver.clickElementAndWaitForWindowToClose({
+            text: 'Reject all',
+            tag: 'button',
+          });
+        }
+
+        await driver.waitUntilXWindowHandles(3);
       },
     );
   });

@@ -24,6 +24,15 @@
         "chromeos": "Alt+Shift+M",
         "linux": "Alt+Shift+M"
       }
+    },
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+M",
+        "windows": "Alt+Shift+M",
+        "mac": "Alt+Shift+M",
+        "chromeos": "Alt+Shift+M",
+        "linux": "Alt+Shift+M"
+      }
     }
   },
   "content_scripts": [
@@ -40,7 +49,7 @@
       "all_frames": true
     },
     {
-      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
   ],
@@ -50,7 +59,9 @@
     "http://localhost:8545/",
     "file://*/*",
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "ws://*/*",
+    "wss://*/*"
   ],
   "icons": {
     "16": "images/icon-16.png",

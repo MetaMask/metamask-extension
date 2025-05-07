@@ -3,7 +3,6 @@ import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   withFixtures,
@@ -11,13 +10,12 @@ import {
 import { Driver } from '../../webdriver/driver';
 import { RECIPIENT_ADDRESS_MOCK } from '../simulation-details/types';
 
-describe('AssetPickerSendFlow @no-mmi', function () {
+describe('AssetPickerSendFlow', function () {
   const chainId = CHAIN_IDS.MAINNET;
 
   const fixtures = {
     fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
-    ganacheOptions: {
-      ...defaultGanacheOptions,
+    localNodeOptions: {
       chainId: parseInt(chainId, 16),
     },
   };
@@ -71,7 +69,7 @@ describe('AssetPickerSendFlow @no-mmi', function () {
           )
         ).getText();
 
-        assert.equal(tokenListValue, '25 ETH');
+        assert.equal(tokenListValue, '$250,000.00');
 
         const tokenListSecondaryValue = await (
           await driver.findElement(
@@ -79,7 +77,7 @@ describe('AssetPickerSendFlow @no-mmi', function () {
           )
         ).getText();
 
-        assert.equal(tokenListSecondaryValue, '$250,000.00');
+        assert.equal(tokenListSecondaryValue, '25 ETH');
 
         // Search for CHZ
         const searchInputField = await driver.waitForSelector(
@@ -87,8 +85,12 @@ describe('AssetPickerSendFlow @no-mmi', function () {
         );
         await searchInputField.sendKeys('CHZ');
 
+        await driver.elementCountBecomesN(
+          '[data-testid="multichain-token-list-button"]',
+          1,
+        );
         // check that CHZ is disabled
-        const [, tkn] = await driver.findElements(
+        const [tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',
         );
 

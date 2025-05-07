@@ -2,52 +2,59 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
+import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
-import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
+import { formatAmount } from '../../../../simulation-details/formatAmount';
+import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
+import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { useIsNFT } from './use-is-nft';
 
-const UNLIMITED_THRESHOLD = 10 ** 15;
-
-function isSpendingCapUnlimited(decodedSpendingCap: number) {
-  return decodedSpendingCap >= UNLIMITED_THRESHOLD;
+export function isSpendingCapUnlimited(decodedSpendingCap: number) {
+  return decodedSpendingCap >= TOKEN_VALUE_UNLIMITED_THRESHOLD;
 }
 
 export const useApproveTokenSimulation = (
   transactionMeta: TransactionMeta,
-  decimals: string,
+  decimals: string | undefined,
 ) => {
   const locale = useSelector(getIntlLocale);
   const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
-  const decodedResponse = useDecodedTransactionData();
-  const { value, pending } = decodedResponse;
+  const transactionData = transactionMeta?.txParams?.data as Hex | undefined;
 
-  const decodedSpendingCap = useMemo(() => {
-    return value
-      ? new BigNumber(value.data[0].params[1].value)
-          .dividedBy(new BigNumber(10).pow(Number(decimals)))
-          .toNumber()
-      : 0;
-  }, [value, decimals]);
+  const { amountOrTokenId: parsedValue } =
+    parseApprovalTransactionData(transactionData ?? '0x') ?? {};
+
+  const value = parsedValue ?? new BigNumber(0);
+
+  const decodedSpendingCap = calcTokenAmount(
+    value,
+    Number(decimals ?? '0'),
+  ).toFixed();
+
+  const tokenPrefix = isNFT ? '#' : '';
 
   const formattedSpendingCap = useMemo(() => {
     return isNFT
-      ? decodedSpendingCap
-      : new Intl.NumberFormat(locale).format(decodedSpendingCap);
+      ? `${tokenPrefix}${decodedSpendingCap}`
+      : formatAmount(locale, new BigNumber(decodedSpendingCap));
   }, [decodedSpendingCap, isNFT, locale]);
 
-  const spendingCap = useMemo(() => {
-    if (!isNFT && isSpendingCapUnlimited(decodedSpendingCap)) {
-      return SPENDING_CAP_UNLIMITED_MSG;
+  const { spendingCap, isUnlimitedSpendingCap } = useMemo(() => {
+    if (!isNFT && isSpendingCapUnlimited(parseInt(decodedSpendingCap, 10))) {
+      return { spendingCap: decodedSpendingCap, isUnlimitedSpendingCap: true };
     }
-    const tokenPrefix = isNFT ? '#' : '';
-    return `${tokenPrefix}${formattedSpendingCap}`;
+    return {
+      spendingCap: `${tokenPrefix}${decodedSpendingCap}`,
+      isUnlimitedSpendingCap: false,
+    };
   }, [decodedSpendingCap, formattedSpendingCap, isNFT]);
 
   return {
+    isUnlimitedSpendingCap,
     spendingCap,
     formattedSpendingCap,
     value,
-    pending: pending || isNFTPending,
+    pending: isNFTPending,
   };
 };

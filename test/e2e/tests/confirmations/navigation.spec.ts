@@ -1,49 +1,44 @@
-import { strict as assert } from 'assert';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
-import {
-  DAPP_HOST_ADDRESS,
-  WINDOW_TITLES,
-  openDapp,
-  unlockWallet,
-  regularDelayMs,
-} from '../../helpers';
+import { openDapp, unlockWallet, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from './helpers';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { createDappTransaction } from '../../page-objects/flows/transaction';
+import { TestSnaps } from '../../page-objects/pages/test-snaps';
+import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
+import SignTypedData from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
-describe('Navigation Signature - Different signature types', function (this: Suite) {
+describe('Confirmation Navigation', function (this: Suite) {
   it('initiates and queues multiple signatures and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
+        const confirmation = new SignTypedData(driver);
         await unlockWallet(driver);
         await openDapp(driver);
         await queueSignatures(driver);
 
         await verifySignTypedData(driver);
-        await driver.clickElement(
-          '[data-testid="confirm-nav__next-confirmation"]',
-        );
+        await confirmation.clickNextPage();
 
         // Verify Sign Typed Data v3 confirmation is displayed
         await verifySignedTypeV3Confirmation(driver);
 
-        await driver.clickElement(
-          '[data-testid="confirm-nav__next-confirmation"]',
-        );
+        await confirmation.clickNextPage();
 
         // Verify Sign Typed Data v4 confirmation is displayed
         await verifySignedTypeV4Confirmation(driver);
 
-        await driver.clickElement(
-          '[data-testid="confirm-nav__previous-confirmation"]',
-        );
+        await confirmation.clickPreviousPage();
 
         // Verify Sign Typed Data v3 confirmation is displayed
         await verifySignedTypeV3Confirmation(driver);
 
-        await driver.clickElement(
-          '[data-testid="confirm-nav__previous-confirmation"]',
-        );
+        await confirmation.clickPreviousPage();
         // Verify Sign Typed Data v3 confirmation is displayed
         await verifySignTypedData(driver);
       },
@@ -51,35 +46,33 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   });
 
   it('initiates and queues a mix of signatures and transactions and navigates', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
+        const confirmation = new TransactionConfirmation(driver);
         await unlockWallet(driver);
         await openDapp(driver);
         await queueSignaturesAndTransactions(driver);
 
         await verifySignTypedData(driver);
 
-        await driver.clickElement(
-          '[data-testid="confirm-nav__next-confirmation"]',
-        );
+        await confirmation.clickNextPage();
 
-        // Verify Transaction Sending ETH is displayed
-        await verifyTransaction(driver, 'SENDING ETH');
+        // Verify simple send transaction is displayed
+        await confirmation.check_dappInitiatedHeadingTitle();
 
-        await driver.clickElement('[data-testid="next-page"]');
+        await confirmation.clickNextPage();
 
         // Verify Sign Typed Data v3 confirmation is displayed
         await verifySignedTypeV3Confirmation(driver);
 
-        await driver.clickElement(
-          '[data-testid="confirm-nav__previous-confirmation"]',
-        );
+        await confirmation.clickPreviousPage();
 
-        // Verify Sign Typed Data v3 confirmation is displayed
-        await verifyTransaction(driver, 'SENDING ETH');
+        // Verify simple send transaction is displayed
+        await confirmation.check_dappInitiatedHeadingTitle();
 
-        await driver.clickElement('[data-testid="previous-page"]');
+        await confirmation.clickPreviousPage();
 
         // Verify Sign Typed Data v3 confirmation is displayed
         await verifySignTypedData(driver);
@@ -88,117 +81,137 @@ describe('Navigation Signature - Different signature types', function (this: Sui
   });
 
   it('initiates multiple signatures and rejects all', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
+        const confirmation = new SignTypedData(driver);
+        const testDapp = new TestDapp(driver);
         await unlockWallet(driver);
         await openDapp(driver);
         await queueSignatures(driver);
-        await driver.delay(regularDelayMs);
 
-        await driver.clickElement('[data-testid="confirm-nav__reject-all"]');
+        await confirmation.clickRejectAll();
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.check_failedSignTypedData('User rejected the request.');
+        await testDapp.check_failedSignTypedDataV3(
+          'User rejected the request.',
+        );
+        await testDapp.check_failedSignTypedDataV4(
+          'User rejected the request.',
+        );
+      },
+    );
+  });
 
-        await verifyRejectionResults(driver, '#signTypedDataResult');
-        await verifyRejectionResults(driver, '#signTypedDataV3Result');
-        await verifyRejectionResults(driver, '#signTypedDataV4Result');
+  it('navigates between transactions, signatures, and snap dialogs', async function () {
+    await withTransactionEnvelopeTypeFixtures(
+      this.test?.fullTitle(),
+      TransactionEnvelopeType.feeMarket,
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithoutBalanceValidation(driver);
+
+        const testSnaps = new TestSnaps(driver);
+        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
+        await testSnaps.scrollAndClickButton('confirmationButton');
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.clickSignTypedDatav4();
+
+        await createDappTransaction(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        const confirmation = new TransactionConfirmation(driver);
+        const signTypedDataConfirmation = new SignTypedData(driver);
+        await confirmation.check_pageNumbers(1, 3);
+        await confirmation.verifyConfirmationHeadingTitle();
+
+        await confirmation.clickNextPage();
+        await confirmation.check_pageNumbers(2, 3);
+        await signTypedDataConfirmation.verifyConfirmationHeadingTitle();
+
+        await confirmation.clickNextPage();
+        await confirmation.check_pageNumbers(3, 3);
+        await confirmation.check_dappInitiatedHeadingTitle();
+
+        await confirmation.clickPreviousPage();
+        await confirmation.check_pageNumbers(2, 3);
+        await signTypedDataConfirmation.verifyConfirmationHeadingTitle();
+
+        await confirmation.clickPreviousPage();
+        await confirmation.check_pageNumbers(1, 3);
+        await confirmation.verifyConfirmationHeadingTitle();
       },
     );
   });
 });
 
 async function verifySignTypedData(driver: Driver) {
-  const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const message = await driver.findElement({ text: 'Hi, Alice!' });
-
-  // Verify Sign Typed Data confirmation is displayed
-  assert.ok(origin, 'origin');
-  assert.ok(message, 'message');
-}
-
-async function verifyRejectionResults(driver: Driver, verifyResultId: string) {
-  const rejectionResult = await driver.findElement(verifyResultId);
-  assert.equal(
-    await rejectionResult.getText(),
-    'Error: User rejected the request.',
-  );
+  const confirmation = new SignTypedData(driver);
+  await confirmation.verifyOrigin();
+  await confirmation.verifySignTypedDataMessage();
 }
 
 async function verifySignedTypeV3Confirmation(driver: Driver) {
-  const origin = await driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const fromAddress = driver.findElement({
-    css: '.name__value',
-    text: '0xCD2a3...DD826',
-  });
-  const toAddress = driver.findElement({
-    css: '.name__value',
-    text: '0xbBbBB...bBBbB',
-  });
-  const contents = driver.findElement({ text: 'Hello, Bob!' });
-
-  assert.ok(await origin, 'origin');
-  assert.ok(await fromAddress, 'fromAddress');
-  assert.ok(await toAddress, 'toAddress');
-  assert.ok(await contents, 'contents');
+  const confirmation = new SignTypedData(driver);
+  await confirmation.verifyOrigin();
+  await confirmation.verifyFromAddress();
+  await confirmation.verifyToAddress();
+  await confirmation.verifyContents();
 }
 
 async function verifySignedTypeV4Confirmation(driver: Driver) {
+  const confirmation = new SignTypedData(driver);
   verifySignedTypeV3Confirmation(driver);
-  const attachment = driver.findElement({ text: '0x' });
-  assert.ok(await attachment, 'attachment');
+  await confirmation.verifyAttachment();
 }
 
 async function queueSignatures(driver: Driver) {
-  // There is a race condition which changes the order in which signatures are displayed (#25251)
-  // We fix it deterministically by waiting for an element in the screen for each signature
-  await driver.clickElement('#signTypedData');
-  await driver.waitUntilXWindowHandles(3);
+  const testDapp = new TestDapp(driver);
+  const confirmation = new SignTypedData(driver);
+
+  // Sign Typed Data
+  await testDapp.clickSignTypedData();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.findElement({ text: 'Hi, Alice!' });
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signTypedDataV3');
-  await driver.waitUntilXWindowHandles(3);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.findElement({ text: 'Reject all' });
+  await confirmation.verifySignTypedDataMessage();
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signTypedDataV4');
-  await driver.waitUntilXWindowHandles(3);
+
+  // Sign Typed Data V3
+  await testDapp.clickSignTypedDatav3();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await confirmation.check_pageNumbers(1, 2);
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+  // Sign Typed Data V4
+  await testDapp.clickSignTypedDatav4();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await confirmation.check_pageNumbers(1, 3);
 }
 
 async function queueSignaturesAndTransactions(driver: Driver) {
-  await driver.clickElement('#signTypedData');
-  await driver.waitUntilXWindowHandles(3);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(2000); // Delay needed due to a race condition
-  // To be fixed in https://github.com/MetaMask/metamask-extension/issues/25251
+  const testDapp = new TestDapp(driver);
+  const confirmation = new SignTypedData(driver);
 
-  await driver.waitUntilXWindowHandles(3);
+  // Sign Typed Data
+  await testDapp.clickSignTypedData();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await confirmation.verifySignTypedDataMessage();
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  await driver.clickElement('#sendButton');
-  await driver.waitUntilXWindowHandles(3);
+  // Send Transaction
+  await testDapp.clickSimpleSendButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(2000);
+  await confirmation.check_pageNumbers(1, 2);
 
-  await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  await driver.clickElement('#signTypedDataV3');
-  await driver.waitUntilXWindowHandles(3);
+  // Sign Typed Data V3
+  await testDapp.clickSignTypedDatav3();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.delay(2000);
-}
-
-async function verifyTransaction(
-  driver: Driver,
-  expectedTransactionType: string,
-) {
-  const transactionType = await driver.findElement(
-    '.confirm-page-container-summary__action__name',
-  );
-  assert.equal(await transactionType.getText(), expectedTransactionType);
+  await confirmation.check_pageNumbers(1, 3);
 }

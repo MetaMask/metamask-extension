@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useSafeChainsListValidationSelector } from '../../../../selectors';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
+import { CHAIN_SPEC_URL } from '../../../../../shared/constants/network';
 import { DAY } from '../../../../../shared/constants/time';
 
 export type SafeChain = {
@@ -22,11 +23,12 @@ export const useSafeChains = () => {
     error?: Error;
   }>({ safeChains: [] });
 
-  if (useSafeChainsListValidation) {
-    useEffect(() => {
+  useEffect(() => {
+    if (useSafeChainsListValidation) {
       fetchWithCache({
-        url: 'https://chainid.network/chains.json',
+        url: CHAIN_SPEC_URL,
         functionName: 'getSafeChainsList',
+        allowStale: true,
         cacheOptions: { cacheRefreshTime: DAY },
       })
         .then((response) => {
@@ -35,8 +37,8 @@ export const useSafeChains = () => {
         .catch((error) => {
           setSafeChains({ error });
         });
-    }, []);
-  }
+    }
+  }, [useSafeChainsListValidation]);
 
   return safeChains;
 };

@@ -3,7 +3,7 @@
 .dropdown {
   position: relative;
   display: inline-block;
-  height: 36px;
+  height: 48px;
 
   &__select {
     appearance: none;
@@ -15,9 +15,9 @@
 
     color: var(--color-text-default);
     border: 1px solid var(--color-border-default);
-    border-radius: 4px;
+    border-radius: 8px;
     background-color: var(--color-background-default);
-    padding: 8px 40px 8px 16px;
+    padding: 12px 40px 12px 16px;
     width: 100%;
 
     [dir='rtl'] & {

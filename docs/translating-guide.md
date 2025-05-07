@@ -12,7 +12,6 @@ The MetaMask browser extension supports new translations added in the form of ne
 - **The `description` key** is just to add context for what the translation is about, it **does not need to be translated**.
 - Add the language to the [locales index](https://github.com/MetaMask/metamask-extension/blob/master/app/_locales/index.json) `app/_locales/index.json`
 
-
 That's it! When MetaMask is loaded on a computer with that language set as the system language, they will see your translation instead of the default one.
 
 ## Testing

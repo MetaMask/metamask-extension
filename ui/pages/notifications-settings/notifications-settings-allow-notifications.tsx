@@ -20,7 +20,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../selectors/identity/backup-and-sync';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { Box, Text } from '../../components/component-library';
 import {
@@ -40,10 +40,12 @@ export function NotificationsSettingsAllowNotifications({
   loading,
   setLoading,
   disabled,
+  dataTestId,
 }: {
   loading: boolean;
   setLoading: (loading: boolean) => void;
   disabled: boolean;
+  dataTestId: string;
 }) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -57,12 +59,14 @@ export function NotificationsSettingsAllowNotifications({
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   const { enableNotifications, error: errorEnableNotifications } =
     useEnableNotifications();
   const { disableNotifications, error: errorDisableNotifications } =
     useDisableNotifications();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const error = errorEnableNotifications || errorDisableNotifications;
 
   useEffect(() => {
@@ -74,7 +78,7 @@ export function NotificationsSettingsAllowNotifications({
   }, [isMetamaskNotificationsEnabled]);
 
   useEffect(() => {
-    if (isMetamaskNotificationsEnabled && !error) {
+    if (!error && isMetamaskNotificationsEnabled) {
       listNotifications();
     }
   }, [isMetamaskNotificationsEnabled, error, listNotifications]);
@@ -82,29 +86,29 @@ export function NotificationsSettingsAllowNotifications({
   const toggleNotifications = useCallback(async () => {
     setLoading(true);
     if (isMetamaskNotificationsEnabled) {
-      await disableNotifications();
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
           settings_type: 'notifications',
-          was_profile_syncing_on: isProfileSyncingEnabled,
+          was_profile_syncing_on: isBackupAndSyncEnabled,
           old_value: true,
           new_value: false,
         },
       });
+      await disableNotifications();
     } else {
-      await enableNotifications();
       trackEvent({
         category: MetaMetricsEventCategory.NotificationSettings,
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
           settings_type: 'notifications',
-          was_profile_syncing_on: isProfileSyncingEnabled,
+          was_profile_syncing_on: isBackupAndSyncEnabled,
           old_value: false,
           new_value: true,
         },
       });
+      await enableNotifications();
     }
     setLoading(false);
     setToggleValue(!toggleValue);
@@ -114,6 +118,8 @@ export function NotificationsSettingsAllowNotifications({
     disableNotifications,
     enableNotifications,
     toggleValue,
+    isBackupAndSyncEnabled,
+    trackEvent,
   ]);
 
   const privacyLink = useMemo(
@@ -142,13 +148,13 @@ export function NotificationsSettingsAllowNotifications({
       paddingLeft={8}
       paddingRight={8}
       paddingBottom={8}
-      data-testid="notifications-settings-allow-notifications"
     >
       <NotificationsSettingsBox
         value={toggleValue}
         onToggle={toggleNotifications}
         disabled={disabled}
         loading={loading}
+        dataTestId={dataTestId}
       >
         <NotificationsSettingsType title={t('allowNotifications')} />
       </NotificationsSettingsBox>

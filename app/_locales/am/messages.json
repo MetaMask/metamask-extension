@@ -235,10 +235,6 @@
   "fast": {
     "message": "ፈጣን"
   },
-  "fiat": {
-    "message": "ፊያት",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "ፋይል ማስመጣት እየሰራ አይደለም? እዚህ ላይ ጠቅ ያድርጉ!",
     "description": "Helps user import their account from a JSON file"
@@ -248,9 +244,6 @@
   },
   "from": {
     "message": "ከ"
-  },
-  "functionType": {
-    "message": "የተግባር ዓይነት"
   },
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
@@ -311,9 +304,6 @@
     "message": "ከውጭ አስመጣ",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "መለያ አስመጣ"
-  },
   "importAccountMsg": {
     "message": "የመጡ መለያዎች በመጀመሪያ ከተፈጠረው የእርስዎ MetaMask መለያ የዘር ሐረግ ጋር አይዛመዱም። ስለሚመጡ መለያዎቸ ተጨማሪ መረጃ ያግኙ"
   },
@@ -372,9 +362,6 @@
   },
   "loading": {
     "message": "በመጫን ላይ…"
-  },
-  "loadingTokens": {
-    "message": "ተለዋጭ ስሞችን በመጫን ላይ..."
   },
   "lock": {
     "message": "ዘግተህ ውጣ"
@@ -435,9 +422,6 @@
   "noConversionRateAvailable": {
     "message": "ምንም የልወጣ ተመን አይገኝም"
   },
-  "noTransactions": {
-    "message": "ግብይቶች የሉዎትም"
-  },
   "noWebcamFound": {
     "message": "የኮምፒዩተርዎ ካሜራ አልተገኘም። እባክዎ እንደገና ይሞክሩ።"
   },
@@ -461,9 +445,6 @@
   },
   "origin": {
     "message": "መነሻ"
-  },
-  "parameters": {
-    "message": "መለኪያዎች"
   },
   "participateInMetaMetrics": {
     "message": "በ MetaMetrics ውስጥ ይሳተፉ"
@@ -492,12 +473,6 @@
   },
   "prev": {
     "message": "የቀደመ"
-  },
-  "primaryCurrencySetting": {
-    "message": "ተቀዳሚ የገንዘብ ዓይነት"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "ዋጋዎች በራሳቸው የሰንሰለት ገንዘብ ዓይነት (ለምሳሌ ETH) በቅድሚያ እንዲታዪ ይምረጡ። ዋጋዎች በተመረጠ የፊያት ገንዘብ ዓይነት እንዲታዩ ደግሞ ፊያትን ይምረጡ።"
   },
   "privacyMsg": {
     "message": "የግለኝነት መጠበቂያ ህግ"
@@ -538,9 +513,6 @@
   },
   "removeAccountDescription": {
     "message": "ይህ መለያ ከቋትዎ ይወገዳል። እባክዎ ከመቀጠልዎ በፊት የዚህ የመጣ መለያ የመጀመሪያው የዘር ሐረግ ወይም የግል ቁልፍ እንዳለዎት ያረጋግጡ። መለያዎችን ከመለያ ተቆልቋይ ማስመጣት ወይም መፍጠር ይችላሉ።"
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "ማረጋገጫ የሚጠባበቁ ጥያቄዎች"
   },
   "required": {
     "message": "የሚያስፈልግ"
@@ -608,9 +580,6 @@
   },
   "showHexDataDescription": {
     "message": "በመላኪያ ማያ ላይ የ hex ውሂብ መስክን ለማሳየት ይህን ይምረጡ"
-  },
-  "sigRequest": {
-    "message": "የፊርማ ጥያቄ"
   },
   "sign": {
     "message": "ፈርም"
@@ -708,9 +677,6 @@
   "transactionErrored": {
     "message": "ግብይቱ እንከን አጋጥሞታል።"
   },
-  "transactionFee": {
-    "message": " የግብይት ክፍያ"
-  },
   "transactionResubmitted": {
     "message": "ግብይቱ በድጋሚ ሲቀርብ የነዳጅ ክፍያ ወደ $1በ$2ጨምሯል"
   },
@@ -738,9 +704,6 @@
   "unknown": {
     "message": "ያልታወቀ"
   },
-  "unknownNetwork": {
-    "message": "የማይታወቅ የግል አውታረ መረብ"
-  },
   "unknownQrCode": {
     "message": "ስህተት፡ ያን የ QR ኮድ መለየት አልቻልንም"
   },
@@ -749,9 +712,6 @@
   },
   "unlockMessage": {
     "message": "ያልተማከለ ድር ይጠባበቃል"
-  },
-  "updatedWithDate": {
-    "message": "የዘመነ $1"
   },
   "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"
@@ -773,9 +733,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "ይህን ባህርይ ለመጠቀም የካሜራን መድረስ መፍቀድ አለብዎት።"
-  },
-  "youSign": {
-    "message": "እየፈረሙ ነው"
   },
   "yourPrivateSeedPhrase": {
     "message": "የግል ዘር ሐረግዎ"

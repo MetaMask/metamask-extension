@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import browser from 'webextension-polyfill';
 
-import { InternalAccount } from '@metamask/keyring-api';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -43,7 +43,11 @@ import {
   getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
 } from '../../../selectors';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -51,23 +55,21 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { CONNECTIONS } from '../../../helpers/constants/routes';
-import { MultichainNetwork } from '../../../selectors/multichain';
+import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { TraceName, trace } from '../../../../shared/lib/trace';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
-  isEvmNetwork: boolean;
-  currentNetwork: MultichainNetwork;
+  currentNetwork: MultichainNetworkConfiguration;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
   menuRef: React.RefObject<HTMLButtonElement>;
-  internalAccount: InternalAccount;
 };
 
 export const AppHeaderUnlockedContent = ({
   popupStatus,
-  isEvmNetwork,
   currentNetwork,
   networkOpenCallback,
   disableNetworkPicker,
@@ -81,6 +83,7 @@ export const AppHeaderUnlockedContent = ({
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const networkIconSrc = getNetworkIcon(currentNetwork);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -115,32 +118,33 @@ export const AppHeaderUnlockedContent = ({
   };
 
   const handleConnectionsRoute = () => {
-    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
+    history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
   };
 
   return (
     <>
       {popupStatus ? (
         <Box className="multichain-app-header__contents__container">
-          <Tooltip title={currentNetwork?.nickname} position="right">
+          <Tooltip title={currentNetwork.name} position="right">
             <PickerNetwork
               avatarNetworkProps={{
                 backgroundColor: testNetworkBackgroundColor,
                 role: 'img',
-                name: currentNetwork?.nickname ?? '',
+                name: currentNetwork.name,
               }}
               className="multichain-app-header__contents--avatar-network"
               ref={menuRef}
               as="button"
-              src={currentNetwork?.network?.rpcPrefs?.imageUrl ?? ''}
-              label={currentNetwork?.nickname ?? ''}
-              aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
+              src={networkIconSrc}
+              label={currentNetwork.name}
+              aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
               labelProps={{
                 display: Display.None,
               }}
               onClick={(e: React.MouseEvent<HTMLElement>) => {
                 e.stopPropagation();
                 e.preventDefault();
+                trace({ name: TraceName.NetworkList });
                 networkOpenCallback();
               }}
               display={[Display.Flex, Display.None]} // show on popover hide on desktop
@@ -154,15 +158,16 @@ export const AppHeaderUnlockedContent = ({
             avatarNetworkProps={{
               backgroundColor: testNetworkBackgroundColor,
               role: 'img',
-              name: currentNetwork?.nickname ?? '',
+              name: currentNetwork.name,
             }}
             margin={2}
-            aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
-            label={currentNetwork?.nickname ?? ''}
-            src={currentNetwork?.network?.rpcPrefs?.imageUrl}
+            aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
+            label={currentNetwork.name}
+            src={networkIconSrc}
             onClick={(e: React.MouseEvent<HTMLElement>) => {
               e.stopPropagation();
               e.preventDefault();
+              trace({ name: TraceName.NetworkList });
               networkOpenCallback();
             }}
             display={[Display.None, Display.Flex]} // show on desktop hide on popover
@@ -197,8 +202,8 @@ export const AppHeaderUnlockedContent = ({
             }}
             disabled={disableAccountPicker}
             labelProps={{ fontWeight: FontWeight.Bold }}
-            paddingLeft={2}
-            paddingRight={2}
+            paddingLeft={0}
+            paddingRight={0}
           />
           <Tooltip
             position="left"
@@ -246,13 +251,7 @@ export const AppHeaderUnlockedContent = ({
           {showConnectedStatus && (
             <Box ref={menuRef}>
               <ConnectedStatusIndicator
-                onClick={() => {
-                  if (!isEvmNetwork) {
-                    return;
-                  }
-                  handleConnectionsRoute();
-                }}
-                disabled={!isEvmNetwork}
+                onClick={() => handleConnectionsRoute()}
               />
             </Box>
           )}{' '}

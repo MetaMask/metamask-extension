@@ -15,6 +15,8 @@ import { matchPath, useLocation } from 'react-router-dom';
 import { captureException, captureMessage } from '@sentry/browser';
 
 import { omit } from 'lodash';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import { PATH_NAME_MAP } from '../helpers/constants/routes';
 import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
@@ -24,7 +26,7 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 
 // type imports
 /**
- * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
+ * @typedef {import('../../shared/constants/metametrics').UnsanitizedMetaMetricsEventPayload} MetaMetricsEventPayload
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsPageObject} MetaMetricsPageObject
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsReferrerObject} MetaMetricsReferrerObject

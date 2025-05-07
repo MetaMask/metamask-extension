@@ -1,4 +1,10 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
@@ -45,9 +51,13 @@ export const NetworkListItem = ({
   onClick,
   onDeleteClick,
   onEditClick,
+  onDiscoverClick,
   onRpcEndpointClick,
   startAccessory,
+  endAccessory,
   showEndAccessory = true,
+  disabled = false,
+  variant,
 }: {
   name: string;
   iconSrc?: string;
@@ -59,9 +69,13 @@ export const NetworkListItem = ({
   onRpcEndpointClick?: () => void;
   onDeleteClick?: () => void;
   onEditClick?: () => void;
+  onDiscoverClick?: () => void;
   focus?: boolean;
   startAccessory?: ReactNode;
+  endAccessory?: ReactNode;
   showEndAccessory?: boolean;
+  disabled?: boolean;
+  variant?: TextVariant;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
@@ -70,14 +84,18 @@ export const NetworkListItem = ({
     useState();
 
   // I can't find a type that satisfies this.
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setNetworkListItemMenuRef = (ref: any) => {
     setNetworkListItemMenuElement(ref);
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
 
-  const renderButton = () => {
-    return onDeleteClick || onEditClick ? (
+  const renderButton = useCallback(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    return onDeleteClick || onEditClick || onDiscoverClick ? (
       <ButtonIcon
         iconName={IconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
@@ -90,7 +108,15 @@ export const NetworkListItem = ({
         size={ButtonIconSize.Sm}
       />
     ) : null;
-  };
+  }, [
+    onDeleteClick,
+    onEditClick,
+    onDiscoverClick,
+    chainId,
+    t,
+    setNetworkListItemMenuRef,
+    setNetworkOptionsMenuOpen,
+  ]);
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
@@ -116,12 +142,13 @@ export const NetworkListItem = ({
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
+        'multichain-network-list-item--disabled': disabled,
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
     >
       {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
       {selected && (
@@ -152,26 +179,24 @@ export const NetworkListItem = ({
           alignItems={AlignItems.center}
           data-testid={name}
         >
-          <Text
-            ref={networkRef}
-            color={TextColor.textDefault}
-            backgroundColor={BackgroundColor.transparent}
-            ellipsis
-            onKeyDown={handleKeyPress}
-            tabIndex={0} // Enable keyboard focus
+          <Tooltip
+            title={name}
+            position="bottom"
+            wrapperClassName="multichain-network-list-item__tooltip"
+            disabled={name?.length <= MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP}
           >
-            {name?.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-              <Tooltip
-                title={name}
-                position="bottom"
-                wrapperClassName="multichain-network-list-item__tooltip"
-              >
-                {name}
-              </Tooltip>
-            ) : (
-              name
-            )}
-          </Text>
+            <Text
+              ref={networkRef}
+              color={TextColor.textDefault}
+              backgroundColor={BackgroundColor.transparent}
+              variant={variant ?? TextVariant.bodyMd}
+              ellipsis
+              onKeyDown={handleKeyPress}
+              tabIndex={0} // Enable keyboard focus
+            >
+              {name}
+            </Text>
+          </Tooltip>
         </Box>
         {rpcEndpoint && (
           <Box
@@ -190,6 +215,7 @@ export const NetworkListItem = ({
               as="button"
               variant={TextVariant.bodySmMedium}
               color={TextColor.textAlternative}
+              ellipsis
             >
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>
@@ -204,15 +230,18 @@ export const NetworkListItem = ({
       </Box>
 
       {renderButton()}
-      {showEndAccessory ? (
-        <NetworkListItemMenu
-          anchorElement={networkListItemMenuElement}
-          isOpen={networkOptionsMenuOpen}
-          onDeleteClick={onDeleteClick}
-          onEditClick={onEditClick}
-          onClose={() => setNetworkOptionsMenuOpen(false)}
-        />
-      ) : null}
+      {showEndAccessory
+        ? endAccessory ?? (
+            <NetworkListItemMenu
+              anchorElement={networkListItemMenuElement}
+              isOpen={networkOptionsMenuOpen}
+              onDeleteClick={onDeleteClick}
+              onEditClick={onEditClick}
+              onDiscoverClick={onDiscoverClick}
+              onClose={() => setNetworkOptionsMenuOpen(false)}
+            />
+          )
+        : null}
     </Box>
   );
 };
@@ -255,7 +284,11 @@ NetworkListItem.propTypes = {
    */
   startAccessory: PropTypes.node,
   /**
-   * Represents if we need to show menu option
+   * Represents end accessory
+   */
+  endAccessory: PropTypes.node,
+  /**
+   * Represents if we need to show menu option or endAccessory
    */
   showEndAccessory: PropTypes.bool,
 };

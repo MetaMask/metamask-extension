@@ -30,13 +30,15 @@ import {
   resetOnboarding,
   resetViewedNotifications,
   setServiceWorkerKeepAlivePreference,
-  setRedesignedConfirmationsDeveloperEnabled,
 } from '../../../store/actions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getIsRedesignedConfirmationsDeveloperEnabled } from '../../confirmations/selectors/confirm';
+import { getRemoteFeatureFlags } from '../../../selectors';
 import ToggleRow from './developer-options-toggle-row-component';
-import { SentryTest } from './sentry-test';
+import SentryTest from './sentry-test';
+import { BackupAndSyncDevSettings } from './backup-and-sync';
 
 /**
  * Settings Page for Developer Options (internal-only)
@@ -52,18 +54,10 @@ const DeveloperOptionsTab = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const redesignConfirmationsFeatureToggle = useSelector(
-    getIsRedesignedConfirmationsDeveloperEnabled,
-  );
-
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
   const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
     useState(true);
-  const [
-    isRedesignedConfirmationsFeatureEnabled,
-    setIsRedesignedConfirmationsFeatureEnabled,
-  ] = useState(redesignConfirmationsFeatureToggle);
 
   const settingsRefs = Array(
     getNumberOfSettingRoutesInTab(t, t('developerOptions')),
@@ -106,13 +100,6 @@ const DeveloperOptionsTab = () => {
     setIsServiceWorkerKeptAlive(value);
   };
 
-  const setEnableConfirmationsRedesignEnabled = async (
-    value: boolean,
-  ): Promise<void> => {
-    await dispatch(setRedesignedConfirmationsDeveloperEnabled(value));
-    await setIsRedesignedConfirmationsFeatureEnabled(value);
-  };
-
   const renderAnnouncementReset = () => {
     return (
       <Box
@@ -127,7 +114,7 @@ const DeveloperOptionsTab = () => {
           <span>Announcements</span>
           <div className="settings-page__content-description">
             Resets isShown boolean to false for all announcements. Announcements
-            are the notifications shown in the What's New popup modal.
+            are the notifications shown in the What&apos;s New popup modal.
           </div>
         </div>
 
@@ -223,18 +210,33 @@ const DeveloperOptionsTab = () => {
     );
   };
 
-  const renderEnableConfirmationsRedesignToggle = () => {
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+
+  const renderRemoteFeatureFlags = () => {
     return (
-      <ToggleRow
-        title="Confirmations Redesign"
-        description="Enables or disables the confirmations redesign feature currently in development"
-        isEnabled={isRedesignedConfirmationsFeatureEnabled}
-        onToggle={(value: boolean) =>
-          setEnableConfirmationsRedesignEnabled(!value)
-        }
-        dataTestId="developer-options-enable-confirmations-redesign-toggle"
-        settingsRef={settingsRefs[5] as React.RefObject<HTMLDivElement>}
-      />
+      <Box
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>Remote feature flags</span>
+          <div className="settings-page__content-description">
+            Remote feature flag values come from LaunchDarkly by default. If you
+            need to update feature flag values locally for development purposes,
+            you can change feature flag values in .manifest-overrides.json,
+            which will override values coming from LaunchDarkly.
+          </div>
+        </div>
+        <div
+          className="settings-page__content-description"
+          data-testid="developer-options-remote-feature-flags"
+        >
+          {JSON.stringify(remoteFeatureFlags)}
+        </div>
+      </Box>
     );
   };
 
@@ -243,6 +245,18 @@ const DeveloperOptionsTab = () => {
       <Text className="settings-page__security-tab-sub-header__bold">
         States
       </Text>
+
+      <Text
+        className="settings-page__security-tab-sub-header"
+        color={TextColor.textAlternative}
+        paddingTop={6}
+        ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
+      >
+        Current States
+      </Text>
+      <div className="settings-page__content-padded">
+        {renderRemoteFeatureFlags()}
+      </div>
       <Text
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}
@@ -251,13 +265,13 @@ const DeveloperOptionsTab = () => {
       >
         Reset States
       </Text>
-
       <div className="settings-page__content-padded">
         {renderAnnouncementReset()}
         {renderOnboardingReset()}
         {renderServiceWorkerKeepAliveToggle()}
-        {renderEnableConfirmationsRedesignToggle()}
       </div>
+
+      <BackupAndSyncDevSettings />
       <SentryTest />
     </div>
   );

@@ -1,7 +1,6 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
-import { RpcEndpointType } from '@metamask/network-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -16,10 +15,12 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+} from '../../selectors/selectors';
+import {
+  getProviderConfig,
   getSelectedNetworkClientId,
-  getSelectedInternalAccount,
-  getNetworkConfigurationsByChainId,
-} from '../../selectors';
+} from '../../../shared/modules/selectors/networks';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
@@ -27,18 +28,12 @@ import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 const initialState = {
   isInitialized: false,
   isUnlocked: false,
-  isAccountMenuOpen: false,
-  isNetworkMenuOpen: false,
   internalAccounts: { accounts: {}, selectedAccount: '' },
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
-  confirmationExchangeRates: {},
-  pendingTokens: {},
-  customNonceValue: '',
   useBlockie: false,
   featureFlags: {},
-  welcomeScreenSeen: false,
   currentLocale: '',
   currentBlockGasLimit: '',
   currentBlockGasLimitByChainId: {},
@@ -47,10 +42,10 @@ const initialState = {
     showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
-    smartTransactionsOptInStatus: false,
-    useNativeCurrencyAsPrimaryCurrency: true,
+    smartTransactionsOptInStatus: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
+    privacyMode: false,
     showMultiRpcModal: false,
   },
   firstTimeFlowType: null,
@@ -59,12 +54,12 @@ const initialState = {
   use4ByteResolution: true,
   participateInMetaMetrics: null,
   dataCollectionForMarketing: null,
-  nextNonce: null,
   currencyRates: {
     ETH: {
       conversionRate: null,
     },
   },
+  throttledOrigins: {},
 };
 
 /**
@@ -120,24 +115,6 @@ export default function reduceMetamask(state = initialState, action) {
       return Object.assign(metamaskState, { internalAccounts });
     }
 
-    case actionConstants.UPDATE_CUSTOM_NONCE:
-      return {
-        ...metamaskState,
-        customNonceValue: action.value,
-      };
-
-    case actionConstants.TOGGLE_ACCOUNT_MENU:
-      return {
-        ...metamaskState,
-        isAccountMenuOpen: !metamaskState.isAccountMenuOpen,
-      };
-
-    case actionConstants.TOGGLE_NETWORK_MENU:
-      return {
-        ...metamaskState,
-        isNetworkMenuOpen: !metamaskState.isNetworkMenuOpen,
-      };
-
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {
       const { id: txId, value } = action;
       let { transactions } = metamaskState;
@@ -168,25 +145,6 @@ export default function reduceMetamask(state = initialState, action) {
         dataCollectionForMarketing: action.value,
       };
 
-    case actionConstants.CLOSE_WELCOME_SCREEN:
-      return {
-        ...metamaskState,
-        welcomeScreenSeen: true,
-      };
-
-    case actionConstants.SET_PENDING_TOKENS:
-      return {
-        ...metamaskState,
-        pendingTokens: { ...action.payload },
-      };
-
-    case actionConstants.CLEAR_PENDING_TOKENS: {
-      return {
-        ...metamaskState,
-        pendingTokens: {},
-      };
-    }
-
     case actionConstants.COMPLETE_ONBOARDING: {
       return {
         ...metamaskState,
@@ -197,13 +155,12 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...metamaskState,
+        isInitialized: false,
         completedOnboarding: false,
         firstTimeFlowType: null,
-        isInitialized: false,
         isUnlocked: false,
         onboardingTabs: {},
         seedPhraseBackedUp: null,
-        welcomeScreenSeen: false,
       };
     }
 
@@ -213,18 +170,6 @@ export default function reduceMetamask(state = initialState, action) {
         firstTimeFlowType: action.value,
       };
     }
-
-    case actionConstants.SET_NEXT_NONCE: {
-      return {
-        ...metamaskState,
-        nextNonce: action.payload,
-      };
-    }
-    case actionConstants.SET_CONFIRMATION_EXCHANGE_RATES:
-      return {
-        ...metamaskState,
-        confirmationExchangeRates: action.value,
-      };
 
     default:
       return metamaskState;
@@ -274,42 +219,6 @@ export function updateGasFees({
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
-/**
- * Get the provider configuration for the current selected network.
- *
- * @param {object} state - Redux state object.
- */
-export const getProviderConfig = createSelector(
-  (state) => getNetworkConfigurationsByChainId(state),
-  (state) => getSelectedNetworkClientId(state),
-  (networkConfigurationsByChainId, selectedNetworkClientId) => {
-    for (const network of Object.values(networkConfigurationsByChainId)) {
-      for (const rpcEndpoint of network.rpcEndpoints) {
-        if (rpcEndpoint.networkClientId === selectedNetworkClientId) {
-          const blockExplorerUrl =
-            network.blockExplorerUrls?.[network.defaultBlockExplorerUrlIndex];
-
-          return {
-            chainId: network.chainId,
-            ticker: network.nativeCurrency,
-            rpcPrefs: { ...(blockExplorerUrl && { blockExplorerUrl }) },
-            type:
-              rpcEndpoint.type === RpcEndpointType.Custom
-                ? 'rpc'
-                : rpcEndpoint.networkClientId,
-            ...(rpcEndpoint.type === RpcEndpointType.Custom && {
-              id: rpcEndpoint.networkClientId,
-              nickname: network.name,
-              rpcUrl: rpcEndpoint.url,
-            }),
-          };
-        }
-      }
-    }
-    return undefined; // should not be reachable
-  },
-);
-
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
@@ -319,9 +228,12 @@ export const getWeb3ShimUsageAlertEnabledness = (state) =>
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
-export const getPendingTokens = (state) => state.metamask.pendingTokens;
-
-export const getTokens = (state) => state.metamask.tokens;
+export const getTokens = (state) => {
+  const { allTokens } = state.metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const { chainId } = getProviderConfig(state);
+  return allTokens?.[chainId]?.[selectedAddress] || [];
+};
 
 export function getNftsDropdownState(state) {
   return state.metamask.nftsDropdownState;
@@ -334,6 +246,24 @@ export const getNfts = (state) => {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   const { chainId } = getProviderConfig(state);
+
+  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+};
+
+export const getAllNfts = (state) => {
+  const {
+    metamask: { allNfts },
+  } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  return allNfts?.[selectedAddress] ?? [];
+};
+
+export const getNFTsByChainId = (state, chainId) => {
+  const {
+    metamask: { allNfts },
+  } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
@@ -358,6 +288,10 @@ export function getNativeCurrency(state) {
 export function getConversionRate(state) {
   return state.metamask.currencyRates[getProviderConfig(state).ticker]
     ?.conversionRate;
+}
+
+export function getCurrencyRates(state) {
+  return state.metamask.currencyRates;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
@@ -395,7 +329,7 @@ export function isEIP1559Network(state, networkClientId) {
   return (
     state.metamask.networksMetadata?.[
       networkClientId ?? selectedNetworkClientId
-    ].EIPS[1559] === true
+    ]?.EIPS[1559] === true
   );
 }
 
@@ -456,6 +390,16 @@ export const getGasEstimateTypeByChainId = createSelector(
     return transactionGasFeeEstimateType ?? gasFeeControllerEstimateType;
   },
 );
+
+/**
+ * Returns the balances of imported and detected tokens across all accounts and chains.
+ *
+ * @param {*} state
+ * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
+ */
+export function getTokenBalances(state) {
+  return state.metamask.tokenBalances;
+}
 
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,
@@ -615,4 +559,8 @@ export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
+}
+
+export function getCurrentCurrency(state) {
+  return state.metamask.currentCurrency;
 }

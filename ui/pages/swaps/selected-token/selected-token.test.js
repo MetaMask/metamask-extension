@@ -37,7 +37,7 @@ describe('SelectedToken', () => {
   it('renders the component and opens the list', () => {
     const props = createProps();
     const { getByTestId } = renderWithProvider(<SelectedToken {...props} />);
-    const dropdownSearchList = getByTestId('dropdown-search-list');
+    const dropdownSearchList = getByTestId('selected-token-list');
     expect(dropdownSearchList).toBeInTheDocument();
     fireEvent.click(dropdownSearchList);
     expect(props.onClick).toHaveBeenCalledTimes(1);

@@ -13,9 +13,7 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
         ...mockState.metamask,
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         currencyRates: {},
-        preferences: {
-          useNativeCurrencyAsPrimaryCurrency: true,
-        },
+        preferences: {},
       },
     };
     const mockStore = configureMockStore()(defaultState);

@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
-import { useAsyncResult } from '../../../../../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 
 export const useIsNFT = (
@@ -10,7 +10,7 @@ export const useIsNFT = (
     return await getTokenStandardAndDetails(
       transactionMeta?.txParams?.to as string,
     );
-  }, [transactionMeta]);
+  }, [transactionMeta?.txParams?.to]);
 
   const isNFT = value?.standard !== TokenStandard.ERC20;
 

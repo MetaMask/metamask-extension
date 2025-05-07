@@ -1,81 +1,55 @@
-import { act, fireEvent, waitFor, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
-import { ApprovalType } from '@metamask/controller-utils';
-import mockMetaMaskState from '../../data/integration-init-state.json';
-import { integrationTestRender } from '../../../lib/render-helpers';
-import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName,
   MetaMetricsEventLocation,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
+import * as backgroundConnection from '../../../../ui/store/background-connection';
+import { integrationTestRender } from '../../../lib/render-helpers';
+import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation } from '../../helpers';
+import { tEn } from '../../../lib/i18n-helpers';
+import {
+  getMetamaskStateWithMaliciousPermit,
+  getMetaMaskStateWithUnapprovedPermitSign,
+} from './signature-helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
 }));
 
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
-
-const getMetaMaskStateWithUnapprovedPermitSign = (accountAddress: string) => {
-  const pendingPermitId = 'eae47d40-42a3-11ef-9253-b105fa7dfc9c';
-  const pendingPermitTime = new Date().getTime();
-  const messageParams = {
-    from: accountAddress,
-    version: 'v4',
-    data: `{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Permit":[{"name":"owner","type":"address"},{"name":"spender","type":"address"},{"name":"value","type":"uint256"},{"name":"nonce","type":"uint256"},{"name":"deadline","type":"uint256"}]},"primaryType":"Permit","domain":{"name":"MyToken","version":"1","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","chainId":1},"message":{"owner":"${accountAddress}","spender":"0x5B38Da6a701c568545dCfcB03FcB875f56beddC4","value":3000,"nonce":0,"deadline":50000000000}}`,
-    origin: 'https://metamask.github.io',
-    signatureMethod: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-  };
-  return {
-    ...mockMetaMaskState,
-    preferences: {
-      ...mockMetaMaskState.preferences,
-      redesignedConfirmationsEnabled: true,
-    },
-    unapprovedTypedMessages: {
-      [pendingPermitId]: {
-        id: pendingPermitId,
-        status: 'unapproved',
-        time: pendingPermitTime,
-        type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
-        securityProviderResponse: null,
-        msgParams: messageParams,
-      },
-    },
-    unapprovedTypedMessagesCount: 1,
-    pendingApprovals: {
-      [pendingPermitId]: {
-        id: pendingPermitId,
-        origin: 'origin',
-        time: pendingPermitTime,
-        type: ApprovalType.EthSignTypedData,
-        requestData: {
-          ...messageParams,
-          metamaskId: pendingPermitId,
-        },
-        requestState: null,
-        expectsResult: false,
-      },
-    },
-    pendingApprovalCount: 1,
-  };
-};
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 describe('Permit Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2' },
+        getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
       }),
     );
+    mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   afterEach(() => {
@@ -92,6 +66,7 @@ describe('Permit Confirmation', () => {
     const accountName = account.metadata.name;
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
+      'Permit',
     );
 
     await act(async () => {
@@ -101,25 +76,29 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    expect(screen.getByTestId('header-account-name')).toHaveTextContent(
+    expect(await screen.findByTestId('header-account-name')).toHaveTextContent(
       accountName,
     );
-    expect(screen.getByTestId('header-network-display-name')).toHaveTextContent(
-      'Sepolia',
-    );
+    expect(
+      await screen.findByTestId('header-network-display-name'),
+    ).toHaveTextContent('Sepolia');
 
-    fireEvent.click(screen.getByTestId('header-info__account-details-button'));
+    fireEvent.click(
+      await screen.findByTestId('header-info__account-details-button'),
+    );
 
     expect(
       await screen.findByTestId(
         'confirmation-account-details-modal__account-name',
       ),
     ).toHaveTextContent(accountName);
-    expect(screen.getByTestId('address-copy-button-text')).toHaveTextContent(
-      '0x0DCD5...3E7bc',
-    );
     expect(
-      screen.getByTestId('confirmation-account-details-modal__account-balance'),
+      await screen.findByTestId('address-copy-button-text'),
+    ).toHaveTextContent('0x0DCD5...3E7bc');
+    expect(
+      await screen.findByTestId(
+        'confirmation-account-details-modal__account-balance',
+      ),
     ).toHaveTextContent('1.582717SepoliaETH');
 
     let confirmAccountDetailsModalMetricsEvent;
@@ -146,13 +125,16 @@ describe('Permit Confirmation', () => {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            hd_entropy_index: 0,
           },
         }),
       ]),
     );
 
     fireEvent.click(
-      screen.getByTestId('confirmation-account-details-modal__close-button'),
+      await screen.findByTestId(
+        'confirmation-account-details-modal__close-button',
+      ),
     );
 
     await waitFor(() => {
@@ -173,6 +155,7 @@ describe('Permit Confirmation', () => {
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
+      'Permit',
     );
 
     await act(async () => {
@@ -182,10 +165,12 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    expect(screen.getByText('Spending cap request')).toBeInTheDocument();
-    expect(
-      screen.getByText('This site wants permission to spend your tokens.'),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Spending cap request')).toBeInTheDocument();
+      expect(
+        screen.getByText('This site wants permission to spend your tokens.'),
+      ).toBeInTheDocument();
+    });
   });
 
   it('displays the simulation section', async () => {
@@ -229,6 +214,7 @@ describe('Permit Confirmation', () => {
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
+      'Permit',
     );
 
     await act(async () => {
@@ -248,7 +234,7 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    const simulationSection = screen.getByTestId(
+    const simulationSection = await screen.findByTestId(
       'confirmation__simulation_section',
     );
     expect(simulationSection).toBeInTheDocument();
@@ -258,9 +244,9 @@ describe('Permit Confirmation', () => {
     );
     expect(simulationSection).toHaveTextContent('Spending cap');
     expect(simulationSection).toHaveTextContent('0xCcCCc...ccccC');
-    expect(screen.getByTestId('simulation-token-value')).toHaveTextContent(
-      '30',
-    );
+    expect(
+      await screen.findByTestId('simulation-token-value'),
+    ).toHaveTextContent('30');
 
     const individualFiatDisplay = await screen.findByTestId(
       'individual-fiat-display',
@@ -271,18 +257,14 @@ describe('Permit Confirmation', () => {
     expect(scope.isDone()).toBe(true);
   });
 
-  it('displays the MMI header warning when account signing is not the same as the account selected', async () => {
+  it('displays the malicious banner', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        '07c2cfec-36c9-46c4-8115-3836d3ac9047'
-      ];
-    const selectedAccount =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
           .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
       ];
 
-    const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
+    const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
       account.address,
     );
 
@@ -293,12 +275,50 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    const mismatchAccountText = `Your selected account (${shortenAddress(
-      selectedAccount.address,
-    )}) is different than the account trying to sign (${shortenAddress(
-      account.address,
-    )})`;
+    const headingText = tEn('blockaidTitleDeceptive') as string;
+    const bodyText = tEn('blockaidDescriptionApproveFarming') as string;
+    expect(await screen.findByText(headingText)).toBeInTheDocument();
+    expect(await screen.findByText(bodyText)).toBeInTheDocument();
+  });
 
-    expect(screen.getByText(mismatchAccountText)).toBeInTheDocument();
+  it('tracks external link clicked property in signature rejected event', async () => {
+    const account =
+      mockMetaMaskState.internalAccounts.accounts[
+        mockMetaMaskState.internalAccounts
+          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+      ];
+
+    const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
+      account.address,
+    );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    fireEvent.click(await screen.findByTestId('disclosure'));
+    expect(
+      await screen.findByTestId('alert-provider-report-link'),
+    ).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByTestId('alert-provider-report-link'));
+
+    fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
+
+    expect(
+      mockedBackgroundConnection.submitRequestToBackground,
+    ).toHaveBeenCalledWith(
+      'updateEventFragment',
+      expect.arrayContaining([
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            external_link_clicked: 'security_alert_support_link',
+          }),
+        }),
+      ]),
+    );
   });
 });
