@@ -108,13 +108,6 @@ export const SENTRY_BACKGROUND_STATE = {
     assetsRates: false,
   },
   BridgeController: {
-    bridgeFeatureFlags: {
-      extensionConfig: {
-        support: false,
-        chains: {},
-      },
-      mobileConfig: false,
-    },
     assetExchangeRates: false,
     quoteRequest: {
       walletAddress: false,

@@ -1,5 +1,4 @@
 import { waitFor } from '@testing-library/react';
-import { BridgeBackgroundAction } from '@metamask/bridge-controller';
 import nock from 'nock';
 import mockMetaMaskState from '../data/onboarding-completion-route.json';
 import { integrationTestRender } from '../../lib/render-helpers';
@@ -38,7 +37,6 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      [BridgeBackgroundAction.SET_FEATURE_FLAGS]: undefined,
       ...mockRequests,
     }),
   );
