@@ -27,6 +27,10 @@ type CreateSnapAccountProps = {
    * The chain ID to create the account
    */
   chainId: CaipChainId;
+  /**
+   * Whether to set the newly created account as the selected account
+   */
+  setNewlyCreatedAccountAsSelected?: boolean;
 };
 
 export const CreateSnapAccount = ({
@@ -35,16 +39,20 @@ export const CreateSnapAccount = ({
   selectedKeyringId,
   clientType,
   chainId,
+  setNewlyCreatedAccountAsSelected,
 }: CreateSnapAccountProps) => {
   const client = useMultichainWalletSnapClient(clientType);
 
   const onCreateAccount = useCallback(
     async (accountNameSuggestion?: string) => {
-      client.createAccount({
-        scope: chainId,
-        entropySource: selectedKeyringId,
-        accountNameSuggestion,
-      });
+      await client.createAccount(
+        {
+          scope: chainId,
+          entropySource: selectedKeyringId,
+          accountNameSuggestion,
+        },
+        { setSelectedAccount: setNewlyCreatedAccountAsSelected },
+      );
       onActionComplete(true);
     },
     [client, chainId, selectedKeyringId, onActionComplete],
