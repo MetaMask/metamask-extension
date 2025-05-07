@@ -184,6 +184,8 @@ export const CHAIN_IDS = {
   PLUME: '0x18232',
   MATCHAIN: '0x2ba',
   FLOW: '0x2eb',
+  OMNI: '0xa6',
+  OMNI_OMEGA_TESTNET: '0xa4',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -255,6 +257,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
   XRPLEVM_TESTNET: '0x161c28',
+  OMNI: '0xa6',
+  OMNI_OMEGA_TESTNET: '0xa4',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -320,6 +324,8 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
+export const OMNI_DISPLAY_NAME = 'Omni Network';
+export const OMNI_OMEGA_TESTNET_DISPLAY_NAME = 'Omni Omega Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -455,6 +461,8 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
   XRPLEVM_TESTNET: 'XRP',
+  OMNI: 'ETH',
+  OMNI_OMEGA_TESTNET: 'ETH',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -560,6 +568,8 @@ export const PLUME_IMAGE_URL = './images/plume.svg';
 export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
+export const OMNI_IMAGE_URL = './images/omni.png';
+export const OMNI_OMEGA_TESTNET_IMAGE_URL = './images/omni-testnet.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -823,6 +833,9 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.PLUME]: CURRENCY_SYMBOLS.PLUME,
   [CHAIN_IDS.MATCHAIN]: CURRENCY_SYMBOLS.BNB,
   [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
+  [CHAINLIST_CHAIN_IDS_MAP.OMNI]: CHAINLIST_CURRENCY_SYMBOLS_MAP.OMNI,
+  [CHAINLIST_CHAIN_IDS_MAP.OMNI_OMEGA_TESTNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.OMNI_OMEGA_TESTNET,
 } as const;
 
 /**
@@ -1019,6 +1032,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
+  [CHAIN_IDS.OMNI]: OMNI_IMAGE_URL,
+  [CHAIN_IDS.OMNI_OMEGA_TESTNET]: OMNI_OMEGA_TESTNET_IMAGE_URL,
 } as const;
 
 /**
