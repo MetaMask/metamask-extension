@@ -148,7 +148,7 @@ class BridgeQuotePage {
       const balance = await this.driver.waitForSelector(this.networkFees);
       const currentBalanceText = await balance.getText();
       // Verify that the text matches the pattern $XXX.XX
-      const pricePattern = /^\$\d+\.\d{2}$/;
+      const pricePattern = /^\$\d+\.\d{2}$/u;
       if (!pricePattern.test(currentBalanceText)) {
         throw new Error(`Price format is not valid: ${currentBalanceText}`);
       }

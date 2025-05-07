@@ -41,7 +41,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Ethereum',
           },
           1,
-          '$0.00',
           '23.9999',
         );
 
@@ -55,7 +54,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           2,
-          '$0.00',
           '22.9999',
         );
 
@@ -72,7 +70,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           4,
-          '$0.00',
           '22.9998',
         );
 
@@ -89,7 +86,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Ethereum',
           },
           6,
-          '$0.00',
           '22.9997',
         );
       },
