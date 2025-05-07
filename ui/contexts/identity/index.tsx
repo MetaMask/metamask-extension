@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
+import { useAddressBookSyncing } from '../../hooks/identity/useAddressBookSyncing';
 import {
   useAutoSignIn,
   useAutoSignOut,
@@ -8,6 +9,8 @@ import {
 export const MetamaskIdentityProvider: React.FC = ({ children }) => {
   const { dispatchAccountSyncing, shouldDispatchAccountSyncing } =
     useAccountSyncing();
+  const { dispatchAddressBookSyncing, shouldDispatchAddressBookSyncing } =
+    useAddressBookSyncing();
   const { autoSignIn, shouldAutoSignIn } = useAutoSignIn();
   const { autoSignOut, shouldAutoSignOut } = useAutoSignOut();
 
@@ -19,6 +22,12 @@ export const MetamaskIdentityProvider: React.FC = ({ children }) => {
       dispatchAccountSyncing();
     }
   }, [shouldDispatchAccountSyncing, dispatchAccountSyncing]);
+
+  useEffect(() => {
+    if (shouldDispatchAddressBookSyncing) {
+      dispatchAddressBookSyncing();
+    }
+  }, [shouldDispatchAddressBookSyncing, dispatchAddressBookSyncing]);
 
   /**
    * Authentication effects

@@ -394,6 +394,7 @@ export const SENTRY_BACKGROUND_STATE = {
     isProfileSyncingEnabled: true,
     isProfileSyncingUpdateLoading: false,
     isAccountSyncingEnabled: true,
+    isAddressBookSyncingEnabled: true,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
   },
