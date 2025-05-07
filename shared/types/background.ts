@@ -1,5 +1,5 @@
 /* eslint-disable import/no-restricted-paths */
-/** Circular dependencies in this file should have no impact at build time and runtime, ås all imports/exports are types that will be stripped by tsc */
+/** Type import paths do not need to be restricted, as they are stripped at runtime and do not have any build time impact. */
 import type {
   CurrencyRateState,
   TokenListState,
