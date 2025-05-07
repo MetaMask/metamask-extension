@@ -342,24 +342,28 @@ function maybeDetectPhishing(theController) {
         blockedUrl = details.initiator;
       }
 
-      theController.metaMetricsController.trackEvent(
-        {
-          // should we differentiate between background redirection and content script redirection?
-          event: MetaMetricsEventName.PhishingPageDisplayed,
-          category: MetaMetricsEventCategory.Phishing,
-          properties: {
-            url: blockedUrl,
-            referrer: {
+      if (!isFirefox) {
+        theController.metaMetricsController.trackEvent(
+          {
+            // should we differentiate between background redirection and content script redirection?
+            event: MetaMetricsEventName.PhishingPageDisplayed,
+            category: MetaMetricsEventCategory.Phishing,
+            properties: {
               url: blockedUrl,
+              referrer: {
+                url: blockedUrl,
+              },
+              reason: blockReason,
+              requestDomain: blockedRequestResponse.result
+                ? hostname
+                : undefined,
             },
-            reason: blockReason,
-            requestDomain: blockedRequestResponse.result ? hostname : undefined,
           },
-        },
-        {
-          excludeMetaMetricsId: true,
-        },
-      );
+          {
+            excludeMetaMetricsId: true,
+          },
+        );
+      }
       const querystring = new URLSearchParams({ hostname, href });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
