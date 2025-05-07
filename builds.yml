@@ -19,6 +19,9 @@ buildTypes:
       - build-main
       - keyring-snaps
       - multi-srp
+      - multichain
+      - solana
+      - solana-swaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -71,7 +74,7 @@ buildTypes:
     features:
       - build-flask
       - keyring-snaps
-      # - bitcoin
+      - bitcoin
       - solana
       - multi-srp
       - solana-swaps
@@ -159,8 +162,8 @@ features:
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
     assets:
-      - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json
-        dest: snaps/bitcoin-wallet-snap.json
+      - src: ./node_modules/@metamask/bitcoin-wallet-snap/dist/preinstalled-snap.json.gz
+        dest: snaps/bitcoin-wallet-snap.json.gz
   solana:
     assets:
       - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json

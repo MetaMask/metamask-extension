@@ -60,7 +60,7 @@ import EditGasPopover from '../../../pages/confirmations/components/edit-gas-pop
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+// import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
@@ -86,9 +86,7 @@ function TransactionListItemInner({
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
-  const isSmartTransaction = useSelector((state) =>
-    getIsSmartTransaction(state, chainId),
-  );
+  // const isSmartTransaction = useSelector(getIsSmartTransaction);
   const dispatch = useDispatch();
 
   // Bridge transactions
@@ -193,10 +191,19 @@ function TransactionListItemInner({
   const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
-  const isSwap = [
-    TransactionGroupCategory.swap,
-    TransactionGroupCategory.swapAndSend,
-  ].includes(category);
+
+  /**
+   * Disabling the retry button until further notice
+   *
+   * @see {@link https://github.com/MetaMask/metamask-extension/issues/28615}
+   */
+  // const isSwap = [
+  //   TransactionGroupCategory.swap,
+  //   TransactionGroupCategory.swapAndSend,
+  // ].includes(category);
+  // const showRetry =
+  //   status === TransactionStatus.failed && !isSwap && !isSmartTransaction;
+
   const isSigning = status === TransactionStatus.approved;
   const isSubmitting = status === TransactionStatus.signed;
 
@@ -297,7 +304,8 @@ function TransactionListItemInner({
         subtitle={
           !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
           isBridgeTx &&
-          !isBridgeComplete ? (
+          !isBridgeComplete &&
+          bridgeTxHistoryItem ? (
             <BridgeActivityItemTxSegments
               bridgeTxHistoryItem={bridgeTxHistoryItem}
               transactionGroup={transactionGroup}
@@ -366,11 +374,7 @@ function TransactionListItemInner({
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={
-            status === TransactionStatus.failed &&
-            !isSwap &&
-            !isSmartTransaction
-          }
+          // showRetry={showRetry}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}

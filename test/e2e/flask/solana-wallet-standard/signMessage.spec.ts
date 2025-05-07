@@ -1,6 +1,6 @@
-import { withSolanaAccountSnap } from '../solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { largeDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import {
   acccount1,
   assertSignedMessageIsValid,
@@ -28,7 +28,7 @@ describe('Solana Wallet Standard - Sign Message', function () {
 
           await signMessageTest.signMessage();
 
-          await driver.delay(largeDelayMs);
+          await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
 

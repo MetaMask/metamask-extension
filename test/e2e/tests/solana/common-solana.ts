@@ -11,15 +11,15 @@ const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u;
 const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
 const SOLANA_SPOT_PRICE_API =
-  /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
+  /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
 const SOLANA_EXCHANGE_RATES_PRICE_API =
-  /^https:\/\/price\.(uat-api|api)\.cx\.metamask\.io\/v[1-9]\/exchange-rates\/fiat/u;
+  /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/exchange-rates\/fiat/u;
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/u;
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX_DEVNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/EtWTRABZaYq6iMfeYKouRu166VU2xqa1/u;
 const SOLANA_BITCOIN_MIN_API =
-  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti\?fsyms=btc/u;
+  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti\?fsyms=btc&sol&tsyms=usd/u;
 export const SOLANA_TOKEN_API =
   /^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u;
 export const METAMASK_PHISHING_DETECTION_API =
@@ -59,7 +59,7 @@ export const commonSolanaTxConfirmedDetailsFixture = {
   amount: '0.00708 SOL',
   networkFee: '0.000005 SOL',
   fromAddress: 'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
-  toAddress: 'AL9Z5JgZdeCKnaYg6jduy9PQGzo3moo7vZYVSTJwnSEq',
+  toAddress: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
   txHash:
     '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
 };
@@ -1580,7 +1580,7 @@ export async function mockGetSuccessTransaction(mockServer: Mockttp) {
           message: {
             accountKeys: [
               'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
-              'AL9Z5JgZdeCKnaYg6jduy9PQGzo3moo7vZYVSTJwnSEq',
+              '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
               '11111111111111111111111111111111',
             ],
             addressTableLookups: [],
@@ -2024,6 +2024,7 @@ export async function mockGetFeeForMessageDevnet(mockServer: Mockttp) {
 
 export async function mockGetTokenAccountsByOwner(
   mockServer: Mockttp,
+  account: string,
   programId: string,
 ) {
   return await mockServer
@@ -2031,7 +2032,7 @@ export async function mockGetTokenAccountsByOwner(
     .withJsonBodyIncluding({
       method: 'getTokenAccountsByOwner',
       params: [
-        '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
+        account,
         {
           programId,
         },
@@ -2059,7 +2060,7 @@ export async function mockGetTokenAccountsByOwner(
                       info: {
                         isNative: false,
                         mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-                        owner: '14BLn1WLBf3coaPj1fZ5ZqJKQArEjJHvw7rvSktGv2b5',
+                        owner: account,
                         state: 'initialized',
                         tokenAmount: {
                           amount: '6000000',
@@ -2354,6 +2355,7 @@ export async function withSolanaAccountSnap(
     mockSendTransaction,
     numberOfAccounts = 1,
     simulateTransaction,
+    simulateTransactionFailed,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockZeroBalance,
@@ -2366,6 +2368,7 @@ export async function withSolanaAccountSnap(
     mockSendTransaction?: boolean;
     numberOfAccounts?: number;
     simulateTransaction?: boolean;
+    simulateTransactionFailed?: boolean;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
     mockZeroBalance?: boolean;
@@ -2385,6 +2388,13 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
+      manifestFlags: {
+        // This flag is used to enable/disable the remote mode for the carousel
+        // component, which will impact to the slides count.
+        // - If this flag is not set, the slides count will be 4.
+        // - If this flag is set, the slides count will be 5.
+        remoteFeatureFlags: { addSolanaAccount: true },
+      },
       dappPaths,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList: MockedEndpoint[] = [];
@@ -2422,7 +2432,13 @@ export async function withSolanaAccountSnap(
               await mockGetMinimumBalanceForRentExemptionDevnet(mockServer),
               await mockGetTokenAccountsByOwner(
                 mockServer,
+                '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
                 SOLANA_TOKEN_PROGRAM,
+              ),
+              await mockGetTokenAccountsByOwner(
+                mockServer,
+                '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
+                'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
               ),
               await mockGetTokenAccountsByOwnerDevnet(mockServer),
               await mockMultiCoinPrice(mockServer),
@@ -2439,12 +2455,16 @@ export async function withSolanaAccountSnap(
               await mockGetAccountInfoDevnet(mockServer),
               await mockTokenApiMainnetTest(mockServer),
               await mockAccountsApi(mockServer),
+              await mockGetTokenAccountInfoDevnet(mockServer),
             ],
           );
         }
         if (mockZeroBalance) {
           mockList.push(await mockSolanaBalanceQuote(mockServer, true));
           mockList.push(await mockSolanaBalanceQuoteDevnet(mockServer, true));
+        }
+        if (simulateTransactionFailed) {
+          mockList.push(await simulateSolanaTransactionFailed(mockServer));
         }
         if (mockSendTransaction || simulateTransaction) {
           mockList.push(await simulateSolanaTransaction(mockServer));
@@ -2459,6 +2479,8 @@ export async function withSolanaAccountSnap(
       ignoredConsoleErrors: [
         'SES_UNHANDLED_REJECTION: 0, never, undefined, index, Array(1)',
         'SES_UNHANDLED_REJECTION: 1, never, undefined, index, Array(1)',
+        'No custom network client was found with the ID',
+        'No Infura network client was found with the ID "linea-mainnet"',
       ],
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
@@ -2472,6 +2494,7 @@ export async function withSolanaAccountSnap(
           accountType: ACCOUNT_TYPE.Solana,
           accountName: `Solana ${i}`,
         });
+        await headerComponent.check_accountLabel(`Solana ${i}`);
       }
 
       if (numberOfAccounts > 0) {
