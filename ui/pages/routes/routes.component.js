@@ -48,6 +48,10 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  REMOTE_ROUTE,
+  REMOTE_ROUTE_SETUP_SWAPS,
+  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+  DEFI_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -85,6 +89,7 @@ import {
   isConfirmTransactionRoute,
   setTheme,
   showOnboardingHeader,
+  showAppHeader,
 } from './utils';
 
 // Begin Lazy Routes
@@ -121,6 +126,7 @@ const NftFullImage = mmLazy(() =>
   import('../../components/app/assets/nfts/nft-details/nft-full-image'),
 );
 const Asset = mmLazy(() => import('../asset'));
+const DeFiPage = mmLazy(() => import('../defi'));
 const PermissionsPage = mmLazy(() =>
   import('../../components/multichain/pages/permissions-page/permissions-page'),
 );
@@ -133,6 +139,14 @@ const ReviewPermissions = mmLazy(() =>
   ),
 );
 const Home = mmLazy(() => import('../home'));
+
+const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview'));
+const RemoteModeSetupSwaps = mmLazy(() =>
+  import('../remote-mode/setup/setup-swaps'),
+);
+const RemoteModeSetupDailyAllowance = mmLazy(() =>
+  import('../remote-mode/setup/setup-daily-allowance'),
+);
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -355,6 +369,10 @@ export default class Routes extends Component {
           />
           <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
           <Authenticated
+            path={`${DEFI_ROUTE}/:chainId/:protocolId`}
+            component={DeFiPage}
+          />
+          <Authenticated
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
@@ -364,6 +382,22 @@ export default class Routes extends Component {
             component={ReviewPermissions}
             exact
           />
+          <Authenticated
+            path={REMOTE_ROUTE}
+            component={RemoteModeOverview}
+            exact
+          />
+          <Authenticated
+            path={REMOTE_ROUTE_SETUP_SWAPS}
+            component={RemoteModeSetupSwaps}
+            exact
+          />
+          <Authenticated
+            path={REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE}
+            component={RemoteModeSetupDailyAllowance}
+            exact
+          />
+
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
@@ -487,7 +521,9 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!hideAppHeader(this.props) && <AppHeader location={location} />}
+        {process.env.REMOVE_GNS
+          ? showAppHeader(this.props) && <AppHeader location={location} />
+          : !hideAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
         {showOnboardingHeader(location) && <OnboardingAppHeader />}
         {isAccountMenuOpen ? (

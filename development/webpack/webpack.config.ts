@@ -260,6 +260,12 @@ const config = {
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
+      // treats JSON and compressed JSON files loaded via `new URL('./file.json(?:\.gz)', import.meta.url)` as assets.
+      {
+        test: /\.json(?:\.gz)?$/u,
+        dependency: 'url',
+        type: 'asset/resource',
+      },
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,

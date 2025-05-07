@@ -56,6 +56,7 @@ import {
   getShowFiatInTestnets,
   getChainIdsToPoll,
   getSnapsMetadata,
+  getMetaMaskKeyrings,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -76,7 +77,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { getAccountLabels } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF
@@ -103,6 +104,7 @@ const AccountListItem = ({
   startAccessory,
   onActionClick,
   shouldScrollToWhenSelected = true,
+  showConnectedStatus = true,
   privacyMode = false,
 }) => {
   const t = useI18nContext();
@@ -113,13 +115,20 @@ const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
+
   const snapMetadata = useSelector(getSnapsMetadata);
-  const accountLabel = getAccountLabel(
-    account.metadata.keyring.type,
-    account,
-    account.metadata.keyring.type === KeyringType.snap
-      ? getSnapName(snapMetadata)(account.metadata?.snap.id)
-      : null,
+  const keyrings = useSelector(getMetaMaskKeyrings);
+  const accountLabels = useMemo(
+    () =>
+      getAccountLabels(
+        account.metadata.keyring.type,
+        account,
+        keyrings,
+        account.metadata.keyring.type === KeyringType.snap
+          ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
+          : null,
+      ),
+    [account, keyrings, snapMetadata],
   );
 
   const useBlockie = useSelector(getUseBlockie);
@@ -258,6 +267,7 @@ const AccountListItem = ({
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
         'multichain-account-list-item--clickable': Boolean(onClick),
       })}
+      data-testid="account-item"
       ref={itemRef}
       onClick={() => {
         // Without this check, the account will be selected after
@@ -285,7 +295,11 @@ const AccountListItem = ({
           display={[Display.Flex, Display.None]}
           data-testid="account-list-item-badge"
         >
-          <ConnectedStatus address={account.address} isActive={isActive} />
+          <ConnectedStatus
+            address={account.address}
+            isActive={isActive}
+            showConnectedStatus={showConnectedStatus}
+          />
         </Box>
         <Box display={[Display.None, Display.Flex]}>
           {
@@ -437,19 +451,23 @@ const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {accountLabel ? (
-          <Tag
-            label={accountLabel}
-            labelProps={{
-              variant: TextVariant.bodyXs,
-              color: Color.textAlternative,
-            }}
-            startIconName={
-              account.metadata.keyring.type === KeyringType.snap
-                ? IconName.Snaps
-                : null
-            }
-          />
+        {accountLabels.length > 0 ? (
+          <Box flexDirection={FlexDirection.Row}>
+            {accountLabels.map(({ label, icon }) => {
+              return (
+                <Tag
+                  data-testid={`account-list-item-tag-${account.id}-${label}`}
+                  key={label}
+                  label={label}
+                  labelProps={{
+                    variant: TextVariant.bodyXs,
+                    color: Color.textAlternative,
+                  }}
+                  startIconName={icon}
+                />
+              );
+            })}
+          </Box>
         ) : null}
       </Box>
 
@@ -580,6 +598,10 @@ AccountListItem.propTypes = {
    * Determines if list balance should be obfuscated
    */
   privacyMode: PropTypes.bool,
+  /**
+   * Determines if the connected status should be shown
+   */
+  showConnectedStatus: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

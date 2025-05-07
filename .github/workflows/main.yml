@@ -14,6 +14,18 @@ on:
       - synchronize
   merge_group:
 
+env:
+  # For a `pull_request` event, the branch is `github.head_ref``.
+  # For a `push` event, the branch is `github.ref_name`.
+  BRANCH: ${{ github.head_ref || github.ref_name }}
+  # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
+  # For a `push` event, the fork is `github.event.repository.fork`.
+  IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   prep-deps:
     runs-on: ubuntu-latest
@@ -23,6 +35,7 @@ jobs:
         with:
           is-high-risk-environment: false
           cache-node-modules: true
+          skip-allow-scripts: true
 
   lint-workflows:
     name: Lint workflows
@@ -43,6 +56,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -77,6 +91,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - run: yarn build:test
 
@@ -101,6 +116,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - run: yarn build:test:webpack
 
@@ -120,15 +136,12 @@ jobs:
     needs:
       - prep-deps
     runs-on: ubuntu-latest
-    env:
-      # For a `pull_request` event, the branch is `github.head_ref``.
-      # For a `push` event, the branch is `github.ref_name`.
-      BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       # GHA does not allow the : ? ternary operator, you must write && ||
       - run: ${{ env.BRANCH == 'master' && 'yarn build prod' || 'yarn build dist' }}
@@ -170,12 +183,6 @@ jobs:
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
-      # For a `pull_request` event, the branch is `github.head_ref``.
-      # For a `push` event, the branch is `github.ref_name`.
-      BRANCH: ${{ github.head_ref || github.ref_name }}
-      # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
-      # For a `push` event, the fork is `github.event.repository.fork`.
-      IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
     permissions:
       contents: read
       # id-token permission is required for uploading to s3
@@ -185,6 +192,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Download artifact prep-build-dist-browserify-chrome
         uses: actions/download-artifact@v4
@@ -197,7 +205,7 @@ jobs:
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
 
       - name: Record bundle size at commit
-        if: ${{ env.BRANCH == 'main' && !env.IS_FORK }}
+        if: ${{ env.BRANCH == 'main' && env.IS_FORK == 'false'}}
         run: ./.github/scripts/bundle-stats-commit.sh
 
       - name: Upload 'bundle-size' to S3
@@ -255,6 +263,9 @@ jobs:
   build-beta:
     name: Build beta
     uses: ./.github/workflows/build-beta.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
     permissions:
       contents: read
       # id-token permission is required for uploading to s3
@@ -289,6 +300,8 @@ jobs:
       - prep-build-test-webpack
       - run-tests
       - needs-e2e
+      - e2e-chrome
+      - e2e-firefox
       - wait-for-circleci-workflow-status
       - build-storybook
       - build-beta

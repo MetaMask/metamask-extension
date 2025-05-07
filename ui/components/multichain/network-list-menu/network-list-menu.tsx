@@ -19,13 +19,18 @@ import {
   RpcEndpointType,
   type UpdateNetworkFields,
 } from '@metamask/network-controller';
-import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import {
+  NON_EVM_TESTNET_IDS,
+  toEvmCaipChainId,
+  type MultichainNetworkConfiguration,
+} from '@metamask/multichain-network-controller';
 import {
   type CaipChainId,
   type Hex,
   parseCaipChainId,
   KnownCaipNamespace,
 } from '@metamask/utils';
+import { ChainId } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { NetworkListItem } from '../network-list-item';
@@ -50,7 +55,7 @@ import {
   TEST_CHAINS,
   CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
 } from '../../../../shared/constants/network';
-import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME } from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOnboardedInThisUISession,
@@ -61,12 +66,12 @@ import {
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
   getAllDomains,
-  getPermittedChainsForSelectedTab,
-  getPermittedAccountsForSelectedTab,
+  getPermittedEVMChainsForSelectedTab,
+  getPermittedEVMAccountsForSelectedTab,
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
-  getIsPortfolioDiscoverButtonEnabled,
+  getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
@@ -104,6 +109,7 @@ import {
   sortNetworks,
   getNetworkIcon,
   getRpcDataByChainId,
+  sortNetworksByPrioity,
 } from '../../../../shared/modules/network.utils';
 import {
   getCompletedOnboarding,
@@ -112,6 +118,7 @@ import {
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -153,8 +160,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const showNetworkBanner = useSelector(getShowNetworkBanner);
   // This selector provides the indication if the "Discover" button
   // is enabled based on the remote feature flag.
-  const isPortfolioDiscoverButtonEnabled = useSelector(
-    getIsPortfolioDiscoverButtonEnabled,
+  const isNetworkDiscoverButtonEnabled = useSelector(
+    getNetworkDiscoverButtonEnabled,
   );
   // This selector provides an array with two elements.
   // 1 - All network configurations including EVM and non-EVM with the data type
@@ -169,14 +176,18 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
   const permittedChainIds = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, selectedTabOrigin),
+    getPermittedEVMChainsForSelectedTab(state, selectedTabOrigin),
   );
 
   const permittedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, selectedTabOrigin),
+    getPermittedEVMAccountsForSelectedTab(state, selectedTabOrigin),
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.NetworkList });
+  }, []);
 
   const currentlyOnTestnet = useMemo(() => {
     const { namespace } = parseCaipChainId(currentChainId);
@@ -190,12 +201,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     () =>
       Object.entries(multichainNetworks).reduce(
         ([nonTestnetsList, testnetsList], [id, network]) => {
-          const chainId = network.isEvm
-            ? convertCaipToHexChainId(id as CaipChainId)
-            : id;
-          // This is type casted to string since chainId could be
-          // Hex or CaipChainId.
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+          let chainId = id;
+          let isTest = false;
+
+          if (network.isEvm) {
+            // We keep using raw chain ID for EVM.
+            chainId = convertCaipToHexChainId(network.chainId);
+            isTest = TEST_CHAINS.includes(chainId as Hex);
+          } else {
+            isTest = NON_EVM_TESTNET_IDS.includes(network.chainId);
+          }
           (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
           return [nonTestnetsList, testnetsList];
         },
@@ -294,12 +309,25 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     Object.values(testNetworks),
     searchQuery,
   );
+  // A sorted list of test networks that put Sepolia first then Linea Sepolia at the top
+  // and the rest of the test networks in alphabetical order.
+  const sortedTestNetworks = useMemo(() => {
+    return sortNetworksByPrioity(searchedTestNetworks, [
+      toEvmCaipChainId(ChainId.sepolia),
+      toEvmCaipChainId(ChainId['linea-sepolia']),
+    ]);
+  }, [searchedTestNetworks]);
 
-  const handleEvmNetworkChange = (chainId: CaipChainId) => {
+  const handleEvmNetworkChange = (
+    chainId: CaipChainId,
+    networkClientId?: string,
+  ) => {
     const hexChainId = convertCaipToHexChainId(chainId);
     const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
-    const { networkClientId } = defaultRpcEndpoint;
-    dispatch(setActiveNetwork(networkClientId));
+    const finalNetworkClientId =
+      networkClientId ?? defaultRpcEndpoint.networkClientId;
+
+    dispatch(setActiveNetwork(finalNetworkClientId));
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
     dispatch(detectNfts(allChainIds));
@@ -328,11 +356,11 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       // to ensure that the isConnected value can be accurately inferred from
       // NetworkController.state.networksMetadata in return value of
       // `metamask_getProviderState` requests and `metamask_chainChanged` events.
-      setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
+      setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId);
     }
 
     if (permittedAccountAddresses.length > 0) {
-      dispatch(addPermittedChain(selectedTabOrigin, hexChainId));
+      dispatch(addPermittedChain(selectedTabOrigin, chainId));
       if (!permittedChainIds.includes(hexChainId)) {
         dispatch(showPermittedNetworkToast());
       }
@@ -392,14 +420,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   const isDiscoverBtnEnabled = useCallback(
     (hexChainId: Hex): boolean => {
-      // For now, the "Discover" button should be enabled only for Linea network base on
-      // the feature flag and the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
+      // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
       return (
-        isPortfolioDiscoverButtonEnabled &&
-        CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+        (isNetworkDiscoverButtonEnabled as Record<Hex, boolean>)?.[
+          hexChainId
+        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
       );
     },
-    [isPortfolioDiscoverButtonEnabled],
+    [isNetworkDiscoverButtonEnabled],
   );
 
   const hasMultiRpcOptions = useCallback(
@@ -488,8 +517,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const generateMultichainNetworkListItem = (
     network: MultichainNetworkConfiguration,
   ) => {
-    const { chainId } = network;
-    const isCurrentNetwork = chainId === currentChainId;
+    const isCurrentNetwork = network.chainId === currentChainId;
     const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
       getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
@@ -505,11 +533,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         focus={isCurrentNetwork && !focusSearch}
         rpcEndpoint={
           hasMultiRpcOptions(network)
-            ? getRpcDataByChainId(chainId, evmNetworks).defaultRpcEndpoint
+            ? getRpcDataByChainId(network.chainId, evmNetworks)
+                .defaultRpcEndpoint
             : undefined
         }
         onClick={async () => {
-          await handleNetworkChange(chainId);
+          await handleNetworkChange(network.chainId);
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
@@ -651,7 +680,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
               {showTestnets || currentlyOnTestnet ? (
                 <Box className="multichain-network-list-menu">
-                  {searchedTestNetworks.map((network) =>
+                  {sortedTestNetworks.map((network) =>
                     generateMultichainNetworkListItem(network),
                   )}
                 </Box>
@@ -752,7 +781,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     selectedNonEvmNetwork
   ) {
     title = t('addNonEvmAccount', [
-      MULTICHAIN_NETWORK_TO_NICKNAME[selectedNonEvmNetwork],
+      MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME[selectedNonEvmNetwork],
     ]);
   } else {
     title = editedNetwork?.name ?? '';

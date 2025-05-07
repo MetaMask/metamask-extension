@@ -170,6 +170,7 @@ class SmartTransactionHook {
       getFeesResponse = await this.#smartTransactionsController.getFees(
         { ...this.#txParams, chainId: this.#chainId },
         undefined,
+        { networkClientId: this.#transactionMeta.networkClientId },
       );
     } catch (error) {
       log.error(
@@ -501,6 +502,8 @@ class SmartTransactionHook {
 
     const transactionsWithChainId = unsignedTransactions.map((tx) => ({
       ...tx,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       chainId: tx.chainId || this.#chainId,
     }));
 

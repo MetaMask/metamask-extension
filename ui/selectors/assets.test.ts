@@ -1,14 +1,17 @@
-import { cloneDeep } from 'lodash';
+import { SolScope } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { cloneDeep } from 'lodash';
 import {
   AssetsRatesState,
   AssetsState,
   getAccountAssets,
-  getTokenByAccountAndAddressAndChainId,
   getAssetsMetadata,
   getAssetsRates,
+  getHistoricalPrices,
   getMultiChainAssets,
   getMultichainNativeAssetType,
+  getTokenByAccountAndAddressAndChainId,
 } from './assets';
 
 const mockRatesState = {
@@ -16,6 +19,15 @@ const mockRatesState = {
     conversionRates: {
       'token-1': { rate: 1.5, currency: 'USD' },
       'token-2': { rate: 0.8, currency: 'EUR' },
+    },
+    historicalPrices: {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+        usd: {
+          intervals: {},
+          updateTime: 1737542312,
+          expirationTime: 1737542312,
+        },
+      },
     },
   },
 };
@@ -67,7 +79,7 @@ describe('getAssetsRates', () => {
 
   it('should return an empty object if assetsRates is empty', () => {
     const emptyState: AssetsRatesState = {
-      metamask: { conversionRates: {} },
+      metamask: { conversionRates: {}, historicalPrices: {} },
     };
     const result = getAssetsRates(emptyState);
     expect(result).toEqual({});
@@ -76,6 +88,26 @@ describe('getAssetsRates', () => {
   it('should return undefined if state does not have metamask property', () => {
     const invalidState = {} as AssetsRatesState;
     expect(() => getAssetsRates(invalidState)).toThrow();
+  });
+});
+
+describe('getHistoricalPrices', () => {
+  it('should return the assetsRates from the state', () => {
+    const result = getHistoricalPrices(mockRatesState);
+    expect(result).toEqual(mockRatesState.metamask.historicalPrices);
+  });
+
+  it('should return an empty object if historicalPrices is empty', () => {
+    const emptyState: AssetsRatesState = {
+      metamask: { conversionRates: {}, historicalPrices: {} },
+    };
+    const result = getHistoricalPrices(emptyState);
+    expect(result).toEqual({});
+  });
+
+  it('should return undefined if state does not have metamask property', () => {
+    const invalidState = {} as AssetsRatesState;
+    expect(() => getHistoricalPrices(invalidState)).toThrow();
   });
 });
 
@@ -376,8 +408,17 @@ describe('getMultichainNativeAssetType', () => {
         ],
       },
       networkConfigurationsByChainId: {},
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       completedOnboarding: true,
+      selectedMultichainNetworkChainId: SolScope.Mainnet,
+      isEvmSelected: false,
+      remoteFeatureFlags: {
+        addSolanaAccount: true,
+      },
     },
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 

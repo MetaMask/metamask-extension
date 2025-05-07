@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 
@@ -19,18 +20,25 @@ export const buttonLocator = {
   connectGetEntropyButton: '#connectGetEntropySnap',
   connectGetFileButton: '#connectgetfile',
   connectHomePageButton: '#connecthomepage',
+  connectInteractiveButton: '#connectinteractive-ui',
   connectImagesButton: '#connectimages',
   connectLifeCycleButton: '#connectlifecycle-hooks',
   connectNameLookUpButton: '#connectname-lookup',
+  connectPreinstalledButton: '#connectpreinstalled-snap',
   connectTransactionInsightButton: '#connecttransaction-insights',
   connectUpdateButton: '#connectUpdate',
   connectUpdateNewButton: '#connectUpdateNew',
   connectWasmButton: '#connectwasm',
   connectNotificationButton: '#connectnotifications',
   confirmationButton: '#sendConfirmationButton',
+  createDialogButton: '#createDialogButton',
+  createDialogDisabledButton: '#createDisabledDialogButton',
   getAccountButton: '#getAccounts',
   getBip32CompressedPublicKeyButton: '#bip32GetCompressedPublic',
   getBip32PublicKeyButton: '#bip32GetPublic',
+  getPreferencesConnectButton: '#connectpreferences',
+  getPreferencesSubmitButton: '#getPreferences',
+  getSettingsStateButton: '#settings-state',
   publicKeyBip44Button: '#sendBip44Test',
   sendErrorButton: '#sendError',
   sendExpandedViewNotificationButton: '#sendExpandedViewNotification',
@@ -60,7 +68,10 @@ const spanLocator = {
   errorResultSpan: '#errorResult',
   fileResultSpan: '#getFileResult',
   installedSnapResultSpan: '#installedSnapsResult',
+  interactiveUIResultSpan: '#interactiveUIResult',
   messageResultEd25519SBip32Span: '#bip32MessageResult-ed25519Bip32',
+  preferencesResultSpan: '#preferencesResult',
+  rpcResultSpan: '#rpcResult',
   updateVersionSpan: '#updateSnapVersion',
   wasmResultSpan: '#wasmResult',
 } satisfies Record<string, string>;
@@ -183,5 +194,51 @@ export class TestSnaps {
       text: name,
       css: `${locator} option`,
     });
+  }
+
+  /**
+   * Validate the preferences result span JSON response.
+   *
+   * @param expectedPreferences - The expected preferences object to validate against.
+   * @param expectedPreferences.locale
+   * @param expectedPreferences.currency
+   * @param expectedPreferences.hideBalances
+   * @param expectedPreferences.useSecurityAlerts
+   * @param expectedPreferences.useExternalPricingData
+   * @param expectedPreferences.simulateOnChainActions
+   * @param expectedPreferences.useTokenDetection
+   * @param expectedPreferences.batchCheckBalances
+   * @param expectedPreferences.displayNftMedia
+   * @param expectedPreferences.useNftDetection
+   */
+  async check_preferencesResult(expectedPreferences: {
+    locale: string;
+    currency: string;
+    hideBalances: boolean;
+    useSecurityAlerts: boolean;
+    useExternalPricingData: boolean;
+    simulateOnChainActions: boolean;
+    useTokenDetection: boolean;
+    batchCheckBalances: boolean;
+    displayNftMedia: boolean;
+    useNftDetection: boolean;
+  }) {
+    console.log('Validating preferences result span JSON response');
+
+    const element = await this.driver.findElement(
+      spanLocator.preferencesResultSpan,
+    );
+    const spanText = await element.getAttribute('textContent');
+    const actualPreferences = JSON.parse(spanText);
+
+    console.log(`Actual preferences: ${JSON.stringify(actualPreferences)}`);
+    console.log(`Expected preferences: ${JSON.stringify(expectedPreferences)}`);
+
+    if (!isEqual(actualPreferences, expectedPreferences)) {
+      throw new Error(
+        'Preferences result span JSON does not match expected values',
+      );
+    }
+    console.log('Preferences result span JSON is valid');
   }
 }

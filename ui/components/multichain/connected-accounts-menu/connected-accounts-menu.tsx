@@ -24,7 +24,7 @@ import { getPermissionsForActiveTab } from '../../../selectors';
 import { PermissionDetailsModal } from '../permission-details-modal/permission-details-modal';
 import { Identity } from './connected-accounts-menu.types';
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TsMenuItem = MenuItem as any;
 

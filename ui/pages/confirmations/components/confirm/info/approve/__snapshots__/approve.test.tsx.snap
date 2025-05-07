@@ -175,8 +175,12 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
       </div>
     </div>
     <div
-      style="height: 1px; margin-left: -8px; margin-right: -8px;"
-    />
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="transaction-details-origin-row"
@@ -342,8 +346,9 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
             0.0001
           </p>
           <div
-            class="mm-box mm-box--padding-inline-2 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
-            style="cursor: default;"
+            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            data-testid="selected-gas-fee-token"
+            style="cursor: default; padding-inline-end: 6px;"
           >
             <div
               class="mm-box"
@@ -368,6 +373,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          data-testid="gas-fee-token-fee"
         >
            
         </p>
@@ -536,7 +542,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
     data-testid="advanced-details-data-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -550,7 +556,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"

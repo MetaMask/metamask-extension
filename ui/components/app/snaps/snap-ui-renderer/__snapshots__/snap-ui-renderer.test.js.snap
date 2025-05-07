@@ -247,10 +247,10 @@ exports[`SnapUIRenderer renders footers 1`] = `
       </div>
       <div
         class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
-        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          data-testid="undefined-snap-footer-button"
           textvariant="body-md"
         >
           <span
@@ -318,10 +318,10 @@ exports[`SnapUIRenderer supports container backgrounds 1`] = `
       </div>
       <div
         class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
-        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          data-testid="undefined-snap-footer-button"
           textvariant="body-md"
         >
           <span
@@ -404,10 +404,10 @@ exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
       </div>
       <div
         class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
-        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          data-testid="undefined-snap-footer-button"
           textvariant="body-md"
         >
           <span
@@ -452,10 +452,10 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
       </div>
       <div
         class="box snap-ui-renderer__footer box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--width-full box--background-color-background-default"
-        style="box-shadow: var(--shadow-size-md) var(--color-shadow-default); height: 80px; position: fixed; bottom: 0px;"
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          data-testid="undefined-snap-footer-button"
         >
           <span
             class="mm-box mm-text mm-text--inherit mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-primary-default"
@@ -465,6 +465,7 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
         </button>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block snap-ui-renderer__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          data-testid="undefined-snap-footer-button"
           textvariant="body-md"
         >
           <span

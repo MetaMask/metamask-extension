@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { unlockWallet, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
-import { mockInfuraAndAccountSync } from '../mocks';
+import { mockInfuraAndAccountSync, mockNftApiCall } from '../mocks';
 import {
   IDENTITY_TEAM_PASSWORD,
   IDENTITY_TEAM_SEED_PHRASE,
@@ -126,7 +126,10 @@ describe('Account syncing - User already has balances on multiple accounts', fun
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(4);
+          await accountListPage.check_numberOfAvailableAccounts(
+            4,
+            ACCOUNT_TYPE.Ethereum,
+          );
 
           // Verify each initial account name
           for (const accountName of EXPECTED_ACCOUNT_NAMES.INITIAL) {
@@ -162,11 +165,17 @@ describe('Account syncing - User already has balances on multiple accounts', fun
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            await mockInfuraAndAccountSync(
-              server,
-              userStorageMockttpController,
-              { accountsToMockBalances },
-            );
+            return [
+              await mockInfuraAndAccountSync(
+                server,
+                userStorageMockttpController,
+                { accountsToMockBalances },
+              ),
+              await mockNftApiCall(
+                server,
+                '0x0f205850eac507473aa0e47cc8eb528d875e7498',
+              ),
+            ];
           },
         },
         async ({ driver }) => {
@@ -189,7 +198,10 @@ describe('Account syncing - User already has balances on multiple accounts', fun
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(6);
+          await accountListPage.check_numberOfAvailableAccounts(
+            6,
+            ACCOUNT_TYPE.Ethereum,
+          );
 
           for (const accountName of EXPECTED_ACCOUNT_NAMES.WITH_NEW_ACCOUNTS) {
             await accountListPage.check_accountDisplayedInAccountList(
@@ -258,7 +270,10 @@ describe('Account syncing - User already has balances on multiple accounts', fun
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(6);
+          await accountListPage.check_numberOfAvailableAccounts(
+            6,
+            ACCOUNT_TYPE.Ethereum,
+          );
           await accountListPage.check_accountDisplayedInAccountList(
             'My Renamed Account 6',
           );
@@ -274,7 +289,10 @@ describe('Account syncing - User already has balances on multiple accounts', fun
 
           await header.check_pageIsLoaded();
           await header.openAccountMenu();
-          await accountListPage.check_numberOfAvailableAccounts(6);
+          await accountListPage.check_numberOfAvailableAccounts(
+            6,
+            ACCOUNT_TYPE.Ethereum,
+          );
         },
       );
     });

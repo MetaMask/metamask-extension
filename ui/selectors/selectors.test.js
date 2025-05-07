@@ -212,11 +212,10 @@ describe('Selectors', () => {
       ).toStrictEqual(0);
     });
 
-    it('returns correct number of unapproved transactions and queued requests', () => {
+    it('returns correct number of unapproved transactions', () => {
       expect(
         selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
-            queuedRequestCount: 5,
             transactions: [
               {
                 id: 0,
@@ -254,7 +253,7 @@ describe('Selectors', () => {
             },
           },
         }),
-      ).toStrictEqual(8);
+      ).toStrictEqual(3);
     });
 
     it('returns correct number of unapproved transactions and messages', () => {
@@ -327,7 +326,6 @@ describe('Selectors', () => {
             ],
           },
         },
-        queuedRequestCount: 0,
         transactions: [],
         selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
         // networkConfigurations:
@@ -391,18 +389,6 @@ describe('Selectors', () => {
               status: TransactionStatus.approved,
             },
           ],
-        },
-      });
-      expect(networkToSwitchTo).toBe(null);
-    });
-
-    it('should return no network to switch to because there are queued requests', () => {
-      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-          queuedRequestCount: 1,
         },
       });
       expect(networkToSwitchTo).toBe(null);
@@ -1350,6 +1336,30 @@ describe('Selectors', () => {
           '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
             address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
             balance: '0x0',
+          },
+        },
+        accountsByChainId: {
+          '0x5': {
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              balance: '0x0',
+            },
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+              address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+              balance: '0x0',
+            },
+            '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+              address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+              balance: '0x0',
+            },
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
+              address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+              balance: '0x0',
+            },
+            '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+              address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+              balance: '0x0',
+            },
           },
         },
         permissionHistory: {
@@ -2369,6 +2379,118 @@ describe('#getConnectedSitesList', () => {
       expect(
         selectors.getMetaMaskAccounts(state, '0x1')[ACCOUNT_ADDRESS].balance,
       ).toStrictEqual(BALANCE);
+    });
+  });
+
+  describe('getManageInstitutionalWallets', () => {
+    it('returns the manageInstitutionalWallets state', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask.metamask,
+          manageInstitutionalWallets: true,
+        },
+      };
+
+      expect(selectors.getManageInstitutionalWallets(state)).toBe(true);
+    });
+  });
+});
+
+describe('getNativeTokenInfo', () => {
+  const arrange = () => {
+    const state = {
+      metamask: {
+        networkConfigurationsByChainId: {},
+        provider: {},
+      },
+    };
+
+    return { state };
+  };
+
+  it('provides native token info from a network a user has added', () => {
+    const mocks = arrange();
+    mocks.state.metamask.networkConfigurationsByChainId['0x1337'] = {
+      nativeCurrency: 'HELLO',
+      name: 'MyToken',
+    };
+
+    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    expect(result).toStrictEqual({
+      symbol: 'HELLO',
+      decimals: 18,
+      name: 'MyToken',
+    });
+  });
+
+  it('provides native token info from a network added but with fallbacks for missing fields', () => {
+    const mocks = arrange();
+    mocks.state.metamask.networkConfigurationsByChainId['0x1337'] = {
+      nativeCurrency: undefined,
+      name: undefined,
+    };
+
+    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    expect(result).toStrictEqual({
+      symbol: 'NATIVE',
+      decimals: 18,
+      name: 'Native Token',
+    });
+  });
+
+  it('provides native token from DApp provider', () => {
+    const mocks = arrange();
+    mocks.state.metamask.provider = {
+      chainId: '0x1337',
+      ticker: 'HELLO',
+      nativeCurrency: { decimals: 18 },
+      nickname: 'MyToken',
+    };
+
+    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    expect(result).toStrictEqual({
+      symbol: 'HELLO',
+      decimals: 18,
+      name: 'MyToken',
+    });
+  });
+
+  it('provides native token from DApp provider but with fallbacks for missing fields', () => {
+    const mocks = arrange();
+    mocks.state.metamask.provider = {
+      chainId: '0x1337',
+      ticker: undefined,
+      nativeCurrency: undefined,
+      nickname: undefined,
+    };
+
+    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    expect(result).toStrictEqual({
+      symbol: 'NATIVE',
+      decimals: 18,
+      name: 'Native Token',
+    });
+  });
+
+  it('provides native token from known list of hardcoded native tokens', () => {
+    const mocks = arrange();
+
+    const result = selectors.getNativeTokenInfo(mocks.state, '0x89');
+    expect(result).toStrictEqual({
+      symbol: 'POL',
+      decimals: 18,
+      name: 'Polygon',
+    });
+  });
+
+  it('fallbacks for unknown native token info', () => {
+    const mocks = arrange();
+    const result = selectors.getNativeTokenInfo(mocks.state, '0xFakeToken');
+    expect(result).toStrictEqual({
+      symbol: 'NATIVE',
+      decimals: 18,
+      name: 'Native Token',
     });
   });
 });
