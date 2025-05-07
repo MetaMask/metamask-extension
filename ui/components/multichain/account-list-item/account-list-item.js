@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { BigNumber } from 'bignumber.js';
-///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
@@ -41,7 +38,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -245,16 +242,18 @@ const AccountListItem = ({
     return isAggregatedFiatOverviewBalance;
   };
 
-  const getPreferredCurrencyValue = () => {
-    let value;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    value = account.balance;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    value = isEvmNetwork ? account.balance : balanceToTranslate;
-    ///: END:ONLY_INCLUDE_IF
-    return value;
-  };
+  // TODO: This value is incorrect. If a single network is selected, we should be displaying the token balance for the native token of whichever chain we are on
+  // This value is incorrect for both evm and non-evm. We should also include test coverage for this case.
+  // const getPreferredCurrencyValue = () => {
+  //   let value;
+  //   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  //   value = account.balance;
+  //   ///: END:ONLY_INCLUDE_IF
+  //   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  //   value = isEvmNetwork ? account.balance : balanceToTranslate;
+  //   ///: END:ONLY_INCLUDE_IF
+  //   return value;
+  // };
 
   return (
     <Box
@@ -437,7 +436,7 @@ const AccountListItem = ({
                 textAlign={TextAlign.End}
                 as="div"
               >
-                <UserPreferencedCurrencyDisplay
+                {/* <UserPreferencedCurrencyDisplay
                   account={account}
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                   value={getPreferredCurrencyValue()}
@@ -445,7 +444,7 @@ const AccountListItem = ({
                   showNative
                   data-testid="second-currency-display"
                   privacyMode={privacyMode}
-                />
+                /> */}
               </Text>
             </Box>
           )}
