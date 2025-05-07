@@ -578,9 +578,7 @@ async function initialize() {
       }
     : {};
 
-  console.time("loadPreinstalledSnaps");
   const preinstalledSnaps = await loadPreinstalledSnaps();
-  console.timeEnd("loadPreinstalledSnaps");
 
   setupController(
     initState,
