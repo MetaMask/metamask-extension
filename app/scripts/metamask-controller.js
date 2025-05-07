@@ -23,7 +23,6 @@ import {
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
-
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import {
@@ -314,6 +313,7 @@ import {
   getEnvironmentType,
   getMethodDataName,
   previousValueComparator,
+  initializeRpcProviderDomains,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
@@ -377,11 +377,6 @@ import {
   rejectAllApprovals,
   rejectOriginApprovals,
 } from './lib/approval/utils';
-import {
-  handleBridgeTransactionComplete,
-  handleBridgeTransactionFailed,
-  handleTransactionFailedTypeBridge,
-} from './lib/bridge-status/metrics';
 import { InstitutionalSnapControllerInit } from './controller-init/institutional-snap/institutional-snap-controller-init';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -420,6 +415,7 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
+import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
 import {
   onRpcEndpointUnavailable,
   onRpcEndpointDegraded,
@@ -508,9 +504,6 @@ export default class MetamaskController extends EventEmitter {
       }),
       state: initState.LoggingController,
     });
-
-    // instance of a class that wraps the extension's storage local API.
-    this.localStoreApiWrapper = opts.persistanceManager;
 
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
@@ -1486,8 +1479,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
 
-    this._addBridgeStatusControllerListeners();
-
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
       messenger: this.controllerMessenger.getRestricted({
@@ -1749,6 +1740,7 @@ export default class MetamaskController extends EventEmitter {
           url,
           fetchOptions: { method: 'GET', headers, signal },
           ...requestOptions,
+          cacheOptions: { cacheRefreshTime: 0 },
         }),
       addTransactionFn: (...args) => this.txController.addTransaction(...args),
       estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
@@ -1995,6 +1987,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
+      DelegationController: DelegationControllerInit,
     };
 
     const {
@@ -2040,6 +2033,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainNetworkController;
     this.authenticationController = controllersByName.AuthenticationController;
     this.userStorageController = controllersByName.UserStorageController;
+    this.delegationController = controllersByName.DelegationController;
     this.notificationServicesController =
       controllersByName.NotificationServicesController;
     this.notificationServicesPushController =
@@ -5097,28 +5091,33 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   async _addSolanaAccount(keyringId) {
     let entropySource = keyringId;
-    if (!entropySource) {
-      // Get the entropy source from the first HD keyring
-      const id = await this.keyringController.withKeyring(
-        { type: KeyringTypes.hd },
-        async ({ metadata }) => {
-          return metadata.id;
+    try {
+      if (!entropySource) {
+        // Get the entropy source from the first HD keyring
+        const id = await this.keyringController.withKeyring(
+          { type: KeyringTypes.hd },
+          async ({ metadata }) => {
+            return metadata.id;
+          },
+        );
+        entropySource = id;
+      }
+
+      const client = await this._getSolanaWalletSnapClient();
+      return await client.createAccount(
+        { entropySource },
+        {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
         },
       );
-      entropySource = id;
+    } catch (e) {
+      // Do not block the onboarding flow if this fails
+      log.warn(`Failed to add Solana account. Error: ${e}`);
+      captureException(e);
+      return null;
     }
-
-    const client = await this._getSolanaWalletSnapClient();
-    return await client.createAccount(
-      {
-        entropySource,
-      },
-      {
-        displayConfirmation: false,
-        displayAccountNameSuggestion: false,
-        setSelectedAccount: false,
-      },
-    );
   }
   ///: END:ONLY_INCLUDE_IF
 
@@ -7786,6 +7785,8 @@ export default class MetamaskController extends EventEmitter {
     const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
     const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
     if (cachedResponse) {
+      // Also initialize the known domains when we have chain data cached
+      await initializeRpcProviderDomains();
       return;
     }
     await setStorageItem(cacheKey, {
@@ -7793,6 +7794,8 @@ export default class MetamaskController extends EventEmitter {
       // Cached value is immediately invalidated
       cachedTime: 0,
     });
+    // Initialize domains after setting the chainlist cache
+    await initializeRpcProviderDomains();
   }
 
   /**
@@ -7843,58 +7846,6 @@ export default class MetamaskController extends EventEmitter {
       error.name = 'TestError';
       throw error;
     });
-  }
-
-  /**
-   * A method for setting BridgeStatusController event listeners
-   */
-  _addBridgeStatusControllerListeners() {
-    this.controllerMessenger.subscribe(
-      'BridgeStatusController:bridgeTransactionComplete',
-      (payload) =>
-        handleBridgeTransactionComplete(payload, {
-          backgroundState: this.getState(),
-          trackEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
-        }),
-    );
-
-    this.controllerMessenger.subscribe(
-      'BridgeStatusController:bridgeTransactionFailed',
-      (payload) =>
-        handleBridgeTransactionFailed(payload, {
-          backgroundState: this.getState(),
-          trackEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
-        }),
-    );
-    // Putting these TransactionController listeners here to keep it colocated with the other bridge events
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionFailed',
-      ({ transactionMeta }) => {
-        const { type, status } = transactionMeta;
-
-        const isBridgeTransaction = type === TransactionType.bridge;
-        const isIncompleteTransactionCleanup = [
-          TransactionStatus.approved,
-          TransactionStatus.signed,
-        ].includes(status);
-
-        if (isBridgeTransaction && !isIncompleteTransactionCleanup) {
-          handleTransactionFailedTypeBridge(
-            { transactionMeta },
-            {
-              backgroundState: this.getState(),
-              trackEvent: this.metaMetricsController.trackEvent.bind(
-                this.metaMetricsController,
-              ),
-            },
-          );
-        }
-      },
-    );
   }
 
   getTransactionMetricsRequest() {
@@ -7964,6 +7915,37 @@ export default class MetamaskController extends EventEmitter {
           .showConfirmationAdvancedDetails;
       },
       getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
+      getNetworkRpcUrl: (chainId) => {
+        // TODO: Move to @metamask/network-controller
+        try {
+          const networkClientId =
+            this.networkController.findNetworkClientIdByChainId(chainId);
+          const networkConfig =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+
+          // Try direct rpcUrl property first
+          if (networkConfig.rpcUrl) {
+            return networkConfig.rpcUrl;
+          }
+
+          // Try rpcEndpoints array
+          if (networkConfig.rpcEndpoints?.length > 0) {
+            const defaultEndpointIndex =
+              networkConfig.defaultRpcEndpointIndex || 0;
+            return (
+              networkConfig.rpcEndpoints[defaultEndpointIndex]?.url ||
+              networkConfig.rpcEndpoints[0].url
+            );
+          }
+
+          return 'unknown';
+        } catch (error) {
+          console.error('Error getting RPC URL:', error);
+          return 'unknown';
+        }
+      },
     };
     return {
       ...controllerActions,

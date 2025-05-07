@@ -1,19 +1,17 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  useEnableProfileSyncing,
-  useDisableProfileSyncing,
-} from '../../../../hooks/identity/useProfileSyncing';
+import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import {
-  selectIsProfileSyncingEnabled,
-  selectIsProfileSyncingUpdateLoading,
-} from '../../../../selectors/identity/profile-syncing';
+  selectIsBackupAndSyncEnabled,
+  selectIsBackupAndSyncUpdateLoading,
+} from '../../../../selectors/identity/backup-and-sync';
 import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
 import { showModal } from '../../../../store/actions';
 import { Box, Text } from '../../../../components/component-library';
@@ -33,19 +31,12 @@ const ProfileSyncToggle = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const basicFunctionality: boolean = useSelector(getUseExternalServices);
-  const { enableProfileSyncing, error: enableProfileSyncingError } =
-    useEnableProfileSyncing();
-  const { disableProfileSyncing, error: disableProfileSyncingError } =
-    useDisableProfileSyncing();
+  const { error, setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
 
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const error = enableProfileSyncingError || disableProfileSyncingError;
-
-  const isProfileSyncingUpdateLoading = useSelector(
-    selectIsProfileSyncingUpdateLoading,
+  const isBackupAndSyncUpdateLoading = useSelector(
+    selectIsBackupAndSyncUpdateLoading,
   );
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
@@ -53,12 +44,12 @@ const ProfileSyncToggle = () => {
 
   useEffect(() => {
     if (basicFunctionality === false) {
-      disableProfileSyncing();
+      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false);
     }
-  }, [basicFunctionality, disableProfileSyncing]);
+  }, [basicFunctionality, setIsBackupAndSyncFeatureEnabled]);
 
   const handleProfileSyncToggleSetValue = async () => {
-    if (isProfileSyncingEnabled) {
+    if (isBackupAndSyncEnabled) {
       dispatch(
         showModal({
           name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
@@ -74,7 +65,10 @@ const ProfileSyncToggle = () => {
                 was_notifications_on: isMetamaskNotificationsEnabled,
               },
             });
-            disableProfileSyncing();
+            setIsBackupAndSyncFeatureEnabled(
+              BACKUPANDSYNC_FEATURES.main,
+              false,
+            );
           },
         }),
       );
@@ -90,7 +84,7 @@ const ProfileSyncToggle = () => {
           was_notifications_on: isMetamaskNotificationsEnabled,
         },
       });
-      await enableProfileSyncing();
+      await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);
     }
   };
 
@@ -124,17 +118,17 @@ const ProfileSyncToggle = () => {
           </div>
         </div>
 
-        {isProfileSyncingUpdateLoading && (
+        {isBackupAndSyncUpdateLoading && (
           <Box paddingLeft={5} paddingRight={5}>
             <Preloader size={36} />
           </Box>
         )}
 
-        {!isProfileSyncingUpdateLoading && (
+        {!isBackupAndSyncUpdateLoading && (
           <div className="settings-page__content-item-col">
             <ToggleButton
               disabled={!basicFunctionality}
-              value={isProfileSyncingEnabled}
+              value={isBackupAndSyncEnabled}
               onToggle={handleProfileSyncToggleSetValue}
               offLabel={t('off')}
               onLabel={t('on')}

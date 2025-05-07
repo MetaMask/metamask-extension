@@ -2965,11 +2965,6 @@ export function getIsSolanaSupportEnabled(state) {
   return Boolean(addSolanaAccount);
 }
 
-export function getIsSolanaBuyable(state) {
-  const { isSolanaBuyable } = getRemoteFeatureFlags(state);
-  return Boolean(isSolanaBuyable);
-}
-
 export function getManageInstitutionalWallets(state) {
   return state.metamask.manageInstitutionalWallets;
 }
@@ -2991,15 +2986,15 @@ export function getIsCustomNetwork(state) {
 }
 
 /**
- * Get the state of the `nePortfolioDiscoverButton` remote feature flag.
+ * Get the state of the `neNetworkDiscoverButton` remote feature flag.
  * This flag determines whether the user should see a `Discover` button on the network menu list.
  *
  * @param {*} state
- * @returns The state of the `nePortfolioDiscoverButton` remote feature flag.
+ * @returns The state of the `neNetworkDiscoverButton` remote feature flag.
  */
-export function getIsPortfolioDiscoverButtonEnabled(state) {
-  const { nePortfolioDiscoverButton } = getRemoteFeatureFlags(state);
-  return Boolean(nePortfolioDiscoverButton);
+export function getNetworkDiscoverButtonEnabled(state) {
+  const { neNetworkDiscoverButton } = getRemoteFeatureFlags(state);
+  return neNetworkDiscoverButton;
 }
 
 export function getBlockExplorerLinkText(

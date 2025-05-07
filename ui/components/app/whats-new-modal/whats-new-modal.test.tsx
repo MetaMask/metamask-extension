@@ -171,11 +171,14 @@ describe('WhatsNewModal', () => {
           );
           fireEvent.click(submitButton);
 
-          await expect(mockCreateAccount).toHaveBeenCalledWith({
-            scope: MultichainNetworks.SOLANA,
-            entropySource: KEYRING_ID,
-            accountNameSuggestion: 'Test Account',
-          });
+          await expect(mockCreateAccount).toHaveBeenCalledWith(
+            {
+              scope: MultichainNetworks.SOLANA,
+              entropySource: KEYRING_ID,
+              accountNameSuggestion: 'Test Account',
+            },
+            { setSelectedAccount: undefined },
+          );
         });
 
         it('closes the modal when clicking "Not Now"', async () => {

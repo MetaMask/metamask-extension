@@ -22,7 +22,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/modules/selectors/networks';
 import {
   getIsMainnet,
   getSelectedInternalAccount,
@@ -81,6 +84,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
   const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const handleAddNft = async () => {
     trace({ name: TraceName.ImportNfts });
@@ -112,6 +116,7 @@ export const ImportNftsModal = ({ onClose }) => {
         ignoreTokens({
           tokensToIgnore: nftAddress,
           dontShowLoadingIndicator: true,
+          networkClientId,
         }),
       );
     }
