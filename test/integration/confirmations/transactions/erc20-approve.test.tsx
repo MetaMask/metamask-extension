@@ -145,7 +145,7 @@ describe('ERC20 Approve Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
-      getTokenStandardAndDetails: {
+      getTokenStandardAndDetailsByChain: {
         standard: TokenStandard.ERC20,
       },
     });
