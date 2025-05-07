@@ -1,7 +1,7 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  mockEthereumProviderExampleSnap,
+  mockEthereumProviderSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -10,7 +10,7 @@ describe('Test Snap ethereum_provider', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockEthereumProviderExampleSnap,
+        testSpecificMock: mockEthereumProviderSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

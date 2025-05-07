@@ -6,7 +6,7 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  mockCronjobExampleSnap,
+  mockCronjobSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -15,7 +15,7 @@ describe('Test Snap Cronjob', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockCronjobExampleSnap,
+        testSpecificMock: mockCronjobSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

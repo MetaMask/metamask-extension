@@ -89,7 +89,7 @@ export async function mockClientStatusSnap(mockServer: Mockttp) {
     });
 }
 
-export async function mockCronjobExampleSnap(mockServer: Mockttp) {
+export async function mockCronjobSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/cronjob-example-snap-3.0.0.txt';
   return await mockServer
@@ -155,7 +155,7 @@ export async function mockErrorSnap(mockServer: Mockttp) {
     });
 }
 
-export async function mockEthereumProviderExampleSnap(mockServer: Mockttp) {
+export async function mockEthereumProviderSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/ethereum-provider-example-snap-2.2.1.txt';
   return await mockServer
@@ -221,7 +221,7 @@ export async function mockHomePageSnap(mockServer: Mockttp) {
     });
 }
 
-export async function mockImagesExampleSnap(mockServer: Mockttp) {
+export async function mockImagesSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/images-example-snap-1.1.1.txt';
   return await mockServer
@@ -309,7 +309,7 @@ export async function mockLifecycleHooksSnap(mockServer: Mockttp) {
     });
 }
 
-export async function mockLocalizationExampleSnap(mockServer: Mockttp) {
+export async function mockLocalizationSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/localization-example-snap-1.1.4.txt';
   return await mockServer
@@ -375,7 +375,7 @@ export async function mockManageStateSnap(mockServer: Mockttp) {
     });
 }
 
-export async function mockNetworkExampleSnap(mockServer: Mockttp) {
+export async function mockNetworkSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/network-example-snap-2.1.3.txt';
   return await mockServer
@@ -397,7 +397,7 @@ export async function mockNetworkExampleSnap(mockServer: Mockttp) {
     });
 }
 
-export async function mockNotificationExampleSnap(mockServer: Mockttp) {
+export async function mockNotificationSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/notification-example-snap-2.3.0.txt';
   return await mockServer
@@ -463,7 +463,7 @@ export async function mockSimpleKeyringSnap(mockServer: Mockttp) {
     });
 }
 
-export async function mockWasmExampleSnap(mockServer: Mockttp) {
+export async function mockWasmSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/wasm-example-snap-2.1.5.txt';
   return await mockServer
@@ -485,7 +485,7 @@ export async function mockWasmExampleSnap(mockServer: Mockttp) {
     });
 }
 
-export async function mockWebpackPluginExampleOldSnap(mockServer: Mockttp) {
+export async function mockWebpackPluginOldSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/webpack-plugin-example-snap-2.0.0.txt';
   return await mockServer
@@ -507,7 +507,7 @@ export async function mockWebpackPluginExampleOldSnap(mockServer: Mockttp) {
     });
 }
 
-export async function mockWebpackPluginExampleSnap(mockServer: Mockttp) {
+export async function mockWebpackPluginSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/webpack-plugin-example-snap-2.1.3.txt';
   return await mockServer

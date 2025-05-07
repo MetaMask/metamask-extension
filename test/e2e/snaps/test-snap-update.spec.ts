@@ -7,14 +7,14 @@ import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import {
-  mockWebpackPluginExampleOldSnap,
-  mockWebpackPluginExampleSnap,
+  mockWebpackPluginOldSnap,
+  mockWebpackPluginSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
 
 async function mockSnapExamples(mockServer: Mockttp) {
   return [
-    await mockWebpackPluginExampleOldSnap(mockServer),
-    await mockWebpackPluginExampleSnap(mockServer),
+    await mockWebpackPluginOldSnap(mockServer),
+    await mockWebpackPluginSnap(mockServer),
   ];
 }
 

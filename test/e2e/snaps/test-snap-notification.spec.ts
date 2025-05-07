@@ -6,14 +6,14 @@ import HeaderNavbar from '../page-objects/pages/header-navbar';
 import { withFixtures, unlockWallet, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
-import { mockNotificationExampleSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Test Snap Notification', function () {
   it('can send 1 correctly read in-app notification', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockNotificationExampleSnap,
+        testSpecificMock: mockNotificationSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -57,7 +57,7 @@ describe('Test Snap Notification', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockNotificationExampleSnap,
+        testSpecificMock: mockNotificationSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

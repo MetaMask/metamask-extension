@@ -31,6 +31,13 @@ export function withTransactionEnvelopeTypeFixtures(
   mocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mocks as an optional parameter
   smartContract?: typeof SMART_CONTRACTS,
 ) {
+  const combinedMocks = async (
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> => {
+    const baseMocks = mocks ? await mocks(mockServer) : [];
+    const dialogSnapMocks = await mockDialogSnap(mockServer);
+    return [...baseMocks, ...[dialogSnapMocks]];
+  };
   return withFixtures(
     {
       dapp: true,
@@ -47,8 +54,7 @@ export function withTransactionEnvelopeTypeFixtures(
           ? {}
           : defaultOptionsForType2Transactions,
       ...(smartContract && { smartContract }),
-      ...(mocks && { testSpecificMock: mocks }),
-      testSpecificMock: mockDialogSnap,
+      testSpecificMock: combinedMocks,
       title,
     },
     testFunction,
