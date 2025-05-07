@@ -192,10 +192,9 @@ const AccountListItem = ({
     balanceToTranslate = multichainAggregatedBalance;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    const balanceOrFallback = accountTotalFiatBalances?.totalBalance ?? 0;
-    const bnBalance = new BigNumber(balanceOrFallback);
+    const balanceOrFallback = multichainAggregatedBalance ?? 0;
     const formattedBalanceToTranslate = formatWithThreshold(
-      bnBalance.toNumber(),
+      balanceOrFallback,
       0.00001,
       locale,
       {
