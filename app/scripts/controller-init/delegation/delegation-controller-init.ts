@@ -2,7 +2,11 @@ import {
   DelegationController,
   DelegationControllerMessenger,
 } from '@metamask/delegation-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { type Hex } from '../../../../shared/lib/delegation/utils';
 import {
   getDelegationHashOffchain,
@@ -69,43 +73,69 @@ async function awaitDeleteDelegationEntry(
   initMessenger: DelegationControllerInitMessenger,
   { hash, txMeta }: { hash: Hex; txMeta: TransactionMeta },
 ) {
-  let timer: NodeJS.Timeout | null = null;
+  let { id } = txMeta;
+  let action: 'continue' | 'unsubscribe' | 'delete' = 'continue';
 
-  const handleTransactionConfirmed = (transactionMeta: TransactionMeta) => {
-    if (
-      transactionMeta.id !== txMeta.id &&
-      transactionMeta.history?.[0].id !== txMeta.id
-    ) {
-      // Not our transaction
+  const handleTransactionStatusUpdated = ({
+    transactionMeta,
+  }: {
+    transactionMeta: TransactionMeta;
+  }) => {
+    // If not our transaction, ignore
+    if (transactionMeta.id !== id) {
       return;
     }
+
+    // Check if transaction was replaced
     if (
-      transactionMeta.type === 'contractInteraction' ||
-      transactionMeta.type === 'retry'
+      transactionMeta.status === TransactionStatus.dropped &&
+      transactionMeta.replacedById
     ) {
-      // Delegation got disabled on-chain, delete the delegation entry
+      id = transactionMeta.replacedById;
+      return;
+    }
+
+    switch (transactionMeta.type) {
+      case TransactionType.contractInteraction:
+      case TransactionType.retry:
+        switch (transactionMeta.status) {
+          case TransactionStatus.confirmed:
+            action = 'delete';
+            break;
+          case TransactionStatus.failed:
+          case TransactionStatus.rejected:
+            action = 'unsubscribe';
+            break;
+          default:
+            // Ignore other statuses
+            return;
+        }
+        break;
+      case TransactionType.cancel:
+        action = 'unsubscribe';
+        break;
+      default:
+        console.warn(
+          'awaitDeleteDelegationEntry: Unexpected tx type',
+          transactionMeta.type,
+        );
+        return;
+    }
+
+    if (action === 'delete') {
       controller.delete(hash);
     }
-    initMessenger.unsubscribe(
-      'TransactionController:transactionConfirmed',
-      handleTransactionConfirmed,
-    );
-    if (timer) {
-      clearTimeout(timer);
+
+    if (action === 'unsubscribe' || action === 'delete') {
+      initMessenger.unsubscribe(
+        'TransactionController:transactionStatusUpdated',
+        handleTransactionStatusUpdated,
+      );
     }
   };
 
   initMessenger.subscribe(
-    'TransactionController:transactionConfirmed',
-    handleTransactionConfirmed,
+    'TransactionController:transactionStatusUpdated',
+    handleTransactionStatusUpdated,
   );
-
-  // In case the transaction is not confirmed, we still want to unsubscribe
-  // from the event, regardless of the status, to avoid leaking subscriptions
-  timer = setTimeout(() => {
-    initMessenger.unsubscribe(
-      'TransactionController:transactionConfirmed',
-      handleTransactionConfirmed,
-    );
-  }, 60000);
 }

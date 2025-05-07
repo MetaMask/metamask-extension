@@ -2,7 +2,7 @@ import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-c
 import { Messenger } from '@metamask/base-controller';
 import { type DelegationControllerMessenger } from '@metamask/delegation-controller';
 import { type KeyringControllerSignTypedMessageAction } from '@metamask/keyring-controller';
-import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
+import { TransactionControllerTransactionStatusUpdatedEvent } from '@metamask/transaction-controller';
 
 export { type DelegationControllerMessenger } from '@metamask/delegation-controller';
 
@@ -14,7 +14,7 @@ type AllowedActions =
   | KeyringControllerSignTypedMessageAction
   | AccountsControllerGetSelectedAccountAction;
 
-type AllowedEvents = TransactionControllerTransactionConfirmedEvent;
+type AllowedEvents = TransactionControllerTransactionStatusUpdatedEvent;
 
 export function getDelegationControllerMessenger(
   messenger: Messenger<AllowedActions, AllowedEvents>,
@@ -25,7 +25,7 @@ export function getDelegationControllerMessenger(
       'AccountsController:getSelectedAccount',
       'KeyringController:signTypedMessage',
     ],
-    allowedEvents: ['TransactionController:transactionConfirmed'],
+    allowedEvents: ['TransactionController:transactionStatusUpdated'],
   });
 }
 
@@ -34,7 +34,7 @@ export function getDelegationControllerInitMessenger(
 ) {
   return messenger.getRestricted({
     name: 'DelegationControllerInit',
-    allowedEvents: ['TransactionController:transactionConfirmed'],
+    allowedEvents: ['TransactionController:transactionStatusUpdated'],
     allowedActions: [],
   });
 }
