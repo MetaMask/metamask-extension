@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { BigNumber } from 'bignumber.js';
-///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
@@ -249,7 +247,9 @@ const AccountListItem = ({
   const getPreferredCurrencyValue = () => {
     let value;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    value = account.balance;
+    value = isEvmNetwork
+      ? new BigNumber(account.balance).toNumber()
+      : account.balance;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     value = isEvmNetwork ? account.balance : balanceToTranslate;
