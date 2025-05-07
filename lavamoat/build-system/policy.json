@@ -890,7 +890,7 @@
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map": {
       "packages": {
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>acorn": true,
-        "chokidar>normalize-path": true,
+        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>normalize-path": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>postcss": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>source-map": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2": true
@@ -898,7 +898,7 @@
     },
     "gulp-sourcemaps>@gulp-sourcemaps/map-sources": {
       "packages": {
-        "gulp-sourcemaps>@gulp-sourcemaps/map-sources>normalize-path": true,
+        "gulp-watch>anymatch>normalize-path": true,
         "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2": true
       }
     },
@@ -1309,7 +1309,7 @@
     },
     "chokidar>anymatch": {
       "packages": {
-        "chokidar>normalize-path": true,
+        "chokidar>anymatch>normalize-path": true,
         "micromatch>picomatch": true
       }
     },
@@ -1319,7 +1319,7 @@
       },
       "packages": {
         "gulp>glob-watcher>anymatch>micromatch": true,
-        "gulp>glob-watcher>anymatch>normalize-path": true
+        "gulp-watch>anymatch>normalize-path": true
       }
     },
     "gulp-watch>anymatch": {
@@ -4773,22 +4773,7 @@
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv": true
       }
     },
-    "gulp-sourcemaps>@gulp-sourcemaps/map-sources>normalize-path": {
-      "packages": {
-        "vinyl>remove-trailing-separator": true
-      }
-    },
-    "gulp>glob-watcher>anymatch>normalize-path": {
-      "packages": {
-        "vinyl>remove-trailing-separator": true
-      }
-    },
     "gulp-watch>anymatch>normalize-path": {
-      "packages": {
-        "vinyl>remove-trailing-separator": true
-      }
-    },
-    "gulp>vinyl-fs>vinyl-sourcemap>normalize-path": {
       "packages": {
         "vinyl>remove-trailing-separator": true
       }
@@ -9087,7 +9072,7 @@
         "gulp>vinyl-fs>vinyl-sourcemap>append-buffer": true,
         "nyc>convert-source-map": true,
         "del>graceful-fs": true,
-        "gulp>vinyl-fs>vinyl-sourcemap>normalize-path": true,
+        "gulp-watch>anymatch>normalize-path": true,
         "gulp>vinyl-fs>vinyl-sourcemap>now-and-later": true,
         "gulp>vinyl-fs>remove-bom-buffer": true,
         "vinyl": true
