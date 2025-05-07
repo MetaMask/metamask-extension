@@ -379,6 +379,8 @@ export const CURRENCY_SYMBOLS = {
   ONE: 'ONE',
   LENS: 'GHO',
   PLUME: 'PLUME',
+  FLOW: 'FLOW',
+  SEI: 'SEI',
 } as const;
 
 // Non-EVM currency symbols
