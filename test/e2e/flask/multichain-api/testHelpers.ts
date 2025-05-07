@@ -84,6 +84,7 @@ export const addAccountInWalletAndAuthorize = async (
   const editButtons = await driver.findElements('[data-testid="edit"]');
   await editButtons[0].click();
   await driver.clickElement({ text: 'New account', tag: 'button' });
+  await driver.clickElement({ text: 'Ethereum account', tag: 'button' });
   await driver.clickElement({ text: 'Add account', tag: 'button' });
   await driver.delay(regularDelayMs);
 

@@ -100,6 +100,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevent bridge confirmation if user doesn't have enough balance ([#32485](https://github.com/MetaMask/metamask-extension/pull/32485))
 - Fix bridge activity log doesn't update and may show incorrect token amounts ([#32387](https://github.com/MetaMask/metamask-extension/pull/32387))
 - Fix text flashing on Solana's "What's New" modal cp-12.18.0 ([#32469](https://github.com/MetaMask/metamask-extension/pull/32469))
+- Fix duplicate and orphaned accounts appearing in the Send flow account selector ([#32642](https://github.com/MetaMask/metamask-extension/pull/32642))
+- Display Solana account details with correct prefixed address format and QR code showing the proper Solana address ([#32670](https://github.com/MetaMask/metamask-extension/pull/32670))
+- Fix accessing InApp notification and feature announcement notification([#32714](https://github.com/MetaMask/metamask-extension/pull/32714))
+- Show SOL balance in account picker and FIAT conversion in account list on flask build ([#32684](https://github.com/MetaMask/metamask-extension/pull/32684))
+
 
 ## [12.17.0]
 ### Added
