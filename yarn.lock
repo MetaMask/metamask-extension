@@ -5125,16 +5125,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^18.0.0":
-  version: 18.0.0
-  resolution: "@metamask/bridge-controller@npm:18.0.0"
+"@metamask/bridge-controller@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@metamask/bridge-controller@npm:20.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/constants": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/controller-utils": "npm:^11.7.0"
     "@metamask/gas-fee-controller": "npm:^23.0.0"
     "@metamask/keyring-api": "npm:^17.4.0"
@@ -5146,11 +5146,12 @@ __metadata:
     reselect: "npm:^5.1.1"
   peerDependencies:
     "@metamask/accounts-controller": ^27.0.0
-    "@metamask/assets-controllers": ^59.0.0
+    "@metamask/assets-controllers": ^60.0.0
     "@metamask/network-controller": ^23.0.0
+    "@metamask/remote-feature-flag-controller": ^1.6.0
     "@metamask/snaps-controllers": ^11.0.0
     "@metamask/transaction-controller": ^54.0.0
-  checksum: 10/8178599c0f712bc4ed47c9fe870f5ce1b927efeb939e3ac64719394c8bd3f2a12ec64dc1c404f4f5efe74d6fe58a13469e16e90290d311251c8a073e0d0aa08c
+  checksum: 10/4f74716fd09cbc9a70ad1f4a1c91fcc9b26ed0670d8568d7f9eef2978f43bc85d7e1f2d0ffb5cc14dd012c19a86625d585fa67a4cfa51dfa9031bd06aaff7dd6
   languageName: node
   linkType: hard
 
@@ -30017,7 +30018,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
-    "@metamask/bridge-controller": "npm:^18.0.0"
+    "@metamask/bridge-controller": "npm:^20.0.0"
     "@metamask/bridge-status-controller": "npm:^17.0.1"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
