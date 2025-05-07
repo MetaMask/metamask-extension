@@ -30,7 +30,6 @@ import {
 import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
 import { parseSecretRecoveryPhrase } from '../../../components/app/srp-input/parse-secret-recovery-phrase';
 import { clearClipboard } from '../../../helpers/utils/util';
-import { useTheme } from '../../../hooks/useTheme';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 
@@ -43,7 +42,6 @@ const defaultNumberOfWords = 12;
 export const ImportSrp = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const theme = useTheme();
   const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
