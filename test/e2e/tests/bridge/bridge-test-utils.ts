@@ -1,8 +1,5 @@
 import { Mockttp } from 'mockttp';
-import {
-  BridgeClientId,
-  type FeatureFlagResponse,
-} from '@metamask/bridge-controller';
+import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
@@ -32,7 +29,6 @@ import {
   TOP_ASSETS_API_LINEA_MOCK_RESULT,
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
-  DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from './constants';
 
 export class BridgePage {

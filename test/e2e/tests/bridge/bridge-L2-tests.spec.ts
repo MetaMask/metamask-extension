@@ -11,11 +11,7 @@ import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
 describe('Bridge tests', function (this: Suite) {
   it('should execete bridge transactions on L2 networks', async function () {
     await withFixtures(
-      getBridgeL2Fixtures(this.test?.fullTitle(),
-      {
-        ...DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
-        support: true,
-      }),
+      getBridgeL2Fixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);

@@ -14,10 +14,7 @@ describe('Bridge tests', function (this: Suite) {
     await withFixtures(
       getBridgeFixtures(
         this.test?.fullTitle(),
-        {
-          ...DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
-          support: true,
-        },
+        DEFAULT_BRIDGE_FEATURE_FLAGS,
         false,
       ),
       async ({ driver }) => {
