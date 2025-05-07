@@ -438,8 +438,9 @@ describe('Test Snap Metrics', function () {
   it('tests snap uninstall metric', async function () {
     async function mockSegment(mockServer) {
       return [
-        await mockNotificationSnap(mockServer),
         await mockedSnapUninstall(mockServer),
+        await mockNotificationSnap(mockServer),
+        await mockWebpackPluginSnap(mockServer),
       ];
     }
 
@@ -569,9 +570,11 @@ describe('Test Snap Metrics', function () {
   it('test snap update metric', async function () {
     async function mockSegment(mockServer) {
       return [
-        await mockNotificationSnap(mockServer),
         await mockedSnapUpdateStarted(mockServer),
         await mockedSnapUpdated(mockServer),
+        await mockNotificationSnap(mockServer),
+        await mockWebpackPluginSnap(mockServer),
+        await mockWebpackPluginOldSnap(mockServer),
       ];
     }
     await withFixtures(
