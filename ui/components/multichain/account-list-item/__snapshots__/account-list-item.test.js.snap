@@ -4,6 +4,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
 <div>
   <div
     class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+    data-testid="account-item"
   >
     <div
       class="mm-box mm-box--display-flex mm-box--sm:display-none"
@@ -226,6 +227,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
 <div>
   <div
     class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+    data-testid="account-item"
   >
     <div
       class="mm-box mm-box--display-flex mm-box--sm:display-none"

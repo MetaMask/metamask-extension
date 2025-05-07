@@ -65,7 +65,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         ref={ref}
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {...(props as BoxProps<any>)}
       >

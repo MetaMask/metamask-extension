@@ -4,9 +4,9 @@ import {
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
 } from '../../constants/smartTransactions';
 import {
-  getCurrentNetwork,
   accountSupportsSmartTx,
   getPreferences,
+  selectDefaultRpcEndpointByChainId,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
@@ -54,6 +54,9 @@ export type SmartTransactionsMetaMaskState = {
     };
   };
 };
+
+export type SmartTransactionsState = SmartTransactionsMetaMaskState &
+  NetworkState;
 
 /**
  * Returns the user's explicit opt-in status for the smart transactions feature.
@@ -129,44 +132,61 @@ export const getSmartTransactionsPreferenceEnabled = createSelector(
   },
 );
 
-export const getCurrentChainSupportsSmartTransactions = (
+export const getChainSupportsSmartTransactions = (
   state: NetworkState,
+  chainId?: string,
 ): boolean => {
-  const chainId = getCurrentChainId(state);
-  return getAllowedSmartTransactionsChainIds().includes(chainId);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const effectiveChainId = chainId || getCurrentChainId(state);
+  return getAllowedSmartTransactionsChainIds().includes(effectiveChainId);
 };
 
-const getIsAllowedRpcUrlForSmartTransactions = (state: NetworkState) => {
-  const chainId = getCurrentChainId(state);
+const getIsAllowedRpcUrlForSmartTransactions = (
+  state: NetworkState,
+  chainId?: string,
+) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const effectiveChainId = chainId || getCurrentChainId(state);
   // Allow in non-production or if chain ID is on skip list.
-  if (!isProduction() || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
+  if (
+    !isProduction() ||
+    SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(effectiveChainId)
+  ) {
     return true;
   }
-  const rpcUrl = getCurrentNetwork(state)?.rpcUrl;
-  if (!rpcUrl) {
-    return false;
-  }
-  const { hostname } = new URL(rpcUrl);
-  if (!hostname) {
-    return false;
-  }
-  return hostname.endsWith('.infura.io') || hostname.endsWith('.binance.org');
+
+  // Get the default RPC endpoint directly for this chain ID
+  const defaultRpcEndpoint = selectDefaultRpcEndpointByChainId(
+    state,
+    effectiveChainId,
+  );
+  const rpcUrl = defaultRpcEndpoint?.url;
+  const hostname = rpcUrl && new URL(rpcUrl).hostname;
+
+  return (
+    hostname?.endsWith('.infura.io') ||
+    hostname?.endsWith('.binance.org') ||
+    false
+  );
 };
 
 export const getSmartTransactionsEnabled = (
-  state: SmartTransactionsMetaMaskState & NetworkState,
+  state: SmartTransactionsState,
+  chainId?: string,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
   // @ts-expect-error Smart transaction selector types does not match controller state
-  const featureFlagsByChainId = getFeatureFlagsByChainId(state);
+  const featureFlagsByChainId = getFeatureFlagsByChainId(state, chainId);
   // TODO: Create a new proxy service only for MM feature flags.
   const smartTransactionsFeatureFlagEnabled =
     featureFlagsByChainId?.smartTransactions?.extensionActive;
   const smartTransactionsLiveness =
     state.metamask.smartTransactionsState?.liveness;
   return Boolean(
-    getCurrentChainSupportsSmartTransactions(state) &&
-      getIsAllowedRpcUrlForSmartTransactions(state) &&
+    getChainSupportsSmartTransactions(state, chainId) &&
+      getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&
       supportedAccount &&
       smartTransactionsFeatureFlagEnabled &&
       smartTransactionsLiveness,
@@ -174,11 +194,12 @@ export const getSmartTransactionsEnabled = (
 };
 
 export const getIsSmartTransaction = (
-  state: SmartTransactionsMetaMaskState & NetworkState,
+  state: SmartTransactionsState,
+  chainId?: string,
 ): boolean => {
   const smartTransactionsPreferenceEnabled =
     getSmartTransactionsPreferenceEnabled(state);
-  const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
+  const smartTransactionsEnabled = getSmartTransactionsEnabled(state, chainId);
   return Boolean(
     smartTransactionsPreferenceEnabled && smartTransactionsEnabled,
   );

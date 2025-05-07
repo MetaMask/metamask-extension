@@ -36,7 +36,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 export default function AwaitingSignatures() {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes, shallowEqual);
-  const fromAmount = activeQuote?.sentAmount?.amount?.toNumber();
+  const fromAmount = activeQuote?.sentAmount?.amount;
   const fromToken = useSelector(getFromToken, isEqual);
   const toToken = useSelector(getToToken, isEqual);
   const fromChain = useSelector(getFromChain, isEqual);

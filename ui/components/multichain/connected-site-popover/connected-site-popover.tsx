@@ -5,6 +5,7 @@ import {
   AvatarNetworkSize,
   Box,
   ButtonLink,
+  ButtonLinkSize,
   ButtonSecondary,
   IconName,
   Popover,
@@ -15,6 +16,7 @@ import {
   AlignItems,
   Display,
   FlexDirection,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
@@ -56,7 +58,7 @@ export const ConnectedSitePopover = ({
       data-testid="connected-site-popover"
       paddingLeft={0}
       paddingRight={0}
-      offset={[0, 0]}
+      offset={[8, 8]}
       position={PopoverPosition.BottomEnd}
       flip
     >
@@ -71,7 +73,7 @@ export const ConnectedSitePopover = ({
           paddingRight={4}
           paddingBottom={2}
         >
-          <Text variant={TextVariant.bodyMd}>{siteName}</Text>
+          <Text variant={TextVariant.bodyMdMedium}>{siteName}</Text>
           {isConnected ? (
             <Box
               display={Display.Flex}
@@ -81,6 +83,8 @@ export const ConnectedSitePopover = ({
             >
               <AvatarNetwork
                 size={AvatarNetworkSize.Xs}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 name={currentNetwork?.nickname || ''}
                 src={
                   currentNetwork?.chainId
@@ -93,7 +97,12 @@ export const ConnectedSitePopover = ({
               </ButtonLink>
             </Box>
           ) : (
-            <Text variant={TextVariant.bodySm}>{t('statusNotConnected')}</Text>
+            <Text
+              variant={TextVariant.bodySmMedium}
+              color={TextColor.textAlternative}
+            >
+              {t('statusNotConnected')}
+            </Text>
           )}
         </Box>
         {!isConnected && (
@@ -101,13 +110,28 @@ export const ConnectedSitePopover = ({
             <Text variant={TextVariant.bodyMd}>
               {t('connectionPopoverDescription')}
             </Text>
+            <ButtonLink
+              href="https://support.metamask.io/more-web3/dapps/connecting-to-a-dapp/"
+              externalLink
+              size={ButtonLinkSize.Sm}
+            >
+              {t('learnMoreUpperCase')}
+            </ButtonLink>
           </Box>
         )}
         <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
           <ButtonSecondary
             endIconName={IconName.Export}
             block
-            onClick={onClick}
+            onClick={() => {
+              if (isConnected) {
+                onClick();
+              } else {
+                global.platform.openTab({
+                  url: 'https://portfolio.metamask.io/explore/dapps',
+                });
+              }
+            }}
           >
             {isConnected ? t('managePermissions') : t('exploreweb3')}
           </ButtonSecondary>

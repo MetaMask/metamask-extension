@@ -3,13 +3,13 @@ version: 2.1
 executors:
   node-browsers-small:
     docker:
-      - image: cimg/node:22.14-browsers
+      - image: cimg/node:22.15-browsers
     resource_class: small
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-medium:
     docker:
-      - image: cimg/node:22.14-browsers
+      - image: cimg/node:22.15-browsers
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
@@ -21,33 +21,13 @@ executors:
       NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:22.14-browsers
+      - image: cimg/node:22.15-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
-  playwright:
-    docker:
-      - image: mcr.microsoft.com/playwright:v1.44.1-focal
-    resource_class: medium
 
 orbs:
   gh: circleci/github-cli@2.0
-  codecov: codecov/codecov@3.2.2
-  slack: circleci/slack@4.12.5
-
-rc_branch_only: &rc_branch_only
-  filters:
-    branches:
-      only:
-        - /^Version-v(\d+)[.](\d+)[.](\d+)/
-
-main_master_rc_only: &main_master_rc_only
-  filters:
-    branches:
-      only:
-        - main
-        - master
-        - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
 aliases:
   # Shallow Git Clone
@@ -121,9 +101,6 @@ workflows:
       - prep-build-test-mv2:
           requires:
             - prep-deps
-      - prep-build-test-webpack:
-          requires:
-            - prep-deps
       - prep-build-test-flask:
           requires:
             - prep-deps
@@ -133,24 +110,6 @@ workflows:
       - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
-      - test-e2e-chrome-webpack:
-          <<: *main_master_rc_only
-          requires:
-            - prep-build-test-webpack
-            - get-changed-files-with-git-diff
-      - test-e2e-chrome:
-          requires:
-            - prep-build-test
-            - get-changed-files-with-git-diff
-      - test-e2e-firefox:
-          <<: *main_master_rc_only
-          requires:
-            - prep-build-test-mv2
-            - get-changed-files-with-git-diff
-      - test-e2e-chrome-rpc:
-          requires:
-            - prep-build-test
-            - get-changed-files-with-git-diff
       - test-api-specs:
           requires:
             - prep-build-test
@@ -159,29 +118,6 @@ workflows:
           requires:
             - prep-build-test-flask
             - get-changed-files-with-git-diff
-      - test-e2e-chrome-multiple-providers:
-          requires:
-            - prep-build-test
-            - get-changed-files-with-git-diff
-      - test-e2e-chrome-flask:
-          requires:
-            - prep-build-test-flask
-            - get-changed-files-with-git-diff
-      - test-e2e-firefox-flask:
-          <<: *main_master_rc_only
-          requires:
-            - prep-build-test-flask-mv2
-      - test-e2e-swap-playwright - OPTIONAL:
-          requires:
-            - prep-build
-      - test-e2e-chrome-vault-decryption:
-          filters:
-            branches:
-              only:
-                - main
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
-          requires:
-            - prep-build
       - validate-source-maps:
           requires:
             - prep-build
@@ -208,13 +144,6 @@ workflows:
             - validate-source-maps-flask
             - test-mozilla-lint-mv2
             - test-mozilla-lint-flask-mv2
-            - test-e2e-chrome
-            - test-e2e-chrome-multiple-providers
-            - test-e2e-firefox
-            - test-e2e-chrome-flask
-            - test-e2e-firefox-flask
-            - test-e2e-chrome-vault-decryption
-            - test-e2e-chrome-webpack
       - job-publish-prerelease:
           requires:
             - prep-deps
@@ -575,26 +504,6 @@ jobs:
             - dist-test-mv2
             - builds-test-mv2
 
-  prep-build-test-webpack:
-    executor: node-linux-medium
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - attach_workspace:
-          at: .
-      - run:
-          name: Activate yarn
-          command: corepack enable
-      - run:
-          name: Build extension for testing
-          command: yarn build:test:webpack
-      - run:
-          name: Move test build to 'dist-test-webpack' to avoid conflict with production build
-          command: mv ./dist ./dist-test-webpack
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-webpack
-
   prep-build-ts-migration-dashboard:
     executor: node-browsers-small
     steps:
@@ -620,27 +529,6 @@ jobs:
       - run:
           name: Rerun workflows from failed
           command: yarn ci-rerun-from-failed
-
-  test-e2e-chrome-webpack:
-    executor: node-browsers-medium-plus
-    parallelism: 20
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-webpack ./dist
-      - run:
-          name: test:e2e:chrome:webpack
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:webpack
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
 
   test-api-specs-multichain:
     executor: node-browsers-medium-plus
@@ -703,198 +591,6 @@ jobs:
       - store_artifacts:
           path: html-report
           destination: html-report
-
-  test-e2e-chrome:
-    executor: node-browsers-medium-plus
-    parallelism: 20
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: test:e2e:chrome
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-chrome-rpc:
-    executor: node-browsers-medium
-    parallelism: 1
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: test:e2e:chrome:rpc
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:rpc
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-chrome-multiple-providers:
-    executor: node-browsers-small
-    parallelism: 1
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: test:e2e:chrome:multi-provider
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:multi-provider
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-chrome-vault-decryption:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:e2e:single
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-firefox-flask:
-    executor: node-browsers-medium-plus
-    parallelism: 10
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-flask-mv2 ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-flask-mv2 ./builds
-      - run:
-          name: test:e2e:firefox:flask
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox:flask
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-chrome-flask:
-    executor: node-browsers-medium-plus
-    parallelism: 8
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-flask ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-flask ./builds
-      - run:
-          name: test:e2e:chrome:flask
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:chrome:flask
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-swap-playwright - OPTIONAL:
-    executor: playwright
-    parallelism: 2
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install chromium
-          command: yarn playwright install chromium
-      - run:
-          name: test:e2e:chrome:swap
-          command: |
-            TESTFILES=$(circleci tests glob "test/e2e/playwright/swap/**/*.spec.ts")
-            echo "$TESTFILES"
-            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=swap" verbose || true
-            # above line makes it never fail, and these tests are going away soon
-          no_output_timeout: 10m
-      - slack/notify:
-          event: fail
-          mentions: <@davide.brocchetto>
-          template: basic_fail_1
-          channel: C06BEG71R1S
-      - store_artifacts:
-          name: html-report and artifacts
-          path: public/playwright/playwright-reports
-      - store_test_results:
-          name: report for pipeline integration
-          path: public/playwright/playwright-reports/junit/test-results.xml
-
-  test-e2e-firefox:
-    executor: node-browsers-medium-plus
-    parallelism: 24
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-mv2 ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-mv2 ./builds
-      - run:
-          name: test:e2e:firefox
-          command: .circleci/scripts/test-run-e2e.sh yarn test:e2e:firefox
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
 
   job-publish-prerelease:
     executor: node-browsers-medium

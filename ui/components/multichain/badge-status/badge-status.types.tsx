@@ -29,4 +29,8 @@ export interface BadgeStatusProps extends StyleUtilityProps {
    * Address for AvatarAccount
    */
   address: string;
+  /**
+   * Show the status of the connected account on the badge
+   */
+  showConnectedStatus?: boolean;
 }

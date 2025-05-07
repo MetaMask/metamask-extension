@@ -8,6 +8,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
+import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import { MessageSender } from '../../../types/global';
@@ -195,6 +196,11 @@ export type ControllerInitRequest<
   ) => void;
 
   /**
+   * A list of preinstalled Snaps loaded from disk during boot.
+   */
+  preinstalledSnaps: PreinstalledSnap[];
+
+  /**
    * Required initialization messenger instance.
    * Generated using the callback specified in `getInitMessengerCallback`.
    */
@@ -204,6 +210,8 @@ export type ControllerInitRequest<
 /**
  * A single background API method available to the UI.
  */
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ControllerApi = (...args: any[]) => unknown;
 

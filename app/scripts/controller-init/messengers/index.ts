@@ -25,6 +25,7 @@ import {
   getMultichainNetworkControllerMessenger,
   getMultichainAssetsRatesControllerMessenger,
 } from './multichain';
+import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
 import {
   getAuthenticationControllerMessenger,
   getUserStorageControllerMessenger,
@@ -39,6 +40,9 @@ import {
   getNotificationServicesControllerMessenger,
   getNotificationServicesPushControllerMessenger,
 } from './notifications';
+import { getDeFiPositionsControllerMessenger } from './defi-positions';
+import { getDeFiPositionsControllerInitMessenger } from './defi-positions/defi-positions-controller-messenger';
+import { getDelegationControllerMessenger } from './delegation/delegation-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -49,8 +53,20 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
   },
+  DeFiPositionsController: {
+    getMessenger: getDeFiPositionsControllerMessenger,
+    getInitMessenger: getDeFiPositionsControllerInitMessenger,
+  },
+  DelegationController: {
+    getMessenger: getDelegationControllerMessenger,
+    getInitMessenger: noop,
+  },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
+    getInitMessenger: noop,
+  },
+  InstitutionalSnapController: {
+    getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
   },
   MultichainAssetsController: {

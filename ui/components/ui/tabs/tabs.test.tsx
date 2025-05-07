@@ -121,4 +121,59 @@ describe('Tabs', () => {
     expect(getByText('Tab 1')).toBeInTheDocument();
     expect(getByText('Tab 1 Content')).toBeInTheDocument();
   });
+
+  it('renders disabled tab with proper styling', () => {
+    const { getByText } = render(
+      <Tabs defaultActiveTabKey="" onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2" disabled>
+          Tab 2 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    const disabledTab = getByText('Tab 2').closest('li');
+    expect(disabledTab).toHaveClass('tab--disabled');
+
+    const disabledButton = getByText('Tab 2').closest('button');
+    expect(disabledButton).toHaveAttribute('disabled');
+  });
+
+  it('does not switch to disabled tab when clicked', () => {
+    const { getByText, queryByText } = render(
+      <Tabs defaultActiveTabKey="tab1" onTabClick={() => null}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2" disabled>
+          Tab 2 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    fireEvent.click(getByText('Tab 2'));
+
+    expect(getByText('Tab 1 Content')).toBeInTheDocument();
+    expect(queryByText('Tab 2 Content')).not.toBeInTheDocument();
+  });
+
+  it('does not call onTabClick when disabled tab is clicked', () => {
+    const onTabClick = jest.fn();
+    const { getByText } = render(
+      <Tabs defaultActiveTabKey="tab1" onTabClick={onTabClick}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2" disabled>
+          Tab 2 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    fireEvent.click(getByText('Tab 2'));
+
+    expect(onTabClick).not.toHaveBeenCalled();
+  });
 });

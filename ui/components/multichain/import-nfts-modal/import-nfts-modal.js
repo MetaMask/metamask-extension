@@ -22,7 +22,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/modules/selectors/networks';
 import {
   getIsMainnet,
   getSelectedInternalAccount,
@@ -55,6 +58,7 @@ import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -80,8 +84,10 @@ export const ImportNftsModal = ({ onClose }) => {
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
   const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const handleAddNft = async () => {
+    trace({ name: TraceName.ImportNfts });
     try {
       await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
       const newNftDropdownState = {
@@ -101,12 +107,16 @@ export const ImportNftsModal = ({ onClose }) => {
       dispatch(setNewNftAddedMessage(message));
       setNftAddFailed(true);
       return;
+    } finally {
+      endTrace({ name: TraceName.ImportNfts });
     }
+
     if (ignoreErc20Token && nftAddress) {
       await dispatch(
         ignoreTokens({
           tokensToIgnore: nftAddress,
           dontShowLoadingIndicator: true,
+          networkClientId,
         }),
       );
     }

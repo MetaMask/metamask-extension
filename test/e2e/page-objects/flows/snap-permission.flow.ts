@@ -18,14 +18,14 @@ export async function confirmPermissionSwitchToTestSnap(
   const snapInstallWarning = new SnapInstallWarning(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await snapInstall.check_pageIsLoaded();
-  await snapInstall.clickNextButton();
+  await snapInstall.clickConnectButton();
   await snapInstall.clickConfirmButton();
   if (withWarning) {
     await snapInstallWarning.check_pageIsLoaded();
     await snapInstallWarning.clickCheckboxPermission();
     await snapInstallWarning.clickConfirmButton();
   }
-  await snapInstall.clickNextButton();
+  await snapInstall.clickOkButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 }
 
@@ -51,8 +51,8 @@ export async function switchAndApproveDialogSwitchToTestSnap(driver: Driver) {
 export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
   const snapInstall = new SnapInstall(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await snapInstall.clickNextButton();
-  await snapInstall.clickNextButton();
-  await snapInstall.clickNextButton();
+  await snapInstall.clickConnectButton();
+  await snapInstall.clickConfirmButton();
+  await snapInstall.clickOkButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 }

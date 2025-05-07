@@ -441,7 +441,9 @@ const WINDOW_TITLES = Object.freeze({
   ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
   TestDApp: 'E2E Test Dapp',
+  TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
   MultichainTestDApp: 'Multichain Test Dapp',
+  SolanaTestDApp: 'Solana Test Dapp',
   TestSnaps: 'Test Snaps',
   ERC4337Snap: 'Account Abstraction Snap',
 });
@@ -542,7 +544,7 @@ const PRIVATE_KEY_TWO =
 const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
-const defaultGanacheOptionsForType2Transactions = {
+const defaultOptionsForType2Transactions = {
   // EVM version that supports type 2 transactions (EIP1559)
   hardfork: 'london',
 };
@@ -571,6 +573,7 @@ const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
+  console.log('Opening action menu and starting send flow');
   await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
@@ -938,7 +941,7 @@ module.exports = {
   switchToOrOpenDapp,
   connectToDapp,
   multipleGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
+  defaultOptionsForType2Transactions,
   sendTransaction,
   sendScreenToConfirmScreen,
   unlockWallet,

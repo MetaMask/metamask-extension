@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { BRIDGE_MM_FEE_RATE } from '@metamask/bridge-controller';
+import {
+  BRIDGE_MM_FEE_RATE,
+  formatEtaInMinutes,
+} from '@metamask/bridge-controller';
 import {
   Text,
   PopoverPosition,
@@ -18,11 +21,7 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  formatEtaInMinutes,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import {
   getCurrentCurrency,
   getNativeCurrency,

@@ -74,6 +74,9 @@ const mockMetamaskStore = {
     },
   },
   cryptocurrencies: [Cryptocurrency.Solana],
+  remoteFeatureFlags: {
+    addSolanaAccount: true,
+  },
 };
 
 function getStore(state?: Record<string, unknown>) {

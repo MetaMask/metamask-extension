@@ -15,7 +15,7 @@ const triggerCrash = async (driver: Driver): Promise<void> => {
   await headerNavbar.openSettingsPage();
   const settingsPage = new SettingsPage(driver);
   await settingsPage.check_pageIsLoaded();
-  await settingsPage.goToDevelopOptionSettings();
+  await settingsPage.goToDeveloperOptions();
 
   const developOptionsPage = new DevelopOptions(driver);
   await developOptionsPage.check_pageIsLoaded();

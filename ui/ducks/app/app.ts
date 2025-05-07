@@ -2,11 +2,11 @@ import type {
   ContractExchangeRates,
   Token,
 } from '@metamask/assets-controllers';
-import { AnyAction, Action } from 'redux';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { Action, AnyAction } from 'redux';
 import {
-  WebHIDConnectedStatuses,
   HardwareTransportStates,
+  WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
@@ -26,7 +26,8 @@ type AppState = {
     open: boolean;
     modalState: {
       name: string | null;
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       props: Record<string, any>;
     };
@@ -67,7 +68,8 @@ type AppState = {
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buyView: Record<string, any>;
   defaultHdPaths: {
@@ -79,7 +81,8 @@ type AppState = {
   networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
@@ -120,9 +123,7 @@ type AppState = {
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
   errorInSettings: string | null;
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   showNewSrpAddedToast: boolean;
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export type AppSliceState = {
@@ -219,9 +220,7 @@ const initialState: AppState = {
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
   errorInSettings: null,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   showNewSrpAddedToast: false,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export default function reduceApp(
@@ -522,7 +521,8 @@ export default function reduceApp(
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
       const { device, path } = action.payload;
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newDefaults = { ...appState.defaultHdPaths } as any;
       newDefaults[device] = path;
@@ -743,13 +743,11 @@ export default function reduceApp(
         },
       };
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
     case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
       return {
         ...appState,
         showNewSrpAddedToast: action.payload,
       };
-    ///: END:ONLY_INCLUDE_IF
 
     default:
       return appState;

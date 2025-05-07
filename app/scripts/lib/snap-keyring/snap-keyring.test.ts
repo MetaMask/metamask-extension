@@ -11,6 +11,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
+import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import {
   showAccountCreationDialog,
   showAccountNameSuggestionDialog,
@@ -20,7 +22,6 @@ import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderMessenger,
 } from './types';
-import { getSnapName, isSnapPreinstalled } from './snaps';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
@@ -68,9 +69,13 @@ const mockInternalAccount = {
   },
 };
 
-jest.mock('./snaps', () => ({
-  ...jest.requireActual('./snaps'),
+jest.mock('../../../../shared/lib/snaps/snaps', () => ({
+  ...jest.requireActual('../../../../shared/lib/snaps/snaps'),
   isSnapPreinstalled: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/accounts/snaps', () => ({
+  ...jest.requireActual('../../../../shared/lib/accounts/snaps'),
   getSnapName: jest.fn(),
 }));
 
@@ -105,6 +110,8 @@ const createControllerMessenger = ({
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     // This mock implementation does not have a nice discriminate union where types/parameters can be correctly inferred
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [actionType, ...params]: any[] = args;
 
@@ -311,6 +318,7 @@ describe('Snap Keyring Methods', () => {
           account_type: 'snap',
           snap_id: mockSnapId,
           snap_name: mockSnapName,
+          is_suggested_name: false,
         },
       });
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
@@ -353,6 +361,7 @@ describe('Snap Keyring Methods', () => {
           account_type: 'snap',
           snap_id: mockSnapId,
           snap_name: mockSnapName,
+          is_suggested_name: false,
         },
       });
       expect(mockSetAccountName).not.toHaveBeenCalled();
@@ -425,6 +434,7 @@ describe('Snap Keyring Methods', () => {
           account_type: 'snap',
           snap_id: mockSnapId,
           snap_name: mockSnapName,
+          is_suggested_name: true,
         },
       });
       expect(mockSetAccountName).toHaveBeenCalledWith([
@@ -474,6 +484,7 @@ describe('Snap Keyring Methods', () => {
           account_type: 'snap',
           snap_id: mockSnapId,
           snap_name: mockSnapName,
+          is_suggested_name: true,
         },
       });
       expect(mockSetAccountName).toHaveBeenCalledTimes(1);
@@ -550,6 +561,7 @@ describe('Snap Keyring Methods', () => {
           account_type: 'snap',
           snap_id: mockSnapId,
           snap_name: mockSnapName,
+          is_suggested_name: true,
         },
       });
       expect(mockSetAccountName).toHaveBeenCalledTimes(1);

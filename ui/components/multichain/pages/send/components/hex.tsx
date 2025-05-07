@@ -28,13 +28,15 @@ export const SendHexData = () => {
     <SendPageRow>
       <Label>{t('hexData')}</Label>
       <Textarea
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onInput={(event: any) => {
           const newData = event.target.value.replace(/\n/gu, '') || null;
           dispatch(updateSendHexData(newData ?? ''));
         }}
         placeholder={t('optional')}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         defaultValue={data || ''}
         data-testid="send-hex-textarea"
         error={hasError}

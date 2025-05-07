@@ -20,7 +20,7 @@ export function useNonContractAddressAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const isUpgradeTransaction = useIsUpgradeTransaction();
+  const { isUpgrade } = useIsUpgradeTransaction();
 
   const isSendingHexData =
     currentConfirmation?.txParams?.data !== undefined &&
@@ -29,6 +29,8 @@ export function useNonContractAddressAlerts(): Alert[] {
   const { value, pending } = useAsyncResult(async () => {
     return await readAddressAsContract(
       global.ethereumProvider,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       (currentConfirmation?.txParams?.to || '0x') as Hex,
     );
   }, [currentConfirmation?.txParams?.to]);
@@ -45,10 +47,7 @@ export function useNonContractAddressAlerts(): Alert[] {
     !isContractDeploymentTx;
 
   return useMemo(() => {
-    if (
-      !isSendingHexDataWhileInteractingWithNonContractAddress ||
-      isUpgradeTransaction
-    ) {
+    if (!isSendingHexDataWhileInteractingWithNonContractAddress || isUpgrade) {
       return [];
     }
 
@@ -62,8 +61,5 @@ export function useNonContractAddressAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [
-    isSendingHexDataWhileInteractingWithNonContractAddress,
-    isUpgradeTransaction,
-  ]);
+  }, [isSendingHexDataWhileInteractingWithNonContractAddress, isUpgrade]);
 }

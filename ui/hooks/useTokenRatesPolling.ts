@@ -33,7 +33,7 @@ const useTokenRatesPolling = () => {
   useMultiPolling({
     startPolling: tokenRatesStartPolling,
     stopPollingByPollingToken: tokenRatesStopPollingByPollingToken,
-    input: enabled ? chainIds : [],
+    input: enabled ? [chainIds] : [],
   });
 
   return {

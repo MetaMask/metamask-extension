@@ -10,7 +10,7 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
 import {
-  getCurrentChainSupportsSmartTransactions,
+  getChainSupportsSmartTransactions,
   getFeatureFlagsByChainId,
   getIsSmartTransaction,
   getSmartTransactionsPreferenceEnabled,
@@ -42,6 +42,7 @@ import {
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -69,7 +70,6 @@ export const TransactionControllerInit: ControllerInitFunction<
   } = getControllers(request);
 
   const controller: TransactionController = new TransactionController({
-    enableTxParamsGasFeeUpdates: true,
     getCurrentNetworkEIP1559Compatibility: () =>
       // @ts-expect-error Controller type does not support undefined return value
       initMessenger.call('NetworkController:getEIP1559Compatibility'),
@@ -103,6 +103,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       queryEntireHistory: false,
       updateTransactions: false,
     },
+    isAutomaticGasFeeUpdateEnabled: () => true,
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
     isSimulationEnabled: () =>
@@ -113,7 +114,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         const uiState = getUIState(getFlatState());
         return !(
           getSmartTransactionsPreferenceEnabled(uiState) &&
-          getCurrentChainSupportsSmartTransactions(uiState)
+          getChainSupportsSmartTransactions(uiState)
         );
       },
     },
@@ -122,17 +123,32 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      // @ts-expect-error Controller type does not support undefined return value
-      publish: (transactionMeta, rawTx: Hex) =>
-        publishSmartTransactionHook(
-          controller,
-          smartTransactionsController(),
-          // Init messenger cannot yet be further restricted so is a superset of what is needed
-          initMessenger as SmartTransactionHookMessenger,
-          getFlatState(),
+      beforePublish: (transactionMeta: TransactionMeta) => {
+        const response = initMessenger.call(
+          'InstitutionalSnapController:publishHook',
           transactionMeta,
-          rawTx,
-        ),
+        );
+        return response;
+      },
+
+      beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
+        const response = initMessenger.call(
+          'InstitutionalSnapController:beforeCheckPendingTransactionHook',
+          transactionMeta,
+        );
+
+        return response;
+      },
+      // @ts-expect-error Controller type does not support undefined return value
+      publish: (transactionMeta, signedTx) =>
+        publishHook({
+          flatState: getFlatState(),
+          initMessenger,
+          signedTx,
+          smartTransactionsController: smartTransactionsController(),
+          transactionController: controller,
+          transactionMeta,
+        }),
       publishBatch: async (_request: PublishBatchHookRequest) =>
         await publishBatchSmartTransactionHook({
           transactionController: controller,
@@ -167,6 +183,7 @@ function getApi(
       controller.abortTransactionSigning.bind(controller),
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
+    isAtomicBatchSupported: controller.isAtomicBatchSupported.bind(controller),
     updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
     updateBatchTransactions:
       controller.updateBatchTransactions.bind(controller),
@@ -198,19 +215,24 @@ function getControllers(
       request.getController('SmartTransactionsController'),
     transactionUpdateController: () =>
       request.getController('TransactionUpdateController'),
+    institutionalSnapController: () =>
+      request.getController('InstitutionalSnapController'),
   };
 }
 
-function getSmartTransactionCommonParams(flatState: ControllerFlatState) {
+function getSmartTransactionCommonParams(
+  flatState: ControllerFlatState,
+  chainId?: string,
+) {
   // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
   // Ideally all backend logic would instead rely on messenger event / state subscriptions.
   const uiState = getUIState(flatState);
 
   // @ts-expect-error Smart transaction selector types does not match controller state
-  const isSmartTransaction = getIsSmartTransaction(uiState);
+  const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
 
   // @ts-expect-error Smart transaction selector types does not match controller state
-  const featureFlags = getFeatureFlagsByChainId(uiState);
+  const featureFlags = getFeatureFlagsByChainId(uiState, chainId);
 
   const isHardwareWalletAccount = isHardwareWallet(uiState);
 
@@ -221,7 +243,45 @@ function getSmartTransactionCommonParams(flatState: ControllerFlatState) {
   };
 }
 
-function publishSmartTransactionHook(
+async function publishHook({
+  flatState,
+  initMessenger,
+  signedTx,
+  smartTransactionsController,
+  transactionController,
+  transactionMeta,
+}: {
+  flatState: ControllerFlatState;
+  initMessenger: TransactionControllerInitMessenger;
+  signedTx: string;
+  smartTransactionsController: SmartTransactionsController;
+  transactionController: TransactionController;
+  transactionMeta: TransactionMeta;
+}) {
+  const result = await publishSmartTransactionHook(
+    transactionController,
+    smartTransactionsController,
+    initMessenger,
+    flatState,
+    transactionMeta,
+    signedTx as Hex,
+  );
+
+  if (result?.transactionHash) {
+    return result;
+  }
+
+  const hook = new Delegation7702PublishHook({
+    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
+      transactionController,
+    ),
+    messenger: initMessenger,
+  }).getHook();
+
+  return await hook(transactionMeta, signedTx);
+}
+
+async function publishSmartTransactionHook(
   transactionController: TransactionController,
   smartTransactionsController: SmartTransactionsController,
   hookControllerMessenger: SmartTransactionHookMessenger,
@@ -230,14 +290,14 @@ function publishSmartTransactionHook(
   signedTransactionInHex: Hex,
 ) {
   const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState);
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
 
   if (!isSmartTransaction) {
     // Will cause TransactionController to publish to the RPC provider as normal.
     return { transactionHash: undefined };
   }
 
-  return submitSmartTransactionHook({
+  return await submitSmartTransactionHook({
     transactionMeta,
     signedTransactionInHex,
     transactionController,
@@ -263,16 +323,6 @@ function publishBatchSmartTransactionHook({
   flatState: ControllerFlatState;
   transactions: PublishBatchHookTransaction[];
 }) {
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState);
-
-  if (!isSmartTransaction) {
-    // Will cause TransactionController to publish to the RPC provider as normal.
-    throw new Error(
-      'publishBatchSmartTransactionHook: Smart Transaction is required for batch submissions',
-    );
-  }
-
   // Get transactionMeta based on the last transaction ID
   const lastTransaction = transactions[transactions.length - 1];
   const transactionMeta = getTransactionById(
@@ -284,6 +334,15 @@ function publishBatchSmartTransactionHook({
   if (!transactionMeta) {
     throw new Error(
       `publishBatchSmartTransactionHook: Could not find transaction with id ${lastTransaction.id}`,
+    );
+  }
+
+  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+
+  if (!isSmartTransaction) {
+    throw new Error(
+      'publishBatchSmartTransactionHook: Smart Transaction is required for batch submissions',
     );
   }
 

@@ -14,16 +14,17 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getAllPermittedAccountsForCurrentTab,
   getPermissionsForActiveTab,
   getSelectedInternalAccount,
-  getPermittedAccountsForCurrentTab,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
+import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
 
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
 
@@ -31,10 +32,10 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
     .map((permission) => permission.key)
     .includes(WALLET_SNAP_PERMISSION_KEY);
 
-  const permittedAccounts = useSelector(getPermittedAccountsForCurrentTab);
-  const currentTabIsConnectedToSelectedAddress = permittedAccounts.find(
-    (account) => account === selectedAddress,
-  );
+  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+
+  const currentTabIsConnectedToSelectedAddress =
+    isInternalAccountInPermittedAccountIds(selectedAccount, permittedAccounts);
 
   let status;
   if (currentTabIsConnectedToSelectedAddress) {

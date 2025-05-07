@@ -32,5 +32,17 @@ describe('Badge Status', () => {
   it('should render correctly', () => {
     const { container } = render({}, { useBlockie: true });
     expect(container).toMatchSnapshot();
+    const badge = container.querySelector('.multichain-badge-status__badge');
+    expect(badge).toBeInTheDocument();
+  });
+
+  it('should not render the badge if showConnectedStatus is false', () => {
+    const { container } = render(
+      { showConnectedStatus: false },
+      { useBlockie: true },
+    );
+    expect(container).toMatchSnapshot();
+    const badge = container.querySelector('.multichain-badge-status__badge');
+    expect(badge).not.toBeInTheDocument();
   });
 });

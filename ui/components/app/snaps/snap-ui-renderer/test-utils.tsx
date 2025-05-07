@@ -1,5 +1,5 @@
 import React from 'react';
-import { Reducer } from 'redux';
+import { DeepPartial, Reducer } from 'redux';
 import { RenderResult } from '@testing-library/react';
 import { JSXElement } from '@metamask/snaps-sdk/jsx';
 import configureStore, { MetaMaskReduxState } from '../../../../store/store';
@@ -15,6 +15,7 @@ type RenderInterfaceOptions = {
   onCancel?: () => void;
   contentBackgroundColor?: string;
   state?: Record<string, unknown>;
+  metamaskState?: DeepPartial<MetaMaskReduxState>;
 };
 
 // The return type from renderWithProvider includes RenderResult plus a history property
@@ -44,6 +45,7 @@ type RenderInterfaceResult = RenderWithProviderResult & {
  * @param options.onCancel - The function to call when the interface is cancelled.
  * @param options.contentBackgroundColor - The background color of the content.
  * @param options.state - The state of the interface.
+ * @param options.metamaskState - The initial state of the MetaMask store.
  * @returns Testing utilities with render result, plus updateInterface and getRenderCount functions.
  */
 export function renderInterface(
@@ -53,12 +55,15 @@ export function renderInterface(
     onCancel,
     contentBackgroundColor,
     state = {},
+    metamaskState = {},
   }: RenderInterfaceOptions = {},
 ): RenderInterfaceResult {
   const store = configureStore({
     ...mockState,
+    ...metamaskState,
     metamask: {
       ...mockState.metamask,
+      ...metamaskState?.metamask,
       interfaces: {
         [MOCK_INTERFACE_ID]: {
           snapId: MOCK_SNAP_ID,

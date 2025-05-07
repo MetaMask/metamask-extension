@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
@@ -61,11 +61,19 @@ import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { Nav } from '../confirmations/components/confirm/nav';
+import { hideAppHeader } from '../routes/utils';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const location = useLocation();
+  const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
+
+  const classNames = classnames('confirm-add-suggested-nft page-container', {
+    'confirm-add-suggested-nft--has-app-header-multichain': hasAppHeader,
+  });
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedNftsNotSorted = useSelector(getSuggestedNfts);
@@ -180,10 +188,11 @@ const ConfirmAddSuggestedNFT = () => {
     };
 
     addImageUrlToSuggestedNFTs();
-  }, []); // Empty dependency array to run only on mount
+  }, [suggestedNfts]); // rerender when suggestedNfts changes
 
   return (
     <Box
+      className={classNames}
       height={BlockSize.Full}
       width={BlockSize.Full}
       display={Display.Flex}
@@ -239,7 +248,7 @@ const ConfirmAddSuggestedNFT = () => {
           ])}
         </Text>
       </Box>
-      <Box className="confirm-add-suggested-nft__content">
+      <Box className="page-container__content confirm-add-suggested-nft__content">
         <Box
           className="confirm-add-suggested-nft__card"
           padding={2}
@@ -269,7 +278,6 @@ const ConfirmAddSuggestedNFT = () => {
                 const nftImageURL = found
                   ? found.requestData.asset.assetImageUrl
                   : '';
-
                 const blockExplorerLink = getTokenTrackerLink(
                   address,
                   chainId,

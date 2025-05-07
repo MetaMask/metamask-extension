@@ -19,6 +19,7 @@ describe('transaction controller utils', () => {
   });
 
   describe('calcTokenAmount()', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       // number values
       [0, 5, '0'],

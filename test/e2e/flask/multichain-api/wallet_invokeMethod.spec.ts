@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
@@ -15,12 +14,11 @@ import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   addAccountInWalletAndAuthorize,
-  describeBrowserOnly,
   escapeColon,
   type FixtureCallbackArgs,
 } from './testHelpers';
 
-describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
+describe('Multichain API', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
   const ACCOUNTS = [ACCOUNT_1, ACCOUNT_2];
   const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(

@@ -1,9 +1,9 @@
-import * as Multichain from '@metamask/multichain';
+import * as Multichain from '@metamask/chain-agnostic-permission';
 import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import { Hex } from '@metamask/utils';
 import * as EthChainUtils from './ethereum-chain-utils';
 
@@ -253,6 +253,7 @@ describe('Ethereum Chain Utils', () => {
       });
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     describe.each([
       ['legacy', false],
       ['multichain', true],

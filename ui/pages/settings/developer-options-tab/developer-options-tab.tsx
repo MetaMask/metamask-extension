@@ -38,7 +38,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../selectors';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
-import { ProfileSyncDevSettings } from './profile-sync';
+import { BackupAndSyncDevSettings } from './backup-and-sync';
 
 /**
  * Settings Page for Developer Options (internal-only)
@@ -271,7 +271,7 @@ const DeveloperOptionsTab = () => {
         {renderServiceWorkerKeepAliveToggle()}
       </div>
 
-      <ProfileSyncDevSettings />
+      <BackupAndSyncDevSettings />
       <SentryTest />
     </div>
   );

@@ -42,7 +42,7 @@ export type TransactionMetricsRequest = {
   // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
   // doesn't include some properties used in buildEventFragmentProperties,
   // hence returning any here to avoid type errors.
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
   getParticipateInMetrics: () => boolean;
@@ -56,16 +56,17 @@ export type TransactionMetricsRequest = {
   getTransaction: (transactionId: string) => TransactionMeta;
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackEvent: (payload: any) => void;
-  getIsSmartTransaction: () => boolean;
+  getIsSmartTransaction: (chainId: Hex) => boolean;
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
   getHDEntropyIndex: () => number;
+  getNetworkRpcUrl: (chainId: Hex) => string;
 };
 
 export type TransactionEventPayload = {

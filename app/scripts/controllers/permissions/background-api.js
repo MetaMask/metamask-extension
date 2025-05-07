@@ -6,16 +6,24 @@ import {
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  getEthAccounts,
-  setEthAccounts,
-  getPermittedEthChainIds,
-  setPermittedEthChainIds,
-} from '@metamask/multichain';
+  setPermittedChainIds,
+  setPermittedAccounts,
+} from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
+import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
+import {
+  getCaipAccountIdsFromCaip25CaveatValue,
+  isInternalAccountInPermittedAccountIds,
+} from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import { getAllScopesFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
+import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 
 export function getPermissionBackgroundApiMethods({
   permissionController,
   approvalController,
+  accountsController,
+  networkController,
+  multichainNetworkController,
 }) {
   // Returns the CAIP-25 caveat or undefined if it does not exist
   const getCaip25Caveat = (origin) => {
@@ -38,7 +46,7 @@ export function getPermissionBackgroundApiMethods({
   };
 
   // To add more than one account when already connected to the dapp
-  const addMoreAccounts = (origin, accounts) => {
+  const addMoreAccounts = (origin, addresses) => {
     const caip25Caveat = getCaip25Caveat(origin);
     if (!caip25Caveat) {
       throw new Error(
@@ -46,22 +54,90 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    const ethAccounts = getEthAccounts(caip25Caveat.value);
+    const internalAccounts = addresses.map((address) => {
+      return accountsController.getAccountByAddress(address);
+    });
 
-    const updatedEthAccounts = Array.from(
-      new Set([...ethAccounts, ...accounts]),
+    // Only the first scope in the scopes array is needed because
+    // setPermittedAccounts currently sets accounts on all matching
+    // namespaces, not just the exact CaipChainId.
+    const caipAccountIds = internalAccounts.map((internalAccount) => {
+      return `${internalAccount.scopes[0]}:${internalAccount.address}`;
+    });
+
+    const existingPermittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+      caip25Caveat.value,
     );
 
-    const updatedCaveatValue = setEthAccounts(
+    const existingPermittedChainIds = getAllScopesFromCaip25CaveatValue(
       caip25Caveat.value,
-      updatedEthAccounts,
+    );
+
+    const updatedAccountIds = Array.from(
+      new Set([...existingPermittedAccountIds, ...caipAccountIds]),
+    );
+
+    let updatedPermittedChainIds = [...existingPermittedChainIds];
+
+    const allNetworksList = Object.keys(
+      getNetworkConfigurationsByCaipChainId({
+        networkConfigurationsByChainId:
+          networkController.state.networkConfigurationsByChainId,
+        multichainNetworkConfigurationsByChainId:
+          multichainNetworkController.state
+            .multichainNetworkConfigurationsByChainId,
+        internalAccounts: accountsController.state.internalAccounts,
+      }),
+    );
+
+    updatedAccountIds.forEach((caipAccountAddress) => {
+      const {
+        chain: { namespace: accountNamespace },
+      } = parseCaipAccountId(caipAccountAddress);
+
+      const existsSelectedChainForNamespace = updatedPermittedChainIds.some(
+        (caipChainId) => {
+          try {
+            const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+            return accountNamespace === chainNamespace;
+          } catch (err) {
+            return false;
+          }
+        },
+      );
+
+      if (!existsSelectedChainForNamespace) {
+        const chainIdsForNamespace = allNetworksList.filter((caipChainId) => {
+          try {
+            const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+            return accountNamespace === chainNamespace;
+          } catch (err) {
+            return false;
+          }
+        });
+
+        updatedPermittedChainIds = [
+          ...updatedPermittedChainIds,
+          ...chainIdsForNamespace,
+        ];
+      }
+    });
+
+    const updatedCaveatValueWithChainIds = setPermittedChainIds(
+      caip25Caveat.value,
+      updatedPermittedChainIds,
+    );
+
+    const updatedCaveatValueWithAccountIds = setPermittedAccounts(
+      updatedCaveatValueWithChainIds,
+      updatedAccountIds,
     );
 
     permissionController.updateCaveat(
       origin,
       Caip25EndowmentPermissionName,
       Caip25CaveatType,
-      updatedCaveatValue,
+      updatedCaveatValueWithAccountIds,
     );
   };
 
@@ -73,22 +149,26 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
-
-    const updatedEthChainIds = Array.from(
-      new Set([...ethChainIds, ...chainIds]),
+    const updatedChainIds = Array.from(
+      new Set([
+        ...getAllScopesFromCaip25CaveatValue(caip25Caveat.value),
+        ...chainIds,
+      ]),
     );
 
-    const caveatValueWithChains = setPermittedEthChainIds(
+    const caveatValueWithChainIds = setPermittedChainIds(
       caip25Caveat.value,
-      updatedEthChainIds,
+      updatedChainIds,
     );
 
-    // ensure that the list of permitted eth accounts is set for the newly added eth scopes
-    const ethAccounts = getEthAccounts(caveatValueWithChains);
-    const caveatValueWithAccountsSynced = setEthAccounts(
-      caveatValueWithChains,
-      ethAccounts,
+    const permittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    // ensure that the list of permitted accounts is set for the newly added scopes
+    const caveatValueWithAccountsSynced = setPermittedAccounts(
+      caveatValueWithChainIds,
+      permittedAccountIds,
     );
 
     permissionController.updateCaveat(
@@ -147,33 +227,41 @@ export function getPermissionBackgroundApiMethods({
     addPermittedAccounts: (origin, accounts) =>
       addMoreAccounts(origin, accounts),
 
-    removePermittedAccount: (origin, account) => {
+    removePermittedAccount: (origin, address) => {
       const caip25Caveat = getCaip25Caveat(origin);
       if (!caip25Caveat) {
         throw new Error(
-          `Cannot remove account "${account}": No permissions exist for origin "${origin}".`,
+          `Cannot remove account "${address}": No permissions exist for origin "${origin}".`,
         );
       }
 
-      const existingAccounts = getEthAccounts(caip25Caveat.value);
-
-      const remainingAccounts = existingAccounts.filter(
-        (existingAccount) => existingAccount !== account,
+      const existingAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+        caip25Caveat.value,
       );
 
-      if (remainingAccounts.length === existingAccounts.length) {
+      const internalAccount = accountsController.getAccountByAddress(address);
+
+      const remainingAccountIds = existingAccountIds.filter(
+        (existingAccountId) => {
+          return !isInternalAccountInPermittedAccountIds(internalAccount, [
+            existingAccountId,
+          ]);
+        },
+      );
+
+      if (remainingAccountIds.length === existingAccountIds.length) {
         return;
       }
 
-      if (remainingAccounts.length === 0) {
+      if (remainingAccountIds.length === 0) {
         permissionController.revokePermission(
           origin,
           Caip25EndowmentPermissionName,
         );
       } else {
-        const updatedCaveatValue = setEthAccounts(
+        const updatedCaveatValue = setPermittedAccounts(
           caip25Caveat.value,
-          remainingAccounts,
+          remainingAccountIds,
         );
         permissionController.updateCaveat(
           origin,
@@ -196,13 +284,15 @@ export function getPermissionBackgroundApiMethods({
         );
       }
 
-      const existingEthChainIds = getPermittedEthChainIds(caip25Caveat.value);
+      const existingChainIds = getAllScopesFromCaip25CaveatValue(
+        caip25Caveat.value,
+      );
 
-      const remainingChainIds = existingEthChainIds.filter(
+      const remainingChainIds = existingChainIds.filter(
         (existingChainId) => existingChainId !== chainId,
       );
 
-      if (remainingChainIds.length === existingEthChainIds.length) {
+      if (remainingChainIds.length === existingChainIds.length) {
         return;
       }
 
@@ -212,7 +302,7 @@ export function getPermissionBackgroundApiMethods({
           Caip25EndowmentPermissionName,
         );
       } else {
-        const updatedCaveatValue = setPermittedEthChainIds(
+        const updatedCaveatValue = setPermittedChainIds(
           caip25Caveat.value,
           remainingChainIds,
         );

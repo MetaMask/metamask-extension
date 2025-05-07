@@ -43,8 +43,12 @@ const NFTGridItem = (props: {
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const isImageHosted =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const nftItemSrc = isImageHosted ? image || imageFromTokenURI : nftImageURL;
 
   const nftImageAlt = getNftImageAlt(nft);
@@ -57,8 +61,8 @@ const NFTGridItem = (props: {
       nft={nft}
       alt={nftImageAlt}
       src={nftItemSrc}
-      networkName={allNetworks?.[toHex(nft.chainId)]?.name}
-      networkSrc={getImageForChainId(toHex(nft.chainId)) || undefined}
+      networkName={allNetworks?.[toHex(nft?.chainId ?? '')]?.name}
+      networkSrc={getImageForChainId(toHex(nft?.chainId ?? '')) || undefined}
       onClick={onClick}
       isIpfsURL={isIpfsURL}
       privacyMode={privacyMode}

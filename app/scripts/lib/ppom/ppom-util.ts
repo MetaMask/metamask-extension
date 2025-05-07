@@ -229,6 +229,7 @@ async function findConfirmationBySecurityAlertId(
     } else {
       confirmation = transactionController.state.transactions.find(
         (meta) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (meta.securityAlertResponse as any)?.securityAlertId ===
           securityAlertId,

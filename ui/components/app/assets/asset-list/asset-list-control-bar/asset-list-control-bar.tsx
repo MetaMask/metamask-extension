@@ -56,11 +56,13 @@ import { getMultichainNetwork } from '../../../../../selectors/multichain';
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
   showTokenFiatBalance?: boolean;
+  showImportTokenButton?: boolean;
 };
 
 const AssetListControlBar = ({
   showTokensLinks,
   showTokenFiatBalance,
+  showImportTokenButton = true,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -233,10 +235,12 @@ const AssetListControlBar = ({
             />
           </Tooltip>
 
-          <ImportControl
-            showTokensLinks={showTokensLinks}
-            onClick={toggleImportTokensPopover}
-          />
+          {showImportTokenButton && (
+            <ImportControl
+              showTokensLinks={showTokensLinks}
+              onClick={toggleImportTokensPopover}
+            />
+          )}
         </Box>
       </Box>
 

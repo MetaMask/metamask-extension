@@ -1,4 +1,3 @@
-import type { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
@@ -76,14 +75,4 @@ export const updateQuoteRequestParams = (
       callBridgeControllerMethod(BridgeUserAction.UPDATE_QUOTE_PARAMS, params),
     );
   };
-};
-
-export const getBridgeERC20Allowance = async (
-  contractAddress: string,
-  chainId: Hex,
-): Promise<string> => {
-  return await submitRequestToBackground(
-    BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
-    [contractAddress, chainId],
-  );
 };

@@ -1,10 +1,11 @@
 import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import {
   expectMockRequest,
   expectNoMockRequest,
 } from '../../helpers/mock-server';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 async function mockSentryCustomTrace(mockServer: MockttpServer) {
   return [
@@ -50,7 +51,7 @@ describe('Traces', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );
@@ -71,7 +72,7 @@ describe('Traces', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );
@@ -92,7 +93,7 @@ describe('Traces', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );
@@ -113,7 +114,7 @@ describe('Traces', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );

@@ -135,7 +135,7 @@ export class Anvil {
 
     if (!provider) {
       console.log('No provider found');
-      return;
+      return undefined;
     }
     const { publicClient } = provider;
 
@@ -153,10 +153,7 @@ export class Anvil {
     return Number(fiatBalance);
   }
 
-  async setAccountBalance(
-    address: Hex,
-    balance: string,
-  ): Promise<void> {
+  async setAccountBalance(address: Hex, balance: string): Promise<void> {
     const provider = this.getProvider();
     const { testClient } = provider;
 

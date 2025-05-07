@@ -9,6 +9,8 @@ export const LOCAL_NODE_PRIVATE_KEY =
 export const DEFAULT_FIXTURE_ACCOUNT =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 
+export const DEFAULT_FIXTURE_ACCOUNT_SHORTENED = '0x5CfE73b602...474086a7e1';
+
 /* Address of the 4337 entrypoint smart contract. */
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
 
@@ -109,3 +111,6 @@ export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
     value: 'valueA',
   },
 };
+
+/* The password for the wallet used in e2e tests*/
+export const WALLET_PASSWORD = 'correct horse battery staple';

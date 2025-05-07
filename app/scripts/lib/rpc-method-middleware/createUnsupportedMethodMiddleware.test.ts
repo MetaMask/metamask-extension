@@ -21,6 +21,7 @@ describe('createUnsupportedMethodMiddleware', () => {
     expect(endMock).not.toHaveBeenCalled();
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([...UNSUPPORTED_RPC_METHODS])(
     'ends requests for default unsupported rpc methods when no list is provided: %s',
     (method: string) => {
@@ -39,6 +40,7 @@ describe('createUnsupportedMethodMiddleware', () => {
 
   const unsupportedMethods = new Set(['foo', 'bar']);
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([...unsupportedMethods])(
     'ends requests for methods that are in the provided list of unsupported methods: %s',
     (method: string) => {

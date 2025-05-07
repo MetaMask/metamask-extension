@@ -23,7 +23,6 @@ describe('Test Snap Client Status', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectClientStatusButton',
-          false,
         );
         await testSnaps.scrollAndClickButton('submitClientStatusButton');
 

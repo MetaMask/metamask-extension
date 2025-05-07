@@ -103,4 +103,21 @@ describe('<GasFeesDetails />', () => {
 
     expect(queryByTestId('gas-fee-details-max-fee')).toBeNull();
   });
+
+  it('does not render gas timing if selected gas fee token', async () => {
+    const { queryByText } = renderWithConfirmContextProvider(
+      <GasFeesDetails
+        setShowCustomizeGasPopover={() => {
+          // Intentionally empty
+        }}
+      />,
+      getStore({ isAdvanced: true, selectedGasFeeToken: '0x123' }),
+    );
+
+    await act(async () => {
+      // Intentionally empty
+    });
+
+    expect(queryByText('Speed')).not.toBeInTheDocument();
+  });
 });

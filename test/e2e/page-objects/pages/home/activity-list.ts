@@ -115,7 +115,7 @@ class ActivityListPage {
         this.confirmedTransactions,
       );
       return confirmedTxs.length === expectedNumber;
-    }, 10000);
+    }, 60000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
@@ -137,7 +137,7 @@ class ActivityListPage {
     await this.driver.wait(async () => {
       const failedTxs = await this.driver.findElements(this.failedTransactions);
       return failedTxs.length === expectedNumber;
-    }, 10000);
+    }, 60000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
     );
@@ -157,7 +157,7 @@ class ActivityListPage {
         expectedNumber - 1
       ].getText();
       return transactionActionText === expectedAction;
-    });
+    }, 60000);
 
     console.log(
       `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
@@ -279,7 +279,9 @@ class ActivityListPage {
   }
 
   async click_confirmTransactionReplacement() {
-    await this.driver.clickElement(this.confirmTransactionReplacementButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmTransactionReplacementButton,
+    );
   }
 
   async check_waitForTransactionStatus(status: 'confirmed' | 'cancelled') {

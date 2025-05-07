@@ -31,6 +31,10 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import {
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  displayStateCorruptionError,
+} from './lib/state-corruption-errors';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -98,10 +102,18 @@ async function start() {
   const messageListener = async (message) => {
     const method = message?.data?.method;
 
-    if (method !== METHOD_START_UI_SYNC) {
-      return;
+    switch (method) {
+      case METHOD_START_UI_SYNC:
+        await handleStartUISync();
+        break;
+      case METHOD_DISPLAY_STATE_CORRUPTION_ERROR:
+        handleDisplayStateCorruptionError(message.data.params);
+        break;
+      default:
     }
+  };
 
+  async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
 
     if (isManifestV3 && isUIInitialised) {
@@ -122,7 +134,20 @@ async function start() {
     } else {
       extensionPort.onMessage.removeListener(messageListener);
     }
-  };
+  }
+
+  /**
+   * @typedef {import('./lib/state-corruption-errors').ErrorLike} ErrorLike
+   */
+
+  /**
+   * Updates the DOM with the state corruption error UI.
+   *
+   * @param {{ error: ErrorLike, currentLocale?: string }} params
+   */
+  function handleDisplayStateCorruptionError({ error, currentLocale }) {
+    displayStateCorruptionError(container, error, currentLocale);
+  }
 
   if (isManifestV3) {
     // resetExtensionStreamAndListeners takes care to remove listeners from closed streams

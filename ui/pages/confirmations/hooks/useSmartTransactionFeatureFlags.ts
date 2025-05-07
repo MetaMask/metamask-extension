@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import {
-  getCurrentChainSupportsSmartTransactions,
+  getChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
@@ -17,7 +17,11 @@ import { useConfirmContext } from '../context/confirm';
 export function useSmartTransactionFeatureFlags() {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { id: transactionId, txParams } = currentConfirmation ?? {};
+  const {
+    id: transactionId,
+    txParams,
+    networkClientId,
+  } = currentConfirmation ?? {};
   const isTransaction = Boolean(txParams);
 
   const smartTransactionsPreferenceEnabled = useSelector(
@@ -25,7 +29,7 @@ export function useSmartTransactionFeatureFlags() {
   );
 
   const currentChainSupportsSmartTransactions = useSelector(
-    getCurrentChainSupportsSmartTransactions,
+    getChainSupportsSmartTransactions,
   );
 
   useEffect(() => {
@@ -38,7 +42,10 @@ export function useSmartTransactionFeatureFlags() {
       return;
     }
 
-    Promise.all([fetchSwapsFeatureFlags(), fetchSmartTransactionsLiveness()()])
+    Promise.all([
+      fetchSwapsFeatureFlags(),
+      fetchSmartTransactionsLiveness({ networkClientId })(),
+    ])
       .then(([swapsFeatureFlags]) => {
         dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
         dispatch(
@@ -55,5 +62,6 @@ export function useSmartTransactionFeatureFlags() {
     transactionId,
     smartTransactionsPreferenceEnabled,
     currentChainSupportsSmartTransactions,
+    networkClientId,
   ]);
 }

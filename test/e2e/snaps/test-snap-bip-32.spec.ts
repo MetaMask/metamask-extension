@@ -34,11 +34,9 @@ describe('Test Snap bip-32', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to `test-snaps` page, click bip32, connect and approve
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectBip32Button',
-          true,
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectBip32Button', {
+          withWarning: true,
+        });
 
         // check the installation status
         await testSnaps.check_installationComplete(

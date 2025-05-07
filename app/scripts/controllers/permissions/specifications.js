@@ -7,7 +7,7 @@ import {
   Caip25CaveatType,
   caip25EndowmentBuilder,
   caip25CaveatBuilder,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   EndowmentTypes,
   RestrictedMethods,
@@ -45,16 +45,24 @@ export const CaveatFactories = Object.freeze({
  * `AccountsController` internalAccount objects for all evm accounts.
  * @param options.findNetworkClientIdByChainId - A function that
  * returns the networkClientId given a chainId.
+ * @param options.isNonEvmScopeSupported - A function that returns true if
+ * a non-evm scope is supported.
+ * @param options.getNonEvmAccountAddresses - A function that returns the
+ * supported CAIP-10 account addresses for a non-evm scope.
  * @returns the caveat specifications to construct the PermissionController.
  */
 export const getCaveatSpecifications = ({
   listAccounts,
   findNetworkClientIdByChainId,
+  isNonEvmScopeSupported,
+  getNonEvmAccountAddresses,
 }) => {
   return {
     [Caip25CaveatType]: caip25CaveatBuilder({
       listAccounts,
       findNetworkClientIdByChainId,
+      isNonEvmScopeSupported,
+      getNonEvmAccountAddresses,
     }),
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,

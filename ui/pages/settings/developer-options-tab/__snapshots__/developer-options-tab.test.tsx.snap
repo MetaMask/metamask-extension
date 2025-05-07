@@ -204,7 +204,7 @@ exports[`Develop options tab should match snapshot 1`] = `
     <p
       class="mm-box mm-text settings-page__security-tab-sub-header__bold mm-text--body-md mm-box--color-text-default"
     >
-      Profile Sync
+      Backup and sync
     </p>
     <div
       class="settings-page__content-padded"

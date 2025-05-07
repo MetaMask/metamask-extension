@@ -37,8 +37,7 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: cimg/node:22.14-browsers
-    continue-on-error: true # soft launch
+      image: cimg/node:22.15-browsers
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
@@ -46,6 +45,9 @@ jobs:
       BRANCH: ${{ github.head_ref || github.ref_name }}
       MATRIX_INDEX: ${{ inputs.matrix-index }}
       MATRIX_TOTAL: ${{ inputs.matrix-total }}
+      JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
+      RUN_ID: ${{ github.run_id }}
+      PR_NUMBER: ${{ github.event.pull_request.number || '' }}
     steps:
       - name: Install dependencies
         run: |
@@ -56,6 +58,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       # not installed by checkout-and-setup when cache is restored
       - name: Install anvil
@@ -93,12 +96,15 @@ jobs:
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
+        env:
+          # The properties are picked up by mocha-junit-reporter and added to the XML test results
+          PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
 
       - name: Upload test results and artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format('-{0}', inputs.matrix-index) || '' }}
+          name: ${{ env.JOB_NAME }}
           path: |
             ./test-artifacts
             ./test/test-results/e2e

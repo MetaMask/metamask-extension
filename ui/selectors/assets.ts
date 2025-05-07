@@ -20,11 +20,7 @@ import { calculateTokenFiatAmount } from '../components/app/assets/util/calculat
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { getSelectedInternalAccount } from './accounts';
-import {
-  getMultichainBalances,
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from './multichain';
+import { getMultichainBalances, getMultichainIsEvm } from './multichain';
 import {
   getCurrencyRates,
   getCurrentNetwork,
@@ -35,6 +31,7 @@ import {
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
 } from './selectors';
+import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -72,6 +69,16 @@ export function getAssetsMetadata(state: AssetsState) {
  */
 export function getAssetsRates(state: AssetsRatesState) {
   return state.metamask.conversionRates;
+}
+
+/**
+ * Gets non-EVM assets historical prices.
+ *
+ * @param state - Redux state object.
+ * @returns An object containing non-EVM assets historical prices per asset types (CAIP-19).
+ */
+export function getHistoricalPrices(state: AssetsRatesState) {
+  return state.metamask.historicalPrices;
 }
 
 export const getTokenBalancesEvm = createDeepEqualSelector(
@@ -124,6 +131,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               decimals,
               nativeBalances,
               selectedAccountTokenBalancesAcrossChains,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             }) || '0';
 
           const tokenFiatAmount = calculateTokenFiatAmount({
@@ -153,6 +162,8 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
             if (token.isNative) {
               title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
             } else {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               title = token.name || token.symbol;
             }
 
@@ -285,31 +296,21 @@ const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
-  getMultichainNetwork,
   getMultichainBalances,
   getAccountAssets,
   getAssetsRates,
-  (
-    selectedAccountAddress,
-    currentNetwork,
-    multichainBalances,
-    accountAssets,
-    assetRates,
-  ) => {
+  (selectedAccountAddress, multichainBalances, accountAssets, assetRates) => {
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
 
     let aggregatedBalance = new BigNumber(0);
 
     assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId } = parseCaipAssetType(assetId);
-      if (chainId === currentNetwork.chainId) {
-        const balance = balances?.[assetId] || zeroBalanceAssetFallback;
-        const rate = assetRates?.[assetId]?.rate || '0';
-        const balanceInFiat = new BigNumber(balance.amount).times(rate);
+      const balance = balances?.[assetId] || zeroBalanceAssetFallback;
+      const rate = assetRates?.[assetId]?.rate || '0';
+      const balanceInFiat = new BigNumber(balance.amount).times(rate);
 
-        aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
-      }
+      aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
     });
 
     return aggregatedBalance.toNumber();
@@ -326,11 +327,13 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
 export const getMultichainNativeAssetType = createDeepEqualSelector(
   getSelectedInternalAccount,
   getAccountAssets,
-  getMultichainNetwork,
+  getSelectedMultichainNetworkConfiguration,
   (
     selectedAccount: ReturnType<typeof getSelectedInternalAccount>,
     accountAssets: ReturnType<typeof getAccountAssets>,
-    currentNetwork: ReturnType<typeof getMultichainNetwork>,
+    currentNetwork: ReturnType<
+      typeof getSelectedMultichainNetworkConfiguration
+    >,
   ) => {
     const assetTypes = accountAssets?.[selectedAccount.id] || [];
     const nativeAssetType = assetTypes.find((assetType) => {

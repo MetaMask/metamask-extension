@@ -18,7 +18,8 @@ import type { Provider } from '@metamask/network-controller';
  * @param tokenData - ethers Interface token data.
  * @returns A decimal string value.
  */
-// TODO: Replace `any` with type
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getTokenIdParam(tokenData: any = {}): string | undefined {
   return (
@@ -30,7 +31,8 @@ export async function fetchTokenBalance(
   address: string,
   userAddress: string,
   provider: Provider,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   const ethersProvider = new Web3Provider(provider);
@@ -45,10 +47,12 @@ export async function fetchERC1155Balance(
   address: string,
   userAddress: string,
   tokenId: string,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   provider: any,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   if (!userAddress || !tokenId) {
