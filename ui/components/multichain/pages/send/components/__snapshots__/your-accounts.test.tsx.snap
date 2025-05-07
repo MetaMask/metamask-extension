@@ -199,25 +199,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             </div>
             <div
               class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
-            >
-              <div
-                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                data-testid="second-currency-display"
-                title="966.988 ETH"
-              >
-                <span
-                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="account-value-and-suffix"
-                >
-                  966.988
-                </span>
-                <span
-                  class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                >
-                  ETH
-                </span>
-              </div>
-            </div>
+            />
           </div>
         </div>
       </div>
@@ -413,25 +395,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             </div>
             <div
               class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
-            >
-              <div
-                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                data-testid="second-currency-display"
-                title="0 ETH"
-              >
-                <span
-                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="account-value-and-suffix"
-                >
-                  0
-                </span>
-                <span
-                  class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                >
-                  ETH
-                </span>
-              </div>
-            </div>
+            />
           </div>
         </div>
       </div>
@@ -627,25 +591,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             </div>
             <div
               class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
-            >
-              <div
-                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                data-testid="second-currency-display"
-                title="0 ETH"
-              >
-                <span
-                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="account-value-and-suffix"
-                >
-                  0
-                </span>
-                <span
-                  class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                >
-                  ETH
-                </span>
-              </div>
-            </div>
+            />
           </div>
         </div>
         <div
@@ -855,25 +801,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             </div>
             <div
               class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
-            >
-              <div
-                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                data-testid="second-currency-display"
-                title="0 ETH"
-              >
-                <span
-                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="account-value-and-suffix"
-                >
-                  0
-                </span>
-                <span
-                  class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                >
-                  ETH
-                </span>
-              </div>
-            </div>
+            />
           </div>
         </div>
       </div>
@@ -1069,25 +997,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             </div>
             <div
               class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
-            >
-              <div
-                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                data-testid="second-currency-display"
-                title="0 ETH"
-              >
-                <span
-                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="account-value-and-suffix"
-                >
-                  0
-                </span>
-                <span
-                  class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                >
-                  ETH
-                </span>
-              </div>
-            </div>
+            />
           </div>
         </div>
         <div
@@ -1301,25 +1211,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             </div>
             <div
               class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
-            >
-              <div
-                class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                data-testid="second-currency-display"
-                title="0 ETH"
-              >
-                <span
-                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="account-value-and-suffix"
-                >
-                  0
-                </span>
-                <span
-                  class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                >
-                  ETH
-                </span>
-              </div>
-            </div>
+            />
           </div>
         </div>
       </div>
