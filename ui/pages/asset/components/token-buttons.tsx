@@ -75,7 +75,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 ///: END:ONLY_INCLUDE_IF
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import type { Asset } from './asset-page';
+import { Asset } from '../types/asset';
 
 const TokenButtons = ({
   token,
@@ -297,7 +297,7 @@ const TokenButtons = ({
           Icon={
             <Icon
               name={IconName.PlusMinus}
-              color={IconColor.primaryInverse}
+              color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
           }
@@ -318,7 +318,7 @@ const TokenButtons = ({
         Icon={
           <Icon
             name={IconName.Arrow2UpRight}
-            color={IconColor.primaryInverse}
+            color={IconColor.iconDefault}
             size={IconSize.Sm}
           />
         }
@@ -333,7 +333,7 @@ const TokenButtons = ({
           Icon={
             <Icon
               name={IconName.SwapHorizontal}
-              color={IconColor.primaryInverse}
+              color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
           }
@@ -352,7 +352,7 @@ const TokenButtons = ({
             Icon={
               <Icon
                 name={IconName.Bridge}
-                color={IconColor.primaryInverse}
+                color={IconColor.iconDefault}
                 size={IconSize.Sm}
               />
             }

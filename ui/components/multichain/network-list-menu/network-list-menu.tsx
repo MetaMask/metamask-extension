@@ -71,7 +71,7 @@ import {
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
-  getIsPortfolioDiscoverButtonEnabled,
+  getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
@@ -118,6 +118,7 @@ import {
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -159,8 +160,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const showNetworkBanner = useSelector(getShowNetworkBanner);
   // This selector provides the indication if the "Discover" button
   // is enabled based on the remote feature flag.
-  const isPortfolioDiscoverButtonEnabled = useSelector(
-    getIsPortfolioDiscoverButtonEnabled,
+  const isNetworkDiscoverButtonEnabled = useSelector(
+    getNetworkDiscoverButtonEnabled,
   );
   // This selector provides an array with two elements.
   // 1 - All network configurations including EVM and non-EVM with the data type
@@ -183,6 +184,10 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.NetworkList });
+  }, []);
 
   const currentlyOnTestnet = useMemo(() => {
     const { namespace } = parseCaipChainId(currentChainId);
@@ -313,11 +318,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     ]);
   }, [searchedTestNetworks]);
 
-  const handleEvmNetworkChange = (chainId: CaipChainId) => {
+  const handleEvmNetworkChange = (
+    chainId: CaipChainId,
+    networkClientId?: string,
+  ) => {
     const hexChainId = convertCaipToHexChainId(chainId);
     const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
-    const { networkClientId } = defaultRpcEndpoint;
-    dispatch(setActiveNetwork(networkClientId));
+    const finalNetworkClientId =
+      networkClientId ?? defaultRpcEndpoint.networkClientId;
+
+    dispatch(setActiveNetwork(finalNetworkClientId));
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
     dispatch(detectNfts(allChainIds));
@@ -346,7 +356,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       // to ensure that the isConnected value can be accurately inferred from
       // NetworkController.state.networksMetadata in return value of
       // `metamask_getProviderState` requests and `metamask_chainChanged` events.
-      setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
+      setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId);
     }
 
     if (permittedAccountAddresses.length > 0) {
@@ -410,14 +420,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   const isDiscoverBtnEnabled = useCallback(
     (hexChainId: Hex): boolean => {
-      // For now, the "Discover" button should be enabled only for Linea network base on
-      // the feature flag and the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
+      // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
       return (
-        isPortfolioDiscoverButtonEnabled &&
-        CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+        (isNetworkDiscoverButtonEnabled as Record<Hex, boolean>)?.[
+          hexChainId
+        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
       );
     },
-    [isPortfolioDiscoverButtonEnabled],
+    [isNetworkDiscoverButtonEnabled],
   );
 
   const hasMultiRpcOptions = useCallback(

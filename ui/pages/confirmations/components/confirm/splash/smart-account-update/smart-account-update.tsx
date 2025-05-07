@@ -2,6 +2,7 @@ import React, { ReactElement, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
+import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
 import {
   Box,
@@ -65,15 +66,14 @@ const ListItem = ({
 
 export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
-
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId, txParams } = currentConfirmation ?? {};
-  const { from } = txParams;
-
   const { handleRejectUpgrade } = useSmartAccountActions();
 
-  if (!currentConfirmation || acknowledged) {
+  const { chainId, txParams, origin } = currentConfirmation ?? {};
+  const { from } = txParams;
+
+  if (!currentConfirmation || acknowledged || origin === ORIGIN_METAMASK) {
     return null;
   }
 
@@ -129,7 +129,7 @@ export function SmartAccountUpdate() {
         />
         <ListItem
           imgSrc="./images/sparkle.svg"
-          title={t('smartAccountPayToken')}
+          title={t('smartAccountSameAccount')}
           description={
             <>
               <Text

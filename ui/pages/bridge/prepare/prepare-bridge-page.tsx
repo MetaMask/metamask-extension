@@ -9,7 +9,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
 import { useHistory, useLocation } from 'react-router-dom';
-import { BigNumber } from 'bignumber.js';
 import { type TokenListMap } from '@metamask/assets-controllers';
 import { toChecksumAddress, zeroAddress } from 'ethereumjs-util';
 import {
@@ -21,7 +20,6 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import type { BridgeToken } from '@metamask/bridge-controller';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -50,6 +48,8 @@ import {
   getIsToOrFromSolana,
   getQuoteRefreshRate,
   getHardwareWalletName,
+  getIsQuoteExpired,
+  BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -81,10 +81,7 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import {
-  formatTokenAmount,
-  isQuoteExpired as isQuoteExpiredUtil,
-} from '../utils/quote';
+import { formatTokenAmount } from '../utils/quote';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -96,7 +93,6 @@ import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
@@ -114,6 +110,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
+  getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
@@ -124,10 +121,14 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import type { BridgeToken } from '../../../ducks/bridge/types';
+import {
+  fetchAssetMetadata,
+  toAssetId,
+} from '../../../../shared/lib/asset-utils';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
-import { TmpBridgeToken } from './types';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -138,17 +139,21 @@ const PrepareBridgePage = () => {
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
-  const isFromTokensLoading = useMemo(
-    () => Object.keys(fromTokens).length === 0,
-    [fromTokens],
-  );
 
-  const toToken = useSelector(getToToken) as TmpBridgeToken;
+  const toToken = useSelector(getToToken);
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
+
+  const isFromTokensLoading = useMemo(() => {
+    // This is an EVM token list. Solana tokens should not trigger loading state.
+    if (fromChain && isSolanaChainId(fromChain.chainId)) {
+      return false;
+    }
+    return Object.keys(fromTokens).length === 0;
+  }, [fromTokens, fromChain]);
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
@@ -161,20 +166,23 @@ const PrepareBridgePage = () => {
     isLoading,
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
-    quotesLastFetchedMs,
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
+
+  const isQuoteExpired = useSelector((state) =>
+    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
   // If latest quote is expired and user has sufficient balance
   // set activeQuote to undefined to hide stale quotes but keep inputs filled
-  const isQuoteExpired = isQuoteExpiredUtil(
-    isQuoteGoingToRefresh,
-    refreshRate,
-    quotesLastFetchedMs,
-  );
   const activeQuote =
-    isQuoteExpired && !quoteRequest.insufficientBal ? undefined : activeQuote_;
+    isQuoteExpired &&
+    (!quoteRequest.insufficientBal ||
+      // insufficientBal is always true for solana
+      (fromChain && isSolanaChainId(fromChain.chainId)))
+      ? undefined
+      : activeQuote_;
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
@@ -193,7 +201,7 @@ const PrepareBridgePage = () => {
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
 
-  const ticker = useSelector(getNativeCurrency);
+  const ticker = useMultichainSelector(getMultichainNativeCurrency);
   const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
@@ -276,18 +284,12 @@ const PrepareBridgePage = () => {
           setToToken({
             ...destAsset,
             chainId: destChainId,
-            image: srcAsset.icon ?? destAsset.iconUrl ?? '',
-            address: destAsset.address,
           }),
         );
         dispatch(
           setFromToken({
             ...srcAsset,
             chainId: srcChainId,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            image: srcAsset.icon || srcAsset.iconUrl || '',
-            address: srcAsset.address,
           }),
         );
       }
@@ -316,7 +318,8 @@ const PrepareBridgePage = () => {
     }
   }, [
     isEstimatedReturnLow,
-    isInsufficientGasForQuote(nativeAssetBalance),
+    nativeAssetBalance,
+    isInsufficientGasForQuote,
     isLowReturnBannerOpen,
   ]);
 
@@ -416,34 +419,66 @@ const PrepareBridgePage = () => {
       });
     };
 
-    // fromTokens is for EVM chains so it's ok to lowercase the token address
-    const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+    const handleToken = async () => {
+      if (isSolanaChainId(fromChain.chainId)) {
+        const tokenAddress = tokenAddressFromUrl;
+        const assetId = toAssetId(
+          tokenAddress,
+          formatChainIdToCaip(fromChain.chainId),
+        );
+        if (!assetId) {
+          removeTokenFromUrl();
+          return;
+        }
 
-    switch (tokenAddressFromUrl) {
-      case fromToken?.address:
-        // If the token is already set, remove the query param
-        removeTokenFromUrl();
-        break;
-      case matchedToken?.address:
-      case matchedToken?.address
-        ? toChecksumAddress(matchedToken.address)
-        : undefined: {
-        // If there is a match, set it as the fromToken
+        const tokenMetadata = await fetchAssetMetadata(
+          tokenAddress,
+          fromChain.chainId,
+        );
+        if (!tokenMetadata) {
+          removeTokenFromUrl();
+          return;
+        }
+
         dispatch(
           setFromToken({
-            ...matchedToken,
-            image: matchedToken.iconUrl,
+            ...tokenMetadata,
             chainId: fromChain.chainId,
           }),
         );
         removeTokenFromUrl();
-        break;
+        return;
       }
-      default:
-        // Otherwise remove query param
-        removeTokenFromUrl();
-        break;
-    }
+
+      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+
+      switch (tokenAddressFromUrl) {
+        case fromToken?.address:
+          // If the token is already set, remove the query param
+          removeTokenFromUrl();
+          break;
+        case matchedToken?.address:
+        case matchedToken?.address
+          ? toChecksumAddress(matchedToken.address)
+          : undefined: {
+          // If there is a match, set it as the fromToken
+          dispatch(
+            setFromToken({
+              ...matchedToken,
+              chainId: fromChain.chainId,
+            }),
+          );
+          removeTokenFromUrl();
+          break;
+        }
+        default:
+          // Otherwise remove query param
+          removeTokenFromUrl();
+          break;
+      }
+    };
+
+    handleToken();
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
   // Set the default destination token and slippage for swaps
@@ -457,7 +492,9 @@ const PrepareBridgePage = () => {
     }
   }, []);
 
-  const occurrences = Number(toToken?.occurrences ?? 0);
+  const occurrences = Number(
+    toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
+  );
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
 
@@ -534,7 +571,7 @@ const PrepareBridgePage = () => {
           onMaxButtonClick={(value: string) => {
             dispatch(setFromTokenInputValue(value));
           }}
-          amountInFiat={fromAmountInCurrency.valueInCurrency}
+          amountInFiat={fromAmountInCurrency.valueInCurrency.toString()}
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
@@ -665,7 +702,10 @@ const PrepareBridgePage = () => {
                           value: networkConfig.chainId,
                         });
                       dispatch(setToChainId(networkConfig.chainId));
-                      dispatch(setToToken(null));
+                      const destNativeAsset = getNativeAssetForChainId(
+                        networkConfig.chainId,
+                      );
+                      dispatch(setToToken(destNativeAsset));
                     },
                     header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
                     shouldDisableNetwork: ({ chainId }) =>
@@ -794,7 +834,7 @@ const PrepareBridgePage = () => {
                         : t('willApproveAmountForBridging', [
                             formatTokenAmount(
                               locale,
-                              new BigNumber(fromAmount),
+                              fromAmount,
                               fromToken.symbol,
                             ),
                           ])}
@@ -863,6 +903,7 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
+            toToken.address !== SOLANA_USDC_ASSET.address &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
@@ -874,20 +915,6 @@ const PrepareBridgePage = () => {
                 onClose={() => setIsCannotVerifyTokenBannerOpen(false)}
               />
             )}
-          {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
-            <BannerAlert
-              ref={insufficientBalanceBannerRef}
-              marginInline={4}
-              marginBottom={3}
-              title={t('lowEstimatedReturnTooltipTitle')}
-              severity={BannerAlertSeverity.Warning}
-              description={t('lowEstimatedReturnTooltipMessage', [
-                BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE * 100,
-              ])}
-              textAlign={TextAlign.Left}
-              onClose={() => setIsLowReturnBannerOpen(false)}
-            />
-          )}
           {tokenAlert && isTokenAlertBannerOpen && (
             <BannerAlert
               ref={tokenAlertBannerRef}
@@ -913,32 +940,6 @@ const PrepareBridgePage = () => {
             !isInsufficientBalance(srcTokenBalance) &&
             isInsufficientGasForQuote(nativeAssetBalance) && (
               <BannerAlert
-                marginInline={4}
-                marginBottom={10}
-                severity={BannerAlertSeverity.Danger}
-                description={t('noOptionsAvailableMessage')}
-                textAlign={TextAlign.Left}
-              />
-            )}
-          {isEstimatedReturnLow && isLowReturnBannerOpen && (
-            <BannerAlert
-              ref={insufficientBalanceBannerRef}
-              marginInline={4}
-              marginBottom={3}
-              title={t('lowEstimatedReturnTooltipTitle')}
-              severity={BannerAlertSeverity.Warning}
-              description={t('lowEstimatedReturnTooltipMessage', [
-                BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE * 100,
-              ])}
-              textAlign={TextAlign.Left}
-              onClose={() => setIsLowReturnBannerOpen(false)}
-            />
-          )}
-          {!isLoading &&
-            activeQuote &&
-            !isInsufficientBalance(srcTokenBalance) &&
-            isInsufficientGasForQuote(nativeAssetBalance) && (
-              <BannerAlert
                 ref={isEstimatedReturnLowRef}
                 marginInline={4}
                 marginBottom={3}
@@ -952,6 +953,20 @@ const PrepareBridgePage = () => {
                 actionButtonOnClick={() => openBuyCryptoInPdapp()}
               />
             )}
+          {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
+            <BannerAlert
+              ref={insufficientBalanceBannerRef}
+              marginInline={4}
+              marginBottom={3}
+              title={t('lowEstimatedReturnTooltipTitle')}
+              severity={BannerAlertSeverity.Warning}
+              description={t('lowEstimatedReturnTooltipMessage', [
+                BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE * 100,
+              ])}
+              textAlign={TextAlign.Left}
+              onClose={() => setIsLowReturnBannerOpen(false)}
+            />
+          )}
         </Column>
       </Column>
       {showBlockExplorerToast && blockExplorerToken && (

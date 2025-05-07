@@ -21,6 +21,11 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
+  private readonly preInstalledExampleButton = {
+    text: 'Preinstalled Example Snap',
+    css: '.tab-bar__tab__content__title',
+  };
+
   private readonly settingsPageTitle = {
     text: 'Settings',
     css: 'h3',
@@ -31,18 +36,18 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
+  private readonly backupAndSyncSettingsButton = {
+    text: 'Backup and sync',
+    css: '.tab-bar__tab__content__title',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async check_pageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.settingsPageTitle);
-    } catch (e) {
-      console.log('Timeout while waiting for Settings page to be loaded', e);
-      throw e;
-    }
-    console.log('Settings page is loaded');
+    console.log('Check settings page is loaded');
+    await this.driver.waitForSelector(this.settingsPageTitle);
   }
 
   async clickAdvancedTab(): Promise<void> {
@@ -79,8 +84,8 @@ class SettingsPage {
     await this.driver.clickElement(this.closeSettingsPageButton);
   }
 
-  async goToDevelopOptionSettings(): Promise<void> {
-    console.log('Navigating to Develop options page');
+  async goToDeveloperOptions(): Promise<void> {
+    console.log('Navigating to Developer Options page');
     await this.driver.clickElement(this.developerOptionsButton);
   }
 
@@ -90,13 +95,23 @@ class SettingsPage {
   }
 
   async goToPrivacySettings(): Promise<void> {
-    console.log('Navigating to Privacy & Security Settings page');
+    console.log('Navigating to Privacy Settings page');
     await this.driver.clickElement(this.privacySettingsButton);
+  }
+
+  async goToPreInstalledExample(): Promise<void> {
+    console.log('Navigating to Preinstalled Example Snap settings page');
+    await this.driver.clickElement(this.preInstalledExampleButton);
   }
 
   async goToNotificationsSettings(): Promise<void> {
     console.log('Navigating to Notifications Settings page');
     await this.driver.clickElement(this.notificationsSettingsButton);
+  }
+
+  async goToBackupAndSyncSettings(): Promise<void> {
+    console.log('Navigating to Backup & Sync Settings page');
+    await this.driver.clickElement(this.backupAndSyncSettingsButton);
   }
 }
 

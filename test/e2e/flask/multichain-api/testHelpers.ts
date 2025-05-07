@@ -5,15 +5,8 @@ import {
   KnownNotifications,
 } from '@metamask/chain-agnostic-permission';
 import { JsonRpcRequest } from '@metamask/utils';
-import {
-  convertETHToHexGwei,
-  multipleGanacheOptions,
-  PRIVATE_KEY,
-  regularDelayMs,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import {
   CONTENT_SCRIPT,
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -39,27 +32,20 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
   ],
   localNodeOptions: [
     {
-      type: 'ganache',
-      options: {
-        secretKey: PRIVATE_KEY,
-        balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
-        accounts: multipleGanacheOptions.accounts,
-      },
+      type: 'anvil',
     },
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
         port: 8546,
         chainId: 1338,
-        accounts: multipleGanacheOptions.accounts,
       },
     },
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
         port: 7777,
         chainId: 1000,
-        accounts: multipleGanacheOptions.accounts,
       },
     },
   ],
@@ -84,6 +70,7 @@ export const addAccountInWalletAndAuthorize = async (
   const editButtons = await driver.findElements('[data-testid="edit"]');
   await editButtons[0].click();
   await driver.clickElement({ text: 'New account', tag: 'button' });
+  await driver.clickElement({ text: 'Ethereum account', tag: 'button' });
   await driver.clickElement({ text: 'Add account', tag: 'button' });
   await driver.delay(regularDelayMs);
 
@@ -211,7 +198,7 @@ export const sendMultichainApiRequest = ({
     const data = ${JSON.stringify(requestWithNewId)};
     const result = new Promise((resolve) => {
       port.onMessage.addListener((msg) => {
-        if (msg.type !== 'caip-x') {
+        if (msg.type !== 'caip-348') {
           return;
         }
         if (msg.data?.id !== ${id}) {
@@ -221,7 +208,7 @@ export const sendMultichainApiRequest = ({
         resolve(msg.data);
       })
     })
-    port.postMessage({ type: 'caip-x', data });
+    port.postMessage({ type: 'caip-348', data });
     return result;`;
   }
 
