@@ -106,17 +106,19 @@ export const AssetPickerModalNetwork = ({
     [],
   );
 
-  const [nonTestNetworks, testNetworks] = useMemo(
+ const [nonTestNetworks, testNetworks] = useMemo(
     () =>
-      Object.entries(allNetworks).reduce(
-        ([nonTestNetworksList, testNetworksList], [chainId, networkDetail]) => {
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
+      networksList.reduce(
+        ([nonTestNetworksList, testNetworksList], networkDetail) => {
+          const isTest = (TEST_CHAINS as string[]).includes(
+            networkDetail.chainId,
+          );
           (isTest ? testNetworksList : nonTestNetworksList).push(networkDetail);
           return [nonTestNetworksList, testNetworksList];
         },
-        [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
+        [[] as NetworkOption[], [] as NetworkOption[]],
       ),
-    [allNetworks],
+    [networksList],
   );
   // Tracks the selection/checked state of each network
   // Initialized with the selectedChainIds if provided
