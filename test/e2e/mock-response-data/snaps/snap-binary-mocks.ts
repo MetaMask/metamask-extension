@@ -177,6 +177,28 @@ export async function mockEthereumProviderSnap(mockServer: Mockttp) {
     });
 }
 
+export async function mockGetEntropySnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/get-entropy-example-snap-2.2.0.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/get-entropy-example-snap/-/get-entropy-example-snap-2.2.0.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '28663',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"8d2d41cb8f2f7e7218f4224f6729486d"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
 export async function mockGetFileSnap(mockServer: Mockttp) {
   const SNAP_PATH =
     'test/e2e/mock-response-data/snaps/get-file-example-snap-1.1.3.txt';
@@ -259,6 +281,28 @@ export async function mockInsightsSnap(mockServer: Mockttp) {
           'Content-Length': '11211',
           'Content-Type': 'application/octet-stream',
           Etag: '"47aa2030cc40caa01f29c878572c93aa"',
+          Vary: 'Accept-Encoding',
+        },
+      };
+    });
+}
+
+export async function mockInteractiveUiSnap(mockServer: Mockttp) {
+  const SNAP_PATH =
+    'test/e2e/mock-response-data/snaps/interactive-ui-example-snap-2.4.0.txt';
+  return await mockServer
+    .forGet(
+      'https://registry.npmjs.org/@metamask/interactive-ui-example-snap/-/interactive-ui-example-snap-2.4.0.tgz',
+    )
+    .thenCallback(() => {
+      return {
+        status: 200,
+        rawBody: fs.readFileSync(SNAP_PATH),
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Content-Length': '14418',
+          'Content-Type': 'application/octet-stream',
+          Etag: '"72450054edecdc5b8f98143d658f6d3a"',
           Vary: 'Accept-Encoding',
         },
       };
@@ -440,7 +484,6 @@ export async function mockPreferencesSnap(mockServer: Mockttp) {
       };
     });
 }
-
 
 export async function mockSignatureInsightsSnap(mockServer: Mockttp) {
   const SNAP_PATH =

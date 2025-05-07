@@ -1,12 +1,24 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockWebpackPluginOldSnap,
+  mockWebpackPluginSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+
+async function mockSnaps(mockServer) {
+  return [
+    await mockWebpackPluginOldSnap(mockServer),
+    await mockWebpackPluginSnap(mockServer),
+  ];
+}
 
 describe('Test Snap update via snaps component', function () {
   it('can install an old and then update via the snaps component', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSnaps,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

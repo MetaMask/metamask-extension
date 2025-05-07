@@ -5,12 +5,14 @@ import SnapInteractiveDialog from '../page-objects/pages/dialog/snap-interactive
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { mockInteractiveUiSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Interactive UI Snap', function () {
   it('validate the interactive ui elements', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockInteractiveUiSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
