@@ -94,6 +94,8 @@ export async function displayStateCorruptionError(
 
   function handleRestoreClick(this: HTMLButtonElement) {
     this.removeEventListener('click', handleRestoreClick);
+    // eslint-disable-next-line no-alert
+    // TODO: uh, don't use `confirm`
     const theyAreSure = confirm('Are you sure you want to proceed?');
     if (theyAreSure) {
       this.disabled = true;

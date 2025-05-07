@@ -14,10 +14,9 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
-import { isObject } from '@metamask/utils';
+import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { hasProperty } from '@metamask/utils';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
 import {
@@ -54,7 +53,10 @@ import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { handleStateCorruptionError } from './lib/state-corruption/state-corruption-recovery';
-import { backedUpStateKeys, PersistenceManager } from './lib/stores/persistence-manager';
+import {
+  backedUpStateKeys,
+  PersistenceManager,
+} from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';

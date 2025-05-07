@@ -4613,9 +4613,6 @@
   "reset": {
     "message": "Reset"
   },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Reset MetaMask State"
-  },
   "resetWallet": {
     "message": "Reset wallet"
   },
@@ -5678,6 +5675,9 @@
   },
   "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
     "message": "Internal Error: Database cannot be accessed"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "Reset MetaMask State"
   },
   "stateCorruptionResettingDatabase": {
     "message": "Resetting database…"
