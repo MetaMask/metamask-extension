@@ -31,7 +31,6 @@ import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/ut
 import { parseSecretRecoveryPhrase } from '../../../components/app/srp-input/parse-secret-recovery-phrase';
 import { clearClipboard } from '../../../helpers/utils/util';
 import { useTheme } from '../../../hooks/useTheme';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 
