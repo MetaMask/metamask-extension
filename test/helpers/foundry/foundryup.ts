@@ -2,7 +2,6 @@
 
 import { join, relative } from 'node:path';
 import { homedir } from 'node:os';
-import assert from 'node:assert';
 import { Dir, readFileSync } from 'node:fs';
 import { copyFile, opendir, rm, symlink, unlink } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
