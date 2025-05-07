@@ -25,6 +25,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Multichain API analytics support ([#32013](https://github.com/MetaMask/metamask-extension/pull/32013))
 - Updates default bridge destination token addresses with valid values so they can trigger quote fetching ([#32353](https://github.com/MetaMask/metamask-extension/pull/32353))
 
+## [12.17.2]
+### Changed
+- Increasing polling interval for incoming transactions ([#32547](https://github.com/MetaMask/metamask-extension/pull/32547))
+
+## [12.17.1]
+### Fixed
+- Prevent infinite Load on switching networks or reveal SRP ([#32391](https://github.com/MetaMask/metamask-extension/pull/32391))
+- Ensure vault encryption upgrade fails gracefully during login ([#32438](https://github.com/MetaMask/metamask-extension/pull/32438))
+- Prevent frequent state updates while UI is open, which was preventing state persistence ([#32482](https://github.com/MetaMask/metamask-extension/pull/32482))
+
 ## [12.17.0]
 ### Added
 - Support gasless transactions via EIP-7702 ([#31593](https://github.com/MetaMask/metamask-extension/pull/31593))
@@ -6099,7 +6109,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.18.0...HEAD
-[12.18.0]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...v12.18.0
+[12.18.0]: https://github.com/MetaMask/metamask-extension/compare/v12.17.2...v12.18.0
+[12.17.2]: https://github.com/MetaMask/metamask-extension/compare/v12.17.1...v12.17.2
+[12.17.1]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...v12.17.1
 [12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.2...v12.17.0
 [12.16.2]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...v12.16.2
 [12.16.1]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...v12.16.1
