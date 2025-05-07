@@ -148,6 +148,13 @@ class ActivityListPage {
   }
 
   async check_txAction(expectedAction: string, expectedNumber: number = 1) {
+    await this.driver.wait(async () => {
+      const transactionActions = await this.driver.findElements(
+        this.activityListAction,
+      );
+      return transactionActions.length >= expectedNumber;
+    }, 100000);
+
     const transactionActions = await this.driver.findElements(
       this.activityListAction,
     );
