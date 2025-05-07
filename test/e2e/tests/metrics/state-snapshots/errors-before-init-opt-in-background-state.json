@@ -1,10 +1,7 @@
 {
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
-    "UserStorageController": {
-      "isBackupAndSyncEnabled": true,
-      "isAccountSyncingEnabled": true
-    },
+    "UserStorageController": {},
     "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",

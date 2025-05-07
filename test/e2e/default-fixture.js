@@ -20,10 +20,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       AuthenticationController: {
         isSignedIn: true,
       },
-      UserStorageController: {
-        isBackupAndSyncEnabled: true,
-        isAccountSyncingEnabled: true,
-      },
+      UserStorageController: {},
       NotificationServicesController: {
         subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
