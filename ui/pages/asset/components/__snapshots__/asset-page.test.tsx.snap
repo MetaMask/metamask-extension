@@ -115,7 +115,7 @@ exports[`AssetPage should render a native asset 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-minus.svg');"
+              style="mask-image: url('./images/icons/plus-and-minus.svg');"
             />
           </div>
           <p
@@ -298,7 +298,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 data-testid="multichain-token-list-item-value"
               >
                 0
-
+                 
                 TEST
               </p>
             </div>
@@ -538,13 +538,8 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             class="icon-button__circle"
           >
             <span
-<<<<<<< HEAD
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
-=======
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-minus.svg');"
->>>>>>> 42fd53ba87a9d0bda216dd85241aa0b20bdf9f3e
+              style="mask-image: url('./images/icons/plus-and-minus.svg');"
             />
           </div>
           <p
@@ -683,7 +678,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 data-testid="multichain-token-list-item-value"
               >
                 0
-
+                 
                 TEST
               </p>
             </div>
@@ -980,13 +975,8 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             class="icon-button__circle"
           >
             <span
-<<<<<<< HEAD
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
-=======
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-minus.svg');"
->>>>>>> 42fd53ba87a9d0bda216dd85241aa0b20bdf9f3e
+              style="mask-image: url('./images/icons/plus-and-minus.svg');"
             />
           </div>
           <p
@@ -1125,7 +1115,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 data-testid="multichain-token-list-item-value"
               >
                 0
-
+                 
                 TEST
               </p>
             </div>
