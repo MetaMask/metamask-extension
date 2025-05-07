@@ -170,7 +170,7 @@ export const AssetPickerModalNetwork = ({
         {},
       ),
     );
-  }, []);
+  }, [checkedChainIds]);
 
   return (
     <Modal
