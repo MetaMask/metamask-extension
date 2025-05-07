@@ -1,4 +1,5 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   validateSwitchEthereumChainParams,
@@ -11,10 +12,13 @@ const switchEthereumChain = {
   hookNames: {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
+    requestUserApproval: true,
     getCaveat: true,
-    requestPermittedChainsPermission: true,
     getCurrentChainIdForDomain: true,
-    grantPermittedChainsPermissionIncremental: true,
+    requestPermittedChainsPermissionIncrementalForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
+    setTokenNetworkFilter: true,
+    hasApprovalRequestsForOrigin: true,
   },
 };
 
@@ -28,15 +32,18 @@ async function switchEthereumChainHandler(
   {
     getNetworkConfigurationByChainId,
     setActiveNetwork,
-    requestPermittedChainsPermission,
+    requestUserApproval,
     getCaveat,
     getCurrentChainIdForDomain,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    hasApprovalRequestsForOrigin,
   },
 ) {
   let chainId;
   try {
-    chainId = validateSwitchEthereumChainParams(req, end);
+    chainId = validateSwitchEthereumChainParams(req);
   } catch (error) {
     return end(error);
   }
@@ -57,17 +64,30 @@ async function switchEthereumChainHandler(
 
   if (!networkClientIdToSwitchTo) {
     return end(
-      ethErrors.provider.custom({
+      providerErrors.custom({
         code: 4902,
         message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
       }),
     );
   }
 
-  return switchChain(res, end, chainId, networkClientIdToSwitchTo, null, {
+  const fromNetworkConfiguration = getNetworkConfigurationByChainId(
+    currentChainIdForOrigin,
+  );
+
+  const toNetworkConfiguration = getNetworkConfigurationByChainId(chainId);
+
+  return switchChain(res, end, chainId, networkClientIdToSwitchTo, {
+    origin,
+    isSwitchFlow: true,
     setActiveNetwork,
     getCaveat,
-    requestPermittedChainsPermission,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    requestUserApproval,
+    hasApprovalRequestsForOrigin,
+    toNetworkConfiguration,
+    fromNetworkConfiguration,
   });
 }

@@ -9,7 +9,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  BUILD_QUOTE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -31,7 +30,8 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
@@ -42,8 +42,12 @@ export const AppHeader = ({ location }) => {
   const menuRef = useRef(null);
   const isUnlocked = useSelector(getIsUnlocked);
 
-  const multichainNetwork = useSelector(getMultichainNetwork);
-  const { chainId, isEvmNetwork } = multichainNetwork;
+  const multichainNetwork = useSelector(
+    getSelectedMultichainNetworkConfiguration,
+  );
+
+  const { chainId, isEvm } = multichainNetwork;
+  const networkIconSrc = getNetworkIcon(chainId, isEvm);
 
   const dispatch = useDispatch();
 
@@ -66,24 +70,19 @@ export const AppHeader = ({ location }) => {
   const isSwapsPage = Boolean(
     matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
   );
-  const isSwapsBuildQuotePage = Boolean(
-    matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
-  );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
 
-  const disableAccountPicker =
-    isConfirmationPage || (isSwapsPage && !isSwapsBuildQuotePage);
+  const disableAccountPicker = isConfirmationPage || isSwapsPage;
 
   const disableNetworkPicker =
     isSwapsPage ||
     isTransactionEditPage ||
     isConfirmationPage ||
-    hasUnapprovedTransactions ||
-    !isEvmNetwork;
+    hasUnapprovedTransactions;
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
@@ -97,10 +96,6 @@ export const AppHeader = ({ location }) => {
       },
     });
   }, [chainId, dispatch, trackEvent]);
-
-  // This is required to ensure send and confirmation screens
-  // look as desired
-  const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
 
   const unlockedStyling = {
     alignItems: AlignItems.center,
@@ -125,11 +120,7 @@ export const AppHeader = ({ location }) => {
   return (
     <>
       {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null}
-      <AppHeaderContainer
-        isUnlocked={isUnlocked}
-        popupStatus={popupStatus}
-        headerBottomMargin={headerBottomMargin}
-      >
+      <AppHeaderContainer isUnlocked={isUnlocked} popupStatus={popupStatus}>
         <>
           <Box
             className={classnames(
@@ -145,8 +136,8 @@ export const AppHeader = ({ location }) => {
             {isUnlocked ? (
               <AppHeaderUnlockedContent
                 popupStatus={popupStatus}
-                isEvmNetwork={isEvmNetwork}
                 currentNetwork={multichainNetwork}
+                networkIconSrc={networkIconSrc}
                 networkOpenCallback={networkOpenCallback}
                 disableNetworkPicker={disableNetworkPicker}
                 disableAccountPicker={disableAccountPicker}
@@ -155,6 +146,7 @@ export const AppHeader = ({ location }) => {
             ) : (
               <AppHeaderLockedContent
                 currentNetwork={multichainNetwork}
+                networkIconSrc={networkIconSrc}
                 networkOpenCallback={networkOpenCallback}
               />
             )}

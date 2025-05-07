@@ -1,22 +1,27 @@
-import EthQuery, { Provider } from '@metamask/eth-query';
-import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
-
-import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import {
+  NestedTransactionMetadata,
   TransactionMeta,
+  TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { GasRecommendations } from '../../../../shared/constants/gas';
+import { Json, add0x } from '@metamask/utils';
+import { Hex } from 'viem';
+import { errorCodes } from '@metamask/rpc-errors';
+import {
+  MESSAGE_TYPE,
+  ORIGIN_METAMASK,
+} from '../../../../shared/constants/app';
+import {
+  GasRecommendations,
+  PriorityLevels,
+} from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventFragment,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
-  MetaMetricsPageObject,
-  MetaMetricsReferrerObject,
+  MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import {
   TokenStandard,
@@ -29,6 +34,8 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import {
+  addHexes,
+  hexToDecimal,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
@@ -43,82 +50,19 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/utils/metrics';
-import {
-  REDESIGN_DEV_TRANSACTION_TYPES,
-  REDESIGN_USER_TRANSACTION_TYPES,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/pages/confirmations/utils';
-import {
-  getSnapAndHardwareInfoForMetrics,
-  type SnapAndHardwareMessenger,
-} from '../snap-keyring/metrics';
+import type {
+  TransactionEventPayload,
+  TransactionMetaEventPayload,
+  TransactionMetricsRequest,
+} from '../../../../shared/types/metametrics';
 
-export type TransactionMetricsRequest = {
-  createEventFragment: (
-    options: MetaMetricsEventFragment,
-  ) => MetaMetricsEventFragment;
-  finalizeEventFragment: (
-    fragmentId: string,
-    options?: {
-      abandoned?: boolean;
-      page?: MetaMetricsPageObject;
-      referrer?: MetaMetricsReferrerObject;
-    },
-  ) => void;
-  getEventFragmentById: (fragmentId: string) => MetaMetricsEventFragment;
-  updateEventFragment: (
-    fragmentId: string,
-    payload: Partial<MetaMetricsEventFragment>,
-  ) => void;
-  getAccountType: (
-    address: string,
-  ) => Promise<'hardware' | 'imported' | 'MetaMask'>;
-  getDeviceModel: (
-    address: string,
-  ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
-  // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
-  // doesn't include some properties used in buildEventFragmentProperties,
-  // hence returning any here to avoid type errors.
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
-  getParticipateInMetrics: () => boolean;
-  getSelectedAddress: () => string;
-  getTokenStandardAndDetails: () => Promise<{
-    decimals?: string;
-    balance?: string;
-    symbol?: string;
-    standard?: TokenStandard;
-  }>;
-  getTransaction: (transactionId: string) => TransactionMeta;
-  provider: Provider;
-  snapAndHardwareMessenger: SnapAndHardwareMessenger;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  trackEvent: (payload: any) => void;
-  getIsSmartTransaction: () => boolean;
-  getSmartTransactionByMinedTxHash: (
-    txhash: string | undefined,
-  ) => SmartTransaction;
-  getRedesignedTransactionsEnabled: () => boolean;
-  getMethodData: (data: string) => Promise<{ name: string }>;
-  getIsRedesignedConfirmationsDeveloperEnabled: () => boolean;
-  getIsConfirmationAdvancedDetailsOpen: () => boolean;
-};
+import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
+import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
+import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { extractRpcDomain } from '../util';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
-
-export type TransactionEventPayload = {
-  transactionMeta: TransactionMeta;
-  actionId?: string;
-  error?: string;
-};
-
-export type TransactionMetaEventPayload = TransactionMeta & {
-  actionId?: string;
-  error?: string;
-};
 
 /**
  * This function is called when a transaction is added to the controller.
@@ -189,7 +133,7 @@ export const handleTransactionFailed = async (
     return;
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
   if (transactionEventPayload.error) {
@@ -221,18 +165,27 @@ export const handleTransactionConfirmed = async (
     return;
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
   const transactionMeta = { ...transactionEventPayload };
   const { txReceipt } = transactionMeta;
 
   extraParams.gas_used = txReceipt?.gasUsed;
+  extraParams.block_number =
+    txReceipt?.blockNumber && hexToDecimal(txReceipt.blockNumber);
 
-  const { submittedTime } = transactionMeta;
+  const { submittedTime, blockTimestamp } = transactionMeta;
 
   if (submittedTime) {
     extraParams.completion_time = getTransactionCompletionTime(submittedTime);
+  }
+
+  if (submittedTime && blockTimestamp) {
+    extraParams.completion_time_onchain = getTransactionOnchainCompletionTime(
+      submittedTime,
+      blockTimestamp,
+    );
   }
 
   if (txReceipt?.status === '0x0') {
@@ -379,12 +332,17 @@ export const createTransactionEventFragmentWithTxId = async (
  * @param transactionMetricsRequest - Contains controller actions
  * @param transactionMetricsRequest.getParticipateInMetrics - Returns whether the user has opted into metrics
  * @param transactionMetricsRequest.trackEvent - MetaMetrics track event function
+ * @param transactionMetricsRequest.getHDEntropyIndex - Returns Index of the currently selected HD Keyring
  * @param transactionEventPayload - The event payload
  * @param transactionEventPayload.transactionMeta - The updated transaction meta
  * @param transactionEventPayload.approvalTransactionMeta - The updated approval transaction meta
  */
 export const handlePostTransactionBalanceUpdate = async (
-  { getParticipateInMetrics, trackEvent }: TransactionMetricsRequest,
+  {
+    getParticipateInMetrics,
+    trackEvent,
+    getHDEntropyIndex,
+  }: TransactionMetricsRequest,
   {
     transactionMeta,
     approvalTransactionMeta,
@@ -396,9 +354,12 @@ export const handlePostTransactionBalanceUpdate = async (
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
     if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent({
-        event: 'Swap Failed',
-        sensitiveProperties: { ...transactionMeta.swapMetaData },
+        event: MetaMetricsEventName.SwapFailed,
         category: MetaMetricsEventCategory.Swaps,
+        sensitiveProperties: { ...transactionMeta.swapMetaData },
+        properties: {
+          hd_entropy_index: getHDEntropyIndex(),
+        },
       });
     } else {
       const tokensReceived = getSwapsTokensReceivedFromTxMeta(
@@ -451,6 +412,9 @@ export const handlePostTransactionBalanceUpdate = async (
           // browsers.
           token_to_amount:
             transactionMeta.swapMetaData.token_to_amount.toString(10),
+        },
+        properties: {
+          hd_entropy_index: getHDEntropyIndex(),
         },
       });
     }
@@ -519,7 +483,8 @@ function createTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any;
 }) {
@@ -528,7 +493,12 @@ function createTransactionEventFragment({
       transactionMetricsRequest.getEventFragmentById,
       eventName,
       transactionMeta,
-    )
+    ) &&
+    /**
+     * HACK: "transaction-submitted-<id>" fragment hack
+     * can continue to createEventFragment if "transaction-submitted-<id>"  submitted fragment exists
+     */
+    eventName !== TransactionMetaMetricsEvent.submitted
   ) {
     return;
   }
@@ -634,7 +604,8 @@ function updateTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any;
 }) {
@@ -642,25 +613,14 @@ function updateTransactionEventFragment({
 
   switch (eventName) {
     case TransactionMetaMetricsEvent.approved:
-      transactionMetricsRequest.updateEventFragment(uniqueId, {
-        properties: payload.properties,
-        sensitiveProperties: payload.sensitiveProperties,
-      });
-      break;
-
     case TransactionMetaMetricsEvent.rejected:
-      transactionMetricsRequest.updateEventFragment(uniqueId, {
-        properties: payload.properties,
-        sensitiveProperties: payload.sensitiveProperties,
-      });
-      break;
-
     case TransactionMetaMetricsEvent.finalized:
       transactionMetricsRequest.updateEventFragment(uniqueId, {
         properties: payload.properties,
         sensitiveProperties: payload.sensitiveProperties,
       });
       break;
+
     default:
       break;
   }
@@ -679,6 +639,7 @@ function finalizeTransactionEventFragment({
 
   switch (eventName) {
     case TransactionMetaMetricsEvent.approved:
+    case TransactionMetaMetricsEvent.finalized:
       transactionMetricsRequest.finalizeEventFragment(uniqueId);
       break;
 
@@ -688,9 +649,6 @@ function finalizeTransactionEventFragment({
       });
       break;
 
-    case TransactionMetaMetricsEvent.finalized:
-      transactionMetricsRequest.finalizeEventFragment(uniqueId);
-      break;
     default:
       break;
   }
@@ -705,7 +663,8 @@ async function createUpdateFinalizeTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extraParams?: Record<string, any>;
 }) {
@@ -744,7 +703,7 @@ async function createUpdateFinalizeTransactionEventFragment({
 }
 
 function hasFragment(
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getEventFragmentById: (arg0: string) => any,
   eventName: TransactionMetaMetricsEvent,
@@ -774,7 +733,7 @@ async function buildEventFragmentProperties({
   transactionMetricsRequest,
   extraParams = {},
 }: {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extraParams?: Record<string, any>;
   transactionEventPayload: TransactionEventPayload;
@@ -804,13 +763,17 @@ async function buildEventFragmentProperties({
     finalApprovalAmount,
     securityProviderResponse,
     simulationFails,
+    id,
+    userFeeLevel,
   } = transactionMeta;
-  const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
+
+  const gasFeeSelected =
+    userFeeLevel === 'dappSuggested' ? 'dapp_proposed' : userFeeLevel;
 
   const { assetType, tokenStandard } = await determineTransactionAssetType(
     transactionMeta,
-    query,
+    transactionMetricsRequest.provider,
     transactionMetricsRequest.getTokenStandardAndDetails,
   );
 
@@ -822,7 +785,7 @@ async function buildEventFragmentProperties({
     contractMethodName = methodData?.name;
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gasParams = {} as Record<string, any>;
 
@@ -831,12 +794,18 @@ async function buildEventFragmentProperties({
     gasParams.max_priority_fee_per_gas = maxPriorityFeePerGas;
   } else {
     gasParams.gas_price = gasPrice;
+    gasParams.default_estimate =
+      MetaMetricsEventTransactionEstimateType.DefaultEstimate;
   }
 
   if (defaultGasEstimates) {
     const { estimateType } = defaultGasEstimates;
     if (estimateType) {
-      gasParams.default_estimate = estimateType;
+      gasParams.default_estimate =
+        estimateType === PriorityLevels.dAppSuggested
+          ? MetaMetricsEventTransactionEstimateType.DappProposed
+          : estimateType;
+
       let defaultMaxFeePerGas =
         transactionMeta.defaultGasEstimates?.maxFeePerGas;
       let defaultMaxPriorityFeePerGas =
@@ -916,7 +885,9 @@ async function buildEventFragmentProperties({
   let transactionContractMethod;
   let transactionApprovalAmountVsProposedRatio;
   let transactionApprovalAmountVsBalanceRatio;
+  let transactionContractAddress;
   let transactionType = TransactionType.simpleSend;
+  let transactionContractMethod4Byte;
   if (type === TransactionType.swapAndSend) {
     transactionType = TransactionType.swapAndSend;
   } else if (type === TransactionType.cancel) {
@@ -928,6 +899,11 @@ async function buildEventFragmentProperties({
   } else if (contractInteractionTypes) {
     transactionType = TransactionType.contractInteraction;
     transactionContractMethod = contractMethodName;
+    transactionContractAddress = transactionMeta.txParams?.to;
+    transactionContractMethod4Byte = transactionMeta.txParams?.data?.slice(
+      0,
+      10,
+    );
     if (
       transactionContractMethod === contractMethodNames.APPROVE &&
       tokenStandard === TokenStandard.ERC20
@@ -991,7 +967,7 @@ async function buildEventFragmentProperties({
     );
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const blockaidProperties: any = getBlockaidMetricsProps(transactionMeta);
 
@@ -1002,23 +978,11 @@ async function buildEventFragmentProperties({
   if (simulationFails) {
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
-  const isRedesignedConfirmationsDeveloperSettingEnabled =
-    transactionMetricsRequest.getIsRedesignedConfirmationsDeveloperEnabled() ||
-    Boolean(process.env.ENABLE_CONFIRMATION_REDESIGN);
 
-  const isRedesignedTransactionsUserSettingEnabled =
-    transactionMetricsRequest.getRedesignedTransactionsEnabled();
-
-  if (
-    (isRedesignedConfirmationsDeveloperSettingEnabled &&
-      REDESIGN_DEV_TRANSACTION_TYPES.includes(
-        transactionMeta.type as TransactionType,
-      )) ||
-    (isRedesignedTransactionsUserSettingEnabled &&
-      REDESIGN_USER_TRANSACTION_TYPES.includes(
-        transactionMeta.type as TransactionType,
-      ))
-  ) {
+  const isRedesignedForTransaction = shouldUseRedesignForTransactions({
+    transactionMetadataType: transactionMeta.type as TransactionType,
+  });
+  if (isRedesignedForTransaction) {
     uiCustomizations.push(
       MetaMetricsEventUiCustomization.RedesignedConfirmation,
     );
@@ -1034,6 +998,11 @@ async function buildEventFragmentProperties({
 
   const swapAndSendMetricsProperties =
     getSwapAndSendMetricsProps(transactionMeta);
+
+  // Add Entropy Properties
+  const hdEntropyProperties = {
+    hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
+  };
 
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
@@ -1056,19 +1025,27 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
+    transaction_internal_id: id,
+    gas_fee_selected: gasFeeSelected,
     ...blockaidProperties,
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     transaction_advanced_view: isAdvancedDetailsOpen,
+    transaction_contract_method: transactionContractMethod
+      ? [transactionContractMethod]
+      : [],
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
-    // TODO: Replace `any` with type
+    ...hdEntropyProperties,
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
     transactionMetricsRequest.getAccountType,
     transactionMetricsRequest.getDeviceModel,
+    transactionMetricsRequest.getHardwareTypeForMetric,
     transactionMetricsRequest.snapAndHardwareMessenger,
   );
   Object.assign(properties, snapAndHardwareInfo);
@@ -1086,11 +1063,15 @@ async function buildEventFragmentProperties({
       : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
     first_seen: time,
     gas_limit: gasLimit,
-    transaction_contract_method: transactionContractMethod,
     transaction_replaced: transactionReplaced,
+    transaction_contract_address: transactionContractAddress
+      ? [transactionContractAddress]
+      : [],
+    transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
 
@@ -1104,13 +1085,40 @@ async function buildEventFragmentProperties({
     };
   }
 
+  await addBatchProperties(
+    transactionMeta,
+    transactionMetricsRequest.getMethodData,
+    properties,
+    sensitiveProperties,
+  );
+
+  addGaslessProperties(
+    transactionMeta,
+    properties,
+    sensitiveProperties,
+    transactionMetricsRequest.getAccountBalance,
+  );
+
+  // Only calculate and add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
+  if (
+    status === TransactionStatus.submitted ||
+    status === TransactionStatus.confirmed
+  ) {
+    // Get RPC URL from provider
+    const rpcUrl = transactionMetricsRequest.getNetworkRpcUrl(
+      transactionMeta.chainId,
+    );
+    const domain = extractRpcDomain(rpcUrl);
+    properties.rpc_domain = domain;
+  }
+
   return { properties, sensitiveProperties };
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getGasValuesInGWEI(gasParams: Record<string, any>) {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gasValuesInGwei = {} as Record<string, any>;
   for (const param in gasParams) {
@@ -1125,6 +1133,30 @@ function getGasValuesInGWEI(gasParams: Record<string, any>) {
 
 function getTransactionCompletionTime(submittedTime: number) {
   return Math.round((Date.now() - submittedTime) / 1000).toString();
+}
+
+/**
+ * Returns number of seconds (rounded to the hundredths) between submitted time
+ * and the block timestamp.
+ *
+ * @param submittedTimeMs - The UNIX timestamp in milliseconds in which the
+ * transaction has been submitted
+ * @param blockTimestampHex - The UNIX timestamp in seconds in hexadecimal in which
+ * the transaction has been confirmed in a block
+ */
+function getTransactionOnchainCompletionTime(
+  submittedTimeMs: number,
+  blockTimestampHex: string,
+): string {
+  const DECIMAL_DIGITS = 2;
+
+  const blockTimestampSeconds = Number(hexToDecimal(blockTimestampHex));
+  const completionTimeSeconds = blockTimestampSeconds - submittedTimeMs / 1000;
+  const completionTimeSecondsRounded =
+    Math.round(completionTimeSeconds * 10 ** DECIMAL_DIGITS) /
+    10 ** DECIMAL_DIGITS;
+
+  return completionTimeSecondsRounded.toString();
 }
 
 /**
@@ -1178,4 +1210,121 @@ function allowanceAmountInRelationToTokenBalance(
       .round(2)}`;
   }
   return null;
+}
+
+async function addBatchProperties(
+  transactionMeta: TransactionMeta,
+  getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
+  properties: Record<string, Json | undefined>,
+  sensitiveProperties: Record<string, Json | undefined>,
+) {
+  const isExternal = origin && origin !== ORIGIN_METAMASK;
+  const { delegationAddress, nestedTransactions, txParams } = transactionMeta;
+  const { authorizationList } = txParams;
+  const isBatch = Boolean(nestedTransactions?.length);
+  const isUpgrade = Boolean(authorizationList?.length);
+
+  if (isExternal) {
+    properties.api_method = isBatch
+      ? MESSAGE_TYPE.WALLET_SEND_CALLS
+      : MESSAGE_TYPE.ETH_SEND_TRANSACTION;
+  }
+
+  if (isBatch) {
+    properties.batch_transaction_count = nestedTransactions?.length;
+    properties.batch_transaction_method = 'eip7702';
+
+    properties.transaction_contract_method = await getNestedMethodNames(
+      nestedTransactions ?? [],
+      getMethodData,
+    );
+
+    sensitiveProperties.transaction_contract_address = nestedTransactions
+      ?.filter(
+        (tx) =>
+          tx.type === TransactionType.contractInteraction && tx.to?.length,
+      )
+      .map((tx) => tx.to as string);
+  }
+
+  if (transactionMeta.status === TransactionStatus.rejected) {
+    const { error } = transactionMeta;
+
+    properties.eip7702_upgrade_rejection =
+      // @ts-expect-error Code has string type in controller
+      isUpgrade && error.code === errorCodes.rpc.methodNotSupported;
+  }
+
+  properties.eip7702_upgrade_transaction = isUpgrade;
+  sensitiveProperties.account_eip7702_upgraded = delegationAddress;
+}
+
+function addGaslessProperties(
+  transactionMeta: TransactionMeta,
+  properties: Record<string, Json | undefined>,
+  _sensitiveProperties: Record<string, Json | undefined>,
+  getAccountBalance: (account: Hex, chainId: Hex) => Hex,
+) {
+  const {
+    batchId,
+    batchTransactions,
+    gasFeeTokens,
+    nestedTransactions,
+    selectedGasFeeToken,
+  } = transactionMeta;
+
+  properties.gas_payment_tokens_available = gasFeeTokens?.map(
+    (token) => token.symbol,
+  );
+
+  properties.gas_paid_with = gasFeeTokens?.find(
+    (token) =>
+      token.tokenAddress.toLowerCase() === selectedGasFeeToken?.toLowerCase(),
+  )?.symbol;
+
+  properties.gas_insufficient_native_asset = isInsufficientNativeBalance(
+    transactionMeta,
+    getAccountBalance,
+  );
+
+  // Temporary pending nested transaction type support
+  if (batchId && !batchTransactions?.length && !nestedTransactions?.length) {
+    properties.transaction_type = 'gas_payment';
+  }
+}
+
+async function getNestedMethodNames(
+  transactions: NestedTransactionMetadata[],
+  getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
+): Promise<string[]> {
+  const allData = transactions
+    .filter((tx) => tx.type === TransactionType.contractInteraction && tx.data)
+    .map((tx) => tx.data as Hex);
+
+  const results = await Promise.all(allData.map((data) => getMethodData(data)));
+
+  const names = results
+    .map((result) => result?.name)
+    .filter((name) => name?.length) as string[];
+
+  return names;
+}
+
+function isInsufficientNativeBalance(
+  transactionMeta: TransactionMeta,
+  getAccountBalance: (account: Hex, chainId: Hex) => Hex,
+) {
+  const { chainId, txParams } = transactionMeta;
+  const { from, gas, gasPrice, maxFeePerGas, value } = txParams;
+  const nativeBalance = getAccountBalance(from as Hex, chainId);
+
+  const gasCost = getMaximumGasTotalInHexWei({
+    gasLimit: gas,
+    gasPrice,
+    maxFeePerGas,
+  });
+
+  const totalCost = add0x(addHexes(gasCost, value ?? '0x0'));
+
+  return new Numeric(totalCost, 16).greaterThan(new Numeric(nativeBalance, 16));
 }

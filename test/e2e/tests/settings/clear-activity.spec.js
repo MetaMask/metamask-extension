@@ -1,10 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  defaultGanacheOptions,
-  openMenuSafe,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Clear account activity', function () {
@@ -19,7 +14,6 @@ describe('Clear account activity', function () {
         fixtures: new FixtureBuilder()
           .withTransactionControllerCompletedAndIncomingTransaction()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

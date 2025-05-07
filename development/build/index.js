@@ -102,6 +102,7 @@ async function defineAndRunBuildTasks() {
       'removeEventListener',
       'ShadowRoot',
       'HTMLElement',
+      'HTMLFormElement',
       'Element',
       'pageXOffset',
       'pageYOffset',
@@ -143,6 +144,7 @@ async function defineAndRunBuildTasks() {
       'stateHooks',
       'sentryHooks',
       'sentry',
+      'logEncryptedVault',
     ];
 
     if (

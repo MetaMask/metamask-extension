@@ -86,7 +86,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
                   min="0"
                   placeholder="1"
                   type="number"
-                  value=""
+                  value="1"
                 />
               </div>
             </div>

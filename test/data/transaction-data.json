@@ -751,7 +751,7 @@
       "status": "confirmed",
       "originalGasEstimate": "0x118e0",
       "userEditedGasLimit": false,
-      "chainId": "0x5",
+      "chainId": "0x1",
       "loadingDefaults": false,
       "dappSuggestedGasFees": {
         "maxPriorityFeePerGas": "0x3B9ACA00",

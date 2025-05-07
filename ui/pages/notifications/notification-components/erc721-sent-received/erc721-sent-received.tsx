@@ -6,7 +6,10 @@ import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { t } from '../../../../../app/scripts/translate';
 
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
@@ -58,6 +61,8 @@ const title = (n: ERC721Notification) =>
 
 const getTitle = (n: ERC721Notification) => {
   const address = shortenAddress(isSent(n) ? n.data.to : n.data.from);
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const items = createTextItems([title(n) || '', address], TextVariant.bodySm);
   return items;
 };
@@ -109,7 +114,7 @@ export const components: NotificationComponent<ERC721Notification> = {
       );
     },
     body: {
-      type: 'body_onchain_notification',
+      type: NotificationComponentType.OnChainBody,
       Image: ({ notification }) => {
         const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencyName } =
@@ -147,7 +152,11 @@ export const components: NotificationComponent<ERC721Notification> = {
             color: TextColor.successDefault,
             backgroundColor: BackgroundColor.successMuted,
           }}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           label={t('notificationItemStatus') || ''}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           detail={t('notificationItemConfirmed') || ''}
         />
       ),
@@ -162,6 +171,8 @@ export const components: NotificationComponent<ERC721Notification> = {
               src: notification.data.nft.image,
               badgeSrc: nativeCurrencyLogo,
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationItemCollection') || ''}
             collection={`${notification.data.nft.collection.name} (${notification.data.nft.token_id})`}
           />
@@ -177,6 +188,8 @@ export const components: NotificationComponent<ERC721Notification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />
@@ -188,14 +201,13 @@ export const components: NotificationComponent<ERC721Notification> = {
     },
   },
   footer: {
-    type: 'footer_onchain_notification',
+    type: NotificationComponentType.OnChainFooter,
     ScanLink: ({ notification }) => {
       return (
         <NotificationDetailBlockExplorerButton
           notification={notification}
           chainId={notification.chain_id}
           txHash={notification.tx_hash}
-          id={notification.id}
         />
       );
     },

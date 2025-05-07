@@ -4,6 +4,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { AddressListItem } from '.';
 
 const SAMPLE_ADDRESS = '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb';
@@ -11,35 +12,53 @@ const SAMPLE_LABEL = 'metamask.eth';
 
 const mockOnClick = jest.fn();
 
-const render = (label = '', useConfusable = false) => {
+type Options = {
+  label?: string;
+  useConfusable?: boolean;
+  isDuplicate?: boolean;
+};
+
+const render = (options?: Options) => {
   return renderWithProvider(
     <AddressListItem
       address={SAMPLE_ADDRESS}
-      label={label || SAMPLE_LABEL}
-      useConfusable={useConfusable}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      label={options?.label || SAMPLE_LABEL}
+      useConfusable={options?.useConfusable}
       onClick={mockOnClick}
+      isDuplicate={options?.isDuplicate}
+      chainId={CHAIN_IDS.MAINNET}
     />,
     configureStore(mockState),
   );
 };
 
 describe('AddressListItem', () => {
-  it('renders the address and label', () => {
+  it('renders the address and label without duplicate contact warning icon', () => {
     const { getByText, container } = render();
     expect(container).toMatchSnapshot();
 
     expect(getByText(shortenAddress(SAMPLE_ADDRESS))).toBeInTheDocument();
+    expect(
+      document.querySelector(
+        '.address-list-item__duplicate-contact-warning-icon',
+      ),
+    ).not.toBeInTheDocument();
   });
 
   it('uses a confusable when it should', () => {
-    const { container } = render('metamask.eth', true);
+    const { container } = render({
+      label: 'metamask.eth',
+      useConfusable: true,
+    });
     expect(container).toMatchSnapshot();
 
     expect(document.querySelector('.confusable__point')).toBeInTheDocument();
   });
 
   it('does not force red text when unnecessary', () => {
-    render('metamask.eth');
+    render({ label: 'metamask.eth' });
     expect(
       document.querySelector('.confusable__point'),
     ).not.toBeInTheDocument();
@@ -51,5 +70,16 @@ describe('AddressListItem', () => {
     fireEvent.click(document.querySelector('button')!);
 
     expect(mockOnClick).toHaveBeenCalled();
+  });
+
+  it('displays duplicate contact warning icon', () => {
+    const { container } = render({ isDuplicate: true });
+
+    expect(container).toMatchSnapshot();
+    expect(
+      document.querySelector(
+        '.address-list-item__duplicate-contact-warning-icon',
+      ),
+    ).toBeInTheDocument();
   });
 });

@@ -26,7 +26,7 @@ import {
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   Button,
-  BUTTON_SIZES,
+  ButtonSize,
   Icon,
   IconSize,
   IconName,
@@ -44,17 +44,20 @@ import {
   TextColor,
   TextVariant,
   IconColor,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
-import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
+import {
+  ADD_POPULAR_CUSTOM_NETWORK,
+  REVEAL_SRP_LIST_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
-import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { updateDataDeletionTaskStatus } from '../../../store/actions';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import MetametricsToggle from './metametrics-toggle';
-import ProfileSyncToggle from './profile-sync-toggle';
 import DeleteMetametricsDataButton from './delete-metametrics-data-button';
 
 export default class SecurityTab extends PureComponent {
@@ -64,7 +67,6 @@ export default class SecurityTab extends PureComponent {
   };
 
   static propTypes = {
-    warning: PropTypes.string,
     history: PropTypes.object,
     openSeaEnabled: PropTypes.bool,
     setOpenSeaEnabled: PropTypes.func,
@@ -74,9 +76,6 @@ export default class SecurityTab extends PureComponent {
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
-    incomingTransactionsPreferences: PropTypes.object.isRequired,
-    networkConfigurations: PropTypes.object.isRequired,
-    setIncomingTransactionsPreferences: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
     setUse4ByteResolution: PropTypes.func.isRequired,
@@ -102,9 +101,11 @@ export default class SecurityTab extends PureComponent {
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
-    toggleExternalServices: PropTypes.func.isRequired,
+    toggleExternalServices: PropTypes.func,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
+    hdEntropyIndex: PropTypes.number,
+    hasMultipleHdKeyrings: PropTypes.bool,
   };
 
   state = {
@@ -165,6 +166,7 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
+    const { history, hasMultipleHdKeyrings } = this.props;
 
     return (
       <>
@@ -178,7 +180,7 @@ export default class SecurityTab extends PureComponent {
           <Button
             data-testid="reveal-seed-words"
             type="danger"
-            size={BUTTON_SIZES.LG}
+            size={ButtonSize.Lg}
             onClick={(event) => {
               event.preventDefault();
               this.context.trackEvent({
@@ -187,6 +189,7 @@ export default class SecurityTab extends PureComponent {
                 properties: {
                   key_type: MetaMetricsEventKeyType.Srp,
                   location: 'Settings',
+                  hd_entropy_index: this.props.hdEntropyIndex,
                 },
               });
               this.context.trackEvent({
@@ -197,6 +200,12 @@ export default class SecurityTab extends PureComponent {
                   location: 'Settings',
                 },
               });
+              if (hasMultipleHdKeyrings) {
+                history.push({
+                  pathname: REVEAL_SRP_LIST_ROUTE,
+                });
+                return;
+              }
               this.setState({ srpQuizModalVisible: true });
             }}
           >
@@ -264,23 +273,6 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderIncomingTransactionsOptIn() {
-    const {
-      incomingTransactionsPreferences,
-      networkConfigurations,
-      setIncomingTransactionsPreferences,
-    } = this.props;
-
-    return (
-      <IncomingTransactionToggle
-        wrapperRef={this.settingsRefs[2]}
-        networkConfigurations={networkConfigurations}
-        setIncomingTransactionsPreferences={setIncomingTransactionsPreferences}
-        incomingTransactionsPreferences={incomingTransactionsPreferences}
-      />
-    );
-  }
-
   renderPhishingDetectionToggle() {
     const { t } = this.context;
     const { usePhishDetect, setUsePhishDetect } = this.props;
@@ -331,7 +323,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('use4ByteResolution')}</span>
           <div className="settings-page__content-description">
-            {t('use4ByteResolutionDescription')}
+            {t('toggleDecodeDescription')}
           </div>
         </div>
 
@@ -357,6 +349,7 @@ export default class SecurityTab extends PureComponent {
       participateInMetaMetrics,
       setDataCollectionForMarketing,
       setParticipateInMetaMetrics,
+      useExternalServices,
     } = this.props;
 
     return (
@@ -377,19 +370,21 @@ export default class SecurityTab extends PureComponent {
 
         <div
           className="settings-page__content-item-col"
-          data-testid="dataCollectionForMarketing"
+          data-testid="data-collection-for-marketing-toggle"
         >
           <ToggleButton
             value={dataCollectionForMarketing}
+            disabled={!useExternalServices}
             onToggle={(value) => {
-              setDataCollectionForMarketing(!value);
+              const newMarketingConsent = Boolean(!value);
+              setDataCollectionForMarketing(newMarketingConsent);
               if (participateInMetaMetrics) {
                 this.context.trackEvent({
                   category: MetaMetricsEventCategory.Settings,
                   event: MetaMetricsEventName.AnalyticsPreferenceSelected,
                   properties: {
                     is_metrics_opted_in: true,
-                    has_marketing_consent: false,
+                    has_marketing_consent: Boolean(newMarketingConsent),
                     location: 'Settings',
                   },
                 });
@@ -428,6 +423,14 @@ export default class SecurityTab extends PureComponent {
                 key="cyn-consensys-privacy-link"
               >
                 {t('privacyMsg')}
+              </a>,
+              <a
+                href={ZENDESK_URLS.SOLANA_ACCOUNTS}
+                target="_blank"
+                rel="noopener noreferrer"
+                key="cyn-consensys-privacy-link"
+              >
+                {t('chooseYourNetworkDescriptionCallToAction')}
               </a>,
             ])}
           </div>
@@ -1042,8 +1045,44 @@ export default class SecurityTab extends PureComponent {
         data-testid="advanced-setting-show-testnet-conversion"
       >
         <div className="settings-page__content-item">
-          <span>{t('basicConfigurationLabel')}</span>
-          <div className="settings-page__content-description">
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            marginBottom={2}
+          >
+            <Text variant={TextVariant.headingSm}>
+              {t('basicConfigurationLabel')}
+            </Text>
+            <ToggleButton
+              value={useExternalServices}
+              onToggle={() => {
+                if (useExternalServices) {
+                  // If we are going to be disabling external services, then we want to show the "turn off" warning modal
+                  setBasicFunctionalityModalOpen();
+                } else {
+                  toggleExternalServices(true);
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Settings,
+                    event: MetaMetricsEventName.SettingsUpdated,
+                    properties: {
+                      settings_group: 'security_privacy',
+                      settings_type: 'basic_functionality',
+                      old_value: false,
+                      new_value: true,
+                      // these values will always be set to false
+                      // when basic functionality is re-enabled
+                      was_notifications_on: false,
+                      was_profile_syncing_on: false,
+                    },
+                  });
+                }
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </Box>
+          <Text marginBottom={2} color={TextColor.textAlternative}>
             {t('basicConfigurationDescription', [
               <a
                 href="https://consensys.io/privacy-policy"
@@ -1054,38 +1093,10 @@ export default class SecurityTab extends PureComponent {
                 {t('privacyMsg')}
               </a>,
             ])}
-          </div>
+          </Text>
         </div>
 
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={useExternalServices}
-            onToggle={() => {
-              if (useExternalServices) {
-                // If we are going to be disabling external services, then we want to show the "turn off" warning modal
-                setBasicFunctionalityModalOpen();
-              } else {
-                toggleExternalServices(true);
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Settings,
-                  event: MetaMetricsEventName.SettingsUpdated,
-                  properties: {
-                    settings_group: 'security_privacy',
-                    settings_type: 'basic_functionality',
-                    old_value: false,
-                    new_value: true,
-                    // these values will always be set to false
-                    // when basic functionality is re-enabled
-                    was_notifications_on: false,
-                    was_profile_syncing_on: false,
-                  },
-                });
-              }
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
+        <div className="settings-page__content-item-col"></div>
       </Box>
     );
   }
@@ -1131,7 +1142,6 @@ export default class SecurityTab extends PureComponent {
 
   render() {
     const {
-      warning,
       petnamesEnabled,
       dataCollectionForMarketing,
       setDataCollectionForMarketing,
@@ -1144,8 +1154,6 @@ export default class SecurityTab extends PureComponent {
         {showDataCollectionDisclaimer
           ? this.renderDataCollectionWarning()
           : null}
-
-        {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
         </span>
@@ -1154,10 +1162,6 @@ export default class SecurityTab extends PureComponent {
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
-
-        <div className="settings-page__content-padded">
-          <ProfileSyncToggle />
-        </div>
 
         <div>
           <span className="settings-page__security-tab-sub-header">
@@ -1182,7 +1186,6 @@ export default class SecurityTab extends PureComponent {
         </span>
         <div className="settings-page__content-padded">
           {this.renderCurrencyRateCheckToggle()}
-          {this.renderIncomingTransactionsOptIn()}
           {this.renderSimulationsToggle()}
         </div>
 

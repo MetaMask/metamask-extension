@@ -9,17 +9,31 @@ import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
  * The supported trace names.
  */
 export enum TraceName {
+  AccountList = 'Account List',
+  AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
+  AccountOverviewNftsTab = 'Account Overview Nfts Tab',
+  AccountOverviewActivityTab = 'Account Overview Activity Tab',
+  AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
+  AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  ConnectPage = 'Connect Page',
+  CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
+  DisconnectAllModal = 'Disconnect All Modal',
   FirstRender = 'First Render',
   GetState = 'Get State',
+  ImportNfts = 'Import Nfts',
+  ImportTokens = 'Import Tokens',
   InitialActions = 'Initial Actions',
+  LazyLoadComponent = 'Lazy Load Component',
   LoadScripts = 'Load Scripts',
   Middleware = 'Middleware',
   NestedTest1 = 'Nested Test 1',
   NestedTest2 = 'Nested Test 2',
+  NetworkList = 'Network List',
   NotificationDisplay = 'Notification Display',
   PPOMValidation = 'PPOM Validation',
+  ReceiveModal = 'Receive Modal',
   SetupStore = 'Setup Store',
   Signature = 'Signature',
   Transaction = 'Transaction',
@@ -32,6 +46,11 @@ const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
+const durationsByName: { [name: string]: number } = {};
+
+if (process.env.IN_TEST && globalThis.stateHooks) {
+  globalThis.stateHooks.getCustomTraces = () => durationsByName;
+}
 
 type PendingTrace = {
   end: (timestamp?: number) => void;
@@ -155,9 +174,8 @@ export function endTrace(request: EndTraceRequest) {
 
   const { request: pendingRequest, startTime } = pendingTrace;
   const endTime = timestamp ?? getPerformanceTimestamp();
-  const duration = endTime - startTime;
 
-  log('Finished trace', name, id, duration, { request: pendingRequest });
+  logTrace(pendingRequest, startTime, endTime);
 }
 
 function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
@@ -181,9 +199,7 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
       },
       () => {
         const end = Date.now();
-        const duration = end - start;
-
-        log('Finished trace', name, duration, { error, request });
+        logTrace(request, start, end, error);
       },
     ) as T;
   };
@@ -240,6 +256,22 @@ function startSpan<T>(
     initScope(scope, request);
     return callback(spanOptions);
   });
+}
+
+function logTrace(
+  request: TraceRequest,
+  startTime: number,
+  endTime: number,
+  error?: unknown,
+) {
+  const duration = endTime - startTime;
+  const { name } = request;
+
+  if (process.env.IN_TEST) {
+    durationsByName[name] = duration;
+  }
+
+  log('Finished trace', name, duration, { request, error });
 }
 
 function getTraceId(request: TraceRequest) {

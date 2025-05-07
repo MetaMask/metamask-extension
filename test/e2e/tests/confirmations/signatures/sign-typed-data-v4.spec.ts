@@ -1,41 +1,97 @@
-import { strict as assert } from 'assert';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../../helpers';
-import { Ganache } from '../../../seeder/ganache';
+import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withRedesignConfirmationFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
+import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
   assertPastedAddress,
+  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
+  initializePages,
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: Suite) {
+const signatureMessageWithoutVerifyingContract = [
+  DEFAULT_FIXTURE_ACCOUNT,
+  {
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'version', type: 'string' },
+      ],
+      Person: [
+        { name: 'name', type: 'string' },
+        { name: 'wallets', type: 'address[]' },
+      ],
+      Mail: [
+        { name: 'from', type: 'Person' },
+        { name: 'to', type: 'Person[]' },
+        { name: 'contents', type: 'string' },
+        { name: 'attachment', type: 'bytes' },
+      ],
+    },
+    primaryType: 'Mail',
+    domain: {
+      chainId: '0x539',
+      name: 'Ether Mail',
+      version: '1',
+    },
+    message: {
+      contents: 'Hello, Bob!',
+      from: {
+        name: 'Cow',
+        wallets: [
+          '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+          '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+        ],
+      },
+      to: [
+        {
+          name: 'Bob',
+          wallets: [
+            '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+            '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+            '0xB0B0b0b0b0b0B000000000000000000000000000',
+          ],
+        },
+      ],
+      attachment: '0x',
+    },
+  },
+];
+
+describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        const addresses = await (ganacheServer as Ganache).getAccounts();
+        const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
+        await initializePages(driver);
 
         await openDappAndTriggerSignature(
           driver,
@@ -43,12 +99,12 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
         );
 
         await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance(driver);
+        await assertHeaderInfoBalance();
 
         await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress(driver);
+        await assertPastedAddress();
 
-        await assertInfoValues(driver);
+        await assertInfoValues({ driver });
         await scrollAndConfirmAndAssertConfirm(driver);
 
         await assertAccountDetailsMetrics(
@@ -63,6 +119,7 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Mail',
           withAnonEvents: true,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
         await assertVerifiedResults(driver, publicAddress);
@@ -74,21 +131,22 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
   });
 
   it('initiates and rejects', async function () {
-    await withRedesignConfirmationFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
+        await initializePages(driver);
+        const confirmation = new SignTypedData(driver);
+
         await openDappAndTriggerSignature(
           driver,
           SignatureType.SignTypedDataV4,
         );
 
-        await driver.clickElementAndWaitForWindowToClose(
-          '[data-testid="confirm-footer-cancel-button"]',
-        );
+        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -96,69 +154,74 @@ describe('Confirmation Signature - Sign Typed Data V4 @no-mmi', function (this: 
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Mail',
           location: 'confirmation',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
-        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.waitForSelector({
-          css: '#signTypedDataV4Result',
-          text: 'Error: User rejected the request.',
-        });
-        assert.ok(rejectionResult);
+        await assertRejectedSignature();
       },
       async (mockServer) => {
         return await mockSignatureRejected(mockServer, true);
       },
     );
   });
+
+  it('signs message with verifyingContract field missing', async function () {
+    await withTransactionEnvelopeTypeFixtures(
+      this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
+      async ({ driver }: TestSuiteArguments) => {
+        await unlockWallet(driver);
+        const testDappIndividualRequest = new TestDappIndividualRequest(driver);
+
+        await testDappIndividualRequest.request(
+          'eth_signTypedData_v4',
+          signatureMessageWithoutVerifyingContract,
+        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await assertInfoValues({ driver, verifyingContract: false });
+        await scrollAndConfirmAndAssertConfirm(driver);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.TestDappSendIndividualRequest,
+        );
+
+        await testDappIndividualRequest.checkExpectedResult(
+          '0xdf05fb422b6623939c9ec6b622d21b97e3974cc8bf0d7534aa8e5972be4c1e954261493934ecd1088aa32f4b0686dc9a4a847bd51fb572aba1f69153035533781c',
+        );
+      },
+    );
+  });
 });
 
-async function assertInfoValues(driver: Driver) {
+async function assertInfoValues({
+  driver,
+  verifyingContract = true,
+}: {
+  driver: Driver;
+  verifyingContract?: boolean;
+}) {
+  const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-  const contractPetName = driver.findElement({
-    css: '.name__value',
-    text: '0xCcCCc...ccccC',
-  });
-
-  const primaryType = driver.findElement({ text: 'Mail' });
-  const contents = driver.findElement({ text: 'Hello, Bob!' });
-  const fromName = driver.findElement({ text: 'Cow' });
-  const fromAddressNum0 = driver.findElement({
-    css: '.name__value',
-    text: '0xCD2a3...DD826',
-  });
-  const toName = driver.findElement({ text: 'Bob' });
-  const toAddressNum2 = driver.findElement({
-    css: '.name__value',
-    text: '0xB0B0b...00000',
-  });
-  const attachment = driver.findElement({ text: '0x' });
-
-  assert.ok(await origin, 'origin');
-  assert.ok(await contractPetName, 'contractPetName');
-  assert.ok(await primaryType, 'primaryType');
-  assert.ok(await contents, 'contents');
-  assert.ok(await fromName, 'fromName');
-  assert.ok(await fromAddressNum0, 'fromAddressNum0');
-  assert.ok(await toName, 'toName');
-  assert.ok(await toAddressNum2, 'toAddressNum2');
-  assert.ok(await attachment, 'attachment');
+  if (verifyingContract) {
+    await signTypedData.verifyContractPetName();
+  }
+  await signTypedData.verifyOrigin();
+  await signTypedData.verifyPrimaryType();
+  await signTypedData.verifyFromName();
+  await signTypedData.verifyFromAddress();
+  await signTypedData.verifyToName();
+  await signTypedData.verifyToAddress();
+  await signTypedData.verifyContents();
+  await signTypedData.verifyAttachment();
+  await signTypedData.verifyToAddressNum2();
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
+  const testDapp = new TestDapp(driver);
   await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#signTypedDataV4Verify');
-
-  await driver.waitForSelector({
-    css: '#signTypedDataV4Result',
-    text: '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
-  });
-
-  await driver.waitForSelector({
-    css: '#signTypedDataV4VerifyResult',
-    text: publicAddress,
-  });
+  await testDapp.check_successSignTypedDataV4(publicAddress);
+  await testDapp.verify_successSignTypedDataV4Result(
+    '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
+  );
 }

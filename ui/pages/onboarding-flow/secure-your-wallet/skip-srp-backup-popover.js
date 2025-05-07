@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
 import Popover from '../../../components/ui/popover';
@@ -27,12 +27,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const trackEvent = useContext(MetaMetricsContext);
 
   return (
@@ -50,6 +52,9 @@ export default function SkipSRPBackup({ handleClose }) {
                 category: MetaMetricsEventCategory.Onboarding,
                 event:
                   MetaMetricsEventName.OnboardingWalletSecuritySkipCanceled,
+                properties: {
+                  hd_entropy_index: hdEntropyIndex,
+                },
               });
               handleClose();
             }}
@@ -69,6 +74,9 @@ export default function SkipSRPBackup({ handleClose }) {
                 category: MetaMetricsEventCategory.Onboarding,
                 event:
                   MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
+                properties: {
+                  hd_entropy_index: hdEntropyIndex,
+                },
               });
               history.push(ONBOARDING_COMPLETION_ROUTE);
             }}

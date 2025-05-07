@@ -3,7 +3,13 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import Name from '../../../../../../../components/app/name';
-import { Box, Text } from '../../../../../../../components/component-library';
+import {
+  Box,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -11,10 +17,10 @@ import {
   BlockSize,
   BorderRadius,
   Display,
+  IconColor,
   TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { SPENDING_CAP_UNLIMITED_MSG } from '../../../../../constants';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
@@ -22,23 +28,30 @@ import { Container } from '../../shared/transaction-data/transaction-data';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 import { useIsNFT } from '../hooks/use-is-nft';
 
-export const ApproveStaticSimulation = () => {
+export const ApproveStaticSimulation = ({
+  setIsOpenEditSpendingCapModal,
+}: {
+  setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
+}) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
-  const { decimals: initialDecimals } = useAssetDetails(
+  const { decimals } = useAssetDetails(
     transactionMeta?.txParams?.to,
     transactionMeta?.txParams?.from,
     transactionMeta?.txParams?.data,
+    transactionMeta?.chainId,
   );
 
-  const decimals = initialDecimals || '0';
-
-  const { spendingCap, formattedSpendingCap, value, pending } =
-    useApproveTokenSimulation(transactionMeta, decimals);
+  const {
+    spendingCap,
+    isUnlimitedSpendingCap,
+    formattedSpendingCap,
+    value,
+    pending,
+  } = useApproveTokenSimulation(transactionMeta, decimals);
 
   const { isNFT } = useIsNFT(transactionMeta);
 
@@ -50,6 +63,8 @@ export const ApproveStaticSimulation = () => {
     return null;
   }
 
+  const { chainId } = transactionMeta;
+
   const formattedTokenText = (
     <Text
       data-testid="simulation-token-value"
@@ -59,9 +74,7 @@ export const ApproveStaticSimulation = () => {
       textAlign={TextAlign.Center}
       alignItems={AlignItems.center}
     >
-      {spendingCap === SPENDING_CAP_UNLIMITED_MSG
-        ? t('unlimited')
-        : spendingCap}
+      {isUnlimitedSpendingCap ? t('unlimited') : formattedSpendingCap}
     </Text>
   );
 
@@ -71,15 +84,24 @@ export const ApproveStaticSimulation = () => {
     >
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         <Box display={Display.Flex} alignItems={AlignItems.center}>
+          {!isNFT && (
+            <ButtonIcon
+              color={IconColor.primaryDefault}
+              ariaLabel={t('edit')}
+              iconName={IconName.Edit}
+              onClick={() => setIsOpenEditSpendingCapModal(true)}
+              size={ButtonIconSize.Sm}
+              data-testid="edit-spending-cap-icon"
+            />
+          )}
           <Box
             display={Display.Inline}
             marginInlineEnd={1}
             minWidth={BlockSize.Zero}
           >
-            {spendingCap === SPENDING_CAP_UNLIMITED_MSG ? (
-              <Tooltip title={formattedSpendingCap}>
-                {formattedTokenText}
-              </Tooltip>
+            {Boolean(isUnlimitedSpendingCap) ||
+            spendingCap !== formattedSpendingCap ? (
+              <Tooltip title={spendingCap}>{formattedTokenText}</Tooltip>
             ) : (
               formattedTokenText
             )}
@@ -88,6 +110,7 @@ export const ApproveStaticSimulation = () => {
             value={transactionMeta.txParams.to as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
+            variation={chainId}
           />
         </Box>
       </Box>

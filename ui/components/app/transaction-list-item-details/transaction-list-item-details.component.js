@@ -13,15 +13,12 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { Box } from '../../component-library/box';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { Icon, IconName, Text } from '../../component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
-///: END:ONLY_INCLUDE_IF
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -29,56 +26,60 @@ export default class TransactionListItemDetails extends PureComponent {
     trackEvent: PropTypes.func,
   };
 
-  static defaultProps = {
-    recipientEns: null,
-  };
+  static defaultProps = {};
 
   static propTypes = {
     onCancel: PropTypes.func,
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
     showSpeedUp: PropTypes.bool,
-    showRetry: PropTypes.bool,
+    /**
+     * Disabling the retry button until further notice
+     *
+     * @see {@link https://github.com/MetaMask/metamask-extension/issues/28615}
+     */
+    // showRetry: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     transactionGroup: PropTypes.object,
     title: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
-    recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string,
     recipientName: PropTypes.string,
-    recipientMetadataName: PropTypes.string,
-    rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
-    recipientNickname: PropTypes.string,
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
     history: PropTypes.object,
     blockExplorerLinkText: PropTypes.object,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    getCustodianTransactionDeepLink: PropTypes.func,
-    selectedAccount: PropTypes.object,
-    transactionNote: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IF
+    chainId: PropTypes.string,
+    networkConfiguration: PropTypes.object,
   };
 
   state = {
     justCopied: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    custodyTransactionDeepLink: null,
-    ///: END:ONLY_INCLUDE_IF
   };
 
   handleBlockExplorerClick = () => {
     const {
       transactionGroup: { primaryTransaction },
-      rpcPrefs,
+      networkConfiguration,
       isCustomNetwork,
       history,
       onClose,
+      chainId,
     } = this.props;
+    const blockExplorerUrl =
+      networkConfiguration?.[chainId]?.blockExplorerUrls[
+        networkConfiguration?.[chainId]?.defaultBlockExplorerUrlIndex
+      ];
+
+    const rpcPrefs = {
+      blockExplorerUrl,
+      imageUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId],
+    };
+
     const blockExplorerLink = getBlockExplorerLink(
       primaryTransaction,
       rpcPrefs,
@@ -137,84 +138,37 @@ export default class TransactionListItemDetails extends PureComponent {
   };
 
   componentDidMount() {
-    const {
-      recipientAddress,
-      tryReverseResolveAddress,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      selectedAccount,
-      transactionGroup,
-      ///: END:ONLY_INCLUDE_IF
-    } = this.props;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    this._mounted = true;
-    const address = selectedAccount?.address;
-    const custodyId = transactionGroup?.primaryTransaction?.custodyId;
-
-    if (this._mounted && address && custodyId) {
-      this.getCustodianTransactionDeepLink(address, custodyId);
-    }
-    ///: END:ONLY_INCLUDE_IF
+    const { recipientAddress, tryReverseResolveAddress } = this.props;
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getCustodianTransactionDeepLink = async (address, custodyId) => {
-    const { getCustodianTransactionDeepLink } = this.props;
-
-    const custodyTransactionDeepLink = await getCustodianTransactionDeepLink(
-      address,
-      custodyId,
-    );
-
-    if (custodyTransactionDeepLink && this._mounted) {
-      this.setState({ custodyTransactionDeepLink });
-    }
-  };
-
-  componentWillUnmount() {
-    this._mounted = false;
-  }
-  ///: END:ONLY_INCLUDE_IF
-
   render() {
     const { t } = this.context;
-    const {
-      justCopied,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      custodyTransactionDeepLink,
-      ///: END:ONLY_INCLUDE_IF
-    } = this.state;
+    const { justCopied } = this.state;
     const {
       transactionGroup,
       primaryCurrency,
       showSpeedUp,
-      showRetry,
-      recipientEns,
+      // showRetry,
       recipientAddress,
       recipientName,
-      recipientMetadataName,
       senderAddress,
       isEarliestNonce,
       senderNickname,
       title,
       onClose,
-      recipientNickname,
       showCancel,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      transactionNote,
-      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const {
       primaryTransaction: transaction,
       initialTransaction: { type },
     } = transactionGroup;
-    const { hash } = transaction;
+    const { chainId, hash } = transaction;
 
     return (
       <Popover title={title} onClose={onClose}>
@@ -238,7 +192,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   detailsModal
                 />
               )}
-              {showRetry && (
+              {/* {showRetry && (
                 <Tooltip title={t('retryTransaction')}>
                   <Button
                     type="raised"
@@ -249,7 +203,7 @@ export default class TransactionListItemDetails extends PureComponent {
                     <i className="fa fa-sync"></i>
                   </Button>
                 </Tooltip>
-              )}
+              )} */}
             </div>
           </div>
           <div className="transaction-list-item-details__header">
@@ -289,30 +243,6 @@ export default class TransactionListItemDetails extends PureComponent {
                   </Button>
                 </Tooltip>
               </div>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                custodyTransactionDeepLink &&
-                  custodyTransactionDeepLink.url && (
-                    <Tooltip
-                      wrapperClassName="transaction-list-item-details__header-button"
-                      containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                      title={t('viewinCustodianApp')}
-                    >
-                      <Button
-                        type="raised"
-                        onClick={() => {
-                          window.open(custodyTransactionDeepLink.url);
-                        }}
-                      >
-                        <Icon
-                          name={IconName.Custody}
-                          color={IconColor.primaryDefault}
-                        />
-                      </Button>
-                    </Tooltip>
-                  )
-                ///: END:ONLY_INCLUDE_IF
-              }
             </div>
           </div>
           <div className="transaction-list-item-details__body">
@@ -325,13 +255,11 @@ export default class TransactionListItemDetails extends PureComponent {
                 warnUserOnAccountMismatch={false}
                 variant={DEFAULT_VARIANT}
                 addressOnly
-                recipientEns={recipientEns}
                 recipientAddress={recipientAddress}
-                recipientNickname={recipientNickname}
                 recipientName={recipientName}
-                recipientMetadataName={recipientMetadataName}
                 senderName={senderNickname}
                 senderAddress={senderAddress}
+                chainId={chainId}
                 onRecipientClick={() => {
                   this.context.trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
@@ -364,21 +292,8 @@ export default class TransactionListItemDetails extends PureComponent {
                 transaction={transaction}
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
+                chainId={chainId}
               />
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                transactionNote && transactionNote.length !== 0 && (
-                  <Box className="transaction-list-item-details__transaction-breakdown">
-                    <Text as="h4" className="transaction-breakdown__title">
-                      {t('transactionNote')}
-                    </Text>
-                    <Text as="p" className="transaction-breakdown__description">
-                      {transactionNote}
-                    </Text>
-                  </Box>
-                )
-                ///: END:ONLY_INCLUDE_IF
-              }
               {transactionGroup.initialTransaction.type !==
                 TransactionType.incoming && (
                 <Box marginTop={3} marginBottom={3}>

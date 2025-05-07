@@ -49,6 +49,10 @@ export const PermissionCellOptions = ({
     dispatch(revokeDynamicSnapPermissions(snapId, [permissionName]));
   };
 
+  if (!description && !isRevokable) {
+    return null;
+  }
+
   return (
     <Box ref={ref}>
       <ButtonIcon
@@ -59,16 +63,18 @@ export const PermissionCellOptions = ({
       />
       {showOptions && (
         <Menu anchorElement={ref.current} onHide={handleClose}>
-          <MenuItem onClick={handleDetailsOpen}>
-            <Text
-              variant={TextVariant.bodySm}
-              style={{
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {t('details')}
-            </Text>
-          </MenuItem>
+          {description && (
+            <MenuItem onClick={handleDetailsOpen}>
+              <Text
+                variant={TextVariant.bodySm}
+                style={{
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {t('details')}
+              </Text>
+            </MenuItem>
+          )}
           {isRevokable && (
             <MenuItem onClick={handleRevokePermission}>
               <Text

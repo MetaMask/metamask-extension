@@ -1,18 +1,21 @@
 import { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { isStrictHexString } from '@metamask/utils';
 import {
-  setBridgeFeatureFlags,
-  setFromChain,
-} from '../../ducks/bridge/actions';
+  formatChainIdToCaip,
+  type SwapsTokenObject,
+} from '@metamask/bridge-controller';
+import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getCurrentKeyring,
   getDataCollectionForMarketing,
   getIsBridgeChain,
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  getUseExternalServices,
   SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
@@ -20,6 +23,7 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
 } from '../../../shared/constants/metametrics';
 
 import {
@@ -29,72 +33,79 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { isHardwareKeyring } from '../../helpers/utils/hardware';
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
-import { setSwapsFromToken } from '../../ducks/swaps/swaps';
-import { SwapsTokenObject } from '../../../shared/constants/swaps';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 ///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const providerConfig = useSelector(getProviderConfig);
-  const keyring = useSelector(getCurrentKeyring);
-  const usingHardwareWallet = isHardwareKeyring(keyring.type);
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
   const isBridgeSupported = useSelector(getIsBridgeEnabled);
   const isBridgeChain = useSelector(getIsBridgeChain);
 
   useEffect(() => {
-    dispatch(setBridgeFeatureFlags());
-  }, [dispatch, setBridgeFeatureFlags]);
-
-  useEffect(() => {
-    isBridgeChain &&
-      isBridgeSupported &&
-      providerConfig &&
-      dispatch(setFromChain(providerConfig.chainId));
-  }, []);
+    if (isExternalServicesEnabled) {
+      dispatch(setBridgeFeatureFlags());
+    }
+  }, [dispatch, isExternalServicesEnabled]);
 
   const openBridgeExperience = useCallback(
     (
       location: string,
       token: SwapsTokenObject | SwapsEthToken,
       portfolioUrlSuffix?: string,
+      isSwap = false,
     ) => {
       if (!isBridgeChain || !providerConfig) {
         return;
       }
 
       if (isBridgeSupported) {
+        trackCrossChainSwapsEvent({
+          event: MetaMetricsEventName.ActionOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            location:
+              location === 'Home'
+                ? MetaMetricsSwapsEventSource.MainView
+                : MetaMetricsSwapsEventSource.TokenView,
+            chain_id_source: formatChainIdToCaip(providerConfig.chainId),
+            token_symbol_source: token.symbol,
+            token_address_source: token.address,
+          },
+        });
         trackEvent({
-          event: MetaMetricsEventName.BridgeLinkClicked,
+          event: isSwap
+            ? MetaMetricsEventName.SwapLinkClicked
+            : MetaMetricsEventName.BridgeLinkClicked,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
             token_symbol: token.symbol,
             location,
-            text: 'Bridge',
+            text: isSwap ? 'Swap' : 'Bridge',
             chain_id: providerConfig.chainId,
           },
         });
-        dispatch(
-          setSwapsFromToken({ ...token, address: token.address.toLowerCase() }),
-        );
-        if (usingHardwareWallet && global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(
-            PREPARE_SWAP_ROUTE,
-            null,
-            false,
-          );
-        } else {
-          history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+        let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+        url += `?token=${
+          isStrictHexString(token.address)
+            ? toChecksumAddress(token.address)
+            : token.address
+        }`;
+        if (isSwap) {
+          url += '&swaps=true';
         }
+        history.push(url);
       } else {
         const portfolioUrl = getPortfolioUrl(
           'bridge',
@@ -124,12 +135,10 @@ const useBridging = () => {
     [
       isBridgeSupported,
       isBridgeChain,
-      setSwapsFromToken,
-      dispatch,
-      usingHardwareWallet,
       history,
       metaMetricsId,
       trackEvent,
+      trackCrossChainSwapsEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
       providerConfig,

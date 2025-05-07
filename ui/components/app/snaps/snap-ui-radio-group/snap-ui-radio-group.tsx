@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import classnames from 'classnames';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
   AlignItems,
@@ -14,7 +15,11 @@ import {
   Text,
 } from '../../../component-library';
 
-export type SnapUIRadioOption = { value: string; name: string };
+export type SnapUIRadioOption = {
+  value: string;
+  name: string;
+  disabled: boolean;
+};
 
 export type SnapUIRadioGroupProps = {
   name: string;
@@ -22,6 +27,7 @@ export type SnapUIRadioGroupProps = {
   error?: string;
   options: SnapUIRadioOption[];
   form?: string;
+  disabled?: boolean;
 };
 
 export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
@@ -29,6 +35,7 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
   label,
   error,
   form,
+  disabled,
   ...props
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
@@ -59,12 +66,22 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
             value={option.value}
             checked={value === option.value}
             onChange={() => handleChange(option.value)}
+            style={{ margin: '0' }} // radio buttons have default margins that need to be stripped to ensure proper centering
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            disabled={disabled || option.disabled}
           />
           <Text
+            className={classnames({
+              'snap-ui-renderer__radio-label--disabled':
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                disabled || option.disabled,
+            })}
             as="label"
             htmlFor={option.name}
             variant={TextVariant.bodyMd}
-            marginLeft={1}
+            marginLeft={2}
           >
             {option.name}
           </Text>
@@ -75,7 +92,9 @@ export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
 
   return (
     <Box
-      className="snap-ui-renderer__radio"
+      className={classnames('snap-ui-renderer__radio', {
+        'snap-ui-renderer__field': label !== undefined,
+      })}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
     >

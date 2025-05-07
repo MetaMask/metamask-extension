@@ -1,7 +1,4 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
-import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Json } from '@metamask/utils';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -10,33 +7,6 @@ import { parseTypedDataMessage } from '../../../../shared/modules/transaction.ut
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
-
-export const REDESIGN_APPROVAL_TYPES = [
-  ApprovalType.EthSignTypedData,
-  ApprovalType.PersonalSign,
-];
-
-export const REDESIGN_USER_TRANSACTION_TYPES = [
-  TransactionType.contractInteraction,
-  TransactionType.deployContract,
-  TransactionType.tokenMethodApprove,
-  TransactionType.tokenMethodIncreaseAllowance,
-  TransactionType.tokenMethodSetApprovalForAll,
-];
-
-export const REDESIGN_DEV_TRANSACTION_TYPES = [
-  ...REDESIGN_USER_TRANSACTION_TYPES,
-  TransactionType.tokenMethodTransfer,
-];
-
-const SIGNATURE_APPROVAL_TYPES = [
-  ApprovalType.PersonalSign,
-  ApprovalType.EthSignTypedData,
-];
-
-export const isSignatureApprovalRequest = (
-  request: ApprovalRequest<Record<string, Json>>,
-) => SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
 
 export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,
@@ -99,18 +69,37 @@ export const isPermitSignatureRequest = (request?: Confirmation) => {
   return PRIMARY_TYPES_PERMIT.includes(primaryType);
 };
 
-export const isValidASCIIURL = (urlString?: string) => {
+/**
+ * @param urlString - The URL to check
+ * @returns True if the URL hostname contains only ASCII characters, false otherwise. The URL is still valid if the path contains non-ASCII characters.
+ */
+export const isValidASCIIURL = (urlString?: string): boolean => {
   try {
-    return urlString?.includes(new URL(urlString).host);
+    if (!urlString || urlString.length === 0) {
+      return false;
+    }
+
+    return urlString.includes(new URL(urlString).host);
   } catch (exp: unknown) {
-    console.error(exp);
+    console.error(
+      `Failed to detect if URL hostname contains non-ASCII characters: ${urlString}. Error: ${exp}`,
+    );
     return false;
   }
 };
 
-export const toPunycodeURL = (urlString: string) => {
+/**
+ * Converts the URL to Punycode
+ *
+ * @param urlString - The URL to convert
+ * @returns The Punycode URL
+ */
+export const toPunycodeURL = (urlString: string): string | undefined => {
   try {
-    return new URL(urlString).href;
+    const url = new URL(urlString);
+    const isWithoutEndSlash = url.pathname === '/' && !urlString.endsWith('/');
+
+    return isWithoutEndSlash ? url.href.slice(0, -1) : url.href;
   } catch (err: unknown) {
     console.error(`Failed to convert URL to Punycode: ${err}`);
     return undefined;

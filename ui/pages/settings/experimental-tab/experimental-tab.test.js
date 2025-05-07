@@ -30,18 +30,16 @@ describe('ExperimentalTab', () => {
     const { getAllByRole } = render();
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(8);
+    expect(toggle).toHaveLength(4);
   });
 
   it('enables add account snap', async () => {
     const setAddSnapAccountEnabled = jest.fn();
-    const setPetnamesEnabled = jest.fn();
     const { getByTestId } = render(
       {},
       {
         setAddSnapAccountEnabled,
         petnamesEnabled: true,
-        setPetnamesEnabled,
       },
     );
 
@@ -50,44 +48,6 @@ describe('ExperimentalTab', () => {
 
     await waitFor(() => {
       expect(setAddSnapAccountEnabled).toHaveBeenCalledWith(true);
-    });
-  });
-
-  it('disables petnames', async () => {
-    const setAddSnapAccountEnabled = jest.fn();
-    const setPetnamesEnabled = jest.fn();
-    const { getByTestId } = render(
-      {},
-      {
-        setAddSnapAccountEnabled,
-        petnamesEnabled: true,
-        setPetnamesEnabled,
-      },
-    );
-
-    const toggle = getByTestId('toggle-petnames');
-    fireEvent.click(toggle);
-
-    await waitFor(() => {
-      expect(setPetnamesEnabled).toHaveBeenCalledWith(false);
-    });
-  });
-
-  it('enables redesigned confirmations', async () => {
-    const setRedesignedConfirmationsEnabled = jest.fn();
-    const { getByTestId } = render(
-      {},
-      {
-        setRedesignedConfirmationsEnabled,
-        redesignedConfirmationsEnabled: false,
-      },
-    );
-
-    const toggle = getByTestId('toggle-redesigned-confirmations');
-    fireEvent.click(toggle);
-
-    await waitFor(() => {
-      expect(setRedesignedConfirmationsEnabled).toHaveBeenCalledWith(true);
     });
   });
 

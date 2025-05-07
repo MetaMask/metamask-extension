@@ -11,7 +11,6 @@ import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-ut
 import { sanitizeString } from '../../../../../helpers/utils/util';
 import { Box } from '../../../../../components/component-library';
 import { BlockSize } from '../../../../../helpers/constants/design-system';
-import { useAsyncResult } from '../../../../../hooks/useAsyncResult';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   ConfirmInfoRow,
@@ -20,7 +19,7 @@ import {
   ConfirmInfoRowText,
   ConfirmInfoRowTextTokenUnits,
 } from '../../../../../components/app/confirm/info/row';
-import { fetchErc20Decimals } from '../../../utils/token';
+import { useGetTokenStandardAndDetails } from '../../../hooks/useGetTokenStandardAndDetails';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
@@ -78,9 +77,9 @@ const NONE_DATE_VALUE = -1;
  *
  * @param dataTreeData
  */
-const getTokenDecimalsOfDataTree = async (
+const getTokenContractInDataTree = (
   dataTreeData: Record<string, TreeData> | TreeData[],
-): Promise<void | number> => {
+): Hex | undefined => {
   if (Array.isArray(dataTreeData)) {
     return undefined;
   }
@@ -91,25 +90,24 @@ const getTokenDecimalsOfDataTree = async (
     return undefined;
   }
 
-  return await fetchErc20Decimals(tokenContract);
+  return tokenContract;
 };
 
 export const DataTree = ({
   data,
   primaryType,
   tokenDecimals: tokenDecimalsProp,
+  chainId,
 }: {
   data: Record<string, TreeData> | TreeData[];
   primaryType?: PrimaryType;
   tokenDecimals?: number;
+  chainId: string;
 }) => {
-  const { value: decimalsResponse } = useAsyncResult(
-    async () => await getTokenDecimalsOfDataTree(data),
-    [data],
-  );
-
+  const tokenContract = getTokenContractInDataTree(data);
+  const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
   const tokenDecimals =
-    typeof decimalsResponse === 'number' ? decimalsResponse : tokenDecimalsProp;
+    typeof decimalsNumber === 'number' ? decimalsNumber : tokenDecimalsProp;
 
   return (
     <Box width={BlockSize.Full}>
@@ -120,6 +118,7 @@ export const DataTree = ({
           )}:`}
           style={{ paddingRight: 0 }}
           key={`tree-data-${label}-index-${i}`}
+          data-testid={`confirmation_data-${label}-index-${i}`}
         >
           {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -129,6 +128,7 @@ export const DataTree = ({
               value={value}
               type={type}
               tokenDecimals={tokenDecimals}
+              chainId={chainId}
             />
           }
         </ConfirmInfoRow>
@@ -138,11 +138,15 @@ export const DataTree = ({
 };
 
 function isDateField(label: string, primaryType?: PrimaryType) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   return (FIELD_DATE_PRIMARY_TYPES[label] || [])?.includes(primaryType || '');
 }
 
 function isTokenUnitsField(label: string, primaryType?: PrimaryType) {
   return (FIELD_TOKEN_UTILS_PRIMARY_TYPES[label] || [])?.includes(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     primaryType || '',
   );
 }
@@ -154,12 +158,14 @@ const DataField = memo(
     type,
     value,
     tokenDecimals,
+    chainId,
   }: {
     label: string;
     primaryType?: PrimaryType;
     type: string;
     value: ValueType;
     tokenDecimals?: number;
+    chainId: string;
   }) => {
     const t = useI18nContext();
 
@@ -169,6 +175,7 @@ const DataField = memo(
           data={value}
           primaryType={primaryType}
           tokenDecimals={tokenDecimals}
+          chainId={chainId}
         />
       );
     }
@@ -195,7 +202,11 @@ const DataField = memo(
         mixedCaseUseChecksum: true,
       })
     ) {
-      return <ConfirmInfoRowAddress address={value} />;
+      return <ConfirmInfoRowAddress address={value} chainId={chainId} />;
+    }
+
+    if (type === 'bool') {
+      return <ConfirmInfoRowText text={String(value)} />;
     }
 
     return <ConfirmInfoRowText text={sanitizeString(value)} />;

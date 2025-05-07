@@ -1,7 +1,10 @@
 {
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
-    "UserStorageController": { "isProfileSyncingEnabled": true },
+    "UserStorageController": {
+      "isProfileSyncingEnabled": true,
+      "isAccountSyncingEnabled": true
+    },
     "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
@@ -40,15 +43,23 @@
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
+      "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "usedNetworks": {
-        "0x1": true,
-        "0xe708": true,
-        "0x5": true,
-        "0x539": true
-      },
       "snapsInstallPrivacyWarningShown": true
+    },
+    "BridgeController": {
+      "bridgeFeatureFlags": {
+        "mobileConfig": "object",
+        "extensionConfig": {
+          "support": "boolean",
+          "chains": {
+            "eip155:1": "object",
+            "eip155:10": "object",
+            "eip155:59144": "object"
+          }
+        }
+      }
     },
     "CurrencyController": {
       "currentCurrency": "usd",
@@ -69,7 +80,7 @@
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
       "fragments": "object",
-      "metaMetricsId": "fake-metrics-id",
+      "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
       "participateInMetaMetrics": true,
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
@@ -98,6 +109,7 @@
       "currentLocale": "en",
       "useExternalServices": "boolean",
       "dismissSeedBackUpReminder": true,
+      "overrideContentSecurityPolicyHeader": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
@@ -111,32 +123,33 @@
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
-        "smartTransactionsOptInStatus": false,
+        "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
-        "petnamesEnabled": true,
-        "isRedesignedConfirmationsDeveloperEnabled": "boolean",
+        "petnamesEnabled": "boolean",
+        "showMultiRpcModal": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
-        "showMultiRpcModal": "boolean",
-        "shouldShowAggregatedBalancePopover": "boolean"
+        "shouldShowAggregatedBalancePopover": "boolean",
+        "tokenNetworkFilter": {}
       },
       "selectedAddress": "string",
       "theme": "light",
       "useBlockie": false,
       "useNftDetection": false,
-      "useNonceField": false,
       "usePhishDetect": true,
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": true
+      "isMultiAccountBalancesEnabled": "boolean",
+      "showIncomingTransactions": "object"
     },
-    "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
         "fees": {},
+        "feesByChainId": "object",
         "liveness": true,
+        "livenessByChainId": "object",
         "smartTransactions": "object"
       }
     },
@@ -144,31 +157,7 @@
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
-      "allTokens": {},
-      "detectedTokens": "object",
-      "ignoredTokens": "object",
-      "tokens": "object"
-    },
-    "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionSupport": "boolean",
-          "srcNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          },
-          "destNetworkAllowlist": {
-            "0": "string",
-            "1": "string",
-            "2": "string"
-          }
-        },
-        "destTokens": {},
-        "destTopAssets": {},
-        "srcTokens": {},
-        "srcTopAssets": {}
-      }
+      "allTokens": {}
     },
     "TransactionController": { "transactions": "object" },
     "config": "object",

@@ -1,11 +1,55 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { MOCK_ADDRESS_BOOK } from '../../../../test/data/mock-data';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import ContactList from '.';
 
 describe('Contact List', () => {
   const store = configureMockStore([])({
     metamask: {},
+  });
+
+  const mockInternalAccounts = [createMockInternalAccount()];
+
+  it('displays the warning banner when multiple contacts have the same name', () => {
+    const mockAddressBook = [...MOCK_ADDRESS_BOOK, MOCK_ADDRESS_BOOK[0]]; // Adding duplicate contact
+
+    const { getByText } = renderWithProvider(
+      <ContactList
+        addressBook={mockAddressBook}
+        internalAccounts={mockInternalAccounts}
+      />,
+      store,
+    );
+
+    const duplicateContactBanner = getByText('You have duplicate contacts');
+
+    expect(duplicateContactBanner).toBeVisible();
+  });
+
+  it('displays the warning banner when contact has same name as an existing account', () => {
+    const mockContactWithAccountName = {
+      address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+      chainId: '0x1',
+      isEns: false,
+      memo: '',
+      name: mockInternalAccounts[0].metadata.name,
+    };
+
+    const mockAddressBook = [...MOCK_ADDRESS_BOOK, mockContactWithAccountName];
+
+    const { getByText } = renderWithProvider(
+      <ContactList
+        addressBook={mockAddressBook}
+        internalAccounts={mockInternalAccounts}
+      />,
+      store,
+    );
+
+    const duplicateContactBanner = getByText('You have duplicate contacts');
+
+    expect(duplicateContactBanner).toBeVisible();
   });
 
   describe('given searchForContacts', () => {
@@ -37,6 +81,8 @@ describe('Contact List', () => {
           searchForContacts={() => contacts}
           selectRecipient={selectRecipient}
           selectedAddress={selectedAddress}
+          addressBook={MOCK_ADDRESS_BOOK}
+          internalAccounts={mockInternalAccounts}
         />,
         store,
       );

@@ -1,15 +1,19 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { exportAsFile } from '../../../helpers/utils/export-utils';
 import AdvancedTab from '.';
 
 const mockSetAutoLockTimeLimit = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetShowTestNetworks = jest.fn();
 const mockSetShowFiatConversionOnTestnetsPreference = jest.fn();
-const mockSetStxOptIn = jest.fn();
+const mockSetStxPrefEnabled = jest.fn();
+const mockSetManageInstitutionalWallets = jest.fn();
+const mockSetDismissSmartAccountSuggestionEnabled = jest.fn();
+const mockDisplayErrorInSettings = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
   return {
@@ -17,8 +21,37 @@ jest.mock('../../../store/actions.ts', () => {
     setShowTestNetworks: () => mockSetShowTestNetworks,
     setShowFiatConversionOnTestnetsPreference: () =>
       mockSetShowFiatConversionOnTestnetsPreference,
-    setSmartTransactionsOptInStatus: () => mockSetStxOptIn,
+    setSmartTransactionsPreferenceEnabled: () => mockSetStxPrefEnabled,
+    setManageInstitutionalWallets: () => mockSetManageInstitutionalWallets,
+    setDismissSmartAccountSuggestionEnabled: () =>
+      mockSetDismissSmartAccountSuggestionEnabled,
   };
+});
+
+jest.mock('../../../ducks/app/app.ts', () => ({
+  displayErrorInSettings: () => mockDisplayErrorInSettings,
+  hideErrorInSettings: () => jest.fn(),
+}));
+
+jest.mock('../../../helpers/utils/export-utils', () => ({
+  ...jest.requireActual('../../../helpers/utils/export-utils'),
+  exportAsFile: jest
+    .fn()
+    .mockResolvedValueOnce({})
+    .mockImplementationOnce(new Error('state file error')),
+}));
+
+jest.mock('webextension-polyfill', () => ({
+  runtime: {
+    getPlatformInfo: jest.fn().mockResolvedValue('mac'),
+  },
+}));
+
+Object.defineProperty(window, 'stateHooks', {
+  value: {
+    getCleanAppState: () => mockState,
+    getLogs: () => [],
+  },
 });
 
 describe('AdvancedTab Component', () => {
@@ -74,7 +107,7 @@ describe('AdvancedTab Component', () => {
   it('should toggle show fiat on test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testShowFiatOnTestnets = queryAllByRole('checkbox')[2];
+    const testShowFiatOnTestnets = queryAllByRole('checkbox')[3];
 
     fireEvent.click(testShowFiatOnTestnets);
 
@@ -84,11 +117,21 @@ describe('AdvancedTab Component', () => {
   it('should toggle show test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testNetworkToggle = queryAllByRole('checkbox')[3];
+    const testNetworkToggle = queryAllByRole('checkbox')[4];
 
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
+  });
+
+  it('should toggle manage institutional wallets', () => {
+    const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
+
+    const manageInstitutionalWalletsToggle = queryAllByRole('checkbox')[5];
+
+    fireEvent.click(manageInstitutionalWalletsToggle);
+
+    expect(mockSetManageInstitutionalWallets).toHaveBeenCalled();
   });
 
   describe('renderToggleStxOptIn', () => {
@@ -102,7 +145,55 @@ describe('AdvancedTab Component', () => {
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const toggleButton = queryByTestId('settings-page-stx-opt-in-toggle');
       fireEvent.click(toggleButton);
-      expect(mockSetStxOptIn).toHaveBeenCalled();
+      expect(mockSetStxPrefEnabled).toHaveBeenCalled();
+    });
+  });
+
+  describe('renderToggleDismissSmartAccountSuggestion', () => {
+    it('should render the toggle button for Dismiss Smart Account Suggestion', () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const toggleButton = queryByTestId(
+        'advanced-setting-dismiss-smart-account-suggestion-enabled',
+      );
+      expect(toggleButton).toBeInTheDocument();
+    });
+
+    it('should call setSmartTransactionsOptInStatus when the toggle button is clicked', () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const toggleButton = queryByTestId(
+        'settings-page-dismiss-smart-account-suggestion-enabled-toggle',
+      );
+      fireEvent.click(toggleButton);
+      expect(mockSetDismissSmartAccountSuggestionEnabled).toHaveBeenCalled();
+    });
+  });
+
+  describe('renderStateLogs', () => {
+    it('should render the toggle button for state log download', () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const stateLogButton = queryByTestId('advanced-setting-state-logs');
+      expect(stateLogButton).toBeInTheDocument();
+    });
+
+    it('should call exportAsFile when the toggle button is clicked', async () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const stateLogButton = queryByTestId(
+        'advanced-setting-state-logs-button',
+      );
+      fireEvent.click(stateLogButton);
+      await waitFor(() => {
+        expect(exportAsFile).toHaveBeenCalledTimes(1);
+      });
+    });
+    it('should call displayErrorInSettings when the state file download fails', async () => {
+      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+      const stateLogButton = queryByTestId(
+        'advanced-setting-state-logs-button',
+      );
+      fireEvent.click(stateLogButton);
+      await waitFor(() => {
+        expect(mockDisplayErrorInSettings).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

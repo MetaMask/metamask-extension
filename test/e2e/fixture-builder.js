@@ -4,15 +4,18 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
+const {
+  ETHERSCAN_SUPPORTED_CHAIN_IDS,
+} = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
+  DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
-  ERC_4337_ACCOUNT,
 } = require('./constants');
 const {
   defaultFixture,
@@ -36,12 +39,6 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
-        usedNetworks: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.GOERLI]: true,
-          [CHAIN_IDS.LOCALHOST]: true,
-        },
       },
       NetworkController: {
         ...mockNetworkStateOld({
@@ -54,10 +51,12 @@ function onboardingFixture() {
         }),
         providerConfig: { id: 'networkConfigurationId' },
       },
+      NotificationServicesController: {},
       PreferencesController: {
         advancedGasFee: {},
         currentLocale: 'en',
         dismissSeedBackUpReminder: false,
+        overrideContentSecurityPolicyHeader: true,
         featureFlags: {},
         forgottenPassword: false,
         identities: {},
@@ -70,33 +69,52 @@ function onboardingFixture() {
           hideZeroBalanceTokens: false,
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
+          privacyMode: false,
           showTestNetworks: false,
-          smartTransactionsOptInStatus: false,
+          smartTransactionsOptInStatus: true,
           showNativeTokenAsMainBalance: true,
           petnamesEnabled: true,
           showMultiRpcModal: false,
-          isRedesignedConfirmationsDeveloperEnabled: false,
           showConfirmationAdvancedDetails: false,
           tokenSortConfig: {
             key: 'tokenFiatAmount',
             order: 'dsc',
             sortCallback: 'stringNumeric',
           },
+          tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
         },
         useExternalServices: true,
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
-        useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: true,
-      },
-      QueuedRequestController: {
-        queuedRequestCount: 0,
+        isMultiAccountBalancesEnabled: true,
+        showIncomingTransactions: {
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+        },
       },
       SelectedNetworkController: {
         domains: {},
@@ -110,13 +128,11 @@ function onboardingFixture() {
           },
         },
       },
+      UserStorageController: {},
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},
         allTokens: {},
-        detectedTokens: [],
-        ignoredTokens: [],
-        tokens: [],
       },
       TransactionController: {},
       config: {},
@@ -206,6 +222,18 @@ class FixtureBuilder {
     });
   }
 
+  withUseBasicFunctionalityDisabled() {
+    return this.withPreferencesController({
+      useExternalServices: false,
+    });
+  }
+
+  withUseBasicFunctionalityEnabled() {
+    return this.withPreferencesController({
+      useExternalServices: true,
+    });
+  }
+
   withGasFeeController(data) {
     merge(this.fixture.data.GasFeeController, data);
     return this;
@@ -237,6 +265,22 @@ class FixtureBuilder {
     });
   }
 
+  /**
+   * Add a keyring controller with a vault that contains multiple SRP keyrings.
+   *
+   * @returns {FixtureBuilder}
+   */
+  withKeyringControllerMultiSRP() {
+    return this.withKeyringController({
+      keyringsMetadata: [
+        { id: '01JNGTRZ3QCEEQ7GYYFXBSQSBK', name: 'SRP 1' },
+        { id: '01JNGTTNRVYNQVN5FN8YTFAMJ4', name: 'SRP 2' },
+      ],
+      vault:
+        '{"data":"EfMp/e5oTwIWzxXXUKJDBwnG9ooALjzWDh0Stb2anQ5Q763pW9H0KJ6LJ8J+AnMkfWqP93JWEl0i7meCgDHQz/2rkE15ZAsY3IInEgLYPFqDbEr4zI/wfvHNg5GJGA4v14X/C+ts6asQeJUdMlUgC3m2mVdpis7ALACtDCIWWRuTkdq0jtkafXQra1ExMulPV31ZOMnDsvgHUuoXlL7+om8yNYqKuwMqVO/09X+WdbRG7EJqjNzjfV8BrNvOAJnhmdQpWGXKyIk0IA4o1QFJO8fmrXZMRmf64a3TWYAmEp6jAG3Rz9X4nnL52BpLjMBcik0L8k5y8ZuUZH5+Wme1D86HaHwnJtZvsRULuPFYbb/UCsfW9PwcyYZ4bmDOn/xYiOEFTk0Ku8PE6vkFqcIrrkCJoWaw6BnuriRovsoduzuGcAaJNvQ2bXvV2yyCdQSP7i2WnlXGgRDO7beCamoa80YIf+PAGFC00UxuyBWda4eZ+ipixGmGdp4EpBzt0GgY9GMknA6ivyb2UUNOyz4DMVL/CjjiU9ezf/Go22RzSLcXLUYF4KlpLEP6sFJCG3Uo2WzUWQFiy6Gs/VrYitLeB52MTNRfEviXXmlN+rSQc02zg8xPG19WCnjA3e7fkYzP0aL/DOtWuNqIZwP3s7EziiIGlb/cxIxc0VwyI/Ew0XG2/xbxt8WKsY2DkXdgMsviHcz3u+1STZaxiORVOeBsKnj8w6nEtzbqPxTRpqva7q4nOICk6Xbc//YHezqg8kJWvPmLeZAuYY4VyMiBthCG+qvHqtnhIQ8iobUdhqJ5+QlukPLmFMXfKqPF1fFEPk1vtpCNwhURkG7z2xDzGIzjXmSQUjtlFP6vqmFaqJAgpbuw1mVfoDudQ3cZCH71W5gOyn3TeMIyVse39W/+dK3YLXqmt+Sx05GsXco9QeSlBzAGhMYFB1GKxaiZIEACGg==","iv":"JvKKq/Rs8pbTTamsoPgcGQ==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"Su9hh66sokHRahkEZLUGowOI1pPbNCT90ymFqLFYza0="}',
+    });
+  }
+
   withMetaMetricsController(data) {
     merge(this.fixture.data.MetaMetricsController, data);
     return this;
@@ -252,6 +296,28 @@ class FixtureBuilder {
 
   withNetworkControllerOnMainnet() {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
+  }
+
+  withNetworkControllerOnLinea() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'linea-mainnet',
+    });
+  }
+
+  withNetworkControllerOnLineaLocahost() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
   }
 
   withNetworkControllerOnOptimism() {
@@ -270,21 +336,37 @@ class FixtureBuilder {
     });
   }
 
-  withNetworkControllerDoubleGanache() {
-    const ganacheNetworks = mockNetworkStateOld({
+  withNetworkControllerOnPolygon() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.POLYGON,
+          nickname: 'Polygon Mainnet',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.infura.io',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
+
+  withNetworkControllerDoubleNode() {
+    const secondNode = mockNetworkStateOld({
       id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
       rpcUrl: 'http://localhost:8546',
       chainId: '0x53a',
       ticker: 'ETH',
       nickname: 'Localhost 8546',
     });
-    delete ganacheNetworks.selectedNetworkClientId;
-    return this.withNetworkController(ganacheNetworks);
+    delete secondNode.selectedNetworkClientId;
+    return this.withNetworkController(secondNode);
   }
 
-  withNetworkControllerTripleGanache() {
-    this.withNetworkControllerDoubleGanache();
-    const thirdGanache = mockNetworkStateOld({
+  withNetworkControllerTripleNode() {
+    this.withNetworkControllerDoubleNode();
+    const thirdNode = mockNetworkStateOld({
       rpcUrl: 'http://localhost:7777',
       chainId: '0x3e8',
       ticker: 'ETH',
@@ -292,8 +374,8 @@ class FixtureBuilder {
       blockExplorerUrl: undefined,
     });
 
-    delete thirdGanache.selectedNetworkClientId;
-    merge(this.fixture.data.NetworkController, thirdGanache);
+    delete thirdNode.selectedNetworkClientId;
+    merge(this.fixture.data.NetworkController, thirdNode);
     return this;
   }
 
@@ -302,6 +384,16 @@ class FixtureBuilder {
       this.fixture.data.NftController
         ? this.fixture.data.NftController
         : (this.fixture.data.NftController = {}),
+      data,
+    );
+    return this;
+  }
+
+  withDeFiPositionsController(data) {
+    merge(
+      this.fixture.data.DeFiPositionsController
+        ? this.fixture.data.DeFiPositionsController
+        : (this.fixture.data.DeFiPositionsController = {}),
       data,
     );
     return this;
@@ -331,6 +423,7 @@ class FixtureBuilder {
               image:
                 'ipfs://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
               standard: 'ERC1155',
+              chainId: 1337,
             },
           ],
         },
@@ -365,6 +458,7 @@ class FixtureBuilder {
               name: 'Test Dapp NFTs #1',
               standard: 'ERC721',
               tokenId: '1',
+              chainId: 1337,
             },
           ],
         },
@@ -399,43 +493,34 @@ class FixtureBuilder {
 
   withBridgeControllerDefaultState() {
     this.fixture.data.BridgeController = {
-      bridgeState: {
-        bridgeFeatureFlags: {
-          destNetworkAllowlist: [],
-          extensionSupport: false,
-          srcNetworkAllowlist: [],
+      bridgeFeatureFlags: {
+        extensionConfig: {
+          support: false,
+          chains: {},
         },
-        destTokens: {},
-        destTopAssets: [],
-        srcTokens: {},
-        srcTopAssets: [],
       },
     };
     return this;
   }
 
   withPermissionControllerConnectedToTestDapp({
-    restrictReturnedAccounts = true,
     account = '',
+    useLocalhostHostname = false,
   } = {}) {
     const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
     return this.withPermissionController({
       subjects: {
-        [DAPP_URL]: {
-          origin: DAPP_URL,
+        [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
+          origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
           permissions: {
             eth_accounts: {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [
-                    selectedAccount.toLowerCase(),
-                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                    ERC_4337_ACCOUNT.toLowerCase(),
-                  ],
+                  value: [selectedAccount.toLowerCase()],
                 },
               ],
               date: 1664388714636,
@@ -446,9 +531,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerSnapAccountConnectedToTestDapp(
-    restrictReturnedAccounts = true,
-  ) {
+  withPermissionControllerConnectedToTestDappWithChains(chainIds) {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -458,7 +541,162 @@ class FixtureBuilder {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [DEFAULT_FIXTURE_ACCOUNT.toLowerCase()],
+                },
+              ],
+              date: 1664388714636,
+            },
+            'endowment:permitted-chains': {
+              id: 'D7cac0a2e3BD8f349506a',
+              parentCapability: 'endowment:permitted-chains',
+              invoker: DAPP_URL,
+              caveats: [
+                {
+                  type: 'restrictNetworkSwitching',
+                  value: chainIds,
+                },
+              ],
+              date: 1664388714637,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withPermissionControllerConnectedToMultichainTestDapp({
+    account = '',
+    useLocalhostHostname = false,
+  } = {}) {
+    const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
+    const subjects = {
+      [useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL]: {
+        origin: useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1337': {
+                      accounts: [
+                        `eip155:1337:${selectedAccount.toLowerCase()}`,
+                      ],
+                    },
+                    'wallet:eip155': {
+                      accounts: [
+                        `wallet:eip155:${selectedAccount.toLowerCase()}`,
+                      ],
+                    },
+                    wallet: {
+                      accounts: [],
+                    },
+                  },
+                  isMultichainOrigin: true,
+                },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_URL,
+            parentCapability: 'endowment:caip25',
+          },
+        },
+      },
+    };
+    return this.withPermissionController({
+      subjects,
+    });
+  }
+
+  withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts({
+    scopes = ['eip155:1337'],
+  }) {
+    const optionalScopes = scopes
+      .map((scope) => ({
+        [scope]: {
+          accounts: [
+            `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
+            `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
+          ],
+        },
+      }))
+      .reduce((acc, curr) => {
+        return { ...acc, ...curr };
+      }, {});
+
+    const subjects = {
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions: {
+          'endowment:caip25': {
+            caveats: [
+              {
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes,
+                  isMultichainOrigin: true,
+                },
+              },
+            ],
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            date: 1664388714636,
+            invoker: DAPP_URL,
+            parentCapability: 'endowment:caip25',
+          },
+        },
+      },
+    };
+    return this.withPermissionController({
+      subjects,
+    });
+  }
+
+  withPermissionControllerConnectedToTestDappWithTwoAccounts() {
+    const subjects = {
+      [DAPP_URL]: {
+        origin: DAPP_URL,
+        permissions: {
+          eth_accounts: {
+            id: 'ZaqPEWxyhNCJYACFw93jE',
+            parentCapability: 'eth_accounts',
+            invoker: DAPP_URL,
+            caveats: [
+              {
+                type: 'restrictReturnedAccounts',
+                value: [
+                  '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                  '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                ],
+              },
+            ],
+            date: 1664388714636,
+          },
+        },
+      },
+    };
+    return this.withPermissionController({
+      subjects,
+    });
+  }
+
+  withPermissionControllerSnapAccountConnectedToTestDapp() {
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
                   value: ['0x09781764c08de8ca82e156bbf156a3ca217c7950'],
@@ -472,9 +710,7 @@ class FixtureBuilder {
     });
   }
 
-  withPermissionControllerConnectedToTwoTestDapps(
-    restrictReturnedAccounts = true,
-  ) {
+  withPermissionControllerConnectedToTwoTestDapps() {
     return this.withPermissionController({
       subjects: {
         [DAPP_URL]: {
@@ -484,13 +720,10 @@ class FixtureBuilder {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
               invoker: DAPP_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [
-                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                  ],
+                  value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
                 },
               ],
               date: 1664388714636,
@@ -504,13 +737,10 @@ class FixtureBuilder {
               id: 'AqPEWxyhNCJYACFw93jE4',
               parentCapability: 'eth_accounts',
               invoker: DAPP_ONE_URL,
-              caveats: restrictReturnedAccounts && [
+              caveats: [
                 {
                   type: 'restrictReturnedAccounts',
-                  value: [
-                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                  ],
+                  value: ['0x5cfe73b6021e818b776b421b1c4db2474086a7e1'],
                 },
               ],
               date: 1664388714636,
@@ -626,9 +856,22 @@ class FixtureBuilder {
     });
   }
 
-  withPreferencesControllerAndFeatureFlag(flags) {
-    merge(this.fixture.data.PreferencesController, flags);
-    return this;
+  withPreferencesControllerSmartTransactionsOptedIn() {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: true,
+        tokenNetworkFilter: {},
+      },
+    });
+  }
+
+  withPreferencesControllerSmartTransactionsOptedOut() {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: false,
+        tokenNetworkFilter: {},
+      },
+    });
   }
 
   withAccountsController(data) {
@@ -653,6 +896,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 1',
               lastSelected: 1665507600000,
@@ -673,6 +917,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 2',
               keyring: {
@@ -692,6 +937,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 3',
               keyring: {
@@ -720,6 +966,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 1',
               lastSelected: 1665507600000,
@@ -740,6 +987,7 @@ class FixtureBuilder {
               'eth_signTypedData_v4',
             ],
             type: 'eip155:eoa',
+            scopes: ['eip155:0'],
             metadata: {
               name: 'Account 2',
               lastSelected: 1665507800000,
@@ -774,15 +1022,7 @@ class FixtureBuilder {
           [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
         },
       }),
-      this.withPreferencesControllerUseRequestQueueEnabled(),
-    );
-  }
-
-  withPreferencesControllerUseRequestQueueEnabled() {
-    return merge(
-      this.withPreferencesController({
-        useRequestQueue: true,
-      }),
+      this,
     );
   }
 
@@ -825,19 +1065,6 @@ class FixtureBuilder {
 
   withTokensControllerERC20({ chainId = 1337 } = {}) {
     merge(this.fixture.data.TokensController, {
-      tokens: [
-        {
-          address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
-          symbol: 'TST',
-          decimals: 4,
-          image:
-            'https://static.cx.metamask.io/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
-          isERC721: false,
-          aggregators: [],
-        },
-      ],
-      ignoredTokens: [],
-      detectedTokens: [],
       allTokens: {
         [toHex(chainId)]: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
@@ -1330,6 +1557,7 @@ class FixtureBuilder {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
               metadata: {
                 name: 'Account 1',
                 importTime: 1724486724986,
@@ -1352,6 +1580,7 @@ class FixtureBuilder {
                 'eth_signTypedData_v4',
               ],
               type: 'eip155:eoa',
+              scopes: ['eip155:0'],
               metadata: {
                 name: 'Trezor 1',
                 importTime: 1724486729079,
@@ -1418,6 +1647,79 @@ class FixtureBuilder {
         },
         selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
       });
+  }
+
+  withIncomingTransactionsCache(cache) {
+    return this.withTransactionController({ lastFetchedBlockNumbers: cache });
+  }
+
+  withTransactions(transactions) {
+    return this.withTransactionController({
+      transactions,
+    });
+  }
+
+  withPopularNetworks() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        'op-mainnet': {
+          chainId: CHAIN_IDS.OPTIMISM,
+          nickname: 'OP Mainnet',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.optimism.io',
+          ticker: 'ETH',
+          id: 'op-mainnet',
+        },
+        'polygon-mainnet': {
+          chainId: CHAIN_IDS.POLYGON,
+          nickname: 'Polygon Mainnet',
+          rpcPrefs: {},
+          rpcUrl: 'https://polygon-rpc.com',
+          ticker: 'MATIC',
+          id: 'polygon-mainnet',
+        },
+        'arbitrum-one': {
+          chainId: CHAIN_IDS.ARBITRUM,
+          nickname: 'Arbitrum One',
+          rpcPrefs: {},
+          rpcUrl: 'https://arb1.arbitrum.io/rpc',
+          ticker: 'ETH',
+          id: 'arbitrum-one',
+        },
+        'avalanche-mainnet': {
+          chainId: CHAIN_IDS.AVALANCHE,
+          nickname: 'Avalanche Network C-Chain',
+          rpcPrefs: {},
+          rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+          ticker: 'AVAX',
+          id: 'avalanche-mainnet',
+        },
+        'bnb-mainnet': {
+          chainId: CHAIN_IDS.BSC,
+          nickname: 'BNB Chain',
+          rpcPrefs: {},
+          rpcUrl: 'https://bsc-dataseed.binance.org',
+          ticker: 'BNB',
+          id: 'bnb-mainnet',
+        },
+        'base-mainnet': {
+          chainId: CHAIN_IDS.BASE,
+          nickname: 'Base',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.base.org',
+          ticker: 'ETH',
+          id: 'base-mainnet',
+        },
+        'zksync-mainnet': {
+          chainId: CHAIN_IDS.ZKSYNC_ERA,
+          nickname: 'zkSync Era',
+          rpcPrefs: {},
+          rpcUrl: 'https://mainnet.era.zksync.io',
+          ticker: 'ETH',
+          id: 'zksync-mainnet',
+        },
+      },
+    });
   }
 
   build() {

@@ -1,7 +1,8 @@
 import qrCode from 'qrcode-generator';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -38,15 +39,18 @@ import {
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
+import { getHDEntropyIndex } from '../../selectors/selectors';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
 export default function RevealSeedPage() {
   const history = useHistory();
+  const { keyringId } = useParams();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [screen, setScreen] = useState(PASSWORD_PROMPT_SCREEN);
   const [password, setPassword] = useState('');
@@ -55,6 +59,28 @@ export default function RevealSeedPage() {
   const [error, setError] = useState(null);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
+  const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
+
+  const onClickCopy = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.KeyExportCopied,
+      properties: {
+        key_type: MetaMetricsEventKeyType.Srp,
+        copy_method: 'clipboard',
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.SrpCopiedToClipboard,
+      properties: {
+        key_type: MetaMetricsEventKeyType.Srp,
+        copy_method: 'clipboard',
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
+  }, [trackEvent, hdEntropyIndex]);
 
   useEffect(() => {
     const passwordBox = document.getElementById('password-box');
@@ -75,13 +101,14 @@ export default function RevealSeedPage() {
     setSeedWords(null);
     setCompletedLongPress(false);
     setError(null);
-    dispatch(requestRevealSeedWords(password))
+    dispatch(requestRevealSeedWords(password, keyringId))
       .then((revealedSeedWords) => {
         trackEvent({
           category: MetaMetricsEventCategory.Keys,
           event: MetaMetricsEventName.KeyExportRevealed,
           properties: {
             key_type: MetaMetricsEventKeyType.Srp,
+            hd_entropy_index: hdEntropyIndex,
           },
         });
         setSeedWords(revealedSeedWords);
@@ -95,9 +122,10 @@ export default function RevealSeedPage() {
           properties: {
             key_type: MetaMetricsEventKeyType.Srp,
             reason: e.message, // 'incorrect_password',
+            hd_entropy_index: hdEntropyIndex,
           },
         });
-        setError(e.message);
+        setError(getErrorMessage(e));
       });
   };
 
@@ -145,13 +173,16 @@ export default function RevealSeedPage() {
 
   const renderRevealSeedContent = () => {
     // default for SRP_VIEW_SRP_TEXT event because this is the first thing shown after rendering
-    trackEvent({
-      category: MetaMetricsEventCategory.Keys,
-      event: MetaMetricsEventName.SrpViewSrpText,
-      properties: {
-        key_type: MetaMetricsEventKeyType.Srp,
-      },
-    });
+    if (!srpViewEventTracked) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpViewSrpText,
+        properties: {
+          key_type: MetaMetricsEventKeyType.Srp,
+        },
+      });
+      setSrpViewEventTracked(true);
+    }
 
     return (
       <div>
@@ -184,27 +215,7 @@ export default function RevealSeedPage() {
             tabKey="text-seed"
           >
             <Label marginTop={4}>{t('yourPrivateSeedPhrase')}</Label>
-            <ExportTextContainer
-              text={seedWords}
-              onClickCopy={() => {
-                trackEvent({
-                  category: MetaMetricsEventCategory.Keys,
-                  event: MetaMetricsEventName.KeyExportCopied,
-                  properties: {
-                    key_type: MetaMetricsEventKeyType.Srp,
-                    copy_method: 'clipboard',
-                  },
-                });
-                trackEvent({
-                  category: MetaMetricsEventCategory.Keys,
-                  event: MetaMetricsEventName.SrpCopiedToClipboard,
-                  properties: {
-                    key_type: MetaMetricsEventKeyType.Srp,
-                    copy_method: 'clipboard',
-                  },
-                });
-              }}
-            />
+            <ExportTextContainer text={seedWords} onClickCopy={onClickCopy} />
           </Tab>
           <Tab
             name={t('revealSeedWordsQR')}
@@ -244,6 +255,7 @@ export default function RevealSeedPage() {
               event: MetaMetricsEventName.KeyExportCanceled,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
             trackEvent({
@@ -251,6 +263,7 @@ export default function RevealSeedPage() {
               event: MetaMetricsEventName.SrpRevealCancelled,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
             history.push(mostRecentOverviewPage);
@@ -267,6 +280,7 @@ export default function RevealSeedPage() {
               event: MetaMetricsEventName.KeyExportRequested,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
             trackEvent({

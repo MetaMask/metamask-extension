@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getErrorMessage } from '../../../../shared/modules/error';
 import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
@@ -23,6 +24,9 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getIsMainnet,
   getSelectedInternalAccount,
   getOpenSeaEnabled,
@@ -54,6 +58,7 @@ import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -75,11 +80,14 @@ export const ImportNftsModal = ({ onClose }) => {
   const [disabled, setDisabled] = useState(true);
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
+
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
   const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const handleAddNft = async () => {
+    trace({ name: TraceName.ImportNfts });
     try {
       await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
       const newNftDropdownState = {
@@ -95,16 +103,20 @@ export const ImportNftsModal = ({ onClose }) => {
 
       dispatch(updateNftDropDownState(newNftDropdownState));
     } catch (error) {
-      const { message } = error;
+      const message = getErrorMessage(error);
       dispatch(setNewNftAddedMessage(message));
       setNftAddFailed(true);
       return;
+    } finally {
+      endTrace({ name: TraceName.ImportNfts });
     }
+
     if (ignoreErc20Token && nftAddress) {
       await dispatch(
         ignoreTokens({
           tokensToIgnore: nftAddress,
           dontShowLoadingIndicator: true,
+          networkClientId,
         }),
       );
     }

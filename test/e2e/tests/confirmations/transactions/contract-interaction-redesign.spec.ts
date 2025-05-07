@@ -2,7 +2,7 @@
 import { Mockttp } from 'mockttp';
 import { openDapp, unlockWallet } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
 import {
@@ -18,8 +18,7 @@ import {
 
 const { hexToNumber } = require('@metamask/utils');
 const {
-  defaultGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
+  defaultOptionsForType2Transactions,
   WINDOW_TITLES,
   withFixtures,
 } = require('../../../helpers');
@@ -33,21 +32,14 @@ const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 describe('Confirmation Redesign Contract Interaction Component', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
-  describe('Create a deposit transaction @no-mmi', function () {
+  describe('Create a deposit transaction', function () {
     it(`Sends a contract interaction type 0 transaction (Legacy)`, async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -66,14 +58,8 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -95,27 +81,21 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withPermissionControllerConnectedToTestDapp({
               account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             })
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           smartContract,
           title: this.test?.fullTitle(),
         },
         async ({
           driver,
           contractRegistry,
-          ganacheServer,
+          localNodes,
         }: TestSuiteArguments) => {
           // Seed the Trezor account with balance
-          await ganacheServer?.setAccountBalance(
+          (await localNodes?.[0]?.setAccountBalance(
             KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             '0x100000000000000000000',
-          );
+          )) ?? console.error('localNodes is undefined or empty');
+
           await openDAppWithContract(driver, contractRegistry, smartContract);
 
           await createDepositTransaction(driver);
@@ -140,17 +120,15 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
               useTransactionSimulations: false,
+            })
+            .withAppStateController({
+              [CHAIN_IDS.OPTIMISM]: true,
             })
             .withNetworkControllerOnOptimism()
             .build(),
-          ganacheOptions: {
-            ...defaultGanacheOptionsForType2Transactions,
-            network_id: hexToNumber(CHAIN_IDS.OPTIMISM),
+          localNodeOptions: {
+            ...defaultOptionsForType2Transactions,
             chainId: hexToNumber(CHAIN_IDS.OPTIMISM),
           },
           smartContract,
@@ -162,7 +140,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await createLayer2Transaction(driver);
 
           const contractAddress = await (
-            contractRegistry as GanacheContractAddressRegistry
+            contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
 
           await openDapp(driver, contractAddress);
@@ -177,21 +155,15 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     });
   });
 
-  describe('Custom nonce editing @no-mmi', function () {
+  describe('Custom nonce editing', function () {
     it('Sends a contract interaction type 2 transaction without custom nonce editing (EIP1559)', async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -211,15 +183,8 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-              useNonceField: true,
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -230,27 +195,25 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // re open advanced details
+          await toggleAdvancedDetails(driver);
+
           await confirmDepositTransactionWithCustomNonce(driver, '10');
         },
       );
     });
   });
 
-  describe('Advanced Gas Details @no-mmi', function () {
+  describe('Advanced Gas Details', function () {
     it('Sends a contract interaction type 2 transaction (EIP1559) and checks the advanced gas details', async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -268,51 +231,14 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       );
     });
 
-    it('If nonce editing is enabled, advanced details are shown', async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-              useNonceField: true,
-            })
-            .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
-          smartContract,
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await createDepositTransaction(driver);
-
-          await driver.waitUntilXWindowHandles(3);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-          await assertAdvancedGasDetails(driver);
-        },
-      );
-    });
-
     it('If hex data is enabled, advanced details are shown', async function () {
       await withFixtures(
         {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withPreferencesController({
-              preferences: {
-                redesignedConfirmationsEnabled: true,
-                isRedesignedConfirmationsDeveloperEnabled: true,
-              },
-            })
             .build(),
-          ganacheOptions: defaultGanacheOptionsForType2Transactions,
+          localNodeOptions: defaultOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },

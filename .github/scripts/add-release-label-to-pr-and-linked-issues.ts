@@ -6,6 +6,7 @@ import { retrieveLinkedIssues } from './shared/issue';
 import { Label } from './shared/label';
 import { Labelable, addLabelToLabelable } from './shared/labelable';
 import { retrievePullRequest } from './shared/pull-request';
+import { isValidVersionFormat } from './shared/utils';
 
 main().catch((error: Error): void => {
   console.error(error);
@@ -89,10 +90,4 @@ async function main(): Promise<void> {
   for (const linkedIssue of linkedIssues) {
     await addLabelToLabelable(octokit, linkedIssue, releaseLabel);
   }
-}
-
-// This helper function checks if version has the correct format: "x.y.z" where "x", "y" and "z" are numbers.
-function isValidVersionFormat(str: string): boolean {
-  const regex = /^\d+\.\d+\.\d+$/;
-  return regex.test(str);
 }

@@ -17,13 +17,15 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
 } from '../../../shared/constants/network';
-import MMIController from './mmi-controller';
-import AppStateController from './app-state';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { MMIController, AllowedActions } from './mmi-controller';
+import { AppStateController } from './app-state-controller';
+import { Messenger } from '@metamask/base-controller';
 import { mmiKeyringBuilderFactory } from '../mmi-keyring-builder-factory';
-import MetaMetricsController from './metametrics';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
+import { InfuraNetworkType } from '@metamask/controller-utils';
+import { API_REQUEST_LOG_EVENT } from '@metamask-institutional/sdk';
+import { getDefaultPreferencesControllerState } from './preferences-controller';
 
 jest.mock('@metamask-institutional/portfolio-dashboard', () => ({
   handleMmiPortfolio: jest.fn(),
@@ -37,6 +39,21 @@ jest.mock('./permissions', () => ({
     };
   }),
 }));
+
+export const createMockNetworkConfiguration = (
+  override?: Partial<NetworkConfiguration>,
+): NetworkConfiguration => {
+  return {
+    chainId: CHAIN_IDS.SEPOLIA,
+    blockExplorerUrls: [],
+    defaultRpcEndpointIndex: 0,
+    name: 'Mock Network',
+    nativeCurrency: 'MOCK TOKEN',
+    rpcEndpoints: [],
+    defaultBlockExplorerUrlIndex: 0,
+    ...override,
+  };
+};
 
 const mockAccount = {
   address: '0x758b8178a9A4B7206d1f648c4a77C515Cbac7001',
@@ -70,12 +87,10 @@ const mockMetaMetricsId = 'mock-metametrics-id';
 describe('MMIController', function () {
   let mmiController,
     mmiConfigurationController,
-    controllerMessenger,
     accountsController,
-    networkController,
     keyringController,
-    metaMetricsController,
-    custodyController;
+    custodyController,
+    mmiControllerMessenger;
 
   beforeEach(async function () {
     const mockMessenger = {
@@ -88,25 +103,10 @@ describe('MMIController', function () {
       subscribe: jest.fn(),
     };
 
-    networkController = new NetworkController({
-      messenger: new ControllerMessenger().getRestricted({
-        name: 'NetworkController',
-        allowedEvents: [
-          'NetworkController:stateChange',
-          'NetworkController:networkWillChange',
-          'NetworkController:networkDidChange',
-          'NetworkController:infuraIsBlocked',
-          'NetworkController:infuraIsUnblocked',
-        ],
-      }),
-      state: mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-      infuraProjectId: 'mock-infura-project-id',
-    });
-
-    controllerMessenger = new ControllerMessenger();
+    const messenger = new Messenger<AllowedActions, never>();
 
     accountsController = new AccountsController({
-      messenger: controllerMessenger.getRestricted({
+      messenger: messenger.getRestricted({
         name: 'AccountsController',
         allowedEvents: [
           'SnapController:stateChange',
@@ -114,6 +114,10 @@ describe('MMIController', function () {
           'KeyringController:stateChange',
           'KeyringController:persistAllKeyrings',
           'AccountsController:selectedAccountChange',
+          'SnapKeyring:accountAssetListUpdated',
+          'SnapKeyring:accountBalancesUpdated',
+          'SnapKeyring:accountTransactionsUpdated',
+          'MultichainNetworkController:networkDidChange',
         ],
         allowedActions: [
           'AccountsController:setCurrentAccount',
@@ -148,7 +152,7 @@ describe('MMIController', function () {
     );
 
     keyringController = new KeyringController({
-      messenger: controllerMessenger.getRestricted({
+      messenger: messenger.getRestricted({
         name: 'KeyringController',
         allowedActions: [
           'KeyringController:getState',
@@ -170,7 +174,11 @@ describe('MMIController', function () {
         ],
       }),
       keyringBuilders: [...custodianKeyringBuilders],
-      state: {},
+      state: {
+        keyrings: [],
+        isUnlocked: true,
+        keyringsMetadata: [],
+      },
       encryptor: {
         encrypt(_, object) {
           this.object = object;
@@ -202,16 +210,37 @@ describe('MMIController', function () {
       },
     });
 
-    metaMetricsController = new MetaMetricsController({
-      preferencesStore: {
-        getState: jest.fn().mockReturnValue({ currentLocale: 'en' }),
-        subscribe: jest.fn(),
-      },
-      getCurrentChainId: jest.fn(),
-      onNetworkDidChange: jest.fn(),
-    });
+    messenger.registerActionHandler('MetaMetricsController:getState', () => ({
+      metaMetricsId: mockMetaMetricsId,
+    }));
 
-    const mmiControllerMessenger = controllerMessenger.getRestricted({
+    messenger.registerActionHandler(
+      'NetworkController:getState',
+      jest
+        .fn()
+        .mockReturnValue(mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA })),
+    );
+
+    messenger.registerActionHandler(
+      'NetworkController:setActiveNetwork',
+      InfuraNetworkType['sepolia'],
+    );
+
+    messenger.registerActionHandler(
+      'NetworkController:getNetworkClientById',
+      jest.fn().mockReturnValue({
+        configuration: {
+          chainId: CHAIN_IDS.SEPOLIA,
+        },
+      }),
+    );
+
+    messenger.registerActionHandler(
+      'NetworkController:getNetworkConfigurationByChainId',
+      jest.fn().mockReturnValue(createMockNetworkConfiguration()),
+    );
+
+    mmiControllerMessenger = messenger.getRestricted({
       name: 'MMIController',
       allowedActions: [
         'AccountsController:getAccountByAddress',
@@ -219,6 +248,11 @@ describe('MMIController', function () {
         'AccountsController:listAccounts',
         'AccountsController:getSelectedAccount',
         'AccountsController:setSelectedAccount',
+        'MetaMetricsController:getState',
+        'NetworkController:getState',
+        'NetworkController:setActiveNetwork',
+        'NetworkController:getNetworkClientById',
+        'NetworkController:getNetworkConfigurationByChainId',
       ],
     });
 
@@ -236,29 +270,24 @@ describe('MMIController', function () {
           messenger: mockMessenger,
         }),
         isEthSignEnabled: jest.fn(),
-        getAllState: jest.fn(),
-        getCurrentChainId: jest.fn(),
       }),
       appStateController: new AppStateController({
         addUnlockListener: jest.fn(),
         isUnlocked: jest.fn(() => true),
-        initState: {},
+        state: {},
         onInactiveTimeout: jest.fn(),
         showUnlockRequest: jest.fn(),
-        preferencesStore: {
-          subscribe: jest.fn(),
-          getState: jest.fn(() => ({
+        messenger: {
+          ...mockMessenger,
+          call: jest.fn().mockReturnValue({
             preferences: {
               autoLockTimeLimit: 0,
             },
-          })),
+          }),
         },
-        messenger: mockMessenger,
       }),
-      networkController,
       permissionController,
       custodyController,
-      metaMetricsController,
       custodianEventHandlerFactory: jest.fn(),
       getTransactions: jest.fn(),
       updateTransactionHash: jest.fn(),
@@ -273,10 +302,6 @@ describe('MMIController', function () {
     mmiController.getState = jest.fn();
     mmiController.captureException = jest.fn();
     mmiController.accountTrackerController = { syncWithAddresses: jest.fn() };
-
-    jest.spyOn(metaMetricsController.store, 'getState').mockReturnValue({
-      metaMetricsId: mockMetaMetricsId,
-    });
   });
 
   afterEach(() => {
@@ -288,10 +313,11 @@ describe('MMIController', function () {
       const type = 'mock-keyring-type';
       mmiController.keyringController.getKeyringsByType = jest
         .fn()
-        .mockReturnValue([]);
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce(['new-keyring']);
       mmiController.keyringController.addNewKeyring = jest
         .fn()
-        .mockResolvedValue('new-keyring');
+        .mockResolvedValue('new-keyring-metadata');
 
       const result = await mmiController.addKeyringIfNotExists(type);
 
@@ -354,6 +380,39 @@ describe('MMIController', function () {
         mmiController.mmiConfigurationController.storeConfiguration,
       ).toHaveBeenCalled();
     });
+
+    it('should set up API_REQUEST_LOG_EVENT listener on keyring', async () => {
+      const mockKeyring = {
+        on: jest.fn(),
+        getAccounts: jest.fn().mockResolvedValue([]),
+        getSupportedChains: jest.fn().mockResolvedValue({}),
+      };
+
+      mmiController.addKeyringIfNotExists = jest
+        .fn()
+        .mockResolvedValue(mockKeyring);
+      mmiController.custodyController.getAllCustodyTypes = jest
+        .fn()
+        .mockReturnValue(['mock-custody-type']);
+      mmiController.logAndStoreApiRequest = jest.fn();
+
+      await mmiController.onSubmitPassword();
+
+      expect(mockKeyring.on).toHaveBeenCalledWith(
+        API_REQUEST_LOG_EVENT,
+        expect.any(Function),
+      );
+
+      const mockLogData = { someKey: 'someValue' };
+      const apiRequestLogEventHandler = mockKeyring.on.mock.calls.find(
+        (call) => call[0] === API_REQUEST_LOG_EVENT,
+      )[1];
+      apiRequestLogEventHandler(mockLogData);
+
+      expect(mmiController.logAndStoreApiRequest).toHaveBeenCalledWith(
+        mockLogData,
+      );
+    });
   });
 
   describe('connectCustodyAddresses', () => {
@@ -409,6 +468,66 @@ describe('MMIController', function () {
       ).toHaveBeenCalled();
       expect(result).toEqual(['0x1']);
     });
+
+    it('should set up API_REQUEST_LOG_EVENT listener on keyring', async () => {
+      const custodianType = 'mock-custodian-type';
+      const custodianName = 'mock-custodian-name';
+      const accounts = {
+        '0x1': {
+          name: 'Account 1',
+          custodianDetails: {},
+          labels: [],
+          token: 'token',
+          chainId: 1,
+        },
+      };
+      CUSTODIAN_TYPES['MOCK-CUSTODIAN-TYPE'] = {
+        keyringClass: { type: 'mock-keyring-class' },
+      };
+
+      const mockKeyring = {
+        on: jest.fn(),
+        setSelectedAddresses: jest.fn(),
+        addAccounts: jest.fn(),
+        getStatusMap: jest.fn(),
+      };
+
+      mmiController.addKeyringIfNotExists = jest
+        .fn()
+        .mockResolvedValue(mockKeyring);
+      mmiController.keyringController.getAccounts = jest
+        .fn()
+        .mockResolvedValue(['0x2']);
+      mmiController.keyringController.addNewAccountForKeyring = jest
+        .fn()
+        .mockResolvedValue('0x3');
+      mmiController.custodyController.setAccountDetails = jest.fn();
+      mmiController.accountTrackerController.syncWithAddresses = jest.fn();
+      mmiController.storeCustodianSupportedChains = jest.fn();
+      mmiController.custodyController.storeCustodyStatusMap = jest.fn();
+      mmiController.logAndStoreApiRequest = jest.fn();
+
+      await mmiController.connectCustodyAddresses(
+        custodianType,
+        custodianName,
+        accounts,
+      );
+
+      expect(mockKeyring.on).toHaveBeenCalledWith(
+        API_REQUEST_LOG_EVENT,
+        expect.any(Function),
+      );
+
+      const mockLogData = { someKey: 'someValue' };
+      const apiRequestLogEventHandler = mockKeyring.on.mock.calls.find(
+        (call) => call[0] === API_REQUEST_LOG_EVENT,
+      )[1];
+      apiRequestLogEventHandler(mockLogData);
+
+      expect(mmiController.logAndStoreApiRequest).toHaveBeenCalledWith(
+        mockLogData,
+      );
+    });
   });
 
   describe('getCustodianAccounts', () => {
@@ -434,8 +553,8 @@ describe('MMIController', function () {
       CUSTODIAN_TYPES['CUSTODIAN-TYPE'] = {
         keyringClass: { type: 'mock-keyring-class' },
       };
-      mmiController.messenger.call = jest
-        .fn()
+      jest
+        .spyOn(mmiControllerMessenger, 'call')
         .mockReturnValue({ address: '0x1' });
       mmiController.custodyController.getCustodyTypeByAddress = jest
         .fn()
@@ -555,8 +674,8 @@ describe('MMIController', function () {
       mmiController.custodyController.getAccountDetails = jest
         .fn()
         .mockReturnValue({});
-      mmiController.messenger.call = jest
-        .fn()
+      jest
+        .spyOn(mmiControllerMessenger, 'call')
         .mockReturnValue([mockAccount, mockAccount2]);
       mmiController.mmiConfigurationController.store.getState = jest
         .fn()
@@ -628,7 +747,7 @@ describe('MMIController', function () {
 
   describe('handleMmiCheckIfTokenIsPresent', () => {
     it('should check if a token is present', async () => {
-      mmiController.messenger.call = jest
+      mmiController.messagingSystem.call = jest
         .fn()
         .mockReturnValue({ address: '0x1' });
       mmiController.custodyController.getCustodyTypeByAddress = jest
@@ -660,7 +779,10 @@ describe('MMIController', function () {
 
   describe('handleMmiDashboardData', () => {
     it('should return internalAccounts as identities', async () => {
-      const controllerMessengerSpy = jest.spyOn(controllerMessenger, 'call');
+      jest
+        .spyOn(mmiController.keyringController, 'getAccounts')
+        .mockReturnValue([mockAccount.address, mockAccount2.address]);
+      const controllerMessengerSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.handleMmiDashboardData();
 
       expect(controllerMessengerSpy).toHaveBeenCalledWith(
@@ -738,7 +860,7 @@ describe('MMIController', function () {
 
   describe('setAccountAndNetwork', () => {
     it('should set a new selected account if the selectedAddress and the address from the arguments is different', async () => {
-      const selectedAccountSpy = jest.spyOn(controllerMessenger, 'call');
+      const selectedAccountSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.setAccountAndNetwork(
         'mock-origin',
         mockAccount2.address,
@@ -756,14 +878,14 @@ describe('MMIController', function () {
     });
 
     it('should not set a new selected account the accounts are the same', async () => {
-      const selectedAccountSpy = jest.spyOn(controllerMessenger, 'call');
+      const selectedAccountSpy = jest.spyOn(mmiControllerMessenger, 'call');
       await mmiController.setAccountAndNetwork(
         'mock-origin',
         mockAccount.address,
         '0x1',
       );
 
-      expect(selectedAccountSpy).toHaveBeenCalledTimes(1);
+      expect(selectedAccountSpy).toHaveBeenCalledTimes(4);
       const selectedAccount = accountsController.getSelectedAccount();
       expect(selectedAccount.id).toBe(mockAccount.id);
     });
@@ -782,6 +904,37 @@ describe('MMIController', function () {
       expect(
         mmiController.platform.openExtensionInBrowser,
       ).toHaveBeenCalledWith('/new-account/connect');
+    });
+  });
+
+  describe('logAndStoreApiRequest', () => {
+    it('should call custodyController.sanitizeAndLogApiCall with the provided log data', async () => {
+      const mockLogData = { someKey: 'someValue' };
+      const mockSanitizedLogs = { sanitizedKey: 'sanitizedValue' };
+
+      mmiController.custodyController.sanitizeAndLogApiCall = jest
+        .fn()
+        .mockResolvedValue(mockSanitizedLogs);
+
+      const result = await mmiController.logAndStoreApiRequest(mockLogData);
+
+      expect(
+        mmiController.custodyController.sanitizeAndLogApiCall,
+      ).toHaveBeenCalledWith(mockLogData);
+      expect(result).toEqual(mockSanitizedLogs);
+    });
+
+    it('should handle errors and throw them', async () => {
+      const mockLogData = { someKey: 'someValue' };
+      const mockError = new Error('Sanitize error');
+
+      mmiController.custodyController.sanitizeAndLogApiCall = jest
+        .fn()
+        .mockRejectedValue(mockError);
+
+      await expect(
+        mmiController.logAndStoreApiRequest(mockLogData),
+      ).rejects.toThrow('Sanitize error');
     });
   });
 });

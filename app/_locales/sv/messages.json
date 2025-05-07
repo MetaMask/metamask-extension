@@ -248,9 +248,6 @@
   "from": {
     "message": "Från"
   },
-  "functionType": {
-    "message": "Funktionstyp"
-  },
   "gasLimit": {
     "message": "Gasgräns"
   },
@@ -309,9 +306,6 @@
   "import": {
     "message": "Importera",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importera konto"
   },
   "importAccountMsg": {
     "message": "Importerade konton kommer inte att kopplas till din ursprungligen skapade seedphrase för ditt MetaMask-konto. Läs mer om importerade konton"
@@ -375,9 +369,6 @@
   "loading": {
     "message": "Läser in..."
   },
-  "loadingTokens": {
-    "message": "Laddar tokens..."
-  },
   "lock": {
     "message": "Logga ut"
   },
@@ -434,9 +425,6 @@
   "noConversionRateAvailable": {
     "message": "Ingen omräkningskurs tillgänglig"
   },
-  "noTransactions": {
-    "message": "Du har inga överföringar"
-  },
   "noWebcamFound": {
     "message": "Din dators webbkamera hittades inte. Vänligen försök igen."
   },
@@ -460,9 +448,6 @@
   },
   "origin": {
     "message": "Ursprung"
-  },
-  "parameters": {
-    "message": "Parametrar"
   },
   "participateInMetaMetrics": {
     "message": "Delta i MetaMetrics"
@@ -532,9 +517,6 @@
   "removeAccountDescription": {
     "message": "Detta konto kommer att avlägsnas från din plånbok. Säkerställ att du har din ursprungliga seed phrase eller den privata nyckeln till detta importerade konto innan du fortsätter. Du kan importera eller skapa konton igen via kontots rullgardinsmeny."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "anrop som väntar på godkännande"
-  },
   "required": {
     "message": "Krävs"
   },
@@ -601,9 +583,6 @@
   },
   "showHexDataDescription": {
     "message": "Välj detta för att visa hex-datafältet på sändarskärmen"
-  },
-  "sigRequest": {
-    "message": "Signaturförfrågan"
   },
   "sign": {
     "message": "Signera"
@@ -692,9 +671,6 @@
   "transactionErrored": {
     "message": "Transaktionen påträffade ett fel."
   },
-  "transactionFee": {
-    "message": "Transaktionsavgift"
-  },
   "transactionResubmitted": {
     "message": "Transaktion skickad igen med gas-avgift ökad till $1 på $2"
   },
@@ -721,9 +697,6 @@
   },
   "unknown": {
     "message": "okänt"
-  },
-  "unknownNetwork": {
-    "message": "Okänt privatnätverk"
   },
   "unknownQrCode": {
     "message": "Fel: Vi kunde inte identifiera denna QR-kod"
@@ -754,9 +727,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du måste tillåta åtkomst till kameran för att använda den här funktionen."
-  },
-  "youSign": {
-    "message": "Du signerar"
   },
   "yourPrivateSeedPhrase": {
     "message": "Din privata seedphrase"

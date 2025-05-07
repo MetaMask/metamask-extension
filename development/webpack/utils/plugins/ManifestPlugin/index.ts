@@ -26,16 +26,6 @@ const NAME = 'ManifestPlugin';
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
 
 /**
- * Clones a Buffer or Uint8Array and returns it
- *
- * @param data
- * @returns
- */
-function clone(data: Buffer | Uint8Array): Buffer {
-  return Buffer.from(data);
-}
-
-/**
  * Adds the given asset to the zip file
  *
  * @param asset - The asset to add
@@ -54,12 +44,23 @@ function addAssetToZip(
   zip: Zip,
 ): void {
   const zipFile = compress
-    ? new AsyncZipDeflate(assetName, compressionOptions)
-    : new ZipPassThrough(assetName);
+    ? // AsyncZipDeflate uses workers
+      new AsyncZipDeflate(assetName, compressionOptions)
+    : // ZipPassThrough doesn't use workers
+      new ZipPassThrough(assetName);
   zipFile.mtime = mtime;
   zip.add(zipFile);
-  // use a copy of the Buffer, as Zip will consume it
-  zipFile.push(asset, true);
+  // Use a copy of the Buffer via `Buffer.from(asset)`, as Zip will *consume*
+  // it, which breaks things if we are compiling for multiple browsers at once.
+  // `Buffer.from` uses the internal pool, so it's superior to `new Uint8Array`
+  // if we don't need to pass it off to a worker thread.
+  //
+  // Additionally, in Node.js 22+ a Buffer marked as "Untransferable" (like
+  // ours) can't be passed to a worker, which `AsyncZipDeflate` uses.
+  // See: https://github.com/101arrowz/fflate/issues/227#issuecomment-2540024304
+  // this can probably be simplified to `zipFile.push(Buffer.from(asset), true);`
+  // if the above issue is resolved.
+  zipFile.push(compress ? new Uint8Array(asset) : Buffer.from(asset), true);
 }
 
 /**
@@ -93,11 +94,6 @@ export class ManifestPlugin<Z extends boolean> {
     '.txt',
     '.wasm',
     '.vtt', // very slow to process?
-    // ttf is disabled as some were getting corrupted during compression. You
-    // can test this by uncommenting it, running with --zip, and then unzipping
-    // the resulting zip file. If it is still broken the unzip operation will
-    // show an error.
-    // '.ttf',
     '.wav',
     '.xml',
   ]);
@@ -132,6 +128,8 @@ export class ManifestPlugin<Z extends boolean> {
     const numAssetsPerBrowser = assetsArray.length + 1;
     const totalWork = numAssetsPerBrowser * browsers.length; // +1 for each browser's manifest.json
     const reportProgress =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       ProgressPlugin.getReporter(compilation.compiler) || noop;
     // TODO(perf): run this in parallel. If you try without carefully optimizing the
     // process will run out of memory pretty quickly, and crash. Fun!
@@ -150,7 +148,7 @@ export class ManifestPlugin<Z extends boolean> {
             errored = true;
             reject(error);
           } else {
-            zipSource.add(new RawSource(clone(data)));
+            zipSource.add(new RawSource(Buffer.from(data)));
             // we've received our final bit of data, return the zipSource
             if (final) resolve(zipSource);
           }
@@ -176,9 +174,7 @@ export class ManifestPlugin<Z extends boolean> {
           if (excludeExtensions.includes(extName)) continue;
 
           addAssetToZip(
-            // make a copy of the asset Buffer as Zipping will *consume* it,
-            // which breaks things if we are compiling for multiple browsers.
-            clone(asset.buffer()),
+            asset.buffer(),
             assetName,
             ManifestPlugin.compressibleFileTypes.has(extName),
             compressionOptions,
@@ -280,6 +276,8 @@ export class ManifestPlugin<Z extends boolean> {
       if (resources && resources.length > 0) {
         if (manifest.manifest_version === 3) {
           manifest.web_accessible_resources =
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             manifest.web_accessible_resources || [];
           const war = manifest.web_accessible_resources.find((resource) =>
             resource.matches.includes('<all_urls>'),
@@ -296,6 +294,8 @@ export class ManifestPlugin<Z extends boolean> {
           }
         } else {
           manifest.web_accessible_resources = [
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ...(manifest.web_accessible_resources || []),
             ...resources,
           ];

@@ -44,24 +44,29 @@ import {
   fetchSwapsSmartTransactionFees,
   getSmartTransactionFees,
   getCurrentSmartTransactionsEnabled,
+  getIsEstimatedReturnLow,
 } from '../../../ducks/swaps/swaps';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   conversionRateSelector,
   getSelectedAccount,
-  getCurrentCurrency,
   getTokenExchangeRates,
   getSwapsDefaultToken,
-  getCurrentChainId,
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
+  getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
-import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getTokens,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import {
   setCustomApproveTxData,
   showModal,
@@ -142,8 +147,9 @@ import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { useAsyncResult } from '../../../hooks/useAsyncResult';
+import { useAsyncResult } from '../../../hooks/useAsync';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
@@ -177,11 +183,15 @@ ViewAllQuotesLink.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default function ReviewQuote({ setReceiveToAmount }) {
+export default function ReviewQuote({
+  setReceiveToAmount,
+  setIsEstimatedReturnLow,
+}) {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [submitClicked, setSubmitClicked] = useState(false);
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
@@ -240,7 +250,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
+  );
+  const smartTransactionsPreferenceEnabled = useSelector(
+    getSmartTransactionsPreferenceEnabled,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const swapsSTXLoading = useSelector(getSwapsSTXLoading);
@@ -253,7 +266,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   );
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
-  const { estimatedBaseFee = '0' } = useGasFeeEstimates();
+  const { gasFeeEstimates: networkGasFeeEstimates } = useGasFeeEstimates();
+  const { estimatedBaseFee = '0' } = networkGasFeeEstimates ?? {};
 
   const gasFeeEstimates = useAsyncResult(async () => {
     if (!networkAndAccountSupports1559) {
@@ -280,7 +294,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const unsignedTransaction = usedQuote.trade;
   const { isGasIncludedTrade } = usedQuote;
   const isSmartTransaction =
-    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
+    useSelector(getSmartTransactionsPreferenceEnabled) &&
+    currentSmartTransactionsEnabled;
 
   const [slippageErrorKey] = useState(() => {
     const slippage = Number(fetchParams?.slippage);
@@ -377,7 +392,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       chainId,
       smartTransactionEstimatedGas:
         smartTransactionsEnabled &&
-        smartTransactionsOptInStatus &&
+        smartTransactionsPreferenceEnabled &&
         smartTransactionFees?.tradeTxFees,
       nativeCurrencySymbol,
       multiLayerL1ApprovalFeeTotal,
@@ -394,7 +409,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     smartTransactionFees?.tradeTxFees,
     nativeCurrencySymbol,
     smartTransactionsEnabled,
-    smartTransactionsOptInStatus,
+    smartTransactionsPreferenceEnabled,
     multiLayerL1ApprovalFeeTotal,
   ]);
 
@@ -412,7 +427,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     sourceTokenValue,
   } = renderableDataForUsedQuote;
 
-  let { feeInFiat, feeInEth, rawEthFee, feeInUsd } =
+  let { feeInFiat, feeInEth, rawEthFee, feeInUsd, rawNetworkFees } =
     getRenderableNetworkFeesForQuote({
       tradeGas: usedGasLimit,
       approveGas,
@@ -463,14 +478,15 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       smartTransactionFees?.tradeTxFees.maxFeeEstimate +
       (smartTransactionFees?.approvalTxFees?.maxFeeEstimate || 0);
 
-    ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
-      chainId,
-      currentCurrency,
-      conversionRate,
-      USDConversionRate,
-      nativeCurrencySymbol,
-      feeInWeiDec: stxEstimatedFeeInWeiDec,
-    }));
+    ({ feeInFiat, feeInEth, rawEthFee, feeInUsd, rawNetworkFees } =
+      getFeeForSmartTransaction({
+        chainId,
+        currentCurrency,
+        conversionRate,
+        USDConversionRate,
+        nativeCurrencySymbol,
+        feeInWeiDec: stxEstimatedFeeInWeiDec,
+      }));
     additionalTrackingParams.stx_fee_in_usd = Number(feeInUsd);
     additionalTrackingParams.stx_fee_in_eth = Number(rawEthFee);
     additionalTrackingParams.estimated_gas =
@@ -731,6 +747,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         error_type: MetaMetricsEventErrorType.InsufficientGas,
         additional_balance_needed: additionalBalanceNeeded,
       },
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
+      },
     });
   }, [
     quotesLastFetched,
@@ -741,6 +760,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     prevEthBalanceNeededStx,
     ethBalanceNeeded,
     eventObjectBase,
+    hdEntropyIndex,
   ]);
 
   const metaMaskFee = usedQuote.fee;
@@ -887,7 +907,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       (currentSmartTransactionsEnabled &&
         (currentSmartTransactionsError || smartTransactionsError)) ||
       (currentSmartTransactionsEnabled &&
-        smartTransactionsOptInStatus &&
+        smartTransactionsPreferenceEnabled &&
         !smartTransactionFees?.tradeTxFees),
   );
 
@@ -1113,6 +1133,12 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     currentCurrency,
   ]);
 
+  const isEstimatedReturnLow = getIsEstimatedReturnLow({
+    usedQuote,
+    rawNetworkFees,
+  });
+  setIsEstimatedReturnLow(isEstimatedReturnLow);
+
   return (
     <div className="review-quote">
       <div className="review-quote__content">
@@ -1136,7 +1162,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               initialAggId={usedQuote.aggregator}
               onQuoteDetailsIsOpened={trackQuoteDetailsOpened}
               hideEstimatedGasFee={
-                smartTransactionsEnabled && smartTransactionsOptInStatus
+                smartTransactionsEnabled && smartTransactionsPreferenceEnabled
               }
             />
           )
@@ -1205,7 +1231,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               secondaryTokenDecimals={destinationTokenDecimals}
               secondaryTokenSymbol={destinationTokenSymbol}
               boldSymbols={false}
-              className="main-quote-summary__exchange-rate-display"
+              className="review-quote__exchange-rate-display"
               showIconForSwappingTokens={false}
             />
           </Box>
@@ -1480,4 +1506,5 @@ export default function ReviewQuote({ setReceiveToAmount }) {
 
 ReviewQuote.propTypes = {
   setReceiveToAmount: PropTypes.func.isRequired,
+  setIsEstimatedReturnLow: PropTypes.func.isRequired,
 };

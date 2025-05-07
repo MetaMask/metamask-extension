@@ -1,3 +1,4 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { SignatureRequestType } from '../../../ui/pages/confirmations/types/confirm';
 
 export const PERSONAL_SIGN_SENDER_ADDRESS =
@@ -5,6 +6,7 @@ export const PERSONAL_SIGN_SENDER_ADDRESS =
 
 export const unapprovedPersonalSignMsg = {
   id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
+  chainId: CHAIN_IDS.GOERLI,
   status: 'unapproved',
   time: new Date().getTime(),
   type: 'personal_sign',
@@ -20,6 +22,7 @@ export const unapprovedPersonalSignMsg = {
 
 export const signatureRequestSIWE = {
   id: '210ca3b0-1ccb-11ef-b096-89c4d726ebb5',
+  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',
@@ -57,6 +60,7 @@ export const signatureRequestSIWE = {
 
 export const SignatureRequestSIWEWithResources = {
   id: '210ca3b0-1ccb-11ef-b096-89c4d726ebb5',
+  chainId: CHAIN_IDS.GOERLI,
   securityAlertResponse: {
     reason: 'loading',
     result_type: 'validation_in_progress',

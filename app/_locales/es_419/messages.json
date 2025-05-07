@@ -100,23 +100,6 @@
   "addContact": {
     "message": "Agregar contacto"
   },
-  "addEthereumChainConfirmationDescription": {
-    "message": "Esto permitirá que la red se utilice en MetaMask."
-  },
-  "addEthereumChainConfirmationRisks": {
-    "message": "MetaMask no verifica redes personalizadas."
-  },
-  "addEthereumChainConfirmationRisksLearnMore": {
-    "message": "Obtenga más información sobre $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
-  },
-  "addEthereumChainConfirmationRisksLearnMoreLink": {
-    "message": "estafas y riesgos de seguridad de la red",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
-  },
-  "addEthereumChainConfirmationTitle": {
-    "message": "¿Permitir que este sitio agregue una red?"
-  },
   "addFriendsAndAddresses": {
     "message": "Agregue amigos y direcciones de confianza"
   },
@@ -159,10 +142,6 @@
   },
   "alerts": {
     "message": "Alertas"
-  },
-  "allowSpendToken": {
-    "message": "¿Dar permiso para acceder a su $1?",
-    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowWithdrawAndSpend": {
     "message": "Permitir que se retire $1 y gastar hasta el siguiente importe:",
@@ -289,9 +268,6 @@
   },
   "cancelPopoverTitle": {
     "message": "Cancelar transacción"
-  },
-  "cancelSpeedUp": {
-    "message": "cancelar o acelerar una transacción."
   },
   "cancelSpeedUpLabel": {
     "message": "Esta tarifa de gas va a $1 el original.",
@@ -422,9 +398,6 @@
   "copyAddress": {
     "message": "Copiar dirección al Portapapeles"
   },
-  "copyRawTransactionData": {
-    "message": "Copiar los datos de las transacciones en bruto"
-  },
   "copyToClipboard": {
     "message": "Copiar al Portapapeles"
   },
@@ -489,9 +462,6 @@
   },
   "data": {
     "message": "Datos"
-  },
-  "dataHex": {
-    "message": "Hex"
   },
   "decimal": {
     "message": "Decimales del token"
@@ -644,10 +614,6 @@
   "editGasPriceTooltip": {
     "message": "Esta red requiere un campo \"Precio del gas\" cuando se envía una transacción. El precio del gas es la cantidad que se pagará por unidad de gas."
   },
-  "editGasSubTextAmountLabel": {
-    "message": "Cantidad máxima:",
-    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
-  },
   "editGasSubTextFeeLabel": {
     "message": "Tarifa máxima:"
   },
@@ -703,10 +669,6 @@
     "message": "Código: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Detalles del error",
-    "description": "Title for collapsible section that displays error details for debugging purposes"
-  },
   "errorMessage": {
     "message": "Mensaje: $1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
@@ -714,14 +676,6 @@
   "errorName": {
     "message": "Código: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Vuelva a cargar la página para intentarlo de nuevo o comuníquese con soporte técnico $1.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "errorPagePopupMessage": {
-    "message": "Cierre la ventana emergente y vuelva a abrirla para intentarlo de nuevo o comuníquese con soporte técnico $1.",
-    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask encontró un error",
@@ -767,9 +721,6 @@
   "fast": {
     "message": "Rápido"
   },
-  "feeAssociatedRequest": {
-    "message": "Esta solicitud tiene asociada una tarifa."
-  },
   "fileImportFail": {
     "message": "¿No funciona la importación del archivo? ¡Haga clic aquí!",
     "description": "Helps user import their account from a JSON file"
@@ -809,12 +760,6 @@
   "fromAddress": {
     "message": "De: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
-  "functionApprove": {
-    "message": "Función: Aprobar"
-  },
-  "functionType": {
-    "message": "Tipo de función"
   },
   "gas": {
     "message": "Gas"
@@ -887,9 +832,6 @@
   "goerli": {
     "message": "Red de prueba Goerli"
   },
-  "grantedToWithColon": {
-    "message": "Concedido a:"
-  },
   "gwei": {
     "message": "GWEI"
   },
@@ -944,9 +886,6 @@
   "import": {
     "message": "Importar",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importar cuenta"
   },
   "importAccountError": {
     "message": "Error al importar la cuenta."
@@ -1049,10 +988,6 @@
   "lastConnected": {
     "message": "Última conexión"
   },
-  "learnCancelSpeeedup": {
-    "message": "Aprenda cómo $1",
-    "description": "$1 is link to cancel or speed up transactions"
-  },
   "learnMore": {
     "message": "más información"
   },
@@ -1114,9 +1049,6 @@
   },
   "loading": {
     "message": "Cargando..."
-  },
-  "loadingTokens": {
-    "message": "Cargando tokens..."
   },
   "localhost": {
     "message": "Host local 8545"
@@ -1289,10 +1221,6 @@
   "next": {
     "message": "Siguiente"
   },
-  "nextNonceWarning": {
-    "message": "El nonce es superior al nonce sugerido de $1",
-    "description": "The next nonce according to MetaMask's internal logic"
-  },
   "nfts": {
     "message": "NFT"
   },
@@ -1305,9 +1233,6 @@
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
   },
-  "noTransactions": {
-    "message": "No tiene transacciones"
-  },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."
   },
@@ -1316,12 +1241,6 @@
   },
   "nonce": {
     "message": "Nonce"
-  },
-  "nonceField": {
-    "message": "Personalizar nonce de transacción"
-  },
-  "nonceFieldHeading": {
-    "message": "Nonce personalizado"
   },
   "notBusy": {
     "message": "No ocupado"
@@ -1400,14 +1319,8 @@
   "optional": {
     "message": "Opcional"
   },
-  "or": {
-    "message": "o"
-  },
   "origin": {
     "message": "Origen"
-  },
-  "parameters": {
-    "message": "Parámetros"
   },
   "participateInMetaMetrics": {
     "message": "Participar en MetaMetrics"
@@ -1436,19 +1349,6 @@
   },
   "pending": {
     "message": "Pendiente"
-  },
-  "pendingTransactionInfo": {
-    "message": "Esta transacción no se procesará hasta que aquella haya finalizado."
-  },
-  "pendingTransactionMultiple": {
-    "message": "Tiene ($1) transacciones pendientes."
-  },
-  "pendingTransactionSingle": {
-    "message": "Tiene (1) transacción pendiente.",
-    "description": "$1 is count of pending transactions"
-  },
-  "permissionRequest": {
-    "message": "Solicitud de permiso"
   },
   "permission_ethereumAccounts": {
     "message": "Ver dirección, saldo de cuenta, actividad e iniciar transacciones",
@@ -1567,9 +1467,6 @@
   "replace": {
     "message": "reemplazar"
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "solicitudes en espera de confirmación"
-  },
   "required": {
     "message": "Requerido"
   },
@@ -1661,9 +1558,6 @@
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Antes de comenzar, mire este breve video para aprender sobre su frase de recuperación y sobre cómo proteger su cartera."
-  },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
@@ -1732,13 +1626,6 @@
   "showHexDataDescription": {
     "message": "Seleccione esta opción para mostrar el campo de datos hexadecimales en la pantalla de envío"
   },
-  "showIncomingTransactions": {
-    "message": "Mostrar transacciones entrantes"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
   "showPermissions": {
     "message": "Mostrar permisos"
   },
@@ -1747,9 +1634,6 @@
   },
   "showTestnetNetworksDescription": {
     "message": "Seleccione esta opción para mostrar las redes de prueba en la lista de redes"
-  },
-  "sigRequest": {
-    "message": "Solicitud de firma"
   },
   "sign": {
     "message": "Firmar"
@@ -1894,10 +1778,6 @@
     "message": "Necesita $1 más $2 para realizar este canje",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBuildQuotePlaceHolderText": {
-    "message": "No hay tokens disponibles que coincidan con $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirmar con la cartera de hardware"
   },
@@ -1949,9 +1829,6 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Error al capturar cotizaciones"
   },
-  "swapFetchingTokens": {
-    "message": "Capturando tokens..."
-  },
   "swapFromTo": {
     "message": "El canje de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -1969,15 +1846,9 @@
     "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. MetaMask no se beneficia de las tarifas de gas.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
-  "swapHighSlippageWarning": {
-    "message": "El monto del desfase es muy alto."
-  },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapLowSlippageError": {
-    "message": "Es posible que la transacción tenga errores, el desfase máximo es demasiado bajo."
   },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
@@ -2008,9 +1879,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Diferencia de precio de ~$1 %",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceImpactTooltip": {
-    "message": "El impacto sobre el precio es la diferencia entre el precio actual del mercado y el monto recibido durante la ejecución de la transacción. El impacto sobre el precio es una función del tamaño de su transacción respecto de la dimensión del fondo de liquidez."
   },
   "swapPriceUnavailableDescription": {
     "message": "No se pudo determinar el impacto sobre el precio debido a la falta de datos de los precios del mercado. Antes de realizar el canje, confirme que está de acuerdo con la cantidad de tokens que está a punto de recibir."
@@ -2051,9 +1919,6 @@
   "swapRequestForQuotation": {
     "message": "Solicitud de cotización"
   },
-  "swapReviewSwap": {
-    "message": "Revisar canje"
-  },
   "swapSelect": {
     "message": "Seleccionar"
   },
@@ -2065,9 +1930,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "A continuación se muestran todas las cotizaciones recopiladas de diversas fuentes de liquidez."
-  },
-  "swapSlippageNegative": {
-    "message": "El desfase debe ser mayor o igual que cero"
   },
   "swapSource": {
     "message": "Fuente de liquidez"
@@ -2102,20 +1964,6 @@
     "message": "Canjear $1 por $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerificationAddedManually": {
-    "message": "Este token se añadió de forma manual."
-  },
-  "swapTokenVerificationMessage": {
-    "message": "Siempre confirme la dirección del token en $1.",
-    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationOnlyOneSource": {
-    "message": "Solo se verificó en una fuente."
-  },
-  "swapTokenVerificationSources": {
-    "message": "Verificar en $1 fuentes.",
-    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
-  },
   "swapTooManyDecimalsError": {
     "message": "$1 permite hasta $2 decimales",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -2129,29 +1977,11 @@
   "swapUnknown": {
     "message": "Desconocido"
   },
-  "swapVerifyTokenExplanation": {
-    "message": "Varios tokens pueden usar el mismo nombre y símbolo. Revise $1 para comprobar que este es el token que busca.",
-    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapYourTokenBalance": {
-    "message": "$1 $2 disponible para canje",
-    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
-  },
   "swapZeroSlippage": {
     "message": "0 % de desfase"
   },
-  "swapsAdvancedOptions": {
-    "message": "Opciones avanzadas"
-  },
-  "swapsExcessiveSlippageWarning": {
-    "message": "El monto del desfase es muy alto, por lo que recibirá una tasa de conversión desfavorable. Disminuya su tolerancia de desfase a un valor menor al 15 %."
-  },
   "swapsMaxSlippage": {
     "message": "Tolerancia de desfase"
-  },
-  "swapsNotEnoughForTx": {
-    "message": "No hay $1 suficientes para finalizar esta transacción",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Ver en actividad"
@@ -2241,29 +2071,8 @@
   "transactionCreated": {
     "message": "La transacción se creó con un valor de $1 en $2."
   },
-  "transactionDetailDappGasMoreInfo": {
-    "message": "Sitio sugerido"
-  },
-  "transactionDetailDappGasTooltip": {
-    "message": "Editar para utilizar la tarifa de gas recomendada por MetaMask según el último bloque."
-  },
   "transactionDetailGasHeading": {
     "message": "Tarifa estimada de gas"
-  },
-  "transactionDetailGasTooltipConversion": {
-    "message": "Más información sobre las tarifas de gas"
-  },
-  "transactionDetailGasTooltipExplanation": {
-    "message": "Las tarifas de gas son fijadas por la red y fluctúan en función del tráfico de la red y la complejidad de las transacciones."
-  },
-  "transactionDetailGasTooltipIntro": {
-    "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. MetaMask no se beneficia de las tarifas de gas."
-  },
-  "transactionDetailGasTotalSubtitle": {
-    "message": "Cantidad + tarifa de gas"
-  },
-  "transactionDetailLayer2GasHeading": {
-    "message": "Tarifa de gas de la capa 2"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Monto + cargos"
@@ -2279,9 +2088,6 @@
   },
   "transactionErrored": {
     "message": "La transacción encontró un error."
-  },
-  "transactionFee": {
-    "message": "Tarifa de transacción"
   },
   "transactionHistoryBaseFee": {
     "message": "Tarifa base (GWEI)"
@@ -2323,9 +2129,6 @@
     "message": "Tuvimos problemas al conectar su $1. Pruebe revisar $2 e inténtelo de nuevo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
-  "trustSiteApprovePermission": {
-    "message": "Al conceder el permiso, usted permite que los siguientes $1 tengan acceso a sus fondos"
-  },
   "tryAgain": {
     "message": "Vuelva a intentarlo"
   },
@@ -2347,9 +2150,6 @@
   },
   "unknown": {
     "message": "Desconocido"
-  },
-  "unknownNetwork": {
-    "message": "Red privada desconocida"
   },
   "unknownQrCode": {
     "message": "Error: No se pudo identificar ese código QR"
@@ -2389,22 +2189,8 @@
   "userName": {
     "message": "Nombre de usuario"
   },
-  "verifyThisTokenOn": {
-    "message": "Verificar este token en $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "verifyThisUnconfirmedTokenOn": {
-    "message": "Verifique este token en $1 y asegúrese de que sea el token con el que quiere realizar la transacción.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAllDetails": {
-    "message": "Ver todos los detalles"
-  },
   "viewContact": {
     "message": "Ver contacto"
-  },
-  "viewFullTransactionDetails": {
-    "message": "Ver detalles completos de la transacción"
   },
   "viewMore": {
     "message": "Ver más"
@@ -2462,22 +2248,11 @@
   "welcomeToMetaMaskIntro": {
     "message": "Con la confianza de millones de personas, MetaMask es una cartera segura que pone el mundo de la web3 al alcance de todos."
   },
-  "whatsNew": {
-    "message": "Novedades",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
-  },
   "whatsThis": {
     "message": "¿Qué es esto?"
   },
-  "xOfYPending": {
-    "message": "$1 de $2 están pendientes",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."
-  },
-  "youSign": {
-    "message": "Está firmando"
   },
   "yourPrivateSeedPhrase": {
     "message": "Su frase secreta de recuperación privada"

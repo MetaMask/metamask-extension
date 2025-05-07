@@ -3,10 +3,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
@@ -17,16 +15,10 @@ import { useApproveTokenSimulation } from './hooks/use-approve-token-simulation'
 import { useIsNFT } from './hooks/use-is-nft';
 import { RevokeDetails } from './revoke-details/revoke-details';
 import { RevokeStaticSimulation } from './revoke-static-simulation/revoke-static-simulation';
-import { SpendingCap } from './spending-cap/spending-cap';
 
 const ApproveInfo = () => {
-  const { currentConfirmation: transactionMeta } = useConfirmContext() as {
-    currentConfirmation: TransactionMeta;
-  };
-
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
 
   const { isNFT } = useIsNFT(transactionMeta);
 
@@ -37,11 +29,12 @@ const ApproveInfo = () => {
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
     transactionMeta.txParams.data,
+    transactionMeta.chainId,
   );
 
   const { spendingCap, pending } = useApproveTokenSimulation(
     transactionMeta,
-    decimals || '0',
+    decimals,
   );
 
   const showRevokeVariant =
@@ -52,7 +45,7 @@ const ApproveInfo = () => {
     return null;
   }
 
-  if (pending) {
+  if (pending || (!isNFT && !decimals)) {
     return <ConfirmLoader />;
   }
 
@@ -61,16 +54,13 @@ const ApproveInfo = () => {
       {showRevokeVariant ? (
         <RevokeStaticSimulation />
       ) : (
-        <ApproveStaticSimulation />
-      )}
-      {showRevokeVariant ? <RevokeDetails /> : <ApproveDetails />}
-      {!isNFT && !showRevokeVariant && (
-        <SpendingCap
+        <ApproveStaticSimulation
           setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}
         />
       )}
+      {showRevokeVariant ? <RevokeDetails /> : <ApproveDetails />}
       <GasFeesSection />
-      {showAdvancedDetails && <AdvancedDetails />}
+      <AdvancedDetails />
       <EditSpendingCapModal
         isOpenEditSpendingCapModal={isOpenEditSpendingCapModal}
         setIsOpenEditSpendingCapModal={setIsOpenEditSpendingCapModal}

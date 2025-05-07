@@ -6,15 +6,16 @@ import {
   abiERC1155,
   abiFiatTokenV2,
 } from '@metamask/metamask-eth-abis';
-import type EthQuery from '@metamask/eth-query';
 import log from 'loglevel';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { TransactionParams } from '@metamask/transaction-controller';
+import type { Provider } from '@metamask/network-controller';
 
 import { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { AssetType, TokenStandard } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
@@ -88,6 +89,8 @@ export function txParamsAreDappSuggested(
     transactionMeta?.txParams || {};
   return Boolean(
     (gasPrice &&
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       gasPrice === transactionMeta?.dappSuggestedGasFees?.gasPrice) ||
       (maxPriorityFeePerGas &&
         maxFeePerGas &&
@@ -141,12 +144,12 @@ export function parseStandardTokenTransactionData(data: string) {
  * at transaction creation.
  *
  * @param txParams - Parameters for the transaction
- * @param query - EthQuery instance
+ * @param provider - Provider instance
  * @returns InferTransactionTypeResult
  */
 export async function determineTransactionType(
   txParams: TransactionParams,
-  query: EthQuery,
+  provider: Provider,
 ): Promise<InferTransactionTypeResult> {
   const { data, to } = txParams;
   let contractCode: string | null | undefined;
@@ -159,7 +162,7 @@ export async function determineTransactionType(
   }
   if (to) {
     const { contractCode: resultCode, isContractAddress } =
-      await readAddressAsContract(query, to);
+      await readAddressAsContract(provider, to);
 
     contractCode = resultCode;
 
@@ -211,13 +214,13 @@ type GetTokenStandardAndDetails = (to: string | undefined) => Promise<{
  * is a token transaction.
  *
  * @param txMeta - transaction meta object
- * @param query - EthQuery instance
+ * @param provider - Provider instance
  * @param getTokenStandardAndDetails - function to get token standards and details.
  * @returns assetType: AssetType, tokenStandard: TokenStandard
  */
 export async function determineTransactionAssetType(
   txMeta: TransactionMeta,
-  query: EthQuery,
+  provider: Provider,
   getTokenStandardAndDetails: GetTokenStandardAndDetails,
 ): Promise<{
   assetType: AssetType;
@@ -230,7 +233,7 @@ export async function determineTransactionAssetType(
     // Because we will deal with all types of transactions (including swaps)
     // we want to get an inferrable type of transaction that isn't special cased
     // that way we can narrow the number of logic gates required.
-    const result = await determineTransactionType(txMeta.txParams, query);
+    const result = await determineTransactionType(txMeta.txParams, provider);
     inferrableType = result.type;
   }
 
@@ -246,6 +249,8 @@ export async function determineTransactionAssetType(
   ].find((methodName) => methodName === inferrableType);
 
   if (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     isTokenMethod ||
     // We can also check any contract interaction type to see if the to address
     // is a token contract. If it isn't, then the method will throw and we can
@@ -294,10 +299,10 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
 }
 
 /**
- * JSON.parse has a limitation which coerces values to scientific notation if numbers are greator than
+ * JSON.parse has a limitation which coerces values to scientific notation if numbers are greater than
  * Number.MAX_SAFE_INTEGER. This can cause a loss in precision.
  *
- * Aside from precision concerns, if the value returned was a large number greator than 15 digits,
+ * Aside from precision concerns, if the value returned was a large number greater than 15 digits,
  * e.g. 3.000123123123121e+26, passing the value to BigNumber will throw the error:
  * Error: new BigNumber() number type has more than 15 significant digits
  *
@@ -315,6 +320,8 @@ export const parseTypedDataMessage = (dataToParse: string) => {
 
   const messageValue = extractLargeMessageValue(dataToParse);
   if (result.message?.value) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     result.message.value = messageValue || String(result.message.value);
   }
 
@@ -325,4 +332,38 @@ export function hasTransactionData(transactionData?: Hex): boolean {
   return Boolean(
     transactionData?.length && transactionData?.toLowerCase?.() !== '0x',
   );
+}
+
+export function parseApprovalTransactionData(data: Hex):
+  | {
+      amountOrTokenId?: BigNumber;
+      isApproveAll?: boolean;
+      isRevokeAll?: boolean;
+    }
+  | undefined {
+  const transactionDescription = parseStandardTokenTransactionData(data);
+  const { args, name } = transactionDescription ?? {};
+
+  if (
+    !['approve', 'increaseAllowance', 'setApprovalForAll'].includes(name ?? '')
+  ) {
+    return undefined;
+  }
+
+  const rawAmountOrTokenId =
+    args?._value ?? // ERC-20 - approve
+    args?.increment; // Fiat Token V2 - increaseAllowance
+
+  const amountOrTokenId = rawAmountOrTokenId
+    ? new BigNumber(rawAmountOrTokenId?.toString())
+    : undefined;
+
+  const isApproveAll = name === 'setApprovalForAll' && args?._approved === true;
+  const isRevokeAll = name === 'setApprovalForAll' && args?._approved === false;
+
+  return {
+    amountOrTokenId,
+    isApproveAll,
+    isRevokeAll,
+  };
 }

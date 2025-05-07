@@ -3,7 +3,7 @@
 exports[`<ConfirmLoader /> renders component 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+    class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
   >
     <svg
       class="preloader__icon"

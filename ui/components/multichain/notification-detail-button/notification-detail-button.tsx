@@ -1,10 +1,4 @@
-import React, { useContext } from 'react';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+import React from 'react';
 import {
   Button,
   ButtonVariant,
@@ -13,58 +7,50 @@ import {
 } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 
-type Notification = NotificationServicesController.Types.INotification;
-
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
-
-type NotificationDetailButtonProps = {
-  notification: Notification;
+export type NotificationDetailButtonProps = {
+  /**
+   * Button Variant (defaults to secondary)
+   */
   variant: ButtonVariant;
+  /**
+   * Button Text
+   */
   text: string;
-  href: string;
-  id: string;
+  /**
+   * Optional href if this navigates to a page
+   */
+  href?: string;
+  /**
+   * Opens Href in a seperate window
+   */
   isExternal?: boolean;
-  endIconName?: boolean;
+  /**
+   * Additional click functionality when button is pressed
+   * Can be used to call analytic events
+   */
+  onClick?: () => void;
 };
 
 export const NotificationDetailButton = ({
-  notification,
   variant = ButtonVariant.Secondary,
   text,
   href,
-  id,
   isExternal = false,
-  endIconName = true,
+  onClick,
 }: NotificationDetailButtonProps) => {
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const onClick = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationDetailClicked,
-      properties: {
-        notification_id: notification.id,
-        notification_type: notification.type,
-        ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
-          chain_id: notification?.chain_id,
-        }),
-        clicked_item: 'block_explorer',
-      },
-    });
-  };
-
   return (
-    <Button
-      key={id}
-      href={href}
-      variant={variant}
-      externalLink={isExternal}
-      size={ButtonSize.Lg}
-      width={BlockSize.Full}
-      endIconName={endIconName ? IconName.Arrow2UpRight : undefined}
-      onClick={onClick}
-    >
-      {text}
-    </Button>
+    <>
+      <Button
+        href={href}
+        externalLink={Boolean(href) && isExternal}
+        variant={variant}
+        size={ButtonSize.Lg}
+        width={BlockSize.Full}
+        endIconName={isExternal ? IconName.Arrow2UpRight : undefined}
+        onClick={onClick}
+      >
+        {text}
+      </Button>
+    </>
   );
 };

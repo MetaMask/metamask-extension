@@ -26,7 +26,7 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 
 // type imports
 /**
- * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
+ * @typedef {import('../../shared/constants/metametrics').UnsanitizedMetaMetricsEventPayload} MetaMetricsEventPayload
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsPageObject} MetaMetricsPageObject
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsReferrerObject} MetaMetricsReferrerObject

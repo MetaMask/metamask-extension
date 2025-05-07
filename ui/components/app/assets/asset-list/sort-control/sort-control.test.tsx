@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux';
 import { setTokenSortConfig } from '../../../../../store/actions';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { getCurrentCurrency, getPreferences } from '../../../../../selectors';
+import { getPreferences } from '../../../../../selectors';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import SortControl from './sort-control';
 
 // Mock the sortAssets utility
@@ -79,7 +80,7 @@ describe('SortControl', () => {
 
     expect(mockDispatch).toHaveBeenCalled();
     expect(setTokenSortConfig).toHaveBeenCalledWith({
-      key: 'symbol',
+      key: 'title',
       sortCallback: 'alphaNumeric',
       order: 'asc',
     });
@@ -88,7 +89,7 @@ describe('SortControl', () => {
       category: 'Settings',
       event: 'Token Sort Preference',
       properties: {
-        token_sort_preference: 'symbol',
+        token_sort_preference: 'title',
       },
     });
   });

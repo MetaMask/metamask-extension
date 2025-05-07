@@ -4,10 +4,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { TransactionMetricsRequest } from '../../app/scripts/lib/transaction/metrics';
 import { CHAIN_IDS } from '../constants/network';
+import { TransactionMetricsRequest } from '../types/metametrics';
 import { getSmartTransactionMetricsProperties } from './metametrics';
 
 const txHash =
@@ -27,24 +25,26 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     finalizeEventFragment: jest.fn(),
     getEventFragmentById: jest.fn(),
     updateEventFragment: jest.fn(),
+    getAccountBalance: jest.fn(),
     getAccountType: jest.fn(),
     getDeviceModel: jest.fn(),
+    getHardwareTypeForMetric: jest.fn(),
     getEIP1559GasFeeEstimates: jest.fn(),
     getSelectedAddress: jest.fn(),
     getParticipateInMetrics: jest.fn(),
     getTokenStandardAndDetails: jest.fn(),
     getTransaction: jest.fn(),
     provider: provider as Provider,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     snapAndHardwareMessenger: jest.fn() as any,
     trackEvent: jest.fn(),
     getIsSmartTransaction: jest.fn(),
     getSmartTransactionByMinedTxHash: jest.fn(),
-    getRedesignedTransactionsEnabled: jest.fn(),
     getMethodData: jest.fn(),
-    getIsRedesignedConfirmationsDeveloperEnabled: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
+    getHDEntropyIndex: jest.fn(),
+    getNetworkRpcUrl: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;
 };
@@ -92,7 +92,6 @@ describe('getSmartTransactionMetricsProperties', () => {
             cancellationReason: 'not_cancelled',
             deadlineRatio: 0.6400288486480713,
             minedHash: txHash,
-            duplicated: true,
             timedOut: true,
             proxied: true,
             minedTx: 'success',
@@ -104,7 +103,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
@@ -112,7 +111,6 @@ describe('getSmartTransactionMetricsProperties', () => {
     expect(result).toStrictEqual({
       gas_included: true,
       is_smart_transaction: true,
-      smart_transaction_duplicated: true,
       smart_transaction_proxied: true,
       smart_transaction_timed_out: true,
     });
@@ -126,7 +124,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
@@ -149,7 +147,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );

@@ -70,4 +70,16 @@
   &__remaining-time {
     font-variant-numeric: tabular-nums;
   }
+
+  &__icon,
+  &__icon-fallback {
+    height: 16px;
+    width: 16px;
+  }
+
+  &__icon-fallback {
+    padding-top: 0;
+    font-size: 12px;
+    line-height: 16px;
+  }
 }

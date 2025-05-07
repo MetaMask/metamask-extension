@@ -6,41 +6,37 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   largeDelayMs,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
-  it('should switch to the dapps network automatically when handling sendTransaction calls @no-mmi', async function () {
+  it('should be possible to send requests from different dapps on different networks', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+          .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
@@ -104,10 +100,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Reject Transaction
-        await driver.findClickableElement({ text: 'Reject', tag: 'button' });
-        await driver.clickElement(
-          '[data-testid="page-container-footer-cancel"]',
-        );
+        await driver.findClickableElement({ text: 'Cancel', tag: 'button' });
+        await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         // TODO: No second confirmation from dapp two will show, have to go back to the extension to see the switch chain & dapp two's tx.
         await driver.switchToWindowWithTitle(
@@ -128,13 +122,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Click Unconfirmed Tx
         await driver.clickElement('.transaction-list-item--unconfirmed');
 
-        await driver.assertElementNotPresent({
-          tag: 'p',
-          text: 'Network switched to Localhost 8546',
-        });
-
         // Confirm Tx
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // Check for Confirmed Transaction
         await driver.wait(async () => {

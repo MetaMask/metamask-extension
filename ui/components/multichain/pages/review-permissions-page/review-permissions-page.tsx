@@ -1,9 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { NonEmptyArray } from '@metamask/utils';
-import { InternalAccount, isEvmAccountType } from '@metamask/keyring-api';
-import { NetworkConfiguration } from '@metamask/network-controller';
+import {
+  CaipAccountId,
+  CaipChainId,
+  NonEmptyArray,
+  parseCaipAccountId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
+import { uniq } from 'lodash';
 import {
   AlignItems,
   BlockSize,
@@ -11,15 +16,14 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
 import {
+  getAllPermittedAccountsForSelectedTab,
+  getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
-  getInternalAccounts,
-  getNetworkConfigurationsByChainId,
   getPermissionSubjects,
-  getPermittedAccountsForSelectedTab,
-  getPermittedChainsForSelectedTab,
   getShowPermittedNetworkToastOpen,
-  getUpdatedAndSortedAccounts,
+  getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../../selectors';
 import {
   addPermittedAccounts,
@@ -51,10 +55,13 @@ import {
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
 import { PermissionsHeader } from '../../permissions-header/permissions-header';
-import { mergeAccounts } from '../../account-list-menu/account-list-menu';
-import { MergedInternalAccount } from '../../../../selectors/selectors.types';
-import { TEST_CHAINS } from '../../../../../shared/constants/network';
-import { SiteCell } from '.';
+import {
+  EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+  MergedInternalAccountWithCaipAccountId,
+} from '../../../../selectors/selectors.types';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
+import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -86,6 +93,7 @@ export const ReviewPermissions = () => {
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
@@ -112,22 +120,34 @@ export const ReviewPermissions = () => {
     dispatch(hidePermittedNetworkToast());
   };
 
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const networkConfigurationsByCaipChainId = useSelector(
+    getAllNetworkConfigurationsByCaipChainId,
+  );
+
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
-      Object.entries(networkConfigurations).reduce(
+      Object.entries(networkConfigurationsByCaipChainId).reduce(
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
-          const isTest = (TEST_CHAINS as string[]).includes(chainId);
-          (isTest ? testNetworksList : nonTestNetworksList).push(network);
+          const caipChainId = chainId as CaipChainId;
+          const isTestNetwork =
+            CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
+          (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
+            ...network,
+            caipChainId,
+          });
           return [nonTestNetworksList, testNetworksList];
         },
-        [[] as NetworkConfiguration[], [] as NetworkConfiguration[]],
+        [
+          [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
+          [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
+        ],
       ),
-    [networkConfigurations],
+    [networkConfigurationsByCaipChainId],
   );
+
   const connectedChainIds = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, activeTabOrigin),
-  ) as string[];
+    getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
+  ) as CaipChainId[];
 
   const handleSelectChainIds = async (chainIds: string[]) => {
     if (chainIds.length === 0) {
@@ -146,33 +166,89 @@ export const ReviewPermissions = () => {
     setShowNetworkToast(true);
   };
 
-  const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
-    return mergeAccounts(accounts, internalAccounts).filter(
-      (account: InternalAccount) => isEvmAccountType(account.type),
-    );
-  }, [accounts, internalAccounts]);
+  const allAccounts = useSelector(
+    getUpdatedAndSortedAccountsWithCaipAccountId,
+  ) as MergedInternalAccountWithCaipAccountId[];
 
-  const connectedAccountAddresses = useSelector((state) =>
-    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
-  ) as string[];
+  const nonRemappedConnectedAccountAddresses = useSelector((state) =>
+    getAllPermittedAccountsForSelectedTab(state, activeTabOrigin),
+  ) as CaipAccountId[];
 
-  const handleSelectAccountAddresses = (addresses: string[]) => {
-    if (addresses.length === 0) {
+  // This remaps EVM caip account addresses to match the 'eip155:0'
+  // value that is currently set in InternalAccount.scopes[0] for
+  // EOA EVM accounts. This logic will need to be updated to
+  // support non EOA accounts.
+  const connectedAccountAddresses = uniq(
+    nonRemappedConnectedAccountAddresses.map((caipAccountId) => {
+      const {
+        address,
+        chain: { namespace },
+      } = parseCaipAccountId(caipAccountId);
+      if (namespace === KnownCaipNamespace.Eip155) {
+        // this is very hacky, but it works for now
+        return `eip155:0:${address}` as CaipAccountId;
+      }
+      return caipAccountId;
+    }),
+  );
+
+  const handleSelectAccountAddresses = (caipAccountIds: CaipAccountId[]) => {
+    if (caipAccountIds.length === 0) {
       setShowDisconnectAllModal(true);
       return;
     }
 
+    const parsedCaipAccountIds = caipAccountIds.map((caipAccountId) => {
+      return parseCaipAccountId(caipAccountId);
+    });
+
+    const addresses = parsedCaipAccountIds.map(({ address }) => address);
+
+    // TODO: we should refactor addPermittedAccounts to accept CaipAccountIds
     dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
-    connectedAccountAddresses.forEach((address: string) => {
-      if (!addresses.includes(address)) {
-        dispatch(removePermittedAccount(activeTabOrigin, address));
+    connectedAccountAddresses.forEach((connectedAddress: string) => {
+      // TODO: seems like similar logic to selector logic in ui/index.js
+      // See if we can DRY this
+      const parsedConnectedAddress = parseCaipAccountId(
+        connectedAddress as CaipAccountId,
+      );
+
+      const includesCaipAccountId = parsedCaipAccountIds.some(
+        (parsedAddress) => {
+          if (
+            parsedConnectedAddress.chain.namespace !==
+              parsedAddress.chain.namespace ||
+            parsedConnectedAddress.address !== parsedAddress.address
+          ) {
+            return false;
+          }
+
+          return (
+            parsedAddress.chain.reference === '0' ||
+            parsedAddress.chain.reference ===
+              parsedConnectedAddress.chain.reference
+          );
+        },
+      );
+
+      if (!includesCaipAccountId) {
+        // TODO: we should refactor removePermittedAccount to accept CaipAccountIds
+        dispatch(
+          removePermittedAccount(
+            activeTabOrigin,
+            parsedConnectedAddress.address,
+          ),
+        );
       }
     });
 
     setShowAccountToast(true);
+  };
+
+  const hideAllToasts = () => {
+    setShowAccountToast(false);
+    setShowNetworkToast(false);
   };
 
   return (
@@ -190,12 +266,12 @@ export const ReviewPermissions = () => {
             <SiteCell
               nonTestNetworks={nonTestNetworks}
               testNetworks={testNetworks}
-              accounts={mergedAccounts}
+              accounts={allAccounts}
               onSelectAccountAddresses={handleSelectAccountAddresses}
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
               selectedChainIds={connectedChainIds}
-              activeTabOrigin={activeTabOrigin}
+              hideAllToasts={hideAllToasts}
             />
           ) : (
             <NoConnectionContent />
@@ -206,8 +282,10 @@ export const ReviewPermissions = () => {
               hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
+                trace({ name: TraceName.DisconnectAllModal });
                 disconnectAllPermissions();
                 setShowDisconnectAllModal(false);
+                endTrace({ name: TraceName.DisconnectAllModal });
               }}
             />
           ) : null}
@@ -265,14 +343,18 @@ export const ReviewPermissions = () => {
                 </Button>
               </Box>
             ) : (
-              <ButtonPrimary
-                size={ButtonPrimarySize.Lg}
-                block
-                data-test-id="no-connections-button"
-                onClick={requestAccountsAndChainPermissions}
-              >
-                {t('connectAccounts')}
-              </ButtonPrimary>
+              <>
+                {connectedAccountAddresses.length > 0 ? (
+                  <ButtonPrimary
+                    size={ButtonPrimarySize.Lg}
+                    block
+                    data-test-id="no-connections-button"
+                    onClick={requestAccountsAndChainPermissions}
+                  >
+                    {t('connectAccounts')}
+                  </ButtonPrimary>
+                ) : null}
+              </>
             )}
           </>
         </Footer>

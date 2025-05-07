@@ -19,12 +19,10 @@
     @include design-system.H6;
 
     flex-grow: 1;
-    color: var(--color-icon-default);
-    font-weight: 500;
   }
 
   &__tab--active {
-    color: var(--color-primary-default);
+    color: var(--color-text-default);
   }
 
   &__tab button {

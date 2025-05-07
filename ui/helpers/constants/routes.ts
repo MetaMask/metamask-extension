@@ -12,6 +12,7 @@ export const LOCK_ROUTE = '/lock';
 PATH_NAME_MAP[LOCK_ROUTE] = 'Lock Page';
 
 export const ASSET_ROUTE = '/asset';
+export const DEFI_ROUTE = '/defi';
 PATH_NAME_MAP[`${ASSET_ROUTE}/:asset/:id`] = `Asset Page`;
 PATH_NAME_MAP[`${ASSET_ROUTE}/image/:asset/:id`] = `Nft Image Page`;
 
@@ -62,8 +63,22 @@ PATH_NAME_MAP[CONTACT_ADD_ROUTE] = 'Add Contact Settings Page';
 export const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 PATH_NAME_MAP[`${CONTACT_VIEW_ROUTE}/:address`] = 'View Contact Settings Page';
 
+export const SNAP_SETTINGS_ROUTE = '/settings/snap';
+PATH_NAME_MAP[`${SNAP_SETTINGS_ROUTE}/:snapId`] = 'Snap Settings Page';
+
+export const REVEAL_SRP_LIST_ROUTE =
+  '/settings/security-and-privacy/reveal-srp-list';
+PATH_NAME_MAP[REVEAL_SRP_LIST_ROUTE] =
+  'Reveal Secret Recovery Phrase List Page';
+
+export const BACKUPANDSYNC_ROUTE =
+  '/settings/security-and-privacy/backup-and-sync';
+PATH_NAME_MAP[BACKUPANDSYNC_ROUTE] = 'Backup And Sync Settings Page';
+
 export const REVEAL_SEED_ROUTE = '/seed';
-PATH_NAME_MAP[REVEAL_SEED_ROUTE] = 'Reveal Secret Recovery Phrase Page';
+// This `:keyringId` parameter is actually optional.
+PATH_NAME_MAP[`${REVEAL_SEED_ROUTE}/:keyringId`] =
+  'Reveal Secret Recovery Phrase Page';
 
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 PATH_NAME_MAP[RESTORE_VAULT_ROUTE] = 'Restore Vault Page';
@@ -91,31 +106,19 @@ PATH_NAME_MAP[CONFIRM_ADD_SUGGESTED_NFT_ROUTE] =
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 PATH_NAME_MAP[CONNECT_HARDWARE_ROUTE] = 'Connect Hardware Wallet Page';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-export const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
-PATH_NAME_MAP[CUSTODY_ACCOUNT_ROUTE] = 'Connect Custody';
-
-export const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
-PATH_NAME_MAP[INSTITUTIONAL_FEATURES_DONE_ROUTE] =
-  'Institutional Features Done Page';
-
-export const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
-PATH_NAME_MAP[CUSTODY_ACCOUNT_DONE_ROUTE] = 'Connect Custody Account done';
-
-export const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
-PATH_NAME_MAP[CONFIRM_ADD_CUSTODIAN_TOKEN] = 'Confirm Add Custodian Token';
-
-export const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
-  '/interactive-replacement-token-page';
-PATH_NAME_MAP[INTERACTIVE_REPLACEMENT_TOKEN_PAGE] =
-  'Interactive replacement token page';
-
-export const SRP_REMINDER = '/onboarding/remind-srp';
-PATH_NAME_MAP[SRP_REMINDER] = 'Secret Recovery Phrase Reminder';
-///: END:ONLY_INCLUDE_IF
-
 export const SEND_ROUTE = '/send';
 PATH_NAME_MAP[SEND_ROUTE] = 'Send Page';
+
+export const REMOTE_ROUTE = '/remote';
+PATH_NAME_MAP[REMOTE_ROUTE] = 'Remote Mode Page';
+
+export const REMOTE_ROUTE_SETUP_SWAPS = '/remote/setup-swaps';
+PATH_NAME_MAP[REMOTE_ROUTE_SETUP_SWAPS] = 'Remote Mode Setup Swaps Page';
+
+export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
+  '/remote/setup-daily-allowance';
+PATH_NAME_MAP[REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE] =
+  'Remote Mode Setup Daily Allowance Page';
 
 export const CONNECTIONS = '/connections';
 PATH_NAME_MAP[CONNECTIONS] = 'Connections';
@@ -232,6 +235,8 @@ PATH_NAME_MAP[
 ] = 'Encryption Public Key Request Page';
 
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
+PATH_NAME_MAP[CROSS_CHAIN_SWAP_ROUTE] = 'Prepare Cross Chain Swap Page';
+export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
 
 export const SWAPS_ROUTE = '/swaps';
 
@@ -240,12 +245,6 @@ PATH_NAME_MAP[PREPARE_SWAP_ROUTE] = 'Prepare Swap Page';
 
 export const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
 PATH_NAME_MAP[SWAPS_NOTIFICATION_ROUTE] = 'Swaps Notification Page';
-
-export const BUILD_QUOTE_ROUTE = '/swaps/build-quote';
-PATH_NAME_MAP[BUILD_QUOTE_ROUTE] = 'Swaps Build Quote Page';
-
-export const VIEW_QUOTE_ROUTE = '/swaps/view-quote';
-PATH_NAME_MAP[VIEW_QUOTE_ROUTE] = 'Swaps View Quotes Page';
 
 export const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
 PATH_NAME_MAP[LOADING_QUOTES_ROUTE] = 'Swaps Loading Quotes Page';
@@ -268,7 +267,6 @@ export const ONBOARDING_CONFIRM_SRP_ROUTE =
   '/onboarding/confirm-recovery-phrase';
 export const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
 export const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
-export const MMI_ONBOARDING_COMPLETION_ROUTE = '/onboarding/account-completion';
 export const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 export const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =

@@ -30,17 +30,33 @@ import {
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
+import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
 
-export const TransactionData = () => {
+export const TransactionData = ({
+  data,
+  noPadding,
+  to,
+}: { data?: Hex; noPadding?: boolean; to?: Hex } = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { nestedTransactions, txParams } = currentConfirmation ?? {};
+  const { data: currentData, to: currentTo } = txParams ?? {};
+  const transactionData = data ?? (currentData as Hex);
+  const transactionTo = to ?? (currentTo as Hex);
 
-  const transactionData = currentConfirmation?.txParams?.data as Hex;
-  const decodeResponse = useDecodedTransactionData();
+  const decodeResponse = useDecodedTransactionData({
+    data: transactionData,
+    to: transactionTo,
+  });
 
   const { value, pending } = decodeResponse;
 
+  // Don't show root transaction data if this is a batch transaction
+  if (nestedTransactions?.length && !data) {
+    return null;
+  }
+
   if (pending) {
-    return <Container isLoading />;
+    return <Container isLoading noPadding={noPadding} />;
   }
 
   if (!hasTransactionData(transactionData)) {
@@ -49,26 +65,28 @@ export const TransactionData = () => {
 
   if (!value) {
     return (
-      <Container transactionData={transactionData}>
+      <Container noPadding={noPadding} transactionData={transactionData}>
         <RawDataRow transactionData={transactionData} />
       </Container>
     );
   }
 
-  const { data, source } = value;
-  const isExpandable = data.length > 1;
+  const { data: decodeData, source } = value;
+  const isExpandable = decodeData.length > 1;
+  const { chainId } = currentConfirmation;
 
   return (
-    <Container transactionData={transactionData}>
+    <Container transactionData={transactionData} noPadding={noPadding}>
       <>
-        {data.map((method, index) => (
+        {decodeData.map((method, index) => (
           <React.Fragment key={index}>
             <FunctionContainer
               method={method}
               source={source}
               isExpandable={isExpandable}
+              chainId={chainId}
             />
-            {index < data.length - 1 && <ConfirmInfoRowDivider />}
+            {index < decodeData.length - 1 && <ConfirmInfoRowDivider />}
           </React.Fragment>
         ))}
       </>
@@ -79,20 +97,27 @@ export const TransactionData = () => {
 export function Container({
   children,
   isLoading,
+  noPadding,
   transactionData,
 }: {
   children?: React.ReactNode;
   isLoading?: boolean;
+  noPadding?: boolean;
   transactionData?: string;
 }) {
   const t = useI18nContext();
 
   return (
     <>
-      <ConfirmInfoSection data-testid="advanced-details-data-section">
+      <ConfirmInfoSection
+        noPadding={noPadding}
+        data-testid="advanced-details-data-section"
+      >
         <ConfirmInfoRow
           label={t('advancedDetailsDataDesc')}
           copyEnabled={Boolean(transactionData)}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           copyText={transactionData || undefined}
         >
           <Box>{isLoading && <Preloader size={20} />}</Box>
@@ -119,21 +144,24 @@ function FunctionContainer({
   method,
   source,
   isExpandable,
+  chainId,
 }: {
   method: DecodedTransactionDataMethod;
   source?: DecodedTransactionDataSource;
   isExpandable: boolean;
+  chainId: string;
 }) {
   const t = useI18nContext();
 
   const paramRows = (
-    <Box paddingLeft={2}>
+    <Box paddingLeft={2} data-testid={`advanced-details-${method.name}-params`}>
       {method.params.map((param, paramIndex) => (
         <ParamRow
           key={paramIndex}
           param={param}
           index={paramIndex}
           source={source}
+          chainId={chainId}
         />
       ))}
     </Box>
@@ -172,21 +200,26 @@ function FunctionContainer({
 function ParamValue({
   param,
   source,
+  chainId,
 }: {
   param: DecodedTransactionDataParam;
   source?: DecodedTransactionDataSource;
+  chainId: string;
 }) {
   const { name, type, value } = param;
 
   if (type === 'address') {
-    return <ConfirmInfoRowAddress address={value} />;
+    return <ConfirmInfoRowAddress address={value} chainId={chainId} />;
   }
 
   if (name === 'path' && source === DecodedTransactionDataSource.Uniswap) {
-    return <UniswapPath pathPools={value} />;
+    return <UniswapPath pathPools={value} chainId={chainId} />;
   }
-
+  // if its a long string value truncate it
   let valueString = value.toString();
+  if (valueString.length > 15 && !valueString.startsWith('0x')) {
+    valueString = renderShortTokenId(valueString, 5);
+  }
 
   if (!Array.isArray(value) && valueString.startsWith('0x')) {
     valueString = hexStripZeros(valueString);
@@ -199,10 +232,12 @@ function ParamRow({
   param,
   index,
   source,
+  chainId,
 }: {
   param: DecodedTransactionDataParam;
   index: number;
   source?: DecodedTransactionDataSource;
+  chainId: string;
 }) {
   const { name, type, description } = param;
   const label = name ? _.startCase(name) : `Param #${index + 1}`;
@@ -215,20 +250,29 @@ function ParamRow({
       param={childParam}
       index={childIndex}
       source={source}
+      chainId={chainId}
     />
   ));
 
   return (
     <>
       <ConfirmInfoRow label={label} tooltip={tooltip} data-testid={dataTestId}>
-        {!childRows?.length && <ParamValue param={param} source={source} />}
+        {!childRows?.length && (
+          <ParamValue param={param} source={source} chainId={chainId} />
+        )}
       </ConfirmInfoRow>
       {childRows && <Box paddingLeft={2}>{childRows}</Box>}
     </>
   );
 }
 
-function UniswapPath({ pathPools }: { pathPools: UniswapPathPool[] }) {
+function UniswapPath({
+  pathPools,
+  chainId,
+}: {
+  pathPools: UniswapPathPool[];
+  chainId: string;
+}) {
   return (
     <Box
       display={Display.Flex}
@@ -237,9 +281,17 @@ function UniswapPath({ pathPools }: { pathPools: UniswapPathPool[] }) {
     >
       {pathPools.map((pool, index) => (
         <>
-          {index === 0 && <ConfirmInfoRowAddress address={pool.firstAddress} />}
+          {index === 0 && (
+            <ConfirmInfoRowAddress
+              address={pool.firstAddress}
+              chainId={chainId}
+            />
+          )}
           <ConfirmInfoRowText text={String(pool.tickSpacing)} />
-          <ConfirmInfoRowAddress address={pool.secondAddress} />
+          <ConfirmInfoRowAddress
+            address={pool.secondAddress}
+            chainId={chainId}
+          />
         </>
       ))}
     </Box>

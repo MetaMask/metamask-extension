@@ -1,33 +1,51 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
-
+  type GenericQuoteRequest,
+} from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { MetaMaskReduxDispatch } from '../../store/store';
-import { bridgeSlice } from './bridge';
+import type { MetaMaskReduxDispatch } from '../../store/store';
+import {
+  bridgeSlice,
+  setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
+  setSrcTokenExchangeRates,
+} from './bridge';
 
 const {
-  setToChainId: setToChainId_,
+  setToChainId,
   setFromToken,
   setToToken,
   setFromTokenInputValue,
+  resetInputFields,
+  setSortOrder,
+  setSelectedQuote,
+  setWasTxDeclined,
+  setSlippage,
 } = bridgeSlice.actions;
 
-export { setFromToken, setToToken, setFromTokenInputValue };
+export {
+  setToChainId,
+  resetInputFields,
+  setToToken,
+  setFromToken,
+  setFromTokenInputValue,
+  setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
+  setSrcTokenExchangeRates,
+  setSortOrder,
+  setSelectedQuote,
+  setWasTxDeclined,
+  setSlippage,
+};
 
 const callBridgeControllerMethod = <T>(
   bridgeAction: BridgeUserAction | BridgeBackgroundAction,
-  args?: T[],
+  args?: T,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, args);
+    await submitRequestToBackground(bridgeAction, [args]);
     await forceUpdateMetamaskState(dispatch);
   };
 };
@@ -41,24 +59,20 @@ export const setBridgeFeatureFlags = () => {
   };
 };
 
-// User actions
-export const setFromChain = (chainId: Hex) => {
+export const resetBridgeState = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      callBridgeControllerMethod<Hex>(BridgeUserAction.SELECT_SRC_NETWORK, [
-        chainId,
-      ]),
-    );
+    dispatch(resetInputFields());
+    dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
   };
 };
 
-export const setToChain = (chainId: Hex) => {
+// User actions
+export const updateQuoteRequestParams = (
+  params: Partial<GenericQuoteRequest>,
+) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(setToChainId_(chainId));
-    dispatch(
-      callBridgeControllerMethod<Hex>(BridgeUserAction.SELECT_DEST_NETWORK, [
-        chainId,
-      ]),
+    await dispatch(
+      callBridgeControllerMethod(BridgeUserAction.UPDATE_QUOTE_PARAMS, params),
     );
   };
 };

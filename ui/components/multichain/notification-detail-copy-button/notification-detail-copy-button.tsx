@@ -26,7 +26,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MINUTE } from '../../../../shared/constants/time';
 
 type Notification = NotificationServicesController.Types.INotification;
-const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 export type NotificationDetailCopyButtonProps = {
   notification?: Notification;
@@ -70,8 +69,8 @@ export const NotificationDetailCopyButton: FC<
         properties: {
           notification_id: notification.id,
           notification_type: notification.type,
-          ...(notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT && {
-            chain_id: notification?.chain_id,
+          ...('chain_id' in notification && {
+            chain_id: notification.chain_id,
           }),
           clicked_item: 'tx_id',
         },

@@ -3,7 +3,7 @@
 exports[`NFT Default Image should match snapshot with all provided props 1`] = `
 <div>
   <div
-    class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
+    class="mm-box nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
     data-testid="nft-default-image"
     tabindex="0"
   />
@@ -13,7 +13,7 @@ exports[`NFT Default Image should match snapshot with all provided props 1`] = `
 exports[`NFT Default Image should match snapshot with missing clickable prop 1`] = `
 <div>
   <div
-    class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
+    class="mm-box nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
     data-testid="nft-default-image"
     tabindex="0"
   />
@@ -23,7 +23,7 @@ exports[`NFT Default Image should match snapshot with missing clickable prop 1`]
 exports[`NFT Default Image should render with no props 1`] = `
 <div>
   <div
-    class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
+    class="mm-box nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
     data-testid="nft-default-image"
     tabindex="0"
   />

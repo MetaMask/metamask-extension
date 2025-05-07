@@ -14,7 +14,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
       data-testid="avatar-group"
     >
       <div
-        class="mm-box mm-box--display-flex"
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
           class="mm-box mm-box--rounded-full"
@@ -167,7 +167,7 @@ exports[`SiteCellTooltip should render correctly 1`] = `
       data-testid="avatar-group"
     >
       <div
-        class="mm-box mm-box--display-flex"
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
           class="mm-box mm-box--rounded-full"

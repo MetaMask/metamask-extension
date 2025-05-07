@@ -2,20 +2,21 @@ name: Fitness Functions CI
 
 on:
   pull_request:
-    types: [assigned, opened, synchronize, reopened]
+    types:
+      - opened
+      - reopened
+      - synchronize
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: false
           fetch-depth: 0 # This is needed to checkout all branches
-
-      - name: Setup environment
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+          skip-allow-scripts: true
 
       - name: Run fitness functions
         env:

@@ -20,8 +20,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { ellipsify } from '../../../../../pages/confirmations/send/send.utils';
 import Tooltip from '../../../../ui/tooltip';
+import { shortenAddress } from '../../../../../helpers/utils/util';
 
 type DomainInputResolutionCellArgs = {
   address: string;
@@ -97,6 +97,7 @@ export const DomainInputResolutionCell = ({
       alignItems={AlignItems.center}
       paddingBottom={2}
       style={{ cursor: 'pointer' }}
+      data-testid="multichain-send-page__recipient__item"
     >
       <Tooltip title={t('suggestedBySnap', [resolvingSnap])}>
         <BadgeWrapper
@@ -143,7 +144,7 @@ export const DomainInputResolutionCell = ({
             <Confusable asText input={domainName} />
           )}
         </Box>
-        <Text color={TextColor.textAlternative}>{ellipsify(address)}</Text>
+        <Text color={TextColor.textAlternative}>{shortenAddress(address)}</Text>
         <Box
           className="multichain-send-page__recipient__item__subtitle"
           data-testid="multichain-send-page__recipient__item__subtitle"

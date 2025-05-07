@@ -52,10 +52,6 @@ const t = (key) => {
       return 'Show test networks';
     case 'showTestnetNetworksDescription':
       return 'Select this to show test networks in network list';
-    case 'nonceField':
-      return 'Customize transaction nonce';
-    case 'nonceFieldDesc':
-      return 'Turn this on to change the nonce (transaction number) when sending assets. This is an advanced feature, use cautiously.';
     case 'autoLockTimeLimit':
       return 'Auto-lock timer (minutes)';
     case 'autoLockTimeLimitDescription':
@@ -68,14 +64,16 @@ const t = (key) => {
       return 'Dismiss Secret Recovery Phrase backup reminder';
     case 'dismissReminderDescriptionField':
       return 'Turn this on to dismiss the Secret Recovery Phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds';
+    case 'overrideContentSecurityPolicyHeader':
+      return 'Override Content-Security-Policy header';
+    case 'overrideContentSecurityPolicyHeaderDescription':
+      return "This option is a workaround for a known issue in Firefox, where a dapp's Content-Security-Policy header may prevent the extension from loading properly. Disabling this option is not recommended unless required for specific web page compatibility.";
     case 'Contacts':
       return 'Contacts';
     case 'securityAndPrivacy':
       return 'Security & privacy';
     case 'revealSeedWords':
       return 'Reveal Secret Recovery Phrase';
-    case 'showIncomingTransactions':
-      return 'Show incoming transactions';
     case 'usePhishingDetection':
       return 'Use phishing detection';
     case 'usePhishingDetectionDescription':
@@ -138,6 +136,12 @@ const t = (key) => {
       return 'Show balance and token price checker';
     case 'currencyRateCheckToggleDescription':
       return 'We use Coingecko and CryptoCompare APIs to display your balance and token price. Privacy Policy';
+    case 'watch-only':
+      return 'Watch Ethereum Accounts (Beta)';
+    case 'bitcoin-support':
+      return 'Enable "Add a new Bitcoin account (Beta)"';
+    case 'backupAndSync':
+      return 'Backup and Sync';
     default:
       return '';
   }
@@ -147,9 +151,12 @@ describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
       const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 4;
+      const NUM_OF_HIDDEN_SETTINGS = 1;
 
       expect(getSettingsRoutes()).toHaveLength(
-        SETTINGS_CONSTANTS.length - NUM_OF_ENV_FEATURE_FLAG_SETTINGS,
+        SETTINGS_CONSTANTS.length -
+          NUM_OF_ENV_FEATURE_FLAG_SETTINGS -
+          NUM_OF_HIDDEN_SETTINGS,
       );
     });
   });
@@ -160,7 +167,13 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(11);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(10);
+    });
+
+    it('returns "Backup And Sync" section count', () => {
+      expect(
+        getNumberOfSettingRoutesInTab(t, t('backupAndSync')),
+      ).toStrictEqual(2);
     });
 
     it('returns "Contact" section count', () => {
@@ -170,7 +183,7 @@ describe('Settings Search Utils', () => {
     it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(21);
+      ).toStrictEqual(20);
     });
 
     it('returns "Network" section count', () => {
@@ -179,7 +192,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        5,
+        4,
       );
     });
 

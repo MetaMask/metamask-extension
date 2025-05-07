@@ -8,6 +8,8 @@ import { renderWithProvider } from '../../../../../../../test/lib/render-helpers
 import configureStore from '../../../../../../store/store';
 import { ConfirmInfoRowTypedSignData } from './typedSignData';
 
+const CHAIN_ID_MOCK = '0x123';
+
 describe('ConfirmInfoRowTypedSignData', () => {
   const renderWithComponentData = (
     data = unapprovedTypedSignMsgV4.msgParams?.data as string,
@@ -15,7 +17,7 @@ describe('ConfirmInfoRowTypedSignData', () => {
     const store = configureStore(mockState);
 
     return renderWithProvider(
-      <ConfirmInfoRowTypedSignData data={data} />,
+      <ConfirmInfoRowTypedSignData data={data} chainId={CHAIN_ID_MOCK} />,
       store,
     );
   };
@@ -33,7 +35,7 @@ describe('ConfirmInfoRowTypedSignData', () => {
   });
 
   it('should not render data whose type is not defined', () => {
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockRawMessageV4 = { ...rawMessageV4 } as any;
 

@@ -1,7 +1,7 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import * as URI from 'uri-js';
+import { ApprovalType } from '@metamask/controller-utils';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { cloneDeep } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
@@ -18,12 +18,10 @@ const addEthereumChain = {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
     requestUserApproval: true,
-    startApprovalFlow: true,
-    endApprovalFlow: true,
     getCurrentChainIdForDomain: true,
     getCaveat: true,
-    requestPermittedChainsPermission: true,
-    grantPermittedChainsPermissionIncremental: true,
+    requestPermittedChainsPermissionIncrementalForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
   },
 };
 
@@ -40,17 +38,15 @@ async function addEthereumChainHandler(
     getNetworkConfigurationByChainId,
     setActiveNetwork,
     requestUserApproval,
-    startApprovalFlow,
-    endApprovalFlow,
     getCurrentChainIdForDomain,
     getCaveat,
-    requestPermittedChainsPermission,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
   },
 ) {
   let validParams;
   try {
-    validParams = validateAddEthereumChainParams(req.params[0], end);
+    validParams = validateAddEthereumChainParams(req.params[0]);
   } catch (error) {
     return end(error);
   }
@@ -73,13 +69,12 @@ async function addEthereumChainHandler(
     existingNetwork.nativeCurrency !== ticker
   ) {
     return end(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\n${ticker}`,
       }),
     );
   }
 
-  let approvalFlowId;
   let updatedNetwork = existingNetwork;
 
   let rpcIndex = existingNetwork?.rpcEndpoints.findIndex(({ url }) =>
@@ -93,14 +88,14 @@ async function addEthereumChainHandler(
     : undefined;
 
   // If there's something to add or update
-  if (
+
+  const shouldAddOrUpdateNetwork =
     !existingNetwork ||
     rpcIndex !== existingNetwork.defaultRpcEndpointIndex ||
     (firstValidBlockExplorerUrl &&
-      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex)
-  ) {
-    ({ id: approvalFlowId } = await startApprovalFlow());
+      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex);
 
+  if (shouldAddOrUpdateNetwork) {
     try {
       await requestUserApproval({
         origin,
@@ -183,28 +178,19 @@ async function addEthereumChainHandler(
         });
       }
     } catch (error) {
-      endApprovalFlow({ id: approvalFlowId });
       return end(error);
     }
   }
 
-  // If the added or updated network is not the current chain, prompt the user to switch
-  if (chainId !== currentChainIdForDomain) {
-    const { networkClientId } =
-      updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
+  const { networkClientId } =
+    updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex];
 
-    return switchChain(res, end, chainId, networkClientId, approvalFlowId, {
-      isAddFlow: true,
-      setActiveNetwork,
-      endApprovalFlow,
-      getCaveat,
-      requestPermittedChainsPermission,
-      grantPermittedChainsPermissionIncremental,
-    });
-  } else if (approvalFlowId) {
-    endApprovalFlow({ id: approvalFlowId });
-  }
-
-  res.result = null;
-  return end();
+  return switchChain(res, end, chainId, networkClientId, {
+    isAddFlow: true,
+    autoApprove: shouldAddOrUpdateNetwork,
+    setActiveNetwork,
+    getCaveat,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+  });
 }

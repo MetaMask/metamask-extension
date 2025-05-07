@@ -102,16 +102,11 @@
 
 .btn-default {
   color: var(--color-text-alternative);
-  border: 1px solid var(--color-border-default);
+  //border: 1px solid var(--color-border-default);
   background: var(--color-background-default);
-
-  &:hover {
-    border-color: var(--color-border-default);
-  }
 
   &:active {
     background: var(--color-background-alternative);
-    border-color: var(--color-border-default);
   }
 
   &--disabled,
@@ -205,7 +200,7 @@ input[type="submit"][disabled] {
   }
 
   &.btn-default {
-    border: 1px solid var(--color-icon-default);
+    //border: 1px solid var(--color-icon-default);
 
     &:hover {
       box-shadow: var(--shadow-size-sm) var(--color-shadow-default);

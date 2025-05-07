@@ -1,4 +1,3 @@
-import { ObservableStore } from '@metamask/obs-store';
 import {
   AccountsControllerChangeEvent,
   AccountsControllerGetAccountByAddressAction,
@@ -7,30 +6,26 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Hex } from '@metamask/utils';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { Hex, Json } from '@metamask/utils';
 import {
-  CHAIN_IDS,
-  IPFS_DEFAULT_GATEWAY_URL,
-} from '../../../shared/constants/network';
+  BaseController,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedMessenger,
+} from '@metamask/base-controller';
+import { NetworkControllerGetStateAction } from '@metamask/network-controller';
+import {
+  ETHERSCAN_SUPPORTED_CHAIN_IDS,
+  type PreferencesState,
+} from '@metamask/preferences-controller';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 
 type AccountIdentityEntry = {
   address: string;
   name: string;
-  lastSelected: number | undefined;
-};
-
-const mainNetworks = {
-  [CHAIN_IDS.MAINNET]: true,
-  [CHAIN_IDS.LINEA_MAINNET]: true,
-};
-
-const testNetworks = {
-  [CHAIN_IDS.GOERLI]: true,
-  [CHAIN_IDS.SEPOLIA]: true,
-  [CHAIN_IDS.LINEA_SEPOLIA]: true,
+  lastSelected?: number;
 };
 
 const controllerName = 'PreferencesController';
@@ -38,10 +33,10 @@ const controllerName = 'PreferencesController';
 /**
  * Returns the state of the {@link PreferencesController}.
  */
-export type PreferencesControllerGetStateAction = {
-  type: 'PreferencesController:getState';
-  handler: () => PreferencesControllerState;
-};
+export type PreferencesControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  PreferencesControllerState
+>;
 
 /**
  * Actions exposed by the {@link PreferencesController}.
@@ -51,10 +46,10 @@ export type PreferencesControllerActions = PreferencesControllerGetStateAction;
 /**
  * Event emitted when the state of the {@link PreferencesController} changes.
  */
-export type PreferencesControllerStateChangeEvent = {
-  type: 'PreferencesController:stateChange';
-  payload: [PreferencesControllerState, []];
-};
+export type PreferencesControllerStateChangeEvent = ControllerStateChangeEvent<
+  typeof controllerName,
+  PreferencesControllerState
+>;
 
 /**
  * Events emitted by {@link PreferencesController}.
@@ -68,14 +63,15 @@ export type AllowedActions =
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerSetAccountNameAction
   | AccountsControllerGetSelectedAccountAction
-  | AccountsControllerSetSelectedAccountAction;
+  | AccountsControllerSetSelectedAccountAction
+  | NetworkControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
  */
 export type AllowedEvents = AccountsControllerChangeEvent;
 
-export type PreferencesControllerMessenger = RestrictedControllerMessenger<
+export type PreferencesControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   PreferencesControllerActions | AllowedActions,
   PreferencesControllerEvents | AllowedEvents,
@@ -84,9 +80,7 @@ export type PreferencesControllerMessenger = RestrictedControllerMessenger<
 >;
 
 type PreferencesControllerOptions = {
-  networkConfigurationsByChainId?: Record<Hex, { chainId: Hex }>;
-  initState?: Partial<PreferencesControllerState>;
-  initLangCode?: string;
+  state?: Partial<PreferencesControllerState>;
   messenger: PreferencesControllerMessenger;
 };
 
@@ -95,195 +89,369 @@ export type Preferences = {
   showExtensionInFullSizeView: boolean;
   showFiatInTestnets: boolean;
   showTestNetworks: boolean;
-  smartTransactionsOptInStatus: boolean | null;
+  smartTransactionsOptInStatus: boolean;
+  smartTransactionsMigrationApplied: boolean;
   showNativeTokenAsMainBalance: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
-  redesignedConfirmationsEnabled: boolean;
-  redesignedTransactionsEnabled: boolean;
   featureNotificationsEnabled: boolean;
   showMultiRpcModal: boolean;
-  isRedesignedConfirmationsDeveloperEnabled: boolean;
+  privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
   tokenSortConfig: {
     key: string;
     order: string;
     sortCallback: string;
   };
+  tokenNetworkFilter: Record<string, boolean>;
   shouldShowAggregatedBalancePopover: boolean;
+  dismissSmartAccountSuggestionEnabled: boolean;
 };
 
-export type PreferencesControllerState = {
-  selectedAddress: string;
+// Omitting properties that already exist in the PreferencesState, as part of the preferences property.
+export type PreferencesControllerState = Omit<
+  PreferencesState,
+  | 'showTestNetworks'
+  | 'smartTransactionsOptInStatus'
+  | 'smartTransactionsMigrationApplied'
+  | 'privacyMode'
+  | 'tokenSortConfig'
+  | 'useMultiRpcMigration'
+> & {
   useBlockie: boolean;
-  useNonceField: boolean;
   usePhishDetect: boolean;
   dismissSeedBackUpReminder: boolean;
+  overrideContentSecurityPolicyHeader: boolean;
   useMultiAccountBalanceChecker: boolean;
-  useSafeChainsListValidation: boolean;
-  useTokenDetection: boolean;
-  useNftDetection: boolean;
   use4ByteResolution: boolean;
   useCurrencyRateCheck: boolean;
-  useRequestQueue: boolean;
-  openSeaEnabled: boolean;
-  securityAlertsEnabled: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   bitcoinSupportEnabled: boolean;
   bitcoinTestnetSupportEnabled: boolean;
-  addSnapAccountEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
+  addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
-  featureFlags: Record<string, boolean>;
-  incomingTransactionsPreferences: Record<number, boolean>;
   knownMethodData: Record<string, string>;
   currentLocale: string;
-  identities: Record<string, AccountIdentityEntry>;
-  lostIdentities: Record<string, object>;
   forgottenPassword: boolean;
   preferences: Preferences;
-  ipfsGateway: string;
-  isIpfsGatewayEnabled: boolean;
   useAddressBarEnsResolution: boolean;
   ledgerTransportType: LedgerTransportTypes;
-  snapRegistryList: Record<string, object>;
+  // TODO: Replace `Json` with correct type
+  snapRegistryList: Record<string, Json>;
   theme: ThemeType;
-  snapsAddSnapAccountModalDismissed: boolean;
+  snapsAddSnapAccountModalDismissed?: boolean;
   useExternalNameSources: boolean;
-  useTransactionSimulations: boolean;
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
+  manageInstitutionalWallets: boolean;
+  disabledUpgradeAccountsByChain?: Record<Hex, Hex[]>;
 };
 
-export default class PreferencesController {
-  store: ObservableStore<PreferencesControllerState>;
+/**
+ * Function to get default state of the {@link PreferencesController}.
+ */
+export const getDefaultPreferencesControllerState =
+  (): PreferencesControllerState => ({
+    selectedAddress: '',
+    useBlockie: false,
+    usePhishDetect: true,
+    dismissSeedBackUpReminder: false,
+    overrideContentSecurityPolicyHeader: true,
+    useMultiAccountBalanceChecker: true,
+    useSafeChainsListValidation: true,
+    // set to true means the dynamic list from the API is being used
+    // set to false will be using the static list from contract-metadata
+    useTokenDetection: true,
+    useNftDetection: true,
+    use4ByteResolution: true,
+    useCurrencyRateCheck: true,
+    openSeaEnabled: true,
+    securityAlertsEnabled: true,
+    watchEthereumAccountEnabled: false,
+    bitcoinSupportEnabled: false,
+    bitcoinTestnetSupportEnabled: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    addSnapAccountEnabled: false,
+    ///: END:ONLY_INCLUDE_IF
+    advancedGasFee: {},
+    featureFlags: {},
+    knownMethodData: {},
+    currentLocale: '',
+    identities: {},
+    lostIdentities: {},
+    forgottenPassword: false,
+    preferences: {
+      autoLockTimeLimit: undefined,
+      showExtensionInFullSizeView: false,
+      showFiatInTestnets: false,
+      showTestNetworks: false,
+      smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: false,
+      showNativeTokenAsMainBalance: false,
+      useNativeCurrencyAsPrimaryCurrency: true,
+      hideZeroBalanceTokens: false,
+      petnamesEnabled: true,
+      featureNotificationsEnabled: false,
+      showConfirmationAdvancedDetails: false,
+      showMultiRpcModal: false,
+      privacyMode: false,
+      shouldShowAggregatedBalancePopover: true, // by default user should see popover;
+      dismissSmartAccountSuggestionEnabled: false,
+      tokenSortConfig: {
+        key: 'tokenFiatAmount',
+        order: 'dsc',
+        sortCallback: 'stringNumeric',
+      },
+      tokenNetworkFilter: {},
+    },
+    // ENS decentralized website resolution
+    ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+    isIpfsGatewayEnabled: true,
+    useAddressBarEnsResolution: true,
+    // Ledger transport type is deprecated. We currently only support webhid
+    // on chrome, and u2f on firefox.
+    ledgerTransportType: window.navigator.hid
+      ? LedgerTransportTypes.webhid
+      : LedgerTransportTypes.u2f,
+    snapRegistryList: {},
+    theme: ThemeType.os,
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    snapsAddSnapAccountModalDismissed: false,
+    ///: END:ONLY_INCLUDE_IF
+    useExternalNameSources: true,
+    useTransactionSimulations: true,
+    enableMV3TimestampSave: true,
+    // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
+    // Whenever useExternalServices is false, certain features will be disabled.
+    // The flag is true by Default, meaning the toggle is ON by default.
+    useExternalServices: true,
+    // from core PreferencesController
+    isMultiAccountBalancesEnabled: true,
+    showIncomingTransactions: {
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
+      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+    },
+    manageInstitutionalWallets: false,
+    disabledUpgradeAccountsByChain: {},
+  });
 
-  private messagingSystem: PreferencesControllerMessenger;
+/**
+ * {@link PreferencesController}'s metadata.
+ *
+ * This allows us to choose if fields of the state should be persisted or not
+ * using the `persist` flag; and if they can be sent to Sentry or not, using
+ * the `anonymous` flag.
+ */
+const controllerMetadata = {
+  selectedAddress: {
+    persist: true,
+    anonymous: false,
+  },
+  useBlockie: {
+    persist: true,
+    anonymous: true,
+  },
+  usePhishDetect: {
+    persist: true,
+    anonymous: true,
+  },
+  dismissSeedBackUpReminder: {
+    persist: true,
+    anonymous: true,
+  },
+  overrideContentSecurityPolicyHeader: {
+    persist: true,
+    anonymous: true,
+  },
+  useMultiAccountBalanceChecker: {
+    persist: true,
+    anonymous: true,
+  },
+  useSafeChainsListValidation: {
+    persist: true,
+    anonymous: false,
+  },
+  useTokenDetection: {
+    persist: true,
+    anonymous: true,
+  },
+  useNftDetection: {
+    persist: true,
+    anonymous: true,
+  },
+  use4ByteResolution: {
+    persist: true,
+    anonymous: true,
+  },
+  useCurrencyRateCheck: {
+    persist: true,
+    anonymous: true,
+  },
+  openSeaEnabled: {
+    persist: true,
+    anonymous: true,
+  },
+  securityAlertsEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  watchEthereumAccountEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  bitcoinSupportEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  bitcoinTestnetSupportEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  addSnapAccountEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  advancedGasFee: {
+    persist: true,
+    anonymous: true,
+  },
+  featureFlags: {
+    persist: true,
+    anonymous: true,
+  },
+  knownMethodData: {
+    persist: true,
+    anonymous: false,
+  },
+  currentLocale: {
+    persist: true,
+    anonymous: true,
+  },
+  identities: {
+    persist: true,
+    anonymous: false,
+  },
+  lostIdentities: {
+    persist: true,
+    anonymous: false,
+  },
+  forgottenPassword: {
+    persist: true,
+    anonymous: true,
+  },
+  preferences: {
+    persist: true,
+    anonymous: true,
+    properties: {
+      smartTransactionsOptInStatus: {
+        persist: true,
+        anonymous: true,
+      },
+      smartTransactionsMigrationApplied: {
+        persist: true,
+        anonymous: true,
+      },
+    },
+  },
+  ipfsGateway: {
+    persist: true,
+    anonymous: false,
+  },
+  isIpfsGatewayEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  useAddressBarEnsResolution: {
+    persist: true,
+    anonymous: true,
+  },
+  ledgerTransportType: {
+    persist: true,
+    anonymous: true,
+  },
+  snapRegistryList: {
+    persist: true,
+    anonymous: false,
+  },
+  theme: {
+    persist: true,
+    anonymous: true,
+  },
+  snapsAddSnapAccountModalDismissed: {
+    persist: true,
+    anonymous: false,
+  },
+  useExternalNameSources: {
+    persist: true,
+    anonymous: false,
+  },
+  useTransactionSimulations: {
+    persist: true,
+    anonymous: true,
+  },
+  enableMV3TimestampSave: {
+    persist: true,
+    anonymous: true,
+  },
+  useExternalServices: {
+    persist: true,
+    anonymous: false,
+  },
+  textDirection: {
+    persist: true,
+    anonymous: false,
+  },
+  isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
+  showIncomingTransactions: { persist: true, anonymous: true },
+  manageInstitutionalWallets: { persist: true, anonymous: false },
+  disabledUpgradeAccountsByChain: { persist: true, anonymous: false },
+};
 
+export class PreferencesController extends BaseController<
+  typeof controllerName,
+  PreferencesControllerState,
+  PreferencesControllerMessenger
+> {
   /**
+   * Constructs a Preferences controller.
    *
-   * @param opts - Overrides the defaults for the initial state of this.store
-   * @property messenger - The controller messenger
-   * @property initState The stored object containing a users preferences, stored in local storage
-   * @property initState.useBlockie The users preference for blockie identicons within the UI
-   * @property initState.useNonceField The users preference for nonce field within the UI
-   * @property initState.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
-   * user wishes to see that feature.
-   *
-   * Feature flags can be set by the global function `setPreference(feature, enabled)`, and so should not expose any sensitive behavior.
-   * @property initState.knownMethodData Contains all data methods known by the user
-   * @property initState.currentLocale The preferred language locale key
-   * @property initState.selectedAddress A hex string that matches the currently selected address in the app
+   * @param options - the controller options
+   * @param options.messenger - The controller messenger
+   * @param options.state - The initial controller state
    */
-  constructor(opts: PreferencesControllerOptions) {
-    const addedNonMainNetwork: Record<Hex, boolean> = Object.values(
-      opts.networkConfigurationsByChainId ?? {},
-    ).reduce((acc: Record<Hex, boolean>, element) => {
-      acc[element.chainId] = true;
-      return acc;
-    }, {});
-
-    const initState: PreferencesControllerState = {
-      selectedAddress: '',
-      useBlockie: false,
-      useNonceField: false,
-      usePhishDetect: true,
-      dismissSeedBackUpReminder: false,
-      useMultiAccountBalanceChecker: true,
-      useSafeChainsListValidation: true,
-      // set to true means the dynamic list from the API is being used
-      // set to false will be using the static list from contract-metadata
-      useTokenDetection: opts?.initState?.useTokenDetection ?? true,
-      useNftDetection: opts?.initState?.useTokenDetection ?? true,
-      use4ByteResolution: true,
-      useCurrencyRateCheck: true,
-      useRequestQueue: true,
-      openSeaEnabled: true,
-      securityAlertsEnabled: true,
-      watchEthereumAccountEnabled: false,
-      bitcoinSupportEnabled: false,
-      bitcoinTestnetSupportEnabled: false,
-      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-      addSnapAccountEnabled: false,
-      ///: END:ONLY_INCLUDE_IF
-      advancedGasFee: {},
-
-      // WARNING: Do not use feature flags for security-sensitive things.
-      // Feature flag toggling is available in the global namespace
-      // for convenient testing of pre-release features, and should never
-      // perform sensitive operations.
-      featureFlags: {},
-      incomingTransactionsPreferences: {
-        ...mainNetworks,
-        ...addedNonMainNetwork,
-        ...testNetworks,
+  constructor({ messenger, state }: PreferencesControllerOptions) {
+    super({
+      messenger,
+      metadata: controllerMetadata,
+      name: controllerName,
+      state: {
+        ...getDefaultPreferencesControllerState(),
+        ...state,
       },
-      knownMethodData: {},
-      currentLocale: opts.initLangCode ?? '',
-      identities: {},
-      lostIdentities: {},
-      forgottenPassword: false,
-      preferences: {
-        autoLockTimeLimit: undefined,
-        showExtensionInFullSizeView: false,
-        showFiatInTestnets: false,
-        showTestNetworks: false,
-        smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
-        showNativeTokenAsMainBalance: false,
-        useNativeCurrencyAsPrimaryCurrency: true,
-        hideZeroBalanceTokens: false,
-        petnamesEnabled: true,
-        redesignedConfirmationsEnabled: true,
-        redesignedTransactionsEnabled: true,
-        featureNotificationsEnabled: false,
-        showMultiRpcModal: false,
-        isRedesignedConfirmationsDeveloperEnabled: false,
-        showConfirmationAdvancedDetails: false,
-        tokenSortConfig: {
-          key: 'tokenFiatAmount',
-          order: 'dsc',
-          sortCallback: 'stringNumeric',
-        },
-        shouldShowAggregatedBalancePopover: true, // by default user should see popover;
-      },
-      // ENS decentralized website resolution
-      ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
-      isIpfsGatewayEnabled: true,
-      useAddressBarEnsResolution: true,
-      // Ledger transport type is deprecated. We currently only support webhid
-      // on chrome, and u2f on firefox.
-      ledgerTransportType: window.navigator.hid
-        ? LedgerTransportTypes.webhid
-        : LedgerTransportTypes.u2f,
-      snapRegistryList: {},
-      theme: ThemeType.os,
-      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-      snapsAddSnapAccountModalDismissed: false,
-      ///: END:ONLY_INCLUDE_IF
-      useExternalNameSources: true,
-      useTransactionSimulations: true,
-      enableMV3TimestampSave: true,
-      // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
-      // Whenever useExternalServices is false, certain features will be disabled.
-      // The flag is true by Default, meaning the toggle is ON by default.
-      useExternalServices: true,
-      ...opts.initState,
-    };
-
-    this.store = new ObservableStore(initState);
-    this.store.setMaxListeners(13);
-
-    this.messagingSystem = opts.messenger;
-    this.messagingSystem.registerActionHandler(
-      `PreferencesController:getState`,
-      () => this.store.getState(),
-    );
-    this.messagingSystem.registerInitialEventPayload({
-      eventType: `PreferencesController:stateChange`,
-      getPayload: () => [this.store.getState(), []],
     });
 
     this.messagingSystem.subscribe(
@@ -302,7 +470,9 @@ export default class PreferencesController {
    * @param forgottenPassword - whether or not the user has forgotten their password
    */
   setPasswordForgotten(forgottenPassword: boolean): void {
-    this.store.updateState({ forgottenPassword });
+    this.update((state) => {
+      state.forgottenPassword = forgottenPassword;
+    });
   }
 
   /**
@@ -311,16 +481,9 @@ export default class PreferencesController {
    * @param val - Whether or not the user prefers blockie indicators
    */
   setUseBlockie(val: boolean): void {
-    this.store.updateState({ useBlockie: val });
-  }
-
-  /**
-   * Setter for the `useNonceField` property
-   *
-   * @param val - Whether or not the user prefers to set nonce
-   */
-  setUseNonceField(val: boolean): void {
-    this.store.updateState({ useNonceField: val });
+    this.update((state) => {
+      state.useBlockie = val;
+    });
   }
 
   /**
@@ -329,7 +492,9 @@ export default class PreferencesController {
    * @param val - Whether or not the user prefers phishing domain protection
    */
   setUsePhishDetect(val: boolean): void {
-    this.store.updateState({ usePhishDetect: val });
+    this.update((state) => {
+      state.usePhishDetect = val;
+    });
   }
 
   /**
@@ -338,7 +503,9 @@ export default class PreferencesController {
    * @param val - Whether or not the user prefers to turn off/on all security settings
    */
   setUseMultiAccountBalanceChecker(val: boolean): void {
-    this.store.updateState({ useMultiAccountBalanceChecker: val });
+    this.update((state) => {
+      state.useMultiAccountBalanceChecker = val;
+    });
   }
 
   /**
@@ -347,17 +514,22 @@ export default class PreferencesController {
    * @param val - Whether or not the user prefers to turn off/on validation for manually adding networks
    */
   setUseSafeChainsListValidation(val: boolean): void {
-    this.store.updateState({ useSafeChainsListValidation: val });
+    this.update((state) => {
+      state.useSafeChainsListValidation = val;
+    });
   }
 
   toggleExternalServices(useExternalServices: boolean): void {
-    this.store.updateState({ useExternalServices });
+    this.update((state) => {
+      state.useExternalServices = useExternalServices;
+    });
     this.setUseTokenDetection(useExternalServices);
     this.setUseCurrencyRateCheck(useExternalServices);
     this.setUsePhishDetect(useExternalServices);
     this.setUseAddressBarEnsResolution(useExternalServices);
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
+    this.setUseSafeChainsListValidation(useExternalServices);
   }
 
   /**
@@ -366,7 +538,9 @@ export default class PreferencesController {
    * @param val - Whether or not the user prefers to use the static token list or dynamic token list from the API
    */
   setUseTokenDetection(val: boolean): void {
-    this.store.updateState({ useTokenDetection: val });
+    this.update((state) => {
+      state.useTokenDetection = val;
+    });
   }
 
   /**
@@ -375,7 +549,9 @@ export default class PreferencesController {
    * @param useNftDetection - Whether or not the user prefers to autodetect NFTs.
    */
   setUseNftDetection(useNftDetection: boolean): void {
-    this.store.updateState({ useNftDetection });
+    this.update((state) => {
+      state.useNftDetection = useNftDetection;
+    });
   }
 
   /**
@@ -384,7 +560,9 @@ export default class PreferencesController {
    * @param use4ByteResolution - (Privacy) Whether or not the user prefers to have smart contract name details resolved with 4byte.directory
    */
   setUse4ByteResolution(use4ByteResolution: boolean): void {
-    this.store.updateState({ use4ByteResolution });
+    this.update((state) => {
+      state.use4ByteResolution = use4ByteResolution;
+    });
   }
 
   /**
@@ -393,16 +571,9 @@ export default class PreferencesController {
    * @param val - Whether or not the user prefers to use currency rate check for ETH and tokens.
    */
   setUseCurrencyRateCheck(val: boolean): void {
-    this.store.updateState({ useCurrencyRateCheck: val });
-  }
-
-  /**
-   * Setter for the `useRequestQueue` property
-   *
-   * @param val - Whether or not the user wants to have requests queued if network change is required.
-   */
-  setUseRequestQueue(val: boolean): void {
-    this.store.updateState({ useRequestQueue: val });
+    this.update((state) => {
+      state.useCurrencyRateCheck = val;
+    });
   }
 
   /**
@@ -411,8 +582,8 @@ export default class PreferencesController {
    * @param openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
    */
   setOpenSeaEnabled(openSeaEnabled: boolean): void {
-    this.store.updateState({
-      openSeaEnabled,
+    this.update((state) => {
+      state.openSeaEnabled = openSeaEnabled;
     });
   }
 
@@ -422,8 +593,8 @@ export default class PreferencesController {
    * @param securityAlertsEnabled - Whether or not the user prefers to use the security alerts.
    */
   setSecurityAlertsEnabled(securityAlertsEnabled: boolean): void {
-    this.store.updateState({
-      securityAlertsEnabled,
+    this.update((state) => {
+      state.securityAlertsEnabled = securityAlertsEnabled;
     });
   }
 
@@ -435,8 +606,8 @@ export default class PreferencesController {
    * enable the "Add Snap accounts" button.
    */
   setAddSnapAccountEnabled(addSnapAccountEnabled: boolean): void {
-    this.store.updateState({
-      addSnapAccountEnabled,
+    this.update((state) => {
+      state.addSnapAccountEnabled = addSnapAccountEnabled;
     });
   }
   ///: END:ONLY_INCLUDE_IF
@@ -449,12 +620,13 @@ export default class PreferencesController {
    * enable the "Watch Ethereum account (Beta)" button.
    */
   setWatchEthereumAccountEnabled(watchEthereumAccountEnabled: boolean): void {
-    this.store.updateState({
-      watchEthereumAccountEnabled,
+    this.update((state) => {
+      state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
     });
   }
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   /**
    * Setter for the `bitcoinSupportEnabled` property.
    *
@@ -462,8 +634,8 @@ export default class PreferencesController {
    * enable the "Add a new Bitcoin account (Beta)" button.
    */
   setBitcoinSupportEnabled(bitcoinSupportEnabled: boolean): void {
-    this.store.updateState({
-      bitcoinSupportEnabled,
+    this.update((state) => {
+      state.bitcoinSupportEnabled = bitcoinSupportEnabled;
     });
   }
 
@@ -474,10 +646,11 @@ export default class PreferencesController {
    * enable the "Add a new Bitcoin account (Testnet)" button.
    */
   setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled: boolean): void {
-    this.store.updateState({
-      bitcoinTestnetSupportEnabled,
+    this.update((state) => {
+      state.bitcoinTestnetSupportEnabled = bitcoinTestnetSupportEnabled;
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `useExternalNameSources` property
@@ -485,8 +658,8 @@ export default class PreferencesController {
    * @param useExternalNameSources - Whether or not to use external name providers in the name controller.
    */
   setUseExternalNameSources(useExternalNameSources: boolean): void {
-    this.store.updateState({
-      useExternalNameSources,
+    this.update((state) => {
+      state.useExternalNameSources = useExternalNameSources;
     });
   }
 
@@ -496,8 +669,8 @@ export default class PreferencesController {
    * @param useTransactionSimulations - Whether or not to use simulations in the transaction confirmations.
    */
   setUseTransactionSimulations(useTransactionSimulations: boolean): void {
-    this.store.updateState({
-      useTransactionSimulations,
+    this.update((state) => {
+      state.useTransactionSimulations = useTransactionSimulations;
     });
   }
 
@@ -515,12 +688,12 @@ export default class PreferencesController {
     chainId: string;
     gasFeePreferences: Record<string, string>;
   }): void {
-    const { advancedGasFee } = this.store.getState();
-    this.store.updateState({
-      advancedGasFee: {
+    const { advancedGasFee } = this.state;
+    this.update((state) => {
+      state.advancedGasFee = {
         ...advancedGasFee,
         [chainId]: gasFeePreferences,
-      },
+      };
     });
   }
 
@@ -530,7 +703,9 @@ export default class PreferencesController {
    * @param val - 'default' or 'dark' value based on the mode selected by user.
    */
   setTheme(val: ThemeType): void {
-    this.store.updateState({ theme: val });
+    this.update((state) => {
+      state.theme = val;
+    });
   }
 
   /**
@@ -540,12 +715,14 @@ export default class PreferencesController {
    * @param methodData - Corresponding data method
    */
   addKnownMethodData(fourBytePrefix: string, methodData: string): void {
-    const { knownMethodData } = this.store.getState();
+    const { knownMethodData } = this.state;
 
     const updatedKnownMethodData = { ...knownMethodData };
     updatedKnownMethodData[fourBytePrefix] = methodData;
 
-    this.store.updateState({ knownMethodData: updatedKnownMethodData });
+    this.update((state) => {
+      state.knownMethodData = updatedKnownMethodData;
+    });
   }
 
   /**
@@ -557,9 +734,9 @@ export default class PreferencesController {
     const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(key)
       ? 'rtl'
       : 'auto';
-    this.store.updateState({
-      currentLocale: key,
-      textDirection,
+    this.update((state) => {
+      state.currentLocale = key;
+      state.textDirection = textDirection;
     });
     return textDirection;
   }
@@ -597,15 +774,6 @@ export default class PreferencesController {
     );
 
     return selectedAccount.address;
-  }
-
-  /**
-   * Getter for the `useRequestQueue` property
-   *
-   * @returns whether this option is on or off.
-   */
-  getUseRequestQueue(): boolean {
-    return this.store.getState().useRequestQueue;
   }
 
   /**
@@ -648,14 +816,15 @@ export default class PreferencesController {
    * @returns the updated featureFlags object.
    */
   setFeatureFlag(feature: string, activated: boolean): Record<string, boolean> {
-    const currentFeatureFlags = this.store.getState().featureFlags;
+    const currentFeatureFlags = this.state.featureFlags;
     const updatedFeatureFlags = {
       ...currentFeatureFlags,
       [feature]: activated,
     };
 
-    this.store.updateState({ featureFlags: updatedFeatureFlags });
-
+    this.update((state) => {
+      state.featureFlags = updatedFeatureFlags;
+    });
     return updatedFeatureFlags;
   }
 
@@ -677,7 +846,9 @@ export default class PreferencesController {
       [preference]: value,
     };
 
-    this.store.updateState({ preferences: updatedPreferences });
+    this.update((state) => {
+      state.preferences = updatedPreferences;
+    });
     return updatedPreferences;
   }
 
@@ -687,7 +858,7 @@ export default class PreferencesController {
    * @returns A map of user-selected preferences.
    */
   getPreferences(): Preferences {
-    return this.store.getState().preferences;
+    return this.state.preferences;
   }
 
   /**
@@ -696,7 +867,7 @@ export default class PreferencesController {
    * @returns The current IPFS gateway domain
    */
   getIpfsGateway(): string {
-    return this.store.getState().ipfsGateway;
+    return this.state.ipfsGateway;
   }
 
   /**
@@ -706,7 +877,9 @@ export default class PreferencesController {
    * @returns the update IPFS gateway domain
    */
   setIpfsGateway(domain: string): string {
-    this.store.updateState({ ipfsGateway: domain });
+    this.update((state) => {
+      state.ipfsGateway = domain;
+    });
     return domain;
   }
 
@@ -716,7 +889,9 @@ export default class PreferencesController {
    * @param enabled - Whether or not IPFS is enabled
    */
   setIsIpfsGatewayEnabled(enabled: boolean): void {
-    this.store.updateState({ isIpfsGatewayEnabled: enabled });
+    this.update((state) => {
+      state.isIpfsGatewayEnabled = enabled;
+    });
   }
 
   /**
@@ -725,7 +900,9 @@ export default class PreferencesController {
    * @param useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
    */
   setUseAddressBarEnsResolution(useAddressBarEnsResolution: boolean): void {
-    this.store.updateState({ useAddressBarEnsResolution });
+    this.update((state) => {
+      state.useAddressBarEnsResolution = useAddressBarEnsResolution;
+    });
   }
 
   /**
@@ -739,7 +916,9 @@ export default class PreferencesController {
   setLedgerTransportPreference(
     ledgerTransportType: LedgerTransportTypes,
   ): string {
-    this.store.updateState({ ledgerTransportType });
+    this.update((state) => {
+      state.ledgerTransportType = ledgerTransportType;
+    });
     return ledgerTransportType;
   }
 
@@ -749,30 +928,67 @@ export default class PreferencesController {
    * @param dismissSeedBackUpReminder - User preference for dismissing the back up reminder.
    */
   setDismissSeedBackUpReminder(dismissSeedBackUpReminder: boolean): void {
-    this.store.updateState({
-      dismissSeedBackUpReminder,
+    this.update((state) => {
+      state.dismissSeedBackUpReminder = dismissSeedBackUpReminder;
     });
   }
 
   /**
-   * A setter for the incomingTransactions in preference to be updated
+   * A setter for the user preference to override the Content-Security-Policy header
    *
-   * @param chainId - chainId of the network
-   * @param value - preference of certain network, true to be enabled
+   * @param overrideContentSecurityPolicyHeader - User preference for overriding the Content-Security-Policy header.
    */
-  setIncomingTransactionsPreferences(chainId: Hex, value: boolean): void {
-    const previousValue = this.store.getState().incomingTransactionsPreferences;
-    const updatedValue = { ...previousValue, [chainId]: value };
-    this.store.updateState({ incomingTransactionsPreferences: updatedValue });
+  setOverrideContentSecurityPolicyHeader(
+    overrideContentSecurityPolicyHeader: boolean,
+  ): void {
+    this.update((state) => {
+      state.overrideContentSecurityPolicyHeader =
+        overrideContentSecurityPolicyHeader;
+    });
+  }
+
+  /**
+   * A setter for the user preference to manage institutional wallets
+   *
+   * @param manageInstitutionalWallets - User preference for managing institutional wallets.
+   */
+  setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
+    this.update((state) => {
+      state.manageInstitutionalWallets = manageInstitutionalWallets;
+    });
   }
 
   setServiceWorkerKeepAlivePreference(value: boolean): void {
-    this.store.updateState({ enableMV3TimestampSave: value });
+    this.update((state) => {
+      state.enableMV3TimestampSave = value;
+    });
+  }
+
+  getDisabledUpgradeAccountsByChain(): Record<Hex, Hex[]> {
+    return this.state.disabledUpgradeAccountsByChain ?? {};
+  }
+
+  disableAccountUpgrade(chainId: Hex, address: Hex): void {
+    this.update((state) => {
+      const { disabledUpgradeAccountsByChain = {} } = state;
+      const addressLowerCase = address.toLowerCase() as Hex;
+
+      if (
+        !disabledUpgradeAccountsByChain[chainId]?.includes(addressLowerCase)
+      ) {
+        if (!disabledUpgradeAccountsByChain[chainId]) {
+          disabledUpgradeAccountsByChain[chainId] = [];
+        }
+        disabledUpgradeAccountsByChain[chainId].push(addressLowerCase);
+      }
+    });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setSnapsAddSnapAccountModalDismissed(value: boolean): void {
-    this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
+    this.update((state) => {
+      state.snapsAddSnapAccountModalDismissed = value;
+    });
   }
   ///: END:ONLY_INCLUDE_IF
 
@@ -783,7 +999,7 @@ export default class PreferencesController {
       newAccountsControllerState.internalAccounts;
     const selectedAccount = accounts[selectedAccountId];
 
-    const { identities, lostIdentities } = this.store.getState();
+    const { identities, lostIdentities } = this.state;
 
     const addresses = Object.values(accounts).map((account) =>
       account.address.toLowerCase(),
@@ -812,10 +1028,10 @@ export default class PreferencesController {
       {},
     );
 
-    this.store.updateState({
-      identities: updatedIdentities,
-      lostIdentities: updatedLostIdentities,
-      selectedAddress: selectedAccount?.address || '', // it will be an empty string during onboarding
+    this.update((state) => {
+      state.identities = updatedIdentities;
+      state.lostIdentities = updatedLostIdentities;
+      state.selectedAddress = selectedAccount?.address || ''; // it will be an empty string during onboarding
     });
   }
 }

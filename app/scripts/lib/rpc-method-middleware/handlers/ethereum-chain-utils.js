@@ -1,33 +1,38 @@
-import { errorCodes, ethErrors } from 'eth-rpc-errors';
+import { ApprovalType } from '@metamask/controller-utils';
+import { rpcErrors } from '@metamask/rpc-errors';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getPermittedEthChainIds,
+} from '@metamask/chain-agnostic-permission';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
-import { PermissionNames } from '../../../controllers/permissions';
 import { getValidUrl } from '../../util';
 
 export function validateChainId(chainId) {
-  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
-  if (!isPrefixedFormattedHexString(_chainId)) {
-    throw ethErrors.rpc.invalidParams({
+  const lowercasedChainId =
+    typeof chainId === 'string' ? chainId.toLowerCase() : null;
+  if (!isPrefixedFormattedHexString(lowercasedChainId)) {
+    throw rpcErrors.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
     });
   }
 
-  if (!isSafeChainId(parseInt(_chainId, 16))) {
-    throw ethErrors.rpc.invalidParams({
-      message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
+  if (!isSafeChainId(parseInt(chainId, 16))) {
+    throw rpcErrors.invalidParams({
+      message: `Invalid chain ID "${lowercasedChainId}": numerical value greater than max safe value. Received:\n${chainId}`,
     });
   }
 
-  return _chainId;
+  return lowercasedChainId;
 }
 
-export function validateSwitchEthereumChainParams(req, end) {
+export function validateSwitchEthereumChainParams(req) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
         req.params,
       )}`,
@@ -36,19 +41,19 @@ export function validateSwitchEthereumChainParams(req, end) {
   const { chainId, ...otherParams } = req.params[0];
 
   if (Object.keys(otherParams).length > 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
         otherParams,
       )}`,
     });
   }
 
-  return validateChainId(chainId, end);
+  return validateChainId(chainId);
 }
 
-export function validateAddEthereumChainParams(params, end) {
+export function validateAddEthereumChainParams(params) {
   if (!params || typeof params !== 'object') {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
         params,
       )}`,
@@ -70,14 +75,14 @@ export function validateAddEthereumChainParams(params, end) {
   );
 
   if (otherKeys.length > 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
     });
   }
 
-  const _chainId = validateChainId(chainId, end);
+  const _chainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
     });
   }
@@ -100,13 +105,13 @@ export function validateAddEthereumChainParams(params, end) {
     : null;
 
   if (!firstValidRPCUrl) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
     });
   }
 
   if (typeof chainName !== 'string' || !chainName) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected non-empty string 'chainName'. Received:\n${chainName}`,
     });
   }
@@ -116,18 +121,18 @@ export function validateAddEthereumChainParams(params, end) {
 
   if (nativeCurrency !== null) {
     if (typeof nativeCurrency !== 'object' || Array.isArray(nativeCurrency)) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected null or object 'nativeCurrency'. Received:\n${nativeCurrency}`,
       });
     }
     if (nativeCurrency.decimals !== 18) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected the number 18 for 'nativeCurrency.decimals' when 'nativeCurrency' is provided. Received: ${nativeCurrency.decimals}`,
       });
     }
 
     if (!nativeCurrency.symbol || typeof nativeCurrency.symbol !== 'string') {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected a string 'nativeCurrency.symbol'. Received: ${nativeCurrency.symbol}`,
       });
     }
@@ -138,7 +143,7 @@ export function validateAddEthereumChainParams(params, end) {
     ticker !== UNKNOWN_TICKER_SYMBOL &&
     (typeof ticker !== 'string' || ticker.length < 1 || ticker.length > 6)
   ) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected 1-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
     });
   }
@@ -152,59 +157,96 @@ export function validateAddEthereumChainParams(params, end) {
   };
 }
 
+/**
+ * Switches the active network for the origin if already permitted
+ * otherwise requests approval to update permission first.
+ *
+ * @param response - The JSON RPC request's response object.
+ * @param end - The JSON RPC request's end callback.
+ * @param {string} chainId - The chainId being switched to.
+ * @param {string} networkClientId - The network client being switched to.
+ * @param {object} hooks - The hooks object.
+ * @param {string} hooks.origin - The origin sending this request.
+ * @param {boolean} hooks.isAddFlow - Variable to check if its add flow.
+ * @param {boolean} hooks.isSwitchFlow - Variable to check if its switch flow.
+ * @param {boolean} [hooks.autoApprove] - A boolean indicating whether the request should prompt the user or be automatically approved.
+ * @param {Function} hooks.setActiveNetwork - The callback to change the current network for the origin.
+ * @param {Function} hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
+ * @param {Function} hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
+ * @param {Function} hooks.setTokenNetworkFilter - The callback to set the token network filter.
+ * @param {Function} hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
+ * @param {Function} hooks.requestUserApproval - The callback to trigger user approval flow.
+ * @param {Function} hooks.hasApprovalRequestsForOrigin - Function to check if there are pending approval requests from the origin.
+ * @param {object} hooks.toNetworkConfiguration - Network configutation of network switching to.
+ * @param {object} hooks.fromNetworkConfiguration - Network configutation of network switching from.
+ * @returns a null response on success or an error if user rejects an approval when autoApprove is false or on unexpected errors.
+ */
 export async function switchChain(
-  res,
+  response,
   end,
   chainId,
   networkClientId,
-  approvalFlowId,
   {
+    origin,
     isAddFlow,
+    isSwitchFlow,
+    autoApprove,
     setActiveNetwork,
-    endApprovalFlow,
     getCaveat,
-    requestPermittedChainsPermission,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    setTokenNetworkFilter,
+    rejectApprovalRequestsForOrigin,
+    requestUserApproval,
+    hasApprovalRequestsForOrigin,
+    toNetworkConfiguration,
+    fromNetworkConfiguration,
   },
 ) {
   try {
-    const { value: permissionedChainIds } =
-      getCaveat({
-        target: PermissionNames.permittedChains,
-        caveatType: CaveatTypes.restrictNetworkSwitching,
-      }) ?? {};
+    const caip25Caveat = getCaveat({
+      target: Caip25EndowmentPermissionName,
+      caveatType: Caip25CaveatType,
+    });
 
-    if (
-      permissionedChainIds === undefined ||
-      !permissionedChainIds.includes(chainId)
-    ) {
-      if (isAddFlow) {
-        await grantPermittedChainsPermissionIncremental([chainId]);
-      } else {
-        await requestPermittedChainsPermission([chainId]);
+    if (caip25Caveat) {
+      const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
+
+      if (!ethChainIds.includes(chainId)) {
+        let metadata;
+        if (isSwitchFlow) {
+          metadata = {
+            isSwitchEthereumChain: true,
+          };
+        }
+        await requestPermittedChainsPermissionIncrementalForOrigin({
+          chainId,
+          autoApprove,
+          metadata,
+        });
+      } else if (hasApprovalRequestsForOrigin?.() && !isAddFlow) {
+        await requestUserApproval({
+          origin,
+          type: ApprovalType.SwitchEthereumChain,
+          requestData: {
+            toNetworkConfiguration,
+            fromNetworkConfiguration,
+          },
+        });
       }
+    } else {
+      await requestPermittedChainsPermissionIncrementalForOrigin({
+        chainId,
+        autoApprove,
+      });
     }
+
+    rejectApprovalRequestsForOrigin?.();
 
     await setActiveNetwork(networkClientId);
-    res.result = null;
+    setTokenNetworkFilter(chainId);
+    response.result = null;
+    return end();
   } catch (error) {
-    // We don't want to return an error if user rejects the request
-    // and this is a chained switch request after wallet_addEthereumChain.
-    // approvalFlowId is only defined when this call is of a
-    // wallet_addEthereumChain request so we can use it to determine
-    // if we should return an error
-    if (
-      error.code === errorCodes.provider.userRejectedRequest &&
-      approvalFlowId
-    ) {
-      res.result = null;
-      return end();
-    }
     return end(error);
-  } finally {
-    if (approvalFlowId) {
-      endApprovalFlow({ id: approvalFlowId });
-    }
   }
-  return end();
 }

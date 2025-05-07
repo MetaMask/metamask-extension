@@ -1,51 +1,67 @@
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import {
   assertIsJsonRpcFailure,
   assertIsJsonRpcSuccess,
 } from '@metamask/utils';
-import { createMethodMiddleware, createLegacyMethodMiddleware } from '.';
+import {
+  createEip1193MethodMiddleware,
+  createEthAccountsMethodMiddleware,
+  createMultichainMethodMiddleware,
+} from '.';
 
-jest.mock('@metamask/permission-controller', () => ({
-  permissionRpcMethods: { handlers: [] },
-}));
-
-jest.mock('./handlers', () => {
-  const getHandler = () => ({
-    implementation: (req, res, _next, end, hooks) => {
-      if (Array.isArray(req.params)) {
-        switch (req.params[0]) {
-          case 1:
-            res.result = hooks.hook1();
-            break;
-          case 2:
-            res.result = hooks.hook2();
-            break;
-          case 3:
-            return end(new Error('test error'));
-          case 4:
-            throw new Error('test error');
-          case 5:
-            // eslint-disable-next-line no-throw-literal
-            throw 'foo';
-          default:
-            throw new Error(`unexpected param "${req.params[0]}"`);
-        }
+const getHandler = () => ({
+  implementation: (req, res, _next, end, hooks) => {
+    if (Array.isArray(req.params)) {
+      switch (req.params[0]) {
+        case 1:
+          res.result = hooks.hook1();
+          break;
+        case 2:
+          res.result = hooks.hook2();
+          break;
+        case 3:
+          return end(new Error('test error'));
+        case 4:
+          throw new Error('test error');
+        case 5:
+          // eslint-disable-next-line no-throw-literal
+          throw 'foo';
+        default:
+          throw new Error(`unexpected param "${req.params[0]}"`);
       }
-      return end();
-    },
-    hookNames: { hook1: true, hook2: true },
-    methodNames: ['method1', 'method2'],
-  });
-
-  return {
-    handlers: [getHandler()],
-    legacyHandlers: [getHandler()],
-  };
+    }
+    return end();
+  },
+  hookNames: { hook1: true, hook2: true },
+  methodNames: ['method1', 'method2'],
 });
 
+jest.mock('@metamask/permission-controller', () => ({
+  ...jest.requireActual('@metamask/permission-controller'),
+}));
+
+jest.mock('./handlers/wallet-getPermissions', () => ({
+  getPermissionsHandler: getHandler(),
+}));
+
+jest.mock('./handlers/wallet-requestPermissions', () => ({
+  requestPermissionsHandler: getHandler(),
+}));
+
+jest.mock('./handlers/wallet-revokePermissions', () => ({
+  revokePermissionsHandler: getHandler(),
+}));
+
+jest.mock('./handlers', () => ({
+  handlers: [getHandler()],
+  eip1193OnlyHandlers: [getHandler()],
+  ethAccountsHandler: getHandler(),
+}));
+
 describe.each([
-  ['createMethodMiddleware', createMethodMiddleware],
-  ['createLegacyMethodMiddleware', createLegacyMethodMiddleware],
+  ['createEip1193MethodMiddleware', createEip1193MethodMiddleware],
+  ['createEthAccountsMethodMiddleware', createEthAccountsMethodMiddleware],
+  ['createMultichainMethodMiddleware', createMultichainMethodMiddleware],
 ])('%s', (_name, createMiddleware) => {
   const method1 = 'method1';
 
@@ -140,6 +156,7 @@ describe.each([
     assertIsJsonRpcFailure(response);
 
     expect(response.error.message).toBe('test error');
+    expect(response.error.data.cause.message).toBe('test error');
   });
 
   it('should handle errors thrown by the implementation', async () => {
@@ -156,6 +173,7 @@ describe.each([
     assertIsJsonRpcFailure(response);
 
     expect(response.error.message).toBe('test error');
+    expect(response.error.data.cause.message).toBe('test error');
   });
 
   it('should handle non-errors thrown by the implementation', async () => {

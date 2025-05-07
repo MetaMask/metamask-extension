@@ -7,15 +7,19 @@ const fetchWithCache = async ({
   fetchOptions = {},
   cacheOptions: { cacheRefreshTime = MINUTE * 6, timeout = SECOND * 30 } = {},
   functionName = '',
+  allowStale = false,
 }: {
   url: string;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetchOptions?: Record<string, any>;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cacheOptions?: Record<string, any>;
   functionName: string;
+  allowStale?: boolean;
 }) => {
   if (
     fetchOptions.body ||
@@ -49,6 +53,11 @@ const fetchWithCache = async ({
     ...fetchOptions,
   });
   if (!response.ok) {
+    const message = `Fetch with cache failed within function ${functionName} with status'${response.status}': '${response.statusText}'`;
+    if (allowStale) {
+      console.debug(`${message}. Returning cached result`);
+      return cachedResponse;
+    }
     throw new Error(
       `Fetch with cache failed within function ${functionName} with status'${response.status}': '${response.statusText}'`,
     );

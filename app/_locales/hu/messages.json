@@ -254,9 +254,6 @@
   "from": {
     "message": "Feladó"
   },
-  "functionType": {
-    "message": "Függvénytípus"
-  },
   "gasLimit": {
     "message": "Gáz határértéke"
   },
@@ -315,9 +312,6 @@
   "import": {
     "message": "Importálás",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Fiók importálása"
   },
   "importAccountMsg": {
     "message": "Az importált fiókot nem társítjuk az eredetileg létrehozott MetaMask-fiók seed mondatához. További információ az importált fiókokról"
@@ -381,9 +375,6 @@
   "loading": {
     "message": "Betöltés..."
   },
-  "loadingTokens": {
-    "message": "Tokenek betöltése..."
-  },
   "lock": {
     "message": "Kilépés"
   },
@@ -443,9 +434,6 @@
   "noConversionRateAvailable": {
     "message": "Nincs elérhető átváltási díj"
   },
-  "noTransactions": {
-    "message": "Nincsenek tranzakciói"
-  },
   "noWebcamFound": {
     "message": "Nem található számítógéped webkamerája. Kérünk, próbáld újra."
   },
@@ -469,9 +457,6 @@
   },
   "origin": {
     "message": "Eredet"
-  },
-  "parameters": {
-    "message": "Paraméterek"
   },
   "participateInMetaMetrics": {
     "message": "Vegyen részt a MetaMetrics-ben"
@@ -541,9 +526,6 @@
   "removeAccountDescription": {
     "message": "Ez a fiók el lesz távolítva pénztárcádból. A folytatás előtt győződj meg róla, hogy rendelkezésedre áll az eredeti kulcsszólánc vagy titkos kulcs. A fiók legördülő menüjéből újból importálhatsz vagy létrehozhatsz fiókokat. "
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "jóváhagyásra váró kérelmek"
-  },
   "required": {
     "message": "Kötelező"
   },
@@ -610,9 +592,6 @@
   },
   "showHexDataDescription": {
     "message": "Válassza ezt, ha a hex adatmezőt a küldő képernyőn szeretné megnézni"
-  },
-  "sigRequest": {
-    "message": "Aláírás kérése"
   },
   "sign": {
     "message": "Aláír"
@@ -707,9 +686,6 @@
   "transactionErrored": {
     "message": "Hiba történt a tranzakció során."
   },
-  "transactionFee": {
-    "message": "Tranzakciós költség"
-  },
   "transactionResubmitted": {
     "message": "A tranzakció újra beküldve $1 / $2 emelt gázdíjjal."
   },
@@ -736,9 +712,6 @@
   },
   "unknown": {
     "message": "Ismeretlen"
-  },
-  "unknownNetwork": {
-    "message": "Ismeretlen magánhálózat"
   },
   "unknownQrCode": {
     "message": "Hiba: nem tudtuk azonosítani a QR-kódot"
@@ -769,9 +742,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ennek a funkciónak a használatához engedélyeznie kell a kamerához való hozzáférést."
-  },
-  "youSign": {
-    "message": "Aláírja"
   },
   "yourPrivateSeedPhrase": {
     "message": "Az ön privát seed mondata"

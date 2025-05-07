@@ -1,4 +1,4 @@
-const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -8,47 +8,44 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
   largeDelayMs,
-  switchToNotificationWindow,
 } = require('../../helpers');
-const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on same networks', function () {
-  it('should batch confirmation txs for different dapps on same networks ', async function () {
+  it('should put confirmation txs for different dapps on same networks in same queue', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+          .withNetworkControllerTripleNode()
           .build(),
         dappOptions: { numberOfDapps: 3 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Navigate to extension home screen
-        await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
@@ -59,7 +56,7 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
 
         await driver.delay(regularDelayMs);
 
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
           text: 'Connect',
@@ -98,7 +95,7 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
 
         await driver.delay(regularDelayMs);
 
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.clickElement({
           text: 'Connect',
@@ -134,47 +131,36 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         await driver.clickElement('#sendButton');
         await driver.clickElement('#sendButton');
 
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        let navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
+        await driver.waitForSelector(
+          By.xpath("//p[normalize-space(.)='1 of 4']"),
         );
-
-        let navigationText = await navigationElement.getText();
-
-        assert.equal(navigationText.includes('1 of 2'), true);
 
         // Check correct network on confirm tx.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 7777',
         });
 
-        // Reject All Transactions
-        await driver.clickElement('.page-container__footer-secondary a');
-
-        await driver.clickElement({ text: 'Reject all', tag: 'button' }); // TODO: Do we want to confirm here?
-
-        // Wait for confirmation to close
-        await driver.waitUntilXWindowHandles(4);
-
-        // Wait for new confirmations queued from second dapp to open
-        await driver.delay(largeDelayMs);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        navigationElement = await driver.findElement(
-          '.confirm-page-container-navigation',
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
         );
-
-        navigationText = await navigationElement.getText();
-
-        assert.equal(navigationText.includes('1 of 2'), true);
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
+        );
 
         // Check correct network on confirm tx.
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: 'p',
           text: 'Localhost 8546',
         });
+
+        // Reject All Transactions
+        await driver.clickElement({ text: 'Reject all', tag: 'button' });
+
+        // Wait for confirmation to close
+        await driver.waitUntilXWindowHandles(3);
       },
     );
   });

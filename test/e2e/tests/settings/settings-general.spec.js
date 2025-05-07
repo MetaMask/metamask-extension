@@ -1,10 +1,4 @@
-const { strict: assert } = require('assert');
-const {
-  defaultGanacheOptions,
-  openMenuSafe,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+const { openMenuSafe, unlockWallet, withFixtures } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Settings', function () {
@@ -12,7 +6,6 @@ describe('Settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -28,25 +21,15 @@ describe('Settings', function () {
           '[data-testid="jazz_icon"] .settings-page__content-item__identicon__item__icon--active',
         );
 
-        const jazziconText = await driver.findElement({
+        await driver.waitForSelector({
           tag: 'h6',
           text: 'Jazzicons',
         });
-        assert.equal(
-          await jazziconText.getText(),
-          'Jazzicons',
-          'Text for icon should be Jazzicons',
-        );
 
-        const blockiesText = await driver.findElement({
+        await driver.waitForSelector({
           tag: 'h6',
           text: 'Blockies',
         });
-        assert.equal(
-          await blockiesText.getText(),
-          'Blockies',
-          'Text for icon should be Blockies',
-        );
       },
     );
   });

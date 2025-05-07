@@ -12,6 +12,7 @@ export const radioGroup: UIComponentFactory<RadioGroupElement> = ({
   const options = children.map((child) => ({
     value: child.props.value,
     name: child.props.children,
+    disabled: child.props.disabled,
   }));
 
   return {
@@ -19,6 +20,7 @@ export const radioGroup: UIComponentFactory<RadioGroupElement> = ({
     props: {
       id: element.props.name,
       name: element.props.name,
+      disabled: element.props.disabled,
       form,
       options,
     },

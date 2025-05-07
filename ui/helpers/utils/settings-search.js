@@ -8,8 +8,10 @@ export function getSettingsRoutes() {
   if (settingsRoutes) {
     return settingsRoutes;
   }
-  settingsRoutes = SETTINGS_CONSTANTS.filter((routeObject) =>
-    routeObject.featureFlag ? process.env[routeObject.featureFlag] : true,
+  settingsRoutes = SETTINGS_CONSTANTS.filter(
+    (routeObject) =>
+      (routeObject.featureFlag ? process.env[routeObject.featureFlag] : true) &&
+      !routeObject.hidden,
   );
   return settingsRoutes;
 }

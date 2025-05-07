@@ -32,6 +32,20 @@ describe('Creation Successful Onboarding View', () => {
         type: 'test',
       },
       firstTimeFlowType: FirstTimeFlowType.import,
+      internalAccounts: {
+        accounts: {
+          accountId: {
+            address: '0x0000000000000000000000000000000000000000',
+          },
+        },
+        selectedAccount: 'accountId',
+      },
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0000000000000000000000000000000000000000'],
+        },
+      ],
     },
   };
   const store = configureMockStore([thunk])(mockStore);
@@ -116,9 +130,9 @@ describe('Creation Successful Onboarding View', () => {
     ).toBeInTheDocument();
   });
 
-  it('should redirect to privacy-settings view when "Manage default settings" button is clicked', () => {
+  it('should redirect to privacy-settings view when "Manage default privacy settings" button is clicked', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, store);
-    const privacySettingsButton = getByText('Manage default settings');
+    const privacySettingsButton = getByText('Manage default privacy settings');
     fireEvent.click(privacySettingsButton);
     expect(mockHistoryPush).toHaveBeenCalledWith(
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,

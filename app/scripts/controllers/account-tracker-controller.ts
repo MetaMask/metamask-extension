@@ -7,11 +7,9 @@
  * on each new block.
  */
 
-import EthQuery from '@metamask/eth-query';
 import { v4 as random } from 'uuid';
 
 import log from 'loglevel';
-import pify from 'pify';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
@@ -24,19 +22,19 @@ import {
   NetworkControllerGetStateAction,
   Provider,
 } from '@metamask/network-controller';
-import { hasProperty, Hex } from '@metamask/utils';
+import { hasProperty, type Hex, type JsonRpcParams } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 
 import { LOCALHOST_RPC_URL } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
@@ -45,7 +43,7 @@ import type {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
 } from './onboarding';
-import PreferencesController from './preferences-controller';
+import { PreferencesControllerGetStateAction } from './preferences-controller';
 
 // Unique name for the controller
 const controllerName = 'AccountTrackerController';
@@ -143,7 +141,8 @@ export type AllowedActions =
   | OnboardingControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetStateAction
-  | NetworkControllerGetNetworkClientByIdAction;
+  | NetworkControllerGetNetworkClientByIdAction
+  | PreferencesControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -156,7 +155,7 @@ export type AllowedEvents =
 /**
  * Messenger type for the {@link AccountTrackerController}.
  */
-export type AccountTrackerControllerMessenger = RestrictedControllerMessenger<
+export type AccountTrackerControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   AccountTrackerControllerActions | AllowedActions,
   AccountTrackerControllerEvents | AllowedEvents,
@@ -170,7 +169,6 @@ export type AccountTrackerControllerOptions = {
   provider: Provider;
   blockTracker: BlockTracker;
   getNetworkIdentifier: (config?: NetworkClientConfiguration) => string;
-  preferencesController: PreferencesController;
 };
 
 /**
@@ -198,8 +196,6 @@ export default class AccountTrackerController extends BaseController<
 
   #getNetworkIdentifier: AccountTrackerControllerOptions['getNetworkIdentifier'];
 
-  #preferencesController: AccountTrackerControllerOptions['preferencesController'];
-
   #selectedAccount: InternalAccount;
 
   /**
@@ -209,7 +205,7 @@ export default class AccountTrackerController extends BaseController<
    * @param options.provider - An EIP-1193 provider instance that uses the current global network
    * @param options.blockTracker - A block tracker, which emits events for each new block
    * @param options.getNetworkIdentifier - A function that returns the current network or passed network configuration
-   * @param options.preferencesController - The preferences controller
+   * @param options.preferencesControllerState - The state of preferences controller
    */
   constructor(options: AccountTrackerControllerOptions) {
     super({
@@ -226,7 +222,6 @@ export default class AccountTrackerController extends BaseController<
     this.#blockTracker = options.blockTracker;
 
     this.#getNetworkIdentifier = options.getNetworkIdentifier;
-    this.#preferencesController = options.preferencesController;
 
     // subscribe to account removal
     this.messagingSystem.subscribe(
@@ -256,8 +251,9 @@ export default class AccountTrackerController extends BaseController<
     this.messagingSystem.subscribe(
       'AccountsController:selectedEvmAccountChange',
       (newAccount) => {
-        const { useMultiAccountBalanceChecker } =
-          this.#preferencesController.store.getState();
+        const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+          'PreferencesController:getState',
+        );
 
         if (
           this.#selectedAccount.id !== newAccount.id &&
@@ -407,10 +403,8 @@ export default class AccountTrackerController extends BaseController<
     if (!pollingToken) {
       throw new Error('pollingToken required');
     }
-    let found = false;
     this.#pollingTokenSets.forEach((tokenSet, key) => {
       if (tokenSet.has(pollingToken)) {
-        found = true;
         tokenSet.delete(pollingToken);
         if (tokenSet.size === 0) {
           this.#pollingTokenSets.delete(key);
@@ -418,9 +412,6 @@ export default class AccountTrackerController extends BaseController<
         }
       }
     });
-    if (!found) {
-      throw new Error('pollingToken not found');
-    }
   }
 
   /**
@@ -433,10 +424,8 @@ export default class AccountTrackerController extends BaseController<
       return;
     }
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
-    const updateForBlock = this.#updateForBlockByNetworkClientId.bind(
-      this,
-      networkClientId,
-    );
+    const updateForBlock = (blockNumber: string) =>
+      this.#updateForBlockByNetworkClientId(networkClientId, blockNumber);
     blockTracker.addListener('latest', updateForBlock);
 
     this.#listeners[networkClientId] = updateForBlock;
@@ -485,7 +474,7 @@ export default class AccountTrackerController extends BaseController<
    * AccountTrackerController.
    *
    * Once this AccountTrackerController accounts are up to date with those referenced by the passed addresses, each
-   * of these accounts are given an updated balance via EthQuery.
+   * of these accounts are given an updated balance via Provider.
    *
    * @param addresses - The array of hex addresses for accounts with which this AccountTrackerController accounts should be
    * in sync
@@ -592,7 +581,7 @@ export default class AccountTrackerController extends BaseController<
 
   /**
    * Given a block, updates this AccountTrackerController currentBlockGasLimit and currentBlockGasLimitByChainId and then updates
-   * each local account's balance via EthQuery
+   * each local account's balance via Provider
    *
    * @private
    * @param blockNumber - the block number to update to.
@@ -604,7 +593,7 @@ export default class AccountTrackerController extends BaseController<
 
   /**
    * Given a block, updates this AccountTrackerController currentBlockGasLimitByChainId, and then updates each local account's balance
-   * via EthQuery
+   * via Provider
    *
    * @private
    * @param networkClientId - optional network client ID to use instead of the globally selected network.
@@ -620,10 +609,13 @@ export default class AccountTrackerController extends BaseController<
     this.#currentBlockNumberByChainId[chainId] = blockNumber;
 
     // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
-    const currentBlock = await pify(new EthQuery(provider)).getBlockByNumber(
-      blockNumber,
-      false,
-    );
+    const currentBlock = await provider.request<
+      JsonRpcParams,
+      { gasLimit: string }
+    >({
+      method: 'eth_getBlockByNumber',
+      params: [blockNumber, false],
+    });
     if (!currentBlock) {
       return;
     }
@@ -672,8 +664,9 @@ export default class AccountTrackerController extends BaseController<
 
     const { chainId, provider, identifier } =
       this.#getCorrectNetworkClient(networkClientId);
-    const { useMultiAccountBalanceChecker } =
-      this.#preferencesController.store.getState();
+    const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+      'PreferencesController:getState',
+    );
 
     let addresses = [];
     if (useMultiAccountBalanceChecker) {
@@ -710,6 +703,37 @@ export default class AccountTrackerController extends BaseController<
     }
   }
 
+  async updateAccountByAddress({
+    address,
+    networkClientId,
+  }: {
+    address?: string;
+    networkClientId?: NetworkClientId;
+  } = {}): Promise<void> {
+    const { completedOnboarding } = this.messagingSystem.call(
+      'OnboardingController:getState',
+    );
+    if (!completedOnboarding) {
+      return;
+    }
+
+    const selectedAddress =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      address ||
+      this.messagingSystem.call('AccountsController:getSelectedAccount')
+        .address;
+
+    if (!selectedAddress) {
+      return;
+    }
+
+    const { chainId, provider } =
+      this.#getCorrectNetworkClient(networkClientId);
+
+    await this.#updateAccount(selectedAddress, provider, chainId);
+  }
+
   /**
    * Updates the current balance of an account.
    *
@@ -724,14 +748,18 @@ export default class AccountTrackerController extends BaseController<
     provider: Provider,
     chainId: Hex,
   ): Promise<void> {
-    const { useMultiAccountBalanceChecker } =
-      this.#preferencesController.store.getState();
+    const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+      'PreferencesController:getState',
+    );
 
     let balance = '0x0';
 
     // query balance
     try {
-      balance = await pify(new EthQuery(provider)).getBalance(address);
+      balance = await provider.request({
+        method: 'eth_getBalance',
+        params: [address, 'latest'],
+      });
     } catch (error) {
       if (
         error &&

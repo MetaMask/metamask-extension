@@ -1,10 +1,4 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-  switchToNotificationWindow,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -13,7 +7,6 @@ describe('Test Snap Images', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -28,29 +21,43 @@ describe('Test Snap Images', function () {
           tag: 'h2',
         });
 
-        // find and scroll to the images test and connect
+        // find and scroll to the images test snap
         const snapButton1 = await driver.findElement('#connectimages');
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
         await driver.waitForSelector('#connectimages');
         await driver.clickElement('#connectimages');
 
-        // switch to metamask extension and click connect and approve
-        await switchToNotificationWindow(driver, 2);
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
+
+        // wait for confirm
         await driver.waitForSelector({ text: 'Confirm' });
 
+        // click and dismiss possible scroll element
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
+        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        // deal with OK button
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
@@ -75,7 +82,7 @@ describe('Test Snap Images', function () {
         // check snaps ui image using waitForSelector
         await driver.waitForSelector('[data-testid="snaps-ui-image"]');
 
-        // click ok to close window
+        // click ok to close window and wait for window to close
         await driver.clickElementAndWaitForWindowToClose(
           '[data-testid="confirmation-submit-button"]',
         );

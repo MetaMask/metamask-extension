@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -9,7 +8,6 @@ const {
   DAPP_ONE_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function () {
@@ -20,21 +18,22 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+          .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -49,7 +48,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector({
-          text: 'Reject',
+          text: 'Cancel',
           tag: 'button',
         });
 
@@ -79,8 +78,9 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
 
         // Reject the pending confirmation from the first dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Reject',
+
+        await driver.clickElement({
+          text: 'Cancel',
           tag: 'button',
         });
 
@@ -110,21 +110,22 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+          .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTwoTestDapps()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

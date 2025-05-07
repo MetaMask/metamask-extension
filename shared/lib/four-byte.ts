@@ -34,6 +34,10 @@ export async function getMethodFrom4Byte(
     functionName: 'getMethodFrom4Byte',
   })) as FourByteResponse;
 
+  if (!fourByteResponse.results?.length) {
+    return undefined;
+  }
+
   fourByteResponse.results.sort((a, b) => {
     return new Date(a.created_at).getTime() < new Date(b.created_at).getTime()
       ? -1

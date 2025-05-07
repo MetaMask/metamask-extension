@@ -11,6 +11,7 @@ exports[`CancelTransactionGasFee Component should render 1`] = `
     >
       <span
         class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        data-testid="account-value-and-suffix"
       >
         &lt;0.000001
       </span>
@@ -26,6 +27,7 @@ exports[`CancelTransactionGasFee Component should render 1`] = `
     >
       <span
         class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        data-testid="account-value-and-suffix"
       >
         &lt;0.000001
       </span>

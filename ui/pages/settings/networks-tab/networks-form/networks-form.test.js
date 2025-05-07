@@ -12,13 +12,20 @@ import {
 } from '../../../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { addNetwork, updateNetwork } from '../../../../store/actions';
+import {
+  addNetwork,
+  setTokenNetworkFilter,
+  updateNetwork,
+} from '../../../../store/actions';
 import { NetworksForm } from './networks-form';
 
 jest.mock('../../../../../ui/store/actions', () => ({
   ...jest.requireActual('../../../../../ui/store/actions'),
   updateNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
   addNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+  setTokenNetworkFilter: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
 const renderComponent = (props) => {
@@ -442,6 +449,7 @@ describe('NetworkForm Component', () => {
           replacementSelectedRpcEndpointIndex: undefined,
         },
       );
+      expect(setTokenNetworkFilter).toHaveBeenCalledTimes(1);
     });
   });
 });

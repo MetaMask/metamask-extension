@@ -1,7 +1,10 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
-import type { NotificationComponent } from '../types/notifications/notifications';
+import {
+  NotificationComponentType,
+  type NotificationComponent,
+} from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 
 import {
@@ -46,6 +49,8 @@ const isLidoWithdrawalRequestedNotification = isOfTypeNodeGuard([
 
 const getTitle = () => {
   const items = createTextItems(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     [t('notificationItemUnStakingRequested') || ''],
     TextVariant.bodySm,
   );
@@ -61,6 +66,8 @@ const getDescription = (n: LidoWithdrawalRequestedNotification) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     t('notificationItemLidoWithdrawalRequestedMessage', [
       `${amount} ${n.data.stake_in.symbol}`,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     ]) || '';
   const items = createTextItems([description], TextVariant.bodyMd);
   return items;
@@ -98,19 +105,23 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       title: ({ notification }) => {
         return (
           <NotificationDetailTitle
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             title={t('notificationItemUnStakingRequested') || ''}
             date={formatIsoDateString(notification.createdAt)}
           />
         );
       },
       body: {
-        type: 'body_onchain_notification',
+        type: NotificationComponentType.OnChainBody,
         Account: ({ notification }) => {
           if (!notification.address) {
             return null;
           }
           return (
             <NotificationDetailAddress
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               side={t('account') || ''}
               address={notification.address}
             />
@@ -123,12 +134,18 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
               color: TextColor.successDefault,
               backgroundColor: BackgroundColor.successMuted,
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationItemStatus') || ''}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             detail={t('notificationItemConfirmed') || ''}
             action={
               <NotificationDetailCopyButton
                 notification={notification}
                 text={notification.tx_hash}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 displayText={t('notificationItemTransactionId') || ''}
               />
             }
@@ -148,6 +165,8 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               label={t('notificationItemUnStakingRequested') || ''}
               detail={notification.data.stake_in.symbol}
               fiatValue={`$${getUsdAmount(
@@ -177,6 +196,8 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               label={t('notificationItemStakingProvider') || ''}
               detail="Lido-staked ETH"
             />
@@ -185,14 +206,13 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       },
     },
     footer: {
-      type: 'footer_onchain_notification',
+      type: NotificationComponentType.OnChainFooter,
       ScanLink: ({ notification }) => {
         return (
           <NotificationDetailBlockExplorerButton
             notification={notification}
             chainId={notification.chain_id}
             txHash={notification.tx_hash}
-            id={notification.id}
           />
         );
       },

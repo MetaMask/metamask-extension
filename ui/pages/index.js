@@ -10,8 +10,10 @@ import {
   LegacyMetaMetricsProvider,
 } from '../contexts/metametrics';
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
-import { CurrencyRateProvider } from '../contexts/currencyRate';
-import ErrorPage from './error';
+import { AssetPollingProvider } from '../contexts/assetPolling';
+import { MetamaskIdentityProvider } from '../contexts/identity';
+import ErrorPage from './error-page/error-page.component';
+
 import Routes from './routes';
 
 class Index extends PureComponent {
@@ -26,7 +28,7 @@ class Index extends PureComponent {
   }
 
   render() {
-    const { error, errorId } = this.state;
+    const { error } = this.state;
     const { store } = this.props;
 
     if (error) {
@@ -34,7 +36,7 @@ class Index extends PureComponent {
         <Provider store={store}>
           <I18nProvider>
             <LegacyI18nProvider>
-              <ErrorPage error={error} errorId={errorId} />
+              <ErrorPage error={error} />
             </LegacyI18nProvider>
           </I18nProvider>
         </Provider>
@@ -49,11 +51,13 @@ class Index extends PureComponent {
               <LegacyMetaMetricsProvider>
                 <I18nProvider>
                   <LegacyI18nProvider>
-                    <CurrencyRateProvider>
-                      <MetamaskNotificationsProvider>
-                        <Routes />
-                      </MetamaskNotificationsProvider>
-                    </CurrencyRateProvider>
+                    <AssetPollingProvider>
+                      <MetamaskIdentityProvider>
+                        <MetamaskNotificationsProvider>
+                          <Routes />
+                        </MetamaskNotificationsProvider>
+                      </MetamaskIdentityProvider>
+                    </AssetPollingProvider>
                   </LegacyI18nProvider>
                 </I18nProvider>
               </LegacyMetaMetricsProvider>

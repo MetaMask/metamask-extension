@@ -1,13 +1,14 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { CreateAccount } from '..';
 import { Box, ModalHeader } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getNextAvailableAccountName } from '../../../store/actions';
+import { getUniqueAccountName } from '../../../../shared/lib/accounts';
 
 export type CreateNamedSnapAccountProps = {
   /**
@@ -44,25 +45,9 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   const getNextAccountName = useCallback(
     async (accounts: InternalAccount[]): Promise<string> => {
       // If a snap-suggested account name exists, use it as a base
-      if (snapSuggestedAccountName) {
-        let suffix = 1;
-        let candidateName = snapSuggestedAccountName;
-
-        // Check if the name is already taken
-        const isNameTaken = (name: string) =>
-          accounts.some((account) => account.metadata.name === name);
-
-        // Keep incrementing suffix until we find an available name
-        while (isNameTaken(candidateName)) {
-          suffix += 1;
-          candidateName = `${snapSuggestedAccountName} ${suffix}`;
-        }
-
-        return candidateName;
-      }
-
-      // If no snap-suggested name, use the next available account name
-      return getNextAvailableAccountName(KeyringTypes.snap);
+      return snapSuggestedAccountName
+        ? getUniqueAccountName(accounts, snapSuggestedAccountName)
+        : getNextAvailableAccountName(KeyringTypes.snap);
     },
     [],
   );
@@ -73,8 +58,14 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   }, []);
 
   return (
-    <Box padding={4} className="name-snap-account-page">
-      <ModalHeader padding={4} onClose={onClose}>
+    <Box padding={6} className="name-snap-account-page">
+      <ModalHeader
+        paddingTop={2}
+        paddingBottom={4}
+        paddingRight={0}
+        paddingLeft={0}
+        onClose={onClose}
+      >
         {t('addAccountToMetaMask')}
       </ModalHeader>
       <CreateAccount
