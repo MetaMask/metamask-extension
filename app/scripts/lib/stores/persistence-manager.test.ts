@@ -7,6 +7,7 @@ import log from 'loglevel';
 import { PersistenceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
+import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 
 const MOCK_DATA = { config: { foo: 'bar' } };
 
@@ -147,6 +148,61 @@ describe('PersistenceManager', () => {
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: MOCK_DATA,
       });
+    });
+
+    it('does not throw when validating state with a *missing vault* and no backup', async () => {
+      // the reason this does NOT throw is because this could be an initial
+      // state; we have no good evidence that this isn't the first time
+      // state is being initialized, so we just assume it is fine.
+      const mockData = {
+        data: {
+          KeyringController: {
+            vault: undefined, // vault is missing on purpose
+          },
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce({ data: mockData });
+
+      const result = await manager.get(true);
+      expect(result).toStrictEqual({ data: mockData });
+      expect(manager.mostRecentRetrievedState).toStrictEqual({
+        data: mockData,
+      });
+    });
+
+    it('does not throw when validating a valid vault', async () => {
+      const mockData = {
+        data: {
+          KeyringController: {
+            vault: 'vault',
+          },
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce({ data: mockData });
+
+      const result = await manager.get(true);
+      expect(result).toStrictEqual({ data: mockData });
+      expect(manager.mostRecentRetrievedState).toStrictEqual({
+        data: mockData,
+      });
+    });
+
+    it('does throw when validating state with a *missing vault* but has a backup', async () => {
+      const mockData = {
+        data: {
+          KeyringController: {
+            vault: undefined, // vault is missing on purpose
+          },
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce({ data: mockData });
+      manager.getBackup = jest.fn().mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'vault',
+        },
+      });
+
+      await expect(manager.get(true)).rejects.toThrow(MISSING_VAULT_ERROR);
     });
   });
 

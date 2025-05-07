@@ -725,9 +725,11 @@ export async function loadStateFromPersistence(backup) {
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
+  // if we *have* a backup, we don't care about validating the vault, since
+  // we're going to be overwriting it with the backup data.
+  const validateVault = !backup;
   // read from disk
   // first from preferred, async API:
-  const validateVault = !backup;
   let preMigrationVersionedData = await persistenceManager.get(validateVault);
 
   const migrator = new Migrator({
@@ -752,6 +754,8 @@ export async function loadStateFromPersistence(backup) {
     preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
   }
 
+  // if we have a backup we need to make sure we use its properties in the
+  // migration step, so we add the backup props in now
   if (backup) {
     if (!preMigrationVersionedData?.data) {
       preMigrationVersionedData.data = {};
@@ -761,6 +765,11 @@ export async function loadStateFromPersistence(backup) {
       if (hasProperty(backup, key)) {
         preMigrationVersionedData.data[key] = backup[key];
       }
+    }
+    // use the meta property from the backup if it exists, that way the
+    // migrations will behave correctly.
+    if (hasProperty(backup, "meta")) {
+      preMigrationVersionedData.meta = backup.meta;
     }
   }
 
