@@ -408,6 +408,7 @@ class AssetListPage {
     timeout: number = 10000,
   ): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
+    await this.driver.waitForSelector(this.tokenListItem, { timeout });
     await this.driver.wait(async () => {
       const tokenItemsNumber = await this.getNumberOfAssets();
       return tokenItemsNumber === expectedNumber;
