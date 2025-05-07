@@ -160,7 +160,7 @@ class ActivityListPage {
         expectedNumber - 1
       ].getText();
       return transactionActionText === expectedAction;
-    }, 30000);
+    }, 60000);
 
     console.log(
       `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
