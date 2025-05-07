@@ -359,11 +359,7 @@ export const ImportSrp = () => {
           marginTop={4}
           paddingBottom={6}
           paddingTop={2}
-          backgroundColor={
-            theme === ThemeType.light
-              ? BackgroundColor.backgroundDefault
-              : BackgroundColor.backgroundDefault
-          }
+          backgroundColor={BackgroundColor.backgroundDefault}
         >
           <ButtonPrimary
             width={BlockSize.Full}
