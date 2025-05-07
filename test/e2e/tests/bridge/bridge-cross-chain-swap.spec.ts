@@ -10,7 +10,7 @@ import BridgeQuotePage, {
   BridgeQuote,
 } from '../../page-objects/pages/bridge/quote-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import { Anvil } from '../../seeder/anvil';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
 
@@ -28,10 +28,10 @@ describe('Bridge tests', function (this: Suite) {
         },
         false,
       ),
-      async ({ driver, localNodes }) => {
+      async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_localNodeBalanceIsDisplayed(localNodes[0]);
+        await homePage.check_expectedBalanceIsDisplayed();
         // disable smart transactions
 
         const headerNavbar = new HeaderNavbar(driver);
@@ -57,7 +57,7 @@ describe('Bridge tests', function (this: Suite) {
             unapproved: true,
           },
           2,
-          localNodes[0],
+          '24.9998',
         );
 
         // Switch to Linea Mainnet to set it as the selected network
@@ -74,7 +74,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           3,
-          localNodes[0],
+          '23.9997',
         );
 
         await bridgeTransaction(
@@ -87,7 +87,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           4,
-          localNodes[0],
+          '22.9997',
         );
 
         // Switch to Linea Mainnet to set it as the selected network
@@ -104,7 +104,7 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           5,
-          localNodes[0],
+          '22.9996',
         );
       },
     );
@@ -114,7 +114,7 @@ describe('Bridge tests', function (this: Suite) {
     driver: Driver,
     quote: BridgeQuote,
     transactionsCount: number,
-    localNode: Anvil,
+    expectedAmount: string,
   ) {
     // Navigate to Bridge page
     const homePage = new HomePage(driver);
@@ -147,6 +147,7 @@ describe('Bridge tests', function (this: Suite) {
     );
 
     // Check the wallet ETH balance is correct
-    await homePage.check_localNodeBalanceIsDisplayed(localNode);
+    const accountListPage = new AccountListPage(driver);
+    await accountListPage.check_accountValueAndSuffixDisplayed(expectedAmount);
   }
 });
