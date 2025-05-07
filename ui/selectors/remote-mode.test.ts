@@ -1,8 +1,7 @@
 import { FeatureFlags } from '@metamask/remote-feature-flag-controller';
-import { RemoteFeatureFlagsState } from './remote-feature-flags';
-import { getIsRemoteModeEnabled } from './remote-mode';
+import { getIsRemoteModeEnabled, RemoteModeState } from './remote-mode';
 
-function getMockState(vaultRemoteMode?: boolean): RemoteFeatureFlagsState {
+function getMockState(vaultRemoteMode?: boolean): RemoteModeState {
   const featureFlags: FeatureFlags = {};
   if (vaultRemoteMode !== undefined) {
     featureFlags.vaultRemoteMode = vaultRemoteMode;
@@ -10,6 +9,7 @@ function getMockState(vaultRemoteMode?: boolean): RemoteFeatureFlagsState {
   return {
     metamask: {
       remoteFeatureFlags: featureFlags,
+      delegations: {},
     },
   };
 }

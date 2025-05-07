@@ -15,24 +15,26 @@ const EIP7702_CONTRACT_ADDRESSES_FLAG = 'confirmations_eip_7702';
 
 type Address = Hex;
 
+export type RemoteModeState = RemoteFeatureFlagsState & DelegationState;
+
 /**
  * Get the state of the `vaultRemoteMode` remote feature flag.
  *
  * @param state - The MetaMask state object
  * @returns The state of the `vaultRemoteMode` remote feature flag
  */
-export function getIsRemoteModeEnabled(state: RemoteFeatureFlagsState) {
+export function getIsRemoteModeEnabled(state: RemoteModeState) {
   const { vaultRemoteMode } = getRemoteFeatureFlags(state);
   return Boolean(vaultRemoteMode);
 }
 
-export function getEIP7702ContractAddresses(state: RemoteFeatureFlagsState) {
+export function getEIP7702ContractAddresses(state: RemoteModeState) {
   const flags = getRemoteFeatureFlags(state);
   return flags[EIP7702_CONTRACT_ADDRESSES_FLAG];
 }
 
 const getRemoteModeDelegationEntries = (
-  state: DelegationState,
+  state: RemoteModeState,
   account: Address,
   chainId: Hex,
 ) => {
