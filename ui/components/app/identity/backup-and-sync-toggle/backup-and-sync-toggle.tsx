@@ -38,6 +38,7 @@ export const backupAndSyncToggleTestIds = {
 
 export const BackupAndSyncToggle = () => {
   const trackEvent = useContext(MetaMetricsContext);
+
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -65,8 +66,8 @@ export const BackupAndSyncToggle = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          settings_group: 'security_privacy',
-          settings_type: 'profile_syncing',
+          settings_group: 'backup_and_sync',
+          settings_type: 'main',
           old_value: isBackupAndSyncEnabled,
           new_value: newValue,
           was_notifications_on: isMetamaskNotificationsEnabled,
@@ -89,11 +90,11 @@ export const BackupAndSyncToggle = () => {
 
   const handleBackupAndSyncToggleSetValue = async () => {
     if (isBackupAndSyncEnabled) {
+      trackBackupAndSyncToggleEvent(false);
       await setIsBackupAndSyncFeatureEnabled(
         BACKUPANDSYNC_FEATURES.main,
         false,
       );
-      trackBackupAndSyncToggleEvent(false);
     } else {
       trackBackupAndSyncToggleEvent(true);
 

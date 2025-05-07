@@ -6,7 +6,6 @@ import type {
 } from '@metamask/network-controller';
 import {
   isSolanaChainId,
-  type BridgeToken,
   BridgeFeatureFlagsKey,
   isNativeAddress,
   formatChainIdToCaip,
@@ -71,7 +70,7 @@ import {
   exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
 } from './utils';
-import type { BridgeState } from './bridge';
+import type { BridgeState } from './types';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -206,7 +205,7 @@ export const getToChain = createSelector(
 export const getFromToken = createSelector(
   (state: BridgeAppState) => state.bridge.fromToken,
   getFromChain,
-  (fromToken, fromChain): BridgeToken | null => {
+  (fromToken, fromChain) => {
     if (!fromChain?.chainId) {
       return null;
     }
@@ -229,7 +228,7 @@ export const getFromToken = createSelector(
   },
 );
 
-export const getToToken = (state: BridgeAppState): BridgeToken | null => {
+export const getToToken = (state: BridgeAppState) => {
   return state.bridge.toToken;
 };
 
