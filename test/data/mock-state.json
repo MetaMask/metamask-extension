@@ -102,7 +102,7 @@
         }
       }
     },
-    "delegations": {},
+    "permissionHistory": {},
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,
@@ -2150,7 +2150,8 @@
       }
     },
     "txHistory": {},
-    "throttledOrigins": {}
+    "throttledOrigins": {},
+    "delegations": {}
   },
   "ramps": {
     "buyableChains": [
