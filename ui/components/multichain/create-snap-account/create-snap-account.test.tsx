@@ -12,21 +12,22 @@ import { CreateSnapAccount } from './create-snap-account';
 // Mock dependencies
 jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => {
   const mockCreateAccount = jest.fn().mockResolvedValue(true);
+  const mockGetNextAvailableAccountName = jest
+    .fn()
+    .mockResolvedValue('Snap Account 2');
+
   return {
     ...jest.requireActual(
       '../../../hooks/accounts/useMultichainWalletSnapClient',
     ),
     useMultichainWalletSnapClient: jest.fn().mockReturnValue({
       createAccount: mockCreateAccount,
+      getNextAvailableAccountName: mockGetNextAvailableAccountName,
     }),
     __mockCreateAccount: mockCreateAccount,
+    __mockGetNextAvailableAccountName: mockGetNextAvailableAccountName,
   };
 });
-
-jest.mock('../../../store/actions', () => ({
-  ...jest.requireActual('../../../store/actions'),
-  getNextAvailableAccountName: jest.fn().mockResolvedValue('Snap Account 2'),
-}));
 
 const { __mockCreateAccount: mockCreateAccount } = jest.requireMock(
   '../../../hooks/accounts/useMultichainWalletSnapClient',
@@ -120,15 +121,20 @@ describe('CreateSnapAccount', () => {
     fireEvent.click(createButton);
 
     await waitFor(() => {
-      expect(mockCreateAccount).toHaveBeenCalledWith({
-        scope: defaultProps.chainId,
-        entropySource: defaultProps.selectedKeyringId,
-        accountNameSuggestion: '',
-      });
+      expect(mockCreateAccount).toHaveBeenCalledWith(
+        {
+          scope: defaultProps.chainId,
+          entropySource: defaultProps.selectedKeyringId,
+          accountNameSuggestion: '',
+        },
+        {
+          setSelectedAccount: undefined,
+        },
+      );
     });
   });
 
-  it('renders the suggested account name for a first party snap', async () => {
+  it('renders the suggested account name as placeholder', async () => {
     const { getByPlaceholderText } = render({
       ...defaultProps,
       clientType: WalletClientType.Solana,
@@ -136,7 +142,7 @@ describe('CreateSnapAccount', () => {
     });
 
     await waitFor(() => {
-      const nameSuggestion = getByPlaceholderText('Solana Account 2');
+      const nameSuggestion = getByPlaceholderText('Snap Account 2');
       expect(nameSuggestion).toBeInTheDocument();
     });
   });

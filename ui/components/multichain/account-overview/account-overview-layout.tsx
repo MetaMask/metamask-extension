@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 ///: END:ONLY_INCLUDE_IF
 import {
+  showModal,
   removeSlide,
+  setAccountDetailsAddress,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   setSelectedAccount,
   ///: END:ONLY_INCLUDE_IF
@@ -12,6 +14,7 @@ import {
 import { Carousel } from '..';
 import {
   getAppIsLoading,
+  getSelectedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
@@ -28,8 +31,11 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
+import { TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../app/modals/identity';
 import {
   useCarouselManagement,
+  BACKUPANDSYNC_SLIDE,
+  SMART_ACCOUNT_UPGRADE_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
@@ -55,6 +61,7 @@ export const AccountOverviewLayout = ({
   const isLoading = useSelector(getAppIsLoading);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
+  const selectedAccount = useSelector(getSelectedAccount);
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
@@ -84,6 +91,10 @@ export const AccountOverviewLayout = ({
     }
     ///: END:ONLY_INCLUDE_IF
 
+    if (id === BACKUPANDSYNC_SLIDE.id) {
+      dispatch(showModal({ name: TURN_ON_BACKUP_AND_SYNC_MODAL_NAME }));
+    }
+
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     if (id === SOLANA_SLIDE.id) {
       if (hasSolanaAccount && selectedSolanaAccount) {
@@ -93,6 +104,10 @@ export const AccountOverviewLayout = ({
       }
     }
     ///: END:ONLY_INCLUDE_IF
+
+    if (id === SMART_ACCOUNT_UPGRADE_SLIDE.id) {
+      dispatch(setAccountDetailsAddress(selectedAccount.address));
+    }
 
     trackEvent({
       event: MetaMetricsEventName.BannerSelect,
