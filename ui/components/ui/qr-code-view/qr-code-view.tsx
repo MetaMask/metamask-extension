@@ -7,14 +7,14 @@ import { isHexPrefixed } from 'ethereumjs-util';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { Box, Text } from '../../component-library';
+import type { MetaMaskReduxState } from '../../../store/store';
 import {
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import type { MetaMaskReduxState } from '../../../store/store';
 
-function mapStateToProps(state: MetaMaskReduxState) {
+function mapStateToProps(state: Pick<MetaMaskReduxState, 'appState'>) {
   const { buyView, warning } = state.appState;
   return {
     buyView,
