@@ -43,8 +43,6 @@ function transformState(state: VersionedData['data']) {
     delete state.UserStorageController.isProfileSyncingUpdateInProgress;
   }
 
-  state.UserStorageController.isBackupAndSyncUpdateLoading = false;
-
   return state;
 }
 
