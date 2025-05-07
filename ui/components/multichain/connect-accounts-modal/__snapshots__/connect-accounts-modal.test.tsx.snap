@@ -160,7 +160,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                                 <rect
                                   fill="#FA4300"
                                   height="32"
-                                  transform="translate(-1.712066926084717 -0.6920409130150889) rotate(264.3 16 16)"
+                                  transform="translate(-1.712066926084717 -0.6920409130150887) rotate(264.3 16 16)"
                                   width="32"
                                   x="0"
                                   y="0"
@@ -219,7 +219,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                         <rect
                           fill="#FA4300"
                           height="32"
-                          transform="translate(-1.712066926084717 -0.6920409130150889) rotate(264.3 16 16)"
+                          transform="translate(-1.712066926084717 -0.6920409130150887) rotate(264.3 16 16)"
                           width="32"
                           x="0"
                           y="0"
@@ -309,25 +309,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                     </div>
                     <div
                       class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
-                    >
-                      <div
-                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                        data-testid="second-currency-display"
-                        title="0 ETH"
-                      >
-                        <span
-                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                          data-testid="account-value-and-suffix"
-                        >
-                          0
-                        </span>
-                        <span
-                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                        >
-                          ETH
-                        </span>
-                      </div>
-                    </div>
+                    />
                   </div>
                 </div>
               </div>

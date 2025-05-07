@@ -436,17 +436,17 @@ const AccountListItem = ({
                 textAlign={TextAlign.End}
                 as="div"
               >
-                {!isEvmNetwork && (
-                  <UserPreferencedCurrencyDisplay
-                    account={account}
-                    ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                    value={getPreferredCurrencyValue()}
-                    type={SECONDARY}
-                    showNative
-                    data-testid="second-currency-display"
-                    privacyMode={privacyMode}
-                  />
-                )}
+                {/* {!isEvmNetwork && ( */}
+                <UserPreferencedCurrencyDisplay
+                  account={account}
+                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                  value={getPreferredCurrencyValue()}
+                  type={SECONDARY}
+                  showNative
+                  data-testid="second-currency-display"
+                  privacyMode={privacyMode}
+                />
+                {/* )} */}
               </Text>
             </Box>
           )}
