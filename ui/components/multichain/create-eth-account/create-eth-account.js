@@ -13,6 +13,7 @@ export const CreateEthAccount = ({
   onActionComplete,
   onSelectSrp,
   selectedKeyringId,
+  redirectToOverviewPage,
 }) => {
   const dispatch = useDispatch();
 
@@ -37,6 +38,7 @@ export const CreateEthAccount = ({
       onSelectSrp={onSelectSrp}
       selectedKeyringId={selectedKeyringId}
       ///: END:ONLY_INCLUDE_IF(multi-srp)
+      redirectToOverviewPage={redirectToOverviewPage}
     ></CreateAccount>
   );
 };
@@ -56,4 +58,8 @@ CreateEthAccount.propTypes = {
    */
   selectedKeyringId: PropTypes.string,
   ///: END:ONLY_INCLUDE_IF(multi-srp)
+  /**
+   * Whether to redirect to the overview page after creating the account
+   */
+  redirectToOverviewPage: PropTypes.bool,
 };
