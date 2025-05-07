@@ -1,9 +1,9 @@
 diff --git a/package.json b/package.json
-index aa8e92d4774ca26f0cf9156f18d5a76cae6046b0..621a4a3361e2a79cecd3c6810d8cfa33e820c546 100644
+index ffd13104e8fc441d915d011012ef83f396c47088..18a96730f11370a0695b09ec36e54bf3e6f33e26 100644
 --- a/package.json
 +++ b/package.json
 @@ -3,6 +3,9 @@
-   "version": "0.0.0-EIP7702-20250418164917",
+   "version": "0.0.0-eip7702-20250506170433",
    "private": false,
    "license": "Apache-2.0",
 +  "main": "./lib/cjs/index.js",

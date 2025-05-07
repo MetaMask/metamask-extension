@@ -1,9 +1,9 @@
 diff --git a/package.json b/package.json
-index 535c9a57696628a5f384bda166e67a9911f5e3d2..65065e8bda242aa0e583655cc9502a9cae2fd23d 100644
+index 74335b4daeaaf299b23bbed5235cd8791372f323..70a0cf8ececd9b55fec72c48455e607a24de3c4e 100644
 --- a/package.json
 +++ b/package.json
 @@ -3,6 +3,8 @@
-   "version": "0.0.0-EIP7702-20250418164917",
+   "version": "0.0.0-eip7702-20250506170433",
    "license": "Apache-2.0",
    "private": false,
 +  "main": "./lib/esm/index.js",

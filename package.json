@@ -225,7 +225,7 @@
     "gridplus-sdk/elliptic": "^6.6.1",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
-    "@ledgerhq/signer-utils@npm:0.0.0-EIP7702-20250418164917": "patch:@ledgerhq/signer-utils@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-signer-utils-npm-0.0.0-EIP7702-20250418164917-ca631cdc2c.patch"
+    "@ledgerhq/signer-utils@npm:0.0.0-eip7702-20250506170433": "patch:@ledgerhq/signer-utils@npm%3A0.0.0-eip7702-20250506170433#~/.yarn/patches/@ledgerhq-signer-utils-npm-0.0.0-eip7702-20250506170433-c316de87b3.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -245,11 +245,11 @@
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.3",
-    "@ledgerhq/context-module": "patch:@ledgerhq/context-module@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-context-module-npm-0.0.0-EIP7702-20250418164917-2312fcfbeb.patch",
-    "@ledgerhq/device-management-kit": "patch:@ledgerhq/device-management-kit@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-management-kit-npm-0.0.0-EIP7702-20250418164917-14cf6a5af4.patch",
-    "@ledgerhq/device-signer-kit-ethereum": "patch:@ledgerhq/device-signer-kit-ethereum@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-signer-kit-ethereum-npm-0.0.0-EIP7702-20250418164917-a863f84172.patch",
-    "@ledgerhq/device-transport-kit-web-ble": "patch:@ledgerhq/device-transport-kit-web-ble@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-transport-kit-web-ble-npm-0.0.0-EIP7702-20250418164917-95f8b359f3.patch",
-    "@ledgerhq/device-transport-kit-web-hid": "patch:@ledgerhq/device-transport-kit-web-hid@npm%3A0.0.0-EIP7702-20250418164917#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-0.0.0-EIP7702-20250418164917-3d6ccb9e66.patch",
+    "@ledgerhq/context-module": "patch:@ledgerhq/context-module@npm%3A0.0.0-eip7702-20250506170433#~/.yarn/patches/@ledgerhq-context-module-npm-0.0.0-eip7702-20250506170433-2e330bb530.patch",
+    "@ledgerhq/device-management-kit": "patch:@ledgerhq/device-management-kit@npm%3A0.0.0-eip7702-20250506170433#~/.yarn/patches/@ledgerhq-device-management-kit-npm-0.0.0-eip7702-20250506170433-7482dc7e63.patch",
+    "@ledgerhq/device-signer-kit-ethereum": "patch:@ledgerhq/device-signer-kit-ethereum@npm%3A0.0.0-eip7702-20250506170433#~/.yarn/patches/@ledgerhq-device-signer-kit-ethereum-npm-0.0.0-eip7702-20250506170433-8ac3956e87.patch",
+    "@ledgerhq/device-transport-kit-web-ble": "patch:@ledgerhq/device-transport-kit-web-ble@npm%3A0.0.0-eip7702-20250506170433#~/.yarn/patches/@ledgerhq-device-transport-kit-web-ble-npm-0.0.0-eip7702-20250506170433-68a940e9fd.patch",
+    "@ledgerhq/device-transport-kit-web-hid": "patch:@ledgerhq/device-transport-kit-web-hid@npm%3A0.0.0-eip7702-20250506170433#~/.yarn/patches/@ledgerhq-device-transport-kit-web-hid-npm-0.0.0-eip7702-20250506170433-a8cdd0082d.patch",
     "@material-ui/core": "^4.11.0",
     "@metamask-institutional/custody-controller": "^0.3.0",
     "@metamask-institutional/custody-keyring": "^2.1.1",
