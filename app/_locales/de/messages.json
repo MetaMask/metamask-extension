@@ -4132,18 +4132,6 @@
   "productAnnouncements": {
     "message": "Produktankündigungen"
   },
-  "profileSync": {
-    "message": "Profilsynchronisation"
-  },
-  "profileSyncConfirmation": {
-    "message": "Wenn Sie die Profilsynchronisierung deaktivieren, können Sie keine Benachrichtigungen empfangen."
-  },
-  "profileSyncDescription": {
-    "message": "Erstellt ein Profil, über das MetaMask bestimmte Einstellungen zwischen Ihren Geräten synchronisiert. Dies ist für den Erhalt von Benachrichtigungen erforderlich. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Erfahren Sie, wie wir Ihre Privatsphäre schützen"
-  },
   "proposedApprovalLimit": {
     "message": "Vorgeschlagenes Genehmigungslimit"
   },

@@ -4132,18 +4132,6 @@
   "productAnnouncements": {
     "message": "製品に関するお知らせ"
   },
-  "profileSync": {
-    "message": "プロファイルの同期"
-  },
-  "profileSyncConfirmation": {
-    "message": "プロファイルの同期をオフにすると、通知を受け取ることができなくなります。"
-  },
-  "profileSyncDescription": {
-    "message": "MetaMaskが一部の設定をデバイス間で同期するために使用するプロファイルを作成します。これは通知の受取に必要です。$1。"
-  },
-  "profileSyncPrivacyLink": {
-    "message": "当社がどのようにユーザーのプライバシーを保護するのか、ご覧ください"
-  },
   "proposedApprovalLimit": {
     "message": "提案された承認限度額"
   },

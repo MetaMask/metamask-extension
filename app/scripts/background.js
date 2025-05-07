@@ -602,11 +602,20 @@ async function initialize() {
 /**
  * Loads the preinstalled snaps from urls and returns them as an array.
  * It fails if any Snap fails to load in the expected time range.
+ * Supports .json.gz files using gzip decompression.
  */
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
     const response = await fetchWithTimeout(url);
+
+    // If the Snap is compressed, decompress it
+    if (url.pathname.endsWith('.json.gz')) {
+      const ds = new DecompressionStream('gzip');
+      const decompressedStream = response.body.pipeThrough(ds);
+      return await new Response(decompressedStream).json();
+    }
+
     return await response.json();
   });
 

@@ -640,6 +640,12 @@
   "backupAndSyncPrivacyLink": {
     "message": "Learn how we protect your privacy"
   },
+  "backupAndSyncSlideDescription": {
+    "message": "Back up your accounts and sync settings."
+  },
+  "backupAndSyncSlideTitle": {
+    "message": "Introducing backup and sync"
+  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -682,6 +688,16 @@
   },
   "basicConfigurationModalDisclaimerOff": {
     "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalText": {
+    "message": "Turning this off also disables all features within $1, and $2.",
+    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
+    "message": "security and privacy, backup and sync"
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
+    "message": "notifications"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "To optimize your time on MetaMask, you’ll need to turn on this feature. Basic functions (like token details, optimal gas settings, and others) are important to the web3 experience."
@@ -1007,7 +1023,7 @@
     "message": "Busy"
   },
   "buyAndSell": {
-    "message": "Buy & Sell"
+    "message": "Buy/Sell"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -4345,18 +4361,6 @@
   "productAnnouncements": {
     "message": "Product announcements"
   },
-  "profileSync": {
-    "message": "Profile Sync"
-  },
-  "profileSyncConfirmation": {
-    "message": "If you turn off profile sync, you won’t be able to receive notifications."
-  },
-  "profileSyncDescription": {
-    "message": "Creates a profile that MetaMask uses to sync some settings among your devices. This is required to get notifications. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Learn how we protect your privacy"
-  },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
   },
@@ -5160,10 +5164,10 @@
     "message": "Add multiple Secret Recovery Phrases"
   },
   "slideRemoteModeDescription": {
-    "message": "Access your hardware wallet without plugging it in"
+    "message": "Use your cold wallet wirelessly"
   },
   "slideRemoteModeTitle": {
-    "message": "Remote mode is here!"
+    "message": "Cold storage, fast access"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Same address, smarter features"
@@ -5209,6 +5213,9 @@
   },
   "smartAccountRequestFor": {
     "message": "Request for"
+  },
+  "smartAccountSameAccount": {
+    "message": "Same account, smarter features."
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"

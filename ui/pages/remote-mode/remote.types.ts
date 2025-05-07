@@ -1,10 +1,12 @@
 // Note: just some initial types (will likely be refactored to pull from contract metadata
 
 export enum TokenSymbol {
+  ETH = 'ETH',
   USDC = 'USDC',
   WETH = 'WETH',
   WBTC = 'WBTC',
   BNB = 'BNB',
+  EURC = 'EURC',
 }
 
 export type TokenInfo = {
@@ -14,6 +16,11 @@ export type TokenInfo = {
 };
 
 export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
+  [TokenSymbol.ETH]: {
+    symbol: TokenSymbol.ETH,
+    name: 'ETH',
+    iconUrl: './images/eth_logo.png',
+  },
   [TokenSymbol.USDC]: {
     symbol: TokenSymbol.USDC,
     name: 'USDC',
@@ -34,24 +41,33 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     name: 'BNB',
     iconUrl: './images/icon-bnb.png',
   },
+  // note: added for testing (finalized list tbd)
+  [TokenSymbol.EURC]: {
+    symbol: TokenSymbol.EURC,
+    name: 'EURC',
+    iconUrl: './images/eth_logo.png',
+  },
 };
 
-export type SwapAllowance = {
-  from: TokenSymbol;
-  to: string;
-  amount: number;
-};
-
-export enum ToTokenOption {
+export enum BaseToTokenOption {
   AllowedOutcome = 'Select allowed outcome token',
   Any = 'Any token on Ethereum Mainnet',
 }
+
+export type ToTokenOption = BaseToTokenOption | TokenSymbol;
+
+export type SwapAllowance = {
+  from: TokenSymbol;
+  to: ToTokenOption;
+  amount: number;
+};
 
 export enum DailyAllowanceTokenTypes {
   ETH = 'ETH',
 }
 
 export type DailyAllowance = {
-  tokenType: DailyAllowanceTokenTypes;
+  tokenType: TokenSymbol;
   amount: number;
+  iconUrl: string;
 };

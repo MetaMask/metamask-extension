@@ -1,14 +1,15 @@
-/* eslint-disable no-useless-escape */
-const { isEqual, omit } = require('lodash');
-const {
-  withFixtures,
-  sendTransaction,
-  getEventPayloads,
+import { isEqual, omit } from 'lodash';
+import { Mockttp } from 'mockttp';
+import { Suite } from 'mocha';
+import {
   assertInAnyOrder,
-  logInWithBalanceValidation,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const { MOCK_META_METRICS_ID } = require('../../constants');
+  getEventPayloads,
+  withFixtures,
+} from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { MOCK_META_METRICS_ID } from '../../constants';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -20,10 +21,9 @@ const { MOCK_META_METRICS_ID } = require('../../constants');
  * constants files, because if these change we want a strong indicator to our
  * data team that the shape of data will change.
  *
- * @param {import('mockttp').Mockttp} mockServer
- * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse>[]}
+ * @param mockServer
  */
-async function mockSegment(mockServer) {
+async function mockSegment(mockServer: Mockttp) {
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
@@ -92,35 +92,44 @@ async function mockSegment(mockServer) {
 
 const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
+type EventPayload = {
+  messageId: string;
+  userId?: string;
+  anonymousId?: string;
+  properties: Record<string, unknown>;
+};
+
 /**
  * Assert that the event names begin with the appropriate prefixes. Even
  * finalized events begin with transaction-submitted because they start as
  * event fragments created when the transaction is submitted.
  *
- * @param {object} payload
+ * @param payload
  */
-const messageIdStartsWithTransactionSubmitted = (payload) =>
-  payload.messageId.startsWith('transaction-submitted');
+const messageIdStartsWithTransactionSubmitted = (
+  payload: EventPayload,
+): boolean => payload.messageId.startsWith('transaction-submitted');
 
 /**
  * Assert that the events with sensitive properties should have messageIds
  * ending in 0x000 this is important because otherwise the events are seen as
  * duplicates in segment
  *
- * @param {object} payload
+ * @param payload
  */
-const messageIdEndsWithZeros = (payload) => payload.messageId.endsWith('0x000');
+const messageIdEndsWithZeros = (payload: EventPayload): boolean =>
+  payload.messageId.endsWith('0x000');
 
 /**
  * Assert that the events with sensitive data do not contain a userId (the
  * random anonymous id generated when a user opts into metametrics)
  *
- * @param {object} payload
+ * @param payload
  */
-const eventDoesNotIncludeUserId = (payload) =>
+const eventDoesNotIncludeUserId = (payload: EventPayload): boolean =>
   typeof payload.userId === 'undefined';
 
-const eventHasUserIdWithoutAnonymousId = (payload) =>
+const eventHasUserIdWithoutAnonymousId = (payload: EventPayload): boolean =>
   typeof payload.userId === 'string' &&
   typeof payload.anonymousId === 'undefined';
 
@@ -128,12 +137,12 @@ const eventHasUserIdWithoutAnonymousId = (payload) =>
  * Assert that the events with sensitive data have anonymousId set to
  * 0x0000000000000000 which is our universal anonymous record
  *
- * @param {object} payload
+ * @param payload
  */
-const eventHasZeroAddressAnonymousId = (payload) =>
+const eventHasZeroAddressAnonymousId = (payload: EventPayload): boolean =>
   payload.anonymousId === '0x0000000000000000';
 
-describe('Transaction Finalized Event', function () {
+describe('Transaction Finalized Event', function (this: Suite) {
   it('Successfully tracked when sending a transaction', async function () {
     await withFixtures(
       {
@@ -143,13 +152,17 @@ describe('Transaction Finalized Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await logInWithBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         // TODO: Update Test when Multichain Send Flow is added
-        await sendTransaction(driver, RECIPIENT, '2.0');
+        await sendRedesignedTransactionToAddress({
+          driver,
+          recipientAddress: RECIPIENT,
+          amount: '2.0',
+        });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
@@ -158,7 +171,7 @@ describe('Transaction Finalized Event', function () {
           messageIdEndsWithZeros,
           eventDoesNotIncludeUserId,
           eventHasZeroAddressAnonymousId,
-          (payload) =>
+          (payload: EventPayload) =>
             isEqual(omit(payload.properties, ['first_seen']), {
               status: 'submitted',
               transaction_envelope_type: 'legacy',
@@ -189,7 +202,7 @@ describe('Transaction Finalized Event', function () {
         const transactionSubmittedWithoutSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,
           eventHasUserIdWithoutAnonymousId,
-          (payload) =>
+          (payload: EventPayload) =>
             isEqual(payload.properties, {
               chain_id: '0x539',
               referrer: 'metamask',
@@ -219,7 +232,7 @@ describe('Transaction Finalized Event', function () {
           messageIdEndsWithZeros,
           eventDoesNotIncludeUserId,
           eventHasZeroAddressAnonymousId,
-          (payload) =>
+          (payload: EventPayload) =>
             isEqual(
               omit(payload.properties, ['first_seen', 'completion_time']),
               {
@@ -254,7 +267,7 @@ describe('Transaction Finalized Event', function () {
         const transactionFinalizedWithoutSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,
           eventHasUserIdWithoutAnonymousId,
-          (payload) =>
+          (payload: EventPayload) =>
             isEqual(payload.properties, {
               chain_id: '0x539',
               referrer: 'metamask',

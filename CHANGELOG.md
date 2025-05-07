@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Rebrand "Profile syncing" to "Backup and sync", adding a dedicated settings menu and more ([#32129](https://github.com/MetaMask/metamask-extension/pull/32129))
 - Adding slide for smart account upgrade to home page carousel ([#32048](https://github.com/MetaMask/metamask-extension/pull/32048))
 - Improvements in confirmation page to upgrade to smart account ([#32034](https://github.com/MetaMask/metamask-extension/pull/32034))
 - When `selectedNetworkClientId` is invalid at startup, set it back to mainnet default RPC ([#31517](https://github.com/MetaMask/metamask-extension/pull/31517))
@@ -16,15 +17,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace `caip-x` with `caip-348` in Multichain API over externally_connectable ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
 - Unify confirmation page styles and responsive behavior ([#31454](https://github.com/MetaMask/metamask-extension/pull/31454))
 - Integrate @metamask/bridge-status-controller@^14.0.0 and replace existing BridgeStatusController instance ([#31907](https://github.com/MetaMask/metamask-extension/pull/31907))
+- Add RPC (sub)domain tracking to transaction event metrics for RPC endpoints usage ([#32076](https://github.com/MetaMask/metamask-extension/pull/32076))
 
 ### Changed
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
 - Update security and privacy policy description to reflect Solana account handling ([#32231](https://github.com/MetaMask/metamask-extension/pull/32231))
 - Updates the Solana modal by adding a learn more link, UI tweaks and auto selects a solana account when it exists. ([#32087](https://github.com/MetaMask/metamask-extension/pull/32087))
+- Hide failed transaction retry button ([#32024](https://github.com/MetaMask/metamask-extension/pull/32024))
 
 ### Fixed
 - updates display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
 - Add Multichain API analytics support ([#32013](https://github.com/MetaMask/metamask-extension/pull/32013))
+
+## [12.17.1]
+### Fixed
+- Prevent infinite Load on switching networks or reveal SRP ([#32391](https://github.com/MetaMask/metamask-extension/pull/32391))
+- Ensure vault encryption upgrade fails gracefully during login ([#32438](https://github.com/MetaMask/metamask-extension/pull/32438))
+- Prevent frequent state updates while UI is open, which was preventing state persistence ([#32482](https://github.com/MetaMask/metamask-extension/pull/32482))
 
 ## [12.17.0]
 ### Added
@@ -6098,7 +6107,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.1...HEAD
+[12.17.1]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...v12.17.1
 [12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.2...v12.17.0
 [12.16.2]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...v12.16.2
 [12.16.1]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...v12.16.1
