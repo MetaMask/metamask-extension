@@ -251,7 +251,7 @@ export const AssetPickerModalNetwork = ({
             flexDirection={FlexDirection.Column}
             width={BlockSize.Full}
           >
-            {(testNetworks.length > 0 ? nonTestNetworks : networksList).map(
+            {nonTestNetworks.map(
               (networkConfig) => {
                 const { name, chainId } = networkConfig;
                 return (
