@@ -550,9 +550,7 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(
         `Must specify success event. Success event was: ${
           options.event
-        }. Payload keys were: ${Object.keys(
-          options,
-        )}. ${
+        }. Payload keys were: ${Object.keys(options)}. ${
           typeof options.properties === 'object'
             ? `Payload property keys were: ${Object.keys(options.properties)}`
             : ''
@@ -998,9 +996,7 @@ export default class MetaMetricsController extends BaseController<
       throw new Error(
         `Must specify event. Event was: ${
           payload.event
-        }. Payload keys were: ${Object.keys(
-          payload,
-        )}. ${
+        }. Payload keys were: ${Object.keys(payload)}. ${
           typeof payload.properties === 'object'
             ? `Payload property keys were: ${Object.keys(payload.properties)}`
             : ''
