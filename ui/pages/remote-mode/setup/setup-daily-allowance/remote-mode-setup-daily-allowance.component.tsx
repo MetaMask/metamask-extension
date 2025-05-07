@@ -54,7 +54,6 @@ import {
   DailyAllowance,
   REMOTE_MODES,
   TokenSymbol,
-  DailyAllowance,
   TOKEN_DETAILS,
 } from '../../remote.types';
 
