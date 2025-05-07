@@ -18,10 +18,12 @@ const {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } = require('../../../../shared/constants/metametrics');
+const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
 const {
   TOKENS_API_MOCK_RESULT,
   TOP_ASSETS_API_MOCK_RESULT,
   AGGREGATOR_METADATA_API_MOCK_RESULT,
+  GAS_PRICE_API_MOCK_RESULT,
   FEATURE_FLAGS_API_MOCK_RESULT,
   TRADES_API_MOCK_RESULT,
   NETWORKS_2_API_MOCK_RESULT,
@@ -53,6 +55,12 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
       .thenCallback(() => ({
         statusCode: 200,
         json: AGGREGATOR_METADATA_API_MOCK_RESULT,
+      })),
+    await mockServer
+      .forGet(`${GAS_API_BASE_URL}/networks/1/gasPrices`)
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: GAS_PRICE_API_MOCK_RESULT,
       })),
     await mockServer
       .forGet('https://swap.api.cx.metamask.io/featureFlags')
@@ -92,6 +100,9 @@ describe('Swap Eth for another Token', function () {
             participateInMetaMetrics: true,
           })
           .build(),
+        localNodeOptions: {
+          hardfork: 'muirGlacier',
+        },
         title: this.test.fullTitle(),
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },
@@ -155,7 +166,7 @@ async function getQuoteAndSwapTokens(driver) {
 async function assertReqsNumAndFilterMetrics(driver, mockedEndpoints) {
   const events = await getEventPayloads(driver, mockedEndpoints);
 
-  const numberOfMetaswapRequests = 6;
+  const numberOfMetaswapRequests = 7;
   assert.equal(
     events.length,
     numberOfSegmentRequests + numberOfMetaswapRequests,
@@ -380,7 +391,7 @@ async function assertAllAvailableQuotesOpenedEvents(reqs) {
 async function assertSwapStartedEvents(reqs) {
   const assertionsReq11 = [
     (req) => req.event === MetaMetricsEventName.SwapStarted,
-    (req) => Object.keys(req.properties).length === 28,
+    (req) => Object.keys(req.properties).length === 26,
 
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
@@ -394,17 +405,13 @@ async function assertSwapStartedEvents(reqs) {
     (req) => req.properties?.custom_slippage === false,
     (req) => req.properties?.is_hardware_wallet === false,
     (req) => req.properties?.stx_enabled === false,
-    (req) => req.properties?.stx_user_opt_in === true,
     (req) => req.properties?.current_stx_enabled === false,
     (req) => typeof req.properties?.token_to_amount === 'string',
     (req) => typeof req.properties?.best_quote_source === 'string',
     (req) => typeof req.properties?.other_quote_selected === 'boolean',
     (req) => typeof req.properties?.gas_fees === 'string',
     (req) => typeof req.properties?.estimated_gas === 'string',
-    (req) => typeof req.properties?.suggested_gas_price === 'undefined',
-    (req) => typeof req.properties?.max_fee_per_gas === 'string',
-    (req) => typeof req.properties?.max_priority_fee_per_gas === 'string',
-    (req) => req.properties?.used_gas_price === '0',
+    (req) => typeof req.properties?.suggested_gas_price === 'string',
     (req) => typeof req.properties?.reg_tx_fee_in_usd === 'number',
     (req) => typeof req.properties?.reg_tx_fee_in_eth === 'number',
     (req) => typeof req.properties?.reg_tx_max_fee_in_usd === 'number',
@@ -433,7 +440,7 @@ async function assertSwapStartedEvents(reqs) {
 async function assertSwapCompletedEvents(reqs) {
   const assertionsReq13 = [
     (req) => req.event === MetaMetricsEventName.SwapCompleted,
-    (req) => Object.keys(req.properties).length === 34,
+    (req) => Object.keys(req.properties).length === 32,
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'background',
@@ -449,8 +456,8 @@ async function assertSwapCompletedEvents(reqs) {
     (req) => typeof req.properties?.other_quote_selected_source === 'string',
     (req) => typeof req.properties?.gas_fees === 'string',
     (req) => typeof req.properties?.estimated_gas === 'string',
-    (req) => typeof req.properties?.suggested_gas_price === 'undefined',
-    (req) => req.properties?.used_gas_price === '0',
+    (req) => req.properties?.suggested_gas_price === '30',
+    (req) => req.properties?.used_gas_price === '30',
     (req) => req.properties?.is_hardware_wallet === false,
     (req) => req.properties?.stx_enabled === false,
     (req) => req.properties?.current_stx_enabled === false,

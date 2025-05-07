@@ -10,9 +10,9 @@ import BridgeQuotePage, {
   BridgeQuote,
 } from '../../page-objects/pages/bridge/quote-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import { Anvil } from '../../seeder/anvil';
 import { getBridgeFixtures } from './bridge-test-utils';
 import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './constants';
-import { Anvil } from '../../seeder/anvil';
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
