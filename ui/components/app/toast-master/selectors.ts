@@ -15,20 +15,23 @@ import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/m
 import { MetaMaskReduxState } from '../../../store/store';
 import { getIsPrivacyToastRecent } from './utils';
 
-// TODO: get this into one of the larger definitions of state type
-type State = Omit<MetaMaskReduxState, 'appState'> & {
-  appState: {
-    showNftDetectionEnablementToast?: boolean;
-    showNewSrpAddedToast?: boolean;
-  };
-  metamask: {
-    newPrivacyPolicyToastClickedOrClosed?: boolean;
-    newPrivacyPolicyToastShownDate?: number;
-    onboardingDate?: number;
-    showNftDetectionEnablementToast?: boolean;
-    surveyLinkLastClickedOrClosed?: number;
-    switchedNetworkNeverShowMessage?: boolean;
-  };
+type State = Partial<Omit<MetaMaskReduxState, 'appState' | 'metamask'>> & {
+  appState: Partial<
+    Pick<
+      MetaMaskReduxState['appState'],
+      'showNftDetectionEnablementToast' | 'showNewSrpAddedToast'
+    >
+  >;
+  metamask: Partial<
+    Pick<
+      MetaMaskReduxState['metamask'],
+      | 'newPrivacyPolicyToastClickedOrClosed'
+      | 'newPrivacyPolicyToastShownDate'
+      | 'onboardingDate'
+      | 'surveyLinkLastClickedOrClosed'
+      | 'switchedNetworkNeverShowMessage'
+    >
+  >;
 };
 
 /**
@@ -57,7 +60,7 @@ export function selectShowSurveyToast(state: State): boolean {
  */
 export function selectShowPrivacyPolicyToast(state: State): {
   showPrivacyPolicyToast: boolean;
-  newPrivacyPolicyToastShownDate?: number;
+  newPrivacyPolicyToastShownDate?: number | null;
 } {
   const {
     newPrivacyPolicyToastClickedOrClosed,
