@@ -1,13 +1,13 @@
 import { DelegationController } from '@metamask/delegation-controller';
 import { Messenger } from '@metamask/base-controller';
 import {
-  TransactionMeta,
+  type TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { type Hex } from '../../../../shared/lib/delegation/utils';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { ControllerInitRequest } from '../types';
+import type { ControllerInitRequest } from '../types';
 import {
   type DelegationControllerMessenger,
   type DelegationControllerInitMessenger,

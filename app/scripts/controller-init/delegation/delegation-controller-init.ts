@@ -1,9 +1,9 @@
 import {
   DelegationController,
-  DelegationControllerMessenger,
+  type DelegationControllerMessenger,
 } from '@metamask/delegation-controller';
 import {
-  TransactionMeta,
+  type TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -12,8 +12,8 @@ import {
   getDelegationHashOffchain,
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
-import { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messenger';
-import { ControllerInitFunction } from '../types';
+import type { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messenger';
+import type { ControllerInitFunction } from '../types';
 
 const getDelegationEnvironment = (chainId: Hex) => {
   return getDeleGatorEnvironment(Number(chainId));

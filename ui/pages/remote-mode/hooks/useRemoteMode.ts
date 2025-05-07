@@ -1,6 +1,6 @@
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Hex, hexToNumber } from '@metamask/utils';
+import { type Hex, hexToNumber } from '@metamask/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -143,7 +143,6 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
         delegation,
       });
 
-      // TODO: change to addTransactionAndRouteToConfirmationPage when ID consistency is fixed
       const transactionMeta = await addTransaction(
         {
           from: account,

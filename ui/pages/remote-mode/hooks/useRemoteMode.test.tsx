@@ -1,13 +1,20 @@
 import React, { PropsWithChildren } from 'react';
 import { renderHook, act } from '@testing-library/react-hooks';
 import configureMockStore from 'redux-mock-store';
-import { Provider } from 'react-redux';
-import { useRemoteMode } from './useRemoteMode';
-import { REMOTE_MODES } from '../remote.types';
+import { Provider, useSelector } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { REMOTE_MODES } from '../remote.types';
 import * as selectors from '../../../selectors';
-import * as remoteModeSelectors from '../../../selectors/remote-mode';
 import * as networkSelectors from '../../../../shared/modules/selectors/networks';
+import { createDelegation } from '../../../../shared/lib/delegation';
+import {
+  signDelegation,
+  storeDelegationEntry,
+  awaitDeleteDelegationEntry,
+  listDelegationEntries,
+} from '../../../store/controller-actions/delegation-controller';
+import { addTransaction } from '../../../store/actions';
+import { useRemoteMode } from './useRemoteMode';
 
 // Minimal mock state for tests
 const mockState = {
@@ -89,9 +96,9 @@ const mockAuthorizedAccount: InternalAccount = {
 };
 
 let store: ReturnType<ReturnType<typeof configureMockStore>>;
-let Wrapper: ({ children }: PropsWithChildren<{}>) => JSX.Element;
+let Wrapper: ({ children }: PropsWithChildren<object>) => JSX.Element;
 
-const mockUseSelector = (selector: any) => {
+const mockUseSelector = (selector: unknown) => {
   // Handle getSelectedNetwork
   if (selector === selectors.getSelectedNetwork) {
     return { configuration: { chainId: '0x1' } };
@@ -113,13 +120,11 @@ const mockUseSelector = (selector: any) => {
 describe('useRemoteMode', () => {
   beforeEach(() => {
     store = configureMockStore()(mockState);
-    Wrapper = ({ children }: PropsWithChildren<{}>) => {
+    Wrapper = ({ children }: PropsWithChildren<object>) => {
       return <Provider store={store}>{children}</Provider>;
     };
     jest.clearAllMocks();
-    (require('react-redux').useSelector as jest.Mock).mockImplementation(
-      mockUseSelector,
-    );
+    (useSelector as jest.Mock).mockImplementation(mockUseSelector);
   });
 
   it('returns remoteModeConfig from selector', () => {
@@ -143,11 +148,6 @@ describe('useRemoteMode', () => {
       },
     );
     const { enableRemoteMode } = result.current;
-    const { createDelegation } = require('../../../../shared/lib/delegation');
-    const {
-      signDelegation,
-      storeDelegationEntry,
-    } = require('../../../store/controller-actions/delegation-controller');
 
     await act(async () => {
       await enableRemoteMode({
@@ -179,10 +179,6 @@ describe('useRemoteMode', () => {
       },
     );
     const { disableRemoteMode } = result.current;
-    const { addTransaction } = require('../../../store/actions');
-    const {
-      awaitDeleteDelegationEntry,
-    } = require('../../../store/controller-actions/delegation-controller');
 
     await act(async () => {
       await disableRemoteMode({ mode: REMOTE_MODES.SWAP });
@@ -192,10 +188,7 @@ describe('useRemoteMode', () => {
   });
 
   it('disableRemoteMode throws if no delegation entry found', async () => {
-    const {
-      listDelegationEntries,
-    } = require('../../../store/controller-actions/delegation-controller');
-    listDelegationEntries.mockResolvedValueOnce([]);
+    (listDelegationEntries as jest.Mock).mockResolvedValueOnce([]);
     const { result } = renderHook(
       () => useRemoteMode({ account: mockAccount }),
       {
