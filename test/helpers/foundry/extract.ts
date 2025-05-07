@@ -83,8 +83,8 @@ export async function extractFrom(
     const rmErrors = (
       await Promise.allSettled([rm(tempDir, rmOpts), rm(dir, rmOpts)])
     )
-      .filter((p) => p.status === 'rejected')
-      .map((p) => (p as PromiseRejectedResult).reason);
+      .filter((r) => r.status === 'rejected')
+      .map((r) => (r as PromiseRejectedResult).reason);
 
     // if we failed to clean up, create an aggregate error message
     if (rmErrors.length) {
