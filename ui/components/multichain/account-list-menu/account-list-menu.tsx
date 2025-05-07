@@ -197,22 +197,22 @@ export const getActionTitle = (
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
-      return t('addAccountFromNetwork', ['Ethereum']);
+      return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     case ACTION_MODES.MENU:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_WATCH_ONLY:
-      return t('addAccountFromNetwork', ['Ethereum']);
+      return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     case ACTION_MODES.ADD_BITCOIN:
-      return t('addAccountFromNetwork', ['Bitcoin']);
+      return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
-      return t('addAccountFromNetwork', ['Bitcoin Testnet']);
+      return t('addAccountFromNetwork', [t('networkNameBitcoinTestnet')]);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     case ACTION_MODES.ADD_SOLANA:
-      return t('addAccountFromNetwork', ['Solana']);
+      return t('addAccountFromNetwork', [t('networkNameSolana')]);
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');

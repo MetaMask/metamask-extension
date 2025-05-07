@@ -38,14 +38,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !cancelled() }}
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       # For a `pull_request` event, the branch is `github.head_ref`.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
-      TEST_RESULTS_PATH: test/test-results/e2e
-      RUN_ID: ${{ github.run_id }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
+      TEST_RUNS_PATH: test/test-results/test-runs-firefox.json
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -67,4 +66,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-e2e-firefox-report
-          path: test/test-results/test-runs.json
+          path: ${{ env.TEST_RUNS_PATH }}

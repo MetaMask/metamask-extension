@@ -14,6 +14,7 @@ import {
   CONNECTIONS,
   CROSS_CHAIN_SWAP_ROUTE,
   IMPORT_SRP_ROUTE,
+  DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
@@ -227,5 +228,15 @@ export function hideAppHeader(props) {
     isHandlingAddEthereumChainRequest ||
     isConfirmTransactionRoute(location.pathname) ||
     isImportSrpPage
+  );
+}
+
+export function showAppHeader(props) {
+  const { location } = props;
+  return Boolean(
+    matchPath(location.pathname, {
+      path: DEFAULT_ROUTE,
+      exact: true,
+    }),
   );
 }

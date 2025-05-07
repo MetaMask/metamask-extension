@@ -2,8 +2,7 @@ export const REMOTE_MODE_SLIDE = {
   id: 'remoteMode',
   title: 'slideRemoteModeTitle',
   description: 'slideRemoteModeDescription',
-  // TODO: Update image once we have a remote mode icon
-  image: './images/slide-fund-icon.svg',
+  image: './images/slide-cold-storage.svg',
   href: '/home.html#remote',
 };
 
@@ -70,6 +69,13 @@ export const MULTI_SRP_SLIDE = {
   description: 'slideMultiSrpDescription',
   image: './images/slide-multi-srp-icon.svg',
   href: '/home.html#import-srp',
+};
+
+export const BACKUPANDSYNC_SLIDE = {
+  id: 'backupAndSync',
+  title: 'backupAndSyncSlideTitle',
+  description: 'backupAndSyncSlideDescription',
+  image: './images/slide-backup-and-sync-icon.png',
 };
 
 export const ZERO_BALANCE = '0x0';

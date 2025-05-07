@@ -1,7 +1,9 @@
 import type { FeatureFlagResponse } from '@metamask/bridge-controller';
 
-export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
-  'extension-config': {
+export const DEFAULT_BRIDGE_FEATURE_FLAGS: {
+  bridgeConfig: FeatureFlagResponse;
+} = {
+  bridgeConfig: {
     refreshRate: 30000,
     maxRefreshCount: 5,
     support: false,
@@ -9,14 +11,6 @@ export const DEFAULT_FEATURE_FLAGS_RESPONSE: FeatureFlagResponse = {
       '1': { isActiveSrc: true, isActiveDest: true },
       '42161': { isActiveSrc: true, isActiveDest: true },
       '59144': { isActiveSrc: true, isActiveDest: true },
-    },
-  },
-  'mobile-config': {
-    refreshRate: 30,
-    maxRefreshCount: 5,
-    support: false,
-    chains: {
-      '1': { isActiveSrc: true, isActiveDest: true },
     },
   },
 };
@@ -581,9 +575,9 @@ export const MOCK_BRIDGE_NATIVE_L2_TO_L2 = [
           srcChainId: 59144,
           destChainId: 42161,
           protocol: {
-            name: 'celer',
-            displayName: 'Celer cBridge',
-            icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/cbridge.svg',
+            name: '0x',
+            displayName: '0x',
+            icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/exchanges/zerox.png',
           },
           srcAsset: {
             address: '0x0000000000000000000000000000000000000000',
@@ -596,7 +590,7 @@ export const MOCK_BRIDGE_NATIVE_L2_TO_L2 = [
             aggregators: [],
             occurrences: 100,
             iconUrl:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/native/60.png',
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
             metadata: {
               honeypotStatus: {},
               erc20Permit: false,
