@@ -28,16 +28,37 @@ export function getIsRemoteModeEnabled(state: RemoteModeState) {
   return Boolean(vaultRemoteMode);
 }
 
+/**
+ * Get the EIP-7702 contract addresses from the remote feature flags.
+ *
+ * @param state - The MetaMask state object
+ * @returns The EIP-7702 contract addresses
+ */
 export function getEIP7702ContractAddresses(state: RemoteModeState) {
   const flags = getRemoteFeatureFlags(state);
   return flags[EIP7702_CONTRACT_ADDRESSES_FLAG];
 }
 
-const getRemoteModeDelegationEntries = (
+/**
+ * Get the remote mode delegation entries.
+ *
+ * @param state - The MetaMask state object
+ * @param account - The account address
+ * @param chainId - The chain ID
+ */
+export const getRemoteModeDelegationEntries = (
   state: RemoteModeState,
   account: Address,
   chainId: Hex,
 ) => {
+  const isRemoteModeEnabled = getIsRemoteModeEnabled(state);
+
+  if (!isRemoteModeEnabled) {
+    return {
+      swapDelegationEntry: null,
+      dailyDelegationEntry: null,
+    };
+  }
   const swapEntries = listDelegationEntries(state, {
     filter: {
       from: account,
@@ -58,6 +79,13 @@ const getRemoteModeDelegationEntries = (
   };
 };
 
+/**
+ * Get the remote mode config.
+ *
+ * @param state - The MetaMask state object
+ * @param hwAccount - The hardware account address
+ * @param chainId - The chain ID
+ */
 export const getRemoteModeConfig = createSelector(
   (state, hwAccount: Address, chainId: Hex) =>
     getRemoteModeDelegationEntries(state, hwAccount, chainId),
@@ -65,8 +93,8 @@ export const getRemoteModeConfig = createSelector(
     swapDelegationEntry,
     dailyDelegationEntry,
   }: {
-    swapDelegationEntry?: DelegationEntry;
-    dailyDelegationEntry?: DelegationEntry;
+    swapDelegationEntry?: DelegationEntry | null;
+    dailyDelegationEntry?: DelegationEntry | null;
   }) => {
     const config: RemoteModeConfig = {
       swapAllowance: null,
