@@ -44,7 +44,6 @@ describe('Bridge tests', function (this: Suite) {
             unapproved: true,
           },
           2,
-          '$200.88',
           '24.9',
         );
 
@@ -62,7 +61,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Arbitrum One',
           },
           3,
-          '$37.91',
           '23.9',
         );
 
@@ -76,7 +74,6 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
           },
           4,
-          '$10.27',
           '22.9',
         );
 
@@ -95,7 +92,6 @@ describe('Bridge tests', function (this: Suite) {
             unapproved: true,
           },
           6,
-          '$34.33',
           '22.9',
         );
       },

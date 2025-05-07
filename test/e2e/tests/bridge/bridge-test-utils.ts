@@ -91,6 +91,73 @@ export class BridgePage {
   };
 }
 
+export async function bridgeTransaction(
+  driver: Driver,
+  quote: BridgeQuote,
+  transactionsCount: number,
+  expectedWalletBalance: string,
+) {
+  // Navigate to Bridge page
+  const homePage = new HomePage(driver);
+  await homePage.startBridgeFlow();
+
+  const bridgePage = new BridgeQuotePage(driver);
+  await bridgePage.enterBridgeQuote(quote);
+  await bridgePage.waitForQuote();
+  await bridgePage.check_expectedNetworkFeeIsDisplayed();
+  await bridgePage.submitQuote();
+
+  await homePage.goToActivityList();
+
+  const activityList = new ActivityListPage(driver);
+  await activityList.check_completedBridgeTransactionActivity(
+    transactionsCount,
+  );
+
+  if (quote.unapproved) {
+    await activityList.check_txAction(`Bridge to ${quote.toChain}`);
+    await activityList.check_txAction(
+      `Approve ${quote.tokenFrom} for bridge`,
+      2,
+    );
+  } else {
+    await activityList.check_txAction(`Bridge to ${quote.toChain}`);
+  }
+  // Check the amount of ETH deducted in the activity is correct
+  await activityList.check_txAmountInActivity(
+    `-${quote.amount} ${quote.tokenFrom}`,
+  );
+
+  // Check the wallet ETH balance is correct
+  const accountListPage = new AccountListPage(driver);
+  await accountListPage.check_accountValueAndSuffixDisplayed(
+    expectedWalletBalance,
+  );
+}
+
+export async function mockFeatureFlag(
+  mockServer: Mockttp,
+  featureFlagOverrides: Partial<FeatureFlagResponse>,
+) {
+  return await mockServer
+    .forGet(/getAllFeatureFlags/u)
+    .withHeaders({ 'X-Client-Id': BridgeClientId.EXTENSION })
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          ...DEFAULT_FEATURE_FLAGS_RESPONSE,
+          ...featureFlagOverrides,
+          'extension-config': {
+            ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
+            ...featureFlagOverrides['extension-config'],
+          },
+        },
+      };
+    });
+}
+
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
     .forGet(`https://portfolio.metamask.io/bridge`)
@@ -353,6 +420,107 @@ async function mockDAIL2toMainnet(mockServer: Mockttp) {
     });
 }
 
+async function mockAccountsTransactions(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      /^https:\/\/accounts.api.cx.metamask.io\/v1\/accounts\/.*\/transactions/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          transactions: [],
+          pagination: {
+            next: null,
+            prev: null,
+          },
+        },
+      };
+    });
+}
+
+async function mockAccountsBalances(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      /^https:\/\/accounts.api.cx.metamask.io\/v2\/accounts\/.*\/balances/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          balances: {
+            '1': {
+              '0x0000000000000000000000000000000000000000': {
+                balance: '100000000000000000000',
+                token: {
+                  address: '0x0000000000000000000000000000000000000000',
+                  symbol: 'ETH',
+                  decimals: 18,
+                  name: 'Ethereum',
+                  type: 'native',
+                },
+              },
+              '0x6b175474e89094c44da98b954eedeac495271d0f': {
+                balance: '50000000000000000000',
+                token: {
+                  address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+                  symbol: 'DAI',
+                  decimals: 18,
+                  name: 'Dai Stablecoin',
+                  type: 'erc20',
+                },
+              },
+            },
+          },
+        },
+      };
+    });
+}
+
+async function mockPriceSpotPrices(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      /^https:\/\/price.api.cx.metamask.io\/v2\/chains\/\d+\/spot-prices/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          data: {
+            '0x0000000000000000000000000000000000000000': {
+              usd: 2000.0,
+              usd_24h_change: 2.5,
+            },
+            '0x6b175474e89094c44da98b954eedeac495271d0f': {
+              usd: 1.0,
+              usd_24h_change: 0.1,
+            },
+          },
+        },
+      };
+    });
+}
+
+async function mockPriceSpotPricesV3(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/^https:\/\/price.api.cx.metamask.io\/v3\/spot-prices/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
+            usd: 1.0,
+            usd_24h_change: 0.1,
+          },
+          'eip155:1/slip44:60': {
+            usd: 2000.0,
+            usd_24h_change: 2.5,
+          },
+        },
+      };
+    });
+}
+
 export const getBridgeFixtures = (
   title?: string,
   featureFlags: Partial<FeatureFlagResponse> = {},
@@ -397,6 +565,10 @@ export const getBridgeFixtures = (
       await mockETHtoUSDC(mockServer),
       await mockDAItoETH(mockServer),
       await mockUSDCtoDAI(mockServer),
+      await mockAccountsTransactions(mockServer),
+      await mockAccountsBalances(mockServer),
+      await mockPriceSpotPrices(mockServer),
+      await mockPriceSpotPricesV3(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {

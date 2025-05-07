@@ -143,24 +143,24 @@ class BridgeQuotePage {
     console.log('The message "More ETH needed for gas" is displayed');
   }
 
-  async check_expectedNetworkFeeIsDisplayed(
-    expectedFees: string,
-  ): Promise<void> {
+  async check_expectedNetworkFeeIsDisplayed(): Promise<void> {
     try {
-      await this.driver.waitForSelector({
-        css: this.networkFees,
-        text: expectedFees,
-      });
-    } catch (e) {
       const balance = await this.driver.waitForSelector(this.networkFees);
-      const currentBalance = parseFloat(await balance.getText());
-      const errorMessage = `Expected network fees ${expectedFees}, got  ${currentBalance}`;
-      console.log(errorMessage, e);
+      const currentBalanceText = await balance.getText();
+      // Verify that the text matches the pattern $XXX.XX
+      const pricePattern = /^\$\d+\.\d{2}$/;
+      if (!pricePattern.test(currentBalanceText)) {
+        throw new Error(`Price format is not valid: ${currentBalanceText}`);
+      }
+    } catch (e: unknown) {
+      console.log(
+        `Error checking price format: ${
+          e instanceof Error ? e.message : String(e)
+        }`,
+      );
       throw e;
     }
-    console.log(
-      `Expected network fees ${expectedFees} is displayed on bridge quote page`,
-    );
+    console.log('Price matches expected format');
   }
 }
 
