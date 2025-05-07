@@ -1,6 +1,6 @@
 import {
   BridgeBackgroundAction,
-  BridgeController,
+  type BridgeController,
   BridgeUserAction,
 } from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';

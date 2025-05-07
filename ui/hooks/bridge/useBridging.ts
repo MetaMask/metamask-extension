@@ -14,7 +14,7 @@ import {
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  SwapsEthToken,
+  type SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
