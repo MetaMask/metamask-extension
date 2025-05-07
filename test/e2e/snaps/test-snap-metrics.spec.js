@@ -355,7 +355,6 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapInstallStarted(mockServer),
         await mockedSnapInstallFailed(mockServer),
-        await mockNotificationSnap(mockServer),
         await mockedNpmInstall(mockServer),
       ];
     }
