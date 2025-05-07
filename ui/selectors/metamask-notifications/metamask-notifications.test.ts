@@ -25,7 +25,7 @@ describe('Metamask Notifications Selectors', () => {
       isFeatureAnnouncementsEnabled: true,
       metamaskNotificationsList: mockNotifications,
       metamaskNotificationsReadList: [],
-      isProfileSyncingUpdateLoading: false,
+      isBackupAndSyncUpdateLoading: false,
       isFetchingMetamaskNotifications: false,
       isUpdatingMetamaskNotifications: false,
       isUpdatingMetamaskNotificationsAccount: [],

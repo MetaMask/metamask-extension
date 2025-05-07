@@ -8,8 +8,8 @@ import {
 describe('Backup And Sync Selectors', () => {
   const mockState = {
     metamask: {
-      isProfileSyncingEnabled: true,
-      isProfileSyncingUpdateLoading: false,
+      isBackupAndSyncEnabled: true,
+      isBackupAndSyncUpdateLoading: false,
       isAccountSyncingEnabled: true,
       isAccountSyncingReadyToBeDispatched: false,
       hasAccountSyncingSyncedAtLeastOnce: false,
