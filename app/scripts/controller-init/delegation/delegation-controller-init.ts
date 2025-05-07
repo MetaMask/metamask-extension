@@ -68,7 +68,7 @@ export const DelegationControllerInit: ControllerInitFunction<
  * @param options.hash - The hash of the delegation entry to delete.
  * @param options.txMeta - The transaction meta of the transaction that confirmed the delegation entry.
  */
-async function awaitDeleteDelegationEntry(
+export async function awaitDeleteDelegationEntry(
   controller: DelegationController,
   initMessenger: DelegationControllerInitMessenger,
   { hash, txMeta }: { hash: Hex; txMeta: TransactionMeta },
