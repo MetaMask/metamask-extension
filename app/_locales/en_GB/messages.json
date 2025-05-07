@@ -3248,6 +3248,9 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
+  "networkNameBitcoinTestnet": {
+    "message": "Bitcoin Testnet"
+  },
   "networkNameDefinition": {
     "message": "The name associated with this network."
   },
@@ -5152,6 +5155,9 @@
   },
   "smartAccountRequestFor": {
     "message": "Request for"
+  },
+  "smartAccountSameAccount": {
+    "message": "Same account, smarter features."
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
