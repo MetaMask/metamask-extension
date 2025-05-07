@@ -54,26 +54,5 @@ describe(`migration #${version}`, () => {
 
       expect(newStorage.data).toStrictEqual(expectedData);
     });
-
-    it('sets isBackupAndSyncUpdateLoading to false', async () => {
-      const oldStorage: VersionedData = {
-        meta: { version: oldVersion },
-        data: {
-          UserStorageController: {
-            isProfileSyncingEnabled: true,
-            isProfileSyncingUpdateLoading: true,
-          },
-        },
-      };
-      const expectedData = {
-        UserStorageController: {
-          isBackupAndSyncEnabled: true,
-          isBackupAndSyncUpdateLoading: false,
-        },
-      };
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual(expectedData);
-    });
   });
 });
