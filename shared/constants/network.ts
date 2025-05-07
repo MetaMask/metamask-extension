@@ -1027,6 +1027,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
 export const CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP: Record<Hex, string> = {
   [CHAIN_IDS.LINEA_MAINNET]:
     'https://portfolio.metamask.io/explore/networks/linea',
+  [CHAIN_IDS.SEI]: 'https://portfolio.metamask.io/explore/networks/sei',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

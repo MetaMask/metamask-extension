@@ -5164,10 +5164,10 @@
     "message": "Add multiple Secret Recovery Phrases"
   },
   "slideRemoteModeDescription": {
-    "message": "Access your hardware wallet without plugging it in"
+    "message": "Use your cold wallet wirelessly"
   },
   "slideRemoteModeTitle": {
-    "message": "Remote mode is here!"
+    "message": "Cold storage, fast access"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Same address, smarter features"
