@@ -52,7 +52,7 @@ describe('BackupAndSyncToggle', () => {
     const mockTrackEvent = jest.fn();
     const store = initialStore();
 
-    store.metamask.isProfileSyncingEnabled = true;
+    store.metamask.isBackupAndSyncEnabled = true;
     arrangeMocks();
 
     const { getByTestId } = renderWithProvider(
