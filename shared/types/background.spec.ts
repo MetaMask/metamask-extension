@@ -4,9 +4,9 @@ import type {
   FlattenedBackgroundStateProxy,
 } from './background';
 
-abstract class _ {
-  abstract readonly _: symbol;
-}
+type _ = {
+  readonly _: unique symbol;
+};
 
 /**
  * The purpose of this function is to cause a compiler error to be emitted if the types are not equivalent.
