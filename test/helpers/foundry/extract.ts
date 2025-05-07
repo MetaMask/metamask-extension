@@ -9,7 +9,7 @@ import { pipeline } from 'node:stream/promises';
 import { Minipass } from 'minipass';
 import { extract as extractTar } from 'tar';
 import { Open, type Source, type Entry } from 'unzipper';
-import { say, noop } from './utils';
+import { say } from './utils';
 import { startDownload } from './download';
 import { Extension, Binary } from './types';
 
@@ -68,16 +68,32 @@ export async function extractFrom(
       paths.push(join(dir, relative(tempDir, path)));
     }
 
+    // this directory shouldn't exist, but if two simultaneous `yarn foundryup`
+    // processes are running, it might. Last process wins, so we remove other
+    // `dir`s just in case.
+    await rm(dir, rmOpts);
     // everything has been extracted; move the files to their final destination
     await rename(tempDir, dir);
     // return the list of extracted binaries
     return paths;
-  } catch (e) {
+  } catch (error) {
     // if things fail for any reason try to clean up a bit. it is very important
     // to not leave `dir` behind, as its existence is a signal that the binaries
     // are installed.
-    await Promise.all([rm(tempDir, rmOpts), rm(dir, rmOpts)]).catch(noop);
-    throw e;
+    const rmErrors = (
+      await Promise.allSettled([rm(tempDir, rmOpts), rm(dir, rmOpts)])
+    )
+      .filter((p) => p.status === 'rejected')
+      .map((p) => (p as PromiseRejectedResult).reason);
+
+    // if we failed to clean up, create an aggregate error message
+    if (rmErrors.length) {
+      throw new AggregateError(
+        [error, ...rmErrors],
+        'This is a bug; you should report it.',
+      );
+    }
+    throw error;
   }
 }
 /**
