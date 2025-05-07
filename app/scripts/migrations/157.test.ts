@@ -538,6 +538,165 @@ describe(`migration #${VERSION}`, () => {
     expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
+  it('assigns failover URLs to known Infura RPC endpoints, even if they have an empty set of failover URLs', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
+    process.env.QUICKNODE_MAINNET_URL = QUICKNODE_MAINNET_URL;
+    process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
+    process.env.QUICKNODE_ARBITRUM_URL = QUICKNODE_ARBITRUM_URL;
+    process.env.QUICKNODE_AVALANCHE_URL = QUICKNODE_AVALANCHE_URL;
+    process.env.QUICKNODE_OPTIMISM_URL = QUICKNODE_OPTIMISM_URL;
+    process.env.QUICKNODE_POLYGON_URL = QUICKNODE_POLYGON_URL;
+    process.env.QUICKNODE_BASE_URL = QUICKNODE_BASE_URL;
+    const oldVersionedData = {
+      meta: { version: VERSION - 1 },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://mainnet.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0xe708': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://linea-mainnet.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0xa4b1': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://arbitrum.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0xa86a': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://avalanche.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0xa': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://optimism.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0x89': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://polygon.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0x2105': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://base.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+    const expectedVersionedData = {
+      meta: { version: VERSION },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://mainnet.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [QUICKNODE_MAINNET_URL],
+                },
+              ],
+            },
+            '0xe708': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://linea-mainnet.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [QUICKNODE_LINEA_MAINNET_URL],
+                },
+              ],
+            },
+            '0xa4b1': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://arbitrum.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [QUICKNODE_ARBITRUM_URL],
+                },
+              ],
+            },
+            '0xa86a': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://avalanche.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [QUICKNODE_AVALANCHE_URL],
+                },
+              ],
+            },
+            '0xa': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://optimism.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [QUICKNODE_OPTIMISM_URL],
+                },
+              ],
+            },
+            '0x89': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://polygon.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [QUICKNODE_POLYGON_URL],
+                },
+              ],
+            },
+            '0x2105': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura,
+                  url: `https://base.infura.io/v3/{infuraProjectId}`,
+                  failoverUrls: [QUICKNODE_BASE_URL],
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    const newVersionedData = await migrate(oldVersionedData);
+
+    expect(newVersionedData).toStrictEqual(expectedVersionedData);
+  });
+
   it('does not assign failover URLs to any Infura endpoints for which the appropriate environment variable is not set', async () => {
     process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
@@ -805,6 +964,165 @@ describe(`migration #${VERSION}`, () => {
                 {
                   type: RpcEndpointType.Custom,
                   url: `https://base.infura.io/v3/${INFURA_PROJECT_ID}`,
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+    const expectedVersionedData = {
+      meta: { version: VERSION },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [QUICKNODE_MAINNET_URL],
+                },
+              ],
+            },
+            '0xe708': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://linea-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [QUICKNODE_LINEA_MAINNET_URL],
+                },
+              ],
+            },
+            '0xa4b1': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://arbitrum.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [QUICKNODE_ARBITRUM_URL],
+                },
+              ],
+            },
+            '0xa86a': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://avalanche.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [QUICKNODE_AVALANCHE_URL],
+                },
+              ],
+            },
+            '0xa': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://optimism.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [QUICKNODE_OPTIMISM_URL],
+                },
+              ],
+            },
+            '0x89': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://polygon.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [QUICKNODE_POLYGON_URL],
+                },
+              ],
+            },
+            '0x2105': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://base.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [QUICKNODE_BASE_URL],
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    const newVersionedData = await migrate(oldVersionedData);
+
+    expect(newVersionedData).toStrictEqual(expectedVersionedData);
+  });
+
+  it('assigns failover URLs to custom RPC endpoints that are actually Infura RPC endpoints in disguise, even if they have an empty set of failover URLs', async () => {
+    process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
+    process.env.QUICKNODE_MAINNET_URL = QUICKNODE_MAINNET_URL;
+    process.env.QUICKNODE_LINEA_MAINNET_URL = QUICKNODE_LINEA_MAINNET_URL;
+    process.env.QUICKNODE_ARBITRUM_URL = QUICKNODE_ARBITRUM_URL;
+    process.env.QUICKNODE_AVALANCHE_URL = QUICKNODE_AVALANCHE_URL;
+    process.env.QUICKNODE_OPTIMISM_URL = QUICKNODE_OPTIMISM_URL;
+    process.env.QUICKNODE_POLYGON_URL = QUICKNODE_POLYGON_URL;
+    process.env.QUICKNODE_BASE_URL = QUICKNODE_BASE_URL;
+    const oldVersionedData = {
+      meta: { version: VERSION - 1 },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0xe708': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://linea-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0xa4b1': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://arbitrum.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0xa86a': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://avalanche.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0xa': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://optimism.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0x89': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://polygon.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [],
+                },
+              ],
+            },
+            '0x2105': {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://base.infura.io/v3/${INFURA_PROJECT_ID}`,
+                  failoverUrls: [],
                 },
               ],
             },
