@@ -102,6 +102,7 @@ async function awaitDeleteDelegationEntry(
           case TransactionStatus.confirmed:
             action = 'delete';
             break;
+          case TransactionStatus.dropped:
           case TransactionStatus.failed:
           case TransactionStatus.rejected:
             action = 'unsubscribe';
