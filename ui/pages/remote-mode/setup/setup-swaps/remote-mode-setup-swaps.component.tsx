@@ -51,16 +51,17 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import {
-  SwapAllowance,
-  TokenSymbol,
-  ToTokenOption,
-  BaseToTokenOption,
-} from '../../remote.types';
-import {
   DEFAULT_ROUTE,
   REMOTE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
+import {
+  BaseToTokenOption,
+  REMOTE_MODES,
+  SwapAllowance,
+  TokenSymbol,
+  ToTokenOption,
+} from '../../remote.types';
 
 import {
   RemoteModeHardwareWalletConfirm,
