@@ -56,7 +56,6 @@ const render = (props: AccountOverviewNonEvmProps = defaultProps) => {
 describe('AccountOverviewBtc', () => {
   beforeEach(() => {
     setBackgroundConnection({
-      setBridgeFeatureFlags: jest.fn(),
       tokenBalancesStartPolling: jest.fn(),
     } as never);
   });

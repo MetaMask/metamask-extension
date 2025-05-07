@@ -1,5 +1,5 @@
-import { useCallback, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { isStrictHexString } from '@metamask/utils';
@@ -7,7 +7,6 @@ import {
   formatChainIdToCaip,
   type SwapsTokenObject,
 } from '@metamask/bridge-controller';
-import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getDataCollectionForMarketing,
@@ -15,8 +14,7 @@ import {
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getUseExternalServices,
-  SwapsEthToken,
+  type SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -39,7 +37,6 @@ import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker
 ///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -48,16 +45,9 @@ const useBridging = () => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const providerConfig = useSelector(getProviderConfig);
-  const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
   const isBridgeSupported = useSelector(getIsBridgeEnabled);
   const isBridgeChain = useSelector(getIsBridgeChain);
-
-  useEffect(() => {
-    if (isExternalServicesEnabled) {
-      dispatch(setBridgeFeatureFlags());
-    }
-  }, [dispatch, isExternalServicesEnabled]);
 
   const openBridgeExperience = useCallback(
     (

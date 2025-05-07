@@ -1,6 +1,6 @@
 # Confirmation Pages - Frontend State Management
 
-State Management is very important piece to keep frontend confirmation code simplified. Currently state management is fragmented over places and is complicated. Following guidelines will be useful for designing State Magagement:
+State Management is very important piece to keep frontend confirmation code simplified. Currently state management is fragmented over places and is complicated. Following guidelines will be useful for designing State Management:
 
 1. Use state obtained from backend (redux store `state.metamask`) as single source of truth
 2. For state derived from the backend state hooks can be written, these will internally use backend state
