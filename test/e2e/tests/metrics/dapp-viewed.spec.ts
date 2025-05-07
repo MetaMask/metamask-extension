@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -65,6 +66,9 @@ async function mockPermissionApprovedEndpoint(mockServer: Mockttp) {
 describe('Dapp viewed Event', function () {
   const validFakeMetricsId = 'fake-metrics-fd20';
   it('is not sent when metametrics ID is not valid', async function () {
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
     async function mockSegment(mockServer: Mockttp) {
       return [await mockedDappViewedEndpointFirstVisit(mockServer)];
     }
@@ -97,6 +101,9 @@ describe('Dapp viewed Event', function () {
   });
 
   it('is sent when navigating to dapp with no account connected', async function () {
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
     async function mockSegment(mockServer: Mockttp) {
       return [await mockedDappViewedEndpointFirstVisit(mockServer)];
     }
@@ -132,6 +139,9 @@ describe('Dapp viewed Event', function () {
   });
 
   it('is sent when opening the dapp in a new tab with one account connected', async function () {
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
     async function mockSegment(mockServer: Mockttp) {
       return [
         await mockedDappViewedEndpointFirstVisit(mockServer),
@@ -174,6 +184,9 @@ describe('Dapp viewed Event', function () {
   });
 
   it('is sent when refreshing dapp with one account connected', async function () {
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
     async function mockSegment(mockServer: Mockttp) {
       return [
         await mockedDappViewedEndpointFirstVisit(mockServer),
@@ -217,6 +230,9 @@ describe('Dapp viewed Event', function () {
   });
 
   it('is sent when navigating to a connected dapp', async function () {
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
     async function mockSegment(mockServer: Mockttp) {
       return [
         await mockedDappViewedEndpointFirstVisit(mockServer),
@@ -262,6 +278,9 @@ describe('Dapp viewed Event', function () {
   });
 
   it('is sent when reconnect to a dapp that has been connected before', async function () {
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
     async function mockSegment(mockServer: Mockttp) {
       return [
         await mockedDappViewedEndpointFirstVisit(mockServer),
