@@ -372,5 +372,7 @@ export type FlattenedBackgroundStateProxy = IsEquivalent<
   ControllerStatePropertiesEnumerated,
   ControllerStateTypesMerged
 > extends true
-  ? { isInitialized: boolean } & ControllerStatePropertiesEnumerated
+  ? { isInitialized: boolean } & {
+      [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
+    }
   : never;
