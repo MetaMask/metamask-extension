@@ -53,7 +53,7 @@ function transformState(state: Record<string, unknown>) {
         {
           networkClientId: monadTestnet,
           type: RpcEndpointType.Custom,
-          url: BUILT_IN_CUSTOM_NETWORKS_RPC.MONAD_TESTNET,
+          url: BUILT_IN_CUSTOM_NETWORKS_RPC["monad-testnet"],
         },
       ],
     };
