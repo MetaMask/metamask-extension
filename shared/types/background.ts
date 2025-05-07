@@ -130,7 +130,6 @@ export type ControllerStatePropertiesEnumerated = {
   custodianDeepLink?: AppStateControllerState['custodianDeepLink'];
   slides: AppStateControllerState['slides'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
-  bridgeFeatureFlags: BridgeControllerState['bridgeFeatureFlags'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
