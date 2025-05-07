@@ -518,4 +518,7 @@ export const StablecoinsByChainId: Partial<Record<string, Set<string>>> = {
     '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4', // USDC.e
     '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C', // USDT
   ]),
+  [CHAIN_IDS.SEI]: new Set([
+    '0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1', // USDC
+  ]),
 };
