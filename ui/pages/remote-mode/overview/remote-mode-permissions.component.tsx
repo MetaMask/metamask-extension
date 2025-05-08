@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+
 import {
   Box,
   Icon,
@@ -29,6 +31,11 @@ import { getSelectedInternalAccount } from '../../../selectors';
 import { RevokeWithdrawlConfirmModalType } from '../components/revoke-withdrawl-confirm-modal';
 import { useRemoteMode } from '../hooks/useRemoteMode';
 import { REMOTE_MODES } from '../remote.types';
+import {
+  REMOTE_ROUTE_SETUP_SWAPS,
+  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+} from '../../../helpers/constants/routes';
+import { getDelegationHashOffchain } from '../../../../shared/lib/delegation/delegation';
 
 export default function RemoteModePermissions({
   setStartEnableRemoteSwap,
@@ -44,6 +51,11 @@ export default function RemoteModePermissions({
     useState(false);
   const [isRevokeSpendAllowanceVisible, setIsRevokeSpendAllowanceVisible] =
     useState(false);
+  const [delegationHashSwap, setDelegationHashSwap] = useState<string>('');
+  const [delegationHashDailyAllowance, setDelegationHashDailyAllowance] =
+    useState<string>('');
+
+  const history = useHistory();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
@@ -53,6 +65,33 @@ export default function RemoteModePermissions({
   } = useRemoteMode({
     account: selectedAccount.address as `0x${string}`,
   });
+
+  const { listDelegations } = useRemoteMode({
+    account: selectedAccount.address as Hex,
+  });
+
+  useEffect(() => {
+    async function fetchDelegations() {
+      const entries = await listDelegations({
+        from: selectedAccount.address as Hex,
+      });
+      for (const entry of entries) {
+        switch (entry.tags[0]) {
+          case REMOTE_MODES.SWAP:
+            const swapHash = getDelegationHashOffchain(entry.delegation);
+            setDelegationHashSwap(swapHash);
+            break;
+          case REMOTE_MODES.DAILY_ALLOWANCE:
+            const dailyAllowanceHash = getDelegationHashOffchain(
+              entry.delegation,
+            );
+            setDelegationHashDailyAllowance(dailyAllowanceHash);
+            break;
+        }
+      }
+    }
+    fetchDelegations();
+  }, []);
 
   const handleEnableRemoteSwap = () => {
     if (setStartEnableRemoteSwap) {
@@ -105,6 +144,12 @@ export default function RemoteModePermissions({
                 <Text
                   color={TextColor.infoDefault}
                   style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    history.push({
+                      pathname: REMOTE_ROUTE_SETUP_SWAPS,
+                      search: `?delegationHash=${delegationHashSwap}`,
+                    });
+                  }}
                 >
                   Update
                 </Text>
@@ -224,6 +269,12 @@ export default function RemoteModePermissions({
                 <Text
                   color={TextColor.infoDefault}
                   style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    history.push({
+                      pathname: REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+                      search: `?delegationHash=${delegationHashDailyAllowance}`,
+                    });
+                  }}
                 >
                   Update
                 </Text>
