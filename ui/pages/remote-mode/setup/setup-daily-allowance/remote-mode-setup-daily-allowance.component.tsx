@@ -79,6 +79,7 @@ const DAILY_ETH_LIMIT = 10;
  * - Select an account
  * - Configure daily token allowances
  * - Review and confirm changes (including EOA upgrade)
+ *
  * @returns The rendered component
  */
 export default function RemoteModeSetupDailyAllowance() {
@@ -140,8 +141,7 @@ export default function RemoteModeSetupDailyAllowance() {
   }, []);
 
   useEffect(() => {
-    // TODO: remove the `|| true`
-    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount) || true);
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
   }, [selectedHardwareAccount]);
 
   useEffect(() => {

@@ -86,6 +86,7 @@ const TOTAL_STEPS = 2;
  * - Select an account
  * - Configure swap allowances
  * - Review and confirm changes (including EOA upgrade)
+ *
  * @returns The rendered component
  */
 export default function RemoteModeSetupSwaps() {
@@ -137,10 +138,7 @@ export default function RemoteModeSetupSwaps() {
   }, []);
 
   useEffect(() => {
-    // TODO: remove the `|| true`
-    setIsHardwareAccount(
-      isRemoteModeSupported(selectedHardwareAccount) || true,
-    );
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
   }, [selectedHardwareAccount]);
 
   useEffect(() => {
