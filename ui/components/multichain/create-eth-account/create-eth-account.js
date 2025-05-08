@@ -13,15 +13,16 @@ export const CreateEthAccount = ({
   onActionComplete,
   onSelectSrp,
   selectedKeyringId,
+  redirectToOverview,
 }) => {
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name) => {
-    const newAccountAddress = await dispatch(addNewAccount(selectedKeyringId));
+    const newAccount = await dispatch(addNewAccount(selectedKeyringId));
     if (name) {
-      dispatch(setAccountLabel(newAccountAddress, name));
+      dispatch(setAccountLabel(newAccount.address, name));
     }
-    onActionComplete(true);
+    onActionComplete(true, newAccount);
   };
 
   const getNextAvailableAccountName = async () => {
@@ -37,6 +38,7 @@ export const CreateEthAccount = ({
       onSelectSrp={onSelectSrp}
       selectedKeyringId={selectedKeyringId}
       ///: END:ONLY_INCLUDE_IF(multi-srp)
+      redirectToOverview={redirectToOverview}
     ></CreateAccount>
   );
 };
@@ -55,5 +57,9 @@ CreateEthAccount.propTypes = {
    * Currently selected HD keyring
    */
   selectedKeyringId: PropTypes.string,
+  /**
+   * Whether to redirect to the overview page after creating the account
+   */
+  redirectToOverview: PropTypes.bool,
   ///: END:ONLY_INCLUDE_IF(multi-srp)
 };

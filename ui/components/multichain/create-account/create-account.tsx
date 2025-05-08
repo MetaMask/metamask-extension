@@ -56,7 +56,10 @@ type Props = {
   /**
    * Callback called once the account has been created
    */
-  onActionComplete: (completed: boolean) => Promise<void>;
+  onActionComplete: (
+    completed: boolean,
+    newAccount?: InternalAccount,
+  ) => Promise<void>;
 
   /**
    * The scope of the account
@@ -68,6 +71,7 @@ type Props = {
    */
   onSelectSrp?: () => void;
   selectedKeyringId?: string;
+  redirectToOverview?: boolean;
 };
 
 type CreateAccountProps<C extends React.ElementType> =
@@ -87,6 +91,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         selectedKeyringId,
         onActionComplete,
         scope,
+        redirectToOverview = true,
       }: CreateAccountProps<C>,
       ref?: PolymorphicRef<C>,
     ) => {
@@ -156,7 +161,9 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                   trimmedAccountName === defaultAccountName,
               },
             });
-            history.push(mostRecentOverviewPage);
+            if (redirectToOverview) {
+              history.push(mostRecentOverviewPage);
+            }
           } catch (error) {
             if (selectedKeyringId) {
               trackEvent({
