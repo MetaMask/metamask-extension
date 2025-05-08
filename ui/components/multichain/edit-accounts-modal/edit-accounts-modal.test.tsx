@@ -214,22 +214,21 @@ describe('EditAccountsModal', () => {
         address: '0x67B2fAf7959fB61eb9746571041476Bbd0672569',
       });
 
-      const hdKeyringMetadata = {
-        id: '01JKAF3DSGM3AB87EM9N0K41AJ',
-        name: '',
-      };
-      const hdKeyring2Metadata = {
-        id: '01JKAF3DSGM3AB87EM9N0K4444',
-        name: '',
-      };
-
       const hdKeyring = {
         type: KeyringTypes.hd,
         accounts: [hdAccount.address],
+        metadata: {
+          id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+          name: '',
+        },
       };
       const hdKeyring2 = {
         type: KeyringTypes.hd,
         accounts: [hdAccount2.address],
+        metadata: {
+          id: '01JKAF3DSGM3AB87EM9N0K4444',
+          name: '',
+        },
       };
 
       const { getByTestId } = render(undefined, {
@@ -241,7 +240,6 @@ describe('EditAccountsModal', () => {
           selectedAccount: hdAccount.id,
         },
         keyrings: [hdKeyring, hdKeyring2],
-        keyringsMetadata: [hdKeyringMetadata, hdKeyring2Metadata],
       });
       goToAddNewAccount(getByTestId, 'solana');
 

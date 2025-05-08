@@ -727,10 +727,10 @@ describe('AccountListMenu', () => {
       const secondHdKeyring = {
         accounts: [accountInSecondSrp.address],
         type: KeyringTypes.hd,
-      };
-      const secondHdKeyringMetadata = {
-        id: '01JN2RD391JM4K7Q5T4RP3JXMA',
-        name: '',
+        metadata: {
+          id: '01JN2RD391JM4K7Q5T4RP3JXMA',
+          name: '',
+        },
       };
 
       const { getByTestId } = render({
@@ -743,10 +743,6 @@ describe('AccountListMenu', () => {
             },
           },
           keyrings: [...mockState.metamask.keyrings, secondHdKeyring],
-          keyringsMetadata: [
-            ...mockState.metamask.keyringsMetadata,
-            secondHdKeyringMetadata,
-          ],
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {

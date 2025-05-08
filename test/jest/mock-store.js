@@ -365,20 +365,18 @@ export const createSwapsMockStore = () => {
             'c5b8dbac4c1d3f152cdeb400e2313f309c410acb',
             '2f8d4a878cfa04a6e60d46362f5644deab66572d',
           ],
+          metadata: {
+            id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+            name: '',
+          },
         },
         {
           type: KeyringType.imported,
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
-        },
-      ],
-      keyringsMetadata: [
-        {
-          id: '01JKAF3DSGM3AB87EM9N0K41AJ',
-          name: '',
-        },
-        {
-          id: '01JKAF3KP7VPAG0YXEDTDRB6ZV',
-          name: '',
+          metadata: {
+            id: '01JKAF3KP7VPAG0YXEDTDRB6ZV',
+            name: '',
+          },
         },
       ],
       ...mockNetworkState({
