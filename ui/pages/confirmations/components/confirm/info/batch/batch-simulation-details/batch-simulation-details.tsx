@@ -63,7 +63,7 @@ export function BatchSimulationDetails() {
     return null;
   }
 
-  const approveRow: StaticRow[] = useMemo(() => {
+  const approveRows: StaticRow[] = useMemo(() => {
     const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
       ...change,
       onEdit:
@@ -98,7 +98,7 @@ export function BatchSimulationDetails() {
       )}
       <SimulationDetails
         transaction={transactionMeta}
-        staticRows={approveRow}
+        staticRows={approveRows}
         isTransactionsRedesign
         enableMetrics
       />
