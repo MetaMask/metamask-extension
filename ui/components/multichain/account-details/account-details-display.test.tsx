@@ -23,6 +23,7 @@ function renderComponent() {
     <AccountDetailsDisplay
       accounts={[]}
       accountName={''}
+      accountType={'eip155:eoa'}
       address={ADDRESS_MOCK}
       onExportClick={() => {
         // Intentionally empty
