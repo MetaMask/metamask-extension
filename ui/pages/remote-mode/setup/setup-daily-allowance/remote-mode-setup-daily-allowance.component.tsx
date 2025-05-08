@@ -1,14 +1,9 @@
-import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import {
-  Content,
-  Footer,
-  Header,
-  Page,
-} from '../../../../components/multichain/pages/page';
+import { Hex } from '@metamask/utils';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -16,34 +11,39 @@ import {
   Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonVariant,
   ButtonSize,
-  Text,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../../components/component-library';
+import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../../../components/multichain/pages/page';
+import Dropdown from '../../../../components/ui/dropdown';
 import Tooltip from '../../../../components/ui/tooltip';
 import UnitInput from '../../../../components/ui/unit-input';
-import Dropdown from '../../../../components/ui/dropdown';
 import {
   AlignItems,
-  FontWeight,
-  TextVariant,
-  TextAlign,
   BackgroundColor,
-  Display,
-  JustifyContent,
-  FlexDirection,
   BlockSize,
-  TextColor,
   BorderColor,
   BorderRadius,
+  Display,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Card from '../../../../components/ui/card';
 import { AccountPicker } from '../../../../components/multichain/account-picker';
 import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
-import { TokenSymbol, DailyAllowance, TOKEN_DETAILS } from '../../remote.types';
 import {
   DEFAULT_ROUTE,
   REMOTE_ROUTE,
@@ -51,17 +51,25 @@ import {
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import {
-  getSelectedInternalAccount,
+  DailyAllowance,
+  REMOTE_MODES,
+  TokenSymbol,
+  TOKEN_DETAILS,
+} from '../../remote.types';
+
+import {
   getMetaMaskAccountsOrdered,
+  getSelectedInternalAccount,
 } from '../../../../selectors';
 import {
-  RemoteModeHardwareWalletConfirm,
   RemoteModeDailyAllowanceCard,
-  StepIndicator,
+  RemoteModeHardwareWalletConfirm,
   SmartAccountUpdateInformation,
+  StepIndicator,
 } from '../../components';
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { useRemoteMode } from '../../hooks/useRemoteMode';
 
 const TOTAL_STEPS = 3;
 const DAILY_ETH_LIMIT = 10;
@@ -113,6 +121,10 @@ export default function RemoteModeSetupDailyAllowance() {
     );
   };
 
+  const { enableRemoteMode } = useRemoteMode({
+    account: selectedHardwareAccount.address as Hex,
+  });
+
   useEffect(() => {
     setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
   }, [selectedHardwareAccount]);
@@ -121,7 +133,7 @@ export default function RemoteModeSetupDailyAllowance() {
     if (authorizedAccounts.length > 0) {
       setSelectedAccount(authorizedAccounts[0]);
     }
-  }, []);
+  }, [authorizedAccounts]);
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
@@ -195,8 +207,24 @@ export default function RemoteModeSetupDailyAllowance() {
     setIsConfirmModalOpen(true);
   };
 
-  const handleConfigureRemoteSwaps = () => {
-    history.replace(REMOTE_ROUTE);
+  const handleConfigureDailyAllowance = async () => {
+    if (!selectedAccount) {
+      return;
+    }
+
+    try {
+      await enableRemoteMode({
+        selectedAccount: selectedHardwareAccount,
+        authorizedAccount: selectedAccount,
+        mode: REMOTE_MODES.DAILY_ALLOWANCE,
+        meta: JSON.stringify({ allowances: dailyAllowance }),
+      });
+      // TODO: check better way to route to remote mode if upgrade is needed
+      history.replace(REMOTE_ROUTE);
+    } catch (error) {
+      // TODO: show error on UI
+      console.error(error);
+    }
   };
 
   const onCancel = () => {
@@ -556,7 +584,7 @@ export default function RemoteModeSetupDailyAllowance() {
 
         <RemoteModeHardwareWalletConfirm
           visible={isConfirmModalOpen}
-          onConfirm={handleConfigureRemoteSwaps}
+          onConfirm={handleConfigureDailyAllowance}
           onClose={() => {
             setIsConfirmModalOpen(false);
           }}
