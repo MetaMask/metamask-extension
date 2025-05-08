@@ -48,7 +48,7 @@ describe('Snap Account Transfers', function (this: Suite) {
 
         // check the balance of the 2 accounts are updated
         await accountList.check_accountBalanceDisplayed('26');
-        await accountList.check_accountBalanceDisplayed('24');
+        await accountList.check_accountBalanceDisplayed('23.99995');
       },
     );
   });
@@ -89,7 +89,7 @@ describe('Snap Account Transfers', function (this: Suite) {
 
         // check the balance of the 2 accounts are updated
         await accountList.check_accountBalanceDisplayed('26');
-        await accountList.check_accountBalanceDisplayed('24');
+        await accountList.check_accountBalanceDisplayed('23.99995');
       },
     );
   });
