@@ -1,11 +1,5 @@
 import classnames from 'classnames';
 import React from 'react';
-
-import {
-  Display,
-  IconColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
@@ -15,6 +9,13 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
+
+import {
+  Display,
+  IconColor,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 type MenuItemProps = {
   children: React.ReactNode;
@@ -78,18 +79,17 @@ const MenuItem = React.forwardRef(
         <Icon
           name={iconName}
           size={IconSize.Sm}
-          marginRight={2}
+          marginRight={3}
           color={iconColor as IconColor}
         />
       )}
       <div>
-        <Text
-          as="div"
-          variant={isRedesign ? TextVariant.bodyMdMedium : undefined}
-        >
-          {children}
-        </Text>
-        {subtitle ? <Text variant={TextVariant.bodyXs}>{subtitle}</Text> : null}
+        <Text as="div">{children}</Text>
+        {subtitle ? (
+          <Text variant={isRedesign ? TextVariant.bodyMdMedium : undefined} color={TextColor.textAlternative}>
+            {subtitle}
+          </Text>
+        ) : null}
       </div>
     </button>
   ),

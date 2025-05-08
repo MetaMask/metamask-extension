@@ -304,6 +304,22 @@ class FixtureBuilder {
     });
   }
 
+  withNetworkControllerOnLineaLocahost() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
+
   withNetworkControllerOnOptimism() {
     return this.withNetworkController({
       networkConfigurations: {
@@ -476,14 +492,7 @@ class FixtureBuilder {
   }
 
   withBridgeControllerDefaultState() {
-    this.fixture.data.BridgeController = {
-      bridgeFeatureFlags: {
-        extensionConfig: {
-          support: false,
-          chains: {},
-        },
-      },
-    };
+    this.fixture.data.BridgeController = {};
     return this;
   }
 

@@ -3,7 +3,7 @@ import { BorderRadius } from '../../../../../helpers/constants/design-system';
 import { mapSnapBorderRadiusToExtensionBorderRadius } from '../utils';
 import { UIComponentFactory } from './types';
 
-const DEFAULT_SKELETON_WIDTH = '100%';
+const DEFAULT_SKELETON_WIDTH = 96;
 const DEFAULT_SKELETON_HEIGHT = 22;
 const DEFAULT_SKELETON_BORDER_RADIUS = BorderRadius.MD;
 

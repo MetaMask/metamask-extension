@@ -100,7 +100,7 @@ export const GlobalMenu = memo(({
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsProfileSyncingEnabled);
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
@@ -158,7 +158,7 @@ export const GlobalMenu = memo(({
         event: MetaMetricsEventName.NotificationsActivated,
         properties: {
           action_type: 'started',
-          is_profile_syncing_enabled: isProfileSyncingEnabled,
+          is_profile_syncing_enabled: isBackupAndSyncEnabled,
         },
       });
       dispatch(showConfirmTurnOnMetamaskNotifications());

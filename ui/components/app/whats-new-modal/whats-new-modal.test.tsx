@@ -16,11 +16,6 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   },
 }));
 
-jest.mock('../../../store/actions', () => ({
-  ...jest.requireActual('../../../store/actions'),
-  getNextAvailableAccountName: () => 'Test Account',
-}));
-
 describe('WhatsNewModal', () => {
   const mockOnClose = jest.fn();
   const mockCreateAccount = jest.fn();
@@ -32,6 +27,7 @@ describe('WhatsNewModal', () => {
 
     (useMultichainWalletSnapClient as jest.Mock).mockReturnValue({
       createAccount: mockCreateAccount,
+      getNextAvailableAccountName: () => 'Test Account',
     });
   });
 
@@ -175,11 +171,14 @@ describe('WhatsNewModal', () => {
           );
           fireEvent.click(submitButton);
 
-          await expect(mockCreateAccount).toHaveBeenCalledWith({
-            scope: MultichainNetworks.SOLANA,
-            entropySource: KEYRING_ID,
-            accountNameSuggestion: 'Test Account',
-          });
+          await expect(mockCreateAccount).toHaveBeenCalledWith(
+            {
+              scope: MultichainNetworks.SOLANA,
+              entropySource: KEYRING_ID,
+              accountNameSuggestion: 'Test Account',
+            },
+            { setSelectedAccount: undefined },
+          );
         });
 
         it('closes the modal when clicking "Not Now"', async () => {
