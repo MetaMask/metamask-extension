@@ -157,6 +157,10 @@ AccountDetailsDisplay.propTypes = {
    */
   address: PropTypes.string.isRequired,
   /**
+   * Current account type
+   */
+  accountType: PropTypes.string.isRequired,
+  /**
    * Executes upon Export button click
    */
   onExportClick: PropTypes.func.isRequired,
