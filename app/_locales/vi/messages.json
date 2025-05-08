@@ -4135,18 +4135,6 @@
   "productAnnouncements": {
     "message": "Thông báo về sản phẩm"
   },
-  "profileSync": {
-    "message": "Đồng bộ hồ sơ"
-  },
-  "profileSyncConfirmation": {
-    "message": "Nếu tắt đồng bộ hồ sơ, bạn sẽ không nhận được thông báo."
-  },
-  "profileSyncDescription": {
-    "message": "Tạo một hồ sơ mà MetaMask sử dụng để đồng bộ một số chế độ cài đặt giữa các thiết bị của bạn. Đây là thao tác cần thiết để nhận được thông báo. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn"
-  },
   "proposedApprovalLimit": {
     "message": "Giới hạn chấp thuận đề xuất"
   },

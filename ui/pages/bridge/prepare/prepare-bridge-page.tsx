@@ -19,9 +19,8 @@ import {
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
-  formatChainIdToHex,
+  type BridgeController,
 } from '@metamask/bridge-controller';
-import type { BridgeToken } from '@metamask/bridge-controller';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -95,7 +94,6 @@ import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column, Row, Tooltip } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import {
@@ -111,9 +109,9 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
-  getImageForChainId,
   getLastSelectedNonEvmAccount,
   getMultichainIsEvm,
+  getMultichainNativeCurrency,
   getMultichainProviderConfig,
 } from '../../../selectors/multichain';
 import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
@@ -124,15 +122,15 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 import {
   fetchAssetMetadata,
-  getAssetImageUrl,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
+import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
-import { TmpBridgeToken } from './types';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -144,7 +142,7 @@ const PrepareBridgePage = () => {
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
 
-  const toToken = useSelector(getToToken) as TmpBridgeToken;
+  const toToken = useSelector(getToToken);
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
@@ -161,6 +159,8 @@ const PrepareBridgePage = () => {
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
+
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -205,7 +205,7 @@ const PrepareBridgePage = () => {
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
 
-  const ticker = useSelector(getNativeCurrency);
+  const ticker = useMultichainSelector(getMultichainNativeCurrency);
   const {
     isEstimatedReturnLow,
     isNoQuotesAvailable,
@@ -288,18 +288,12 @@ const PrepareBridgePage = () => {
           setToToken({
             ...destAsset,
             chainId: destChainId,
-            image: srcAsset.icon ?? destAsset.iconUrl ?? '',
-            address: destAsset.address,
           }),
         );
         dispatch(
           setFromToken({
             ...srcAsset,
             chainId: srcChainId,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            image: srcAsset.icon || srcAsset.iconUrl || '',
-            address: srcAsset.address,
           }),
         );
       }
@@ -328,7 +322,8 @@ const PrepareBridgePage = () => {
     }
   }, [
     isEstimatedReturnLow,
-    isInsufficientGasForQuote(nativeAssetBalance),
+    nativeAssetBalance,
+    isInsufficientGasForQuote,
     isLowReturnBannerOpen,
   ]);
 
@@ -383,15 +378,26 @@ const PrepareBridgePage = () => {
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce((p: Partial<GenericQuoteRequest>) => {
-      dispatch(updateQuoteRequestParams(p));
-    }, 300),
+    debounce(
+      (
+        p: Partial<GenericQuoteRequest>,
+        c: Parameters<BridgeController['updateBridgeQuoteRequestParams']>[1],
+      ) => {
+        dispatch(updateQuoteRequestParams(p, c));
+      },
+      300,
+    ),
     [],
   );
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
-    debouncedUpdateQuoteRequestInController(quoteParams);
+    debouncedUpdateQuoteRequestInController(quoteParams, {
+      stx_enabled: smartTransactionsEnabled,
+      token_symbol_source: fromToken?.symbol ?? '',
+      token_symbol_destination: toToken?.symbol ?? '',
+      security_warnings: [],
+    });
   }, [quoteParams, debouncedUpdateQuoteRequestInController]);
 
   const trackInputEvent = useCallback(
@@ -453,7 +459,6 @@ const PrepareBridgePage = () => {
           setFromToken({
             ...tokenMetadata,
             chainId: fromChain.chainId,
-            image: tokenMetadata.image || '',
           }),
         );
         removeTokenFromUrl();
@@ -475,7 +480,6 @@ const PrepareBridgePage = () => {
           dispatch(
             setFromToken({
               ...matchedToken,
-              image: matchedToken.iconUrl,
               chainId: fromChain.chainId,
             }),
           );
@@ -503,7 +507,9 @@ const PrepareBridgePage = () => {
     }
   }, []);
 
-  const occurrences = Number(toToken?.occurrences ?? 0);
+  const occurrences = Number(
+    toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
+  );
   const toTokenIsNotNative =
     toToken?.address && !isNativeAddress(toToken?.address);
 
@@ -714,22 +720,7 @@ const PrepareBridgePage = () => {
                       const destNativeAsset = getNativeAssetForChainId(
                         networkConfig.chainId,
                       );
-                      dispatch(
-                        setToToken({
-                          ...destNativeAsset,
-                          image:
-                            getImageForChainId(
-                              isSolanaChainId(networkConfig.chainId)
-                                ? formatChainIdToCaip(networkConfig.chainId)
-                                : formatChainIdToHex(networkConfig.chainId),
-                            ) ??
-                            getAssetImageUrl(
-                              destNativeAsset.assetId,
-                              networkConfig.chainId,
-                            ) ??
-                            '',
-                        }),
-                      );
+                      dispatch(setToToken(destNativeAsset));
                     },
                     header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
                     shouldDisableNetwork: ({ chainId }) =>
@@ -838,7 +829,12 @@ const PrepareBridgePage = () => {
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
                   onFetchNewQuotes={() => {
-                    debouncedUpdateQuoteRequestInController(quoteParams);
+                    debouncedUpdateQuoteRequestInController(quoteParams, {
+                      stx_enabled: smartTransactionsEnabled,
+                      token_symbol_source: fromToken?.symbol ?? '',
+                      token_symbol_destination: toToken?.symbol ?? '',
+                      security_warnings: [], // TODO populate security warnings
+                    });
                   }}
                   needsDestinationAddress={
                     isSolanaBridgeEnabled &&
@@ -927,6 +923,7 @@ const PrepareBridgePage = () => {
             isEvm &&
             toToken &&
             toTokenIsNotNative &&
+            toToken.address !== SOLANA_USDC_ASSET.address &&
             occurrences < 2 && (
               <BannerAlert
                 severity={BannerAlertSeverity.Warning}
