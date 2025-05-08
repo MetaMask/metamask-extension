@@ -323,3 +323,9 @@ export function generateScenarios(): Scenario[] {
 // and run this file via `npx tsx test-utils.test.ts`. It will generate a `scenarios.json` file
 // in the current directory with all the scenarios.
 // require("fs").writeFileSync("scenarios.json", JSON.stringify(generateScenarios(), null, 2));
+
+it('should generate scenarios', () => {
+  // jest requires this file to actually have a test in it:
+  const scenarios = generateScenarios();
+  expect(scenarios.length).toBeGreaterThan(0);
+});
