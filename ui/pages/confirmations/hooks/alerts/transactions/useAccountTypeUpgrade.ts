@@ -10,7 +10,6 @@ import { AccountTypeMessage } from './AccountTypeMessage';
 
 export function useAccountTypeUpgrade(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { isUpgrade } = useIsUpgradeTransaction();
 
   return useMemo(() => {
