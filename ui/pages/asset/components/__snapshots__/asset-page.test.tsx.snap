@@ -115,7 +115,7 @@ exports[`AssetPage should render a native asset 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
+              style="mask-image: url('./images/icons/money.svg');"
             />
           </div>
           <p
@@ -170,7 +170,7 @@ exports[`AssetPage should render a native asset 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+              style="mask-image: url('./images/icons/send.svg');"
             />
           </div>
           <p
@@ -188,7 +188,7 @@ exports[`AssetPage should render a native asset 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/scan-barcode.svg');"
+              style="mask-image: url('./images/icons/qr-code.svg');"
             />
           </div>
           <p
@@ -539,7 +539,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
+              style="mask-image: url('./images/icons/money.svg');"
             />
           </div>
           <p
@@ -557,7 +557,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+              style="mask-image: url('./images/icons/send.svg');"
             />
           </div>
           <p
@@ -976,7 +976,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
+              style="mask-image: url('./images/icons/money.svg');"
             />
           </div>
           <p
@@ -994,7 +994,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+              style="mask-image: url('./images/icons/send.svg');"
             />
           </div>
           <p
