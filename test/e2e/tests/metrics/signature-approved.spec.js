@@ -58,7 +58,7 @@ const expectedEventPropertiesBase = {
   security_alert_response: 'loading',
   ui_customizations: ['redesigned_confirmation'],
   api_source: MetaMetricsRequestedThrough.EthereumProvider,
-} as const;
+};
 
 describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
