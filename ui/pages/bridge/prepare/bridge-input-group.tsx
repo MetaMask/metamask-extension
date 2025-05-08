@@ -4,7 +4,6 @@ import {
   formatChainIdToCaip,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import type { BridgeToken } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import {
   Text,
@@ -43,6 +42,7 @@ import {
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {

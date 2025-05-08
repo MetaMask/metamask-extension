@@ -3,6 +3,11 @@ import { Driver } from '../../../webdriver/driver';
 class SettingsPage {
   private readonly driver: Driver;
 
+  private readonly aboutViewButton = {
+    text: 'About',
+    css: '.tab-bar__tab__content__title',
+  };
+
   private readonly closeSettingsPageButton =
     '.settings-page__header__title-container__close-button';
 
@@ -82,6 +87,11 @@ class SettingsPage {
   async closeSettingsPage(): Promise<void> {
     console.log('Closing Settings page');
     await this.driver.clickElement(this.closeSettingsPageButton);
+  }
+
+  async goToAboutPage(): Promise<void> {
+    console.log('Navigating to About page');
+    await this.driver.clickElement(this.aboutViewButton);
   }
 
   async goToDeveloperOptions(): Promise<void> {

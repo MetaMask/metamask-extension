@@ -8,6 +8,8 @@ describe('CaveatBuilder', () => {
     DelegationManager: '0x1234567890123456789012345678901234567890' as Hex,
     EntryPoint: '0x1234567890123456789012345678901234567890' as Hex,
     SimpleFactory: '0x1234567890123456789012345678901234567890' as Hex,
+    EIP7702StatelessDeleGatorImpl:
+      '0x1234567890123456789012345678901234567890' as Hex,
     implementations: {
       MultiSigDeleGatorImpl:
         '0x1234567890123456789012345678901234567890' as Hex,
