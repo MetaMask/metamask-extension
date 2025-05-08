@@ -5972,28 +5972,6 @@ export function checkAccountsPresence(
     }
   };
 }
-
-/**
- * Triggers a modal to confirm the action of turning off profile syncing.
- * This function dispatches an action to show a modal dialog asking the user to confirm if they want to turn off profile syncing.
- *
- * @returns A thunk action that, when dispatched, shows the confirmation modal.
- */
-export function showConfirmTurnOffProfileSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      showModal({
-        name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
-      }),
-    );
-  };
-}
-
 /**
  * Triggers a modal to confirm the action of turning on MetaMask notifications.
  * This function dispatches an action to show a modal dialog asking the user to confirm if they want to turn on MetaMask notifications.

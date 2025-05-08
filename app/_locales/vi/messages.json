@@ -3665,22 +3665,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Quá trình cài đặt MetaMask đã hoàn tất!"
   },
-  "oneDayAbbreviation": {
-    "message": "1 Ngày",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1 Tháng",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1 Tuần",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1 Năm",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4150,18 +4134,6 @@
   },
   "productAnnouncements": {
     "message": "Thông báo về sản phẩm"
-  },
-  "profileSync": {
-    "message": "Đồng bộ hồ sơ"
-  },
-  "profileSyncConfirmation": {
-    "message": "Nếu tắt đồng bộ hồ sơ, bạn sẽ không nhận được thông báo."
-  },
-  "profileSyncDescription": {
-    "message": "Tạo một hồ sơ mà MetaMask sử dụng để đồng bộ một số chế độ cài đặt giữa các thiết bị của bạn. Đây là thao tác cần thiết để nhận được thông báo. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn"
   },
   "proposedApprovalLimit": {
     "message": "Giới hạn chấp thuận đề xuất"
@@ -5974,10 +5946,6 @@
   "thirdPartySoftware": {
     "message": "Thông báo phần mềm của bên thứ ba",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3 Tháng",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "Thời gian"
