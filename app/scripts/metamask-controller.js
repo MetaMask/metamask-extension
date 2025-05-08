@@ -215,6 +215,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
+  PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -312,6 +313,7 @@ import {
   getMethodDataName,
   previousValueComparator,
   initializeRpcProviderDomains,
+  getPlatform,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
@@ -4838,7 +4840,7 @@ export default class MetamaskController extends EventEmitter {
       this.permissionController.clearState();
 
       // Clear snap state
-      this.snapController.clearState();
+      await this.snapController.clearState();
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
@@ -6829,6 +6831,11 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions(
             { origin },
             requestedPermissions,
+            {
+              metadata: {
+                isEip1193Request: true,
+              },
+            },
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
           try {
@@ -7985,16 +7992,24 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - the domain to safelist
    */
   safelistPhishingDomain(origin) {
-    this.metaMetricsController.trackEvent({
-      category: MetaMetricsEventCategory.Phishing,
-      event: MetaMetricsEventName.ProceedAnywayClicked,
-      properties: {
-        url: origin,
-        referrer: {
-          url: origin,
+    const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+    if (!isFirefox) {
+      this.metaMetricsController.trackEvent(
+        {
+          category: MetaMetricsEventCategory.Phishing,
+          event: MetaMetricsEventName.ProceedAnywayClicked,
+          properties: {
+            url: origin,
+            referrer: {
+              url: origin,
+            },
+          },
         },
-      },
-    });
+        {
+          excludeMetaMetricsId: true,
+        },
+      );
+    }
 
     return this.phishingController.bypass(origin);
   }

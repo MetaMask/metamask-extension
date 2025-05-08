@@ -2,7 +2,7 @@ import {
   BridgeBackgroundAction,
   type BridgeController,
   BridgeUserAction,
-  RequiredEventContextFromClient,
+  type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';

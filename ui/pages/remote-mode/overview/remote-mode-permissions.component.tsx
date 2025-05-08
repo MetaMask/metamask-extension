@@ -1,47 +1,39 @@
 import React, { useState } from 'react';
 
+import { useSelector } from 'react-redux';
 import {
   Box,
-  Text,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../components/component-library';
 import Card from '../../../components/ui/card';
 import {
   AlignItems,
-  TextVariant,
+  BackgroundColor,
   Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
-  BackgroundColor,
-  FlexDirection,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 import {
-  RemoteModeSwapAllowanceCard,
   RemoteModeDailyAllowanceCard,
+  RemoteModeSwapAllowanceCard,
   RevokeWithdrawlConfirm,
 } from '../components';
 
-import { DailyAllowance, SwapAllowance } from '../remote.types';
+import { getSelectedInternalAccount } from '../../../selectors';
 import { RevokeWithdrawlConfirmModalType } from '../components/revoke-withdrawl-confirm-modal';
-
-type RemoteModeConfig = {
-  swapAllowance: {
-    allowances: SwapAllowance[];
-  };
-  dailyAllowance: {
-    allowances: DailyAllowance[];
-  };
-};
+import { useRemoteMode } from '../hooks/useRemoteMode';
+import { REMOTE_MODES } from '../remote.types';
 
 export default function RemoteModePermissions({
-  remoteModeConfig,
   setStartEnableRemoteSwap,
   setStartEnableDailyAllowance,
 }: {
-  remoteModeConfig: RemoteModeConfig | null;
   setStartEnableRemoteSwap?: (startEnableRemoteSwap: boolean) => void;
   setStartEnableDailyAllowance?: (startEnableDailyAllowance: boolean) => void;
 }) {
@@ -53,8 +45,14 @@ export default function RemoteModePermissions({
   const [isRevokeSpendAllowanceVisible, setIsRevokeSpendAllowanceVisible] =
     useState(false);
 
-  const swapAllowance = remoteModeConfig?.swapAllowance || null;
-  const dailyAllowance = remoteModeConfig?.dailyAllowance || null;
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+
+  const {
+    disableRemoteMode,
+    remoteModeConfig: { swapAllowance, dailyAllowance },
+  } = useRemoteMode({
+    account: selectedAccount.address as `0x${string}`,
+  });
 
   const handleEnableRemoteSwap = () => {
     if (setStartEnableRemoteSwap) {
@@ -68,28 +66,22 @@ export default function RemoteModePermissions({
     }
   };
 
-  const handleRevokeRemoteSwap = () => {
+  const handleRevokeRemoteSwap = async () => {
     // todo: handoff to the confirmation screen (when available)
-    const remoteModeData = JSON.parse(
-      localStorage.getItem('remoteMode') || 'null',
-    );
-    if (remoteModeData) {
-      const { swapAllowance: _, ...updatedRemoteMode } = remoteModeData;
-      localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
-    }
     setIsRevokeWithdrawlConfirmVisible(false);
+
+    await disableRemoteMode({
+      mode: REMOTE_MODES.SWAP,
+    });
   };
 
-  const handleRevokeDailyAllowance = () => {
+  const handleRevokeDailyAllowance = async () => {
     // todo: handoff to the confirmation screen (when available)
-    const remoteModeData = JSON.parse(
-      localStorage.getItem('remoteMode') || 'null',
-    );
-    if (remoteModeData) {
-      const { dailyAllowance: _, ...updatedRemoteMode } = remoteModeData;
-      localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
-    }
     setIsRevokeSpendAllowanceVisible(false);
+
+    await disableRemoteMode({
+      mode: REMOTE_MODES.DAILY_ALLOWANCE,
+    });
   };
 
   return (

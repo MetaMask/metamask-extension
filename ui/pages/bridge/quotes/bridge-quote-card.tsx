@@ -205,6 +205,7 @@ export const BridgeQuoteCard = () => {
                           ? TextColor.warningDefault
                           : undefined
                       }
+                      data-testid="network-fees"
                     >
                       {shouldShowNetworkFeesInGasToken
                         ? //  Network fee in gas token amounts
