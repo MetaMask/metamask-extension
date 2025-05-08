@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
 import {
@@ -19,7 +19,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
@@ -109,7 +108,7 @@ export const AssetPickerAmount = ({
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const showNetworkPickerinModal = process.env.REMOVE_GNS && showNetworkPicker;
   const currentNetwork = useMemo(
     () => allNetworks[currentChainId],
     [allNetworks, currentChainId],
