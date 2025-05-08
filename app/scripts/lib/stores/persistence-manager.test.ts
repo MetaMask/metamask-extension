@@ -4,10 +4,10 @@ import 'navigator.locks';
 import { captureException } from '@sentry/browser';
 import log from 'loglevel';
 
+import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { PersistenceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
-import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 
 const MOCK_DATA = { config: { foo: 'bar' } };
 

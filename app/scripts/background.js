@@ -769,7 +769,7 @@ export async function loadStateFromPersistence(backup) {
     }
     // use the meta property from the backup if it exists, that way the
     // migrations will behave correctly.
-    if (hasProperty(backup, "meta")) {
+    if (hasProperty(backup, 'meta')) {
       preMigrationVersionedData.meta = backup.meta;
     }
   }

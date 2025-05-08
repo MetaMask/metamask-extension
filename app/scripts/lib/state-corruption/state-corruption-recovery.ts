@@ -10,7 +10,7 @@ import { ErrorLike } from '../../../../shared/constants/errors';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Message = any;
 
-const REPAIR_LOCK = 'repairDatabase';
+const REPAIR_LOCK_NAME = 'repairDatabase';
 
 /**
  * Requests a lock for the repair operation. This is used to ensure that only
@@ -26,7 +26,7 @@ async function requestRepair(
   repairDatabase: () => Promise<void> | (() => void),
 ): Promise<boolean> {
   return await navigator.locks.request(
-    REPAIR_LOCK,
+    REPAIR_LOCK_NAME,
     { ifAvailable: true },
     async function requestRepairLockCallback(lock) {
       // something is already repairing the database
@@ -80,7 +80,7 @@ async function maybeGetBackup(
    * if it does, we can use it without reading from the DB again.
    */
   let backup =
-    isObject(error) && hasProperty(error, 'backup')
+    isObject(error) && hasProperty(error, 'backup') && error.backup !== null
       ? (error.backup as Backup)
       : null;
   if (!backup) {
@@ -163,7 +163,7 @@ export class CorruptionHandler {
     database: PersistenceManager,
     repair: (backup: Backup | null) => void | Promise<void>,
   ): Promise<void> {
-    const connectedPorts = this.connectedPorts;
+    const { connectedPorts } = this;
     const backup = await maybeGetBackup(error, database);
     const currentLocale = maybeGetCurrentLocale(backup);
     // console.log('currentLocale', error.backup, backup, currentLocale);
