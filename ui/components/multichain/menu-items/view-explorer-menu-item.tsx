@@ -43,6 +43,10 @@ export type ViewExplorerMenuItemProps = {
    * Account to show account details for
    */
   account: InternalAccount;
+  /**
+   * Whether the menu item is in redesign mode
+   */
+  isRedesign?: boolean;
 };
 
 export const openBlockExplorer = (
@@ -75,6 +79,7 @@ export const ViewExplorerMenuItem = ({
   closeMenu,
   textProps,
   account,
+  isRedesign = false,
 }: ViewExplorerMenuItemProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -101,7 +106,6 @@ export const ViewExplorerMenuItem = ({
   const LABEL = t('viewOnExplorer');
 
   return (
-    // @ts-expect-error - TODO: Fix MenuItem props types
     <MenuItem
       onClick={() => {
         blockExplorerLinkText.firstPart === 'addBlockExplorer'
@@ -126,6 +130,7 @@ export const ViewExplorerMenuItem = ({
       }}
       subtitle={blockExplorerUrlSubTitle || null}
       iconName={IconName.Export}
+      className={isRedesign ? 'redesign-menu-item' : ''}
       data-testid="account-list-menu-open-explorer"
     >
       {textProps ? <Text {...textProps}>{LABEL}</Text> : LABEL}

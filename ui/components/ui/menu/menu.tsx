@@ -1,8 +1,17 @@
-import PropTypes from 'prop-types';
+import { VirtualElement } from '@popperjs/core';
+import classnames from 'classnames';
 import React, { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
-import classnames from 'classnames';
+
+type MenuProps = {
+  anchorElement: Element | VirtualElement | null | undefined;
+  children: React.ReactNode;
+  className: string;
+  'data-testid': string;
+  onHide: () => void;
+  popperOptions: any;
+};
 
 /**
  * @deprecated The `<Menu />` component has been deprecated in favor of the new `<Popover>` component from the component-library.
@@ -20,8 +29,8 @@ const Menu = ({
   'data-testid': dataTestId,
   onHide,
   popperOptions,
-}) => {
-  const [popperElement, setPopperElement] = useState(null);
+}: MenuProps) => {
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null);
   const popoverContainerElement = useRef(
     document.getElementById('popover-content'),
   );
@@ -42,30 +51,15 @@ const Menu = ({
       <div
         className={classnames('menu__container', className)}
         data-testid={className}
-        ref={setPopperElement}
+        ref={setPopperElement as React.Ref<HTMLDivElement>}
         style={styles.popper}
         {...attributes.popper}
       >
         {children}
       </div>
     </>,
-    popoverContainerElement.current,
+    popoverContainerElement.current as Element,
   );
-};
-
-Menu.propTypes = {
-  anchorElement: PropTypes.instanceOf(window.Element),
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-  onHide: PropTypes.func.isRequired,
-  popperOptions: PropTypes.object,
-  dataTestId: PropTypes.string,
-};
-
-Menu.defaultProps = {
-  anchorElement: undefined,
-  className: undefined,
-  popperOptions: undefined,
 };
 
 export default Menu;

@@ -1,31 +1,39 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setAccountDetailsAddress } from '../../../store/actions';
 
-import { MenuItem } from '../../ui/menu';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { IconName, Text } from '../../component-library';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { IconName, Text } from '../../component-library';
+import { MenuItem } from '../../ui/menu';
+
+type AccountDetailsMenuItemProps = {
+  metricsLocation: string;
+  closeMenu: () => void;
+  address: string;
+  textProps: object;
+  isRedesign: boolean;
+};
 
 export const AccountDetailsMenuItem = ({
   metricsLocation,
   closeMenu,
   address,
   textProps,
-}) => {
+  isRedesign = false,
+}: AccountDetailsMenuItemProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
-  const LABEL = t('accountDetails');
+  const LABEL = isRedesign ? t('manageWallet') : t('accountDetails');
 
   return (
     <MenuItem
@@ -41,29 +49,11 @@ export const AccountDetailsMenuItem = ({
         });
         closeMenu?.();
       }}
-      iconName={IconName.ScanBarcode}
+      iconName={isRedesign ? IconName.ScanBarcode : IconName.ScanBarcode}
+      className={isRedesign ? 'redesign-menu-item' : ''}
       data-testid="account-list-menu-details"
     >
       {textProps ? <Text {...textProps}>{LABEL}</Text> : LABEL}
     </MenuItem>
   );
-};
-
-AccountDetailsMenuItem.propTypes = {
-  /**
-   * Represents the "location" property of the metrics event
-   */
-  metricsLocation: PropTypes.string.isRequired,
-  /**
-   * Closes the menu
-   */
-  closeMenu: PropTypes.func,
-  /**
-   * Address to show account details for
-   */
-  address: PropTypes.string.isRequired,
-  /**
-   * Custom properties for the menu item text
-   */
-  textProps: PropTypes.object,
 };

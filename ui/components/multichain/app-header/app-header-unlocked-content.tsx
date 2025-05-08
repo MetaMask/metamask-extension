@@ -281,7 +281,7 @@ export const AppHeaderUnlockedContent = ({
           </Box>
         </Box>
         <GlobalMenu
-          anchorElement={menuRef.current}
+          anchorElement={menuRef.current as HTMLElement}
           isOpen={accountOptionsMenuOpen}
           closeMenu={() => setAccountOptionsMenuOpen(false)}
         />

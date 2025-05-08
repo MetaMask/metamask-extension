@@ -2947,6 +2947,9 @@
   "managePermissions": {
     "message": "Manage permissions"
   },
+  "manageWallet": {
+    "message": "Manage wallet"
+  },
   "marketCap": {
     "message": "Market cap"
   },

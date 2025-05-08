@@ -1,36 +1,35 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import React, { memo, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
-  useUnreadNotificationsCounter,
-  useReadNotificationsCounter,
-} from '../../../hooks/metamask-notifications/useCounter';
-import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
-import {
-  SETTINGS_ROUTE,
   DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
-  SNAPS_ROUTE,
   PERMISSIONS,
+  SETTINGS_ROUTE,
+  SNAPS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  lockMetamask,
-  showConfirmTurnOnMetamaskNotifications,
-} from '../../../store/actions';
+  useReadNotificationsCounter,
+  useUnreadNotificationsCounter,
+} from '../../../hooks/metamask-notifications/useCounter';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import {
+  lockMetamask,
+  showConfirmTurnOnMetamaskNotifications,
+} from '../../../store/actions';
 import {
   Box,
   IconName,
   Popover,
   PopoverPosition,
 } from '../../component-library';
+import { NotificationsTagCounter } from '../notifications-tag-counter';
 
 import { MenuItem } from '../../ui/menu';
 // TODO: Remove restricted import
@@ -42,20 +41,14 @@ import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 ///: END:ONLY_INCLUDE_IF
 
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
-import {
-  getSelectedInternalAccount,
-  getUnapprovedTransactions,
-  getAnySnapUpdateAvailable,
-  getThirdPartyNotifySnaps,
-  getUseExternalServices,
-} from '../../../selectors';
+import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 import {
   AlignItems,
   BlockSize,
@@ -64,12 +57,28 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
-
+import {
+  getAnySnapUpdateAvailable,
+  getSelectedInternalAccount,
+  getThirdPartyNotifySnaps,
+  getUnapprovedTransactions,
+  getUseExternalServices,
+} from '../../../selectors';
 const METRICS_LOCATION = 'Global Menu';
 
-export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
+type GlobalMenuProps = {
+  closeMenu: () => void;
+  anchorElement: HTMLElement;
+  isOpen: boolean;
+};
+
+export const GlobalMenu = memo(({
+  closeMenu,
+  anchorElement,
+  isOpen,
+}: GlobalMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -117,11 +126,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   ///: END:ONLY_INCLUDE_IF
 
   // Accessibility improvement for popover
-  const lastItemRef = React.useRef(null);
+  const lastItemRef = React.useRef<HTMLButtonElement | null>(null);
 
   React.useEffect(() => {
-    const lastItem = lastItemRef.current;
-    const handleKeyDown = (event) => {
+    const lastItem = lastItemRef.current as HTMLButtonElement;
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Tab' && !event.shiftKey) {
         event.preventDefault();
         closeMenu();
@@ -170,6 +179,136 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
     history.push(NOTIFICATIONS_ROUTE);
     closeMenu();
   };
+
+  return (
+    <Popover
+      data-testid="global-menu"
+      referenceElement={anchorElement}
+      isOpen={isOpen}
+      padding={0}
+      onClickOutside={closeMenu}
+      onPressEscKey={closeMenu}
+      style={{
+        overflow: 'hidden',
+        minWidth: 225,
+      }}
+      borderStyle={BorderStyle.none}
+      position={PopoverPosition.BottomEnd}
+    >
+      {account && (
+        <>
+          <AccountDetailsMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+            isRedesign={true}
+            textProps={{
+              variant: TextVariant.bodyMdMedium,
+            }}
+          />
+          <ViewExplorerMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            account={account}
+            isRedesign={true}
+            textProps={{
+              variant: TextVariant.bodyMdMedium,
+            }}
+          />
+        </>
+      )}
+      {basicFunctionality && (
+        <MenuItem
+          iconName={IconName.Notification}
+          onClick={() => handleNotificationsClick()}
+          data-testid="notifications-menu-item"
+          isRedesign={true}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            {t('notifications')}
+            {notificationsUnreadCount === 0 &&
+              !isMetamaskNotificationFeatureSeen && <NewFeatureTag />}
+            <NotificationsTagCounter />
+          </Box>
+        </MenuItem>
+      )}
+      <MenuItem
+        iconName={IconName.Snaps}
+        isRedesign={true}
+        onClick={() => {
+          history.push(SNAPS_ROUTE);
+          closeMenu();
+        }}
+        showInfoDot={snapsUpdatesAvailable}
+      >
+        {t('snaps')}
+      </MenuItem>
+      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
+        <MenuItem
+          iconName={IconName.Expand}
+          isRedesign={true}
+          onClick={() => {
+            (global as any).platform?.openExtensionInBrowser();
+            trackEvent({
+              event: MetaMetricsEventName.AppWindowExpanded,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-expand"
+        >
+          {t('expandView')}
+        </MenuItem>
+      )}
+      <MenuItem
+        iconName={IconName.Setting}
+        disabled={hasUnapprovedTransactions}
+        isRedesign={true}
+        onClick={() => {
+          history.push(SETTINGS_ROUTE);
+          trackEvent({
+            category: MetaMetricsEventCategory.Navigation,
+            event: MetaMetricsEventName.NavSettingsOpened,
+            properties: {
+              location: METRICS_LOCATION,
+            },
+          });
+          closeMenu();
+        }}
+        data-testid="global-menu-settings"
+      >
+        {t('settings')}
+      </MenuItem>
+      <MenuItem
+        ref={lastItemRef} // ref for last item in GlobalMenu
+        iconName={IconName.Lock}
+        isRedesign={true}
+        onClick={() => {
+          dispatch(lockMetamask());
+          history.push(DEFAULT_ROUTE);
+          trackEvent({
+            category: MetaMetricsEventCategory.Navigation,
+            event: MetaMetricsEventName.AppLocked,
+            properties: {
+              location: METRICS_LOCATION,
+            },
+          });
+          closeMenu();
+        }}
+        data-testid="global-menu-lock"
+      >
+        {t('lockMetaMask')}
+      </MenuItem>
+    </Popover>
+  );
 
   return (
     <Popover
@@ -254,7 +393,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         <MenuItem
           iconName={IconName.Expand}
           onClick={() => {
-            global.platform.openExtensionInBrowser();
+            (global as any).platform?.openExtensionInBrowser();
             trackEvent({
               event: MetaMetricsEventName.AppWindowExpanded,
               category: MetaMetricsEventCategory.Navigation,
@@ -343,19 +482,4 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       </MenuItem>
     </Popover>
   );
-};
-
-GlobalMenu.propTypes = {
-  /**
-   * The element that the menu should display next to
-   */
-  anchorElement: PropTypes.instanceOf(window.Element),
-  /**
-   * Function that closes this menu
-   */
-  closeMenu: PropTypes.func.isRequired,
-  /**
-   * Whether or not the menu is open
-   */
-  isOpen: PropTypes.bool.isRequired,
-};
+});

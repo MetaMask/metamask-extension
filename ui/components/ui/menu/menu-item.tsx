@@ -1,7 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import React from 'react';
 
+import {
+  Display,
+  IconColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
@@ -11,17 +15,25 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
-import {
-  Display,
-  IconColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+
+type MenuItemProps = {
+  children: React.ReactNode;
+  className?: string;
+  'data-testid'?: string;
+  iconName?: IconName;
+  iconColor?: string;
+  onClick?: () => void;
+  subtitle?: React.ReactNode;
+  disabled?: boolean;
+  showInfoDot?: boolean;
+  isRedesign?: boolean;
+};
 
 const MenuItem = React.forwardRef(
   (
     {
       children,
-      className,
+      className = '',
       'data-testid': dataTestId,
       iconName,
       iconColor,
@@ -29,14 +41,19 @@ const MenuItem = React.forwardRef(
       subtitle,
       disabled = false,
       showInfoDot,
-    },
-    ref,
+      isRedesign = false,
+    }: MenuItemProps,
+    ref: React.Ref<HTMLButtonElement>,
   ) => (
     <button
-      className={classnames('menu-item', className)}
+      className={classnames(
+        'menu-item',
+        className,
+        isRedesign ? 'redesign-menu-item' : '',
+      )}
       data-testid={dataTestId}
       onClick={onClick}
-      ref={ref}
+      ref={ref as React.Ref<HTMLButtonElement>}
       disabled={disabled}
     >
       {iconName && showInfoDot && (
@@ -50,7 +67,7 @@ const MenuItem = React.forwardRef(
               name={IconName.FullCircle}
               size={IconSize.Xs}
               color={IconColor.primaryDefault}
-              style={{ '--size': '10px' }}
+              style={{ '--size': '10px' } as React.CSSProperties}
             />
           }
         >
@@ -62,29 +79,22 @@ const MenuItem = React.forwardRef(
           name={iconName}
           size={IconSize.Sm}
           marginRight={2}
-          color={iconColor}
+          color={iconColor as IconColor}
         />
       )}
       <div>
-        <Text as="div">{children}</Text>
+        <Text
+          as="div"
+          variant={isRedesign ? TextVariant.bodyMdMedium : undefined}
+        >
+          {children}
+        </Text>
         {subtitle ? <Text variant={TextVariant.bodyXs}>{subtitle}</Text> : null}
       </div>
     </button>
   ),
 );
 
-MenuItem.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-  'data-testid': PropTypes.string,
-  iconName: PropTypes.string,
-  onClick: PropTypes.func,
-  subtitle: PropTypes.node,
-  disabled: PropTypes.bool,
-  showInfoDot: PropTypes.bool,
-  iconColor: PropTypes.string,
-};
-
 MenuItem.displayName = 'MenuItem';
 
-export default MenuItem;
+export default React.memo(MenuItem);
