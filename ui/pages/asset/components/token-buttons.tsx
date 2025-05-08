@@ -296,7 +296,7 @@ const TokenButtons = ({
           className="token-overview__button"
           Icon={
             <Icon
-              name={IconName.PlusMinus}
+              name={IconName.PlusAndMinus}
               color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
