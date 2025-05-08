@@ -70,7 +70,7 @@ function useBatchApproveSimulationBalanceChanges({
 }) {
   return useAsyncResult(
     async () => buildSimulationTokenBalanceChanges({ nestedTransactions }),
-    [nestedTransactions?.length],
+    [JSON.stringify(nestedTransactions)],
   );
 }
 
