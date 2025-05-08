@@ -64,14 +64,13 @@ import {
 import {
   RemoteModeDailyAllowanceCard,
   RemoteModeHardwareWalletConfirm,
-  SmartAccountUpdateInformation,
   StepIndicator,
 } from '../../components';
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { useRemoteMode } from '../../hooks/useRemoteMode';
 
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 2;
 const DAILY_ETH_LIMIT = 10;
 
 /**
@@ -80,7 +79,6 @@ const DAILY_ETH_LIMIT = 10;
  * - Select an account
  * - Configure daily token allowances
  * - Review and confirm changes (including EOA upgrade)
- *
  * @returns The rendered component
  */
 export default function RemoteModeSetupDailyAllowance() {
@@ -399,36 +397,6 @@ export default function RemoteModeSetupDailyAllowance() {
       case 2:
         return (
           <>
-            <SmartAccountUpdateInformation
-              selectedHardwareAccount={selectedHardwareAccount}
-            />
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text paddingBottom={2}>
-                  Network fee <Icon name={IconName.Info} size={IconSize.Sm} />
-                </Text>
-                <Text paddingBottom={2}>0.0013 ETH</Text>
-              </Box>
-              <Box
-                paddingTop={2}
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text paddingBottom={2}>Speed</Text>
-                <Text paddingBottom={2}>🦊 Market &lt; 30 sec</Text>
-              </Box>
-            </Card>
-          </>
-        );
-      case 3:
-        return (
-          <>
             <Card backgroundColor={BackgroundColor.backgroundMuted}>
               <Box
                 display={Display.Flex}
@@ -486,7 +454,7 @@ export default function RemoteModeSetupDailyAllowance() {
                   Edit
                 </Text>
               </Box>
-              <Box marginTop={2} marginBottom={2}>
+              <Box marginTop={4}>
                 <Box
                   display={Display.Flex}
                   justifyContent={JustifyContent.spaceBetween}
@@ -494,11 +462,11 @@ export default function RemoteModeSetupDailyAllowance() {
                   onClick={() => setIsAllowancesExpanded(!isAllowancesExpanded)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <Text>
+                  <Text color={TextColor.infoDefault}>
                     {dailyAllowance.length} token
                     {dailyAllowance.length === 1 ? '' : 's'} enabled
                   </Text>
-                  <Text color={TextColor.infoDefault}>
+                  <Text>
                     {isAllowancesExpanded ? (
                       <Icon name={IconName.ArrowUp} size={IconSize.Sm} />
                     ) : (
@@ -519,25 +487,6 @@ export default function RemoteModeSetupDailyAllowance() {
                     ))}
                   </Box>
                 )}
-              </Box>
-            </Card>
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text paddingBottom={2}>Network fee</Text>
-                <Text paddingBottom={2}>0.0013 ETH</Text>
-              </Box>
-              <Box
-                paddingTop={2}
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text paddingBottom={2}>Speed</Text>
-                <Text paddingBottom={2}>🦊 Market &lt; 30 sec</Text>
               </Box>
             </Card>
           </>
@@ -589,8 +538,7 @@ export default function RemoteModeSetupDailyAllowance() {
           fontWeight={FontWeight.Bold}
         >
           {currentStep === 1 && 'Set a withdrawl limit'}
-          {currentStep === 2 && 'Update to a smart account'}
-          {currentStep === 3 && 'Review changes'}
+          {currentStep === 2 && 'Review changes'}
         </Text>
 
         {renderStepContent()}
@@ -616,7 +564,7 @@ export default function RemoteModeSetupDailyAllowance() {
           {currentStep === 1 ? 'Cancel' : 'Back'}
         </Button>
         <Button
-          onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
+          onClick={currentStep === 2 ? handleShowConfirmation : handleNext}
           width={BlockSize.Half}
           size={ButtonSize.Lg}
           disabled={!isHardwareAccount || dailyAllowance.length === 0}
