@@ -1138,16 +1138,16 @@ export default class MetaMetricsController extends BaseController<
     let chainId;
     if (
       properties &&
-      'chain_id' in properties &&
-      typeof properties.chain_id === 'string'
-    ) {
-      chainId = properties.chain_id;
-    } else if (
-      properties &&
       'chain_id_caip' in properties &&
       typeof properties.chain_id_caip === 'string'
     ) {
       chainId = null;
+    } else if (
+      properties &&
+      'chain_id' in properties &&
+      typeof properties.chain_id === 'string'
+    ) {
+      chainId = properties.chain_id;
     } else {
       chainId = this.chainId;
     }
