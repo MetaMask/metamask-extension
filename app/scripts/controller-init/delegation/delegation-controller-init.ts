@@ -1,14 +1,19 @@
 import {
   DelegationController,
-  DelegationControllerMessenger,
+  type DelegationControllerMessenger,
 } from '@metamask/delegation-controller';
+import {
+  type TransactionMeta,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { type Hex } from '../../../../shared/lib/delegation/utils';
 import {
   getDelegationHashOffchain,
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
-import { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messenger';
-import { ControllerInitFunction, ControllerInitResult } from '../types';
+import type { DelegationControllerInitMessenger } from '../messengers/delegation/delegation-controller-messenger';
+import type { ControllerInitFunction } from '../types';
 
 const getDelegationEnvironment = (chainId: Hex) => {
   return getDeleGatorEnvironment(Number(chainId));
@@ -20,13 +25,14 @@ const getDelegationEnvironment = (chainId: Hex) => {
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
+ * @param request.initMessenger - The initialization messenger for the controller.
  * @returns The initialized controller.
  */
 export const DelegationControllerInit: ControllerInitFunction<
   DelegationController,
   DelegationControllerMessenger,
   DelegationControllerInitMessenger
-> = ({ controllerMessenger, persistedState }) => {
+> = ({ controllerMessenger, persistedState, initMessenger }) => {
   const controller = new DelegationController({
     messenger: controllerMessenger,
     state: persistedState.DelegationController,
@@ -34,29 +40,103 @@ export const DelegationControllerInit: ControllerInitFunction<
     getDelegationEnvironment,
   });
 
-  const api = getApi(controller);
-
   return {
     controller,
-    api,
+    api: {
+      signDelegation: controller.signDelegation.bind(controller),
+      storeDelegationEntry: controller.store.bind(controller),
+      listDelegationEntries: controller.list.bind(controller),
+      getDelegationEntry: controller.retrieve.bind(controller),
+      getDelegationEntryChain: controller.chain.bind(controller),
+      deleteDelegationEntry: controller.delete.bind(controller),
+      awaitDeleteDelegationEntry: awaitDeleteDelegationEntry.bind(
+        null,
+        controller,
+        initMessenger,
+      ),
+    },
   };
 };
 
 /**
- * Get the API for the Delegation controller.
+ * Awaits for the transaction with txMeta to be confirmed, then
+ * deletes the delegation entry with `hash`.
  *
- * @param controller - The controller to get the API for.
- * @returns The API for the Delegation controller.
+ * @param controller - The DelegationController.
+ * @param initMessenger - The initialization messenger for the controller.
+ * @param options
+ * @param options.hash - The hash of the delegation entry to delete.
+ * @param options.txMeta - The transaction meta of the transaction that confirmed the delegation entry.
  */
-function getApi(
+export async function awaitDeleteDelegationEntry(
   controller: DelegationController,
-): ControllerInitResult<DelegationController>['api'] {
-  return {
-    signDelegation: controller.signDelegation.bind(controller),
-    storeDelegationEntry: controller.store.bind(controller),
-    listDelegationEntries: controller.list.bind(controller),
-    getDelegationEntry: controller.retrieve.bind(controller),
-    getDelegationEntryChain: controller.chain.bind(controller),
-    deleteDelegationEntry: controller.delete.bind(controller),
+  initMessenger: DelegationControllerInitMessenger,
+  { hash, txMeta }: { hash: Hex; txMeta: TransactionMeta },
+) {
+  let { id } = txMeta;
+  let action: 'continue' | 'unsubscribe' | 'delete' = 'continue';
+
+  const handleTransactionStatusUpdated = ({
+    transactionMeta,
+  }: {
+    transactionMeta: TransactionMeta;
+  }) => {
+    // If not our transaction, ignore
+    if (transactionMeta.id !== id) {
+      return;
+    }
+
+    // Check if transaction was replaced
+    if (
+      transactionMeta.status === TransactionStatus.dropped &&
+      transactionMeta.replacedById
+    ) {
+      id = transactionMeta.replacedById;
+      return;
+    }
+
+    switch (transactionMeta.type) {
+      case TransactionType.contractInteraction:
+      case TransactionType.retry:
+        switch (transactionMeta.status) {
+          case TransactionStatus.confirmed:
+            action = 'delete';
+            break;
+          case TransactionStatus.dropped:
+          case TransactionStatus.failed:
+          case TransactionStatus.rejected:
+            action = 'unsubscribe';
+            break;
+          default:
+            // Ignore other statuses
+            return;
+        }
+        break;
+      case TransactionType.cancel:
+        action = 'unsubscribe';
+        break;
+      default:
+        console.warn(
+          'awaitDeleteDelegationEntry: Unexpected tx type',
+          transactionMeta.type,
+        );
+        return;
+    }
+
+    if (action === 'delete') {
+      controller.delete(hash);
+    }
+
+    if (action === 'unsubscribe' || action === 'delete') {
+      initMessenger.unsubscribe(
+        'TransactionController:transactionStatusUpdated',
+        handleTransactionStatusUpdated,
+      );
+    }
   };
+
+  initMessenger.subscribe(
+    'TransactionController:transactionStatusUpdated',
+    handleTransactionStatusUpdated,
+  );
 }
