@@ -19,7 +19,7 @@ const {
   literal,
 } = require('superstruct');
 const yaml = require('yaml');
-const { uniqWith } = require('lodash');
+const { cloneDeep, merge, uniqWith } = require('lodash');
 
 const BUILDS_YML_PATH = path.resolve('./builds.yml');
 
@@ -82,11 +82,12 @@ const isInRange = (min, max) => {
 
 const BuildTypeStruct = object({
   id: isInRange(10, 64),
+  extends: optional(string()),
   features: optional(unique(array(string()))),
   env: optional(EnvArrayStruct),
   isPrerelease: optional(boolean()),
-  manifestOverrides: union([string(), literal(false)]),
-  buildNameOverride: union([string(), literal(false)]),
+  manifestOverrides: optional(union([string(), literal(false)])),
+  buildNameOverride: optional(union([string(), literal(false)])),
 });
 
 const CopyAssetStruct = object({ src: string(), dest: string() });
@@ -125,13 +126,14 @@ const BuildTypesStruct = refine(
 /**
  * Loads definitions of build type and what they are composed of.
  *
- * @param cachedBuildTypes
+ * @param {import('superstruct').Infer<typeof BuildTypesStruct> | null} cachedBuildTypes - The cached build types, if any.
  * @returns {import('superstruct').Infer<typeof BuildTypesStruct>}
  */
 function loadBuildTypesConfig(cachedBuildTypes = _cachedBuildTypes) {
   if (cachedBuildTypes !== null) {
     return cachedBuildTypes;
   }
+
   const buildsData = yaml.parse(fs.readFileSync(BUILDS_YML_PATH, 'utf8'));
   const [err, result] = validate(buildsData, BuildTypesStruct, {
     coerce: true,
@@ -141,8 +143,29 @@ function loadBuildTypesConfig(cachedBuildTypes = _cachedBuildTypes) {
       message: constructFailureMessage(err),
     });
   }
+
+  applyBuildTypeExtensions(result);
   _cachedBuildTypes = result;
   return _cachedBuildTypes;
+}
+
+/**
+ * Extends any extended build types with their parent build types. This is accomplished
+ * by merging the extending build type into a copy of its parent build type.
+ *
+ * @param {import('superstruct').Infer<typeof BuildTypesStruct>} buildsConfig
+ */
+function applyBuildTypeExtensions({ buildTypes }) {
+  for (const [buildType, config] of Object.entries(buildTypes)) {
+    if (config.extends !== undefined) {
+      const parentConfig = buildTypes[config.extends];
+      if (!parentConfig) {
+        throw new Error(`Build type "${buildType.extends}" not found`);
+      }
+
+      buildTypes[buildType] = merge(cloneDeep(parentConfig), config);
+    }
+  }
 }
 
 /**
