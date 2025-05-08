@@ -76,7 +76,11 @@ import {
   getHDEntropyIndex,
   getAllChainsToPoll,
 } from '../../../selectors';
-import { detectNfts, setSelectedAccount } from '../../../store/actions';
+import {
+  detectNfts,
+  getNetworksWithTransactionActivityByAccounts,
+  setSelectedAccount,
+} from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -261,6 +265,7 @@ export const AccountListMenu = ({
       ),
     [accounts, allowedAccountTypes],
   );
+
   const allChainIds = useSelector(getAllChainsToPoll);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(
@@ -277,6 +282,7 @@ export const AccountListMenu = ({
   );
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
+
   const filteredUpdatedAccountList = useMemo(
     () =>
       updatedAccountsList.filter((account) =>
@@ -511,6 +517,12 @@ export const AccountListMenu = ({
     chainId: null,
   };
   ///: END:ONLY_INCLUDE_IF(multichain)
+
+  useEffect(() => {
+    if (process.env.REMOVE_GNS && filteredAccounts.length > 0) {
+      dispatch(getNetworksWithTransactionActivityByAccounts());
+    }
+  }, [dispatch, filteredAccounts.length]);
 
   return (
     <Modal isOpen onClose={onClose}>

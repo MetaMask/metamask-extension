@@ -5,15 +5,19 @@ import classnames from 'classnames';
 import { BigNumber } from 'bignumber.js';
 ///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
+import { toHex } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '../account-list-item-menu';
 import { AvatarGroup } from '../avatar-group';
+import { AvatarType } from '../avatar-group/avatar-group.types';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
+  AvatarNetwork,
+  AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
   Box,
@@ -77,6 +81,7 @@ import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/add
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
+import { getNetworksWithTransactionActivity } from '../../../selectors/multichain/networks';
 import { getAccountLabels } from '../../../helpers/utils/accounts';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
@@ -84,6 +89,10 @@ import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 ///: END:ONLY_INCLUDE_IF
+import {
+  CHAIN_ID_TO_NAME_MAP,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+} from '../../../../shared/constants/network';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -133,6 +142,7 @@ const AccountListItem = ({
 
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
+
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
@@ -173,6 +183,31 @@ const AccountListItem = ({
     account,
     formattedTokensWithBalancesPerChain,
   );
+  const networksWithTransactionActivity = useSelector(
+    getNetworksWithTransactionActivity,
+  );
+
+  const sortedNetworkIcons = useMemo(() => {
+    const chainsWithActivityByAddress =
+      networksWithTransactionActivity?.[account.address]?.activeChains;
+
+    if (!chainsWithActivityByAddress?.length) {
+      return [];
+    }
+
+    const chainsWithActivity = chainsWithActivityByAddress.map((chainId) => {
+      const formattedChainId = toHex(chainId);
+      const networkName = CHAIN_ID_TO_NAME_MAP[formattedChainId];
+      return {
+        chainId: formattedChainId,
+        name: networkName,
+        avatarValue: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[formattedChainId],
+      };
+    });
+
+    return chainsWithActivity;
+  }, [networksWithTransactionActivity, account.address]);
+
   // cross chain agg balance
   const mappedOrderedTokenList = useMemo(
     () =>
@@ -225,6 +260,7 @@ const AccountListItem = ({
     getMultichainNativeCurrency,
     account,
   );
+
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
@@ -416,9 +452,38 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {mappedOrderedTokenList.length > 1 ? (
+          {process.env.REMOVE_GNS &&
+            sortedNetworkIcons.length > 0 &&
+            isEvmNetwork && (
+              <AvatarGroup
+                avatarType={AvatarType.NETWORK}
+                members={sortedNetworkIcons}
+                limit={4}
+                renderTag={false}
+              />
+            )}
+          {process.env.REMOVE_GNS && !isEvmNetwork && primaryTokenImage && (
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              gap={1}
+              className="multichain-account-list-item__avatar-currency"
+            >
+              <AvatarNetwork
+                src={primaryTokenImage}
+                name={nativeCurrency}
+                size={AvatarNetworkSize.Xs}
+                borderColor={BorderColor.borderDefault}
+              />
+            </Box>
+          )}
+
+          {!process.env.REMOVE_GNS && mappedOrderedTokenList.length > 1 && (
             <AvatarGroup members={mappedOrderedTokenList} limit={4} />
-          ) : (
+          )}
+
+          {!process.env.REMOVE_GNS && mappedOrderedTokenList.length === 1 && (
             <Box
               display={Display.Flex}
               alignItems={AlignItems.center}
