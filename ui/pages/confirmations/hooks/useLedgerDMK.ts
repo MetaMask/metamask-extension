@@ -4,6 +4,8 @@ import { webHidTransportFactory } from '@ledgerhq/device-transport-kit-web-hid';
 import { webBleTransportFactory } from '@ledgerhq/device-transport-kit-web-ble';
 import { SignerEthBuilder } from '@ledgerhq/device-signer-kit-ethereum';
 import { ContextModuleBuilder } from '@ledgerhq/context-module';
+import type { SignatureRequestType } from '@metamask/signature-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   setConnectedDevice,
   setDeviceStatus,
@@ -22,8 +24,6 @@ import {
 } from '../../../ducks/ledger-dmk/selectors';
 import type { WEBHID, BLE } from '../../../ducks/ledger-dmk/constants';
 import { useConfirmContext } from '../context/confirm';
-import type { SignatureRequestType } from '@metamask/signature-controller';
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import { isAddressLedger } from '../../../ducks/metamask/metamask';
 
 const useLedgerDMK = () => {
