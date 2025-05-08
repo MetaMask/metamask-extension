@@ -31,15 +31,15 @@ describe('SnapUIAssetSelector', () => {
   };
 
   const mockAccountsAssets = {
-    '8c33fc18-6c52-44b1-b8fa-550b934a05ef': [
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    ['8c33fc18-6c52-44b1-b8fa-550b934a05ef' as const]: [
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105' as const,
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' as const,
     ],
   };
 
   const mockAssetsMetadata = {
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
-      fungible: true,
+      fungible: true as const,
       iconUrl:
         'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
       name: 'Solana',
@@ -54,7 +54,7 @@ describe('SnapUIAssetSelector', () => {
     },
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
       {
-        fungible: true,
+        fungible: true as const,
         iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
         name: 'USDC',
