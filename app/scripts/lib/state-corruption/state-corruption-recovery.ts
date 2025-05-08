@@ -138,114 +138,117 @@ function hasVault(backup: Backup | null): boolean {
   return false;
 }
 
-/**
- * Stores the connected ports that are used to send messages to the UI. This is
- * used to ensure that only one repair operation is happening at a time, and to
- * allow the UI to listen for messages from the background. The ports are stored
- * in a Set to ensure that there are no duplicates. The ports are removed from
- * the Set when they are disconnected.
- */
-const connectedPorts = new Set<chrome.runtime.Port>();
+export class CorruptionHandler {
+  /**
+   * Stores the connected ports that are used to send messages to the UI. This is
+   * used to ensure that only one repair operation is happening at a time, and to
+   * allow the UI to listen for messages from the background. The ports are stored
+   * in a Set to ensure that there are no duplicates. The ports are removed from
+   * the Set when they are disconnected.
+   */
+  connectedPorts = new Set<chrome.runtime.Port>();
 
-/**
- * Handles a state corruption error by sending a message to the UI and
- * initiating a repair process if requested by the UI port.
- *
- * @param port - The port to send the error message to.
- * @param error - The error that caused the state corruption.
- * @param database - The database to get the backup from.
- * @param repair - The function to call to repair the database.
- */
-export async function handleStateCorruptionError(
-  port: chrome.runtime.Port,
-  error: ErrorLike,
-  database: PersistenceManager,
-  repair: (backup: Backup | null) => Promise<void>,
-): Promise<void> {
-  const backup = await maybeGetBackup(error, database);
-  const currentLocale = maybeGetCurrentLocale(backup);
-  // it is not worth claiming we have a backup if the vault doesn't actually
-  // exist
-  const hasBackup = Boolean(hasVault(backup));
+  /**
+   * Handles a state corruption error by sending a message to the UI and
+   * initiating a repair process if requested by the UI port.
+   *
+   * @param port - The port to send the error message to.
+   * @param error - The error that caused the state corruption.
+   * @param database - The database to get the backup from.
+   * @param repair - The function to call to repair the database.
+   */
+  async handleStateCorruptionError(
+    port: chrome.runtime.Port,
+    error: ErrorLike,
+    database: PersistenceManager,
+    repair: (backup: Backup | null) => void | Promise<void>,
+  ): Promise<void> {
+    const connectedPorts = this.connectedPorts;
+    const backup = await maybeGetBackup(error, database);
+    const currentLocale = maybeGetCurrentLocale(backup);
+    // console.log('currentLocale', error.backup, backup, currentLocale);
+    // it is not worth claiming we have a backup if the vault doesn't actually
+    // exist
+    const hasBackup = Boolean(hasVault(backup));
 
-  // send the `error` to the UI for this port
-  const sent = tryPostMessage(port, {
-    data: {
-      method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-      params: {
-        error: {
-          message: error.message,
-          name: error.name,
-          stack: error.stack,
+    // send the `error` to the UI for this port
+    const sent = tryPostMessage(port, {
+      data: {
+        method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+        params: {
+          error: {
+            message: error.message,
+            name: error.name,
+            stack: error.stack,
+          },
+          currentLocale,
+          hasBackup,
         },
-        currentLocale,
-        hasBackup,
       },
-    },
-  });
-
-  if (!sent) {
-    return Promise.resolve();
-  }
-
-  // if we successfully sent the error to the UI, listen for a "restore"
-  // method call back to us
-  return new Promise((resolve, reject) => {
-    connectedPorts.add(port);
-    port.onDisconnect.addListener(onDisconnect);
-    port.onMessage.addListener(restoreVaultListener);
-
-    // remove from `connectedPorts` if the port disconnects. this is
-    // automatically called when the UI closes
-    function onDisconnect() {
-      connectedPorts.delete(port);
-      resolve();
+    });
+    if (!sent) {
+      return Promise.resolve();
     }
-    /**
-     * Listens for a message from the UI to restore the vault. If the message
-     * is received, it will call the `repair` function with the backup and
-     * reload the UI. It will also unregister the listener from all UI windows
-     * to prevent multiple restore requests.
-     *
-     * @param message - The message sent from the UI to the background.
-     */
-    async function restoreVaultListener(message: Message) {
-      if (message?.data?.method === METHOD_REPAIR_DATABASE) {
-        // only allow the restore process once, unregister
-        // `restoreVaultListener` listeners from all UI windows
-        connectedPorts.forEach((connectedPort) =>
-          connectedPort.onMessage.removeListener(restoreVaultListener),
-        );
 
-        try {
-          await requestRepair(async function repairDatabase() {
-            // this callback might be ignored if another repair request
-            // is already in progress.
+    // if we successfully sent the error to the UI, listen for a "restore"
+    // method call back to us
+    return new Promise((resolve, reject) => {
+      connectedPorts.add(port);
+      port.onDisconnect.addListener(onDisconnect);
+      port.onMessage.addListener(restoreVaultListener);
 
-            try {
-              await repair(backup);
-            } finally {
-              // always reload the UI because if `initBackground` worked, the UI
-              // will redirect to the login screen, and if it didn't work, it'll
-              // show them a new error message (which could be the same as the
-              // vault error that sent them here in the first place, but hopefully
-              // not!)
-              connectedPorts.forEach((connectedPort) => {
-                // as each page reloads, it will remove itself from the
-                // `connectedPorts` on disconnection.
-                tryPostMessage(connectedPort, {
-                  data: {
-                    method: 'RELOAD',
-                  },
+      // remove from `connectedPorts` if the port disconnects. this is
+      // automatically called when the UI closes
+      function onDisconnect() {
+        connectedPorts.delete(port);
+        resolve();
+      }
+      /**
+       * Listens for a message from the UI to restore the vault. If the message
+       * is received, it will call the `repair` function with the backup and
+       * reload the UI. It will also unregister the listener from all UI windows
+       * to prevent multiple restore requests.
+       *
+       * @param message - The message sent from the UI to the background.
+       */
+      async function restoreVaultListener(message: Message) {
+        if (message?.data?.method === METHOD_REPAIR_DATABASE) {
+          // only allow the restore process once, unregister
+          // `restoreVaultListener` listeners from all UI windows
+          connectedPorts.forEach((connectedPort) =>
+            connectedPort.onMessage.removeListener(restoreVaultListener),
+          );
+
+          try {
+            await requestRepair(async function repairDatabase() {
+              // this callback might be ignored if another repair request
+              // is already in progress.
+
+              try {
+                await repair(backup);
+              } finally {
+                // always reload the UI because if `initBackground` worked, the UI
+                // will redirect to the login screen, and if it didn't work, it'll
+                // show them a new error message (which could be the same as the
+                // vault error that sent them here in the first place, but hopefully
+                // not!)
+                connectedPorts.forEach((connectedPort) => {
+                  // as each page reloads, it will remove itself from the
+                  // `connectedPorts` on disconnection.
+                  tryPostMessage(connectedPort, {
+                    data: {
+                      method: 'RELOAD',
+                    },
+                  });
                 });
-              });
-            }
-          });
-          resolve();
-        } catch (e) {
-          reject(e);
+              }
+            });
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
         }
       }
-    }
-  });
+    });
+  }
 }

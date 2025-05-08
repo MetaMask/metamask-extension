@@ -52,7 +52,7 @@ import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
-import { handleStateCorruptionError } from './lib/state-corruption/state-corruption-recovery';
+import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
 import {
   backedUpStateKeys,
   PersistenceManager,
@@ -453,6 +453,7 @@ let connectEip1193;
 /** @type {ConnectCaipMultichain} */
 let connectCaipMultichain;
 
+const corruptionHandler = new CorruptionHandler();
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   try {
@@ -466,7 +467,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
     // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
     // restore from a backup, if we have one.
     if (isStateCorruptionError(error)) {
-      await handleStateCorruptionError(
+      await corruptionHandler.handleStateCorruptionError(
         args[0],
         error,
         persistenceManager,
