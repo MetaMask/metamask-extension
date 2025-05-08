@@ -229,8 +229,7 @@
     "gridplus-sdk/elliptic": "^6.6.1",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
-    "@trezor/connect-web": "~9.4.7",
-    "@metamask/multichain-network-controller@npm:^0.5.1": "patch:@metamask/multichain-network-controller@npm%3A0.5.1#~/.yarn/patches/@metamask-multichain-network-controller-npm-0.5.1-6e4a60e4b5.patch"
+    "@trezor/connect-web": "~9.4.7"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -305,7 +304,7 @@
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-api-client": "^0.5.0",
     "@metamask/multichain-api-middleware": "^0.1.1",
-    "@metamask/multichain-network-controller": "patch:@metamask/multichain-network-controller@npm%3A0.5.1#~/.yarn/patches/@metamask-multichain-network-controller-npm-0.5.1-6e4a60e4b5.patch",
+    "@metamask/multichain-network-controller": "^0.5.1",
     "@metamask/multichain-transactions-controller": "^0.9.0",
     "@metamask/name-controller": "^8.0.3",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.2.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch",
