@@ -160,10 +160,8 @@ export async function getCapabilities(
   address: Hex,
   chainIds: Hex[] | undefined,
 ) {
-  const {
-    getDismissSmartAccountSuggestionEnabled,
-    isAtomicBatchSupported,
-  } = hooks;
+  const { getDismissSmartAccountSuggestionEnabled, isAtomicBatchSupported } =
+    hooks;
 
   const addressNormalized = address.toLowerCase() as Hex;
 
