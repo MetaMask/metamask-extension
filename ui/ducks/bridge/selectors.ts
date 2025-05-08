@@ -24,6 +24,7 @@ import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import { isCaipChainId } from '@metamask/utils';
 import type {
   CurrencyRateState,
   MultichainAssetsControllerState,
@@ -633,3 +634,30 @@ export const getHardwareWalletName = (state: BridgeAppState) => {
       return undefined;
   }
 };
+
+/**
+ * Returns true if Unified UI swaps are enabled for the chain.
+ * Falls back to false when the chain is missing from feature-flags.
+ *
+ * @param _state - Redux state (unused placeholder for reselect signature)
+ * @param chainId - ChainId in either hex (e.g. 0x1) or CAIP format (eip155:1).
+ */
+export const getIsUnifiedUIEnabled = createSelector(
+  [
+    getBridgeFeatureFlags,
+    (_state: BridgeAppState, chainId?: string) => chainId,
+  ],
+  (bridgeFeatureFlags, chainId): boolean => {
+    if (!chainId) {
+      return false;
+    }
+
+    const caipChainId: CaipChainId = isCaipChainId(chainId as CaipChainId)
+      ? (chainId as CaipChainId)
+      : (formatChainIdToCaip(chainId as Hex) as CaipChainId);
+
+    return Boolean(
+      bridgeFeatureFlags?.chains?.[caipChainId]?.isUnifiedUIEnabled,
+    );
+  },
+);
