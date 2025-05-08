@@ -39,6 +39,12 @@ const mockNonEvmNetworks: Record<CaipChainId, MultichainNetworkConfiguration> =
       nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
       isEvm: false,
     },
+    [SolScope.Devnet]: {
+      chainId: SolScope.Devnet,
+      name: 'Solana Devnet',
+      nativeCurrency: `${SolScope.Devnet}/slip44:501`,
+      isEvm: false,
+    },
     [BtcScope.Mainnet]: {
       chainId: BtcScope.Mainnet,
       name: 'Bitcoin',
@@ -214,6 +220,7 @@ describe('Multichain network selectors', () => {
       ).toStrictEqual([
         {
           [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
+          [SolScope.Devnet]: mockNonEvmNetworks[SolScope.Devnet],
           ...mockEvmNetworksWithNewConfig,
         },
         mockEvmNetworksWithOldConfig,
@@ -271,6 +278,7 @@ describe('Multichain network selectors', () => {
         {
           ...mockEvmNetworksWithNewConfig,
           [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
+          [SolScope.Devnet]: mockNonEvmNetworks[SolScope.Devnet],
         },
         mockEvmNetworksWithOldConfig,
       ]);
