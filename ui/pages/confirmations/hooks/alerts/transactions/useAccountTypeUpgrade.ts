@@ -7,16 +7,16 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { AccountTypeMessage } from './AccountTypeMessage';
+import { useIsUpgradeTransaction } from '../../../components/confirm/info/hooks/useIsUpgradeTransaction';
 
 export function useAccountTypeUpgrade(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
-
-  const isBatch = isBatchTransaction(nestedTransactions);
+  const { isUpgrade } = useIsUpgradeTransaction();
 
   return useMemo(() => {
-    if (!isBatch) {
+    if (!isUpgrade) {
       return [];
     }
 
@@ -29,5 +29,5 @@ export function useAccountTypeUpgrade(): Alert[] {
         severity: Severity.Info,
       },
     ];
-  }, [isBatch, t]);
+  }, [isUpgrade, t]);
 }
