@@ -25,7 +25,7 @@ describe('Settings', function () {
 
         // Verify identicon options
         await generalSettings.check_identiconOptionsAreDisplayed();
-        await generalSettings.check_identiconIsActive(true);
+        await generalSettings.check_identiconIsActive('jazzicon');
       },
     );
   });

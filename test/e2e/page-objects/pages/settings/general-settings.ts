@@ -88,16 +88,18 @@ class GeneralSettings {
   }
 
   /**
-   * Check if expected identicon icon is active
+   * Check if the specified identicon type is active
    *
-   * @param isJazzicon - Whether the expected active identicon is jazzicon. Defaults to true.
+   * @param identicon - The type of identicon to check ('jazzicon' or 'blockies')
    */
-  async check_identiconIsActive(isJazzicon: boolean = true): Promise<void> {
-    const type = isJazzicon ? 'jazzicon' : 'blockies';
+  async check_identiconIsActive(
+    identicon: 'jazzicon' | 'blockies',
+  ): Promise<void> {
     console.log(
-      `Checking if ${type} identicon is active on general settings page`,
+      `Checking if ${identicon} identicon is active on general settings page`,
     );
-    const iconSelector = isJazzicon ? this.jazziconIcon : this.blockiesIcon;
+    const iconSelector =
+      identicon === 'jazzicon' ? this.jazziconIcon : this.blockiesIcon;
     const activeSelector = `${iconSelector} .settings-page__content-item__identicon__item__icon--active`;
     await this.driver.waitForSelector(activeSelector);
   }
