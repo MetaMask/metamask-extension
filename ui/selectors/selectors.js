@@ -536,12 +536,12 @@ export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
-    const thirdpartySnaps = 'thirdpartySnaps';
+    const thirdPartySnaps = 'thirdPartySnaps';
     // Create a map of entropySource map to accounts for quick lookup
     const entropySourceToAccountsMap = Object.values(accounts).reduce(
       (map, account) => {
         if (account.metadata?.keyring?.type === KeyringTypes.snap) {
-          const { entropySource = thirdpartySnaps } = account.options || {};
+          const { entropySource = thirdPartySnaps } = account.options || {};
           if (!map[entropySource]) {
             map[entropySource] = [];
           }
@@ -563,13 +563,24 @@ export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
       if (keyring.type === KeyringTypes.hd) {
         const snapAccounts =
           entropySourceToAccountsMap[keyring.metadata.id] || [];
-        return [...internalAccounts, ...keyringAccounts, ...snapAccounts];
+        internalAccounts.push(...keyringAccounts, ...snapAccounts);
+        return internalAccounts;
       } else if (keyring.type === KeyringTypes.snap) {
         const thirdpartySnapAccounts =
-          entropySourceToAccountsMap[thirdpartySnaps] || [];
-        return [...internalAccounts, ...thirdpartySnapAccounts];
+          entropySourceToAccountsMap[thirdPartySnaps] || [];
+        // In a scenario where there are multiple snap keyrings, which isn't the case for today
+        // There would be duplicate third party snap accounts that are being pushed into internalAccounts again
+        // This will only be run once, when there is only one snap keyring
+        const accountsToAdd = thirdpartySnapAccounts.filter(
+          (account) =>
+            !internalAccounts.some((existing) => existing.id === account.id),
+        );
+
+        internalAccounts.push(...accountsToAdd);
+        return internalAccounts;
       }
-      return [...internalAccounts, ...keyringAccounts];
+      internalAccounts.push(...keyringAccounts);
+      return internalAccounts;
     }, []);
   },
 );
