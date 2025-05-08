@@ -135,6 +135,8 @@ export const useHistoricalPrices = ({
     };
 
     fetchPrices();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     const intervalId = setInterval(fetchPrices, 60000); // Refresh every minute
     return () => clearInterval(intervalId); // Cleanup on unmount
   }, [

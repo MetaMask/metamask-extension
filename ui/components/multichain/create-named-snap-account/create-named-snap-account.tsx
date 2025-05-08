@@ -64,6 +64,8 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
         paddingBottom={4}
         paddingRight={0}
         paddingLeft={0}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClose={onClose}
       >
         {t('addAccountToMetaMask')}

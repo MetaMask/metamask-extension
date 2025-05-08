@@ -3384,6 +3384,8 @@ export function setShowExtensionInFullSizeView(value: boolean) {
 export function setDismissSmartAccountSuggestionEnabled(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch, getState) => {
     const prevDismissSmartAccountSuggestionEnabled =
       getDismissSmartAccountSuggestionEnabled(getState());
@@ -3751,6 +3753,8 @@ export function setUseCurrencyRateCheck(
 export function fetchHistoricalPricesForAsset(
   address: CaipAssetType,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.fetchHistoricalPricesForAsset`);
     await submitRequestToBackground('fetchHistoricalPricesForAsset', [address]);
