@@ -84,6 +84,7 @@ import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 ///: END:ONLY_INCLUDE_IF
 import { stringifyBalance } from '../../../hooks/useTokenBalances';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
