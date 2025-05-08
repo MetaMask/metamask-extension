@@ -536,15 +536,41 @@ export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
-    // keep existing keyring order
-    const internalAccounts = keyrings
-      .map(({ accounts: addresses }) => addresses)
-      .flat()
-      .map((address) => {
-        return accounts[address];
-      });
+    const thirdpartySnaps = 'thirdpartySnaps';
+    // Create a map of entropySource map to accounts for quick lookup
+    const entropySourceToAccountsMap = Object.values(accounts).reduce(
+      (map, account) => {
+        if (account.metadata?.keyring?.type === KeyringTypes.snap) {
+          const { entropySource = thirdpartySnaps } = account.options || {};
+          if (!map[entropySource]) {
+            map[entropySource] = [];
+          }
+          map[entropySource].push(account);
+        }
+        return map;
+      },
+      {},
+    );
 
-    return internalAccounts;
+    // keep existing keyring order
+    return keyrings.reduce((internalAccounts, keyring) => {
+      // Get regular accounts for this keyring
+      const keyringAccounts = keyring.accounts.map(
+        (address) => accounts[address],
+      );
+
+      // If it's an HD keyring, add any snap accounts that belong to it
+      if (keyring.type === KeyringTypes.hd) {
+        const snapAccounts =
+          entropySourceToAccountsMap[keyring.metadata.id] || [];
+        return [...internalAccounts, ...keyringAccounts, ...snapAccounts];
+      } else if (keyring.type === KeyringTypes.snap) {
+        const thirdpartySnapAccounts =
+          entropySourceToAccountsMap[thirdpartySnaps] || [];
+        return [...internalAccounts, ...thirdpartySnapAccounts];
+      }
+      return [...internalAccounts, ...keyringAccounts];
+    }, []);
   },
 );
 
