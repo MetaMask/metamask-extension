@@ -645,6 +645,45 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
 }
 
 /**
+ * Based on the provided account address, return the balance for the native token of all chain networks on that account.
+ * Same as above, but accepts an account address as a parameter
+ *
+ * @param {object} state - Redux state
+ * @returns {object} An object of tokens with balances for the given account. Data relationship will be chainId => balance
+ */
+export function getAccountNativeTokenCachedBalanceByChainId(state) {
+  const { accountsByChainId } = state.metamask;
+  const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
+
+  const balancesByChainId = {};
+  for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
+    if (accounts[selectedAddress]) {
+      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    }
+  }
+  return balancesByChainId;
+}
+
+export const getAccountNativeTokenCachedBalanceByChainIdForAccount =
+  createDeepEqualSelector(
+    (_state, account) => account,
+    (state) => state.metamask.accountsByChainId,
+    (account, accountsByChainId) => {
+      if (!account?.address || !accountsByChainId) {
+        return {};
+      }
+
+      const balancesByChainId = {};
+      for (const [chainId, accounts] of Object.entries(accountsByChainId)) {
+        if (accounts[account.address]) {
+          balancesByChainId[chainId] = accounts[account.address].balance;
+        }
+      }
+      return balancesByChainId;
+    },
+  );
+
+/**
  * Based on the current account address, query for all tokens across all chain networks on that account,
  * including the native tokens, without hardcoding any native token information.
  *

@@ -89,6 +89,11 @@ const render = (props = {}, state = {}) => {
           },
         },
       },
+      accountsAssets: {
+        [mockNonEvmAccount.id]: [
+          'bip122:000000000019d6689c085ae165831e93/slip44:0',
+        ],
+      },
       rates: {
         btc: {
           conversionDate: 0,
@@ -120,7 +125,7 @@ const render = (props = {}, state = {}) => {
 };
 
 describe('AccountListItem', () => {
-  it('renders AccountListItem component and shows account name, address, and balance', () => {
+  it.only('renders AccountListItem component and shows account name, address, and balance', () => {
     const { container } = render();
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(

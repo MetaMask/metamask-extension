@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import BN from 'bn.js';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
-
 import { AccountListItemMenu } from '../account-list-item-menu';
 import { AvatarGroup } from '../avatar-group';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
@@ -55,6 +54,7 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
   getMetaMaskKeyrings,
+  getAccountNativeTokenCachedBalanceByChainIdForAccount,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -69,19 +69,21 @@ import {
 import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getAccountLabels } from '../../../helpers/utils/accounts';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 ///: END:ONLY_INCLUDE_IF
+import { stringifyBalance } from '../../../hooks/useTokenBalances';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -135,6 +137,8 @@ const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
 
+  const currentChainId = useSelector(getCurrentChainId);
+
   const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
   const isMainnet = !isTestnet;
   const shouldShowFiat = useMultichainSelector(
@@ -147,11 +151,13 @@ const AccountListItem = ({
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, account),
   );
-  ///: END:ONLY_INCLUDE_IF
+
+  const evmNativeTokenBalance = useSelector((state) =>
+    getAccountNativeTokenCachedBalanceByChainIdForAccount(state, account),
+  );
 
   // cross chain agg balance
   const shouldHideZeroBalanceTokens = useSelector(
@@ -244,16 +250,21 @@ const AccountListItem = ({
   };
 
   const getPreferredCurrencyValue = () => {
-    let value;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    value = isEvmNetwork
-      ? new BigNumber(account.balance).toNumber()
+    const value = isEvmNetwork
+      ? stringifyBalance(
+          new BN(hexToDecimal(evmNativeTokenBalance[currentChainId])),
+          new BN(18),
+          5, // precision for native token balance
+        )
       : account.balance;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    value = isEvmNetwork ? account.balance : balanceToTranslate;
-    ///: END:ONLY_INCLUDE_IF
-    return value;
+    if (value === '0') {
+      return '0';
+    }
+    const formattedValue = formatWithThreshold(value, 0.00001, locale, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 5,
+    });
+    return formattedValue;
   };
 
   return (
@@ -437,15 +448,7 @@ const AccountListItem = ({
                 textAlign={TextAlign.End}
                 as="div"
               >
-                <UserPreferencedCurrencyDisplay
-                  account={account}
-                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={getPreferredCurrencyValue()}
-                  type={SECONDARY}
-                  showNative
-                  data-testid="second-currency-display"
-                  privacyMode={privacyMode}
-                />
+                <Text>{getPreferredCurrencyValue()}</Text>
               </Text>
             </Box>
           )}
