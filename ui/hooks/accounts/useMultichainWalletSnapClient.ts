@@ -99,11 +99,12 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     options: WalletSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount> {
-    return await createSnapAccount(
-      this.#snapId,
-      { ...options, synchronize: true },
-      internalOptions,
-    );
+    const snapOptions =
+      this.#snapId === BITCOIN_WALLET_SNAP_ID
+        ? { ...options, synchronize: true }
+        : options;
+
+    return await createSnapAccount(this.#snapId, snapOptions, internalOptions);
   }
 
   async getNextAvailableAccountName(
