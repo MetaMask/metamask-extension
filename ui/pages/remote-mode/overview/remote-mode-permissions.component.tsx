@@ -80,15 +80,20 @@ export default function RemoteModePermissions({
       });
       for (const entry of entries) {
         switch (entry.tags[0]) {
-          case REMOTE_MODES.SWAP:
+          case REMOTE_MODES.SWAP: {
             const swapHash = getDelegationHashOffchain(entry.delegation);
             setDelegationHashSwap(swapHash);
             break;
-          case REMOTE_MODES.DAILY_ALLOWANCE:
+          }
+          case REMOTE_MODES.DAILY_ALLOWANCE: {
             const dailyAllowanceHash = getDelegationHashOffchain(
               entry.delegation,
             );
             setDelegationHashDailyAllowance(dailyAllowanceHash);
+            break;
+          }
+          default:
+            // no action needed for other tags (yet)
             break;
         }
       }
