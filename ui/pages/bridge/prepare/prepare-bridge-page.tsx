@@ -16,10 +16,8 @@ import {
   isSolanaChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
-  type BridgeController,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -378,17 +376,11 @@ const PrepareBridgePage = () => {
     ],
   );
 
-  const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce(
-      (
-        p: Partial<GenericQuoteRequest>,
-        c: Parameters<BridgeController['updateBridgeQuoteRequestParams']>[1],
-      ) => {
-        dispatch(updateQuoteRequestParams(p, c));
-      },
-      300,
-    ),
-    [],
+  const debouncedUpdateQuoteRequestInController = debounce(
+    (...args: Parameters<typeof updateQuoteRequestParams>) => {
+      dispatch(updateQuoteRequestParams(...args));
+    },
+    300,
   );
 
   useEffect(() => {
@@ -399,7 +391,8 @@ const PrepareBridgePage = () => {
       token_symbol_destination: toToken?.symbol ?? '',
       security_warnings: [],
     });
-  }, [quoteParams, debouncedUpdateQuoteRequestInController]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quoteParams]);
 
   const trackInputEvent = useCallback(
     (
