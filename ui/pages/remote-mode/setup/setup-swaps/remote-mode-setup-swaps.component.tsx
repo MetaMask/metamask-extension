@@ -128,7 +128,7 @@ export default function RemoteModeSetupSwaps() {
     async function fetchDelegations() {
       const delegation = await getDelegation(delegationHash as Hex);
       // TODO: handle if user changes account active account
-      if (delegation.meta) {
+      if (delegation?.meta) {
         const allowances = JSON.parse(delegation.meta);
         console.log(allowances);
         setSwapAllowance(allowances.allowances);
