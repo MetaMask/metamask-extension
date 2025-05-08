@@ -80,7 +80,7 @@ export async function waitForRelayResult(
     throw new Error(`Chain not supported by transaction relay - ${chainId}`);
   }
 
-  const url = `${baseUrl}/smart-transactions/${uuid}`;
+  const url = `${baseUrl}smart-transactions/${uuid}`;
 
   return new Promise<RelayWaitResponse>((resolve, reject) => {
     const intervalId = setInterval(async () => {
