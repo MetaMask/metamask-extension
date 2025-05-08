@@ -31,11 +31,13 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getBuildTypes, getVariables } from './utils/config';
+import { BuildConfig, getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 
-const buildTypes = getBuildTypes();
+const { loadBuildTypesConfig } = require('../lib/build-type');
+
+const buildTypes: BuildConfig = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
 if (args.dryRun) {
   console.error(getDryRunMessage(args, features));

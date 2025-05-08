@@ -1,13 +1,10 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { parse as parseYaml } from 'yaml';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
-
-const BUILDS_YML_PATH = join(__dirname, '../../../builds.yml');
 
 /**
  * Coerce `"true"`, `"false"`, and `"null"` to their respective JavaScript
@@ -164,6 +161,7 @@ export type BuildType = {
   env?: (string | { [k: string]: unknown })[];
   isPrerelease?: boolean;
   buildNameOverride?: string;
+  extends?: string;
 };
 
 export type BuildConfig = {
@@ -174,13 +172,6 @@ export type BuildConfig = {
     null | { env?: (string | { [k: string]: unknown })[] }
   >;
 };
-
-/**
- *
- */
-export function getBuildTypes(): BuildConfig {
-  return parseYaml(readFileSync(BUILDS_YML_PATH, 'utf8'));
-}
 
 /**
  * Loads configuration variables from process.env, .metamaskrc, and build.yml.
