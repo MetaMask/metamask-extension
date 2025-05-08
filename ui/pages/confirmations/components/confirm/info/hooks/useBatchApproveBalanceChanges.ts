@@ -12,6 +12,7 @@ import { parseApprovalTransactionData } from '../../../../../../../shared/module
 import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
 import { BalanceChange } from '../../../simulation-details/types';
 import { isSpendingCapUnlimited } from '../approve/hooks/use-approve-token-simulation';
+import { useMemo } from 'react';
 
 type ApprovalSimulationBalanceChange = SimulationTokenBalanceChange & {
   isAll: boolean;
@@ -40,18 +41,20 @@ export function useBatchApproveBalanceChanges() {
       },
     });
 
-  const finalBalanceChanges = (balanceChanges ?? []).map<ApprovalBalanceChange>(
-    (change, index) => {
-      const simulation = simulationBalanceChanges?.[index];
+  const finalBalanceChanges = useMemo(
+    () =>
+      (balanceChanges ?? []).map<ApprovalBalanceChange>((change, index) => {
+        const simulation = simulationBalanceChanges?.[index];
 
-      return {
-        ...change,
-        isApproval: true,
-        isAllApproval: simulation?.isAll ?? false,
-        isUnlimitedApproval: simulation?.isUnlimited ?? false,
-        nestedTransactionIndex: simulation?.nestedTransactionIndex ?? -1,
-      };
-    },
+        return {
+          ...change,
+          isApproval: true,
+          isAllApproval: simulation?.isAll ?? false,
+          isUnlimitedApproval: simulation?.isUnlimited ?? false,
+          nestedTransactionIndex: simulation?.nestedTransactionIndex ?? -1,
+        };
+      }),
+    [balanceChanges, simulationBalanceChanges],
   );
 
   const pending = pendingSimulationChanges || pendingBalanceChanges;
@@ -66,7 +69,7 @@ function useBatchApproveSimulationBalanceChanges({
 }) {
   return useAsyncResult(
     async () => buildSimulationTokenBalanceChanges({ nestedTransactions }),
-    [nestedTransactions],
+    [nestedTransactions?.length],
   );
 }
 
