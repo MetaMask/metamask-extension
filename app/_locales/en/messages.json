@@ -3321,6 +3321,9 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
+  "networkNameBitcoinTestnet": {
+    "message": "Bitcoin Testnet"
+  },
   "networkNameDefinition": {
     "message": "The name associated with this network."
   },
@@ -3893,6 +3896,9 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
+  },
+  "onekey": {
+    "message": "OneKey"
   },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
@@ -5167,10 +5173,10 @@
     "message": "Add multiple Secret Recovery Phrases"
   },
   "slideRemoteModeDescription": {
-    "message": "Access your hardware wallet without plugging it in"
+    "message": "Use your cold wallet wirelessly"
   },
   "slideRemoteModeTitle": {
-    "message": "Remote mode is here!"
+    "message": "Cold storage, fast access"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Same address, smarter features"
@@ -5216,6 +5222,9 @@
   },
   "smartAccountRequestFor": {
     "message": "Request for"
+  },
+  "smartAccountSameAccount": {
+    "message": "Same account, smarter features."
   },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"

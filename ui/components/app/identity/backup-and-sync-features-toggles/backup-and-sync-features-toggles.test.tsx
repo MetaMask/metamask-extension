@@ -5,6 +5,8 @@ import { render, fireEvent } from '@testing-library/react';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import * as useBackupAndSyncHook from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
 import { MetamaskIdentityProvider } from '../../../../contexts/identity';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   BackupAndSyncFeaturesToggles,
   backupAndSyncFeaturesTogglesTestIds,
@@ -34,6 +36,38 @@ describe('BackupAndSyncFeaturesToggles', () => {
     expect(
       getByTestId(backupAndSyncFeaturesTogglesTestIds.container),
     ).toBeInTheDocument();
+  });
+
+  it('tracks the toggle event', () => {
+    const mockTrackEvent = jest.fn();
+    const store = initialStore();
+
+    store.metamask.isProfileSyncingEnabled = true;
+    store.metamask.isAccountSyncingEnabled = true;
+    arrangeMocks();
+
+    const { getByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <BackupAndSyncFeaturesToggles />
+      </MetaMetricsContext.Provider>,
+      mockStore(store),
+    );
+    fireEvent.click(
+      getByTestId(
+        backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleButton,
+      ),
+    );
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      category: 'Settings',
+      event: 'Settings Updated',
+      properties: {
+        settings_group: 'backup_and_sync',
+        settings_type: 'accounts',
+        old_value: true,
+        new_value: false,
+        was_notifications_on: undefined,
+      },
+    });
   });
 
   it('enables account syncing', () => {

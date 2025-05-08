@@ -48,7 +48,7 @@ const render = ({
   isAddingNewNetwork = false,
   isAccessedFromDappConnectedSitePopover = false,
   editedNetwork = undefined,
-  nePortfolioDiscoverButton = false,
+  neNetworkDiscoverButton = { '0x531': true, '0xe708': true },
 } = {}) => {
   const state = {
     appState: {
@@ -84,8 +84,6 @@ const render = ({
               networkClientId: 'linea-mainnet',
             },
           ],
-          portfolioDiscoverUrl:
-            'https://portfolio.metamask.io/explore/networks/linea',
         },
         '0x38': {
           nativeCurrency: 'BNB',
@@ -155,7 +153,7 @@ const render = ({
           : {}),
       },
       remoteFeatureFlags: {
-        nePortfolioDiscoverButton,
+        neNetworkDiscoverButton,
       },
     },
     activeTab: {
@@ -282,10 +280,11 @@ describe('NetworkListMenu', () => {
     ).toHaveLength(0);
   });
 
-  // For now, we only have Linea Mainnet enabled for the discover button.
-  it('enables the "Discover" button when the Feature Flag `nePortfolioDiscoverButton` is true and the network is supported', () => {
+  it('enables the "Discover" for Linea Mainnet button when the Feature Flag `neNetworkDiscoverButton` is true for Linea and the network is supported', () => {
     const { queryByTestId } = render({
-      nePortfolioDiscoverButton: true,
+      neNetworkDiscoverButton: {
+        '0xe708': true,
+      },
     });
 
     const menuButton = queryByTestId(
@@ -300,9 +299,12 @@ describe('NetworkListMenu', () => {
     ).toBeInTheDocument();
   });
 
-  it('disables the "Discover" button when the Feature Flag `nePortfolioDiscoverButton` is false even if the network is supported', () => {
+  it('disables the "Discover" button when the Feature Flag `neNetworkDiscoverButton` is false for Linea even if the network is supported', () => {
     const { queryByTestId } = render({
-      nePortfolioDiscoverButton: false,
+      neNetworkDiscoverButton: {
+        '0x531': true,
+        '0xe708': false,
+      },
     });
 
     const menuButton = queryByTestId(
@@ -319,7 +321,9 @@ describe('NetworkListMenu', () => {
 
   it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`', () => {
     const { queryByTestId } = render({
-      nePortfolioDiscoverButton: true,
+      neNetworkDiscoverButton: {
+        '0x1': true,
+      },
     });
 
     const menuButton = queryByTestId(
