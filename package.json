@@ -325,7 +325,7 @@
     "@metamask/selected-network-controller": "^19.0.0",
     "@metamask/signature-controller": "^27.1.0",
     "@metamask/smart-transactions-controller": "^16.3.1",
-    "@metamask/snaps-controllers": "^11.2.2",
+    "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A11.2.2#~/.yarn/patches/@metamask-snaps-controllers-npm-11.2.2-59e531c8d0.patch",
     "@metamask/snaps-execution-environments": "^7.2.1",
     "@metamask/snaps-rpc-methods": "^12.1.0",
     "@metamask/snaps-sdk": "^6.22.0",
