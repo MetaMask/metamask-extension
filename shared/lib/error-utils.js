@@ -39,11 +39,6 @@ export const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   };
 };
 
-/**
- *
- * @param {string} errorBody
- * @returns {string}
- */
 export function getErrorHtmlBase(errorBody) {
   return `
     <div class="critical-error__container">
