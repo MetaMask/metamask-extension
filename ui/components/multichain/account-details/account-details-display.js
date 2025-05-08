@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEvmAccountType } from '@metamask/keyring-api';
 
 import EditableLabel from '../../ui/editable-label/editable-label';
 
@@ -35,17 +36,17 @@ import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP770
 import Preloader from '../../ui/icon/preloader';
 import { Tab, Tabs } from '../../ui/tabs';
 import { AccountDetailsSection } from './account-details-section';
-import { isEthAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export const AccountDetailsDisplay = ({
   accounts,
   accountName,
   address,
+  accountType,
   onExportClick,
 }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const formatedAddress = isEthAddress(address)
+  const formatedAddress = isEvmAccountType(accountType)
     ? toChecksumHexAddress(address)?.toLowerCase()
     : address;
   const [copied, handleCopy] = useCopyToClipboard();
