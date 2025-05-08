@@ -1,0 +1,72 @@
+diff --git a/dist/constants.cjs b/dist/constants.cjs
+index c2a8ba970e2a58c4e93c98ba7bf42fdfae0ece3b..03d8e0d8af6acfdaf572f1c4298e05f31108a315 100644
+--- a/dist/constants.cjs
++++ b/dist/constants.cjs
+@@ -37,18 +37,19 @@ exports.AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS = {
+         nativeCurrency: exports.SOL_NATIVE_ASSET,
+         isEvm: false,
+     },
+-    [keyring_api_1.SolScope.Testnet]: {
+-        chainId: keyring_api_1.SolScope.Testnet,
+-        name: 'Solana Testnet',
+-        nativeCurrency: exports.SOL_TESTNET_NATIVE_ASSET,
+-        isEvm: false,
+-    },
+-    [keyring_api_1.SolScope.Devnet]: {
+-        chainId: keyring_api_1.SolScope.Devnet,
+-        name: 'Solana Devnet',
+-        nativeCurrency: exports.SOL_DEVNET_NATIVE_ASSET,
+-        isEvm: false,
+-    },
++    // PATCH: Uncomment when Solana Testnet and Devnet are supported
++    // [keyring_api_1.SolScope.Testnet]: {
++    //     chainId: keyring_api_1.SolScope.Testnet,
++    //     name: 'Solana Testnet',
++    //     nativeCurrency: exports.SOL_TESTNET_NATIVE_ASSET,
++    //     isEvm: false,
++    // },
++    // [keyring_api_1.SolScope.Devnet]: {
++    //     chainId: keyring_api_1.SolScope.Devnet,
++    //     name: 'Solana Devnet',
++    //     nativeCurrency: exports.SOL_DEVNET_NATIVE_ASSET,
++    //     isEvm: false,
++    // },
+ };
+ /**
+  * Array of all the Non-EVM chain IDs.
+diff --git a/dist/constants.mjs b/dist/constants.mjs
+index fa324b8067e8701c82b87442db845718fcfe6f3e..55b494cef22ae0550ea266261496825c69f4582b 100644
+--- a/dist/constants.mjs
++++ b/dist/constants.mjs
+@@ -34,18 +34,19 @@ export const AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS = {
+         nativeCurrency: SOL_NATIVE_ASSET,
+         isEvm: false,
+     },
+-    [SolScope.Testnet]: {
+-        chainId: SolScope.Testnet,
+-        name: 'Solana Testnet',
+-        nativeCurrency: SOL_TESTNET_NATIVE_ASSET,
+-        isEvm: false,
+-    },
+-    [SolScope.Devnet]: {
+-        chainId: SolScope.Devnet,
+-        name: 'Solana Devnet',
+-        nativeCurrency: SOL_DEVNET_NATIVE_ASSET,
+-        isEvm: false,
+-    },
++    // PATCH: Uncomment when Solana Testnet and Devnet are supported
++    // [SolScope.Testnet]: {
++    //     chainId: SolScope.Testnet,
++    //     name: 'Solana Testnet',
++    //     nativeCurrency: SOL_TESTNET_NATIVE_ASSET,
++    //     isEvm: false,
++    // },
++    // [SolScope.Devnet]: {
++    //     chainId: SolScope.Devnet,
++    //     name: 'Solana Devnet',
++    //     nativeCurrency: SOL_DEVNET_NATIVE_ASSET,
++    //     isEvm: false,
++    // },
+ };
+ /**
+  * Array of all the Non-EVM chain IDs.
