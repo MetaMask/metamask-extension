@@ -80,8 +80,10 @@ const AssetListControlBar = ({
     useState(false);
 
   const isTestNetwork = useMemo(() => {
-    return (TEST_CHAINS as string[]).includes(currentMultichainNetwork.chainId);
-  }, [currentMultichainNetwork.chainId]);
+    return (TEST_CHAINS as string[]).includes(
+      currentMultichainNetwork.network.chainId,
+    );
+  }, [currentMultichainNetwork.network.chainId]);
 
   const allOpts: Record<string, boolean> = {};
   Object.keys(allNetworks || {}).forEach((chainId) => {
@@ -90,10 +92,12 @@ const AssetListControlBar = ({
 
   useEffect(() => {
     if (isTestNetwork) {
-      const testnetFilter = { [currentMultichainNetwork.chainId]: true };
+      const testnetFilter = {
+        [currentMultichainNetwork.network.chainId]: true,
+      };
       dispatch(setTokenNetworkFilter(testnetFilter));
     }
-  }, [isTestNetwork, currentMultichainNetwork.chainId, dispatch]);
+  }, [isTestNetwork, currentMultichainNetwork.network.chainId, dispatch]);
 
   // TODO: This useEffect should be a migration
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
@@ -103,7 +107,9 @@ const AssetListControlBar = ({
       dispatch(setTokenNetworkFilter(allOpts));
     } else {
       dispatch(
-        setTokenNetworkFilter({ [currentMultichainNetwork.chainId]: true }),
+        setTokenNetworkFilter({
+          [currentMultichainNetwork.network.chainId]: true,
+        }),
       );
     }
   }, []);
@@ -113,7 +119,9 @@ const AssetListControlBar = ({
   useEffect(() => {
     if (Object.keys(tokenNetworkFilter).length === 1) {
       dispatch(
-        setTokenNetworkFilter({ [currentMultichainNetwork.chainId]: true }),
+        setTokenNetworkFilter({
+          [currentMultichainNetwork.network.chainId]: true,
+        }),
       );
     } else {
       dispatch(setTokenNetworkFilter(allOpts));
@@ -170,6 +178,18 @@ const AssetListControlBar = ({
     });
   };
 
+  const isDisabled = useMemo(() => {
+    const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(
+      currentMultichainNetwork.network.chainId as Hex,
+    );
+
+    return (
+      !currentMultichainNetwork.isEvmNetwork ||
+      isTestNetwork ||
+      !isPopularNetwork
+    );
+  }, [currentMultichainNetwork, isTestNetwork]);
+
   return (
     <Box
       className="asset-list-control-bar"
@@ -184,13 +204,7 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
           onClick={toggleNetworkFilterPopover}
           size={ButtonBaseSize.Sm}
-          disabled={
-            !currentMultichainNetwork.isEvmNetwork ||
-            isTestNetwork ||
-            !FEATURED_NETWORK_CHAIN_IDS.includes(
-              currentMultichainNetwork.chainId as Hex,
-            )
-          }
+          disabled={isDisabled}
           endIconName={IconName.ArrowDown}
           backgroundColor={
             isNetworkFilterPopoverOpen
@@ -201,7 +215,8 @@ const AssetListControlBar = ({
           marginRight={isFullScreen ? 2 : null}
           ellipsis
         >
-          {isTokenNetworkFilterEqualCurrentNetwork
+          {isTokenNetworkFilterEqualCurrentNetwork ||
+          !currentMultichainNetwork.isEvmNetwork
             ? currentMultichainNetwork?.nickname ?? t('currentNetwork')
             : t('popularNetworks')}
         </ButtonBase>
