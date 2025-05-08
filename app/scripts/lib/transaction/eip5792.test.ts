@@ -14,7 +14,7 @@ import {
   SendCalls,
   SendCallsParams,
 } from '@metamask/eth-json-rpc-middleware';
-import { Hex, JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcRequest } from '@metamask/utils';
 import { Messenger } from '@metamask/base-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
