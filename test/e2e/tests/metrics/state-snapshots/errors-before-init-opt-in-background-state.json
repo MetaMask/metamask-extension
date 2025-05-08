@@ -48,19 +48,7 @@
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
-    "BridgeController": {
-      "bridgeFeatureFlags": {
-        "mobileConfig": "object",
-        "extensionConfig": {
-          "support": "boolean",
-          "chains": {
-            "eip155:1": "object",
-            "eip155:10": "object",
-            "eip155:59144": "object"
-          }
-        }
-      }
-    },
+    "BridgeController": {},
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
