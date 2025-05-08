@@ -592,6 +592,7 @@ const PrepareBridgePage = () => {
             dispatch(setFromTokenInputValue(value));
           }}
           amountInFiat={fromAmountInCurrency.valueInCurrency.toString()}
+          balanceAmount={srcTokenBalance}
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
@@ -833,6 +834,8 @@ const PrepareBridgePage = () => {
                 ))}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
+                  nativeAssetBalance={nativeAssetBalance}
+                  srcTokenBalance={srcTokenBalance}
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
                       stx_enabled: smartTransactionsEnabled,
