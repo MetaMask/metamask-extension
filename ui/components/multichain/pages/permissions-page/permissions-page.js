@@ -37,7 +37,7 @@ export const PermissionsPage = () => {
   const sitesConnectionsList = useSelector(
     getConnectedSitesListWithNetworkInfo,
   );
-
+console.log(totalConnections, sitesConnectionsList);
   useEffect(() => {
     setTotalConnections(Object.keys(sitesConnectionsList).length);
   }, [sitesConnectionsList]);
