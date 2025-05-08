@@ -1678,8 +1678,7 @@
     },
     "@metamask/keyring-controller": {
       "globals": {
-        "console.error": true,
-        "console.log": true
+        "console.error": true
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
