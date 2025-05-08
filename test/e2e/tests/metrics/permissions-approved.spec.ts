@@ -73,7 +73,7 @@ describe('Permissions Approved Event', function (this: Suite) {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
+          api_source: MetaMetricsRequestedThrough.EthereumProvider,
         });
         assert.deepStrictEqual(events[1].properties, {
           method: 'eth_requestAccounts',
@@ -81,7 +81,7 @@ describe('Permissions Approved Event', function (this: Suite) {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          requested_through: MetaMetricsRequestedThrough.EthereumProvider,
+          api_source: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
     );
