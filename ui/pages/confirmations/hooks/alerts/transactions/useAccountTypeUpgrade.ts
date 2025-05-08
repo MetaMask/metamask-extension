@@ -5,9 +5,8 @@ import { useConfirmContext } from '../../../context/confirm';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
-import { AccountTypeMessage } from './AccountTypeMessage';
 import { useIsUpgradeTransaction } from '../../../components/confirm/info/hooks/useIsUpgradeTransaction';
+import { AccountTypeMessage } from './AccountTypeMessage';
 
 export function useAccountTypeUpgrade(): Alert[] {
   const t = useI18nContext();

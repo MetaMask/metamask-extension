@@ -1,15 +1,16 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
-import { genUnapprovedApproveConfirmation } from '../../../../../../test/data/confirmations/token-approve';
-import { useAccountTypeUpgrade } from './useAccountTypeUpgrade';
-import { AccountTypeMessage } from './AccountTypeMessage';
-import { upgradeAccountConfirmation, upgradeAccountConfirmationOnly } from '../../../../../../test/data/confirmations/batch-transaction';
-import { Confirmation } from '../../../types/confirm';
+import {
+  upgradeAccountConfirmation,
+  upgradeAccountConfirmationOnly,
+} from '../../../../../../test/data/confirmations/batch-transaction';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../test/data/confirmations/token-transfer';
+import { Confirmation } from '../../../types/confirm';
+import { AccountTypeMessage } from './AccountTypeMessage';
+import { useAccountTypeUpgrade } from './useAccountTypeUpgrade';
 
 jest.mock('../../../../../../shared/lib/transactions.utils');
 jest.mock(
