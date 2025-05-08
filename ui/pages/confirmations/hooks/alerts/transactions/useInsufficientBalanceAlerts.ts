@@ -19,7 +19,6 @@ import {
 } from '../../../../../components/app/confirm/info/row/constants';
 import { isBalanceSufficient } from '../../../send/send.utils';
 import { useConfirmContext } from '../../../context/confirm';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
   const t = useI18nContext();
