@@ -6,5 +6,8 @@ on:
 jobs:
   stale:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
       - uses: metamask/github-tools/.github/workflows/stale-issue-pr.yml@90cfe5370ad6496b1c61eaaf81c51751290b1c33
