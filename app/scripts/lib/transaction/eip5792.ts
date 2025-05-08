@@ -317,12 +317,12 @@ function validateUserDisabled(
   const isDisabled =
     disabledUpgradeAccountsByChain[dappChainId]?.includes(addressLowerCase);
 
-  if (isDisabled || dismissSmartAccountSuggestionEnabled) {
-    throw new JsonRpcError(
-      EIP5792ErrorCode.RejectedUpgrade,
-      `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
-    );
-  }
+  // if (isDisabled || dismissSmartAccountSuggestionEnabled) {
+  //   throw new JsonRpcError(
+  //     EIP5792ErrorCode.RejectedUpgrade,
+  //     `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
+  //   );
+  // }
 }
 
 function getStatusCode(transactionMeta: TransactionMeta) {

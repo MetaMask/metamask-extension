@@ -5,6 +5,8 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { add0x } from '@metamask/utils';
+import { useMemo } from 'react';
+
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAsyncResult } from '../../../../../../hooks/useAsync';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
@@ -12,7 +14,6 @@ import { parseApprovalTransactionData } from '../../../../../../../shared/module
 import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
 import { BalanceChange } from '../../../simulation-details/types';
 import { isSpendingCapUnlimited } from '../approve/hooks/use-approve-token-simulation';
-import { useMemo } from 'react';
 
 type ApprovalSimulationBalanceChange = SimulationTokenBalanceChange & {
   isAll: boolean;
