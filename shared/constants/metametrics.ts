@@ -91,7 +91,7 @@ export type MetaMetricsEventPayload = {
   /**
    * The category to associate the event to.
    */
-  category: string;
+  category?: string;
   /**
    * The action ID to deduplicate event requests from the UI.
    */
@@ -205,7 +205,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event category to use for both the success and failure events.
    */
-  category: string;
+  category?: string;
   /**
    * Should this fragment be persisted in state and progressed after the
    * extension is locked and unlocked.

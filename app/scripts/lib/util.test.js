@@ -280,6 +280,17 @@ describe('app utils', () => {
         shouldEmitDappViewedEvent('fake-metrics-id-invalid'),
       ).toStrictEqual(false);
     });
+
+    it('should return false for Firefox', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0) Gecko/20100101 Firefox/95.0',
+        );
+      expect(shouldEmitDappViewedEvent('fake-metrics-id-fd20')).toStrictEqual(
+        false,
+      );
+    });
   });
 
   describe('formatTxMetaForRpcResult', () => {

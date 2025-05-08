@@ -3900,6 +3900,9 @@
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
   },
+  "onekey": {
+    "message": "OneKey"
+  },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."

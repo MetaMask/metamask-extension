@@ -120,44 +120,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
       },
-      BridgeController: {
-        bridgeFeatureFlags: {
-          mobileConfig: {
-            support: false,
-            chains: {
-              'eip155:1': {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-              'eip155:10': {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-              'eip155:59144': {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-            },
-          },
-          extensionConfig: {
-            support: false,
-            chains: {
-              'eip155:1': {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-              'eip155:10': {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-              'eip155:59144': {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-            },
-          },
-        },
-      },
+      BridgeController: {},
       CurrencyController: {
         currentCurrency: 'usd',
         currencyRates: {
