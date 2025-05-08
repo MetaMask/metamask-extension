@@ -200,7 +200,7 @@ describe('useInsufficientBalanceAlerts', () => {
       balance: 7,
       currentConfirmation: TRANSACTION_MOCK,
       transaction: TRANSACTION_MOCK,
-      selectedNetworkClientId: 'testNetworkConfigurationId'
+      selectedNetworkClientId: 'testNetworkConfigurationId',
     });
 
     expect(alerts).toEqual(ALERT);
