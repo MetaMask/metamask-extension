@@ -113,7 +113,7 @@ export class PortPolyfill implements chrome.runtime.Port {
 // #endregion PortPolyfill
 
 // #region Scenarios
-export type OneThreeFive = 1 | 3 | 5;
+export type OneOrFive = 1 | 5;
 
 export type Scenario = {
   /**
@@ -130,7 +130,7 @@ export type Scenario = {
   /**
    * The number of MetaMask UI windows should receive the error message.
    */
-  uiCount: OneThreeFive;
+  uiCount: OneOrFive;
 
   /**
    * The number of `uiCount` windows that should "click" their `Repair` button.
@@ -182,7 +182,7 @@ const REPAIR_STATES: RepairState[] = [
   null,
   new Error('Simulated repair error'),
 ];
-const UI_COUNTS: OneThreeFive[] = [1, 5];
+const UI_COUNTS: OneOrFive[] = [1, 5];
 
 // #region Scenarios.Helpers
 /**
