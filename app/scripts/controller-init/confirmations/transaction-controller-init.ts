@@ -62,6 +62,7 @@ export const TransactionControllerInit: ControllerInitFunction<
   } = request;
 
   const {
+    delegationController,
     gasFeeController,
     keyringController,
     networkController,
@@ -124,7 +125,12 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      afterAdd: updateRemoteModeTransaction,
+      afterAdd: ({ transactionMeta }) => {
+        return updateRemoteModeTransaction({
+          delegationController: delegationController(),
+          transactionMeta,
+        });
+      },
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:publishHook',
@@ -208,6 +214,7 @@ function getControllers(
   >,
 ) {
   return {
+    delegationController: () => request.getController('DelegationController'),
     gasFeeController: () => request.getController('GasFeeController'),
     keyringController: () => request.getController('KeyringController'),
     networkController: () => request.getController('NetworkController'),
