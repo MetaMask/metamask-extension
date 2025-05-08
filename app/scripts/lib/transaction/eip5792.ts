@@ -85,7 +85,6 @@ export async function processSendCalls(
 
   validateSendCalls(
     params,
-    from,
     dappChainId,
     dismissSmartAccountSuggestionEnabled,
     chainBatchSupport,
@@ -205,7 +204,6 @@ export async function getCapabilities(
 
 function validateSendCalls(
   sendCalls: SendCalls,
-  from: Hex,
   dappChainId: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
@@ -214,12 +212,7 @@ function validateSendCalls(
   validateSendCallsChainId(sendCalls, dappChainId, chainBatchSupport);
   validateCapabilities(sendCalls);
 
-  validateUserDisabled(
-    from,
-    dappChainId,
-    dismissSmartAccountSuggestionEnabled,
-    chainBatchSupport,
-  );
+  validateUserDisabled(dismissSmartAccountSuggestionEnabled, chainBatchSupport);
 }
 
 function validateSendCallsVersion(sendCalls: SendCalls) {
@@ -285,8 +278,6 @@ function validateCapabilities(sendCalls: SendCalls) {
 }
 
 function validateUserDisabled(
-  from: Hex,
-  dappChainId: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
 ) {
@@ -297,7 +288,7 @@ function validateUserDisabled(
   if (dismissSmartAccountSuggestionEnabled) {
     throw new JsonRpcError(
       EIP5792ErrorCode.RejectedUpgrade,
-      `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
+      'EIP-7702 upgrade disabled by the user',
     );
   }
 }
