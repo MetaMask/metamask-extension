@@ -138,7 +138,16 @@ describe('AccountListItem', () => {
   });
 
   it('renders AccountListItem component and shows account name, address, and balance for non-EVM account', () => {
-    const { container } = render({ account: mockNonEvmAccount });
+    const { container } = render(
+      { account: mockNonEvmAccount },
+      {
+        metamask: {
+          accountsAssets: {
+            [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
+          },
+        },
+      },
+    );
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(
       screen.getByText(shortenAddress(mockNonEvmAccount.address)),
