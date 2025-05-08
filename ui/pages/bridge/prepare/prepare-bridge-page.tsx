@@ -171,6 +171,7 @@ const PrepareBridgePage = () => {
     isLoading,
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
+    quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
@@ -213,7 +214,6 @@ const PrepareBridgePage = () => {
     isInsufficientGasForQuote,
     isInsufficientBalance,
   } = useSelector(getValidationErrors);
-  const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
   const nativeAsset = useMemo(
