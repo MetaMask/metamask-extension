@@ -6,6 +6,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u;
@@ -27,7 +28,7 @@ export const METAMASK_PHISHING_DETECTION_API =
 export const METAMASK_CLIENT_SIDE_DETECTION_REGEX =
   /^https:\/\/client-side-detection\.api\.cx\.metamask\.io\/$/u;
 export const ACCOUNTS_API =
-  /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/0x5cfe73b6021e818b776b421b1c4db2474086a7e1\/$/u;
+  /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/0x.+\/$/u;
 export const SOLANA_TOKEN_PROGRAM =
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export enum SendFlowPlaceHolders {
@@ -536,6 +537,13 @@ export async function mockTokenApiMainnetTest(mockServer: Mockttp) {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
         name: 'PUMPKIN',
         symbol: 'PKIN',
+      },
+      {
+        decimals: 6,
+        assetId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:GkyZ3xtwoA35nTXE1t26uKGL6jjiC6zM9pGjvdtpump',
+        name: 'seek16z',
+        symbol: 'seek16z',
       },
     ],
   };
@@ -2082,6 +2090,35 @@ export async function mockGetTokenAccountsByOwner(
                 },
                 pubkey: 'EzG33TbDzHVaWBqgQgHhtQSY6tcAVsWub6hBRepcsDt4',
               },
+              {
+                account: {
+                  data: {
+                    parsed: {
+                      info: {
+                        isNative: false,
+                        mint: 'GkyZ3xtwoA35nTXE1t26uKGL6jjiC6zM9pGjvdtpump',
+                        owner: 'CKFo3yPDXvpT8xbA5WQWi25VP2Rgf8CwP4G3MUAi8BB4',
+                        state: 'initialized',
+                        tokenAmount: {
+                          amount: '5000000',
+                          decimals: 6,
+                          uiAmount: 5,
+                          uiAmountString: '5',
+                        },
+                      },
+                      type: 'account',
+                    },
+                    program: 'spl-token',
+                    space: 165,
+                  },
+                  executable: false,
+                  lamports: 2039280,
+                  owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+                  rentEpoch: 18446744073709552000,
+                  space: 165,
+                },
+                pubkey: '5PnjF151TG4w1m6KX5domB2ahas3Q2X9LaTM5Fb7LEjS',
+              },
             ],
           },
         },
@@ -2388,6 +2425,7 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
+      smartContract: SMART_CONTRACTS.HST,
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
         // component, which will impact to the slides count.
