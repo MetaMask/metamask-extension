@@ -218,7 +218,7 @@ function buildStore(
  * @param ok - the value to use if `value` is not a special case
  * @returns the shorthand label for the given value
  */
-function lbl(value: unknown, ok: string): string {
+function getShortLabel(value: unknown, ok: string): string {
   switch (value) {
     case 'missing':
       return '∅';
@@ -273,10 +273,10 @@ export function generateScenarios(): Scenario[] {
             currentLocale,
           };
 
-          const baseName = `vault:${lbl(vault, 'data')} locale:${lbl(
-            locale,
-            'en',
-          )}`;
+          const baseName = `vault:${getShortLabel(
+            vault,
+            'data',
+          )} locale:${getShortLabel(locale, 'en')}`;
 
           for (const repairValue of REPAIR_STATES) {
             for (const uiCount of UI_COUNTS) {
@@ -304,7 +304,7 @@ export function generateScenarios(): Scenario[] {
                       ` | ui:${uiCount}` +
                       ` click:${clickedUiCount}` +
                       ` close:${earlyDisconnectUiCount}` +
-                      ` repair:${lbl(repairValue, '')}`,
+                      ` repair:${getShortLabel(repairValue, '')}`,
                   });
                 }
               }
