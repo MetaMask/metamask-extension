@@ -61,7 +61,7 @@ async function runCommand(command, args) {
       if (errorCode !== null && errorSignal !== null) {
         errorMessage = `Terminated by signal '${errorSignal}'; exited with code '${errorCode}'`;
       } else if (errorSignal !== null) {
-        errorMessage = `Terminaled by signal '${errorSignal}'`;
+        errorMessage = `Terminated by signal '${errorSignal}'`;
       } else if (errorCode === null) {
         errorMessage = 'Exited with no code or signal';
       } else {
@@ -90,7 +90,7 @@ async function runCommand(command, args) {
  * @param {Array<string>} [args] - The arguments to pass to the command
  * @param {string} output - The output file to write to
  */
-async function runInShell(command, args, output) {
+async function runInShell(command, args, output = undefined) {
   let errorSignal;
   let errorCode;
   const internalError = new Error('Internal');
@@ -125,7 +125,7 @@ async function runInShell(command, args, output) {
       if (errorCode !== null && errorSignal !== null) {
         errorMessage = `Terminated by signal '${errorSignal}'; exited with code '${errorCode}'`;
       } else if (errorSignal !== null) {
-        errorMessage = `Terminaled by signal '${errorSignal}'`;
+        errorMessage = `Terminated by signal '${errorSignal}'`;
       } else if (errorCode === null) {
         errorMessage = 'Exited with no code or signal';
       } else {
