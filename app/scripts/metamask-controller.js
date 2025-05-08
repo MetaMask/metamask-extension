@@ -4836,7 +4836,7 @@ export default class MetamaskController extends EventEmitter {
       this.permissionController.clearState();
 
       // Clear snap state
-      this.snapController.clearState();
+      await this.snapController.clearState();
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
