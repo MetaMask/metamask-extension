@@ -35,6 +35,7 @@ import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP770
 import Preloader from '../../ui/icon/preloader';
 import { Tab, Tabs } from '../../ui/tabs';
 import { AccountDetailsSection } from './account-details-section';
+import { isEthAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export const AccountDetailsDisplay = ({
   accounts,
@@ -44,11 +45,13 @@ export const AccountDetailsDisplay = ({
 }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const checksummedAddress = toChecksumHexAddress(address)?.toLowerCase();
+  const formatedAddress = isEthAddress(address)
+    ? toChecksumHexAddress(address)?.toLowerCase()
+    : address;
   const [copied, handleCopy] = useCopyToClipboard();
   const handleClick = useCallback(() => {
-    handleCopy(checksummedAddress);
-  }, [checksummedAddress, handleCopy]);
+    handleCopy(formatedAddress);
+  }, [formatedAddress, handleCopy]);
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
   const { networkSupporting7702Present, pending } = useEIP7702Networks(address);
@@ -81,7 +84,7 @@ export const AccountDetailsDisplay = ({
           data-testid="account-address-shortened"
           marginBottom={4}
         >
-          {shortenString(checksummedAddress, {
+          {shortenString(formatedAddress, {
             truncatedStartChars: 12,
             truncatedEndChars: 10,
           })}
