@@ -9,7 +9,7 @@ import { getErrorHtmlBase } from '../../../shared/lib/error-utils';
 import type { ErrorLike } from '../../../shared/constants/errors';
 import { switchDirectionForPreferredLocale } from '../../../shared/lib/switch-direction';
 import getFirstPreferredLangCode from '../../../shared/lib/get-first-preferred-lang-code';
-import { METHOD_REPAIR_DATABASE } from '../../../shared/lib/state-corruption-utils';
+import { METHOD_REPAIR_DATABASE } from '../../../shared/constants/state-corruption';
 import { t, updateCurrentLocale } from '../../../shared/lib/translate';
 
 export async function getStateCorruptionErrorHtml(

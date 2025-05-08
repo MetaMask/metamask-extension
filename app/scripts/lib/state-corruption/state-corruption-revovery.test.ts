@@ -2,7 +2,7 @@ import 'navigator.locks';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   METHOD_REPAIR_DATABASE,
-} from '../../../../shared/lib/state-corruption-utils';
+} from '../../../../shared/constants/state-corruption';
 import {
   Backup,
   PersistenceError,

@@ -3,7 +3,7 @@ import log from 'loglevel';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   METHOD_REPAIR_DATABASE,
-} from '../../../../shared/lib/state-corruption-utils';
+} from '../../../../shared/constants/state-corruption';
 import { type Backup, PersistenceManager } from '../stores/persistence-manager';
 import { ErrorLike } from '../../../../shared/constants/errors';
 
