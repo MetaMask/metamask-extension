@@ -280,38 +280,21 @@ describe('Account Tracker API polling', function () {
         );
 
         // TODO: expecting the length of infuraJsonRpcRequests would be more accurate
-        if (process.env.PORTFOLIO_VIEW) {
-          const ethCallInfuraRequests = infuraJsonRpcRequests.filter(
-            (obj) =>
-              obj.method === 'eth_call' &&
-              (obj.params as unknown[])?.[1] === '3',
-          );
+        const ethCallInfuraRequests = infuraJsonRpcRequests.filter(
+          (obj) =>
+            obj.method === 'eth_call' && (obj.params as unknown[])?.[1] === '3',
+        );
 
-          const ethGetBalanceInfuraRequests = infuraJsonRpcRequests.filter(
-            (obj) =>
-              obj.method === 'eth_getBalance' &&
-              (obj.params as unknown[])?.[1] === '3',
-          );
+        const ethGetBalanceInfuraRequests = infuraJsonRpcRequests.filter(
+          (obj) =>
+            obj.method === 'eth_getBalance' &&
+            (obj.params as unknown[])?.[1] === '3',
+        );
 
-          // We will call eth_getBalance for Sepolia and Linea Sepolia because multicall is not available for them
-          expect(ethGetBalanceInfuraRequests.length).toEqual(2);
-          // We will call eth_call for linea mainnet and mainnet
-          expect(ethCallInfuraRequests.length).toEqual(2);
-        } else {
-          expect(
-            infuraJsonRpcRequests.some(
-              (obj) => obj.method === 'eth_blockNumber',
-            ),
-          ).toBeTruthy();
-          expect(
-            infuraJsonRpcRequests.some(
-              (obj) => obj.method === 'eth_getBlockByNumber',
-            ),
-          ).toBeTruthy();
-          expect(
-            infuraJsonRpcRequests.some((obj) => obj.method === 'eth_call'),
-          ).toBeTruthy();
-        }
+        // We will call eth_getBalance for Sepolia and Linea Sepolia because multicall is not available for them
+        expect(ethGetBalanceInfuraRequests.length).toEqual(2);
+        // We will call eth_call for linea mainnet and mainnet
+        expect(ethCallInfuraRequests.length).toEqual(2);
       },
     );
   });
@@ -348,32 +331,30 @@ describe('Account Tracker API polling', function () {
     ];
   }
   it('should make token detection calls to account api as expected', async function () {
-    if (process.env.PORTFOLIO_VIEW) {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder()
-            .withNetworkControllerOnMainnet()
-            .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: mockAccountApiForPortfolioView,
-        },
-        async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-          await loginWithoutBalanceValidation(driver);
-          const homepage = new HomePage(driver);
-          await homepage.check_pageIsLoaded();
-          await driver.delay(DELAY_UNTIL_NEXT_POLL);
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockAccountApiForPortfolioView,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await loginWithoutBalanceValidation(driver);
+        const homepage = new HomePage(driver);
+        await homepage.check_pageIsLoaded();
+        await driver.delay(DELAY_UNTIL_NEXT_POLL);
 
-          for (const single of mockedEndpoints) {
-            const requests = await single.getSeenRequests();
-            assert.equal(
-              requests.length,
-              1,
-              `${single} should make requests after onboarding`,
-            );
-          }
-        },
-      );
-    }
+        for (const single of mockedEndpoints) {
+          const requests = await single.getSeenRequests();
+          assert.equal(
+            requests.length,
+            1,
+            `${single} should make requests after onboarding`,
+          );
+        }
+      },
+    );
   });
 });

@@ -15,25 +15,14 @@ jest.mock('../store/actions', () => ({
   }),
   tokenDetectionStopPollingByPollingToken: jest.fn(),
 }));
-let originalPortfolioView: string | undefined;
 
 describe('useTokenDetectionPolling', () => {
   beforeEach(() => {
-    // Mock process.env.PORTFOLIO_VIEW
-    originalPortfolioView = process.env.PORTFOLIO_VIEW;
-    process.env.PORTFOLIO_VIEW = 'true'; // Set your desired mock value here
-
     mockPromises = [];
     jest.clearAllMocks();
   });
 
-  afterEach(() => {
-    // Restore the original value
-    process.env.PORTFOLIO_VIEW = originalPortfolioView;
-  });
-
   it('should poll token detection for chain IDs when enabled and stop on dismount', async () => {
-    process.env.PORTFOLIO_VIEW = 'true';
     const state = {
       metamask: {
         isUnlocked: true,

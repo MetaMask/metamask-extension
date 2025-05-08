@@ -237,7 +237,6 @@ const withMetamaskConnectedToMainnet = {
 
 describe('Defi positions list', () => {
   beforeEach(() => {
-    process.env.PORTFOLIO_VIEW = 'true';
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
   });
