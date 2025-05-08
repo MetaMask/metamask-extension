@@ -1,15 +1,15 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { CaipChainId } from '@metamask/utils';
+import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { CreateSnapAccount } from './create-snap-account';
-import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
 import { WalletSnapOptions } from '../../../../shared/lib/accounts';
+import { CreateSnapAccount } from './create-snap-account';
 
 const newSnapAccount = createMockInternalAccount({
   name: 'Snap Account 2',
