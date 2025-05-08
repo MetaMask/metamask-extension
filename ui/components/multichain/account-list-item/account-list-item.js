@@ -251,7 +251,6 @@ const AccountListItem = ({
   };
 
   const getPreferredCurrencyValue = () => {
-    console.log('IS EVM NETWORK: ', isEvmNetwork);
     const value = isEvmNetwork
       ? stringifyBalance(
           new BN(hexToDecimal(evmNativeTokenBalance[currentChainId])),
@@ -450,7 +449,7 @@ const AccountListItem = ({
                 textAlign={TextAlign.End}
                 as="div"
               >
-                <Text>{getPreferredCurrencyValue()}</Text>
+                <Text data-testid="second-currency-display">{`${getPreferredCurrencyValue()} ${nativeCurrency}`}</Text>
               </Text>
             </Box>
           )}

@@ -196,8 +196,9 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              data-testid="second-currency-display"
             >
-              966.98798
+              966.98798 ETH
             </p>
           </div>
         </div>
