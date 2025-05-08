@@ -7,14 +7,10 @@ import { getMockConfirmStateForTransaction } from '../../../../../../../test/dat
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { upgradeAccountConfirmation } from '../../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../../types/confirm';
-import {
-  disableAccountUpgrade,
-  rejectPendingApproval,
-} from '../../../../../../store/actions';
+import { rejectPendingApproval } from '../../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
 jest.mock('../../../../../../store/actions', () => ({
-  disableAccountUpgrade: jest.fn(),
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
 }));
@@ -81,7 +77,6 @@ describe('Splash', () => {
         name: /Don’t use smart account/iu,
       }),
     );
-    expect(disableAccountUpgrade).toHaveBeenCalledTimes(1);
     await flushPromises();
     expect(rejectPendingApproval).toHaveBeenCalledTimes(1);
   });

@@ -93,10 +93,6 @@ describe('EIP-5792', () => {
     TransactionControllerGetStateAction['handler']
   > = jest.fn();
 
-  const getDisabledUpgradeAccountsByChainMock: jest.MockedFn<
-    () => Record<Hex, Hex[]>
-  > = jest.fn();
-
   const isAtomicBatchSupportedMock: jest.MockedFn<
     TransactionController['isAtomicBatchSupported']
   > = jest.fn();
@@ -113,7 +109,6 @@ describe('EIP-5792', () => {
 
   const sendCallsHooks = {
     addTransactionBatch: addTransactionBatchMock,
-    getDisabledUpgradeAccountsByChain: getDisabledUpgradeAccountsByChainMock,
     getDismissSmartAccountSuggestionEnabled:
       getDismissSmartAccountSuggestionEnabledMock,
     isAtomicBatchSupported: isAtomicBatchSupportedMock,
@@ -150,7 +145,6 @@ describe('EIP-5792', () => {
       batchId: BATCH_ID_MOCK,
     });
 
-    getDisabledUpgradeAccountsByChainMock.mockReturnValue({});
     getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(false);
 
     isAtomicBatchSupportedMock.mockResolvedValue([
@@ -237,10 +231,6 @@ describe('EIP-5792', () => {
     });
 
     it('throws if disabled preference for chain and account', async () => {
-      getDisabledUpgradeAccountsByChainMock.mockReturnValue({
-        [CHAIN_ID_MOCK]: [FROM_MOCK],
-      });
-
       await expect(
         processSendCalls(
           sendCallsHooks,
@@ -254,10 +244,6 @@ describe('EIP-5792', () => {
     });
 
     it('does not throw if disabled preference for chain and account if already upgraded', async () => {
-      getDisabledUpgradeAccountsByChainMock.mockReturnValue({
-        [CHAIN_ID_MOCK]: [FROM_MOCK],
-      });
-
       isAtomicBatchSupportedMock.mockResolvedValueOnce([
         {
           chainId: CHAIN_ID_MOCK,
@@ -530,8 +516,6 @@ describe('EIP-5792', () => {
 
       const capabilities = await getCapabilities(
         {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
           getDismissSmartAccountSuggestionEnabled:
             getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
@@ -561,8 +545,6 @@ describe('EIP-5792', () => {
 
       const capabilities = await getCapabilities(
         {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
           getDismissSmartAccountSuggestionEnabled:
             getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
@@ -585,8 +567,6 @@ describe('EIP-5792', () => {
 
       const capabilities = await getCapabilities(
         {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
           getDismissSmartAccountSuggestionEnabled:
             getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
@@ -612,8 +592,6 @@ describe('EIP-5792', () => {
 
       const capabilities = await getCapabilities(
         {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
           getDismissSmartAccountSuggestionEnabled:
             getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
@@ -635,14 +613,8 @@ describe('EIP-5792', () => {
         },
       ]);
 
-      getDisabledUpgradeAccountsByChainMock.mockReturnValue({
-        [CHAIN_ID_MOCK]: [FROM_MOCK],
-      });
-
       const capabilities = await getCapabilities(
         {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
           getDismissSmartAccountSuggestionEnabled:
             getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
@@ -664,14 +636,8 @@ describe('EIP-5792', () => {
         },
       ]);
 
-      getDisabledUpgradeAccountsByChainMock.mockReturnValue({
-        [CHAIN_ID_MOCK]: [FROM_MOCK],
-      });
-
       const capabilities = await getCapabilities(
         {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
           getDismissSmartAccountSuggestionEnabled:
             getDismissSmartAccountSuggestionEnabledMock,
           isAtomicBatchSupported: isAtomicBatchSupportedMock,
