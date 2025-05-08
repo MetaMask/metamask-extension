@@ -141,7 +141,6 @@ const AccountListItem = ({
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, account),
   );
-  console.log('multichainAggregatedBalance', multichainAggregatedBalance);
 
   // cross chain agg balance
   const shouldHideZeroBalanceTokens = useSelector(
