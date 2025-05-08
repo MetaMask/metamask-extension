@@ -546,13 +546,11 @@ export default class MetaMetricsController extends BaseController<
   createEventFragment(
     options: Omit<MetaMetricsEventFragment, 'id'>,
   ): MetaMetricsEventFragment {
-    if (!options.successEvent || !options.category) {
+    if (!options.successEvent) {
       throw new Error(
-        `Must specify success event and category. Success event was: ${
+        `Must specify success event. Success event was: ${
           options.event
-        }. Category was: ${options.category}. Payload keys were: ${Object.keys(
-          options,
-        )}. ${
+        }. Payload keys were: ${Object.keys(options)}. ${
           typeof options.properties === 'object'
             ? `Payload property keys were: ${Object.keys(options.properties)}`
             : ''
@@ -994,13 +992,11 @@ export default class MetaMetricsController extends BaseController<
    */
   #validatePayload(payload: MetaMetricsEventPayload): void {
     // event and category are required fields for all payloads
-    if (!payload.event || !payload.category) {
+    if (!payload.event) {
       throw new Error(
-        `Must specify event and category. Event was: ${
+        `Must specify event. Event was: ${
           payload.event
-        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
-          payload,
-        )}. ${
+        }. Payload keys were: ${Object.keys(payload)}. ${
           typeof payload.properties === 'object'
             ? `Payload property keys were: ${Object.keys(payload.properties)}`
             : ''
