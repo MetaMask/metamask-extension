@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { Hex } from '@metamask/utils';
 import { Box } from '../../../../../../../components/component-library';
@@ -30,25 +30,17 @@ export function GasFeeTokenToast() {
     setShowToast(false);
   }, []);
 
-  useEffect(() => {
-    if (selectedGasFeeToken?.tokenAddress !== previousGasFeeToken) {
-      setPreviousGasFeeToken(
-        selectedGasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS,
-      );
+  if (selectedGasFeeToken?.tokenAddress !== previousGasFeeToken) {
+    setPreviousGasFeeToken(
+      selectedGasFeeToken?.tokenAddress ?? NATIVE_TOKEN_ADDRESS,
+    );
 
-      setShowToast(true);
+    setShowToast(true);
 
-      setTimeout(() => {
-        hideToast();
-      }, TOAST_TIMEOUT_MILLISECONDS);
-    }
-  }, [
-    selectedGasFeeToken,
-    previousGasFeeToken,
-    setPreviousGasFeeToken,
-    setShowToast,
-    hideToast,
-  ]);
+    setTimeout(() => {
+      hideToast();
+    }, TOAST_TIMEOUT_MILLISECONDS);
+  }
 
   if (!showToast) {
     return null;
