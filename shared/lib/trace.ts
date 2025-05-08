@@ -35,6 +35,7 @@ export enum TraceName {
   NotificationDisplay = 'Notification Display',
   PPOMValidation = 'PPOM Validation',
   ReceiveModal = 'Receive Modal',
+  SendCompleted = 'Send Completed',
   SetupStore = 'Setup Store',
   Signature = 'Signature',
   SwapViewLoaded = 'Swap View Loaded',
