@@ -50,7 +50,6 @@ const render = (props: AccountOverviewEthProps) => {
 describe('AccountOverviewEth', () => {
   beforeEach(() => {
     setBackgroundConnection({
-      setBridgeFeatureFlags: jest.fn(),
       tokenBalancesStartPolling: jest.fn(),
     } as never);
   });
