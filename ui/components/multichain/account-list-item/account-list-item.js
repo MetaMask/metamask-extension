@@ -251,6 +251,7 @@ const AccountListItem = ({
   };
 
   const getPreferredCurrencyValue = () => {
+    console.log('IS EVM NETWORK: ', isEvmNetwork);
     const value = isEvmNetwork
       ? stringifyBalance(
           new BN(hexToDecimal(evmNativeTokenBalance[currentChainId])),
