@@ -76,6 +76,8 @@ class NftListPage {
     }
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_nftImageIsDisplayed(): Promise<void> {
     console.log('Check that NFT image is displayed in NFT tab on homepage');
     await this.driver.waitForSelector(this.nftIconOnActivityList);
@@ -86,6 +88,8 @@ class NftListPage {
    *
    * @param nftName - The name of the NFT to check for.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_nftNameIsDisplayed(nftName: string): Promise<void> {
     console.log(
       `Check that NFT item ${nftName} is displayed in NFT tab on homepage`,
@@ -96,11 +100,15 @@ class NftListPage {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_noNftInfoIsDisplayed(): Promise<void> {
     console.log('Check that no NFT info is displayed on nft tab');
     await this.driver.waitForSelector(this.noNftInfo);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successImportNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success imported NFT message is displayed on homepage',
@@ -108,6 +116,8 @@ class NftListPage {
     await this.driver.waitForSelector(this.successImportNftMessage);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_successRemoveNftMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check that success removed NFT message is displayed on homepage',
@@ -115,6 +125,8 @@ class NftListPage {
     await this.driver.waitForSelector(this.successRemoveNftMessage);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_numberOfNftsDisplayed(
     expectedNumberOfNfts: number,
   ): Promise<void> {

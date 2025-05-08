@@ -96,6 +96,8 @@ export class TestSnaps {
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -112,6 +114,8 @@ export class TestSnaps {
     console.log('Test Snap Dapp page is loaded');
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_clientStatus(expectedStatus: string): Promise<void> {
     console.log(`Checking that the client status should be ${expectedStatus}`);
     await this.driver.waitForSelector({
@@ -143,6 +147,8 @@ export class TestSnaps {
     await this.driver.scrollToElement(buttonSelector);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_installationComplete(
     selector: keyof typeof buttonLocator,
     expectedMessage: string,
@@ -154,6 +160,8 @@ export class TestSnaps {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_installedSnapsResult(expectedMessage: string) {
     console.log('Checking installed snaps, result section on the top left');
     await this.driver.waitForSelector({
@@ -162,6 +170,8 @@ export class TestSnaps {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_messageResultSpan(
     spanSelectorId: keyof typeof spanLocator,
     expectedMessage: string,
@@ -211,6 +221,8 @@ export class TestSnaps {
    * @param expectedPreferences.displayNftMedia
    * @param expectedPreferences.useNftDetection
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_preferencesResult(expectedPreferences: {
     locale: string;
     currency: string;

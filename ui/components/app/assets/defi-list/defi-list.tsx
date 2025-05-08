@@ -61,6 +61,8 @@ type DeFiProtocolPosition = TokenWithFiatAmount & {
   iconGroup: { avatarValue: string; symbol: string }[];
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function ErrorMessage({ title, text }: { title: string; text: string }) {
   return (
     <Box
@@ -95,6 +97,8 @@ const DEFI_EMPTY_STATE_TOKEN = {
   isStakeable: true,
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function DefiList({ onClick }: DefiListProps) {
   const t = useI18nContext();
   const { networkFilter } = useNetworkFilter();
@@ -195,7 +199,11 @@ function DefiList({ onClick }: DefiListProps) {
       event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: token.chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: token.protocolId,
       },
     });

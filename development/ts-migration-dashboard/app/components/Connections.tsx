@@ -16,6 +16,8 @@ function buildPathD(coordinates: [number, number][]): string {
     .join(' ');
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function Arrowhead({
   type,
   x,
@@ -37,6 +39,8 @@ function Arrowhead({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function Line({
   type,
   originX,
@@ -76,6 +80,8 @@ function Line({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function LineStart({
   type,
   x,
@@ -90,6 +96,8 @@ function LineStart({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Connections({ activeBox }: { activeBox: BoxModel }) {
   return (
     <svg className="module-connections">

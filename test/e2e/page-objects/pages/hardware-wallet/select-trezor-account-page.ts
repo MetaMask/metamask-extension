@@ -22,6 +22,8 @@ class SelectTrezorAccountPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -62,6 +64,8 @@ class SelectTrezorAccountPage {
    *
    * @param address - The address to check for.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_addressIsDisplayed(address: string): Promise<void> {
     console.log(
       `Check that account address ${address} is displayed on select trezor account page`,
@@ -75,6 +79,8 @@ class SelectTrezorAccountPage {
    * @param expectedNumber - The number of trezor account items expected to be displayed. Defaults to 5.
    * @returns A promise that resolves if the expected number of trezor account items is displayed.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_trezorAccountNumber(expectedNumber: number = 5): Promise<void> {
     console.log(
       `Waiting for ${expectedNumber} trezor account items to be displayed`,

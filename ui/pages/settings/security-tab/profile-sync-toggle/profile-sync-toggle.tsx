@@ -58,10 +58,20 @@ const ProfileSyncToggle = () => {
               category: MetaMetricsEventCategory.Settings,
               event: MetaMetricsEventName.SettingsUpdated,
               properties: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 settings_group: 'security_privacy',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 settings_type: 'profile_syncing',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 old_value: true,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 new_value: false,
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 was_notifications_on: isMetamaskNotificationsEnabled,
               },
             });
@@ -77,10 +87,20 @@ const ProfileSyncToggle = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           settings_group: 'security_privacy',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           settings_type: 'profile_syncing',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           old_value: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_value: true,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           was_notifications_on: isMetamaskNotificationsEnabled,
         },
       });

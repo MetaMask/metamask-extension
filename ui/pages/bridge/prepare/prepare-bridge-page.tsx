@@ -168,6 +168,8 @@ const PrepareBridgePage = () => {
   const quoteRequest = useSelector(getQuoteRequest);
   const {
     isLoading,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
   } = useSelector(getBridgeQuotes);
@@ -393,9 +395,17 @@ const PrepareBridgePage = () => {
   useEffect(() => {
     dispatch(setSelectedQuote(null));
     debouncedUpdateQuoteRequestInController(quoteParams, {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       stx_enabled: smartTransactionsEnabled,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_symbol_source: fromToken?.symbol ?? '',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_symbol_destination: toToken?.symbol ?? '',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       security_warnings: [],
     });
   }, [quoteParams, debouncedUpdateQuoteRequestInController]);
@@ -830,9 +840,17 @@ const PrepareBridgePage = () => {
                 <BridgeCTAButton
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       stx_enabled: smartTransactionsEnabled,
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       token_symbol_source: fromToken?.symbol ?? '',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       token_symbol_destination: toToken?.symbol ?? '',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       security_warnings: [], // TODO populate security warnings
                     });
                   }}

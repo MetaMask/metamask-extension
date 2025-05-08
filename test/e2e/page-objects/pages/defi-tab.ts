@@ -45,11 +45,15 @@ class DeFiTab extends TokenList {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_errorMessageIsDisplayed(): Promise<void> {
     console.log('Check that error message is displayed');
     await this.driver.waitForSelector(this.errorMessage);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_groupIconIsDisplayed(): Promise<void> {
     console.log('Check that group icon is displayed');
     await this.driver.waitForSelector(this.groupIcon);

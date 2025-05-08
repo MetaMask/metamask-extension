@@ -18,6 +18,8 @@ class NotificationsListPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -46,6 +48,8 @@ class NotificationsListPage {
     await this.driver.clickElement(this.notificationsSettingsButton);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_snapsNotificationMessage(expectedMessage: string): Promise<void> {
     console.log('Checking snap notification message');
     await this.driver.waitForSelector({

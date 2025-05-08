@@ -97,6 +97,8 @@ export const BridgeQuotesModal = ({
                       ...quoteRequestProperties,
                       ...requestMetadataProperties,
                       ...quoteListProperties,
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       sort_order: sortOrder,
                     },
                   });
@@ -179,6 +181,8 @@ export const BridgeQuotesModal = ({
                           ...requestMetadataProperties,
                           ...quoteListProperties,
                           ...tradeProperties,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           is_best_quote: isRecommendedQuote,
                         },
                       });

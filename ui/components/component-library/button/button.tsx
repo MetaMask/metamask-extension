@@ -11,6 +11,8 @@ import type { ButtonProps, ButtonComponent } from './button.types';
 import { ButtonVariant } from './button.types';
 
 export const Button: ButtonComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'button' | 'a'>(
     { variant, ...props }: ButtonProps<C>,
     ref?: PolymorphicRef<C>,

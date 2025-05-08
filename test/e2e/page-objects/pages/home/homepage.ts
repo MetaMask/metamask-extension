@@ -81,6 +81,8 @@ class HomePage {
     this.headerNavbar = new HeaderNavbar(driver);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -168,6 +170,8 @@ class HomePage {
    *
    * @param networkName - The name of the network that was added.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_addNetworkMessageIsDisplayed(networkName: string): Promise<void> {
     console.log(
       `Check the toaster message for adding network ${networkName} is displayed on homepage`,
@@ -178,6 +182,8 @@ class HomePage {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_backupReminderIsNotDisplayed(): Promise<void> {
     console.log('Check backup reminder is not displayed on homepage');
     await this.driver.assertElementNotPresent(
@@ -185,6 +191,8 @@ class HomePage {
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check if basic functionality off warning message is displayed on homepage',
@@ -192,6 +200,8 @@ class HomePage {
     await this.driver.waitForSelector(this.basicFunctionalityOffWarningMessage);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_disabledButtonTooltip(tooltipText: string): Promise<void> {
     console.log(`Check if disabled button tooltip is displayed on homepage`);
     await this.driver.waitForSelector(
@@ -204,6 +214,8 @@ class HomePage {
    *
    * @param shouldBeDisplayed - Whether the popover should be displayed. Defaults to true.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_popoverIsDisplayed(
     shouldBeDisplayed: boolean = true,
   ): Promise<void> {
@@ -224,6 +236,8 @@ class HomePage {
    *
    * @param networkName - The name of the network that was edited.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_editNetworkMessageIsDisplayed(
     networkName: string,
   ): Promise<void> {
@@ -242,6 +256,8 @@ class HomePage {
    * @param expectedBalance - The expected balance to be displayed. Defaults to '25'.
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_expectedBalanceIsDisplayed(
     expectedBalance: string = '25',
     symbol: string = 'ETH',
@@ -269,6 +285,8 @@ class HomePage {
    * @param expectedTokenBalance - The expected balance to be displayed.
    * @param symbol - The symbol of the currency or token.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_expectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
@@ -282,6 +300,8 @@ class HomePage {
   /**
    * This function checks if account syncing has been successfully completed at least once.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_hasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
     console.log('Check if account syncing has synced at least once');
     await this.driver.wait(async () => {
@@ -290,6 +310,8 @@ class HomePage {
     }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_ifBridgeButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.bridgeButton, {
@@ -303,6 +325,8 @@ class HomePage {
     return true;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_ifSendButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.sendButton, {
@@ -316,6 +340,8 @@ class HomePage {
     return true;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_ifSwapButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.swapButton, {
@@ -329,6 +355,8 @@ class HomePage {
     return true;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_localNodeBalanceIsDisplayed(
     localNode?: Ganache | Anvil,
     address = null,
@@ -342,6 +370,8 @@ class HomePage {
     await this.check_expectedBalanceIsDisplayed(expectedBalance);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_newSrpAddedToastIsDisplayed(
     srpNumber: number = 2,
   ): Promise<void> {

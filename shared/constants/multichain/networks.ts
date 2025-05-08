@@ -40,11 +40,19 @@ export type MultichainNetworkIds = `${MultichainNetworks}`;
 
 export enum MultichainNetworks {
   BITCOIN = BtcScope.Mainnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BITCOIN_TESTNET = BtcScope.Testnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   BITCOIN_SIGNET = BtcScope.Signet,
 
   SOLANA = SolScope.Mainnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_DEVNET = SolScope.Devnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_TESTNET = SolScope.Testnet,
 }
 

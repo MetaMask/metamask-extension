@@ -34,10 +34,14 @@ class SendSolanaPage {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_amountCurrencyIsDisplayed(currency: string): Promise<void> {
     await this.driver.waitForSelector(this.amountCurrencyLabel(currency));
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(amount: string = '') {
     await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
     console.log('check_pageIsLoaded after waitForSelector');
@@ -53,6 +57,8 @@ class SendSolanaPage {
     await this.driver.delay(1000); // Added because of https://consensyssoftware.atlassian.net/browse/SOL-116
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenBalanceIsDisplayed(
     amount: string,
     tokenName: string,
@@ -63,6 +69,8 @@ class SendSolanaPage {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_tokenByNameIsDisplayed(tokenName: string): Promise<void> {
     await this.driver.waitForSelector(
       {
@@ -73,6 +81,8 @@ class SendSolanaPage {
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_TxSimulationFailed(): Promise<void> {
     await this.driver.waitForSelector(
       { text: 'Transaction simulation failed', tag: 'p' },
@@ -85,6 +95,8 @@ class SendSolanaPage {
     console.log('Tx simulation failed');
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_validationErrorAppears(
     validationErrorText: string,
   ): Promise<boolean> {

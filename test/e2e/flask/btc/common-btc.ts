@@ -86,6 +86,8 @@ export async function mockMempoolInfo(mockServer: Mockttp) {
             size: 165194,
             bytes: 93042828,
             usage: 550175264,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             total_fee: 1.60127931,
             maxmempool: 2048000000,
             mempoolminfee: DEFAULT_BTC_FEES_RATE,
@@ -189,6 +191,8 @@ export async function mockBtcSatProtectionService(
     {
       output: `${DEFAULT_BTC_TRANSACTION_ID}:0`,
       value: btcToSats(DEFAULT_BTC_BALANCE),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       block_number: DEFAULT_BTC_BLOCK_NUMBER,
     },
   ];
@@ -196,6 +200,8 @@ export async function mockBtcSatProtectionService(
   return await mockServer
     .forGet(`${SIMPLEHASH_URL}/api/v0/custom/wallet_assets_by_utxo/${address}`)
     .withQuery({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       without_inscriptions_runes_raresats: '1',
     })
     .thenCallback(() => {

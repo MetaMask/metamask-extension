@@ -32,6 +32,8 @@ class EditNetworkModal {
     this.driver = driver;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -103,6 +105,8 @@ class EditNetworkModal {
    *
    * @param shouldBeEnabled - Whether the chain id input field should be enabled. Defaults to true.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_chainIdInputFieldIsEnabled(
     shouldBeEnabled: boolean = true,
   ): Promise<void> {
@@ -121,6 +125,8 @@ class EditNetworkModal {
    * @param rpcName - The name of the RPC to check.
    * @param shouldBeDisplayed - Whether the RPC should be displayed or not, default is true.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_rpcIsDisplayed(
     rpcName: string,
     shouldBeDisplayed: boolean = true,

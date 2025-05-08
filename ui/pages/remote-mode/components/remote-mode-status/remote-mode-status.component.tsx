@@ -17,6 +17,8 @@ import {
 } from '../../../../components/component-library';
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeStatus(internalAccount: InternalAccount) {
   // todo: add check (and maybe replace this) that account the has valid delegation
   const isRemoteMode = isRemoteModeSupported(internalAccount);

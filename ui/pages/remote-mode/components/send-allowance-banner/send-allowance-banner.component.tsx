@@ -13,6 +13,8 @@ import Card from '../../../../components/ui/card';
 import { Box, Text } from '../../../../components/component-library';
 import { REMOTE_ROUTE } from '../../../../helpers/constants/routes';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SendAllowanceBanner() {
   const history = useHistory();
 
