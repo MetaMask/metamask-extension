@@ -1,7 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { Hex } from '@metamask/utils';
 import {
@@ -109,6 +109,9 @@ export default function RemoteModeSetupDailyAllowance() {
   );
 
   const history = useHistory();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const delegationHash = params.get('delegationHash');
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
@@ -121,12 +124,26 @@ export default function RemoteModeSetupDailyAllowance() {
     );
   };
 
-  const { enableRemoteMode } = useRemoteMode({
+  const { enableRemoteMode, disableRemoteMode, getDelegation } = useRemoteMode({
     account: selectedHardwareAccount.address as Hex,
   });
 
   useEffect(() => {
-    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+    async function fetchDelegations() {
+      const delegation = await getDelegation(delegationHash as Hex);
+      // TODO: handle if user changes account active account
+      if (delegation.meta) {
+        const allowances = JSON.parse(delegation.meta);
+        console.log(allowances);
+        setDailyAllowance(allowances.allowances);
+      }
+    }
+    fetchDelegations();
+  }, []);
+
+  useEffect(() => {
+    // TODO: remove the `|| true`
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount) || true);
   }, [selectedHardwareAccount]);
 
   useEffect(() => {
@@ -194,22 +211,18 @@ export default function RemoteModeSetupDailyAllowance() {
   };
 
   const handleShowConfirmation = async () => {
-    // todo: replace with delegation controller integration
-    const remoteMode = localStorage.getItem('remoteMode');
-    const parsedRemoteMode = remoteMode ? JSON.parse(remoteMode) : null;
-    const updatedRemoteMode = {
-      ...parsedRemoteMode,
-      dailyAllowance: {
-        allowances: dailyAllowance,
-      },
-    };
-    localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
     setIsConfirmModalOpen(true);
   };
 
   const handleConfigureDailyAllowance = async () => {
     if (!selectedAccount) {
       return;
+    }
+
+    if (delegationHash) {
+      await disableRemoteMode({
+        mode: REMOTE_MODES.DAILY_ALLOWANCE,
+      });
     }
 
     try {

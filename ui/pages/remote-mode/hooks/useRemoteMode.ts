@@ -1,6 +1,7 @@
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { TransactionType } from '@metamask/transaction-controller';
 import { type Hex, hexToNumber } from '@metamask/utils';
+import { type DelegationFilter } from '@metamask/delegation-controller';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -20,6 +21,7 @@ import {
   listDelegationEntries,
   signDelegation,
   storeDelegationEntry,
+  getDelegationEntry,
 } from '../../../store/controller-actions/delegation-controller';
 import { useEIP7702Account } from '../../confirmations/hooks/useEIP7702Account';
 import { useEIP7702Networks } from '../../confirmations/hooks/useEIP7702Networks';
@@ -166,9 +168,25 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
     [account, delegationManagerAddress, globalNetworkClientId],
   );
 
+  const listDelegations = useCallback(
+    async (filter: DelegationFilter) => {
+      return await listDelegationEntries(filter);
+    },
+    [],
+  );
+
+  const getDelegation = useCallback(
+    async (hash: Hex) => {
+      return await getDelegationEntry(hash);
+    },
+    [],
+  );
+
   return {
     enableRemoteMode,
     disableRemoteMode,
     remoteModeConfig,
+    listDelegations,
+    getDelegation,
   };
 };

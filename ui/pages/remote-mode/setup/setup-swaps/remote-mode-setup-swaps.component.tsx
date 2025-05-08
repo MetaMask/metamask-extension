@@ -1,7 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { Hex } from '@metamask/utils';
 import {
@@ -116,14 +116,31 @@ export default function RemoteModeSetupSwaps() {
   );
 
   const history = useHistory();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const delegationHash = params.get('delegationHash');
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-  const { enableRemoteMode } = useRemoteMode({
+  const { enableRemoteMode, disableRemoteMode, getDelegation } = useRemoteMode({
     account: selectedHardwareAccount.address as Hex,
   });
 
   useEffect(() => {
-    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+    async function fetchDelegations() {
+      const delegation = await getDelegation(delegationHash as Hex);
+      // TODO: handle if user changes account active account
+      if (delegation.meta) {
+        const allowances = JSON.parse(delegation.meta);
+        console.log(allowances);
+        setSwapAllowance(allowances.allowances);
+      }
+    }
+    fetchDelegations();
+  }, []);
+
+  useEffect(() => {
+    // TODO: remove the `|| true`
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount) || true);
   }, [selectedHardwareAccount]);
 
   useEffect(() => {
@@ -215,6 +232,12 @@ export default function RemoteModeSetupSwaps() {
       return;
     }
 
+    if (delegationHash) {
+      await disableRemoteMode({
+        mode: REMOTE_MODES.SWAP,
+      });
+    }
+
     try {
       await enableRemoteMode({
         selectedAccount: selectedHardwareAccount,
@@ -226,17 +249,6 @@ export default function RemoteModeSetupSwaps() {
       // TODO: show error on UI
       console.error(error);
     }
-
-    // todo: replace with delegation controller integration
-    const remoteMode = localStorage.getItem('remoteMode');
-    const parsedRemoteMode = remoteMode ? JSON.parse(remoteMode) : null;
-    const updatedRemoteMode = {
-      ...parsedRemoteMode,
-      swapAllowance: {
-        allowances: swapAllowance,
-      },
-    };
-    localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
 
     history.replace(REMOTE_ROUTE);
   };
