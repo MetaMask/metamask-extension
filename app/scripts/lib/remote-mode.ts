@@ -1,26 +1,23 @@
+import { DelegationController } from '@metamask/delegation-controller';
 import {
   TransactionType,
   type AfterAddHook,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { DelegationController } from '@metamask/delegation-controller';
+import { hexToBigInt, hexToNumber } from '@metamask/utils';
+import { parseEther } from 'ethers/lib/utils';
+import { getDeleGatorEnvironment } from '../../../shared/lib/delegation/environment';
+import { SINGLE_DEFAULT_MODE } from '../../../shared/lib/delegation';
 import { isHexEqual } from '../../../shared/lib/delegation/utils';
 import {
   DailyAllowance,
   REMOTE_MODES,
 } from '../../../ui/pages/remote-mode/remote.types';
-import { hexToBigInt, hexToNumber } from '@metamask/utils';
-import { parseEther } from 'ethers/lib/utils';
-import { encodeRedeemDelegations } from './transaction/delegation';
-import { ExecutionMode } from './transaction/delegation';
-import { getDeleGatorEnvironment } from '../../../shared/lib/delegation/environment';
+import { encodeRedeemDelegations } from '../../../shared/lib/delegation/delegation';
 
 type DailyAllowanceMetadata = {
   allowances: DailyAllowance[];
 };
-
-export const SINGLE_DEFAULT_MODE =
-  '0x0000000000000000000000000000000000000000000000000000000000000000';
 
 export const updateRemoteModeTransaction = ({
   delegationController,
@@ -38,7 +35,7 @@ export const updateRemoteModeTransaction = ({
   switch (transactionMeta.type) {
     // Send
     case TransactionType.simpleSend:
-    case TransactionType.tokenMethodTransfer:
+    case TransactionType.tokenMethodTransfer: {
       console.log(
         'delegationController.state.delegations',
         delegationController.state.delegations,
@@ -96,49 +93,50 @@ export const updateRemoteModeTransaction = ({
           return Promise.resolve({ updateTransaction: undefined });
         }
 
-        const delegation = {
-          ...entry.delegation,
-          salt: hexToNumber(entry.delegation.salt),
-        };
+        const { delegation } = entry;
 
         // TODO: Check if delegate is a valid account
-        const updatedTransactionType = TransactionType.contractInteraction;
         const updatedFrom = entry.delegation.delegate;
         const updatedTo = getDeleGatorEnvironment(
           hexToNumber(transactionMeta.chainId),
         ).DelegationManager;
-        const updatedData = encodeRedeemDelegations(
-          [[delegation]],
-          [ExecutionMode.SINGLE_DEFAULT_MODE],
-          [
-            [
-              {
-                target: transactionMeta.txParams.to as `0x${string}`,
-                value: transactionAmount as `0x${string}`,
-                callData: '0x',
-              },
+        try {
+          const updatedData = encodeRedeemDelegations({
+            delegations: [[delegation]],
+            modes: [SINGLE_DEFAULT_MODE],
+            executions: [
+              [
+                {
+                  target: transactionMeta.txParams.to as `0x${string}`,
+                  value: hexToBigInt(transactionAmount),
+                  callData: '0x',
+                },
+              ],
             ],
-          ],
-        );
-
-        console.log('has enough allowance');
-        // Change the transaction to be sent from the delegate and update data to be redeemDelegations
-        return Promise.resolve({
-          updateTransaction: (txMeta) => {
-            txMeta.txParams.maxFeePerGas = undefined;
-            txMeta.txParams.maxPriorityFeePerGas = undefined;
-            txMeta.txParams.gas = undefined;
-            txMeta.txParams.data = updatedData;
-            txMeta.txParams.from = updatedFrom;
-            txMeta.txParams.to = updatedTo;
-            txMeta.txParams.value = undefined;
-            // txMeta.type = updatedTransactionType;
-            // txMeta.delegationAddress = undefined;
-          },
-        });
+          });
+          console.log('has enough allowance');
+          // Change the transaction to be sent from the delegate and update data to be redeemDelegations
+          return Promise.resolve({
+            updateTransaction: (txMeta) => {
+              txMeta.txParams.maxFeePerGas = undefined;
+              txMeta.txParams.maxPriorityFeePerGas = undefined;
+              txMeta.txParams.gas = undefined;
+              txMeta.txParams.data = updatedData;
+              txMeta.txParams.from = updatedFrom;
+              txMeta.txParams.to = updatedTo;
+              txMeta.txParams.value = undefined;
+              // txMeta.type = updatedTransactionType;
+              // txMeta.delegationAddress = undefined;
+            },
+          });
+        } catch (error) {
+          console.error('Error encoding redeemDelegations', error);
+          return Promise.resolve({ updateTransaction: undefined });
+        }
       }
-
       break;
+    }
+
     // TODO: Swap
     default:
       return Promise.resolve({ updateTransaction: undefined });
