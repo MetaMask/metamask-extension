@@ -5,11 +5,11 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
+  selectNetworkConfigurationByChainId,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
   selectTransactionValue,
 } from '../../../../../selectors';
-import { getMultichainNativeCurrency } from '../../../../../selectors/multichain';
 import { isBalanceSufficient } from '../../../send/send.utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -48,7 +48,9 @@ export function useInsufficientBalanceAlerts(): Alert[] {
     selectTransactionFeeById(state, transactionId),
   );
 
-  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const networkConfiguration = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
 
   const insufficientBalance = !isBalanceSufficient({
     amount: totalValue,
@@ -62,7 +64,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
     if (!showAlert) {
       return [];
     }
-
+    const { nativeCurrency } = networkConfiguration;
     return [
       {
         actions: [
@@ -81,5 +83,5 @@ export function useInsufficientBalanceAlerts(): Alert[] {
         severity: Severity.Danger,
       },
     ];
-  }, [nativeCurrency, showAlert, t]);
+  }, [networkConfiguration, showAlert, t]);
 }

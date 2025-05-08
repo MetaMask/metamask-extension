@@ -8,6 +8,7 @@ import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
 const TRANSACTION_ID_MOCK = '123-456';
@@ -84,12 +85,15 @@ function buildState({
             : {},
       },
       transactions: transaction ? [transaction] : [],
+      networkConfigurationsByChainId:
+        mockState.metamask.networkConfigurationsByChainId,
     },
   });
 }
 
 function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
   const state = buildState(stateOptions);
+
   const response = renderHookWithConfirmContextProvider(
     useInsufficientBalanceAlerts,
     state,
