@@ -19,6 +19,7 @@ import {
   getMultichainCurrentChainId,
 } from '../../selectors/multichain';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
+import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
 /**
  * Custom hook to fetch and format the latest balance of a given token or native asset.
@@ -79,7 +80,15 @@ const useLatestBalance = (
       token.address &&
       formatChainIdToCaip(currentChainId) === formatChainIdToCaip(chainId)
     ) {
-      return (
+      trace({
+        name: TraceName.BridgeBalancesUpdated,
+        data: {
+          chainId: formatChainIdToCaip(currentChainId),
+          isNative: isNativeAddress(token?.address),
+        },
+        startTime: Date.now(),
+      });
+      const evmBalance = (
         await calcLatestSrcBalance(
           global.ethereumProvider,
           selectedAddress,
@@ -87,16 +96,14 @@ const useLatestBalance = (
           formatChainIdToHex(chainId),
         )
       )?.toString();
+      endTrace({
+        name: TraceName.BridgeBalancesUpdated,
+      });
+      return evmBalance;
     }
 
     return undefined;
-  }, [
-    currentChainId,
-    token,
-    selectedAddress,
-    tokenAddressFromUrl,
-    shouldUpdateBalance,
-  ]);
+  }, [currentChainId, token, selectedAddress, shouldUpdateBalance]);
 
   const nonEvmBalance = useMemo(() => {
     if (!shouldUpdateBalance() || !token) {
