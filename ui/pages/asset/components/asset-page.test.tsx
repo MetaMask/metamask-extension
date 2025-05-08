@@ -304,7 +304,7 @@ describe('AssetPage', () => {
     });
   });
 
-  it('should not show the Bridge button if chain id is not supported', async () => {
+  it('should disable Bridge button if chain id is not supported', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -316,7 +316,7 @@ describe('AssetPage', () => {
       }),
     );
     const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).not.toBeInTheDocument();
+    expect(bridgeButton).toBeDisabled();
   });
 
   it('should render the network name', async () => {
