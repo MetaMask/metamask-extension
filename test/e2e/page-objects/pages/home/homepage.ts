@@ -200,6 +200,26 @@ class HomePage {
   }
 
   /**
+   * Checks if popover is displayed on homepage.
+   *
+   * @param shouldBeDisplayed - Whether the popover should be displayed. Defaults to true.
+   */
+  async check_popoverIsDisplayed(
+    shouldBeDisplayed: boolean = true,
+  ): Promise<void> {
+    console.log(
+      `Checking if popover ${
+        shouldBeDisplayed ? 'is' : 'is not'
+      } displayed on homepage`,
+    );
+    if (shouldBeDisplayed) {
+      await this.driver.waitForSelector(this.popoverCloseButton);
+    } else {
+      await this.driver.assertElementNotPresent(this.popoverCloseButton);
+    }
+  }
+
+  /**
    * Checks if the toaster message for editing a network is displayed on the homepage.
    *
    * @param networkName - The name of the network that was edited.

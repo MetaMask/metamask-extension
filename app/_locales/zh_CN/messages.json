@@ -3662,22 +3662,6 @@
   "onboardingPinExtensionTitle": {
     "message": "您的 MetaMask 安装完成！"
   },
-  "oneDayAbbreviation": {
-    "message": "1 天",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1 个月",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1 周",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1 年",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "仅连接您信任的网站。$1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4147,18 +4131,6 @@
   },
   "productAnnouncements": {
     "message": "产品公告"
-  },
-  "profileSync": {
-    "message": "配置文件同步"
-  },
-  "profileSyncConfirmation": {
-    "message": "如果您关闭配置文件同步，您将无法收到通知。"
-  },
-  "profileSyncDescription": {
-    "message": "创建配置文件，MetaMask 用以在您的不同设备之间同步某些设置。这是获取通知的必需条件。$1。"
-  },
-  "profileSyncPrivacyLink": {
-    "message": "了解我们如何保护您的隐私"
   },
   "proposedApprovalLimit": {
     "message": "拟议的审批上限"
@@ -5971,10 +5943,6 @@
   "thirdPartySoftware": {
     "message": "第三方软件通告",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3 个月",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "时间"
