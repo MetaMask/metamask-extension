@@ -123,7 +123,7 @@ function maybeGetCurrentLocale(backup: Backup | null): string | null {
  * @param backup - The backup object to check for a vault.
  * @returns True if the vault exists, otherwise false.
  */
-function hasVault(backup: Backup | null): boolean {
+export function hasVault(backup: Backup | null): boolean {
   // we're overly defensive here because we have no idea what happened to the
   // database, and we don't want to throw another error on some unexpected object.
   if (isObject(backup) && hasProperty(backup, 'KeyringController')) {

@@ -52,7 +52,10 @@ import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
-import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
+import {
+  CorruptionHandler,
+  hasVault,
+} from './lib/state-corruption/state-corruption-recovery';
 import {
   backedUpStateKeys,
   PersistenceManager,
@@ -479,7 +482,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
           // right now, that isn't the case though.
           setGlobalInitializers();
 
-          if (backup) {
+          if (hasVault(backup)) {
             await initBackground(backup);
             controller.onboardingController.setFirstTimeFlowType(
               FirstTimeFlowType.restore,

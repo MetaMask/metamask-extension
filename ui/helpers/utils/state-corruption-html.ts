@@ -93,11 +93,10 @@ export async function displayStateCorruptionError(
   log.error(err.stack);
 
   function handleRestoreClick(this: HTMLButtonElement) {
-    this.removeEventListener('click', handleRestoreClick);
-    // TODO: uh, don't use `confirm`
     // eslint-disable-next-line no-alert
-    const theyAreSure = confirm('Are you sure you want to proceed?');
+    const theyAreSure = confirm(t('stateCorruptionAreYouSure') ?? '');
     if (theyAreSure) {
+      this.removeEventListener('click', handleRestoreClick);
       this.disabled = true;
       if (hasBackup) {
         this.innerText = t('stateCorruptionRestoringDatabase') ?? '';

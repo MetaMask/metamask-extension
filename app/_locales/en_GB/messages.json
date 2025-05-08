@@ -5659,6 +5659,9 @@
   "standardAccountLabel": {
     "message": "Standard Account"
   },
+  "stateCorruptionAreYouSure": {
+    "message": "Are you sure you want to proceed?"
+  },
   "stateCorruptionCopyAndRestoreBeforeRecovery": {
     "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
