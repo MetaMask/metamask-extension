@@ -52,8 +52,6 @@ export default class ExtensionStore implements BaseStore {
   /**
    * Removes 'data' and 'meta' keys and values from  `local` extension storage
    * area.
-   *
-   * @returns
    */
   async reset(): Promise<void> {
     if (!this.isSupported) {
