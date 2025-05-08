@@ -7,7 +7,6 @@ import {
   ButtonLink,
   ButtonLinkSize,
   ButtonSecondary,
-  IconName,
   Popover,
   PopoverPosition,
   Text,
@@ -92,7 +91,13 @@ export const ConnectedSitePopover = ({
                     : undefined
                 }
               />
-              <ButtonLink onClick={() => dispatch(toggleNetworkMenu())}>
+              <ButtonLink
+                onClick={() => dispatch(toggleNetworkMenu())}
+                size={ButtonLinkSize.Sm}
+                textProps={{
+                  variant: TextVariant.bodySm,
+                }}
+              >
                 {currentNetwork?.nickname}
               </ButtonLink>
             </Box>
@@ -121,7 +126,6 @@ export const ConnectedSitePopover = ({
         )}
         <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
           <ButtonSecondary
-            endIconName={IconName.Export}
             block
             onClick={() => {
               if (isConnected) {
