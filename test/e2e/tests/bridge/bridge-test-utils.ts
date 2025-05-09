@@ -561,7 +561,6 @@ export const getBridgeFixtures = (
           chainId: 1,
           hardfork: 'london',
           loadState: './test/e2e/seeder/network-states/with50Dai.json',
-          hardfork: 'muirGlacier',
         },
       },
     ],
