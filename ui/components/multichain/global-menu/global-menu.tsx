@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -70,7 +69,17 @@ import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
 const METRICS_LOCATION = 'Global Menu';
 
-export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
+type GlobalMenuProps = {
+  closeMenu: () => void;
+  anchorElement: HTMLElement | null;
+  isOpen: boolean;
+};
+
+export const GlobalMenu = ({
+  closeMenu,
+  anchorElement,
+  isOpen,
+}: GlobalMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -111,18 +120,18 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
 
   let supportText = t('support');
-  let supportLink = SUPPORT_LINK;
+  let supportLink = SUPPORT_LINK || '';
   ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
   supportText = t('needHelpSubmitTicket');
-  supportLink = SUPPORT_REQUEST_LINK;
+  supportLink = SUPPORT_REQUEST_LINK || '';
   ///: END:ONLY_INCLUDE_IF
 
   // Accessibility improvement for popover
-  const lastItemRef = React.useRef(null);
+  const lastItemRef = React.useRef<HTMLElement>(null);
 
   React.useEffect(() => {
-    const lastItem = lastItemRef.current;
-    const handleKeyDown = (event) => {
+    const lastItem = lastItemRef.current as HTMLElement;
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Tab' && !event.shiftKey) {
         event.preventDefault();
         closeMenu();
@@ -255,7 +264,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         <MenuItem
           iconName={IconName.Expand}
           onClick={() => {
-            global.platform.openExtensionInBrowser();
+            global?.platform?.openExtensionInBrowser?.();
             trackEvent({
               event: MetaMetricsEventName.AppWindowExpanded,
               category: MetaMetricsEventCategory.Navigation,
@@ -355,19 +364,4 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       </MenuItem>
     </Popover>
   );
-};
-
-GlobalMenu.propTypes = {
-  /**
-   * The element that the menu should display next to
-   */
-  anchorElement: PropTypes.instanceOf(window.Element),
-  /**
-   * Function that closes this menu
-   */
-  closeMenu: PropTypes.func.isRequired,
-  /**
-   * Whether or not the menu is open
-   */
-  isOpen: PropTypes.bool.isRequired,
 };
