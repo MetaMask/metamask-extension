@@ -28,13 +28,20 @@ export function NestedTransactionTag() {
   if (!isBatch) {
     return null;
   }
+
   const tooltip = t('transactionIncludesTypes', [functionNames.join(', ')]);
+  const nestedTransactionsLength = nestedTransactions?.length ?? 0;
+
+  const label =
+    nestedTransactionsLength > 1
+      ? t('includesXTransactionsPlural', [nestedTransactionsLength])
+      : t('includesXTransactionSingular', [nestedTransactionsLength]);
 
   return (
     <Box paddingBottom={4} textAlign={TextAlign.Center}>
       <Tooltip title={tooltip} position="bottom">
         <Tag
-          label={t('includesXTransactions', [nestedTransactions?.length])}
+          label={label}
           startIconName={IconName.Info}
           paddingLeft={2}
           paddingRight={2}

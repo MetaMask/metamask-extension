@@ -63,6 +63,14 @@ describe('NestedTransactionTag', () => {
     expect(getByText('Includes 2 transactions')).toBeInTheDocument();
   });
 
+  it('renders tag label with 1 transaction', () => {
+    useNestedTransactionLabelsMock.mockReturnValue([FUNCTION_NAME_MOCK]);
+    const { getByText } = render({
+      nestedTransactions: [BATCH_TRANSACTION_PARAMS_MOCK],
+    });
+    expect(getByText('Includes 1 transaction')).toBeInTheDocument();
+  });
+
   it('renders correct tooltip content', () => {
     const { container } = render({
       nestedTransactions: [
