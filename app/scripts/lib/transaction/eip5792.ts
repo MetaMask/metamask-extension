@@ -163,8 +163,6 @@ export async function getCapabilities(
   const { getDismissSmartAccountSuggestionEnabled, isAtomicBatchSupported } =
     hooks;
 
-  const addressNormalized = address.toLowerCase() as Hex;
-
   const chainIdsNormalized = chainIds?.map(
     (chainId) => chainId.toLowerCase() as Hex,
   );
@@ -218,7 +216,6 @@ function validateSendCalls(
   validateCapabilities(sendCalls);
   validateUserDisabled(
     from,
-    dappChainId,
     dismissSmartAccountSuggestionEnabled,
     chainBatchSupport,
   );
@@ -288,12 +285,9 @@ function validateCapabilities(sendCalls: SendCalls) {
 
 function validateUserDisabled(
   from: Hex,
-  dappChainId: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
 ) {
-  const addressLowerCase = from.toLowerCase() as Hex;
-
   if (chainBatchSupport?.delegationAddress) {
     return;
   }
