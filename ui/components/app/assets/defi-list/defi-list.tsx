@@ -87,7 +87,7 @@ const DEFI_EMPTY_STATE_TOKEN = {
   title: 'Start earning',
   symbol: 'Start earning',
   tokenFiatAmount: 0,
-  image: `images/logo/metamask-fox.svg`,
+  image: `images/logo/metamask-fox-bg.svg`,
   primary: '0',
   secondary: 0,
   decimals: 10,
