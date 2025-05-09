@@ -16,7 +16,6 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
-import Typography from '../../components/ui/typography/typography';
 import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
@@ -696,7 +695,7 @@ export default class Home extends PureComponent {
               gap={2}
               margin={4}
             >
-              <Typography>
+              <Text>
                 {t('onboardedMetametricsParagraph1', [
                   <a
                     href={METAMETRICS_SETTINGS_LINK}
@@ -707,14 +706,14 @@ export default class Home extends PureComponent {
                     {t('onboardedMetametricsLink')}
                   </a>,
                 ])}
-              </Typography>
-              <Typography>{t('onboardedMetametricsParagraph2')}</Typography>
+              </Text>
+              <Text>{t('onboardedMetametricsParagraph2')}</Text>
               <ul className="home__onboarding_list">
                 <li>{t('onboardedMetametricsKey1')}</li>
                 <li>{t('onboardedMetametricsKey2')}</li>
                 <li>{t('onboardedMetametricsKey3')}</li>
               </ul>
-              <Typography>{t('onboardedMetametricsParagraph3')}</Typography>
+              <Text>{t('onboardedMetametricsParagraph3')}</Text>
             </Box>
           </ModalBody>
           <ModalFooter>
