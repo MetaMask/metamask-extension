@@ -1,5 +1,5 @@
-import { setTimeout } from 'node:timers/promises';
 import humanizeDuration from 'humanize-duration';
+import { setTimeout } from 'node:timers/promises';
 import * as xml2js from 'xml2js';
 
 // This helper function checks if version has the correct format: "x.y.z" where "x", "y" and "z" are numbers.
