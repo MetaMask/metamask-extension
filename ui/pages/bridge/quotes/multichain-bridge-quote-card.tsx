@@ -228,7 +228,7 @@ export const MultichainBridgeQuoteCard = () => {
                             getNativeAssetForChainId(fromChain.chainId).symbol,
                           token_symbol_destination: toToken?.symbol ?? null,
                           price_impact: Number(
-                            activeQuote.quote?.bridgePriceData?.priceImpact ??
+                            activeQuote.quote?.priceData?.priceImpact ??
                               0,
                           ),
                           gas_included: false,

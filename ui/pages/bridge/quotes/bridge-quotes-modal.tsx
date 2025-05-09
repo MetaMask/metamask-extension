@@ -111,7 +111,7 @@ export const BridgeQuotesModal = ({
                       {
                         sort_order: sortOrder,
                         price_impact: Number(
-                          recommendedQuote.quote?.bridgePriceData
+                          recommendedQuote.quote?.priceData
                             ?.priceImpact ?? '0',
                         ),
                         gas_included: false,
@@ -219,7 +219,7 @@ export const BridgeQuotesModal = ({
                             usd_quoted_return: Number(quote.toTokenAmount.usd),
                             provider: formatProviderLabel(quote.quote),
                             price_impact: Number(
-                              quote.quote.bridgePriceData?.priceImpact ?? '0',
+                              quote.quote.priceData?.priceImpact ?? '0',
                             ),
                             gas_included: false,
                           },
