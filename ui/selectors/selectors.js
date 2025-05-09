@@ -2983,6 +2983,17 @@ export function getIsSolanaSupportEnabled(state) {
   return Boolean(addSolanaAccount);
 }
 
+/**
+ * Checks if the new settings redesign is enabled
+ *
+ * @param state - The state of the application
+ * @returns true if the new settings redesign is enabled, false otherwise
+ */
+export function getIsNewSettingsEnabled(state) {
+  const { settingsRedesign } = getRemoteFeatureFlags(state);
+  return Boolean(settingsRedesign);
+}
+
 export function getManageInstitutionalWallets(state) {
   return state.metamask.manageInstitutionalWallets;
 }

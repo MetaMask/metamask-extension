@@ -633,14 +633,3 @@ export const getHardwareWalletName = (state: BridgeAppState) => {
       return undefined;
   }
 };
-
-/**
- * Checks if the new settings redesign is enabled
- *
- * @param state - The state of the application
- * @returns true if the new settings redesign is enabled, false otherwise
- */
-export const isNewSettingsEnabled = createDeepEqualSelector(
-  [(state) => getRemoteFeatureFlags(state)],
-  (remoteFeatureFlags) => remoteFeatureFlags.settingsRedesign,
-);
