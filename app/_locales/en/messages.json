@@ -2658,11 +2658,11 @@
   "included": {
     "message": "included"
   },
-  "includesXTransactionsPlural": {
-    "message": "Includes $1 transactions"
-  },
   "includesXTransactionSingular": {
     "message": "Includes $1 transaction"
+  },
+  "includesXTransactionsPlural": {
+    "message": "Includes $1 transactions"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
