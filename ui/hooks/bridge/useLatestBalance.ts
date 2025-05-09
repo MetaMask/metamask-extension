@@ -76,10 +76,8 @@ const useLatestBalance = (
       return undefined;
     }
 
-    if (
-      token.address &&
-      formatChainIdToCaip(currentChainId) === formatChainIdToCaip(chainId)
-    ) {
+    const caipCurrentChainId = formatChainIdToCaip(currentChainId);
+    if (token.address && caipCurrentChainId === formatChainIdToCaip(chainId)) {
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {

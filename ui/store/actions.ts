@@ -146,6 +146,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 
 type CustomGasSettings = {
   gas?: string;
@@ -3894,6 +3895,9 @@ export function fetchAndSetQuotes(
     const [quotes, selectedAggId] = await trace(
       {
         name: TraceName.SwapQuotesFetched,
+        data: {
+          srcChainId: formatChainIdToCaip(fetchParamsMetaData.chainId),
+        },
       },
       async () =>
         await submitRequestToBackground<Quotes>('fetchAndSetQuotes', [
