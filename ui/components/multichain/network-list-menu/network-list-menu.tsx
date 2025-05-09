@@ -65,6 +65,7 @@ import {
   getOrderedNetworksList,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
+  getIsAccessedFromDappConnectedSitePopover,
   getAllDomains,
   getPermittedEVMChainsForSelectedTab,
   getPermittedEVMAccountsForSelectedTab,
@@ -141,7 +142,11 @@ export enum ACTION_MODE {
   ADD_NON_EVM_ACCOUNT,
 }
 
-export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
+type NetworkListMenuProps = {
+  onClose: () => void;
+};
+
+export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -155,6 +160,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const isAddingNewNetwork = useSelector(getIsAddingNewNetwork);
   const isMultiRpcOnboarding = useSelector(getIsMultiRpcOnboarding);
+  const isAccessedFromDappConnectedSitePopover = useSelector(
+    getIsAccessedFromDappConnectedSitePopover,
+  );
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
@@ -184,6 +192,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
+  const canSelectNetwork: boolean =
+    !process.env.REMOVE_GNS ||
+    (Boolean(process.env.REMOVE_GNS) &&
+      Boolean(selectedTabOrigin) &&
+      Boolean(domains[selectedTabOrigin]) &&
+      isAccessedFromDappConnectedSitePopover);
 
   useEffect(() => {
     endTrace({ name: TraceName.NetworkList });
@@ -529,8 +543,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
-        selected={isCurrentNetwork && !focusSearch}
-        focus={isCurrentNetwork && !focusSearch}
+        selected={canSelectNetwork && isCurrentNetwork && !focusSearch}
+        focus={canSelectNetwork && isCurrentNetwork && !focusSearch}
         rpcEndpoint={
           hasMultiRpcOptions(network)
             ? getRpcDataByChainId(network.chainId, evmNetworks)
@@ -538,13 +552,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
             : undefined
         }
         onClick={async () => {
-          await handleNetworkChange(network.chainId);
+          if (canSelectNetwork) {
+            await handleNetworkChange(network.chainId);
+          }
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
         onRpcEndpointClick={onRpcConfigEdit}
         disabled={!isNetworkEnabled(network)}
+        notSelectable={!canSelectNetwork}
       />
     );
   };
@@ -559,7 +576,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               setSearchQuery={setSearchQuery}
               setFocusSearch={setFocusSearch}
             />
-            {completedOnboarding &&
+            {!process.env.REMOVE_GNS &&
+              completedOnboarding &&
               !onboardedInThisUISession &&
               showNetworkBanner &&
               !searchQuery && (
@@ -767,7 +785,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   let title;
   if (actionMode === ACTION_MODE.LIST) {
-    title = t('networkMenuHeading');
+    title = process.env.REMOVE_GNS
+      ? t('manageNetworksMenuHeading')
+      : t('networkMenuHeading');
   } else if (actionMode === ACTION_MODE.ADD_EDIT && !editedNetwork) {
     title = t('addACustomNetwork');
   } else if (actionMode === ACTION_MODE.ADD_RPC) {
