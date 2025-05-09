@@ -3435,6 +3435,7 @@ export function toggleAccountMenu() {
 export function toggleNetworkMenu(payload?: {
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
+  isAccessedFromDappConnectedSitePopover?: boolean;
 }) {
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,

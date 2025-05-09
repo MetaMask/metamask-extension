@@ -30,6 +30,8 @@ import {
   ExternalLinkButton,
 } from './annonucement-footer-buttons';
 
+const purify = DOMPurify(window);
+
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 const isFeatureAnnouncementNotification = isOfTypeNodeGuard([
@@ -99,7 +101,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
               as="div"
               // TODO - we can replace the raw HTML string injection with react components
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(notification.data.longDescription),
+                __html: purify.sanitize(notification.data.longDescription),
               }}
             />
           </Box>

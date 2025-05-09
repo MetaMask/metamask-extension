@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEvmAccountType } from '@metamask/keyring-api';
 
 import EditableLabel from '../../ui/editable-label/editable-label';
 
@@ -40,15 +41,18 @@ export const AccountDetailsDisplay = ({
   accounts,
   accountName,
   address,
+  accountType,
   onExportClick,
 }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const checksummedAddress = toChecksumHexAddress(address)?.toLowerCase();
+  const formatedAddress = isEvmAccountType(accountType)
+    ? toChecksumHexAddress(address)?.toLowerCase()
+    : address;
   const [copied, handleCopy] = useCopyToClipboard();
   const handleClick = useCallback(() => {
-    handleCopy(checksummedAddress);
-  }, [checksummedAddress, handleCopy]);
+    handleCopy(formatedAddress);
+  }, [formatedAddress, handleCopy]);
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
   const { networkSupporting7702Present, pending } = useEIP7702Networks(address);
@@ -81,7 +85,7 @@ export const AccountDetailsDisplay = ({
           data-testid="account-address-shortened"
           marginBottom={4}
         >
-          {shortenString(checksummedAddress, {
+          {shortenString(formatedAddress, {
             truncatedStartChars: 12,
             truncatedEndChars: 10,
           })}
@@ -152,6 +156,10 @@ AccountDetailsDisplay.propTypes = {
    * Current address
    */
   address: PropTypes.string.isRequired,
+  /**
+   * Current account type
+   */
+  accountType: PropTypes.string.isRequired,
   /**
    * Executes upon Export button click
    */

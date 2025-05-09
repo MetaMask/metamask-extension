@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
+import { UnifiedSwapBridgeEventName } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
@@ -27,7 +28,10 @@ import {
   Page,
 } from '../../components/multichain/pages/page';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
-import { resetBridgeState } from '../../ducks/bridge/actions';
+import {
+  resetBridgeState,
+  trackUnifiedSwapBridgeEvent,
+} from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
@@ -56,6 +60,9 @@ const CrossChainSwap = () => {
   };
 
   useEffect(() => {
+    dispatch(
+      trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
+    );
     // Reset controller and inputs before unloading the page
     window.addEventListener('beforeunload', resetControllerAndInputStates);
 

@@ -64,6 +64,7 @@
     "snapsInstallPrivacyWarningShown": "boolean",
     "isAddingNewNetwork": "boolean",
     "isMultiRpcOnboarding": "boolean",
+    "isAccessedFromDappConnectedSitePopover": "boolean",
     "errorInSettings": null,
     "showNewSrpAddedToast": "boolean"
   },

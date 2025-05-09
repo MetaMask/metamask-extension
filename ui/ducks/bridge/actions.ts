@@ -2,6 +2,8 @@ import {
   BridgeBackgroundAction,
   type BridgeController,
   BridgeUserAction,
+  type RequiredEventContextFromClient,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -55,6 +57,23 @@ export const resetBridgeState = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(resetInputFields());
     dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
+  };
+};
+
+export const trackUnifiedSwapBridgeEvent = <
+  T extends (typeof UnifiedSwapBridgeEventName)[keyof typeof UnifiedSwapBridgeEventName],
+>(
+  eventName: T,
+  propertiesFromClient: Pick<RequiredEventContextFromClient, T>[T],
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await dispatch(
+      callBridgeControllerMethod(
+        BridgeBackgroundAction.TRACK_METAMETRICS_EVENT,
+        eventName,
+        propertiesFromClient,
+      ),
+    );
   };
 };
 
