@@ -597,6 +597,7 @@ export const getQuoteNegativeCasesFixtures = (
         type: 'anvil',
         options: {
           chainId: 1,
+          hardfork: 'muirGlacier',
         },
       },
     ],
