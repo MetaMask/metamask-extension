@@ -72,6 +72,20 @@
     @include design-system.screen-lg-min {
       width: $width-screen-lg-min;
     }
+
+    // always display horizontal logo on locked screen
+    .app-header__metafox-logo {
+      &--icon {
+        display: none;
+      }
+
+      &--horizontal {
+        @include design-system.screen-sm-max {
+          display: block;
+          width: 60px;
+        }
+      }
+    }
   }
 }
 

@@ -12,7 +12,11 @@ const render = () => {
     },
   });
   const onAccept = jest.fn();
-  return renderWithProvider(<TermsOfUsePopup onAccept={onAccept} />, store);
+  const onClose = jest.fn();
+  return renderWithProvider(
+    <TermsOfUsePopup onAccept={onAccept} isOpen onClose={onClose} />,
+    store,
+  );
 };
 
 describe('TermsOfUsePopup', () => {
@@ -28,9 +32,11 @@ describe('TermsOfUsePopup', () => {
 
   it('renders TermsOfUse component and shows Terms of Use text', () => {
     render();
-    expect(
-      screen.getByText('Our Terms of Use have updated'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Review our Terms of Use')).toBeInTheDocument();
+
+    const agreeButton = screen.getByTestId('terms-of-use-agree-button');
+    expect(agreeButton).toBeInTheDocument();
+    expect(agreeButton).toBeDisabled();
   });
 
   it('scrolls down when handleScrollDownClick is called', () => {
@@ -40,7 +46,7 @@ describe('TermsOfUsePopup', () => {
 
     render();
     const button = document.querySelector(
-      "[data-testid='popover-scroll-button']",
+      "[data-testid='terms-of-use-scroll-button']",
     );
 
     fireEvent.click(button);

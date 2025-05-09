@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import classnames from 'classnames';
 import Unlock from '../unlock-page';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -18,6 +19,9 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_PASSWORD_HINT,
+  ONBOARDING_ACCOUNT_EXIST,
+  ONBOARDING_ACCOUNT_NOT_FOUND,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -43,16 +47,19 @@ import ExperimentalArea from '../../components/app/flask/experimental-area';
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import { getHDEntropyIndex } from '../../selectors/selectors';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
-import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
 import SecureYourWallet from './secure-your-wallet/secure-your-wallet';
 import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 import PrivacySettings from './privacy-settings/privacy-settings';
-import CreationSuccessful from './creation-successful/creation-successful';
-import OnboardingWelcome from './welcome/welcome';
+import WalletReady from './wallet-ready/wallet-ready';
+import Welcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
+import PasswordHint from './password-hint/password-hint';
+import AccountExist from './account-exist/account-exist';
+import AccountNotFound from './account-not-found/account-not-found';
+import CreatePassword from './create-password/create-password';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 
@@ -124,13 +131,25 @@ export default function OnboardingFlow() {
     isFromReminder;
 
   return (
-    <div className="onboarding-flow">
+    <div
+      className={classnames('onboarding-flow', {
+        'onboarding-flow--welcome': pathname === ONBOARDING_WELCOME_ROUTE,
+        'onboarding-flow--unlock': pathname === ONBOARDING_UNLOCK_ROUTE,
+      })}
+    >
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClose={() => history.push(DEFAULT_ROUTE)}
         isOpen={showPasswordModalToAllowSRPReveal}
       />
-      <div className="onboarding-flow__wrapper">
+      <div
+        className={classnames('onboarding-flow__wrapper', {
+          'onboarding-flow__wrapper--welcome':
+            pathname === ONBOARDING_WELCOME_ROUTE,
+          'onboarding-flow__wrapper--unlock':
+            pathname === ONBOARDING_UNLOCK_ROUTE,
+        })}
+      >
         <Switch>
           <Route
             path={ONBOARDING_CREATE_PASSWORD_ROUTE}
@@ -182,14 +201,8 @@ export default function OnboardingFlow() {
             path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}
             component={PrivacySettings}
           />
-          <Route
-            path={ONBOARDING_COMPLETION_ROUTE}
-            component={CreationSuccessful}
-          />
-          <Route
-            path={ONBOARDING_WELCOME_ROUTE}
-            component={OnboardingWelcome}
-          />
+          <Route path={ONBOARDING_COMPLETION_ROUTE} component={WalletReady} />
+          <Route path={ONBOARDING_WELCOME_ROUTE} component={Welcome} />
           <Route
             path={ONBOARDING_PIN_EXTENSION_ROUTE}
             component={OnboardingPinExtension}
@@ -197,6 +210,12 @@ export default function OnboardingFlow() {
           <Route
             path={ONBOARDING_METAMETRICS}
             component={MetaMetricsComponent}
+          />
+          <Route path={ONBOARDING_PASSWORD_HINT} component={PasswordHint} />
+          <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
+          <Route
+            path={ONBOARDING_ACCOUNT_NOT_FOUND}
+            component={AccountNotFound}
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)

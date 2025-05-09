@@ -858,7 +858,7 @@ export default class Home extends PureComponent {
             />
           ) : null}
           {showTermsOfUse ? (
-            <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
+            <TermsOfUsePopup isOpen onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()

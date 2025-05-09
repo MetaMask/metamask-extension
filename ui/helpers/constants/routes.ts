@@ -266,7 +266,7 @@ export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 export const ONBOARDING_CONFIRM_SRP_ROUTE =
   '/onboarding/confirm-recovery-phrase';
 export const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
-export const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
+export const ONBOARDING_COMPLETION_ROUTE = '/onboarding/wallet-ready';
 export const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 export const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
@@ -276,8 +276,11 @@ export const ONBOARDING_SECURE_YOUR_WALLET_ROUTE =
 export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
+export const ONBOARDING_GET_STARTED_ROUTE = '/onboarding/get-started';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
-
+export const ONBOARDING_PASSWORD_HINT = '/onboarding/password-hint';
+export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
+export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';

@@ -10,7 +10,7 @@ class LoginPage {
 
   private welcomeBackMessage: object;
 
-  private forgotPasswordButton: object;
+  private forgotPasswordButton: string;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -20,10 +20,7 @@ class LoginPage {
       css: '[data-testid="unlock-page-title"]',
       text: 'Welcome back',
     };
-    this.forgotPasswordButton = {
-      text: 'Forgot password?',
-      tag: 'a',
-    };
+    this.forgotPasswordButton = '[data-testid="unlock-forgot-password-button"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {

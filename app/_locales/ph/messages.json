@@ -1004,30 +1004,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Isulat ito at itabi sa maraming tagong lugar."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Ilagay sa safe-deposit box."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ang iyong recovery phrase ay ang iyong “pangunahing key” sa wallet at pondo mo."
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Kung may manghihingi man ng iyong recovery phrase, malamang na sinusubukan ka niyang i-scam."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Huwag kailanmang ibahagi ang iyong recovery phrase kahit na sa MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Ano ang recovery phrase?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Dapat kong ibahagi ang aking recovery phrase?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Paano ko mase-save ang aking recovery phrase?"
-  },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang iyong wallet"
   },
@@ -1392,9 +1368,6 @@
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
-  "tips": {
-    "message": "Mga Tip"
-  },
   "to": {
     "message": "Para kay/sa"
   },
@@ -1489,9 +1462,6 @@
   },
   "unlock": {
     "message": "I-unlock"
-  },
-  "unlockMessage": {
-    "message": "Naghihintay ang decentralized web"
   },
   "unrecognizedChain": {
     "message": "Hindi kinikilala ang custom na network na ito. Inirerekomenda naming $1 ka bago magpatuloy",

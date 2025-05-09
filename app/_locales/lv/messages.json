@@ -644,9 +644,6 @@
   "terms": {
     "message": "Lietošanas noteikumi"
   },
-  "tips": {
-    "message": "Dzeramnauda"
-  },
   "to": {
     "message": "Adresāts"
   },
@@ -724,9 +721,6 @@
   },
   "unlock": {
     "message": "Atbloķēt"
-  },
-  "unlockMessage": {
-    "message": "Decentralizētais tīkls jau gaida"
   },
   "urlErrorMsg": {
     "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."

@@ -49,7 +49,9 @@
 @import 'selected-account/index';
 @import 'multichain-bridge-transaction-details-modal/index';
 @import 'multichain-bridge-transaction-list-item/index';
+@import 'srp-details-modal/srp-details-modal';
 @import 'srp-input/srp-input';
+@import 'srp-input-import/srp-input-import';
 @import 'snaps/snap-privacy-warning/index';
 @import 'tab-bar/index';
 @import 'assets/asset-list/asset-list-control-bar/index';
@@ -75,3 +77,4 @@
 @import 'name/index';
 @import 'name/name-details/index';
 @import 'confirm/info/row/index';
+@import 'toast-master/toast-master';

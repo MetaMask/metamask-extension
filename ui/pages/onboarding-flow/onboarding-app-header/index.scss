@@ -9,9 +9,13 @@
   flex-flow: column nowrap;
   width: 100%;
   flex: 0 0 auto;
+  padding: 16px;
+
+  &--welcome {
+    background-color: transparent;
+  }
 
   @include design-system.screen-sm-max {
-    padding: 16px;
     z-index: design-system.$mobile-header-z-index;
   }
 
@@ -30,9 +34,29 @@
     }
 
     &--horizontal {
+      width: 63px;
       @include design-system.screen-sm-max {
         display: none;
       }
+    }
+  }
+
+  &__dropdown {
+    cursor: pointer;
+
+    .dropdown__select {
+      cursor: pointer;
+    }
+  }
+
+  // SRP_OVERRIDE: dropdown on welcome page
+  &__dropdown--welcome {
+    .dropdown__select {
+      border: 0;
+    }
+
+    .dropdown__icon-caret-down {
+      color: var(--color-text-default);
     }
   }
 
@@ -41,21 +65,10 @@
     flex-flow: row nowrap;
     width: 100%;
     justify-content: space-between;
+    max-width: 1280px;
 
     @include design-system.screen-sm-max {
       height: 100%;
-    }
-
-    @include design-system.screen-sm-min {
-      width: 85vw;
-    }
-
-    @include design-system.screen-md-min {
-      width: 90vw;
-    }
-
-    @include design-system.screen-lg-min {
-      width: 62vw;
     }
   }
 

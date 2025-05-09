@@ -18,6 +18,7 @@ describe('Recovery Phrase Chips Component', () => {
     expect(container).toMatchSnapshot();
 
     const recoveryPhraseChips = queryByTestId('recovery-phrase-chips');
+    console.log('recoveryPhraseChips', recoveryPhraseChips.className);
     expect(recoveryPhraseChips).not.toHaveClass(
       'recovery-phrase__chips--hidden',
     );

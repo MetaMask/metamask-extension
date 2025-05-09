@@ -23,8 +23,10 @@ import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
+  onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import OnboardingGetStartedPage from '../../page-objects/pages/onboarding/onboarding-get-started-page';
 
 describe('MetaMask onboarding', function () {
   it("Creates a new wallet, sets up a secure password, and doesn't complete the onboarding process and refreshes the page", async function () {
@@ -47,9 +49,13 @@ describe('MetaMask onboarding', function () {
         await secureWalletPage.check_pageIsLoaded();
         await secureWalletPage.revealAndConfirmSRP();
 
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          await onboardingMetricsFlow(driver);
+        }
+
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
+        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
@@ -103,62 +109,26 @@ describe('MetaMask onboarding', function () {
         await driver.navigate();
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsFlow(driver);
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickImportWalletButton();
+        await startOnboardingPage.agreeToTermsOfUse();
 
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
-        }
+        const onboardingGetStartedPage = new OnboardingGetStartedPage(driver);
+        await onboardingGetStartedPage.check_pageIsLoaded();
+        await onboardingGetStartedPage.importWallet();
 
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.check_pageIsLoaded();
+
         await onboardingSrpPage.fillSrp(wrongSeedPhrase);
+        await onboardingSrpPage.clickConfirmButtonWithSrpError();
 
         // check the wrong SRP warning message is displayed
-        await onboardingSrpPage.check_wrongSrpWarningMessage();
+        await onboardingSrpPage.check_srpError();
         await onboardingSrpPage.check_confirmSrpButtonIsDisabled();
-      },
-    );
-  });
-
-  it('Verifies the functionality of selecting different Secret Recovery Phrase word counts', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-
-        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
-        }
-
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickImportWalletButton();
-
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
-        }
-
-        const onboardingSrpPage = new OnboardingSrpPage(driver);
-        await onboardingSrpPage.check_pageIsLoaded();
-        await onboardingSrpPage.check_srpDropdownIterations();
       },
     );
   });
@@ -174,21 +144,16 @@ describe('MetaMask onboarding', function () {
         await driver.navigate();
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsFlow(driver);
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickCreateWalletButton();
+        await startOnboardingPage.agreeToTermsOfUse();
 
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
-        }
+        const onboardingGetStartedPage = new OnboardingGetStartedPage(driver);
+        await onboardingGetStartedPage.check_pageIsLoaded();
+        await onboardingGetStartedPage.createWalletWithSrp();
 
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.check_pageIsLoaded();
@@ -239,7 +204,7 @@ describe('MetaMask onboarding', function () {
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.check_remindMeLaterButtonIsDisplayed();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
@@ -282,7 +247,7 @@ describe('MetaMask onboarding', function () {
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.check_remindMeLaterButtonIsDisplayed();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
@@ -331,9 +296,10 @@ describe('MetaMask onboarding', function () {
         await onboardingMetricsPage.check_pageIsLoaded();
         await onboardingMetricsPage.clickNoThanksButton();
 
-        // Next screen should be Secure your wallet screen
-        const secureWalletPage = new SecureWalletPage(driver);
-        await secureWalletPage.check_pageIsLoaded();
+        // Next screen should be Onboarding Complete but the remind me later message is displayed
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.check_remindMeLaterButtonIsDisplayed();
       },
     );
   });

@@ -644,9 +644,6 @@
   "terms": {
     "message": "Naudojimo sąlygos"
   },
-  "tips": {
-    "message": "Arbatpinigiai"
-  },
   "to": {
     "message": "Iki"
   },
@@ -724,9 +721,6 @@
   },
   "unlock": {
     "message": "Atrakinti"
-  },
-  "unlockMessage": {
-    "message": "Laukiančios decentralizuotos svetainės"
   },
   "urlErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."

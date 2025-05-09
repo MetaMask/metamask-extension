@@ -122,6 +122,7 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
             </div>
             <p
               class="mm-box mm-text mm-help-text mm-form-text-field__help-text mm-text--body-xs mm-box--margin-top-1 mm-box--color-text-default"
+              data-testid="help-text"
             >
               ​
             </p>

@@ -170,7 +170,7 @@ describe('foundryup', () => {
       (readFileSync as jest.Mock).mockReturnValue('dummy yaml content');
 
       const result = getCacheDirectory();
-      expect(result).toMatch(/^\/home\/.*\/.cache\/metamask$/u);
+      expect(result).toMatch(/^\/(home|Users)\/.*\/.cache\/metamask$/u);
     });
 
     it('uses local cache when global cache is disabled', () => {

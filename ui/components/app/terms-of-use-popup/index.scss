@@ -1,24 +1,36 @@
 @use "design-system";
 
-.popover-wrap.terms-of-use__popover {
-  .terms-of-use {
-    &__terms-list {
-      list-style: decimal none outside;
-    }
-
-    &__footer-text {
-      align-self: center;
-    }
+.terms-of-use-popup {
+  &__body-container {
+    padding: 0 16px;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
   }
 
-  .popover-header {
-    &__title {
-      margin-bottom: 0;
-    }
+  &__body {
+    padding: 16px;
+    border: 1px solid var(--color-border-muted);
+    max-height: 442px;
+    border-radius: 8px;
+    flex: 1;
+    overflow-y: auto;
   }
 
-  .popover-footer {
-    border-top: none;
+  &__scroll-button-container {
+    position: absolute;
+    bottom: 24px;
+    right: 32px;
+    z-index: 201;
+    background-color: var(--color-overlay-inverse);
+    // SRP_OVERRIDE: this is not on design system shadows yet
+    box-shadow: 0 3px 8px 0 rgba(5, 33, 255, 0.35);
+    border-radius: 50%;
+  }
+
+  &__scroll-button {
+    width: 40px;
+    height: 40px;
   }
 
   @include design-system.screen-sm-min {
@@ -28,5 +40,10 @@
 
   @include design-system.screen-sm-max {
     max-height: 568px;
+  }
+
+  // SRP_OVERRIDE: center modal content
+  .mm-modal-content {
+    align-items: center;
   }
 }

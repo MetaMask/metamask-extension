@@ -88,6 +88,10 @@ export function selectNftDetectionEnablementToast(
   return Boolean(state.appState.showNftDetectionEnablementToast);
 }
 
+export function selectPasswordHintSavedToast(state: State): boolean {
+  return Boolean(state.appState?.showPasswordHintSavedToast);
+}
+
 // If there is more than one connected account to activeTabOrigin,
 // *BUT* the current account is not one of them, show the banner
 export function selectShowConnectAccountToast(

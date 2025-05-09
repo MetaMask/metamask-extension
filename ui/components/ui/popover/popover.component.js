@@ -161,7 +161,7 @@ const Popover = ({
             color={Color.iconDefault}
             onClick={onScrollDownButtonClick}
             className="popover-scroll-button"
-            style={{ bottom: footer ? '140px' : '12px' }}
+            style={{ bottom: footer ? '200px' : '12px' }}
             data-testid="popover-scroll-button"
           >
             <Icon

@@ -47,6 +47,7 @@ const initialState = {
     featureNotificationsEnabled: false,
     privacyMode: false,
     showMultiRpcModal: false,
+    passwordHint: '',
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
