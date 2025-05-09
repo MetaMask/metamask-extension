@@ -1,6 +1,11 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
+import {
+  generateCaip25Caveat,
+  getAllNamespacesFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
+  getCaipAccountIdsFromCaip25CaveatValue,
+} from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
   CaipChainId,
@@ -66,11 +71,6 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../selectors/selectors.types';
-import {
-  getAllNonWalletNamespacesFromCaip25CaveatValue,
-  getAllScopesFromCaip25CaveatValue,
-} from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
-import { getCaipAccountIdsFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
 import {
@@ -207,8 +207,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     getUpdatedAndSortedAccountsWithCaipAccountId,
   ) as MergedInternalAccountWithCaipAccountId[];
 
-  const requestedNamespaces = getAllNonWalletNamespacesFromCaip25CaveatValue(
+  const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
+  );
+  const requestedNamespacesWithoutWallet = requestedNamespaces.filter(
+    (namespace) => namespace !== KnownCaipNamespace.Wallet,
   );
 
   // all accounts that match the requested namespaces
@@ -217,7 +220,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       const {
         chain: { namespace },
       } = parseCaipAccountId(account.caipAccountId);
-      return requestedNamespaces.includes(namespace);
+      return requestedNamespacesWithoutWallet.includes(namespace);
     },
   );
 
@@ -244,7 +247,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const defaultAccounts = getDefaultAccounts(
-    requestedNamespaces,
+    requestedNamespacesWithoutWallet,
     supportedRequestedAccounts,
     supportedAccountsForRequestedNamespaces,
   );
