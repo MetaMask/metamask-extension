@@ -1114,6 +1114,13 @@
     "message": "直接將錢包連接到電腦上。關於更多使用您的硬體錢包的詳細資訊，$1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "step1OnekeyWallet": {
+    "message": "插入 OneKey 錢包"
+  },
+  "step1OnekeyWalletMsg": {
+    "message": "直接將錢包連接到電腦上。關於更多使用您的硬體錢包的詳細資訊，$1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "step2LedgerWallet": {
     "message": "插入 Ledger 錢包"
   },
