@@ -24,7 +24,6 @@ import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
-import { isCaipChainId } from '@metamask/utils';
 import type {
   CurrencyRateState,
   MultichainAssetsControllerState,
@@ -645,16 +644,14 @@ export const getHardwareWalletName = (state: BridgeAppState) => {
 export const getIsUnifiedUIEnabled = createSelector(
   [
     getBridgeFeatureFlags,
-    (_state: BridgeAppState, chainId?: string) => chainId,
+    (_state: BridgeAppState, chainId?: string | number) => chainId,
   ],
   (bridgeFeatureFlags, chainId): boolean => {
-    if (!chainId) {
+    if (chainId === undefined || chainId === null) {
       return false;
     }
 
-    const caipChainId: CaipChainId = isCaipChainId(chainId as CaipChainId)
-      ? (chainId as CaipChainId)
-      : (formatChainIdToCaip(chainId as Hex) as CaipChainId);
+    const caipChainId = formatChainIdToCaip(String(chainId));
 
     return Boolean(
       bridgeFeatureFlags?.chains?.[caipChainId]?.isUnifiedUIEnabled,

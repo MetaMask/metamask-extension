@@ -231,7 +231,7 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
 
   const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
-    getIsUnifiedUIEnabled(state, String(chainId)),
+    getIsUnifiedUIEnabled(state, chainId),
   );
   ///: END:ONLY_INCLUDE_IF
 
