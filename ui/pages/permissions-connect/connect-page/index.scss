@@ -5,6 +5,10 @@
     overflow: hidden;
   }
 
+  &__header__children-wrapper {
+    overflow: hidden; // used for elipsis on the domain name
+  }
+
   .multichain-account-list-item {
     &:hover,
     &:focus-within {

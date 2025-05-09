@@ -76,6 +76,9 @@ export const OverflowStory = (args) => (
 );
 OverflowStory.storyName = 'OverflowStory';
 OverflowStory.args = {
+  textProps: {
+    ellipsis: true,
+  },
   startAccessory: (
     <ButtonIcon
       size={ButtonIconSize.Sm}
