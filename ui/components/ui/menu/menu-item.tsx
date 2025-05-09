@@ -34,7 +34,7 @@ const MenuItem = React.forwardRef(
   (
     {
       children,
-      className,
+      className = "",
       'data-testid': dataTestId,
       iconName,
       iconColor,
