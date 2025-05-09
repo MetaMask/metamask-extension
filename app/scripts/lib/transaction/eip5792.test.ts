@@ -230,38 +230,6 @@ describe('EIP-5792', () => {
       );
     });
 
-    it('throws if disabled preference for chain and account', async () => {
-      await expect(
-        processSendCalls(
-          sendCallsHooks,
-          messenger,
-          SEND_CALLS_MOCK,
-          REQUEST_MOCK,
-        ),
-      ).rejects.toThrow(
-        `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
-      );
-    });
-
-    it('does not throw if disabled preference for chain and account if already upgraded', async () => {
-      isAtomicBatchSupportedMock.mockResolvedValueOnce([
-        {
-          chainId: CHAIN_ID_MOCK,
-          delegationAddress: DELEGATION_ADDRESS_MOCK,
-          isSupported: true,
-        },
-      ]);
-
-      expect(
-        await processSendCalls(
-          sendCallsHooks,
-          messenger,
-          SEND_CALLS_MOCK,
-          REQUEST_MOCK,
-        ),
-      ).toBeDefined();
-    });
-
     it('throws if user enabled preference to dismiss option to upgrade account', async () => {
       getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
 
@@ -272,9 +240,7 @@ describe('EIP-5792', () => {
           SEND_CALLS_MOCK,
           REQUEST_MOCK,
         ),
-      ).rejects.toThrow(
-        `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
-      );
+      ).rejects.toThrow('EIP-7702 upgrade disabled by the user');
     });
 
     it('does not throw if user enabled preference to dismiss option to upgrade account if already upgraded', async () => {
@@ -589,29 +555,6 @@ describe('EIP-5792', () => {
       ]);
 
       getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
-
-      const capabilities = await getCapabilities(
-        {
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
-        },
-        FROM_MOCK,
-        [CHAIN_ID_MOCK],
-      );
-
-      expect(capabilities).toStrictEqual({});
-    });
-
-    it('does not include atomic capability if upgrade disabled for chain and account', async () => {
-      isAtomicBatchSupportedMock.mockResolvedValueOnce([
-        {
-          chainId: CHAIN_ID_MOCK,
-          delegationAddress: undefined,
-          isSupported: false,
-          upgradeContractAddress: DELEGATION_ADDRESS_MOCK,
-        },
-      ]);
 
       const capabilities = await getCapabilities(
         {

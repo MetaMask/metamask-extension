@@ -85,6 +85,7 @@ export async function processSendCalls(
 
   validateSendCalls(
     params,
+    from,
     dappChainId,
     dismissSmartAccountSuggestionEnabled,
     chainBatchSupport,
@@ -162,6 +163,8 @@ export async function getCapabilities(
   const { getDismissSmartAccountSuggestionEnabled, isAtomicBatchSupported } =
     hooks;
 
+  const addressNormalized = address.toLowerCase() as Hex;
+
   const chainIdsNormalized = chainIds?.map(
     (chainId) => chainId.toLowerCase() as Hex,
   );
@@ -178,10 +181,10 @@ export async function getCapabilities(
       const { delegationAddress, isSupported, upgradeContractAddress } =
         chainBatchSupport;
 
+      const isUpgradeDisabled = getDismissSmartAccountSuggestionEnabled();
+
       const canUpgrade =
-        !getDismissSmartAccountSuggestionEnabled() &&
-        upgradeContractAddress &&
-        !delegationAddress;
+        !isUpgradeDisabled && upgradeContractAddress && !delegationAddress;
 
       if (!isSupported && !canUpgrade) {
         return acc;
@@ -205,6 +208,7 @@ export async function getCapabilities(
 
 function validateSendCalls(
   sendCalls: SendCalls,
+  from: Hex,
   dappChainId: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
@@ -212,8 +216,12 @@ function validateSendCalls(
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId, chainBatchSupport);
   validateCapabilities(sendCalls);
-
-  validateUserDisabled(dismissSmartAccountSuggestionEnabled, chainBatchSupport);
+  validateUserDisabled(
+    from,
+    dappChainId,
+    dismissSmartAccountSuggestionEnabled,
+    chainBatchSupport,
+  );
 }
 
 function validateSendCallsVersion(sendCalls: SendCalls) {
@@ -279,9 +287,13 @@ function validateCapabilities(sendCalls: SendCalls) {
 }
 
 function validateUserDisabled(
+  from: Hex,
+  dappChainId: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
 ) {
+  const addressLowerCase = from.toLowerCase() as Hex;
+
   if (chainBatchSupport?.delegationAddress) {
     return;
   }
