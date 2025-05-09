@@ -3037,6 +3037,9 @@
   "manageInstitutionalWalletsDescription": {
     "message": "Turn this on to enable institutional wallets."
   },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
+  },
   "managePermissions": {
     "message": "Manage permissions"
   },

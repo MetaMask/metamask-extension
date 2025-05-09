@@ -2150,7 +2150,8 @@
       }
     },
     "txHistory": {},
-    "throttledOrigins": {}
+    "throttledOrigins": {},
+    "delegations": {}
   },
   "ramps": {
     "buyableChains": [
