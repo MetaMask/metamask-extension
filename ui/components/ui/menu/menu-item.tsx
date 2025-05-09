@@ -19,7 +19,7 @@ import {
 
 type MenuItemProps = {
   children: React.ReactNode;
-  className: string;
+  className?: string;
   'data-testid'?: string;
   iconName: IconName;
   iconColor?: IconColor;
@@ -30,11 +30,11 @@ type MenuItemProps = {
   textVariant?: TextVariant;
 };
 
-const MenuItem = React.forwardRef(
+const MenuItem = React.forwardRef<HTMLButtonElement, MenuItemProps>(
   (
     {
       children,
-      className = "",
+      className = '',
       'data-testid': dataTestId,
       iconName,
       iconColor,
@@ -44,13 +44,13 @@ const MenuItem = React.forwardRef(
       showInfoDot,
       textVariant,
     }: MenuItemProps,
-    ref: React.Ref<HTMLElement>,
+    ref,
   ) => (
     <button
       className={classnames('menu-item', className)}
       data-testid={dataTestId}
       onClick={onClick}
-      ref={ref as React.LegacyRef<HTMLButtonElement>}
+      ref={ref}
       disabled={disabled}
     >
       {iconName && showInfoDot && (

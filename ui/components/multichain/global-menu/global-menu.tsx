@@ -127,7 +127,7 @@ export const GlobalMenu = ({
   ///: END:ONLY_INCLUDE_IF
 
   // Accessibility improvement for popover
-  const lastItemRef = React.useRef<HTMLElement>(null);
+  const lastItemRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
     const lastItem = lastItemRef.current as HTMLElement;
