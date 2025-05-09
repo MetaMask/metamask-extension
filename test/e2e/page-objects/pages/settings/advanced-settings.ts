@@ -9,6 +9,21 @@ class AdvancedSettings {
   private readonly downloadStateLogsButton =
     '[data-testid="advanced-setting-state-logs-button"]';
 
+  private readonly clearActivityMessage = {
+    text: 'Clear activity and nonce data?',
+    css: '.modal-content__title',
+  };
+
+  private readonly clearActivityTabDataButton = {
+    text: 'Clear activity tab data',
+    tag: 'button',
+  };
+
+  private readonly confirmClearActivityButton = {
+    text: 'Clear',
+    tag: 'button',
+  };
+
   private readonly fullSizeViewToggle =
     '[data-testid="advanced-setting-show-extension-in-full-size-view"] .toggle-button > div';
 
@@ -36,6 +51,20 @@ class AdvancedSettings {
       throw e;
     }
     console.log('Advanced Settings page is loaded');
+  }
+
+  async clearActivityTabData(): Promise<void> {
+    console.log('Clicking clear activity tab data button in advanced settings');
+    await this.driver.clickElement(this.clearActivityTabDataButton);
+    await this.driver.waitForSelector(this.clearActivityMessage);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmClearActivityButton,
+    );
+  }
+
+  async downloadData(): Promise<void> {
+    console.log('Downloading data on advanced settings page');
+    await this.driver.clickElement(this.downloadDataButton);
   }
 
   async downloadStateLogs(): Promise<void> {
