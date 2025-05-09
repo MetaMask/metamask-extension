@@ -22,6 +22,7 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
+  CHAIN_IDS.SEI,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -71,6 +72,8 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: 'ZkSync Era',
   [CHAIN_IDS.BASE]: 'Base',
   [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'Base',
+  [CHAIN_IDS.SEI]: 'Sei',
+  [toEvmCaipChainId(CHAIN_IDS.SEI)]: 'Sei',
   ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
