@@ -79,7 +79,9 @@ async function mocks(server: MockttpServer) {
 
 async function importTST(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement('[data-testid="import-token-button"]');
+  await driver.clickElement(
+    '[data-testid="asset-list-control-bar-action-button"]',
+  );
   await driver.clickElement('[data-testid="importTokens"]');
 
   await driver.waitForSelector({
