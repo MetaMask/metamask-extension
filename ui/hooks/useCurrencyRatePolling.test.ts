@@ -16,10 +16,21 @@ jest.mock('../store/actions', () => ({
   currencyRateStopPollingByPollingToken: jest.fn(),
 }));
 
+let originalPortfolioView: string | undefined;
+
 describe('useCurrencyRatePolling', () => {
   beforeEach(() => {
+    // Mock process.env.PORTFOLIO_VIEW
+    originalPortfolioView = process.env.PORTFOLIO_VIEW;
+    process.env.PORTFOLIO_VIEW = 'true'; // Set your desired mock value here
+
     mockPromises = [];
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    // Restore the original value
+    process.env.PORTFOLIO_VIEW = originalPortfolioView;
   });
 
   it('should poll currency rates for native currencies when enabled and stop on dismount', async () => {
@@ -32,21 +43,15 @@ describe('useCurrencyRatePolling', () => {
         networkConfigurationsByChainId: {
           '0x1': {
             nativeCurrency: 'ETH',
+            chainId: '0x1',
             defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [
-              {
-                networkClientId: 'selectedNetworkClientId',
-              },
-            ],
+            rpcEndpoints: [{ networkClientId: 'selectedNetworkClientId' }],
           },
-          '0x89': {
+          '0x38': {
             nativeCurrency: 'BNB',
+            chainId: '0x38',
             defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [
-              {
-                networkClientId: 'selectedNetworkClientId2',
-              },
-            ],
+            rpcEndpoints: [{ networkClientId: 'selectedNetworkClientId2' }],
           },
         },
       },
@@ -57,11 +62,14 @@ describe('useCurrencyRatePolling', () => {
       state,
     );
 
+    // Wait for the asynchronous effect(s) to complete.
+    await new Promise((r) => setTimeout(r, 0));
     await Promise.all(mockPromises);
+
     expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
     expect(currencyRateStartPolling).toHaveBeenCalledWith(['ETH', 'BNB']);
 
-    // Stop polling on dismount
+    // Simulate unmount, which should trigger stopping the polling.
     unmount();
     expect(currencyRateStopPollingByPollingToken).toHaveBeenCalledTimes(1);
     expect(currencyRateStopPollingByPollingToken).toHaveBeenCalledWith(

@@ -1,12 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import {
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
-  CHAIN_SPEC_URL,
-} from '../../shared/constants/network';
-import { DAY } from '../../shared/constants/time';
 import { useSafeChainsListValidationSelector } from '../selectors';
 import {
   getMultichainIsEvm,
@@ -15,6 +8,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getValidUrl } from '../../app/scripts/lib/util';
+import { isOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 
 export function useIsOriginalNativeTokenSymbol(
   chainId,
@@ -47,51 +41,18 @@ export function useIsOriginalNativeTokenSymbol(
       }
 
       try {
-        if (!useSafeChainsListValidation) {
-          setIsOriginalNativeSymbol(true);
-          return;
-        }
-
         // exclude local dev network
         if (isLocalhost(rpcUrl)) {
           setIsOriginalNativeSymbol(true);
           return;
         }
 
-        const mappedCurrencySymbol = CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
-        if (mappedCurrencySymbol) {
-          setIsOriginalNativeSymbol(mappedCurrencySymbol === ticker);
-          return;
-        }
-
-        const mappedAsNetworkCollision =
-          CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId];
-
-        const isMappedCollision =
-          mappedAsNetworkCollision &&
-          mappedAsNetworkCollision.some(
-            (network) => network.currencySymbol === ticker,
-          );
-
-        if (isMappedCollision) {
-          setIsOriginalNativeSymbol(true);
-          return;
-        }
-
-        const safeChainsList = await fetchWithCache({
-          url: CHAIN_SPEC_URL,
-          allowStale: true,
-          cacheOptions: { cacheRefreshTime: DAY },
-          functionName: 'getSafeChainsList',
+        const isOriginalNativeToken = await isOriginalNativeTokenSymbol({
+          ticker,
+          chainId: networkId,
         });
 
-        const matchedChain = safeChainsList.find(
-          (network) => network.chainId === parseInt(networkId, 16),
-        );
-
-        const symbol = matchedChain?.nativeCurrency?.symbol ?? null;
-
-        setIsOriginalNativeSymbol(symbol === ticker);
+        setIsOriginalNativeSymbol(isOriginalNativeToken);
       } catch (err) {
         setIsOriginalNativeSymbol(false);
       }
@@ -105,6 +66,8 @@ export function useIsOriginalNativeTokenSymbol(
     type,
     rpcUrl,
     useSafeChainsListValidation,
+    isEvm,
+    providerConfig,
   ]);
 
   return isOriginalNativeSymbol;
