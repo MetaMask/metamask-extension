@@ -210,8 +210,11 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const { chainId, assetNamespace } = parseCaipAssetType(assetId);
       const isNative = assetNamespace === 'slip44';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
-      const rate = assetRates?.[assetId]?.rate || '0';
-      const balanceInFiat = new BigNumber(balance.amount).times(rate);
+      const rate = assetRates?.[assetId]?.rate;
+
+      const balanceInFiat = rate
+        ? new BigNumber(balance.amount).times(rate)
+        : null;
 
       const assetMetadataFallback = {
         name: balance.unit,
@@ -232,9 +235,10 @@ export const getMultiChainAssets = createDeepEqualSelector(
           chainId,
           isNative,
           primary: balance.amount,
-          secondary: balanceInFiat.toNumber(),
+          secondary: balanceInFiat ? balanceInFiat.toNumber() : null,
           string: '',
-          tokenFiatAmount: balanceInFiat.toNumber(), // for now we are keeping this is to satisfy sort, this should be fiat amount
+          tokenFiatAmount: balanceInFiat ? balanceInFiat.toNumber() : null,
+          // tokenFiatAmount: null,
           isStakeable: false,
         });
       }
