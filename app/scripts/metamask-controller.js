@@ -1713,6 +1713,7 @@ export default class MetamaskController extends EventEmitter {
           },
         });
       },
+      traceFn: (...args) => trace(...args),
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
@@ -1752,6 +1753,7 @@ export default class MetamaskController extends EventEmitter {
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
+      traceFn: (...args) => trace(...args),
     });
 
     const smartTransactionsControllerMessenger =

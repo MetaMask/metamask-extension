@@ -59,13 +59,14 @@ const CrossChainSwap = () => {
     await dispatch(resetBridgeState());
   };
 
+  const isSwap = useIsMultichainSwap();
+
   useEffect(() => {
     dispatch(
       trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
     );
     // Reset controller and inputs before unloading the page
     window.addEventListener('beforeunload', resetControllerAndInputStates);
-
     return () => {
       window.removeEventListener('beforeunload', resetControllerAndInputStates);
       resetControllerAndInputStates();
@@ -78,8 +79,6 @@ const CrossChainSwap = () => {
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
   useQuoteFetchEvents();
-
-  const isSwap = useIsMultichainSwap();
 
   const redirectToDefaultRoute = async () => {
     history.push({

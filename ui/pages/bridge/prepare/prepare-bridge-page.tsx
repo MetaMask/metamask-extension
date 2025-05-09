@@ -16,7 +16,6 @@ import {
   isSolanaChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
   type BridgeController,
@@ -130,6 +129,7 @@ import {
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -172,6 +172,7 @@ const PrepareBridgePage = () => {
     isLoading,
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
+    quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
@@ -214,7 +215,6 @@ const PrepareBridgePage = () => {
     isInsufficientGasForQuote,
     isInsufficientBalance,
   } = useSelector(getValidationErrors);
-  const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
   const nativeAsset = useMemo(
@@ -379,17 +379,11 @@ const PrepareBridgePage = () => {
     ],
   );
 
-  const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce(
-      (
-        p: Partial<GenericQuoteRequest>,
-        c: Parameters<BridgeController['updateBridgeQuoteRequestParams']>[1],
-      ) => {
-        dispatch(updateQuoteRequestParams(p, c));
-      },
-      300,
-    ),
-    [],
+  const debouncedUpdateQuoteRequestInController = debounce(
+    (...args: Parameters<typeof updateQuoteRequestParams>) => {
+      dispatch(updateQuoteRequestParams(...args));
+    },
+    300,
   );
 
   useEffect(() => {
@@ -400,7 +394,8 @@ const PrepareBridgePage = () => {
       token_symbol_destination: toToken?.symbol ?? '',
       security_warnings: [],
     });
-  }, [quoteParams, debouncedUpdateQuoteRequestInController]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quoteParams]);
 
   const trackInputEvent = useCallback(
     (
@@ -500,6 +495,10 @@ const PrepareBridgePage = () => {
 
   // Set the default destination token and slippage for swaps
   useEffect(() => {
+    endTrace({
+      name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+      timestamp: Date.now(),
+    });
     if (isSwap) {
       dispatch(setSlippage(undefined));
       if (fromChain && !toToken) {
@@ -589,6 +588,7 @@ const PrepareBridgePage = () => {
             dispatch(setFromTokenInputValue(value));
           }}
           amountInFiat={fromAmountInCurrency.valueInCurrency.toString()}
+          balanceAmount={srcTokenBalance}
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
@@ -858,6 +858,8 @@ const PrepareBridgePage = () => {
                 ))}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
+                  nativeAssetBalance={nativeAssetBalance}
+                  srcTokenBalance={srcTokenBalance}
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
                       stx_enabled: smartTransactionsEnabled,

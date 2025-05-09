@@ -129,7 +129,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
-import { EndTraceRequest } from '../../shared/lib/trace';
+import { EndTraceRequest, trace, TraceName } from '../../shared/lib/trace';
 import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
@@ -146,6 +146,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 
 type CustomGasSettings = {
   gas?: string;
@@ -3892,9 +3893,18 @@ export function fetchAndSetQuotes(
   },
 ): ThunkAction<Promise<Quotes>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const [quotes, selectedAggId] = await submitRequestToBackground<Quotes>(
-      'fetchAndSetQuotes',
-      [fetchParams, fetchParamsMetaData],
+    const [quotes, selectedAggId] = await trace(
+      {
+        name: TraceName.SwapQuotesFetched,
+        data: {
+          srcChainId: formatChainIdToCaip(fetchParamsMetaData.chainId),
+        },
+      },
+      async () =>
+        await submitRequestToBackground<Quotes>('fetchAndSetQuotes', [
+          fetchParams,
+          fetchParamsMetaData,
+        ]),
     );
     await forceUpdateMetamaskState(dispatch);
     return [quotes, selectedAggId];
