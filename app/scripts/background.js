@@ -52,6 +52,7 @@ import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import {
   CorruptionHandler,
   hasVault,
@@ -94,7 +95,6 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
-import { getManifestFlags } from '../../shared/lib/manifestFlags';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -107,8 +107,11 @@ const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const useReadOnlyNetworkStore = (inTest && !getManifestFlags().testing.forceExtensionStore)
-const localStore = useReadOnlyNetworkStore ? new ReadOnlyNetworkStore() : new ExtensionStore();
+const useReadOnlyNetworkStore =
+  inTest && !getManifestFlags().testing.forceExtensionStore;
+const localStore = useReadOnlyNetworkStore
+  ? new ReadOnlyNetworkStore()
+  : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>

@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
@@ -7,18 +8,19 @@ import {
 import LoginPage from '../../page-objects/pages/login-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import assert from 'node:assert/strict';
 
 describe('Vault Corruption', function () {
   /**
    * Script template to simulate a broken database.
+   *
+   * @param code - The code to run after the primary database has been broken.
    */
-  const makeScript = (key: string) => `return new Promise((resolve) => {
+  const makeScript = (code: string) => `return new Promise((resolve) => {
     const browser = globalThis.browser || chrome;
     browser.storage.local.get(({ data, meta }) => {
       delete data.KeyringController;
       browser.storage.local.set({ data: data, meta }, () => {
-        ${key}
+        ${code}
       });
     });
   });`;
