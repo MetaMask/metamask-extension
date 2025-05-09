@@ -131,7 +131,7 @@ jobs:
           path: ${{ inputs.html-report-path }}
 
       - name: Comment on PR with html report
-        if: ${{ failure() && inputs.html-report-path != '' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        if: ${{ failure() && inputs.html-report-path != '' && env.PR_NUMBER != '' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         env:
           HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
           HTML_REPORT_PATH: ${{ inputs.html-report-path }}
