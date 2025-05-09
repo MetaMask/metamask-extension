@@ -33,12 +33,15 @@ describe('WhatsNewModal', () => {
 
   const renderModalWithNotification = ({
     notificationId,
+    isAccountSyncingReady = true,
   }: {
     notificationId: number;
+    isAccountSyncingReady?: boolean;
   }) => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
+        isAccountSyncingReadyToBeDispatched: isAccountSyncingReady,
         announcements: {
           [notificationId]: {
             date: '2025-03-03',
@@ -121,6 +124,21 @@ describe('WhatsNewModal', () => {
     });
 
     describe('Solana notification content', () => {
+      describe('when the extension is still syncing accounts', () => {
+        beforeEach(() => {
+          renderModalWithNotification({
+            notificationId: NOTIFICATION_SOLANA_ON_METAMASK,
+            isAccountSyncingReady: false,
+          });
+        });
+
+        it('shows a loading button when account syncing is not ready', () => {
+          expect(
+            screen.getByTestId('loading-solana-account-button'),
+          ).toBeInTheDocument();
+        });
+      });
+
       describe('when the user does not have a Solana account', () => {
         beforeEach(() => {
           renderModalWithNotification({
@@ -196,6 +214,7 @@ describe('WhatsNewModal', () => {
           const store = configureStore({
             metamask: {
               ...mockState.metamask,
+              isAccountSyncingReadyToBeDispatched: true,
               announcements: {
                 [NOTIFICATION_SOLANA_ON_METAMASK]: {
                   date: '2025-03-03',
