@@ -31,10 +31,10 @@ function readTestResults(TEST_RESULTS_PATH: string): TestRun | undefined {
       error.code === 'ENOENT'
     ) {
       console.warn(
-        `Test results file not found, doing a naive split instead: ${TEST_RESULTS_PATH}`,
+        `Test results file not found, doing a naïve split instead: ${TEST_RESULTS_PATH}`,
       );
 
-      // If the file doesn't exist, return a dummy object to do the naive split
+      // If the file doesn't exist, return a dummy object to do the naïve split
       return {
         name: testSuiteName,
         testFiles: [],
@@ -109,7 +109,13 @@ export function splitTestsByTimings(
   return [];
 }
 
-// Run function if this is the main module (for something like a unit test)
+/**
+ * This is a test function that runs if you directly run `yarn tsx .github/scripts/split-tests-by-timings.ts`,
+ * which only happens while developing and testing this file. Normally the splitTestsByTimings() function
+ * is called by `test/e2e/run-all.ts`.
+ *
+ * This code is left in to be able to test the output of splitTestsByTimings()
+ */
 if (require.main === module) {
   const sampleTestList = [
     'test/e2e/tests/account/account-details.spec.ts',
