@@ -1205,6 +1205,15 @@ export const selectDefaultRpcEndpointByChainId = createSelector(
 );
 
 /**
+ * @type (state: RemoteFeatureFlagsState) => boolean
+ */
+export const getIsRpcFailoverEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
+);
+
+/**
  * @type (state: any, chainId: string) => number | undefined
  */
 export const selectConversionRateByChainId = createSelector(
