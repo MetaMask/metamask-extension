@@ -30,6 +30,19 @@ const INFERRABLE_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.simpleSend,
 ];
 
+const ABI_PERMIT_2_APPROVE = {
+  inputs: [
+    { internalType: 'address', name: 'token', type: 'address' },
+    { internalType: 'address', name: 'spender', type: 'address' },
+    { internalType: 'uint160', name: 'amount', type: 'uint160' },
+    { internalType: 'uint48', name: 'expiration', type: 'uint48' },
+  ],
+  name: 'approve',
+  outputs: [],
+  stateMutability: 'nonpayable',
+  type: 'function',
+};
+
 type InferTransactionTypeResult = {
   // The type of transaction
   type: TransactionType;
@@ -41,6 +54,7 @@ const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
 const erc1155Interface = new Interface(abiERC1155);
 const USDCInterface = new Interface(abiFiatTokenV2);
+const permit2Interface = new Interface([ABI_PERMIT_2_APPROVE]);
 
 /**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
@@ -109,28 +123,20 @@ export function txParamsAreDappSuggested(
  * @returns TransactionDescription | undefined
  */
 export function parseStandardTokenTransactionData(data: string) {
-  try {
-    return erc20Interface.parseTransaction({ data });
-  } catch {
-    // ignore and next try to parse with erc721 ABI
-  }
+  const interfaces = [
+    erc20Interface,
+    erc721Interface,
+    erc1155Interface,
+    USDCInterface,
+    permit2Interface,
+  ];
 
-  try {
-    return erc721Interface.parseTransaction({ data });
-  } catch {
-    // ignore and next try to parse with erc1155 ABI
-  }
-
-  try {
-    return erc1155Interface.parseTransaction({ data });
-  } catch {
-    // ignore and return undefined
-  }
-
-  try {
-    return USDCInterface.parseTransaction({ data });
-  } catch {
-    // ignore and return undefined
+  for (const iface of interfaces) {
+    try {
+      return iface.parseTransaction({ data });
+    } catch {
+      // Intentionally empty
+    }
   }
 
   return undefined;
@@ -339,6 +345,7 @@ export function parseApprovalTransactionData(data: Hex):
       amountOrTokenId?: BigNumber;
       isApproveAll?: boolean;
       isRevokeAll?: boolean;
+      tokenAddress?: Hex;
     }
   | undefined {
   const transactionDescription = parseStandardTokenTransactionData(data);
@@ -352,7 +359,8 @@ export function parseApprovalTransactionData(data: Hex):
 
   const rawAmountOrTokenId =
     args?._value ?? // ERC-20 - approve
-    args?.increment; // Fiat Token V2 - increaseAllowance
+    args?.increment ?? // Fiat Token V2 - increaseAllowance
+    args?.amount; // Permit2 - approve
 
   const amountOrTokenId = rawAmountOrTokenId
     ? new BigNumber(rawAmountOrTokenId?.toString())
@@ -360,10 +368,12 @@ export function parseApprovalTransactionData(data: Hex):
 
   const isApproveAll = name === 'setApprovalForAll' && args?._approved === true;
   const isRevokeAll = name === 'setApprovalForAll' && args?._approved === false;
+  const tokenAddress = name === 'approve' ? args?.token : undefined;
 
   return {
     amountOrTokenId,
     isApproveAll,
     isRevokeAll,
+    tokenAddress,
   };
 }
