@@ -33,14 +33,20 @@ function readChangedAndNewFilesWithStatus() {
  * @returns {string[]} An array of filtered E2E test file paths.
  */
 function filterE2eChangedFiles(changedFilesPaths) {
-  const e2eChangedFiles = changedFilesPaths
-    .filter(
-      (file) =>
-        file.startsWith('test/e2e/') &&
-        (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
-    )
-    .map((file) => `${BASE_PATH}/${file}`);
+  const e2eChangedFiles = changedFilesPaths.filter(
+    (file) =>
+      file.startsWith('test/e2e/') &&
+      (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
+  );
   return e2eChangedFiles;
+}
+
+function readChangedAndFilterE2eChangedFiles() {
+  const changedAndNewFilesPathsWithStatus = readChangedAndNewFilesWithStatus();
+  const changedAndNewFilesPaths = getChangedAndNewFiles(
+    changedAndNewFilesPathsWithStatus,
+  );
+  return filterE2eChangedFiles(changedAndNewFilesPaths);
 }
 
 /**
@@ -121,5 +127,6 @@ module.exports = {
   getChangedFilesOnly,
   getNewFilesOnly,
   readChangedAndNewFilesWithStatus,
+  readChangedAndFilterE2eChangedFiles,
   shouldE2eQualityGateBeSkipped,
 };
