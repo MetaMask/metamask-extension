@@ -19,7 +19,7 @@ class NFTDetailsPage {
 
   private readonly nftDetailsName = '[data-testid="nft-details__name"]';
 
-  private readonly nftImage = '[data-testid="nft-image"]';
+  private readonly nftRenderedImage = '[data-testid="nft-image"]';
 
   private readonly nftImageContainer = '.nft-item__container';
 
@@ -116,9 +116,9 @@ class NFTDetailsPage {
     await this.driver.waitForSelector(this.nftImageContainer);
   }
 
-  async check_nftImageIsDisplayed() {
-    console.log('Check if NFT image is displayed on NFT details page');
-    await this.driver.waitForSelector(this.nftImage);
+  async check_nftRenderedImageIsDisplayed() {
+    console.log('Check if NFT rendered image is displayed on NFT details page');
+    await this.driver.waitForSelector(this.nftRenderedImage);
   }
 
   async check_nftNameIsDisplayed(name: string) {

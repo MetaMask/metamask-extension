@@ -59,7 +59,7 @@ describe('Settings', function () {
         await nftDetailsPage.showNftImage();
 
         // should render image now
-        await nftDetailsPage.check_nftImageIsDisplayed();
+        await nftDetailsPage.check_nftRenderedImageIsDisplayed();
       },
     );
   });

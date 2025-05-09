@@ -54,7 +54,7 @@ class AdvancedSettings {
   }
 
   async clearActivityTabData(): Promise<void> {
-    console.log('Clicking clear activity tab data button in advanced settings');
+    console.log('Clearing activity tab data from advanced settings page');
     await this.driver.clickElement(this.clearActivityTabDataButton);
     await this.driver.waitForSelector(this.clearActivityMessage);
     await this.driver.clickElementAndWaitToDisappear(
