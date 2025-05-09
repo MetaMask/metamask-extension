@@ -47,6 +47,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
 export default function WalletReady() {
   const history = useHistory();
@@ -90,6 +91,18 @@ export default function WalletReady() {
     return t('yourWalletIsReadyRemind');
   };
 
+  const renderFoxPath = () => {
+    if (
+      firstTimeFlowType === FirstTimeFlowType.seedless ||
+      seedPhraseBackedUp
+    ) {
+      return 'images/animations/fox/celebrating.lottie.json';
+    }
+
+    // TODO: Check figma teaching fox animation
+    return 'images/animations/fox/celebrating.lottie.json';
+  };
+
   return (
     <Box className="wallet-ready" data-testid="wallet-ready">
       <div className="wallet-ready__content">
@@ -117,12 +130,16 @@ export default function WalletReady() {
             alignItems={AlignItems.center}
             marginBottom={6}
           >
-            <img
-              src="images/wallet-ready.svg"
-              width={165}
-              height={165}
-              alt="Wallet Ready"
-            />
+            <Box
+              display={Display.Flex}
+              style={{ width: '144px', height: '144px' }}
+            >
+              <LottieAnimation
+                path={renderFoxPath()}
+                loop={false}
+                autoplay={true}
+              />
+            </Box>
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
             {seedPhraseBackedUp

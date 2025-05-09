@@ -80,7 +80,7 @@ export default function AccountExist() {
             marginBottom={6}
           >
             <img
-              src="images/wallet-ready.svg"
+              src="images/account-status.png"
               width={276}
               height={276}
               alt="Account already exists"
