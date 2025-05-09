@@ -9,13 +9,13 @@ const DATA_PERMIT2 =
 describe('Approvals Utils', () => {
   describe('updateApprovalAmount', () => {
     it('updates legacy approval amount', () => {
-      expect(updateApprovalAmount(DATA_LEGACY, 1.23, 10)).toEqual(
+      expect(updateApprovalAmount(DATA_LEGACY, 1.23, 10)).toStrictEqual(
         '0x095ea7b30000000000000000000000000c54fccd2e384b4bb6f2e405bf5cbc15a017aafb00000000000000000000000000000000000000000000000000000002dd231b00',
       );
     });
 
     it('updates Permit2 approval amount', () => {
-      expect(updateApprovalAmount(DATA_PERMIT2, 1.23, 10)).toEqual(
+      expect(updateApprovalAmount(DATA_PERMIT2, 1.23, 10)).toStrictEqual(
         '0x87517c45000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000c54fccd2e384b4bb6f2e405bf5cbc15a017aafb00000000000000000000000000000000000000000000000000000002dd231b000000000000000000000000000000000000000000000000000000000068437af0',
       );
     });

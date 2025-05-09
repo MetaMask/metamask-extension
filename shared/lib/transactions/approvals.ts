@@ -1,7 +1,7 @@
 import { Hex, add0x } from '@metamask/utils';
-import { parseApprovalTransactionData } from '../../modules/transaction.utils';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { Interface } from '@ethersproject/abi';
+import { parseApprovalTransactionData } from '../../modules/transaction.utils';
 
 const SIGNATURE_LEGACY = 'function approve(address,uint256)';
 const SIGNATURE_PERMIT2 = 'function approve(address,address,uint160,uint48)';
