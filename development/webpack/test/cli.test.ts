@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import { getDryRunMessage, parseArgv } from '../utils/cli';
 import { Browsers } from '../utils/helpers';
 
-const { loadBuildTypesConfig } = require('../lib/build-type');
+const { loadBuildTypesConfig } = require('../../lib/build-type');
 
 describe('./utils/cli.ts', () => {
   const defaultArgs = {

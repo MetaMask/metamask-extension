@@ -29,40 +29,77 @@ const BUILDS_YML_PATH = path.resolve('./builds.yml');
 let _cachedBuildTypes = null;
 
 /**
+ * Given a source array and a set or array of its unique values, returns the elements
+ * that are duplicated in the source array.
+ *
+ * @template {unknown} Element
+ * @param {Element[]} source
+ * @param {Set<Element> | Element[]} uniqueValues
+ * @returns {Element[]}
+ */
+const getDuplicates = (source, uniqueValues) => {
+  const uniqueValuesCopy = new Set(uniqueValues);
+  return source.filter((item) => {
+    if (uniqueValuesCopy.has(item)) {
+      uniqueValuesCopy.delete(item);
+      return false;
+    }
+    return true;
+  });
+};
+
+/**
  * Ensures that the array item contains only elements that are distinct from each other
  *
- * @template {Struct<any>} Element
- * @type {import('./build-type').Unique<Element>}
+ * @template {unknown} Element
+ * @type {import('./build-type').Unique<Struct<Element[]>>}
  */
 const unique = (struct, eq) =>
   refine(struct, 'unique', (value) => {
-    if (uniqWith(value, eq).length === value.length) {
+    const uniqueValues = new Set(uniqWith(value, eq));
+    if (uniqueValues.size === value.length) {
       return true;
     }
-    return 'Array contains duplicated values';
+    throw new Error(
+      `Array contains duplicated values: ${JSON.stringify(
+        getDuplicates(value, uniqueValues),
+        null,
+        2,
+      )}`,
+    );
   });
+
+const RawEnvDefinitionStruct = refine(
+  record(string(), unknown()),
+  'Env variable declaration',
+  (value) => {
+    if (Object.keys(value).length === 1) {
+      return true;
+    }
+    throw new Error(
+      `Env variable declarations may only have a single property. Received: ${JSON.stringify(
+        value,
+        null,
+        2,
+      )}`,
+    );
+  },
+);
+
+const RawEnvArrayStruct = unique(
+  array(union([string(), RawEnvDefinitionStruct])),
+  (a, b) => {
+    const keyA = typeof a === 'string' ? a : Object.keys(a)[0];
+    const keyB = typeof b === 'string' ? b : Object.keys(b)[0];
+    return keyA === keyB;
+  },
+);
 
 // The `env` field is parsed into an array of strings or objects with a single key.
 // This struct coerces this array into a single object.
 const EnvObjectStruct = coerce(
   record(string(), unknown()),
-  refine(
-    array(union([string(), record(string(), unknown())])),
-    'Env variable declaration',
-    (value) => {
-      value.forEach((item) => {
-        if (typeof item === 'string') {
-          return;
-        }
-        if (Object.keys(item).length !== 1) {
-          throw new Error(
-            'Declaration should have only one property, the name',
-          );
-        }
-      });
-      return true;
-    },
-  ),
+  RawEnvArrayStruct,
   (value) =>
     Object.fromEntries(
       value.map((item) => {
@@ -80,20 +117,18 @@ const EnvObjectStruct = coerce(
  * @param {number} min
  * @param {number} max
  */
-const isInRange = (min, max) => {
-  /**
-   *
-   * @param {number} value
-   * @returns boolean
-   */
-  function check(value) {
-    return value >= min && value <= max;
-  }
-  return refine(number(), 'range', check);
+const RangeStruct = (min, max) => {
+  return refine(
+    number(),
+    'range',
+    (value) =>
+      (value >= min && value <= max) ||
+      `Number must be ${min} <= ${max}. Received: ${value}`,
+  );
 };
 
 const BuildTypeStruct = object({
-  id: isInRange(10, 64),
+  id: RangeStruct(10, 64),
   extends: optional(string()),
   features: optional(unique(array(string()))),
   env: optional(EnvObjectStruct),
@@ -129,8 +164,20 @@ const BuildTypesStruct = refine(
   }),
   'BuildTypes',
   (value) => {
-    if (!Object.keys(value.buildTypes).includes(value.default)) {
+    if (!Object.hasOwn(value.buildTypes, value.default)) {
       return `Default build type "${value.default}" does not exist in builds declarations`;
+    }
+
+    const buildTypeIds = Object.values(value.buildTypes).map(
+      (buildType) => buildType.id,
+    );
+    const uniqueBuildTypeIds = new Set(buildTypeIds);
+    if (uniqueBuildTypeIds.size !== buildTypeIds.length) {
+      return `Build type ids must be unique. Duplicate ids: ${JSON.stringify(
+        getDuplicates(buildTypeIds, uniqueBuildTypeIds),
+        null,
+        2,
+      )}`;
     }
     return true;
   },
@@ -173,7 +220,7 @@ function applyBuildTypeExtensions({ buildTypes }) {
     if (config.extends !== undefined) {
       const parentConfig = buildTypes[config.extends];
       if (!parentConfig) {
-        throw new Error(`Build type "${buildType.extends}" not found`);
+        throw new Error(`Extended build type "${config.extends}" not found`);
       }
 
       buildTypes[buildType] = merge(cloneDeep(parentConfig), config);

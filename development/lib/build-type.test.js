@@ -33,7 +33,7 @@ describe('loadBuildTypesConfig', () => {
       default: 'main',
       buildTypes: expect.any(Object),
       features: expect.any(Object),
-      env: expect.any(Array),
+      env: expect.any(Object),
     });
   });
 
@@ -46,6 +46,56 @@ describe('loadBuildTypesConfig', () => {
     expect(buildTypes1).toBe(buildTypes2);
   });
 
+  it('should apply build type extensions', () => {
+    const nextBuildsYml = makeBuildsYml();
+    nextBuildsYml.buildTypes.foo = {
+      id: 63,
+      extends: 'main',
+    };
+    yamlParseMock.mockReturnValueOnce(nextBuildsYml);
+    const buildTypes = loadBuildTypesConfig(null);
+    expect(buildTypes.buildTypes.foo).toStrictEqual({
+      ...buildTypes.buildTypes.main,
+      id: 63,
+      extends: 'main',
+    });
+  });
+
+  it('should throw if build type id is out of range', () => {
+    const nextBuildsYml = makeBuildsYml();
+    nextBuildsYml.buildTypes.main.id = 99;
+    yamlParseMock.mockReturnValueOnce(nextBuildsYml);
+
+    expect(() => loadBuildTypesConfig(null)).toThrow(
+      `Number must be 10 <= 64. Received: 99`,
+    );
+  });
+
+  it('should throw if build type ids are not unique', () => {
+    const nextBuildsYml = makeBuildsYml();
+    nextBuildsYml.buildTypes.main.id = 64;
+    nextBuildsYml.buildTypes.flask.id = 64;
+    yamlParseMock.mockReturnValueOnce(nextBuildsYml);
+
+    expect(() => loadBuildTypesConfig(null)).toThrow(
+      `Build type ids must be unique. Duplicate ids: ${JSON.stringify(
+        [64],
+        null,
+        2,
+      )}`,
+    );
+  });
+
+  it('should throw if extended build type does not exist', () => {
+    const nextBuildsYml = makeBuildsYml();
+    nextBuildsYml.buildTypes.main.extends = 'foo';
+    yamlParseMock.mockReturnValueOnce(nextBuildsYml);
+
+    expect(() => loadBuildTypesConfig(null)).toThrow(
+      `Extended build type "foo" not found`,
+    );
+  });
+
   it('should throw on duplicate env variables', () => {
     const nextBuildsYml = makeBuildsYml();
     nextBuildsYml.env.push('foo');
@@ -53,7 +103,7 @@ describe('loadBuildTypesConfig', () => {
     yamlParseMock.mockReturnValueOnce(nextBuildsYml);
 
     expect(() => loadBuildTypesConfig(null)).toThrow(
-      'Array contains duplicated values',
+      `Array contains duplicated values: ${JSON.stringify(['foo'], null, 2)}`,
     );
   });
 
@@ -66,7 +116,14 @@ describe('loadBuildTypesConfig', () => {
     yamlParseMock.mockReturnValueOnce(nextBuildsYml);
 
     expect(() => loadBuildTypesConfig(null)).toThrow(
-      'Failed to parse builds.yml',
+      `Env variable declarations may only have a single property. Received: ${JSON.stringify(
+        {
+          foo: 'bar',
+          baz: 'qux',
+        },
+        null,
+        2,
+      )}`,
     );
   });
 
