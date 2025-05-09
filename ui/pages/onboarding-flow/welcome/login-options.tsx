@@ -24,7 +24,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { LOGIN_TYPE, LoginType } from './types';
+import { LOGIN_TYPE, LoginType, LoginOptionType, LOGIN_OPTION } from './types';
 
 export default function LoginOptions({
   onClose,
@@ -32,14 +32,14 @@ export default function LoginOptions({
   handleLogin,
 }: {
   onClose: () => void;
-  loginOption: string;
+  loginOption: LoginOptionType;
   handleLogin: (loginType: LoginType) => void;
 }) {
+  const t = useI18nContext();
+
   const onLogin = (loginType: LoginType) => {
     handleLogin(loginType);
   };
-
-  const t = useI18nContext();
 
   return (
     <Modal
@@ -74,7 +74,7 @@ export default function LoginOptions({
                       variant={TextVariant.bodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      {loginOption === 'existing'
+                      {loginOption === LOGIN_OPTION.EXISTING
                         ? t('onboardingSignInWith', ['Google'])
                         : t('onboardingContinueWith', ['Google'])}
                     </Text>
@@ -100,7 +100,7 @@ export default function LoginOptions({
                       variant={TextVariant.bodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      {loginOption === 'existing'
+                      {loginOption === LOGIN_OPTION.EXISTING
                         ? t('onboardingSignInWith', ['Apple'])
                         : t('onboardingContinueWith', ['Apple'])}
                     </Text>
@@ -124,7 +124,7 @@ export default function LoginOptions({
             <li>
               <Button
                 data-testid={
-                  loginOption === 'existing'
+                  loginOption === LOGIN_OPTION.EXISTING
                     ? 'onboarding-import-with-srp-button'
                     : 'onboarding-create-with-srp-button'
                 }
@@ -133,7 +133,7 @@ export default function LoginOptions({
                 size={ButtonSize.Lg}
                 onClick={() => onLogin(LOGIN_TYPE.SRP)}
               >
-                {loginOption === 'existing'
+                {loginOption === LOGIN_OPTION.EXISTING
                   ? t('onboardingSrpImport')
                   : t('onboardingSrpCreate')}
               </Button>

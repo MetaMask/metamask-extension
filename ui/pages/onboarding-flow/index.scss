@@ -12,7 +12,6 @@
 @import 'import-srp/index';
 @import 'pin-extension/index';
 @import 'metametrics/index';
-@import 'get-started/index';
 @import 'password-hint/index';
 
 .onboarding-flow {
@@ -26,8 +25,10 @@
   justify-content: flex-start;
 
   &--welcome {
-    background-color: #eac2ff;
-    justify-content: center;
+    background-color: transparent;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0;
   }
 
   &__wrapper {
@@ -41,6 +42,7 @@
     &--welcome {
       border: none;
       max-width: inherit;
+      padding: 0;
     }
 
     &--unlock {
