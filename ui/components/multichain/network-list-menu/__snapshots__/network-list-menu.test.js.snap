@@ -968,6 +968,12 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
   <div
     id="popover-content"
   />
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="rbd-announcement-0"
+    style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%);"
+  />
   <div />
   <div
     class="mm-modal"
