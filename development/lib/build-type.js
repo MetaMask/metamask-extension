@@ -42,24 +42,36 @@ const unique = (struct, eq) =>
     return 'Array contains duplicated values';
   });
 
-const EnvDefinitionStruct = coerce(
-  object({ key: string(), value: unknown() }),
-  refine(record(string(), unknown()), 'Env variable declaration', (value) => {
-    if (Object.keys(value).length !== 1) {
-      return 'Declaration should have only one property, the name';
-    }
-    return true;
-  }),
-  (value) => ({ key: Object.keys(value)[0], value: Object.values(value)[0] }),
-);
-
-const EnvArrayStruct = unique(
-  array(union([string(), EnvDefinitionStruct])),
-  (a, b) => {
-    const keyA = typeof a === 'string' ? a : a.key;
-    const keyB = typeof b === 'string' ? b : b.key;
-    return keyA === keyB;
-  },
+// The `env` field is parsed into an array of strings or objects with a single key.
+// This struct coerces this array into a single object.
+const EnvObjectStruct = coerce(
+  record(string(), unknown()),
+  refine(
+    array(union([string(), record(string(), unknown())])),
+    'Env variable declaration',
+    (value) => {
+      value.forEach((item) => {
+        if (typeof item === 'string') {
+          return;
+        }
+        if (Object.keys(item).length !== 1) {
+          throw new Error(
+            'Declaration should have only one property, the name',
+          );
+        }
+      });
+      return true;
+    },
+  ),
+  (value) =>
+    Object.fromEntries(
+      value.map((item) => {
+        if (typeof item === 'string') {
+          return [item, undefined];
+        }
+        return Object.entries(item)[0];
+      }),
+    ),
 );
 
 /**
@@ -84,7 +96,7 @@ const BuildTypeStruct = object({
   id: isInRange(10, 64),
   extends: optional(string()),
   features: optional(unique(array(string()))),
-  env: optional(EnvArrayStruct),
+  env: optional(EnvObjectStruct),
   isPrerelease: optional(boolean()),
   manifestOverrides: optional(union([string(), literal(false)])),
   buildNameOverride: optional(union([string(), literal(false)])),
@@ -99,6 +111,7 @@ const ExclusiveIncludeAssetStruct = coerce(
 const AssetStruct = union([CopyAssetStruct, ExclusiveIncludeAssetStruct]);
 
 const FeatureStruct = object({
+  // TODO(ritave): Check if the paths exist
   assets: optional(array(AssetStruct)),
 });
 
@@ -112,7 +125,7 @@ const BuildTypesStruct = refine(
     default: string(),
     buildTypes: record(string(), BuildTypeStruct),
     features: FeaturesStruct,
-    env: EnvArrayStruct,
+    env: EnvObjectStruct,
   }),
   'BuildTypes',
   (value) => {
