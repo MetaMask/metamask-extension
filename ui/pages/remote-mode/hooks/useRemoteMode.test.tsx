@@ -73,6 +73,9 @@ jest.mock('../../../store/controller-actions/delegation-controller', () => ({
   ),
   signDelegation: jest.fn(() => Promise.resolve('0xSignature')),
   storeDelegationEntry: jest.fn(),
+  getDelegationEntry: jest.fn(() =>
+    Promise.resolve({ hash: '0xHash', data: 'mockData' }),
+  ),
 }));
 
 const mockAccount = '0x1';

@@ -1,7 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { Hex } from '@metamask/utils';
 import {
@@ -66,7 +66,6 @@ import {
 import {
   RemoteModeHardwareWalletConfirm,
   RemoteModeSwapAllowanceCard,
-  SmartAccountUpdateInformation,
   StepIndicator,
 } from '../../components';
 
@@ -76,10 +75,14 @@ import {
   getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
 } from '../../../../selectors';
+import {
+  getDelegationEntry,
+  type DelegationState,
+} from '../../../../selectors/delegation';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import { useRemoteMode } from '../../hooks/useRemoteMode';
 
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 2;
 
 /**
  * A multi-step setup component for configuring swaps in remote mode
@@ -116,14 +119,30 @@ export default function RemoteModeSetupSwaps() {
   );
 
   const history = useHistory();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const delegationHash = params.get('delegationHash');
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-  const { enableRemoteMode } = useRemoteMode({
+  const { enableRemoteMode, disableRemoteMode } = useRemoteMode({
     account: selectedHardwareAccount.address as Hex,
   });
 
+  const delegation = useSelector((state) =>
+    getDelegationEntry(state as DelegationState, delegationHash as Hex),
+  );
+
   useEffect(() => {
-    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+    if (delegation?.meta) {
+      const allowances = JSON.parse(delegation.meta);
+      setSwapAllowance(allowances.allowances);
+    }
+  }, [delegation]);
+
+  useEffect(() => {
+    setIsHardwareAccount(
+      isRemoteModeSupported(selectedHardwareAccount) || true,
+    );
   }, [selectedHardwareAccount]);
 
   useEffect(() => {
@@ -215,6 +234,12 @@ export default function RemoteModeSetupSwaps() {
       return;
     }
 
+    if (delegationHash) {
+      await disableRemoteMode({
+        mode: REMOTE_MODES.SWAP,
+      });
+    }
+
     try {
       await enableRemoteMode({
         selectedAccount: selectedHardwareAccount,
@@ -226,17 +251,6 @@ export default function RemoteModeSetupSwaps() {
       // TODO: show error on UI
       console.error(error);
     }
-
-    // todo: replace with delegation controller integration
-    const remoteMode = localStorage.getItem('remoteMode');
-    const parsedRemoteMode = remoteMode ? JSON.parse(remoteMode) : null;
-    const updatedRemoteMode = {
-      ...parsedRemoteMode,
-      swapAllowance: {
-        allowances: swapAllowance,
-      },
-    };
-    localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
 
     history.replace(REMOTE_ROUTE);
   };
@@ -431,7 +445,7 @@ export default function RemoteModeSetupSwaps() {
                 <Box marginTop={2}>
                   {swapAllowance.map((allowance) => (
                     <RemoteModeSwapAllowanceCard
-                      key={allowance.from}
+                      key={`${allowance.from}-${allowance.to}`}
                       swapAllowance={allowance}
                       onRemove={() =>
                         handleRemoveAllowance(allowance.from, allowance.to)
@@ -457,50 +471,6 @@ export default function RemoteModeSetupSwaps() {
           </Box>
         );
       case 2:
-        return (
-          <>
-            <Box
-              marginTop={2}
-              marginBottom={2}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.center}
-              gap={2}
-            >
-              <Text variant={TextVariant.bodyMd} color={TextColor.textMuted}>
-                Unlock enhanced capabilities while keeping the same address.
-              </Text>
-            </Box>
-
-            <SmartAccountUpdateInformation
-              selectedHardwareAccount={selectedHardwareAccount}
-            />
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                paddingBottom={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>
-                  Network fee <Icon name={IconName.Info} size={IconSize.Sm} />
-                </Text>
-                <Text>0.0013 ETH</Text>
-              </Box>
-              <Box
-                paddingTop={2}
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>Speed</Text>
-                <Text>🦊 Market &lt; 30 sec</Text>
-              </Box>
-            </Card>
-          </>
-        );
-      case 3:
         return (
           <>
             <Card
@@ -576,7 +546,7 @@ export default function RemoteModeSetupSwaps() {
                   Edit
                 </Text>
               </Box>
-              <Box marginTop={2} marginBottom={2}>
+              <Box marginTop={4}>
                 <Box
                   display={Display.Flex}
                   justifyContent={JustifyContent.spaceBetween}
@@ -584,15 +554,15 @@ export default function RemoteModeSetupSwaps() {
                   onClick={() => setIsAllowancesExpanded(!isAllowancesExpanded)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <Text>
+                  <Text color={TextColor.infoDefault}>
                     {swapAllowance.length} token
                     {swapAllowance.length === 1 ? '' : 's'} enabled
                   </Text>
-                  <Text color={TextColor.infoDefault}>
+                  <Text>
                     {isAllowancesExpanded ? (
-                      <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
-                    ) : (
                       <Icon name={IconName.ArrowUp} size={IconSize.Sm} />
+                    ) : (
+                      <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
                     )}
                   </Text>
                 </Box>
@@ -609,25 +579,6 @@ export default function RemoteModeSetupSwaps() {
                     ))}
                   </Box>
                 )}
-              </Box>
-            </Card>
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text paddingBottom={2}>Network fee</Text>
-                <Text paddingBottom={2}>0.0013 ETH</Text>
-              </Box>
-              <Box
-                paddingTop={2}
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text paddingBottom={2}>Speed</Text>
-                <Text paddingBottom={2}>🦊 Market &lt; 30 sec</Text>
               </Box>
             </Card>
           </>
@@ -679,8 +630,7 @@ export default function RemoteModeSetupSwaps() {
           fontWeight={FontWeight.Bold}
         >
           {currentStep === 1 && 'Set up Remote Swaps'}
-          {currentStep === 2 && 'Update to a smart account'}
-          {currentStep === 3 && 'Review changes'}
+          {currentStep === 2 && 'Review changes'}
         </Text>
 
         {renderStepContent()}
@@ -703,7 +653,7 @@ export default function RemoteModeSetupSwaps() {
           {currentStep === 1 ? 'Cancel' : 'Back'}
         </Button>
         <Button
-          onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
+          onClick={currentStep === 2 ? handleShowConfirmation : handleNext}
           width={BlockSize.Half}
           size={ButtonSize.Lg}
           disabled={!isHardwareAccount || swapAllowance.length === 0}
