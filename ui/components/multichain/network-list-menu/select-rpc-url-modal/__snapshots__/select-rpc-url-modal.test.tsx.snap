@@ -40,7 +40,7 @@ exports[`SelectRpcUrlModal Component renders select rpc url 1`] = `
           class="mm-box"
         >
           <button
-            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--padding-0 mm-box--width-full mm-box--color-text-alternative mm-box--background-color-transparent"
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--padding-0 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--width-full mm-box--color-text-alternative mm-box--background-color-transparent"
           >
             mainnet.infura.io/v3/
           </button>
@@ -57,7 +57,7 @@ exports[`SelectRpcUrlModal Component renders select rpc url 1`] = `
           class="mm-box"
         >
           <button
-            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--padding-0 mm-box--width-full mm-box--color-text-alternative mm-box--background-color-transparent"
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--padding-0 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--width-full mm-box--color-text-alternative mm-box--background-color-transparent"
           >
             rpc.flashbots.net
           </button>
