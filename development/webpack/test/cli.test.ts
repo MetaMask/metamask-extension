@@ -1,9 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import { loadBuildTypesConfig } from '../../lib/build-type';
 import { getDryRunMessage, parseArgv } from '../utils/cli';
 import { Browsers } from '../utils/helpers';
-
-const { loadBuildTypesConfig } = require('../../lib/build-type');
 
 describe('./utils/cli.ts', () => {
   const defaultArgs = {

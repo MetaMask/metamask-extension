@@ -2,11 +2,10 @@ import fs from 'node:fs';
 import { describe, it, after, mock } from 'node:test';
 import assert from 'node:assert';
 import { resolve } from 'node:path';
+import { version } from '../../../package.json';
+import { loadBuildTypesConfig } from '../../lib/build-type';
 import * as config from '../utils/config';
 import { parseArgv } from '../utils/cli';
-import { version } from '../../../package.json';
-
-const { loadBuildTypesConfig } = require('../../lib/build-type');
 
 describe('./utils/config.ts', () => {
   // variables logic is complex, and is "owned" mostly by the other build

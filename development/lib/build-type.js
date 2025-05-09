@@ -17,14 +17,31 @@ const {
   nullable,
   never,
   literal,
-} = require('superstruct');
+} = require('@metamask/superstruct');
 const yaml = require('yaml');
 const { cloneDeep, merge, uniqWith } = require('lodash');
 
-const BUILDS_YML_PATH = path.resolve('./builds.yml');
+const BUILDS_YML_PATH = path.resolve(__dirname, '../../builds.yml');
+
+// This is in fact a valid jsdoc tag.
+/* eslint-disable jsdoc/check-tag-names */
+/**
+ * @import { Infer, Struct, StructError } from '@metamask/superstruct';
+ */
+/* eslint-enable jsdoc/check-tag-names */
 
 /**
- * @type {import('superstruct').Infer<typeof BuildTypesStruct> | null}
+ * Ensures that the array item contains only elements that are distinct from each other
+ *
+ * @template {Struct<unknown>} Element
+ * @typedef {(
+ *   struct: Struct<Infer<Element>[], Infer<Element>>,
+ *   eq?: (a: Infer<Element>, b: Infer<Element>) => boolean
+ * ) => Struct<Infer<Element>[], Infer<Element>>} Unique
+ */
+
+/**
+ * @type {Infer<typeof BuildTypesStruct> | null}
  */
 let _cachedBuildTypes = null;
 
@@ -52,7 +69,7 @@ const getDuplicates = (source, uniqueValues) => {
  * Ensures that the array item contains only elements that are distinct from each other
  *
  * @template {unknown} Element
- * @type {import('./build-type').Unique<Struct<Element[]>>}
+ * @type {Unique<Struct<Element[]>>}
  */
 const unique = (struct, eq) =>
   refine(struct, 'unique', (value) => {
@@ -97,6 +114,9 @@ const RawEnvArrayStruct = unique(
 
 // The `env` field is parsed into an array of strings or objects with a single key.
 // This struct coerces this array into a single object.
+/**
+ * @type {Struct<Record<string, unknown>>} EnvObjectStruct
+ */
 const EnvObjectStruct = coerce(
   record(string(), unknown()),
   RawEnvArrayStruct,
@@ -127,6 +147,17 @@ const RangeStruct = (min, max) => {
   );
 };
 
+/**
+ * @type {Struct<{
+ *   id: number,
+ *   extends?: string | undefined,
+ *   features?: string[] | undefined,
+ *   env?: Record<string, unknown> | undefined,
+ *   isPrerelease?: boolean | undefined,
+ *   manifestOverrides?: string | false | undefined,
+ *   buildNameOverride?: string | false | undefined,
+ * }>} BuildTypeStruct
+ */
 const BuildTypeStruct = object({
   id: RangeStruct(10, 64),
   extends: optional(string()),
@@ -137,24 +168,59 @@ const BuildTypeStruct = object({
   buildNameOverride: optional(union([string(), literal(false)])),
 });
 
+/**
+ * @type {Struct<{
+ *   src: string,
+ *   dest: string,
+ * }>} CopyAssetStruct
+ */
 const CopyAssetStruct = object({ src: string(), dest: string() });
+
+/**
+ * @type {Struct<{
+ *   exclusiveInclude: string,
+ * }>} ExclusiveIncludeAssetStruct
+ */
 const ExclusiveIncludeAssetStruct = coerce(
   object({ exclusiveInclude: string() }),
   string(),
   (exclusiveInclude) => ({ exclusiveInclude }),
 );
+
+/**
+ * @type {Struct<
+ *   Infer<typeof CopyAssetStruct> | Infer<typeof ExclusiveIncludeAssetStruct>
+ * >} AssetStruct
+ */
 const AssetStruct = union([CopyAssetStruct, ExclusiveIncludeAssetStruct]);
 
+/**
+ * @type {Struct<{
+ *   env: Infer<typeof EnvObjectStruct> | undefined,
+ *   assets: Infer<typeof AssetStruct>[] | undefined,
+ * }>} FeatureStruct
+ */
 const FeatureStruct = object({
   // TODO(ritave): Check if the paths exist
   assets: optional(array(AssetStruct)),
 });
 
+/**
+ * @type {Struct<Record<string, Infer<typeof FeatureStruct>>>} FeaturesStruct
+ */
 const FeaturesStruct = record(
   string(),
   coerce(FeatureStruct, nullable(never()), () => ({})),
 );
 
+/**
+ * @type {Struct<{
+ *   default: string,
+ *   buildTypes: Record<string, Infer<typeof BuildTypeStruct>>,
+ *   features: Infer<typeof FeaturesStruct>,
+ *   env: Infer<typeof EnvObjectStruct>,
+ * }>} BuildTypesStruct
+ */
 const BuildTypesStruct = refine(
   object({
     default: string(),
@@ -184,12 +250,15 @@ const BuildTypesStruct = refine(
 );
 
 /**
- * Loads definitions of build type and what they are composed of.
+ * Loads and parses the `builds.yml` file, which contains the definitions of
+ * our build types.
  *
- * @param {import('superstruct').Infer<typeof BuildTypesStruct> | null} cachedBuildTypes - The cached build types, if any.
- * @returns {import('superstruct').Infer<typeof BuildTypesStruct>}
+ * @param {Infer<typeof BuildTypesStruct> | null} cachedBuildTypes - The cached build types, if any.
+ * @returns {Infer<typeof BuildTypesStruct>} The parsed builds configuration.
  */
-function loadBuildTypesConfig(cachedBuildTypes = _cachedBuildTypes) {
+module.exports.loadBuildTypesConfig = function loadBuildTypesConfig(
+  cachedBuildTypes = _cachedBuildTypes,
+) {
   if (cachedBuildTypes !== null) {
     return cachedBuildTypes;
   }
@@ -207,13 +276,13 @@ function loadBuildTypesConfig(cachedBuildTypes = _cachedBuildTypes) {
   applyBuildTypeExtensions(result);
   _cachedBuildTypes = result;
   return _cachedBuildTypes;
-}
+};
 
 /**
  * Extends any extended build types with their parent build types. This is accomplished
  * by merging the extending build type into a copy of its parent build type.
  *
- * @param {import('superstruct').Infer<typeof BuildTypesStruct>} buildsConfig
+ * @param {Infer<typeof BuildTypesStruct>} buildsConfig
  */
 function applyBuildTypeExtensions({ buildTypes }) {
   for (const [buildType, config] of Object.entries(buildTypes)) {
@@ -231,7 +300,7 @@ function applyBuildTypeExtensions({ buildTypes }) {
 /**
  * Creates a user readable error message about parse failure.
  *
- * @param {import('superstruct').StructError} structError
+ * @param {StructError} structError
  * @returns {string}
  */
 function constructFailureMessage(structError) {
@@ -245,5 +314,3 @@ function constructFailureMessage(structError) {
     .join('\n  -> ')}
 `;
 }
-
-module.exports = { loadBuildTypesConfig };
