@@ -716,6 +716,7 @@ export const getBridgeL2Fixtures = (
         type: 'anvil',
         options: {
           chainId: 59144,
+          hardfork: 'muirGlacier',
         },
       },
     ],
