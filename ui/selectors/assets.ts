@@ -213,7 +213,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const rate = assetRates?.[assetId]?.rate;
 
       const balanceInFiat = rate
-        ? new BigNumber(balance.amount).times(rate)
+        ? new BigNumber(balance.amount).times(rate).toNumber()
         : null;
 
       const assetMetadataFallback = {
@@ -235,9 +235,9 @@ export const getMultiChainAssets = createDeepEqualSelector(
           chainId,
           isNative,
           primary: balance.amount,
-          secondary: balanceInFiat ? balanceInFiat.toNumber() : null,
+          secondary: balanceInFiat,
           string: '',
-          tokenFiatAmount: balanceInFiat ? balanceInFiat.toNumber() : null,
+          tokenFiatAmount: balanceInFiat,
           isStakeable: false,
         });
       }
