@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import classnames from 'classnames';
 import Unlock from '../unlock-page';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -124,13 +125,25 @@ export default function OnboardingFlow() {
     isFromReminder;
 
   return (
-    <div className="onboarding-flow">
+    <div
+      className={classnames('onboarding-flow', {
+        'onboarding-flow--welcome': pathname === ONBOARDING_WELCOME_ROUTE,
+        'onboarding-flow--unlock': pathname === ONBOARDING_UNLOCK_ROUTE,
+      })}
+    >
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClose={() => history.push(DEFAULT_ROUTE)}
         isOpen={showPasswordModalToAllowSRPReveal}
       />
-      <div className="onboarding-flow__wrapper">
+      <div
+        className={classnames('onboarding-flow__wrapper', {
+          'onboarding-flow__wrapper--welcome':
+            pathname === ONBOARDING_WELCOME_ROUTE,
+          'onboarding-flow__wrapper--unlock':
+            pathname === ONBOARDING_UNLOCK_ROUTE,
+        })}
+      >
         <Switch>
           <Route
             path={ONBOARDING_CREATE_PASSWORD_ROUTE}
