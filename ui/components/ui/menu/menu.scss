@@ -37,6 +37,10 @@
   cursor: pointer;
   color: inherit;
 
+  &.redesign-menu-item {
+    gap: 8px;
+  }
+
   &:hover,
   &:active {
     background: var(--color-background-default-hover);
