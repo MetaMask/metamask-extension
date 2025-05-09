@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { CaipChainId } from '@metamask/utils';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { KeyringAccount } from '@metamask/keyring-api';
 import { CreateAccount } from '../create-account';
 import {
   WalletClientType,
@@ -13,7 +13,7 @@ type CreateSnapAccountProps = {
    */
   onActionComplete: (
     completed: boolean,
-    newAccount?: InternalAccount,
+    newAccount?: KeyringAccount,
   ) => Promise<void>;
   /**
    * Callback to select the SRP
