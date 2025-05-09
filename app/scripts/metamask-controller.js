@@ -4133,6 +4133,11 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
         ),
+      [BridgeBackgroundAction.TRACK_METAMETRICS_EVENT]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
+        ),
 
       // Bridge Tx submission
       [BridgeStatusAction.SUBMIT_TX]: this.controllerMessenger.call.bind(
@@ -6827,6 +6832,11 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions(
             { origin },
             requestedPermissions,
+            {
+              metadata: {
+                isEip1193Request: true,
+              },
+            },
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
           try {
