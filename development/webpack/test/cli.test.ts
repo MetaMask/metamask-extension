@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import { loadBuildTypesConfig } from '../../lib/build-type';
 import { getDryRunMessage, parseArgv } from '../utils/cli';
-import { getBuildTypes } from '../utils/config';
 import { Browsers } from '../utils/helpers';
 
 describe('./utils/cli.ts', () => {
@@ -27,7 +27,7 @@ describe('./utils/cli.ts', () => {
   };
 
   it('should return defaults', () => {
-    const { args, cacheKey, features } = parseArgv([], getBuildTypes());
+    const { args, cacheKey, features } = parseArgv([], loadBuildTypesConfig());
     assert.deepStrictEqual(args, defaultArgs);
     assert.strictEqual(
       typeof cacheKey,
@@ -42,7 +42,7 @@ describe('./utils/cli.ts', () => {
   });
 
   it('getDryRunMessage', () => {
-    const { args, features } = parseArgv([], getBuildTypes());
+    const { args, features } = parseArgv([], loadBuildTypesConfig());
     const message = getDryRunMessage(args, features);
     // testing the exact message could be nice, but verbose and maybe a bit
     // brittle, so we just check that it returns a string
@@ -55,7 +55,7 @@ describe('./utils/cli.ts', () => {
   });
 
   it('should allow for build types with no features', () => {
-    const buildTypesConfig = getBuildTypes();
+    const buildTypesConfig = loadBuildTypesConfig();
     delete buildTypesConfig.buildTypes.main.features;
     const { features } = parseArgv([], buildTypesConfig);
     assert.strictEqual(
@@ -66,7 +66,7 @@ describe('./utils/cli.ts', () => {
   });
 
   it('should allow for a build type with no features section', () => {
-    const buildTypesConfig = getBuildTypes();
+    const buildTypesConfig = loadBuildTypesConfig();
     delete buildTypesConfig.buildTypes.main.features;
     const { features } = parseArgv([], buildTypesConfig);
     assert.strictEqual(
@@ -77,7 +77,7 @@ describe('./utils/cli.ts', () => {
   });
 
   it('should return all browsers when `--browser all` is specified', () => {
-    const { args } = parseArgv(['--browser', 'all'], getBuildTypes());
+    const { args } = parseArgv(['--browser', 'all'], loadBuildTypesConfig());
     assert.deepStrictEqual(args.browser, Browsers);
   });
 });

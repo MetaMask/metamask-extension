@@ -1,13 +1,10 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { parse as parseYaml } from 'yaml';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
-
-const BUILDS_YML_PATH = join(__dirname, '../../../builds.yml');
 
 /**
  * Coerce `"true"`, `"false"`, and `"null"` to their respective JavaScript
@@ -161,26 +158,17 @@ export function getVariables(
 export type BuildType = {
   id: number;
   features?: string[];
-  env?: (string | { [k: string]: unknown })[];
+  env?: Record<string, unknown>;
   isPrerelease?: boolean;
   buildNameOverride?: string;
+  extends?: string;
 };
 
 export type BuildConfig = {
   buildTypes: Record<string, BuildType>;
-  env: (string | Record<string, unknown>)[];
-  features: Record<
-    string,
-    null | { env?: (string | { [k: string]: unknown })[] }
-  >;
+  env: Record<string, unknown>;
+  features: Record<string, null | { env?: Record<string, unknown> }>;
 };
-
-/**
- *
- */
-export function getBuildTypes(): BuildConfig {
-  return parseYaml(readFileSync(BUILDS_YML_PATH, 'utf8'));
-}
 
 /**
  * Loads configuration variables from process.env, .metamaskrc, and build.yml.
@@ -209,13 +197,11 @@ function loadConfigVars(
   activeBuild.features?.forEach((feature) => addVars(features[feature]?.env));
   addVars(env);
 
-  function addVars(pairs?: (string | Record<string, unknown>)[]): void {
-    pairs?.forEach((pair) => {
-      if (typeof pair === 'string') return;
-      Object.entries(pair).forEach(([key, value]) => {
-        if (definitions.has(key)) return;
-        definitions.set(key, value);
-      });
+  function addVars(pairs: Record<string, unknown> = {}): void {
+    Object.entries(pairs).forEach(([key, value]) => {
+      if (value === undefined) return;
+      if (definitions.has(key)) return;
+      definitions.set(key, value);
     });
   }
 
