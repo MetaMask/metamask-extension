@@ -85,7 +85,6 @@ export async function processSendCalls(
 
   validateSendCalls(
     params,
-    from,
     dappChainId,
     dismissSmartAccountSuggestionEnabled,
     chainBatchSupport,
@@ -206,7 +205,6 @@ export async function getCapabilities(
 
 function validateSendCalls(
   sendCalls: SendCalls,
-  from: Hex,
   dappChainId: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
@@ -214,11 +212,7 @@ function validateSendCalls(
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId, chainBatchSupport);
   validateCapabilities(sendCalls);
-  validateUserDisabled(
-    from,
-    dismissSmartAccountSuggestionEnabled,
-    chainBatchSupport,
-  );
+  validateUserDisabled(dismissSmartAccountSuggestionEnabled, chainBatchSupport);
 }
 
 function validateSendCallsVersion(sendCalls: SendCalls) {
@@ -284,7 +278,6 @@ function validateCapabilities(sendCalls: SendCalls) {
 }
 
 function validateUserDisabled(
-  from: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
 ) {
