@@ -43,6 +43,16 @@ class NftListPage {
     this.driver = driver;
   }
 
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.importNftButton);
+    } catch (e) {
+      console.log('Timeout while waiting for NFT list page to be loaded', e);
+      throw e;
+    }
+    console.log('NFT list page is loaded');
+  }
+
   async clickNFTIconOnActivityList() {
     await this.driver.clickElement(this.nftIconOnActivityList);
   }
