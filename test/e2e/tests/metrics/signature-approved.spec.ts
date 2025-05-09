@@ -50,7 +50,7 @@ const expectedEventPropertiesBase = {
   security_alert_reason: 'validation_in_progress',
   security_alert_response: 'loading',
   ui_customizations: ['redesigned_confirmation'],
-  requested_through: MetaMetricsRequestedThrough.EthereumProvider,
+  api_source: MetaMetricsRequestedThrough.EthereumProvider,
 } as const;
 
 describe('Signature Approved Event', function () {

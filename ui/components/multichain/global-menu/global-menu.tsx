@@ -67,6 +67,7 @@ import {
   getUseExternalServices,
 } from '../../../selectors';
 import { isNewSettingsEnabled } from '../../../ducks/bridge/selectors';
+
 const METRICS_LOCATION = 'Global Menu';
 
 type GlobalMenuProps = {
@@ -253,7 +254,7 @@ export const GlobalMenu = memo(
               iconName={IconName.Expand}
               isRedesign={true}
               onClick={() => {
-                (global as any).platform?.openExtensionInBrowser();
+                global.platform?.openExtensionInBrowser();
                 trackEvent({
                   event: MetaMetricsEventName.AppWindowExpanded,
                   category: MetaMetricsEventCategory.Navigation,
@@ -394,7 +395,7 @@ export const GlobalMenu = memo(
           <MenuItem
             iconName={IconName.Expand}
             onClick={() => {
-              (global as any).platform?.openExtensionInBrowser();
+              global.platform?.openExtensionInBrowser();
               trackEvent({
                 event: MetaMetricsEventName.AppWindowExpanded,
                 category: MetaMetricsEventCategory.Navigation,

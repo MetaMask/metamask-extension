@@ -2,7 +2,7 @@ import { VirtualElement } from '@popperjs/core';
 import classnames from 'classnames';
 import React, { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { usePopper } from 'react-popper';
+import { PopperOptions, usePopper } from 'react-popper';
 
 type MenuProps = {
   anchorElement: Element | VirtualElement | null | undefined;
@@ -10,7 +10,7 @@ type MenuProps = {
   className: string;
   'data-testid': string;
   onHide: () => void;
-  popperOptions: any;
+  popperOptions: PopperOptions;
 };
 
 /**
@@ -30,7 +30,9 @@ const Menu = ({
   onHide,
   popperOptions,
 }: MenuProps) => {
-  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
+    null,
+  );
   const popoverContainerElement = useRef(
     document.getElementById('popover-content'),
   );

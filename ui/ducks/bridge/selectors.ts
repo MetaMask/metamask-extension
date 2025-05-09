@@ -72,7 +72,6 @@ import {
   tokenPriceInNativeAsset,
 } from './utils';
 import type { BridgeState } from './types';
-import { ENVIRONMENT } from '../../../development/build/constants';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -637,11 +636,11 @@ export const getHardwareWalletName = (state: BridgeAppState) => {
 
 /**
  * Checks if the new settings redesign is enabled
+ *
+ * @param state - The state of the application
+ * @returns true if the new settings redesign is enabled, false otherwise
  */
 export const isNewSettingsEnabled = createDeepEqualSelector(
   [(state) => getRemoteFeatureFlags(state)],
-  (remoteFeatureFlags) => {
-    console.log('remoteFeatureFlags', remoteFeatureFlags);
-    return remoteFeatureFlags.settingsRedesign;
-  },
+  (remoteFeatureFlags) => remoteFeatureFlags.settingsRedesign,
 );
