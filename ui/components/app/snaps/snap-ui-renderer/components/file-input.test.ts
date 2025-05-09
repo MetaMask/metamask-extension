@@ -42,7 +42,7 @@ describe('SnapUIFileInput', () => {
 
     // JSDOM doesn't support array buffer so we overwrite it
     file.arrayBuffer = async () => {
-      return new Uint8Array([102, 111, 111]);
+      return [102, 111, 111] as unknown as ArrayBuffer;
     };
 
     const input = container.querySelector('#input') as HTMLInputElement;
