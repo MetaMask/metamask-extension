@@ -93,7 +93,6 @@ const TokenButtons = ({
 
   const account = useSelector(getSelectedInternalAccount, isEqual);
 
-  // This is only returning solana mainnet, not solana devnet?
   const { chainId: multichainChainId } = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );

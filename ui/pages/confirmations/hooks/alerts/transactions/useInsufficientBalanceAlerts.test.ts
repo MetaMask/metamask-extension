@@ -48,10 +48,12 @@ function buildState({
   balance,
   currentConfirmation,
   transaction,
+  selectedNetworkClientId,
 }: {
   balance?: number;
   currentConfirmation?: Partial<TransactionMeta>;
   transaction?: Partial<TransactionMeta>;
+  selectedNetworkClientId?: string;
 } = {}) {
   const accountAddress = transaction?.txParams?.from as string;
   const mockAccount = createMockInternalAccount({
@@ -71,6 +73,7 @@ function buildState({
 
   return getMockConfirmState({
     metamask: {
+      selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
       internalAccounts: {
         accounts:
@@ -187,6 +190,17 @@ describe('useInsufficientBalanceAlerts', () => {
       balance: 7,
       currentConfirmation: TRANSACTION_MOCK,
       transaction: TRANSACTION_MOCK,
+    });
+
+    expect(alerts).toEqual(ALERT);
+  });
+
+  it('returns correct alert test if selected chain is different from chain in confirmation', () => {
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: TRANSACTION_MOCK,
+      transaction: TRANSACTION_MOCK,
+      selectedNetworkClientId: 'testNetworkConfigurationId',
     });
 
     expect(alerts).toEqual(ALERT);
