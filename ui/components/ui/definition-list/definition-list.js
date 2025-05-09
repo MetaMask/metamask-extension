@@ -11,21 +11,12 @@ import {
 import Tooltip from '../tooltip';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 
-const MARGIN_MAP = {
-  [Size.XS]: 0,
-  [Size.SM]: 2,
-  [Size.MD]: 4,
-  [Size.LG]: 6,
-  [Size.XL]: 8,
-};
-
 export default function DefinitionList({
   dictionary,
   termTypography = {},
   definitionTypography = {},
   tooltips = {},
   warnings = {},
-  gapSize = Size.SM,
 }) {
   return (
     <dl className="definition-list">
@@ -35,7 +26,6 @@ export default function DefinitionList({
             variant={TextVariant.bodyMdMedium}
             {...termTypography}
             marginTop={0}
-            marginBottom={1}
             className="definition-list__term"
             as="dt"
           >
@@ -50,7 +40,7 @@ export default function DefinitionList({
                   name={IconName.Question}
                   size={IconSize.Sm}
                   marginLeft={1}
-                  color={IconColor.iconDefault}
+                  color={IconColor.iconAlternative}
                 />
               </Tooltip>
             )}
@@ -60,7 +50,7 @@ export default function DefinitionList({
             color={TextColor.textAlternative}
             {...definitionTypography}
             marginTop={0}
-            marginBottom={MARGIN_MAP[gapSize]}
+            marginBottom={4}
             className="definition-list__definition"
             overflowWrap={OverflowWrap.BreakWord}
             as="dd"
