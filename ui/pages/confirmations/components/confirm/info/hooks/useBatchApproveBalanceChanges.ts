@@ -124,7 +124,11 @@ async function buildSimulationTokenBalanceChanges({
     const tokenId = isNFT && amountOrTokenId ? amountOrTokenIdHex : undefined;
 
     const isUnlimited =
-      !isNFT && isSpendingCapUnlimited(amountOrTokenId?.toNumber() ?? 0);
+      !isNFT &&
+      isSpendingCapUnlimited(
+        amountOrTokenId?.toNumber() ?? 0,
+        Number(tokenData?.decimals ?? 0),
+      );
 
     const balanceChange: ApprovalSimulationBalanceChange = {
       address: tokenAddress,

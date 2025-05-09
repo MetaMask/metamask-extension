@@ -10,8 +10,12 @@ import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
 import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { useIsNFT } from './use-is-nft';
 
-export function isSpendingCapUnlimited(decodedSpendingCap: number) {
-  return decodedSpendingCap >= TOKEN_VALUE_UNLIMITED_THRESHOLD;
+export function isSpendingCapUnlimited(
+  value: number | string | BigNumber,
+  decimals: number = 0,
+) {
+  const finalValue = calcTokenAmount(value, decimals);
+  return finalValue.gte(TOKEN_VALUE_UNLIMITED_THRESHOLD);
 }
 
 export const useApproveTokenSimulation = (

@@ -33,6 +33,12 @@ describe('isSpendingCapUnlimited', () => {
       false,
     );
   });
+
+  it('returns false if spending cap is less than threshold after applying decimals', () => {
+    expect(isSpendingCapUnlimited(TOKEN_VALUE_UNLIMITED_THRESHOLD, 1)).toBe(
+      false,
+    );
+  });
 });
 
 describe('useApproveTokenSimulation', () => {
