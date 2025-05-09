@@ -47,6 +47,7 @@ import {
   getMultichainIsBitcoin,
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
+  MultichainNetwork,
 } from './multichain';
 import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
@@ -166,18 +167,52 @@ describe('Multichain Selectors', () => {
   });
 
   describe('getMultichainNetwork', () => {
-    it('returns an EVM network provider if account is EVM', () => {
+    it('returns an EVM network provider if an account is EVM', () => {
       const state = getEvmState();
-
       const network = getMultichainNetwork(state);
-      expect(network.isEvmNetwork).toBe(true);
+      expect(network).toStrictEqual({
+        chainId: 'eip155:1',
+        isEvmNetwork: true,
+        nickname: MAINNET_DISPLAY_NAME,
+        network: {
+          chainId: '0x1',
+          id: expect.any(String),
+          nickname: MAINNET_DISPLAY_NAME,
+          rpcPrefs: expect.any(Object),
+          rpcUrl: expect.any(String),
+          ticker: 'ETH',
+          type: 'rpc',
+        },
+      } as MultichainNetwork);
     });
 
-    it('returns an non-EVM network provider if account is non-EVM', () => {
+    it('returns a non-EVM network provider if account is non-EVM', () => {
       const state = getNonEvmState();
 
       const network = getMultichainNetwork(state);
-      expect(network.isEvmNetwork).toBe(false);
+      expect(network).toStrictEqual({
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+        isEvmNetwork: false,
+        nickname:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[
+            'bip122:000000000019d6689c085ae165831e93'
+          ].name,
+        network: {
+          blockExplorerFormatUrls: expect.any(Object),
+          chainId: 'bip122:000000000019d6689c085ae165831e93',
+          decimals: 8,
+          id: expect.any(String),
+          isAddressCompatible: expect.any(Function),
+          nickname:
+            AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[
+              'bip122:000000000019d6689c085ae165831e93'
+            ].name,
+          rpcPrefs: expect.any(Object),
+          rpcUrl: expect.any(String),
+          ticker: 'BTC',
+          type: 'rpc',
+        },
+      });
     });
 
     it('returns an EVM network provider if user is not onboarded', () => {
@@ -379,20 +414,30 @@ describe('Multichain Selectors', () => {
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
-      { isMainnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH },
-      { isMainnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+      {
+        isMainnet: true,
+        account: MOCK_ACCOUNT_BIP122_P2WPKH,
+        chainId: BtcScope.Mainnet,
+      },
+      {
+        isMainnet: false,
+        account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+        chainId: BtcScope.Testnet,
+      },
     ])(
       'returns $isMainnet if non-EVM account address "$account.address" is compatible with mainnet',
       ({
         isMainnet,
         account,
+        chainId,
       }: {
         isMainnet: boolean;
         account: InternalAccount;
+        chainId: SupportedCaipChainId;
       }) => {
-        const state = getNonEvmState(account);
+        const state = getNonEvmState(account, chainId);
 
-        expect(getMultichainIsMainnet(state)).toBe(isMainnet);
+        expect(getMultichainIsMainnet(state, account)).toBe(isMainnet);
       },
     );
   });
@@ -415,20 +460,30 @@ describe('Multichain Selectors', () => {
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
-      { isTestnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH },
-      { isTestnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+      {
+        isTestnet: false,
+        account: MOCK_ACCOUNT_BIP122_P2WPKH,
+        chainId: BtcScope.Mainnet,
+      },
+      {
+        isTestnet: true,
+        account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET,
+        chainId: BtcScope.Testnet,
+      },
     ])(
       'returns $isTestnet if non-EVM account address "$account.address" is compatible with mainnet',
       ({
         isTestnet,
         account,
+        chainId,
       }: {
         isTestnet: boolean;
         account: InternalAccount;
+        chainId: SupportedCaipChainId;
       }) => {
-        const state = getNonEvmState(account);
+        const state = getNonEvmState(account, chainId);
 
-        expect(getMultichainIsTestnet(state)).toBe(isTestnet);
+        expect(getMultichainIsTestnet(state, account)).toBe(isTestnet);
       },
     );
   });

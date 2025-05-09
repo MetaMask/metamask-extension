@@ -61,6 +61,7 @@ import {
   getShowFiatInTestnets,
 } from './selectors';
 import {
+  getSelectedMultichainNetworkChainId,
   getSelectedMultichainNetworkConfiguration,
   type MultichainNetworkConfigState,
 } from './multichain/networks';
@@ -204,15 +205,12 @@ export function getMultichainNetwork(
   }
 
   // Non-EVM networks:
-  // (Hardcoded for testing)
-  // HACK: For now, we rely on the account type being "sort-of" CAIP compliant, so use
-  // this as a CAIP-2 namespace and apply our filter with it
-  // For non-EVM, we know we have a selected account, since the logic `isEvm` is based
-  // on having a non-EVM account being selected!
-  const selectedAccount = account ?? getSelectedInternalAccount(state);
+  // We rely on the multichain network controller to retreive CAIP chainID.
+  // From this we can then look through our providers and find the matching provider
+  const multichainChainId = getSelectedMultichainNetworkChainId(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
   const nonEvmNetwork = nonEvmNetworks.find((provider) => {
-    return provider.isAddressCompatible(selectedAccount.address);
+    return provider.chainId === multichainChainId;
   });
 
   if (!nonEvmNetwork) {
@@ -377,7 +375,7 @@ export function getMultichainIsMainnet(
   const mainnet = (
     MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET as Record<string, string>
   )[selectedAccount.type];
-  return providerConfig.chainId === mainnet ?? false;
+  return providerConfig.chainId === mainnet || false;
 }
 
 export function getMultichainIsTestnet(
