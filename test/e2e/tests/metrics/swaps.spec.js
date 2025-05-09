@@ -100,6 +100,9 @@ describe('Swap Eth for another Token', function () {
             participateInMetaMetrics: true,
           })
           .build(),
+        localNodeOptions: {
+          hardfork: 'muirGlacier',
+        },
         title: this.test.fullTitle(),
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },

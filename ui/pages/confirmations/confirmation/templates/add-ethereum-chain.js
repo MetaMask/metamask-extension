@@ -386,6 +386,7 @@ function getValues(pendingApproval, t, actions, history, data) {
           rpcEndpoints: [
             {
               url: pendingApproval.requestData.rpcUrl,
+              failoverUrls: pendingApproval.requestData.failoverRpcUrls,
               type: RpcEndpointType.Custom,
             },
           ],
