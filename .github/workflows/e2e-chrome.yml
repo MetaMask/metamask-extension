@@ -73,19 +73,29 @@ jobs:
 
   test-e2e-chrome-api-specs:
     uses: ./.github/workflows/run-e2e.yml
+    permissions:
+      contents: read
+      # id-token permission is required for uploading to s3
+      id-token: write
     with:
       test-suite-name: test-e2e-chrome-api-specs
       build-artifact: prep-build-test-browserify-chrome
       build-command: yarn build:test
       test-command: yarn test:api-specs
+      html-report-path: html-report
 
   test-e2e-chrome-api-specs-multichain:
     uses: ./.github/workflows/run-e2e.yml
+    permissions:
+      contents: read
+      # id-token permission is required for uploading to s3
+      id-token: write
     with:
       test-suite-name: test-e2e-chrome-api-specs-multichain
       build-artifact: prep-build-test-flask-browserify-chrome
       build-command: yarn build:test:flask
       test-command: yarn test:api-specs-multichain
+      html-report-path: html-report-multichain
 
   test-e2e-chrome-report:
     needs:

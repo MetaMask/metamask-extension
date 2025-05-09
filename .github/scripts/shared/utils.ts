@@ -63,7 +63,9 @@ export async function retry<T extends (...args: any[]) => any>(
     } catch (err) {
       if (attempt === retries) throw err;
       console.log(
-        `Attempt ${attempt} failed: ${err.message}. Retrying in ${delay}ms...`,
+        `Attempt ${attempt} failed: ${
+          err instanceof Error ? err.message : String(err)
+        }. Retrying in ${delay}ms...`,
       );
       await setTimeout(delay);
       delay *= 2;
