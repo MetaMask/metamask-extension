@@ -7038,6 +7038,9 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:get',
         ),
+        trackEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
         getAllSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:getAll',
