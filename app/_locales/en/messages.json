@@ -3908,14 +3908,14 @@
     "message": "Private:"
   },
   "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 we temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
+    "message": "$1 We temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
   },
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "General:"
   },
   "onboardingMetametricsNeverSellData": {
-    "message": "$1 you decide if you want to share or delete your usage data via settings any time.",
+    "message": "$1 You decide if you want to share or delete your usage data via settings any time.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
