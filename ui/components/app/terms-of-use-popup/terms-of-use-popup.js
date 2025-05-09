@@ -1256,6 +1256,6 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
 }
 
 TermsOfUsePopup.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   onAccept: PropTypes.func.isRequired,
 };
