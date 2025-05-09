@@ -74,7 +74,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          last_completed_main_workflow=$(gh api "/repos/${{ env.OWNER }}/${{ env.REPOSITORY }}/actions/workflows/${{ env.WORKFLOW_ID }}/runs?branch=${{ env.DEFAULT_BRANCH }}&per_page=1&status=success" | jq -r .workflow_runs[0].id)
+          last_completed_main_workflow=$(gh api "/repos/${OWNER}/${REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs?branch=${DEFAULT_BRANCH}&per_page=1&status=success" | jq -r .workflow_runs[0].id)
           echo 'LAST_COMPLETED_MAIN_WORKFLOW='"$last_completed_main_workflow" >> "$GITHUB_OUTPUT"
 
       - name: Download test-e2e-chrome-report
