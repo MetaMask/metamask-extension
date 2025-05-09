@@ -1,6 +1,5 @@
 import { readFileSync } from 'node:fs';
 import {
-  findTestFile,
   getNewBlankTestFile,
   getTestFilesSortedByTime,
   TestChunk,
@@ -69,7 +68,9 @@ export function splitTestsByTimings(
       let testRunNew: TestRun = { name: testRunLastTime.name, testFiles: [] };
 
       testList.forEach((path) => {
-        const testFileLastTime = findTestFile(testRunLastTime, path);
+        const testFileLastTime = testRunLastTime.testFiles.find(
+          (file) => file.path === path,
+        );
 
         if (testFileLastTime) {
           testRunNew.testFiles.push(testFileLastTime);

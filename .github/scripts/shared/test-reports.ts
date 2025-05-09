@@ -52,13 +52,6 @@ export interface TestChunk {
   paths: string[];
 }
 
-export function findTestFile(
-  testRun: TestRun,
-  path: string,
-): TestFile | undefined {
-  return testRun.testFiles.find((file) => file.path === path);
-}
-
 export function getTestFilesSortedByTime(testRun: TestRun) {
   // add CONSTANT_TIME_PER_TESTCASE
   testRun.testFiles.forEach((file) => {
