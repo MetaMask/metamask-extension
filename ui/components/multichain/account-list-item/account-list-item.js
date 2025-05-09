@@ -54,6 +54,7 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
   getMetaMaskKeyrings,
+  isSolanaAccount,
 } from '../../../selectors';
 import {
   getMultichainIsTestnet,
@@ -458,7 +459,10 @@ const AccountListItem = ({
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={account.metadata.keyring.type !== KeyringType.hdKeyTree}
+          isRemovable={
+            account.metadata.keyring.type !== KeyringType.hdKeyTree &&
+            !isSolanaAccount(account)
+          }
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}

@@ -653,6 +653,7 @@ describe('AccountListMenu', () => {
     const mockBtcAccount = createMockInternalAccount({
       name: 'Bitcoin Account',
       type: BtcAccountType.P2wpkh,
+      keyringType: KeyringTypes.snap,
       address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
     });
     const defaultMockState = {
