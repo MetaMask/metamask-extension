@@ -162,8 +162,6 @@ export async function getCapabilities(
   const { getDismissSmartAccountSuggestionEnabled, isAtomicBatchSupported } =
     hooks;
 
-  const addressNormalized = address.toLowerCase() as Hex;
-
   const chainIdsNormalized = chainIds?.map(
     (chainId) => chainId.toLowerCase() as Hex,
   );
@@ -180,7 +178,10 @@ export async function getCapabilities(
       const { delegationAddress, isSupported, upgradeContractAddress } =
         chainBatchSupport;
 
-      const canUpgrade = upgradeContractAddress && !delegationAddress;
+      const canUpgrade =
+        !getDismissSmartAccountSuggestionEnabled() &&
+        upgradeContractAddress &&
+        !delegationAddress;
 
       if (!isSupported && !canUpgrade) {
         return acc;
