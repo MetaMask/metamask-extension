@@ -20,6 +20,10 @@ import {
   AccountsControllerUpdateAccountMetadataAction,
 } from '@metamask/accounts-controller';
 import {
+  AddressBookControllerContactUpdatedEvent,
+  AddressBookControllerContactDeletedEvent,
+} from '@metamask/address-book-controller';
+import {
   NetworkControllerAddNetworkAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkRemovedEvent,
@@ -54,6 +58,9 @@ type MessengerEvents =
   // Account Syncing Events
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRenamedEvent
+  // Address Book Syncing Events
+  | AddressBookControllerContactUpdatedEvent
+  | AddressBookControllerContactDeletedEvent
   // Network Syncing Events
   | NetworkControllerNetworkRemovedEvent;
 
@@ -100,6 +107,9 @@ export function getUserStorageControllerMessenger(
       // Accounts Controller Events
       'AccountsController:accountAdded',
       'AccountsController:accountRenamed',
+      // Address Book Controller Events
+      'AddressBookController:contactUpdated',
+      'AddressBookController:contactDeleted',
       // Network Controller Events
       'NetworkController:networkRemoved',
     ],
