@@ -1339,10 +1339,6 @@
   "creatorAddress": {
     "message": "Dirección del creador"
   },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Esto refleja el valor de todos los tokens que posee en todas las redes. Si prefiere ver este valor en ETH u otras monedas, vaya a $1.",
-    "description": "$1 represents the settings page"
-  },
   "crossChainSwapsLink": {
     "message": "Intercambie entre redes con MetaMask Portfolio"
   },
@@ -6492,9 +6488,6 @@
   },
   "yourBalance": {
     "message": "Su saldo"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Su saldo es un acumulado"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Sus NFT podrían estar en riesgo"
