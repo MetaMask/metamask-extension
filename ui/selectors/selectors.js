@@ -18,6 +18,7 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
 import {
+  Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getPermittedEthChainIds,
@@ -2034,9 +2035,11 @@ export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   getPermissionSubjects,
   getSubjectMetadata,
   (subjects, subjectMetadata) => {
+    console.log(subjects, subjectMetadata, 'subjects, subjectMetadata');
     const accountsToConnections = {};
     Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
-      const exposedAccounts = getAccountsFromSubject(subjectValue);
+      const exposedAccounts = getAllAccountsFromSubject(subjectValue);
+      console.log(exposedAccounts);
       exposedAccounts.forEach((address) => {
         if (!accountsToConnections[address]) {
           accountsToConnections[address] = [];
@@ -2064,6 +2067,11 @@ export const getConnectedSitesList = createDeepEqualSelector(
   getInternalAccounts,
   getAllConnectedAccounts,
   (connectedSubjectsForAllAddresses, internalAccounts, connectedAddresses) => {
+    console.log(
+      connectedSubjectsForAllAddresses,
+      internalAccounts,
+      connectedAddresses,
+    );
     const sitesList = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
@@ -3643,6 +3651,20 @@ function getCaip25PermissionFromSubject(subject = {}) {
 
 function getAccountsFromSubject(subject) {
   return getEVMAccountsFromPermission(getCaip25PermissionFromSubject(subject));
+}
+function getCaveatFromPermission(caip25Permission = {}) {
+  return (
+    Array.isArray(caip25Permission.caveats) &&
+    caip25Permission.caveats.find((caveat) => caveat.type === Caip25CaveatType)
+  );
+}
+function getAllAccountsFromSubject(subject) {
+  return getAccountsFromPermission(getCaip25PermissionFromSubject(subject));
+}
+
+function getAccountsFromPermission(caip25Permission) {
+  const caip25Caveat = getCaveatFromPermission(caip25Permission);
+  return caip25Caveat ? getEthAccounts(caip25Caveat.value) : [];
 }
 
 function getEVMChainsFromSubject(subject) {
