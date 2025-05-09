@@ -1,4 +1,20 @@
-import { rewriteReport, removeUrlsFromBreadCrumb } from './setupSentry';
+import * as Sentry from '@sentry/browser';
+import { validate as uuidValidate, version as uuidVersion } from 'uuid';
+import * as setupSentry from './setupSentry';
+
+// Mock the entire setupSentry module because it is a readonly module
+jest.mock('./setupSentry', () => {
+  const originalModule = jest.requireActual('./setupSentry');
+  return {
+    ...originalModule,
+    sentryUserId: null,
+    log: jest.fn(),
+    setUserIdIfAvailable: jest.fn(),
+  };
+});
+jest.mock('@sentry/browser', () => ({
+  setUser: jest.fn(),
+}));
 
 describe('Setup Sentry', () => {
   describe('rewriteReport', () => {
@@ -7,7 +23,7 @@ describe('Setup Sentry', () => {
         message: 'This report has a test url: http://example.com',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report has a test url: **',
       );
@@ -27,7 +43,7 @@ describe('Setup Sentry', () => {
         },
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.exception.values).toStrictEqual([
         {
           value: 'This report has a test url: **',
@@ -44,7 +60,7 @@ describe('Setup Sentry', () => {
           'There is an ethereum address 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 in this message',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'There is an ethereum address 0x** in this message',
       );
@@ -55,7 +71,7 @@ describe('Setup Sentry', () => {
         message: 'This report has an allowed url: https://codefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report has an allowed url: https://codefi.network/',
       );
@@ -67,7 +83,7 @@ describe('Setup Sentry', () => {
           'This report has an allowed url: https://subdomain.codefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report has an allowed url: https://subdomain.codefi.network/',
       );
@@ -79,7 +95,7 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://nodefi.network/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
@@ -91,7 +107,7 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://codefi.network.another.domain.com/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
@@ -103,7 +119,7 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://example.com/test?redirect=http://codefi.network',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
@@ -115,7 +131,7 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://subdomain.example.com/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
@@ -127,7 +143,7 @@ describe('Setup Sentry', () => {
           'This report does not have an allowed url: https://example.%%%/',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This report does not have an allowed url: **',
       );
@@ -139,7 +155,7 @@ describe('Setup Sentry', () => {
           'This 0x790A8A9E9bc1C9dB991D8721a92e461Db4CfB235 address used http://example.com on Saturday',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual(
         'This 0x** address used ** on Saturday',
       );
@@ -150,7 +166,7 @@ describe('Setup Sentry', () => {
         message: 'This is a simple report',
         request: {},
       };
-      const rewrittenReport = rewriteReport(testReport);
+      const rewrittenReport = setupSentry.rewriteReport(testReport);
       expect(rewrittenReport.message).toStrictEqual('This is a simple report');
     });
   });
@@ -162,7 +178,8 @@ describe('Setup Sentry', () => {
           url: 'https://example.com',
         },
       };
-      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.url).toStrictEqual('');
     });
 
@@ -172,7 +189,8 @@ describe('Setup Sentry', () => {
           to: 'https://example.com',
         },
       };
-      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.to).toStrictEqual('');
     });
 
@@ -182,7 +200,8 @@ describe('Setup Sentry', () => {
           from: 'https://example.com',
         },
       };
-      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.from).toStrictEqual('');
     });
 
@@ -192,7 +211,8 @@ describe('Setup Sentry', () => {
           url: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.url).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
@@ -204,7 +224,8 @@ describe('Setup Sentry', () => {
           to: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.to).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
@@ -216,7 +237,8 @@ describe('Setup Sentry', () => {
           from: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data.from).toStrictEqual(
         'chrome-extension://abcefg/home.html',
       );
@@ -230,12 +252,47 @@ describe('Setup Sentry', () => {
           from: 'chrome-extension://abcefg/home.html',
         },
       };
-      const rewrittenBreadcrumb = removeUrlsFromBreadCrumb(testBreadcrumb);
+      const rewrittenBreadcrumb =
+        setupSentry.removeUrlsFromBreadCrumb(testBreadcrumb);
       expect(rewrittenBreadcrumb.data).toStrictEqual({
         url: 'chrome-extension://abcefg/home.html',
         to: '',
         from: 'chrome-extension://abcefg/home.html',
       });
+    });
+  });
+
+  describe('setUserIdIfAvailable', () => {
+    beforeEach(() => {
+      // Reset mocks
+      jest.clearAllMocks();
+
+      // Restore the original implementation for the test
+      setupSentry.setUserIdIfAvailable.mockImplementation(
+        jest.requireActual('./setupSentry').setUserIdIfAvailable,
+      );
+    });
+
+    it('should set user ID with a UUID v4 when called', () => {
+      setupSentry.setUserIdIfAvailable();
+      expect(Sentry.setUser).toHaveBeenCalledTimes(1);
+      const userId = Sentry.setUser.mock.calls[0][0].id;
+      expect(uuidValidate(userId)).toBe(true);
+      expect(uuidVersion(userId)).toBe(4);
+    });
+
+    it('should reuse the same UUID when called multiple times', () => {
+      // Call the function twice
+      setupSentry.setUserIdIfAvailable();
+      setupSentry.setUserIdIfAvailable();
+
+      // Should call setUser twice
+      expect(Sentry.setUser).toHaveBeenCalledTimes(2);
+
+      // Both calls should use the same UUID
+      const firstCallId = Sentry.setUser.mock.calls[0][0].id;
+      const secondCallId = Sentry.setUser.mock.calls[1][0].id;
+      expect(firstCallId).toStrictEqual(secondCallId);
     });
   });
 });
