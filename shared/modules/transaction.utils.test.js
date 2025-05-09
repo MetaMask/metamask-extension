@@ -5,6 +5,7 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import {
   buildApproveTransactionData,
   buildIncreaseAllowanceTransactionData,
+  buildPermit2ApproveTransactionData,
 } from '../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
 import {
@@ -19,6 +20,8 @@ import {
 
 const DATA_MOCK = '0x12345678';
 const ADDRESS_MOCK = '0x1234567890123456789012345678901234567890';
+const ADDRESS_2_MOCK = '0x1234567890123456789012345678901234567891';
+const EXPIRATION_MOCK = 1234567890;
 const AMOUNT_MOCK = 123;
 
 describe('Transaction.utils', function () {
@@ -39,7 +42,29 @@ describe('Transaction.utils', function () {
     it('should not throw errors when called without arguments', () => {
       expect(() => parseStandardTokenTransactionData()).not.toThrow();
     });
+
+    it('decodes Permit2 function', () => {
+      const result = parseStandardTokenTransactionData(
+        buildPermit2ApproveTransactionData(
+          ADDRESS_MOCK,
+          ADDRESS_2_MOCK,
+          AMOUNT_MOCK,
+          EXPIRATION_MOCK,
+        ),
+      );
+
+      expect(result.name).toBe('approve');
+      expect(result.args).toStrictEqual(
+        expect.objectContaining({
+          token: ADDRESS_MOCK,
+          spender: ADDRESS_2_MOCK,
+          expiration: EXPIRATION_MOCK,
+        }),
+      );
+      expect(result.args.amount.toString()).toBe(AMOUNT_MOCK.toString());
+    });
   });
+
   describe('isEIP1559Transaction', function () {
     it('should return true if both maxFeePerGas and maxPriorityFeePerGas are hex strings', () => {
       expect(
@@ -458,6 +483,8 @@ describe('Transaction.utils', function () {
         amountOrTokenId: new BigNumber(AMOUNT_MOCK),
         isApproveAll: false,
         isRevokeAll: false,
+        name: 'approve',
+        tokenAddress: undefined,
       });
     });
 
@@ -470,6 +497,8 @@ describe('Transaction.utils', function () {
         amountOrTokenId: new BigNumber(AMOUNT_MOCK),
         isApproveAll: false,
         isRevokeAll: false,
+        name: 'increaseAllowance',
+        tokenAddress: undefined,
       });
     });
 
@@ -482,6 +511,8 @@ describe('Transaction.utils', function () {
         amountOrTokenId: undefined,
         isApproveAll: true,
         isRevokeAll: false,
+        name: 'setApprovalForAll',
+        tokenAddress: undefined,
       });
     });
 
@@ -494,6 +525,27 @@ describe('Transaction.utils', function () {
         amountOrTokenId: undefined,
         isApproveAll: false,
         isRevokeAll: true,
+        name: 'setApprovalForAll',
+        tokenAddress: undefined,
+      });
+    });
+
+    it('returns parsed data if Permit2 approve', () => {
+      expect(
+        parseApprovalTransactionData(
+          buildPermit2ApproveTransactionData(
+            ADDRESS_MOCK,
+            ADDRESS_2_MOCK,
+            AMOUNT_MOCK,
+            EXPIRATION_MOCK,
+          ),
+        ),
+      ).toStrictEqual({
+        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        isApproveAll: false,
+        isRevokeAll: false,
+        name: 'approve',
+        tokenAddress: ADDRESS_MOCK,
       });
     });
   });

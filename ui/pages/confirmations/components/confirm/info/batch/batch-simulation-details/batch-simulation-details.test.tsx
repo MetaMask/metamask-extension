@@ -20,8 +20,10 @@ import {
 } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { Confirmation } from '../../../../../types/confirm';
-import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
+import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
 import { BatchSimulationDetails } from './batch-simulation-details';
+
+jest.mock('../../../../../../../../shared/lib/transactions/approvals');
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(),
@@ -37,10 +39,6 @@ jest.mock(
     updateAtomicBatchData: jest.fn(),
   }),
 );
-
-jest.mock('../../../../../confirm-approve/confirm-approve.util', () => ({
-  getCustomTxParamsData: jest.fn(),
-}));
 
 const ADDRESS_MOCK = '0x1234567891234567891234567891234567891234';
 const ADDRESS_SHORT_MOCK = '0x12345...91234';
@@ -119,7 +117,7 @@ function render(transaction?: Confirmation) {
 describe('BatchSimulationDetails', () => {
   const useBalanceChangesMock = jest.mocked(useBalanceChanges);
   const updateAtomicBatchDataMock = jest.mocked(updateAtomicBatchData);
-  const getCustomTxParamsDataMock = jest.mocked(getCustomTxParamsData);
+  const updateApprovalAmountMock = jest.mocked(updateApprovalAmount);
 
   const useBatchApproveBalanceChangesMock = jest.mocked(
     useBatchApproveBalanceChanges,
@@ -265,7 +263,7 @@ describe('BatchSimulationDetails', () => {
       value: [BALANCE_CHANGE_ERC20_MOCK],
     });
 
-    getCustomTxParamsDataMock.mockReturnValue(DATA_MOCK);
+    updateApprovalAmountMock.mockReturnValue(DATA_MOCK);
 
     const { getByTestId, getByText } = render();
 

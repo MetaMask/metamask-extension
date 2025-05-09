@@ -93,7 +93,20 @@ async function buildSimulationTokenBalanceChanges({
       continue;
     }
 
-    const tokenData = await getTokenStandardAndDetails(to);
+    const parseResult = parseApprovalTransactionData(data);
+
+    if (!parseResult) {
+      continue;
+    }
+
+    const {
+      amountOrTokenId,
+      isApproveAll: isAll,
+      tokenAddress: token,
+    } = parseResult;
+
+    const tokenAddress = token ?? to;
+    const tokenData = await getTokenStandardAndDetails(tokenAddress);
 
     if (!tokenData?.standard) {
       continue;
@@ -103,14 +116,6 @@ async function buildSimulationTokenBalanceChanges({
       tokenData?.standard?.toLowerCase() as SimulationTokenStandard;
 
     const isNFT = standard !== SimulationTokenStandard.erc20;
-
-    const parseResult = parseApprovalTransactionData(data);
-
-    if (!parseResult) {
-      continue;
-    }
-
-    const { amountOrTokenId, isApproveAll: isAll } = parseResult;
     const amountOrTokenIdHex = add0x(amountOrTokenId?.toString(16) ?? '0x0');
 
     const difference =
@@ -119,10 +124,14 @@ async function buildSimulationTokenBalanceChanges({
     const tokenId = isNFT && amountOrTokenId ? amountOrTokenIdHex : undefined;
 
     const isUnlimited =
-      !isNFT && isSpendingCapUnlimited(amountOrTokenId?.toNumber() ?? 0);
+      !isNFT &&
+      isSpendingCapUnlimited(
+        amountOrTokenId?.toNumber() ?? 0,
+        Number(tokenData?.decimals ?? 0),
+      );
 
     const balanceChange: ApprovalSimulationBalanceChange = {
-      address: to,
+      address: tokenAddress,
       difference,
       id: tokenId,
       isAll: isAll ?? false,
