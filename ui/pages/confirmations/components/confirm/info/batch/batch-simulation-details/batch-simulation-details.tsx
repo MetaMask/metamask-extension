@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   TransactionMeta,
   TransactionType,
@@ -58,18 +58,22 @@ export function BatchSimulationDetails() {
     return null;
   }
 
-  const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
-    ...change,
-    onEdit:
-      change.asset.standard === TokenStandard.ERC20
-        ? () => handleEdit(change)
-        : undefined,
-  }));
+  const approveRows: StaticRow[] = useMemo(() => {
+    const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
+      ...change,
+      onEdit:
+        change.asset.standard === TokenStandard.ERC20
+          ? () => handleEdit(change)
+          : undefined,
+    }));
 
-  const approveRow: StaticRow = {
-    label: t('confirmSimulationApprove'),
-    balanceChanges: finalBalanceChanges ?? [],
-  };
+    return [
+      {
+        label: t('confirmSimulationApprove'),
+        balanceChanges: finalBalanceChanges ?? [],
+      },
+    ];
+  }, [approveBalanceChanges, handleEdit]);
 
   const nestedTransactionToEdit =
     nestedTransactionIndexToEdit === undefined
@@ -89,7 +93,7 @@ export function BatchSimulationDetails() {
       )}
       <SimulationDetails
         transaction={transactionMeta}
-        staticRows={[approveRow]}
+        staticRows={approveRows}
         isTransactionsRedesign
         enableMetrics
       />
