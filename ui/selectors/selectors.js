@@ -595,10 +595,7 @@ export function getNumberOfTokens(state) {
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings.map((keyring, index) => ({
-    ...keyring,
-    metadata: state.metamask.keyringsMetadata?.[index] ?? {},
-  }));
+  return state.metamask.keyrings;
 }
 
 export const getMetaMaskHdKeyrings = createSelector(
@@ -607,10 +604,6 @@ export const getMetaMaskHdKeyrings = createSelector(
     return keyrings.filter((keyring) => keyring.type === KeyringTypes.hd);
   },
 );
-
-export function getMetaMaskKeyringsMetadata(state) {
-  return state.metamask.keyringsMetadata;
-}
 
 export function getHDEntropyIndex(state) {
   const selectedAddress = getSelectedAddress(state);

@@ -24,11 +24,10 @@ jest.mock('../../../../hooks/useMultichainAccountTotalFiatBalance', () => ({
 const mockSecondHdKeyring = {
   accounts: [],
   type: KeyringTypes.hd,
-};
-
-const mockSecondHdKeyringMetadata = {
-  id: '01JN31PKMJ3ANWYFJZM3Z8MYT4',
-  name: '',
+  metadata: {
+    id: '01JN31PKMJ3ANWYFJZM3Z8MYT4',
+    name: '',
+  },
 };
 
 const render = () => {
@@ -37,10 +36,6 @@ const render = () => {
     metamask: {
       ...mockState.metamask,
       keyrings: [...mockState.metamask.keyrings, mockSecondHdKeyring],
-      keyringsMetadata: [
-        ...mockState.metamask.keyringsMetadata,
-        mockSecondHdKeyringMetadata,
-      ],
     },
   });
 
@@ -66,7 +61,7 @@ describe('SrpList', () => {
 
   it('calls onActionComplete when clicking a keyring', () => {
     const { getByTestId } = render();
-    const firstKeyringId = mockState.metamask.keyringsMetadata[0].id;
+    const firstKeyringId = mockState.metamask.keyrings[0].metadata.id;
 
     const keyring = getByTestId(`hd-keyring-${firstKeyringId}`);
     fireEvent.click(keyring);

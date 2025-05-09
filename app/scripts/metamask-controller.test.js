@@ -3992,10 +3992,9 @@ describe('MetaMaskController', () => {
           metamaskController.keyringController.state.keyrings;
 
         const newlyAddedKeyringId =
-          metamaskController.keyringController.state.keyringsMetadata[
-            metamaskController.keyringController.state.keyringsMetadata.length -
-              2 // -1 for the snap keyring, -1 for the newly added keyring
-          ].id;
+          metamaskController.keyringController.state.keyrings[
+            metamaskController.keyringController.state.keyrings.length - 2 // -1 for the snap keyring, -1 for the newly added keyring
+          ].metadata.id;
 
         const newSRP = Buffer.from(
           await metamaskController.getSeedPhrase(password, newlyAddedKeyringId),

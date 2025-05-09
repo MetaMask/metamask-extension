@@ -24,7 +24,6 @@ import {
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
-  getMetaMaskKeyringsMetadata,
   getUseBlockie,
 } from '../../../selectors';
 import {
@@ -86,9 +85,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   showModal = !showHoldToReveal && !srpQuizModalVisible;
 
   const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
-  const keyringsMetadata: KeyringMetadata[] = useSelector(
-    getMetaMaskKeyringsMetadata,
-  );
 
   // Snap accounts have an entropy source that is the id of the hd keyring
   const keyringId =
@@ -96,7 +92,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     isMultichainWalletSnap(snapId) &&
     entropySource
       ? entropySource
-      : findKeyringId(keyrings, keyringsMetadata, {
+      : findKeyringId(keyrings, {
           address,
         });
 

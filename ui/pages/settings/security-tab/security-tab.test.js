@@ -184,13 +184,10 @@ describe('Security Tab', () => {
           {
             type: 'HD Key Tree',
             accounts: ['0x'],
-          },
-        ],
-        keyringsMetadata: [
-          ...mockState.metamask.keyringsMetadata,
-          {
-            id: '01JM1XSBQ78YXY1NNT003HT74V',
-            name: '',
+            metadata: {
+              id: '01JM1XSBQ78YXY1NNT003HT74V',
+              name: '',
+            },
           },
         ],
       },
