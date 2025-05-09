@@ -51,22 +51,28 @@ export function useMultichainTransactionDisplay(
     true,
     locale,
     decimalPlaces,
+    networkConfig.ticker,
   );
   const to = aggregateAmount(
     transaction.to as Movement[],
     transaction.type === TransactionType.Send,
     locale,
     decimalPlaces,
+    networkConfig.ticker,
   );
   const baseFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'base') as Movement[],
     true,
     locale,
+    undefined,
+    networkConfig.ticker,
   );
   const priorityFee = aggregateAmount(
     transaction.fees.filter((fee) => fee.type === 'priority') as Movement[],
     true,
     locale,
+    undefined,
+    networkConfig.ticker,
   );
 
   const typeToTitle: Partial<Record<TransactionType, string>> = {
@@ -96,6 +102,7 @@ function aggregateAmount(
   isNegative: boolean,
   locale: string,
   decimals?: number,
+  nativeSymbol?: string,
 ) {
   const amountByAsset: Record<string, AggregatedMovement> = {};
 
@@ -116,10 +123,35 @@ function aggregateAmount(
     amountByAsset[assetId].amount += parseFloat(mv.asset.amount);
   }
 
-  // We make an assumption that there is only one asset in the transaction.
-  return Object.entries(amountByAsset).map(([_, mv]) =>
-    parseAsset(mv, locale, isNegative, decimals),
-  )[0];
+  const assets = Object.values(amountByAsset);
+  if (assets.length === 0) {
+    return undefined;
+  }
+
+  const assetsCount = assets.length;
+  // No longer logging for production.
+
+  let selected: AggregatedMovement | undefined;
+  if (assetsCount === 1) {
+    selected = assets[0];
+  } else if (assetsCount === 2) {
+    // Prefer the non-native asset (e.g., token) over the native rent payment.
+    if (nativeSymbol) {
+      const nonNative = assets.find(
+        (a) => a.unit.toUpperCase() !== nativeSymbol.toUpperCase(),
+      );
+      selected = nonNative ?? assets[1];
+    } else {
+      selected = assets[1];
+    }
+  } else {
+    // Fallback for >2 assets: pick the largest by absolute amount.
+    selected = assets.reduce((prev, curr) =>
+      Math.abs(curr.amount) > Math.abs(prev.amount) ? curr : prev,
+    );
+  }
+
+  return parseAsset(selected, locale, isNegative, decimals);
 }
 
 function parseAsset(
