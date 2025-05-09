@@ -1,6 +1,14 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockBip32Snap,
+  mockBip44Snap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+
+async function mockSnapBinaries(mockServer) {
+  return [await mockBip32Snap(mockServer), await mockBip44Snap(mockServer)];
+}
 
 describe('Test Snap Multi Install', function () {
   it('test multi install snaps', async function () {
@@ -8,6 +16,7 @@ describe('Test Snap Multi Install', function () {
       {
         fixtures: new FixtureBuilder().build(),
         failOnConsoleError: false,
+        testSpecificMock: mockSnapBinaries,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

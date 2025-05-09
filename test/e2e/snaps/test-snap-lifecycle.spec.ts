@@ -5,12 +5,14 @@ import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { mockLifecycleHooksSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Test Snap Lifecycle Hooks', function () {
   it('can run lifecycle hook on connect', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockLifecycleHooksSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
