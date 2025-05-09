@@ -47,10 +47,12 @@ declare module 'react-tippy' {
     followCursor?: boolean;
     inertia?: boolean;
     transitionFlip?: boolean;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     popperOptions?: any;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     html?: React.ReactElement<any>;
     unmountHTMLWhenHide?: boolean;

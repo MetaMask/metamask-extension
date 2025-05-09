@@ -27,7 +27,8 @@ jest.mock('react-router-dom', () => ({
 const NATIVE_TICKER = 'NATIVE TICKER';
 const store = (
   nativeTicker = NATIVE_TICKER,
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tokenList = {} as any,
   chainId: Hex = CHAIN_IDS.MAINNET,

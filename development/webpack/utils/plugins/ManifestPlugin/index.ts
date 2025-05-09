@@ -128,6 +128,8 @@ export class ManifestPlugin<Z extends boolean> {
     const numAssetsPerBrowser = assetsArray.length + 1;
     const totalWork = numAssetsPerBrowser * browsers.length; // +1 for each browser's manifest.json
     const reportProgress =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       ProgressPlugin.getReporter(compilation.compiler) || noop;
     // TODO(perf): run this in parallel. If you try without carefully optimizing the
     // process will run out of memory pretty quickly, and crash. Fun!
@@ -274,6 +276,8 @@ export class ManifestPlugin<Z extends boolean> {
       if (resources && resources.length > 0) {
         if (manifest.manifest_version === 3) {
           manifest.web_accessible_resources =
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             manifest.web_accessible_resources || [];
           const war = manifest.web_accessible_resources.find((resource) =>
             resource.matches.includes('<all_urls>'),
@@ -290,6 +294,8 @@ export class ManifestPlugin<Z extends boolean> {
           }
         } else {
           manifest.web_accessible_resources = [
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             ...(manifest.web_accessible_resources || []),
             ...resources,
           ];

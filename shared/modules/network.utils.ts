@@ -193,3 +193,34 @@ export const getRpcDataByChainId = (
     defaultRpcEndpoint,
   };
 };
+
+/**
+ * Sorts a list of test networks based on the predefined priority.
+ * And then sorts the rest of the networks in alphabetical order.
+ *
+ * @param networks - The networks to sort.
+ * @param priorityList - The list of CAIP Chain IDs to prioritize.
+ * @returns The sorted list of networks.
+ */
+export const sortNetworksByPrioity = (
+  networks: MultichainNetworkConfiguration[],
+  priorityList: CaipChainId[],
+) => {
+  return networks.sort((networkA, networkB) => {
+    const indexA = priorityList.indexOf(networkA.chainId);
+    const indexB = priorityList.indexOf(networkB.chainId);
+
+    if (indexA !== -1 && indexB !== -1) {
+      // if both are in the priority list, networkA will go first then networkB
+      return indexA - indexB;
+    } else if (indexA !== -1) {
+      // if networkA in the priority list and the networkB not in the list, networkA will go first
+      return -1;
+    } else if (indexB !== -1) {
+      // if networkB in the priority list and the networkA not in the list, networkB will go first
+      return 1;
+    }
+    // if both are not in the priority list, sort by name
+    return networkA.name.localeCompare(networkB.name);
+  });
+};

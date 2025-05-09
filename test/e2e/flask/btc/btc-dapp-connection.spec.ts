@@ -4,6 +4,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Dapp Connection', function (this: Suite) {
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('cannot connect to dapps', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },

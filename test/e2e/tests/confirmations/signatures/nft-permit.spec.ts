@@ -25,6 +25,7 @@ import {
   SignatureType,
   triggerSignature,
 } from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - NFT Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
@@ -74,6 +75,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
           decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
         await assertVerifiedResults(driver, publicAddress);
@@ -118,6 +120,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
           decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejectedWithDecoding,

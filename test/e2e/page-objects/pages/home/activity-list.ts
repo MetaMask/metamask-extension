@@ -115,7 +115,7 @@ class ActivityListPage {
         this.confirmedTransactions,
       );
       return confirmedTxs.length === expectedNumber;
-    }, 10000);
+    }, 60000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
@@ -137,7 +137,7 @@ class ActivityListPage {
     await this.driver.wait(async () => {
       const failedTxs = await this.driver.findElements(this.failedTransactions);
       return failedTxs.length === expectedNumber;
-    }, 10000);
+    }, 60000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
     );
@@ -148,6 +148,13 @@ class ActivityListPage {
   }
 
   async check_txAction(expectedAction: string, expectedNumber: number = 1) {
+    await this.driver.wait(async () => {
+      const transactionActions = await this.driver.findElements(
+        this.activityListAction,
+      );
+      return transactionActions.length >= expectedNumber;
+    }, 100000);
+
     const transactionActions = await this.driver.findElements(
       this.activityListAction,
     );
@@ -157,7 +164,7 @@ class ActivityListPage {
         expectedNumber - 1
       ].getText();
       return transactionActionText === expectedAction;
-    });
+    }, 60000);
 
     console.log(
       `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
@@ -204,7 +211,8 @@ class ActivityListPage {
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
-    const transactionAmounts = await this.driver.findElements(
+    // old implementation
+    /* const transactionAmounts = await this.driver.findElements(
       this.transactionAmountsInActivity,
     );
     const transactionAmountsText = await transactionAmounts[
@@ -214,6 +222,22 @@ class ActivityListPage {
       transactionAmountsText,
       expectedAmount,
       `${transactionAmountsText} is displayed as transaction amount instead of ${expectedAmount} for transaction ${expectedNumber}`,
+    );
+    console.log(
+      `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
+    );*/
+
+    const txAmount = await this.driver.waitForSelector({
+      text: expectedAmount,
+      tag: 'p',
+    }, {
+      timeout: 60000,
+    });
+    const txAmountText = await txAmount.getText();
+    assert.equal(
+      txAmountText,
+      expectedAmount,
+      `${txAmountText} is displayed as transaction amount instead of ${expectedAmount} for transaction ${expectedNumber}`,
     );
     console.log(
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,

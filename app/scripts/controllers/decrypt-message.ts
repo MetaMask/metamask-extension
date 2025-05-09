@@ -127,12 +127,13 @@ export type DecryptMessageControllerMessenger = RestrictedMessenger<
 >;
 
 export type DecryptMessageControllerOptions = {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getState: () => any;
   managerMessenger: DecryptMessageManagerMessenger;
   messenger: DecryptMessageControllerMessenger;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
 };
@@ -145,11 +146,11 @@ export default class DecryptMessageController extends BaseController<
   DecryptMessageControllerState,
   DecryptMessageControllerMessenger
 > {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _getState: () => any;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _metricsEvent: (payload: any, options?: any) => void;
 
@@ -363,7 +364,7 @@ export default class DecryptMessageController extends BaseController<
       `${managerName}:stateChange`,
       (state: MessageManagerState<AbstractMessage>) => {
         const newMessages = this._migrateMessages(
-          // TODO: Replace `any` with type
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           state.unapprovedMessages as any,
         );
@@ -403,6 +404,8 @@ export default class DecryptMessageController extends BaseController<
 
   private _requestApproval(messageParams: AbstractMessageParamsMetamask) {
     const id = messageParams.metamaskId as string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const origin = messageParams.origin || ORIGIN_METAMASK;
     try {
       this.messagingSystem.call(

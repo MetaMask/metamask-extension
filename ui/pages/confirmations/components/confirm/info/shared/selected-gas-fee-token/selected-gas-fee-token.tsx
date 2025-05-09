@@ -53,15 +53,17 @@ export function SelectedGasFeeToken() {
         <GasFeeTokenModal onClose={() => setIsModalOpen(false)} />
       )}
       <Box
+        data-testid="selected-gas-fee-token"
         onClick={handleClick}
         backgroundColor={BackgroundColor.backgroundAlternative}
         borderRadius={BorderRadius.pill}
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
-        paddingInline={2}
+        paddingInlineStart={1}
         gap={1}
         style={{
           cursor: hasGasFeeTokens ? 'pointer' : 'default',
+          paddingInlineEnd: '6px',
         }}
       >
         <GasFeeTokenIcon

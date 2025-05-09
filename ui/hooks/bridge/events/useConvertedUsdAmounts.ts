@@ -17,7 +17,7 @@ export const useConvertedUsdAmounts = () => {
   );
 
   return getConvertedUsdAmounts({
-    activeQuote,
-    fromAmountInputValueInUsd,
+    activeQuote: activeQuote ?? undefined,
+    fromAmountInputValueInUsd: fromAmountInputValueInUsd.toString(),
   });
 };

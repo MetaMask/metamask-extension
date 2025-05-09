@@ -23,8 +23,8 @@ export const useSafeChains = () => {
     error?: Error;
   }>({ safeChains: [] });
 
-  if (useSafeChainsListValidation) {
-    useEffect(() => {
+  useEffect(() => {
+    if (useSafeChainsListValidation) {
       fetchWithCache({
         url: CHAIN_SPEC_URL,
         functionName: 'getSafeChainsList',
@@ -37,8 +37,8 @@ export const useSafeChains = () => {
         .catch((error) => {
           setSafeChains({ error });
         });
-    }, []);
-  }
+    }
+  }, [useSafeChainsListValidation]);
 
   return safeChains;
 };

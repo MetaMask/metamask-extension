@@ -1,6 +1,7 @@
 import { Messenger } from '@metamask/base-controller';
 import {
   AccountsControllerAccountAddedEvent,
+  AccountsControllerGetSelectedMultichainAccountAction,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
 import {
@@ -19,7 +20,8 @@ type Actions =
   | HandleSnapRequest
   | AccountsControllerListMultichainAccountsAction
   | GetCurrencyRateState
-  | MultichainAssetsControllerGetStateAction;
+  | MultichainAssetsControllerGetStateAction
+  | AccountsControllerGetSelectedMultichainAccountAction;
 
 type Events =
   | KeyringControllerLockEvent
@@ -56,6 +58,7 @@ export function getMultichainAssetsRatesControllerMessenger(
       'SnapController:handleRequest',
       'CurrencyRateController:getState',
       'MultichainAssetsController:getState',
+      'AccountsController:getSelectedMultichainAccount',
     ],
   });
 }

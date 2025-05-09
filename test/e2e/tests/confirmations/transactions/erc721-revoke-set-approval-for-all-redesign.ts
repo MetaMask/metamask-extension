@@ -8,7 +8,7 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
-import { TestSuiteArguments } from './shared';
+import { TestSuiteArguments, mocked4BytesSetApprovalForAll } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -42,30 +42,6 @@ describe('Confirmation Redesign ERC721 Revoke setApprovalForAll', function () {
 
 async function mocks(server: Mockttp) {
   return [await mocked4BytesSetApprovalForAll(server)];
-}
-
-export async function mocked4BytesSetApprovalForAll(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
-    .withQuery({ hex_signature: '0xa22cb465' })
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: 1,
-        next: null,
-        previous: null,
-        results: [
-          {
-            bytes_signature: '¢,´e',
-            created_at: '2018-04-11T21:47:39.980645Z',
-            hex_signature: '0xa22cb465',
-            id: 29659,
-            text_signature: 'setApprovalForAll(address,bool)',
-          },
-        ],
-      },
-    }));
 }
 
 async function createTransactionAndAssertDetails(

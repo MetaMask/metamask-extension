@@ -5,6 +5,7 @@ import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Overview', function (this: Suite) {
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('has balance displayed and has portfolio button enabled for BTC accounts', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
@@ -41,6 +42,7 @@ describe('BTC Account - Overview', function (this: Suite) {
     );
   });
   // Skipping btc test for now because btc snap is outdated and does not yet allow for new assets fetching logic.
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('has balance', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },

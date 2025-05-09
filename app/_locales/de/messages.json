@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Kontodetails"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Zum regulären Konto zurückwechseln"
-  },
   "accountIdenticon": {
     "message": "Konto-Identicon"
   },
@@ -958,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Wir verwenden Infura als Anbieter für ferngesteuerte Prozeduranrufe (RPC), um den verlässlichsten und vertraulichsten Zugriff auf Ethereum-Daten zu ermöglichen, den wir können. Sie können Ihren eigenen RPC auswählen, bedenken Sie aber, dass RPC Ihre IP-Adresse und Ihre Ethereum-Wallet erhalten wird, um Transaktionen durchzuführen. Lesen Sie unsere $1, um mehr darüber zu erfahren, wie Infura mit Ihren Daten umgeht.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrer Hardware-Wallet zu verbinden."
@@ -1027,9 +1024,6 @@
   },
   "confirm": {
     "message": "Bestätigen"
-  },
-  "confirmAccountType": {
-    "message": "Typ"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Smart-Konto"
@@ -1120,18 +1114,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Transaktionsanfrage"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Transaktion stornieren"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Aktualisierung abbrechen und Transaktion stornieren"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Wenn Sie Ihr Konto nicht aktualisieren möchten, können Sie es hier stornieren.\n\nUm diese Transaktion ohne Aktualisierung abzuschließen, müssen Sie diese Anfrage erneut auf der Website stellen. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Transaktion stornieren"
   },
   "confirmationAlertDetails": {
     "message": "Um Ihre Assets zu schützen, empfehlen wir die Ablehnung der Anfrage."
@@ -1323,9 +1305,6 @@
   },
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
-  },
-  "copyAddressShort": {
-    "message": "Adresse kopieren"
   },
   "copyPrivateKey": {
     "message": "Privaten Schlüssel kopieren"
@@ -2006,9 +1985,6 @@
   },
   "existingChainId": {
     "message": "Die von Ihnen eingegebenen Informationen sind mit einer bestehenden Chain-ID verknüpft."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Um sich Ihre jüngste Anfrage anzeigen zu lassen und diese zu bestätigen, müssen Sie zunächst bestehende Anfragen genehmigen oder ablehnen."
   },
   "expandView": {
     "message": "Ansicht erweitern"
@@ -3688,22 +3664,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Ihre MetaMask Installation ist abgeschlossen!"
-  },
-  "oneDayAbbreviation": {
-    "message": "1 T",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1 M",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1 W",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1 J",
-    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "Verbinden Sie sich nur mit Websites, denen Sie vertrauen. $1",
@@ -5998,10 +5958,6 @@
   "thirdPartySoftware": {
     "message": "Mitteilung bzgl. Drittanbieter-Software",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3 M",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "Zeit"

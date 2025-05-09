@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { isSolanaChainId } from '@metamask/bridge-controller';
+import { CaipChainId, Hex, hexToNumber } from '@metamask/utils';
 import { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -35,7 +36,14 @@ const useRamps = (
       try {
         const params = new URLSearchParams();
         params.set('metamaskEntry', metamaskEntry);
-        params.set('chainId', _chainId);
+
+        let numericChainId = '';
+        if (isSolanaChainId(_chainId)) {
+          numericChainId = _chainId;
+        } else {
+          numericChainId = hexToNumber(_chainId).toString();
+        }
+        params.set('chainId', numericChainId);
         if (metaMetricsId) {
           params.set('metametricsId', metaMetricsId);
         }
@@ -43,7 +51,6 @@ const useRamps = (
         if (isMarketingEnabled) {
           params.set('marketingEnabled', String(isMarketingEnabled));
         }
-
         const url = new URL(process.env.PORTFOLIO_URL || '');
         url.pathname = 'buy';
         url.search = params.toString();
@@ -52,7 +59,7 @@ const useRamps = (
         return 'https://portfolio.metamask.io/buy';
       }
     },
-    [metaMetricsId],
+    [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, metamaskEntry],
   );
 
   const openBuyCryptoInPdapp = useCallback(
@@ -62,7 +69,7 @@ const useRamps = (
         url: buyUrl,
       });
     },
-    [chainId],
+    [chainId, getBuyURI],
   );
 
   return { openBuyCryptoInPdapp, getBuyURI };

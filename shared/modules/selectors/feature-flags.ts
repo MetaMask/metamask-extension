@@ -36,6 +36,8 @@ export function getFeatureFlagsByChainId(
   state: ProviderConfigState & FeatureFlagsMetaMaskState,
   chainId?: string,
 ) {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = chainId || getCurrentChainId(state);
   const networkName = getNetworkNameByChainId(effectiveChainId);
   const featureFlags = state.metamask.swapsState?.swapsFeatureFlags;

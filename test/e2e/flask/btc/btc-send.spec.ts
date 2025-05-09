@@ -8,7 +8,9 @@ import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx
 import { getTransactionRequest, withBtcAccountSnap } from './common-btc';
 
 // Skipping btc test for now because btc snap is outdated and does not yet allow for new assets fetching logic.
+// eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('BTC Account - Send', function (this: Suite) {
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('can complete the send flow', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
@@ -53,6 +55,7 @@ describe.skip('BTC Account - Send', function (this: Suite) {
     );
   });
 
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('can send the max amount', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },

@@ -37,6 +37,7 @@ describe('useDisplayName', () => {
   const useNftCollectionsMetadataMock = jest.mocked(useNftCollectionsMetadata);
   const domainResolutionsMock = jest.mocked(getDomainResolutions);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let state: any;
 

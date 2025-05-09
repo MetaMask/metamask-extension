@@ -41,7 +41,13 @@ export const Search = ({
   const t = useI18nContext();
 
   return (
-    <Box padding={4} {...props}>
+    <Box
+      paddingTop={4}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingBottom={2}
+      {...props}
+    >
       <TextFieldSearch
         borderRadius={BorderRadius.LG}
         placeholder={
@@ -58,7 +64,7 @@ export const Search = ({
         clearButtonProps={{
           size: ButtonIconSize.Sm,
         }}
-        style={{ paddingInline: 8 }}
+        style={{ paddingInline: 12 }}
         showClearButton
         className="asset-picker-modal__search-list"
         inputProps={{

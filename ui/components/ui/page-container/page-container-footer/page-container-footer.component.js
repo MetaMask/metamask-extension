@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Button from '../../button';
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '../../../component-library/button';
 
 export default class PageContainerFooter extends Component {
   static propTypes = {
@@ -14,7 +18,6 @@ export default class PageContainerFooter extends Component {
     disabled: PropTypes.bool,
     submitButtonType: PropTypes.string,
     hideCancel: PropTypes.bool,
-    buttonSizeLarge: PropTypes.bool,
     footerClassName: PropTypes.string,
     footerButtonClassName: PropTypes.string,
     submitButtonIcon: PropTypes.string,
@@ -35,19 +38,26 @@ export default class PageContainerFooter extends Component {
       submitButtonType,
       hideCancel,
       cancelButtonType,
-      buttonSizeLarge = false,
       footerClassName,
       footerButtonClassName,
       submitButtonIcon,
     } = this.props;
+
+    const submitVariant =
+      submitButtonType === 'confirm' ? ButtonVariant.Primary : submitButtonType;
+
+    const cancelVariant =
+      cancelButtonType === 'default'
+        ? ButtonVariant.Secondary
+        : cancelButtonType;
 
     return (
       <div className={classnames('page-container__footer', footerClassName)}>
         <footer>
           {!hideCancel && (
             <Button
-              type={cancelButtonType || 'secondary'}
-              large={buttonSizeLarge}
+              size={ButtonSize.Lg}
+              variant={cancelVariant ?? ButtonVariant.Secondary}
               className={classnames(
                 'page-container__footer-button',
                 'page-container__footer-button__cancel',
@@ -55,14 +65,15 @@ export default class PageContainerFooter extends Component {
               )}
               onClick={(e) => onCancel(e)}
               data-testid="page-container-footer-cancel"
+              block
             >
               {cancelText || this.context.t('cancel')}
             </Button>
           )}
 
           <Button
-            type={submitButtonType || 'primary'}
-            large={buttonSizeLarge}
+            size={ButtonSize.Lg}
+            variant={submitVariant ?? ButtonVariant.Primary}
             className={classnames(
               'page-container__footer-button',
               footerButtonClassName,
@@ -70,7 +81,8 @@ export default class PageContainerFooter extends Component {
             disabled={disabled}
             onClick={(e) => onSubmit(e)}
             data-testid="page-container-footer-next"
-            icon={submitButtonIcon}
+            startIconName={submitButtonIcon}
+            block
           >
             {submitText || this.context.t('next')}
           </Button>

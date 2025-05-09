@@ -16,17 +16,18 @@ export const PASSWORD_MIN_LENGTH = 8;
 export const OUTDATED_BROWSER_VERSIONS = {
   // Chrome and Edge should match the latest Chrome version released ~2 years ago,
   // or the earliest version that supports our MV3 functionality, whichever is higher
-  chrome: '<109',
-  edge: '<109',
+  chrome: '<113',
+  edge: '<113',
   // Firefox should match the previous extended support release
-  // Current ESR: 115
-  // Previous ESR: 102
-  firefox: '<102',
+  // Current ESR: 128 - first available to ESR 2024/07/09
+  // Previous ESR: 115 - first released to ESR 2023/07/04
+  // per https://whattrainisitnow.com/calendar/firefox ("Click to toggle past releases table data")
+  firefox: '<115',
   // Opera versions correspond to differently numbered Chromium versions.
   // Opera should be set to the equivalent of the Chromium version set
-  // Opera 95 is based on Chromium 109
+  // Opera 99 is based on Chromium 113
   // See https://en.wikipedia.org/wiki/History_of_the_Opera_web_browser
-  opera: '<95',
+  opera: '<99',
 };
 
 /**

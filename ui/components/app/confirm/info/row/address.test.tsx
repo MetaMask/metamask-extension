@@ -9,7 +9,7 @@ import { TEST_ADDRESS } from './constants';
 const CHAIN_ID_MOCK = CHAIN_IDS.MAINNET;
 
 const render = (
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   storeOverrides: Record<string, any> = {},
   address: string = TEST_ADDRESS,

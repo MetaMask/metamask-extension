@@ -1,16 +1,15 @@
 import {
-  GasFeeToken,
   TransactionController,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Messenger } from '@metamask/base-controller';
-import { toHex } from '@metamask/controller-utils';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { submitRelayTransaction } from '../transaction-relay';
+import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { Delegation7702PublishHook } from './delegation-7702-publish';
 
 jest.mock('../transaction-relay');
@@ -39,19 +38,6 @@ const TRANSACTION_META_MOCK = {
     to: '0x12345678901234567890123456789012345678a3',
   },
 } as unknown as TransactionMeta;
-
-const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
-  amount: toHex(1000),
-  balance: toHex(2345),
-  decimals: 3,
-  gas: '0x3',
-  maxFeePerGas: '0x4',
-  maxPriorityFeePerGas: '0x5',
-  rateWei: toHex('1798170000000000000'),
-  recipient: '0x1234567890123456789012345678901234567890',
-  symbol: 'TEST',
-  tokenAddress: '0x1234567890123456789012345678901234567890',
-};
 
 describe('Delegation 7702 Publish Hook', () => {
   const submitRelayTransactionMock = jest.mocked(submitRelayTransaction);

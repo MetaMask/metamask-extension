@@ -3,6 +3,7 @@ import {
   RequestStatus,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
+import { zeroAddress } from 'ethereumjs-util';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -35,14 +36,47 @@ describe('BridgeQuoteCard', () => {
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
       },
       bridgeStateOverrides: {
-        quoteRequest: { insufficientBal: false },
+        quoteRequest: {
+          insufficientBal: false,
+          srcChainId: 10,
+          destChainId: 137,
+          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          srcTokenAmount: '14000000',
+        },
         quotesRefreshCount: 1,
         quotes: mockBridgeQuotesErc20Erc20,
         getQuotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
       metamaskStateOverrides: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        marketData: {
+          '0xa': {
+            '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
+              currency: 'usd',
+              price: 1,
+            },
+          },
+          '0x89': {
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+              currency: 'usd',
+              price: 0.99,
+            },
+          },
+        },
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+          },
+          POL: {
+            conversionRate: 1,
+            usdConversionRate: 1,
+          },
+        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.OPTIMISM },
+          { chainId: CHAIN_IDS.POLYGON },
+        ),
       },
     });
     const { container } = renderWithProvider(
@@ -70,11 +104,40 @@ describe('BridgeQuoteCard', () => {
       },
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesNativeErc20,
+        quoteRequest: {
+          insufficientBal: false,
+          srcChainId: 10,
+          destChainId: 137,
+          srcTokenAddress: zeroAddress(),
+          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          srcTokenAmount: '14000000',
+        },
         getQuotesLastFetched: Date.now() - 5000,
         quotesLoadingStatus: RequestStatus.LOADING,
       },
       metamaskStateOverrides: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+        marketData: {
+          '0x89': {
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
+              currency: 'usd',
+              price: 0.99,
+            },
+          },
+        },
+        currencyRates: {
+          ETH: {
+            conversionRate: 2524.25,
+            usdConversionRate: 1,
+          },
+          POL: {
+            conversionRate: 1,
+            usdConversionRate: 1,
+          },
+        },
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.OPTIMISM },
+          { chainId: CHAIN_IDS.POLYGON },
+        ),
       },
     });
     const { container, queryByText } = renderWithProvider(

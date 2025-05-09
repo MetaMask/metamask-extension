@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { addHexPrefix } from 'ethereumjs-util';
 import { Interface, ParamType } from '@ethersproject/abi';
 import { Hex, createProjectLogger } from '@metamask/utils';
@@ -28,6 +26,8 @@ export async function decodeTransactionDataWithFourByte(
   log('Generated inputs', inputs);
 
   const valueData = addHexPrefix(transactionData.slice(10));
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const values = Interface.getAbiCoder().decode(inputs, valueData) as any[];
 
   const params = inputs.map((input, index) =>
@@ -40,8 +40,12 @@ export async function decodeTransactionDataWithFourByte(
 function decodeParam(
   input: ParamType,
   index: number,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   values: any[],
 ): DecodedTransactionDataParam {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const value = values[index] as any[];
   const { type, name } = input;
 

@@ -21,13 +21,8 @@ const arrangeMockState = (
 const arrangeMocks = () => {
   const mockPerformSignInAction = jest.spyOn(actions, 'performSignIn');
 
-  const mockDisableProfileSyncingAction = jest.spyOn(
-    actions,
-    'disableProfileSyncing',
-  );
   return {
     mockPerformSignInAction,
-    mockDisableProfileSyncingAction,
   };
 };
 

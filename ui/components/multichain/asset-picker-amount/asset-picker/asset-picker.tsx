@@ -258,6 +258,8 @@ export function AssetPicker({
       />
 
       {/** If a child prop is passed in, use it as the trigger button instead of the default */}
+      {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
       {children?.(handleButtonClick, networkImageSrc) || (
         <ButtonBase
           data-testid="asset-picker-button"
@@ -288,6 +290,7 @@ export function AssetPicker({
                     size={AvatarNetworkSize.Xs}
                     name={selectedNetwork?.name ?? ''}
                     src={networkImageSrc}
+                    borderWidth={2}
                     backgroundColor={
                       Object.entries({
                         [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,

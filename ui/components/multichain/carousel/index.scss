@@ -36,6 +36,8 @@
   background-size: cover;
   background-position: center;
   height: 100%;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
 
   /* !important needed to override react-responsive-carousel default width */
   width: 60px !important;

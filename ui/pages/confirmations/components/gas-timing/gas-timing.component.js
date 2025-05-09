@@ -131,12 +131,10 @@ export default function GasTiming({
   const estimateToUse =
     estimateUsed || transactionData.userFeeLevel || 'medium';
   const estimateEmoji = PRIORITY_LEVEL_ICON_MAP[estimateToUse];
-  let text = `${estimateEmoji} ${t(estimateToUse)}`;
-  let time = '';
 
-  if (estimateToUse === 'low') {
-    text = `${estimateEmoji} ${t('gasTimingLow')}`;
-  }
+  const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
+  let text = estimateEmoji ? `${estimateEmoji} ${t(textTKey)}` : t(textTKey);
+  let time = '';
 
   // Anything medium or faster is positive
   if (

@@ -104,7 +104,7 @@ async function createMintTransaction(driver: Driver) {
   await driver.clickElement('#mintButton');
 }
 
-export async function confirmMintTransaction(driver: Driver) {
+async function confirmMintTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.waitForSelector({

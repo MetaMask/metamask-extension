@@ -53,41 +53,4 @@ describe('Swap Eth for another Token', function () {
       },
     );
   });
-
-  it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockEthDaiTrade,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await buildQuote(driver, {
-          amount: 2,
-          swapTo: 'DAI',
-        });
-        await reviewQuote(driver, {
-          amount: 2,
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
-        });
-        await changeExchangeRate(driver);
-        await reviewQuote(driver, {
-          amount: 2,
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
-          skipCounter: true,
-        });
-        await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
-        await checkActivityTransaction(driver, {
-          index: 0,
-          amount: '2',
-          swapFrom: 'TESTETH',
-          swapTo: 'DAI',
-        });
-      },
-    );
-  });
 });

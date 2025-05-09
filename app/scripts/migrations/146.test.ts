@@ -1,11 +1,30 @@
-import { cloneDeep } from 'lodash';
-import {
-  CHAIN_IDS,
-  DEFAULT_CUSTOM_TESTNET_MAP,
-} from '../../../shared/constants/network';
+import { ChainId } from '@metamask/controller-utils';
+
 import { migrate, version } from './146';
 
 const oldVersion = 145;
+const megaEthChainId = ChainId['megaeth-testnet'];
+
+/**
+ * Get the MegaETH testnet network configuration object as snapshot.
+ *
+ * @returns The MegaETH testnet network configuration object.
+ */
+const getMegaEthTestnetConfiguration = () => ({
+  chainId: megaEthChainId,
+  name: 'Mega Testnet',
+  nativeCurrency: 'MegaETH',
+  blockExplorerUrls: ['https://megaexplorer.xyz'],
+  defaultRpcEndpointIndex: 0,
+  defaultBlockExplorerUrlIndex: 0,
+  rpcEndpoints: [
+    {
+      networkClientId: 'megaeth-testnet',
+      url: 'https://carrot.megaeth.com/rpc',
+      type: 'custom',
+    },
+  ],
+});
 
 describe(`migration #${version}`, () => {
   it('updates the version metadata', async () => {
@@ -129,9 +148,7 @@ describe(`migration #${version}`, () => {
           ...oldState.data.NetworkController,
           networkConfigurationsByChainId: {
             ...oldState.data.NetworkController.networkConfigurationsByChainId,
-            [CHAIN_IDS.MEGAETH_TESTNET]: cloneDeep(
-              DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
-            ),
+            [megaEthChainId]: getMegaEthTestnetConfiguration(),
           },
         },
       };
@@ -148,10 +165,8 @@ describe(`migration #${version}`, () => {
             selectedNetworkClientId: 'mainnet',
             networksMetadata: {},
             networkConfigurationsByChainId: {
-              [CHAIN_IDS.MEGAETH_TESTNET]: {
-                ...cloneDeep(
-                  DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
-                ),
+              [megaEthChainId]: {
+                ...getMegaEthTestnetConfiguration(),
                 name: 'Some other name',
               },
             },
@@ -164,9 +179,7 @@ describe(`migration #${version}`, () => {
           ...oldStorage.data.NetworkController,
           networkConfigurationsByChainId: {
             ...oldStorage.data.NetworkController.networkConfigurationsByChainId,
-            [CHAIN_IDS.MEGAETH_TESTNET]: cloneDeep(
-              DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
-            ),
+            [megaEthChainId]: getMegaEthTestnetConfiguration(),
           },
         },
       };

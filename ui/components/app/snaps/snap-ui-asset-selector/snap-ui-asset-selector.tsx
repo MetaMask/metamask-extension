@@ -145,6 +145,8 @@ export const SnapUIAssetSelector: FunctionComponent<
       title={t('snapUIAssetSelectorTitle')}
       options={options}
       optionComponents={optionComponents}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       disabled={disabled || assets.length === 0}
       {...props}
     />

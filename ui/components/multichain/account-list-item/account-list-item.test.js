@@ -12,6 +12,7 @@ import {
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const mockAccount = {
@@ -22,7 +23,10 @@ const mockAccount = {
 };
 
 const mockNonEvmAccount = {
-  ...mockAccount,
+  ...mockState.metamask.internalAccounts.accounts[
+    'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+  ],
+  balance: '1', // updating this  to 1 because the balance for native non evm networks comes from the multichainBalances controller in decimal format and not hex.
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: 'bip122:p2wpkh',
@@ -134,7 +138,16 @@ describe('AccountListItem', () => {
   });
 
   it('renders AccountListItem component and shows account name, address, and balance for non-EVM account', () => {
-    const { container } = render({ account: mockNonEvmAccount });
+    const { container } = render(
+      { account: mockNonEvmAccount },
+      {
+        metamask: {
+          accountsAssets: {
+            [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
+          },
+        },
+      },
+    );
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(
       screen.getByText(shortenAddress(mockNonEvmAccount.address)),
@@ -211,6 +224,72 @@ describe('AccountListItem', () => {
     expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
   });
 
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  it('renders the tag with the snap name for named snap accounts', () => {
+    const { container } = render(
+      {
+        account: {
+          ...mockAccount,
+          metadata: {
+            ...mockAccount.metadata,
+            snap: {
+              id: mockSnap.id,
+            },
+            keyring: {
+              type: 'Snap Keyring',
+            },
+          },
+          balance: '0x0',
+        },
+      },
+      {
+        metamask: {
+          snaps: {
+            [mockSnap.id]: {
+              ...mockSnap,
+              preinstalled: false,
+            },
+          },
+        },
+      },
+    );
+    const tag = container.querySelector('.mm-tag');
+    expect(tag.textContent).toBe(`${mockSnap.manifest.proposedName} (Beta)`);
+  });
+
+  it('does not render the tag with the snap name for preinstalled snap accounts', () => {
+    const { container } = render(
+      {
+        account: {
+          ...mockAccount,
+          metadata: {
+            ...mockAccount.metadata,
+            snap: {
+              id: 'npm:@metamask/solana-wallet-snap',
+            },
+            keyring: {
+              type: 'Snap Keyring',
+            },
+          },
+          balance: '0x0',
+        },
+      },
+      {
+        metamask: {
+          snaps: {
+            [mockSnap.id]: {
+              ...mockSnap,
+              preinstalled: true,
+            },
+          },
+        },
+      },
+    );
+    const tag = container.querySelector('.mm-tag');
+    expect(tag).not.toBeInTheDocument();
+  });
+  ///: END:ONLY_INCLUDE_IF
+
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {
       it('renders tokens for EVM account', () => {
@@ -258,6 +337,9 @@ describe('AccountListItem', () => {
             metamask: {
               preferences: {
                 showFiatInTestnets: false,
+              },
+              accountsAssets: {
+                [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
               },
             },
           },
@@ -333,6 +415,9 @@ describe('AccountListItem', () => {
             metamask: {
               preferences: {
                 showFiatInTestnets: true,
+              },
+              accountsAssets: {
+                [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
               },
             },
           },

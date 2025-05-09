@@ -79,10 +79,11 @@ describe('useSimulationMetrics', () => {
   const useLoadingTimeMock = jest.mocked(useLoadingTime);
   const setLoadingCompleteMock = jest.fn();
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let updateTransactionEventFragmentMock: jest.MockedFunction<any>;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let trackEventMock: jest.MockedFunction<any>;
 
@@ -94,7 +95,7 @@ describe('useSimulationMetrics', () => {
       balanceChanges?: BalanceChange[];
       simulationData?: SimulationData | undefined;
     },
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expected: any,
   ) {
@@ -123,12 +124,12 @@ describe('useSimulationMetrics', () => {
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
 
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useStateMock.mockImplementation(((initialValue: any) => [
       initialValue,
       jest.fn(),
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ]) as any);
 

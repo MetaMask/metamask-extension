@@ -26,7 +26,7 @@ describe('Snap Account Signatures', function (this: Suite) {
     // generate title of the test from flowType
     const title = `can sign with ${flowType} flow`;
 
-    it(title, async () => {
+    it(title, async function () {
       await withFixtures(
         {
           dapp: true,

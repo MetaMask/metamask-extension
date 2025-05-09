@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import log from 'loglevel';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import {
-  disableProfileSyncing as disableProfileSyncingAction,
-  enableProfileSyncing as enableProfileSyncingAction,
+  setIsBackupAndSyncFeatureEnabled,
   hideLoadingIndication,
 } from '../../../store/actions';
 
@@ -26,7 +26,9 @@ export function useEnableProfileSyncing(): {
 
     try {
       // set profile syncing to true
-      await dispatch(enableProfileSyncingAction());
+      await dispatch(
+        setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true),
+      );
     } catch (e) {
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
@@ -58,7 +60,9 @@ export function useDisableProfileSyncing(): {
 
     try {
       // disable profile syncing
-      await dispatch(disableProfileSyncingAction());
+      await dispatch(
+        setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, false),
+      );
     } catch (e) {
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');

@@ -38,18 +38,14 @@ import { initializeProvider } from '@metamask/providers/initializeInpageProvider
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { pipeline } from 'readable-stream';
 
-// this is currently equivalent to process.env.MULTICHAIN_API
-// which can't be used for conditional imports
-///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import {
   getMultichainClient,
   getDefaultTransport,
 } from '@metamask/multichain-api-client';
 import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
-///: END:ONLY_INCLUDE_IF
 
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { METAMASK_PROVIDER } from './constants/stream';
+import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -72,7 +68,7 @@ if (shouldInjectProvider()) {
 
   const mux = new ObjectMultiplex();
   pipeline(metamaskStream, mux, metamaskStream, (error) => {
-    let warningMsg = `Lost connection to "${METAMASK_PROVIDER}".`;
+    let warningMsg = `Lost connection to "${METAMASK_EIP_1193_PROVIDER}".`;
     if (error?.stack) {
       warningMsg += `\n${error.stack}`;
     }
@@ -80,7 +76,7 @@ if (shouldInjectProvider()) {
   });
 
   initializeProvider({
-    connectionStream: mux.createStream(METAMASK_PROVIDER),
+    connectionStream: mux.createStream(METAMASK_EIP_1193_PROVIDER),
     logger: log,
     shouldShimWeb3: true,
     providerInfo: {
@@ -91,12 +87,12 @@ if (shouldInjectProvider()) {
     },
   });
 
-  // this is currently equivalent to process.env.MULTICHAIN_API
-  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
   getMultichainClient({
     transport: getDefaultTransport(),
   }).then((client) => {
-    registerSolanaWalletStandard({ client });
+    registerSolanaWalletStandard({
+      client,
+      walletName: process.env.METAMASK_BUILD_NAME,
+    });
   });
-  ///: END:ONLY_INCLUDE_IF
 }

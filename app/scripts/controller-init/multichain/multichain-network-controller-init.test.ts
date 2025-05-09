@@ -10,9 +10,13 @@ import { MultichainNetworkControllerInit } from './multichain-network-controller
 
 jest.mock('@metamask/multichain-network-controller');
 
-const buildInitRequestMock = (): jest.Mocked<
+type InitRequestMock = jest.Mocked<
   ControllerInitRequest<MultichainNetworkControllerMessenger>
-> => {
+> & {
+  fetchFunction: typeof window.fetch;
+};
+
+const buildInitRequestMock = (): InitRequestMock => {
   const baseControllerMessenger = new Messenger();
 
   return {
@@ -21,6 +25,7 @@ const buildInitRequestMock = (): jest.Mocked<
       baseControllerMessenger,
     ),
     initMessenger: undefined,
+    fetchFunction: window.fetch.bind(window),
   };
 };
 
@@ -31,6 +36,7 @@ describe('MultichainNetworkControllerInit', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    window.fetch = jest.fn();
   });
 
   it('returns controller instance', () => {
@@ -47,6 +53,7 @@ describe('MultichainNetworkControllerInit', () => {
     expect(multichainNetworkControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.MultichainNetworkController,
+      networkService: expect.any(Object),
     });
   });
 });

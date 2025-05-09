@@ -144,6 +144,7 @@ const CancelSpeedupPopover = () => {
             alignItems={AlignItems.center}
             flexDirection={FlexDirection.Column}
             marginTop={2}
+            paddingBottom={4}
           >
             <div className="cancel-speedup-popover__gas-details">
               <GasDetailsItem />

@@ -24,7 +24,11 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import {
+  KnownCaipNamespace,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -586,7 +590,8 @@ export function getHDEntropyIndex(state) {
  * @returns {object} A map of account addresses to account objects (which includes the account balance)
  */
 export function getMetaMaskAccountBalances(state) {
-  return state.metamask.accounts;
+  const currentChainId = getCurrentChainId(state);
+  return state.metamask?.accountsByChainId?.[currentChainId] ?? {};
 }
 
 export function getMetaMaskCachedBalances(state, networkChainId) {
@@ -866,7 +871,7 @@ export const getMetaMaskAccountsConnected = createSelector(
 export function isBalanceCached(state) {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const selectedAccountBalance =
-    getMetaMaskAccountBalances(state)[selectedAddress]?.balance;
+    getMetaMaskAccountBalances(state)?.[selectedAddress]?.balance;
   const cachedBalance = getSelectedAccountCachedBalance(state);
 
   return Boolean(!selectedAccountBalance && cachedBalance);
@@ -1219,10 +1224,6 @@ export function getSwitchedNetworkDetails(state) {
 
 export function getTotalUnapprovedCount(state) {
   return state.metamask.pendingApprovalCount ?? 0;
-}
-
-export function getQueuedRequestCount(state) {
-  return state.metamask.queuedRequestCount ?? 0;
 }
 
 export function getSlides(state) {
@@ -1846,8 +1847,9 @@ export const selectERC20TokensByChain = createDeepEqualSelector(
 );
 
 export const selectERC20Tokens = createDeepEqualSelector(
-  (state) => state.metamask.tokenList,
-  (erc20Tokens) => erc20Tokens,
+  getCurrentChainId,
+  (state) => state.metamask.tokensChainsCache,
+  (chainId, erc20Tokens) => erc20Tokens?.[chainId]?.data || {},
 );
 
 /**
@@ -2293,7 +2295,6 @@ export function getShowRecoveryPhraseReminder(state) {
  */
 export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
   const unapprovedTxs = getAllUnapprovedTransactions(state);
-  const queuedRequestCount = getQueuedRequestCount(state);
 
   const allUnapprovedMessages = {
     ...unapprovedTxs,
@@ -2303,7 +2304,7 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
     ...state.metamask.unapprovedTypedMessages,
   };
   const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages + queuedRequestCount;
+  return numUnapprovedMessages;
 }
 
 export const getCurrentNetwork = createDeepEqualSelector(
@@ -3011,6 +3012,47 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
+export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
+  (state) => state.activeTab,
+  (state) => state.metamask.permissionHistory,
+  getMetaMaskAccountsOrdered,
+  getAllPermittedAccountsForCurrentTab,
+  (activeTab, permissionHistory, orderedAccounts, connectedAccounts) => {
+    const permissionHistoryByAccount =
+      permissionHistory[activeTab.origin]?.eth_accounts?.accounts || {};
+
+    const connectedAccountsAddresses = connectedAccounts.map(
+      (caipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return address;
+      },
+    );
+
+    return orderedAccounts
+      .filter((account) => connectedAccountsAddresses.includes(account.address))
+      .map((account) => ({
+        ...account,
+        metadata: {
+          ...account.metadata,
+          lastActive: permissionHistoryByAccount?.[account.address],
+        },
+      }))
+      .sort(
+        ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
+          if (lastSelectedA === lastSelectedB) {
+            return 0;
+          } else if (lastSelectedA === undefined) {
+            return 1;
+          } else if (lastSelectedB === undefined) {
+            return -1;
+          }
+
+          return lastSelectedB - lastSelectedA;
+        },
+      );
+  },
+);
+
 export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
   getPinnedAccountsList,
@@ -3582,43 +3624,6 @@ export function getAccountToConnectToActiveTab(state) {
   }
 
   return undefined;
-}
-
-export function getOrderedConnectedAccountsForActiveTab(state) {
-  const {
-    activeTab,
-    metamask: { permissionHistory },
-  } = state;
-
-  const permissionHistoryByAccount =
-    // eslint-disable-next-line camelcase
-    permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
-  const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
-
-  return orderedAccounts
-    .filter((account) => connectedAccounts.includes(account.address))
-    .filter((account) => isEvmAccountType(account.type))
-    .map((account) => ({
-      ...account,
-      metadata: {
-        ...account.metadata,
-        lastActive: permissionHistoryByAccount?.[account.address],
-      },
-    }))
-    .sort(
-      ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
-        if (lastSelectedA === lastSelectedB) {
-          return 0;
-        } else if (lastSelectedA === undefined) {
-          return 1;
-        } else if (lastSelectedB === undefined) {
-          return -1;
-        }
-
-        return lastSelectedB - lastSelectedA;
-      },
-    );
 }
 
 export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {

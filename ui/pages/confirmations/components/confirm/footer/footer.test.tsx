@@ -133,17 +133,17 @@ describe('ConfirmFooter', () => {
     const cancelButton = getAllByRole('button')[0];
     const rejectSpy = jest
       .spyOn(Actions, 'rejectPendingApproval')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     const updateCustomNonceSpy = jest
       .spyOn(Actions, 'updateCustomNonce')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     const setNextNonceSpy = jest
       .spyOn(Actions, 'setNextNonce')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     fireEvent.click(cancelButton);
@@ -157,17 +157,17 @@ describe('ConfirmFooter', () => {
     const submitButton = getAllByRole('button')[1];
     const resolveSpy = jest
       .spyOn(Actions, 'resolvePendingApproval')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     const updateCustomNonceSpy = jest
       .spyOn(Actions, 'updateCustomNonce')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     const setNextNonceSpy = jest
       .spyOn(Actions, 'setNextNonce')
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     fireEvent.click(submitButton);

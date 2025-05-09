@@ -44,7 +44,6 @@ class TestDappIndividualRequest {
     await this.driver.openNewPage(dappUrl);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async request(method: string, params: any[]) {
     await this.openTestDappIndividualPage({
       url: `${DAPP_URL}/request?method=${method}&params=${JSON.stringify(

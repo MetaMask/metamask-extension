@@ -41,6 +41,8 @@ describe('AssetPickerModalNetwork', () => {
         },
       ],
       name: 'network',
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
     networks: [
@@ -74,6 +76,8 @@ describe('AssetPickerModalNetwork', () => {
         ],
         name: 'Network name 4',
       },
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any,
   };

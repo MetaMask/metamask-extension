@@ -16,7 +16,8 @@ const PENDING_APPROVAL_MOCK = {
   id: 'testApprovalId',
   origin: 'https://metamask.github.io',
   requestData: { testProperty: 'testValue' },
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as ApprovalRequest<any>;
 
@@ -37,6 +38,8 @@ describe('useAlertActions', () => {
       .mockReturnValue({
         getIndex: jest.fn(),
         navigateToIndex: mockNavigateToIndex,
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
     const { result } = renderHookWithProvider(

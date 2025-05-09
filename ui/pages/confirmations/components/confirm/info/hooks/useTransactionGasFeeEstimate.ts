@@ -23,10 +23,18 @@ export function useTransactionGasFeeEstimate(
     ?.estimatedBaseFee;
 
   // override with values from `dappSuggestedGasFees` if they exist
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   gasLimit = gasLimit || HEX_ZERO;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   gasPrice = gasPrice || HEX_ZERO;
   const maxPriorityFeePerGas =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     transactionMeta.txParams?.maxPriorityFeePerGas || HEX_ZERO;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const maxFeePerGas = transactionMeta.txParams?.maxFeePerGas || HEX_ZERO;
 
   let gasEstimate: Hex;

@@ -16,11 +16,6 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   },
 }));
 
-jest.mock('../../../store/actions', () => ({
-  ...jest.requireActual('../../../store/actions'),
-  getNextAvailableAccountName: () => 'Test Account',
-}));
-
 describe('WhatsNewModal', () => {
   const mockOnClose = jest.fn();
   const mockCreateAccount = jest.fn();
@@ -32,6 +27,7 @@ describe('WhatsNewModal', () => {
 
     (useMultichainWalletSnapClient as jest.Mock).mockReturnValue({
       createAccount: mockCreateAccount,
+      getNextAvailableAccountName: () => 'Test Account',
     });
   });
 
@@ -175,11 +171,14 @@ describe('WhatsNewModal', () => {
           );
           fireEvent.click(submitButton);
 
-          await expect(mockCreateAccount).toHaveBeenCalledWith({
-            scope: MultichainNetworks.SOLANA,
-            entropySource: KEYRING_ID,
-            accountNameSuggestion: 'Test Account',
-          });
+          await expect(mockCreateAccount).toHaveBeenCalledWith(
+            {
+              scope: MultichainNetworks.SOLANA,
+              entropySource: KEYRING_ID,
+              accountNameSuggestion: 'Test Account',
+            },
+            { setSelectedAccount: undefined },
+          );
         });
 
         it('closes the modal when clicking "Not Now"', async () => {
@@ -217,6 +216,9 @@ describe('WhatsNewModal', () => {
                 },
               },
             },
+            activeTab: {
+              origin: 'metamask',
+            },
           });
           renderWithProvider(<WhatsNewModal onClose={mockOnClose} />, store);
         });
@@ -232,13 +234,17 @@ describe('WhatsNewModal', () => {
           expect(
             screen.getByText(/More features coming soon/iu),
           ).toBeInTheDocument();
-          expect(screen.getByTestId('got-it-button')).toBeInTheDocument();
+          expect(
+            screen.getByTestId('view-solana-account-button'),
+          ).toBeInTheDocument();
           expect(screen.getByTestId('not-now-button')).toBeInTheDocument();
         });
 
-        it('closes the modal when clicking "Got it"', async () => {
-          const gotItButton = screen.getByTestId('got-it-button');
-          fireEvent.click(gotItButton);
+        it('closes the modal when clicking "View Solana account"', async () => {
+          const viewSolanaAccountButton = screen.getByTestId(
+            'view-solana-account-button',
+          );
+          fireEvent.click(viewSolanaAccountButton);
 
           await waitFor(() => {
             expect(mockOnClose).toHaveBeenCalled();

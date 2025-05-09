@@ -82,15 +82,13 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 
 function shouldCloseNotificationPopup({
   isNotification,
-  totalUnapprovedAndQueuedRequestCount,
+  totalUnapprovedCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
 }) {
-  // we can't use totalUnapproved because there are also queued requests
-
   const shouldClose =
     isNotification &&
-    totalUnapprovedAndQueuedRequestCount === 0 &&
+    totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 

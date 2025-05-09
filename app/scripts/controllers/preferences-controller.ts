@@ -6,7 +6,7 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Json } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -150,7 +150,7 @@ export type PreferencesControllerState = Omit<
   useExternalServices: boolean;
   textDirection?: string;
   manageInstitutionalWallets: boolean;
-  accountUpgradeDisabledChains?: string[];
+  disabledUpgradeAccountsByChain?: Record<Hex, Hex[]>;
 };
 
 /**
@@ -256,6 +256,7 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
     manageInstitutionalWallets: false,
+    disabledUpgradeAccountsByChain: {},
   });
 
 /**
@@ -427,7 +428,7 @@ const controllerMetadata = {
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
   manageInstitutionalWallets: { persist: true, anonymous: false },
-  accountUpgradeDisabledChains: { persist: true, anonymous: false },
+  disabledUpgradeAccountsByChain: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -528,6 +529,7 @@ export class PreferencesController extends BaseController<
     this.setUseAddressBarEnsResolution(useExternalServices);
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
+    this.setUseSafeChainsListValidation(useExternalServices);
   }
 
   /**
@@ -962,19 +964,22 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  getDisabledAccountUpgradeChains(): string[] {
-    return this.state.accountUpgradeDisabledChains ?? [];
+  getDisabledUpgradeAccountsByChain(): Record<Hex, Hex[]> {
+    return this.state.disabledUpgradeAccountsByChain ?? {};
   }
 
-  disableAccountUpgradeForChain(chainId: string): void {
+  disableAccountUpgrade(chainId: Hex, address: Hex): void {
     this.update((state) => {
-      const { accountUpgradeDisabledChains: existingDisabledChains } = state;
+      const { disabledUpgradeAccountsByChain = {} } = state;
+      const addressLowerCase = address.toLowerCase() as Hex;
 
-      if (!existingDisabledChains?.includes(chainId)) {
-        state.accountUpgradeDisabledChains = [
-          ...(existingDisabledChains ?? []),
-          chainId,
-        ];
+      if (
+        !disabledUpgradeAccountsByChain[chainId]?.includes(addressLowerCase)
+      ) {
+        if (!disabledUpgradeAccountsByChain[chainId]) {
+          disabledUpgradeAccountsByChain[chainId] = [];
+        }
+        disabledUpgradeAccountsByChain[chainId].push(addressLowerCase);
       }
     });
   }

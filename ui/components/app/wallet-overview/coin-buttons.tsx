@@ -81,6 +81,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
+import { trace, TraceName } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
@@ -473,6 +474,7 @@ const CoinButtons = ({
             }
             label={t('receive')}
             onClick={() => {
+              trace({ name: TraceName.ReceiveModal });
               trackEvent({
                 event: MetaMetricsEventName.NavReceiveButtonClicked,
                 category: MetaMetricsEventCategory.Navigation,

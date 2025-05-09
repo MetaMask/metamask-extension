@@ -3,7 +3,7 @@ import {
   getDefaultBridgeControllerState,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { DEFAULT_BRIDGE_STATUS_STATE } from '../../../app/scripts/controllers/bridge-status/constants';
+import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
@@ -103,7 +103,7 @@ export const createBridgeMockStore = ({
       },
       ...bridgeStateOverrides,
       bridgeStatusState: {
-        ...DEFAULT_BRIDGE_STATUS_STATE,
+        ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
         ...bridgeStatusStateOverrides,
       },
     },

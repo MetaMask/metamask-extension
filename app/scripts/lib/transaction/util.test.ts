@@ -106,6 +106,8 @@ describe('Transaction Utils', () => {
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     request.ppomController = {} as any;
 

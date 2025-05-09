@@ -57,9 +57,6 @@ describe('UserStorageControllerInit', () => {
           onAccountSyncErroneousSituation: expect.any(Function),
         },
       },
-      env: {
-        isAccountSyncingEnabled: true,
-      },
     });
   });
 });

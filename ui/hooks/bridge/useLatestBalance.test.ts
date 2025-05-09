@@ -18,10 +18,12 @@ jest.mock('@metamask/bridge-controller', () => {
 });
 
 const renderUseLatestBalance = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   token: { address: string; decimals?: number | string; chainId: any },
   mockStoreState: object,
 ) =>
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderHookWithProvider(() => useLatestBalance(token as any), mockStoreState);
 

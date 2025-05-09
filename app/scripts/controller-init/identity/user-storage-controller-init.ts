@@ -68,9 +68,6 @@ export const UserStorageControllerInit: ControllerInitFunction<
         },
       },
     },
-    env: {
-      isAccountSyncingEnabled: true,
-    },
   });
 
   return {

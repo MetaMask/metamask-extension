@@ -7,22 +7,9 @@ import { ConfirmContextProvider } from '../../../../../context/confirm';
 
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { toHex } from '@metamask/controller-utils';
 import { CHAIN_IDS, GasFeeToken } from '@metamask/transaction-controller';
 import { mockNetworkState } from '../../../../../../../../test/stub/networks';
-
-const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
-  amount: toHex(1000),
-  balance: toHex(2345),
-  decimals: 3,
-  gas: '0x3',
-  maxFeePerGas: '0x4',
-  maxPriorityFeePerGas: '0x5',
-  rateWei: toHex('1798170000000000000'),
-  recipient: '0x1234567890123456789012345678901234567891',
-  symbol: 'USDC',
-  tokenAddress: '0x1234567890123456789012345678901234567890',
-};
+import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 
 function getStore({
   gasFeeTokens,

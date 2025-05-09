@@ -3,6 +3,7 @@ import {
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
   toEvmCaipChainId,
   toMultichainNetworkConfiguration,
+  ActiveNetworksByAddress,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { BtcScope, SolScope } from '@metamask/keyring-api';
@@ -39,6 +40,12 @@ export type IsEvmSelectedState = {
   metamask: Pick<InternalMultichainNetworkState, 'isEvmSelected'>;
 };
 
+export type NetworksWithTransactionActivityByAccountsState = {
+  metamask: {
+    networksWithTransactionActivity: ActiveNetworksByAddress;
+  };
+};
+
 /**
  * This type takes into account the state
  * of the multichain-network-controller and
@@ -49,7 +56,8 @@ export type MultichainNetworkConfigState =
     SelectedNetworkChainIdState &
     IsEvmSelectedState &
     SelectedNetworkClientIdState &
-    ProviderConfigState;
+    ProviderConfigState &
+    NetworksWithTransactionActivityByAccountsState;
 
 // Selectors
 
@@ -184,3 +192,11 @@ export const getSelectedMultichainNetworkConfiguration = (
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
 };
+
+export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
+  state.metamask.networksWithTransactionActivity;
+
+export const getNetworksWithTransactionActivity = createDeepEqualSelector(
+  getNetworksWithActivity,
+  (networksWithActivity) => networksWithActivity,
+);
