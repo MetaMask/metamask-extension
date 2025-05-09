@@ -1,5 +1,4 @@
 import { Mockttp } from 'mockttp';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/user-storage';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { mockIdentityServices } from '../identity/mocks';
@@ -13,10 +12,66 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { accountsToMockForAccountsSync as unencryptedMockAccounts } from '../identity/account-syncing/mock-data';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
+import { Driver } from '../../webdriver/driver';
 import { mockNotificationServices } from './mocks';
 
 describe('Enable Notifications - Without Accounts Syncing', function () {
   describe('from inside MetaMask', function () {
+    async function onboardAndAddAccount(driver: Driver) {
+      await completeOnboardFlowIdentity(driver);
+      const homePage = new HomePage(driver);
+      await homePage.check_pageIsLoaded();
+
+      const headerNavbar = new HeaderNavbar(driver);
+      await headerNavbar.check_pageIsLoaded();
+      await headerNavbar.openAccountMenu();
+
+      const accountListPage = new AccountListPage(driver);
+      await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Ethereum });
+    }
+
+    async function enableNotificationsThroughCTA(driver: Driver) {
+      const headerNavbar = new HeaderNavbar(driver);
+      await headerNavbar.enableNotifications();
+
+      // Navigate to notifications settings through global menu > notifications > settings button
+      const notificationsListPage = new NotificationsListPage(driver);
+      await notificationsListPage.check_pageIsLoaded();
+      await notificationsListPage.goToNotificationsSettings();
+    }
+
+    async function enableNotificationsThroughSettingsPage(driver: Driver) {
+      // Navigate to notifications settings through global menu > settings > notifications settings
+      const headerNavbar = new HeaderNavbar(driver);
+      await headerNavbar.openSettingsPage();
+
+      const settingsPage = new SettingsPage(driver);
+      await settingsPage.check_pageIsLoaded();
+      await settingsPage.goToNotificationsSettings();
+
+      // Enable Toggle
+      const notificationsSettingsPage = new NotificationsSettingsPage(driver);
+      await notificationsSettingsPage.check_pageIsLoaded();
+      await notificationsSettingsPage.clickNotificationToggle({
+        toggleType: 'general',
+      });
+    }
+
+    async function assertMainNotificationSettingsToggles(driver: Driver) {
+      const notificationsSettingsPage = new NotificationsSettingsPage(driver);
+      await notificationsSettingsPage.check_pageIsLoaded();
+      await notificationsSettingsPage.check_notificationState({
+        toggleType: 'general',
+        expectedState: 'enabled',
+      });
+      await notificationsSettingsPage.check_notificationState({
+        toggleType: 'product',
+        expectedState: 'enabled',
+      });
+
+      return notificationsSettingsPage;
+    }
+
     /**
      * Test notification settings persistence across sessions.
      * This specifically tests the scenario where accounts syncing is not on (i.e on Firefox or when user has not enabled this feature)
@@ -49,11 +104,6 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.notifications,
-              server,
-            );
-
             await mockNotificationServices(
               server,
               userStorageMockttpController,
@@ -61,40 +111,10 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_pageIsLoaded();
-          await headerNavbar.openAccountMenu();
-
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.addAccount({
-            accountType: ACCOUNT_TYPE.Ethereum,
-          });
-
-          await headerNavbar.enableNotifications();
-
-          // Navigate to notifications settings through global menu > notifications > settings button
-          const notificationsListPage = new NotificationsListPage(driver);
-          await notificationsListPage.check_pageIsLoaded();
-          await notificationsListPage.goToNotificationsSettings();
-
-          const notificationsSettingsPage = new NotificationsSettingsPage(
-            driver,
-          );
-          await notificationsSettingsPage.check_pageIsLoaded();
-
-          await notificationsSettingsPage.check_notificationState({
-            toggleType: 'general',
-            expectedState: 'enabled',
-          });
-
-          await notificationsSettingsPage.check_notificationState({
-            toggleType: 'product',
-            expectedState: 'enabled',
-          });
+          await onboardAndAddAccount(driver);
+          await enableNotificationsThroughCTA(driver);
+          const notificationsSettingsPage =
+            await assertMainNotificationSettingsToggles(driver);
 
           // Switch off address 2 and product notifications toggle
           await notificationsSettingsPage.clickNotificationToggle({
@@ -113,15 +133,6 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.accounts,
-              server,
-            );
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.notifications,
-              server,
-            );
-
             return [
               await mockNotificationServices(
                 server,
@@ -132,46 +143,14 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
+          await onboardAndAddAccount(driver);
+          await enableNotificationsThroughSettingsPage(driver);
+          const notificationsSettingsPage =
+            await assertMainNotificationSettingsToggles(driver);
 
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_pageIsLoaded();
-          await headerNavbar.openAccountMenu();
-
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.addAccount({
-            accountType: ACCOUNT_TYPE.Ethereum,
-          });
-
-          // Navigate to notifications settings through global menu > settings > notifications settings
-          await headerNavbar.openSettingsPage();
-
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
-          await settingsPage.goToNotificationsSettings();
-
-          const notificationsSettingsPage = new NotificationsSettingsPage(
-            driver,
-          );
-          await notificationsSettingsPage.check_pageIsLoaded();
-          await notificationsSettingsPage.clickNotificationToggle({
-            toggleType: 'general',
-          });
-
-          await notificationsSettingsPage.check_notificationState({
-            toggleType: 'general',
-            expectedState: 'enabled',
-          });
-
-          await notificationsSettingsPage.check_notificationState({
-            toggleType: 'product',
-            expectedState: 'enabled',
-          });
-
+          // Assert Notification Account Settings have persisted
+          // The second account was switched off from the initial run
           const [{ a: account1 }, { a: account2 }] = unencryptedMockAccounts;
-
           await notificationsSettingsPage.check_notificationState({
             address: account1,
             toggleType: 'address',
