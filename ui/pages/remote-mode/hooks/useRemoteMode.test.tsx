@@ -12,7 +12,6 @@ import {
   storeDelegationEntry,
   awaitDeleteDelegationEntry,
   listDelegationEntries,
-  getDelegationEntry,
 } from '../../../store/controller-actions/delegation-controller';
 import { addTransaction } from '../../../store/actions';
 import { useRemoteMode } from './useRemoteMode';
@@ -202,41 +201,5 @@ describe('useRemoteMode', () => {
     await expect(
       result.current.disableRemoteMode({ mode: REMOTE_MODES.SWAP }),
     ).rejects.toThrow('No delegation entry found');
-  });
-
-  it('listDelegations calls listDelegationEntries with filter and returns result', async () => {
-    const filter = {
-      from: mockAccount as `0x${string}`,
-      tags: [REMOTE_MODES.SWAP],
-    };
-    (listDelegationEntries as jest.Mock).mockResolvedValueOnce([
-      { delegation: { from: '0x1', to: '0x2' } },
-    ]);
-    const { result } = renderHook(
-      () => useRemoteMode({ account: mockAccount }),
-      {
-        wrapper: Wrapper,
-      },
-    );
-    const delegations = await result.current.listDelegations(filter);
-    expect(listDelegationEntries).toHaveBeenCalledWith(filter);
-    expect(delegations).toEqual([{ delegation: { from: '0x1', to: '0x2' } }]);
-  });
-
-  it('getDelegation calls getDelegationEntry with hash and returns result', async () => {
-    const hash = '0xHash';
-    (getDelegationEntry as jest.Mock).mockResolvedValueOnce({
-      hash: '0xHash',
-      data: 'mockData',
-    });
-    const { result } = renderHook(
-      () => useRemoteMode({ account: mockAccount }),
-      {
-        wrapper: Wrapper,
-      },
-    );
-    const delegation = await result.current.getDelegation(hash);
-    expect(getDelegationEntry).toHaveBeenCalledWith(hash);
-    expect(delegation).toEqual({ hash: '0xHash', data: 'mockData' });
   });
 });

@@ -168,19 +168,9 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
     [account, delegationManagerAddress, globalNetworkClientId],
   );
 
-  const listDelegations = useCallback(async (filter: DelegationFilter) => {
-    return await listDelegationEntries(filter);
-  }, []);
-
-  const getDelegation = useCallback(async (hash: Hex) => {
-    return await getDelegationEntry(hash);
-  }, []);
-
   return {
     enableRemoteMode,
     disableRemoteMode,
     remoteModeConfig,
-    listDelegations,
-    getDelegation,
   };
 };
