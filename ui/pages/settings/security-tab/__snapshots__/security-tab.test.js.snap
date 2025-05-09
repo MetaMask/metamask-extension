@@ -559,7 +559,7 @@ exports[`Security Tab should match snapshot 1`] = `
           >
             <span>
                
-              We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our 
+              When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our 
               <a
                 href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
@@ -567,7 +567,7 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Privacy policy
               </a>
-               to learn more about how Infura handles data for EVM accounts, for Solana accounts 
+              , and for Solana accounts, 
               <a
                 href="https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts"
                 rel="noopener noreferrer"
