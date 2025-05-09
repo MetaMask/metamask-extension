@@ -84,9 +84,9 @@ const MenuItem = React.forwardRef(
         />
       )}
       <div>
-        <Text as="div">{children}</Text>
+        <Text variant={isRedesign ? TextVariant.bodyMdMedium : undefined} as="div">{children}</Text>
         {subtitle ? (
-          <Text variant={isRedesign ? TextVariant.bodyMdMedium : undefined} color={TextColor.textAlternative}>
+          <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
             {subtitle}
           </Text>
         ) : null}

@@ -17,15 +17,15 @@ type AccountDetailsMenuItemProps = {
   metricsLocation: string;
   closeMenu: () => void;
   address: string;
-  textProps: object;
-  isRedesign: boolean;
+  textProps?: object;
+  isRedesign?: boolean;
 };
 
 export const AccountDetailsMenuItem = ({
   metricsLocation,
   closeMenu,
   address,
-  textProps,
+  textProps = {},
   isRedesign = false,
 }: AccountDetailsMenuItemProps) => {
   const t = useI18nContext();
