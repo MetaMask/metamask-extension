@@ -19,7 +19,7 @@ import {
 
 type MenuItemProps = {
   children: React.ReactNode;
-  className?: string;
+  className: string;
   'data-testid'?: string;
   iconName: IconName;
   iconColor?: IconColor;
@@ -34,13 +34,13 @@ const MenuItem = React.forwardRef(
   (
     {
       children,
-      className = '',
-      'data-testid': dataTestId = '',
+      className,
+      'data-testid': dataTestId,
       iconName,
-      iconColor = IconColor.primaryDefault,
+      iconColor,
       onClick,
-      subtitle = '',
-      disabled = false,
+      subtitle,
+      disabled,
       showInfoDot,
       textVariant,
     }: MenuItemProps,
