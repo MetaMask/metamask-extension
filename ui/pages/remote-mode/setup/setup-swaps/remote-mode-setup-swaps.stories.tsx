@@ -5,9 +5,17 @@ import configureStore from '../../../../store/store';
 import RemoteModeSetupSwaps from './remote-mode-setup-swaps.component';
 import testData from '../../../../../.storybook/test-data';
 
-import { InternalAccount } from '@metamask/keyring-internal-api';
+const mockDelegationState = {
+  delegations: {},
+};
 
-const store = configureStore(testData);
+const store = configureStore({
+  ...testData,
+  metamask: {
+    ...testData.metamask,
+    ...mockDelegationState,
+  },
+});
 
 export default {
   title: 'Pages/Vault/RemoteMode/SetupSwaps',

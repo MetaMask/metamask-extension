@@ -291,7 +291,9 @@ export function isWebUrl(urlString: string): boolean {
  * @returns Whether to emit the event or not.
  */
 export function shouldEmitDappViewedEvent(metaMetricsId: string): boolean {
-  if (metaMetricsId === null) {
+  const isFireFox = getPlatform() === PLATFORM_FIREFOX;
+
+  if (metaMetricsId === null || isFireFox) {
     return false;
   }
 
