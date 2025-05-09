@@ -78,6 +78,7 @@ jobs:
           echo 'LAST_COMPLETED_MAIN_WORKFLOW='"$last_completed_main_workflow" >> "$GITHUB_OUTPUT"
 
       - name: Download test-e2e-chrome-report
+        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
         uses: actions/download-artifact@v4
         with:
           name: test-e2e-chrome-report
@@ -86,6 +87,7 @@ jobs:
           run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
 
       - name: Download test-e2e-firefox-report
+        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
         uses: actions/download-artifact@v4
         with:
           name: test-e2e-firefox-report
@@ -94,6 +96,7 @@ jobs:
           run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
 
       - name: Upload test-runs-for-splitting
+        if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
         uses: actions/upload-artifact@v4
         with:
           name: test-runs-for-splitting

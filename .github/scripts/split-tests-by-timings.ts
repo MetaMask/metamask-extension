@@ -1,3 +1,4 @@
+import { hasProperty } from '@metamask/utils';
 import { readFileSync } from 'node:fs';
 import {
   getNewBlankTestFile,
@@ -10,18 +11,38 @@ import {
 const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 4;
 
 function readTestResults(TEST_RESULTS_PATH: string): TestRun | undefined {
-  const testRuns: TestRun[] = JSON.parse(
-    readFileSync(TEST_RESULTS_PATH, 'utf8'),
-  );
-
   const testSuiteName =
     process.env.TEST_SUITE_NAME || 'test-e2e-chrome-browserify';
 
-  const testRun: TestRun | undefined = testRuns.find(
-    (run) => run.name === testSuiteName,
-  );
+  try {
+    const testRuns: TestRun[] = JSON.parse(
+      readFileSync(TEST_RESULTS_PATH, 'utf8'),
+    );
 
-  return testRun;
+    const testRun: TestRun | undefined = testRuns.find(
+      (run) => run.name === testSuiteName,
+    );
+
+    return testRun;
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      hasProperty(error, 'code') &&
+      error.code === 'ENOENT'
+    ) {
+      console.warn(
+        `Test results file not found, doing a naïve split instead: ${TEST_RESULTS_PATH}`,
+      );
+
+      // If the file doesn't exist, return a dummy object to do the naïve split
+      return {
+        name: testSuiteName,
+        testFiles: [],
+      };
+    } else {
+      throw error; // Re-throw if it's a different error
+    }
+  }
 }
 
 function splitTests(
