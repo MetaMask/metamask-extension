@@ -208,8 +208,8 @@
     "ui/components/multichain/app-header/app-header-unlocked-content.tsx",
     "ui/components/multichain/app-header/app-header.js",
     "ui/components/multichain/app-header/index.js",
-    "ui/components/multichain/global-menu/global-menu.js",
-    "ui/components/multichain/global-menu/index.js",
+    "ui/components/multichain/global-menu/global-menu.tsx",
+    "ui/components/multichain/global-menu/index.ts",
     "ui/components/multichain/index.js"
   ],
   [

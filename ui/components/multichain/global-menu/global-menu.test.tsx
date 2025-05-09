@@ -31,14 +31,16 @@ jest.mock('../../../store/actions', () => ({
 describe('Global Menu', () => {
   it('locks MetaMask when item is clicked', async () => {
     render();
-    fireEvent.click(document.querySelector('[data-testid="global-menu-lock"]'));
+    fireEvent.click(
+      document.querySelector('[data-testid="global-menu-lock"]') as Element,
+    );
     await waitFor(() => {
       expect(mockLockMetaMask).toHaveBeenCalled();
     });
   });
 
   it('opens the support site when item is clicked', async () => {
-    global.platform = { openTab: jest.fn() };
+    global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     const { getByTestId } = render();
     fireEvent.click(getByTestId('global-menu-support'));
@@ -76,11 +78,15 @@ describe('Global Menu', () => {
   });
 
   it('expands metamask to tab when item is clicked', async () => {
-    global.platform = { openExtensionInBrowser: jest.fn() };
+    global.platform = {
+      openExtensionInBrowser: jest.fn(),
+      openTab: jest.fn(),
+      closeCurrentWindow: jest.fn(),
+    };
 
     render();
     fireEvent.click(
-      document.querySelector('[data-testid="global-menu-expand"]'),
+      document.querySelector('[data-testid="global-menu-expand"]') as Element,
     );
     await waitFor(() => {
       expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();

@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { memo } from 'react';
 import classnames from 'classnames';
 
 import {
@@ -18,19 +17,33 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-const MenuItem = React.forwardRef(
+type MenuItemProps = {
+  children: React.ReactNode;
+  className?: string;
+  'data-testid'?: string;
+  iconName: IconName;
+  iconColor?: IconColor;
+  onClick?: () => void;
+  subtitle?: string;
+  disabled?: boolean;
+  showInfoDot?: boolean;
+  textVariant?: TextVariant;
+};
+
+const MenuItem = React.forwardRef<HTMLButtonElement, MenuItemProps>(
   (
     {
       children,
-      className,
+      className = '',
       'data-testid': dataTestId,
       iconName,
       iconColor,
       onClick,
       subtitle,
-      disabled = false,
+      disabled,
       showInfoDot,
-    },
+      textVariant,
+    }: MenuItemProps,
     ref,
   ) => (
     <button
@@ -51,7 +64,7 @@ const MenuItem = React.forwardRef(
               name={IconName.FullCircle}
               size={IconSize.Xs}
               color={IconColor.primaryDefault}
-              style={{ '--size': '10px' }}
+              style={{ '--size': '10px' } as React.CSSProperties}
             />
           }
         >
@@ -67,7 +80,9 @@ const MenuItem = React.forwardRef(
         />
       )}
       <div>
-        <Text as="div">{children}</Text>
+        <Text variant={textVariant} as="div">
+          {children}
+        </Text>
         {subtitle ? (
           <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
             {subtitle}
@@ -78,18 +93,6 @@ const MenuItem = React.forwardRef(
   ),
 );
 
-MenuItem.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-  'data-testid': PropTypes.string,
-  iconName: PropTypes.string,
-  onClick: PropTypes.func,
-  subtitle: PropTypes.node,
-  disabled: PropTypes.bool,
-  showInfoDot: PropTypes.bool,
-  iconColor: PropTypes.string,
-};
-
 MenuItem.displayName = 'MenuItem';
 
-export default MenuItem;
+export default memo(MenuItem);
