@@ -1,40 +1,24 @@
 .secure-your-wallet {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  gap: 1rem;
+
   &__list {
     list-style: disc inside;
   }
 
-  &__srp-design-container {
-    margin-bottom: 36px;
-  }
-
   &__srp-design-image {
     width: 100%;
-    height: 300px;
+    height: 180px;
     object-fit: contain;
   }
 }
 
-.skip-srp-backup-popover {
-  width: 365px;
-
-  &__icon {
-    display: block;
-    margin-top: 16px;
-    margin-bottom: 16px;
-  }
-
-  &__checkbox {
-    margin: 8px 12px 0 0;
-  }
-
-  &__label {
-    display: flex;
-  }
-
-  &__footer {
-    button {
-      width: 140px;
-      margin: 0 10px;
-    }
+.skip-srp-backup-modal {
+  // SRP_OVERRIDE: center modal content
+  .mm-modal-content {
+    align-items: center;
   }
 }
