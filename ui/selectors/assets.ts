@@ -238,7 +238,6 @@ export const getMultiChainAssets = createDeepEqualSelector(
           secondary: balanceInFiat ? balanceInFiat.toNumber() : null,
           string: '',
           tokenFiatAmount: balanceInFiat ? balanceInFiat.toNumber() : null,
-          // tokenFiatAmount: null,
           isStakeable: false,
         });
       }
