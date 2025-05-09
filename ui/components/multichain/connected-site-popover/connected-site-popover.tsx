@@ -7,7 +7,6 @@ import {
   ButtonLink,
   ButtonLinkSize,
   ButtonSecondary,
-  IconName,
   Popover,
   PopoverPosition,
   Text,
@@ -131,7 +130,6 @@ export const ConnectedSitePopover = ({
         )}
         <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
           <ButtonSecondary
-            endIconName={IconName.Export}
             block
             onClick={() => {
               if (isConnected) {

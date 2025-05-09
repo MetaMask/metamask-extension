@@ -6,6 +6,7 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import {
   AvatarAccount,
   AvatarAccountVariant,
+  Box,
   ButtonBase,
   ButtonBaseSize,
   IconName,
@@ -16,6 +17,7 @@ import {
   BackgroundColor,
   BorderRadius,
   Display,
+  FlexDirection,
   IconColor,
   Size,
   TextColor,
@@ -41,69 +43,74 @@ export const AccountPicker = ({
   const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
-    <ButtonBase
-      className={classnames('multichain-account-picker', className)}
-      data-testid="account-menu-icon"
-      onClick={() => {
-        trace({ name: TraceName.AccountList });
-        onClick();
-      }}
-      backgroundColor={BackgroundColor.transparent}
-      borderRadius={BorderRadius.LG}
-      ellipsis
-      textProps={{
-        display: Display.Flex,
-        alignItems: AlignItems.center,
-        gap: 2,
-        ...textProps,
-      }}
-      size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Sm}
-      disabled={disabled}
-      endIconName={IconName.ArrowDown}
-      endIconProps={{
-        color: IconColor.iconDefault,
-        size: Size.SM,
-      }}
-      {...props}
-      gap={1}
-    >
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        <AvatarAccount
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
-          }
-          address={address}
-          size={showAddress ? Size.MD : Size.XS}
-          borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
-        />
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      <Text
-        as="span"
+    <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+      <ButtonBase
+        className={classnames('multichain-account-picker', className)}
+        data-testid="account-menu-icon"
+        onClick={() => {
+          trace({ name: TraceName.AccountList });
+          onClick();
+        }}
+        backgroundColor={BackgroundColor.transparent}
+        borderRadius={BorderRadius.LG}
         ellipsis
-        {...labelProps}
-        className={classnames(
-          'multichain-account-picker__label',
-          labelProps.className ?? '',
-        )}
+        textProps={{
+          display: Display.Flex,
+          alignItems: AlignItems.center,
+          gap: 2,
+          ...textProps,
+        }}
+        size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Sm}
+        disabled={disabled}
+        endIconName={IconName.ArrowDown}
+        endIconProps={{
+          color: IconColor.iconDefault,
+          size: Size.SM,
+        }}
+        {...props}
+        gap={1}
       >
-        {name}
-        {showAddress ? (
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          {
+            process.env.REMOVE_GNS ? null : (
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+              <AvatarAccount
+                variant={
+                  useBlockie
+                    ? AvatarAccountVariant.Blockies
+                    : AvatarAccountVariant.Jazzicon
+                }
+                address={address}
+                size={showAddress ? Size.MD : Size.XS}
+                borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+              />
+            )
+            ///: END:ONLY_INCLUDE_IF
+          }
           <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
+            as="span"
             ellipsis
-            {...addressProps}
+            {...labelProps}
+            className={classnames(
+              'multichain-account-picker__label',
+              labelProps.className ?? '',
+            )}
           >
-            {shortenedAddress}
+            {name}
+            {showAddress ? (
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodySm}
+                ellipsis
+                {...addressProps}
+              >
+                {shortenedAddress}
+              </Text>
+            ) : null}
           </Text>
-        ) : null}
-      </Text>
-    </ButtonBase>
+        </Box>
+      </ButtonBase>
+    </Box>
   );
 };
 

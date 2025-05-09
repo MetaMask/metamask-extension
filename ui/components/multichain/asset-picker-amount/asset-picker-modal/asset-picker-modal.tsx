@@ -31,6 +31,7 @@ import {
   TextAlign,
   Display,
   AlignItems,
+  JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Toast, ToastContainer } from '../../toast';
@@ -599,7 +600,11 @@ export function AssetPickerModal({
           </Box>
         )}
         {onNetworkPickerClick && (
-          <Box className="network-picker">
+          <Box
+            className="network-picker"
+            display={Display.Flex}
+            justifyContent={JustifyContent.center}
+          >
             <PickerNetwork
               label={getNetworkPickerLabel()}
               src={
