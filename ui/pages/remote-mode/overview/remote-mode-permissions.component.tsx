@@ -31,6 +31,10 @@ import {
 } from '../components';
 
 import { getSelectedInternalAccount } from '../../../selectors';
+import {
+  listDelegationEntries,
+  type DelegationState,
+} from '../../../selectors/delegation';
 import { RevokeWithdrawlConfirmModalType } from '../components/revoke-withdrawl-confirm-modal';
 import { useRemoteMode } from '../hooks/useRemoteMode';
 import { REMOTE_MODES } from '../remote.types';
@@ -61,6 +65,11 @@ export default function RemoteModePermissions({
   const history = useHistory();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const entries = useSelector((state) =>
+    listDelegationEntries(state as DelegationState, {
+      filter: { from: selectedAccount.address as Hex },
+    }),
+  );
 
   const {
     disableRemoteMode,
@@ -69,15 +78,8 @@ export default function RemoteModePermissions({
     account: selectedAccount.address as `0x${string}`,
   });
 
-  const { listDelegations } = useRemoteMode({
-    account: selectedAccount.address as Hex,
-  });
-
   useEffect(() => {
     async function fetchDelegations() {
-      const entries = await listDelegations({
-        from: selectedAccount.address as Hex,
-      });
       for (const entry of entries) {
         switch (entry.tags[0]) {
           case REMOTE_MODES.SWAP: {
@@ -99,7 +101,7 @@ export default function RemoteModePermissions({
       }
     }
     fetchDelegations();
-  }, []);
+  }, [entries]);
 
   const handleEnableRemoteSwap = () => {
     if (setStartEnableRemoteSwap) {

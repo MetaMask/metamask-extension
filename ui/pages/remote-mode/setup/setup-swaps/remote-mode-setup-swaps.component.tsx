@@ -75,6 +75,10 @@ import {
   getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
 } from '../../../../selectors';
+import {
+  getDelegationEntry,
+  type DelegationState,
+} from '../../../../selectors/delegation';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import { useRemoteMode } from '../../hooks/useRemoteMode';
 
@@ -120,25 +124,25 @@ export default function RemoteModeSetupSwaps() {
   const delegationHash = params.get('delegationHash');
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-  const { enableRemoteMode, disableRemoteMode, getDelegation } = useRemoteMode({
+  const { enableRemoteMode, disableRemoteMode } = useRemoteMode({
     account: selectedHardwareAccount.address as Hex,
   });
 
-  useEffect(() => {
-    async function fetchDelegations() {
-      const delegation = await getDelegation(delegationHash as Hex);
-      // TODO: handle if user changes account active account
-      if (delegation?.meta) {
-        const allowances = JSON.parse(delegation.meta);
-        console.log(allowances);
-        setSwapAllowance(allowances.allowances);
-      }
-    }
-    fetchDelegations();
-  }, []);
+  const delegation = useSelector((state) =>
+    getDelegationEntry(state as DelegationState, delegationHash as Hex),
+  );
 
   useEffect(() => {
-    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+    if (delegation?.meta) {
+      const allowances = JSON.parse(delegation.meta);
+      setSwapAllowance(allowances.allowances);
+    }
+  }, [delegation]);
+
+  useEffect(() => {
+    setIsHardwareAccount(
+      isRemoteModeSupported(selectedHardwareAccount) || true,
+    );
   }, [selectedHardwareAccount]);
 
   useEffect(() => {
@@ -441,7 +445,7 @@ export default function RemoteModeSetupSwaps() {
                 <Box marginTop={2}>
                   {swapAllowance.map((allowance) => (
                     <RemoteModeSwapAllowanceCard
-                      key={allowance.from}
+                      key={`${allowance.from}-${allowance.to}`}
                       swapAllowance={allowance}
                       onRemove={() =>
                         handleRemoveAllowance(allowance.from, allowance.to)

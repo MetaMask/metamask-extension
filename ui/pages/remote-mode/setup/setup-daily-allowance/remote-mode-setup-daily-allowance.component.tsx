@@ -62,6 +62,10 @@ import {
   getSelectedInternalAccount,
 } from '../../../../selectors';
 import {
+  getDelegationEntry,
+  type DelegationState,
+} from '../../../../selectors/delegation';
+import {
   RemoteModeDailyAllowanceCard,
   RemoteModeHardwareWalletConfirm,
   StepIndicator,
@@ -116,32 +120,25 @@ export default function RemoteModeSetupDailyAllowance() {
 
   const { assetsWithBalance } = useMultichainBalances();
 
-  const updateSelectedTokenBalance = (value: string) => {
-    setSelectedAllowanceBalance(
-      storedAssets.find((asset) => asset.symbol.includes(value))?.balance ??
-        '0',
-    );
-  };
-
-  const { enableRemoteMode, disableRemoteMode, getDelegation } = useRemoteMode({
+  const { enableRemoteMode, disableRemoteMode } = useRemoteMode({
     account: selectedHardwareAccount.address as Hex,
   });
 
+  const delegation = useSelector((state) =>
+    getDelegationEntry(state as DelegationState, delegationHash as Hex),
+  );
+
   useEffect(() => {
-    async function fetchDelegations() {
-      const delegation = await getDelegation(delegationHash as Hex);
-      // TODO: handle if user changes account active account
-      if (delegation.meta) {
-        const allowances = JSON.parse(delegation.meta);
-        console.log(allowances);
-        setDailyAllowance(allowances.allowances);
-      }
+    if (delegation?.meta) {
+      const allowances = JSON.parse(delegation.meta);
+      setDailyAllowance(allowances.allowances);
     }
-    fetchDelegations();
   }, []);
 
   useEffect(() => {
-    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+    setIsHardwareAccount(
+      isRemoteModeSupported(selectedHardwareAccount) || true,
+    );
   }, [selectedHardwareAccount]);
 
   useEffect(() => {
@@ -163,6 +160,13 @@ export default function RemoteModeSetupDailyAllowance() {
   useEffect(() => {
     updateSelectedTokenBalance(selectedAllowanceToken);
   }, [storedAssets, selectedAllowanceToken]);
+
+  const updateSelectedTokenBalance = (value: string) => {
+    setSelectedAllowanceBalance(
+      storedAssets.find((asset) => asset.symbol.includes(value))?.balance ??
+        '0',
+    );
+  };
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
