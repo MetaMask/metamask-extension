@@ -38,4 +38,5 @@ function transformState(state: Record<string, unknown>) {
     | undefined;
 
   delete preferences?.disabledUpgradeAccountsByChain;
+  delete preferences?.accountUpgradeDisabledChains;
 }

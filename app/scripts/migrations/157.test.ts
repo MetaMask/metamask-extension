@@ -20,6 +20,7 @@ describe(`migration #${version}`, () => {
           PreferencesController: {
             preferences: {
               disabledUpgradeAccountsByChain: {},
+              accountUpgradeDisabledChains: {},
             },
           },
         },
