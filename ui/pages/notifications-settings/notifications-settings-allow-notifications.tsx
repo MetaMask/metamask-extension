@@ -151,6 +151,8 @@ export function NotificationsSettingsAllowNotifications({
     >
       <NotificationsSettingsBox
         value={toggleValue}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onToggle={toggleNotifications}
         disabled={disabled}
         loading={loading}

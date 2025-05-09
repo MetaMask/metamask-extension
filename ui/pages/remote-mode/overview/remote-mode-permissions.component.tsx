@@ -331,12 +331,16 @@ export default function RemoteModePermissions({
         </Card>
         <RevokeWithdrawlConfirm
           visible={isRevokeWithdrawlConfirmVisible}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onConfirm={handleRevokeRemoteSwap}
           onClose={() => setIsRevokeWithdrawlConfirmVisible(false)}
           type={RevokeWithdrawlConfirmModalType.Swap}
         />
         <RevokeWithdrawlConfirm
           visible={isRevokeSpendAllowanceVisible}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onConfirm={handleRevokeDailyAllowance}
           onClose={() => setIsRevokeSpendAllowanceVisible(false)}
           type={RevokeWithdrawlConfirmModalType.Spend}
