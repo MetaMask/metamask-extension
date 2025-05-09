@@ -17,6 +17,7 @@ import {
   multichainUpdateTransactions,
 } from '../../store/actions';
 import {
+  MultichainWalletSnapOptions,
   useMultichainWalletSnapClient,
   WalletClientType,
 } from './useMultichainWalletSnapClient';
@@ -67,10 +68,13 @@ describe('useMultichainWalletSnapClient', () => {
   ];
 
   testCases.forEach(({ clientType, network, snapId, mockAccount }) => {
-    const options = {
+    const options: MultichainWalletSnapOptions = {
       scope: network,
       entropySource: 'test-entropy-source',
     };
+    if (clientType === WalletClientType.Bitcoin) {
+      options.synchronize = true;
+    }
 
     it(`creates a ${clientType} account`, async () => {
       const { result } = renderHook(() =>
