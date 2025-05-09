@@ -94,6 +94,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -105,11 +106,11 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
-// Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
-
-const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
+const useReadOnlyNetworkStore = (inTest && !getManifestFlags().testing.forceExtensionStore)
+const localStore = useReadOnlyNetworkStore ? new ReadOnlyNetworkStore() : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
+// Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
 
