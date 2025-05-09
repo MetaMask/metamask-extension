@@ -31,6 +31,10 @@ type CreateSnapAccountProps = {
    * Whether to set the newly created account as the selected account
    */
   setNewlyCreatedAccountAsSelected?: boolean;
+  /**
+   * Whether to redirect to the overview page after creating the account
+   */
+  redirectToOverviewPage?: boolean;
 };
 
 export const CreateSnapAccount = ({
@@ -40,6 +44,7 @@ export const CreateSnapAccount = ({
   clientType,
   chainId,
   setNewlyCreatedAccountAsSelected,
+  redirectToOverviewPage,
 }: CreateSnapAccountProps) => {
   const client = useMultichainWalletSnapClient(clientType);
 
@@ -55,7 +60,13 @@ export const CreateSnapAccount = ({
       );
       onActionComplete(true);
     },
-    [client, chainId, selectedKeyringId, onActionComplete],
+    [
+      client,
+      chainId,
+      selectedKeyringId,
+      setNewlyCreatedAccountAsSelected,
+      onActionComplete,
+    ],
   );
 
   const getNextAccountName = async () => {
@@ -72,6 +83,7 @@ export const CreateSnapAccount = ({
       scope={chainId}
       onSelectSrp={onSelectSrp}
       selectedKeyringId={selectedKeyringId}
+      redirectToOverviewPage={redirectToOverviewPage}
     />
   );
 };

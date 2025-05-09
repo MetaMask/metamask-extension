@@ -111,12 +111,14 @@ export const EditAccountAddAccountForm: React.FC<
                   clientType={clientType}
                   chainId={chainId}
                   setNewlyCreatedAccountAsSelected={true}
+                  redirectToOverviewPage={false}
                 />
               ) : (
                 <CreateEthAccount
                   onActionComplete={onActionComplete}
                   selectedKeyringId={selectedKeyringId}
                   onSelectSrp={onSelectSrp}
+                  redirectToOverviewPage={false}
                 />
               )}
             </>
