@@ -8,7 +8,6 @@ const {
   optional,
   array,
   refine,
-  any,
   boolean,
   coerce,
   union,
@@ -27,7 +26,7 @@ const BUILDS_YML_PATH = path.resolve('./builds.yml');
 /**
  * @type {import('superstruct').Infer<typeof BuildTypesStruct> | null}
  */
-let cachedBuildTypes = null;
+let _cachedBuildTypes = null;
 
 /**
  * Ensures that the array item contains only elements that are distinct from each other
@@ -45,7 +44,7 @@ const unique = (struct, eq) =>
 
 const EnvDefinitionStruct = coerce(
   object({ key: string(), value: unknown() }),
-  refine(record(string(), any()), 'Env variable declaration', (value) => {
+  refine(record(string(), unknown()), 'Env variable declaration', (value) => {
     if (Object.keys(value).length !== 1) {
       return 'Declaration should have only one property, the name';
     }
@@ -99,35 +98,12 @@ const ExclusiveIncludeAssetStruct = coerce(
 const AssetStruct = union([CopyAssetStruct, ExclusiveIncludeAssetStruct]);
 
 const FeatureStruct = object({
-  env: optional(EnvArrayStruct),
-  // TODO(ritave): Check if the paths exist
   assets: optional(array(AssetStruct)),
 });
 
-const FeaturesStruct = refine(
-  record(
-    string(),
-    coerce(FeatureStruct, nullable(never()), () => ({})),
-  ),
-  'feature definitions',
-  function* (value) {
-    let isValid = true;
-
-    const definitions = new Set();
-
-    for (const feature of Object.values(value)) {
-      for (const env of feature?.env ?? []) {
-        if (typeof env !== 'string') {
-          if (definitions.has(env.key)) {
-            isValid = false;
-            yield `Multiple defined features have a definition of "${env}" env variable, resulting in a conflict`;
-          }
-          definitions.add(env.key);
-        }
-      }
-    }
-    return isValid;
-  },
+const FeaturesStruct = record(
+  string(),
+  coerce(FeatureStruct, nullable(never()), () => ({})),
 );
 
 const BuildTypesStruct = refine(
@@ -149,9 +125,10 @@ const BuildTypesStruct = refine(
 /**
  * Loads definitions of build type and what they are composed of.
  *
+ * @param cachedBuildTypes
  * @returns {import('superstruct').Infer<typeof BuildTypesStruct>}
  */
-function loadBuildTypesConfig() {
+function loadBuildTypesConfig(cachedBuildTypes = _cachedBuildTypes) {
   if (cachedBuildTypes !== null) {
     return cachedBuildTypes;
   }
@@ -164,8 +141,8 @@ function loadBuildTypesConfig() {
       message: constructFailureMessage(err),
     });
   }
-  cachedBuildTypes = result;
-  return cachedBuildTypes;
+  _cachedBuildTypes = result;
+  return _cachedBuildTypes;
 }
 
 /**
