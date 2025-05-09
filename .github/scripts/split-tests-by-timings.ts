@@ -31,10 +31,10 @@ function readTestResults(TEST_RESULTS_PATH: string): TestRun | undefined {
       error.code === 'ENOENT'
     ) {
       console.warn(
-        `Test results file not found, doing a naïve split instead: ${TEST_RESULTS_PATH}`,
+        `Test results file not found, doing a naive split instead: ${TEST_RESULTS_PATH}`,
       );
 
-      // If the file doesn't exist, return a dummy object to do the naïve split
+      // If the file doesn't exist, return a dummy object to do the naive split
       return {
         name: testSuiteName,
         testFiles: [],

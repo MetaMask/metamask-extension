@@ -88,7 +88,7 @@ async function runCommand(command, args) {
  *
  * @param {string} command - The command to run
  * @param {Array<string>} [args] - The arguments to pass to the command
- * @param {string} output - The output file to write to
+ * @param {string | undefined} output - The output file to write to
  */
 async function runInShell(command, args, output = undefined) {
   let errorSignal;
