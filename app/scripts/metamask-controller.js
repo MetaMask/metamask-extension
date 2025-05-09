@@ -122,7 +122,6 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
   BridgeClientId,
-  UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
 } from '@metamask/bridge-controller';
 
 import {
@@ -1704,7 +1703,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         );
         trackEvent({
-          category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
+          category: MetaMetricsEventCategory.UnifiedSwapBridge,
           event,
           properties: {
             ...(properties ?? {}),
@@ -1733,7 +1732,7 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:handleRequest',
           'TransactionController:getState',
         ],
-        allowedEvents: [],
+        allowedEvents: ['TransactionController:transactionFailed'],
       });
     this.bridgeStatusController = new BridgeStatusController({
       messenger: bridgeStatusControllerMessenger,
