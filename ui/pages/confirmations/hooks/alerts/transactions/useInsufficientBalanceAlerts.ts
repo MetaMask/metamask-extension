@@ -1,5 +1,4 @@
 import { Hex } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -49,7 +48,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
     selectTransactionFeeById(state, transactionId),
   );
 
-  const networkConfiguration: Record<Hex, NetworkConfiguration> = useSelector((state) =>
+  const networkConfiguration = useSelector((state) =>
     selectNetworkConfigurationByChainId(state, chainId),
   );
   const nativeCurrency = networkConfiguration?.nativeCurrency;
