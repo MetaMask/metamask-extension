@@ -247,6 +247,18 @@ env:
   - __FIREBASE_DEFAULTS__: null
 
   ###
+  # RPC Failover
+  ###
+
+  - QUICKNODE_MAINNET_URL: null
+  - QUICKNODE_LINEA_MAINNET_URL: null
+  - QUICKNODE_ARBITRUM_URL: null
+  - QUICKNODE_AVALANCHE_URL: null
+  - QUICKNODE_OPTIMISM_URL: null
+  - QUICKNODE_POLYGON_URL: null
+  - QUICKNODE_BASE_URL: null
+
+  ###
   # API keys to 3rd party services
   ###
 
