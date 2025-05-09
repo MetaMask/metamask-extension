@@ -373,7 +373,7 @@ const CoinButtons = ({
           iconButtonClassName={iconButtonClassName}
           Icon={
             <Icon
-              name={IconName.PlusAndMinus}
+              name={IconName.Money}
               color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
@@ -441,7 +441,7 @@ const CoinButtons = ({
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
-            name={IconName.Arrow2UpRight}
+            name={IconName.Send}
             color={IconColor.iconDefault}
             size={IconSize.Sm}
           />
@@ -467,7 +467,7 @@ const CoinButtons = ({
             data-testid={`${classPrefix}-overview-receive`}
             Icon={
               <Icon
-                name={IconName.ScanBarcode}
+                name={IconName.QrCode}
                 color={IconColor.iconDefault}
                 size={IconSize.Sm}
               />
