@@ -1,22 +1,17 @@
 import { useMemo } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
+import { useIsUpgradeTransaction } from '../../../components/confirm/info/hooks/useIsUpgradeTransaction';
 import { AccountTypeMessage } from './AccountTypeMessage';
 
 export function useAccountTypeUpgrade(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { nestedTransactions } = currentConfirmation ?? {};
-
-  const isBatch = isBatchTransaction(nestedTransactions);
+  const { isUpgrade } = useIsUpgradeTransaction();
 
   return useMemo(() => {
-    if (!isBatch) {
+    if (!isUpgrade) {
       return [];
     }
 
@@ -29,5 +24,5 @@ export function useAccountTypeUpgrade(): Alert[] {
         severity: Severity.Info,
       },
     ];
-  }, [isBatch, t]);
+  }, [isUpgrade, t]);
 }

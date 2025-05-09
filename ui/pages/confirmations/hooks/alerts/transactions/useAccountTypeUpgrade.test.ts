@@ -1,12 +1,16 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
-import { genUnapprovedApproveConfirmation } from '../../../../../../test/data/confirmations/token-approve';
-import { useAccountTypeUpgrade } from './useAccountTypeUpgrade';
+import {
+  upgradeAccountConfirmation,
+  upgradeAccountConfirmationOnly,
+} from '../../../../../../test/data/confirmations/batch-transaction';
+import { genUnapprovedTokenTransferConfirmation } from '../../../../../../test/data/confirmations/token-transfer';
+import { Confirmation } from '../../../types/confirm';
 import { AccountTypeMessage } from './AccountTypeMessage';
+import { useAccountTypeUpgrade } from './useAccountTypeUpgrade';
 
 jest.mock('../../../../../../shared/lib/transactions.utils');
 jest.mock(
@@ -21,9 +25,8 @@ jest.mock('./AccountTypeMessage', () => ({
   AccountTypeMessage: jest.fn(() => 'Mocked AccountTypeMessage'),
 }));
 
-function runHook() {
-  const transactionMeta = genUnapprovedApproveConfirmation() as TransactionMeta;
-  const state = getMockConfirmStateForTransaction(transactionMeta);
+function runHook(confirmation: Confirmation) {
+  const state = getMockConfirmStateForTransaction(confirmation);
 
   const response = renderHookWithConfirmContextProvider(
     () => useAccountTypeUpgrade(),
@@ -40,12 +43,25 @@ describe('useAccountTypeUpgrade', () => {
   });
 
   it('returns an empty array when the transaction is not a batch transaction', () => {
-    expect(runHook()).toEqual([]);
+    expect(runHook(genUnapprovedTokenTransferConfirmation())).toEqual([]);
   });
 
-  it('returns an alert when the transaction is a batch transaction', () => {
+  it('returns an alert when the transaction is a upgrade transaction', () => {
     isBatchTransactionMock.mockReturnValue(true);
-    expect(runHook()).toEqual([
+    expect(runHook(upgradeAccountConfirmation)).toEqual([
+      {
+        field: 'accountTypeUpgrade',
+        key: RowAlertKey.AccountTypeUpgrade,
+        content: AccountTypeMessage(),
+        reason: 'Account type',
+        severity: Severity.Info,
+      },
+    ]);
+  });
+
+  it('returns an alert when the transaction is a upgrade only transaction', () => {
+    isBatchTransactionMock.mockReturnValue(true);
+    expect(runHook(upgradeAccountConfirmationOnly)).toEqual([
       {
         field: 'accountTypeUpgrade',
         key: RowAlertKey.AccountTypeUpgrade,
