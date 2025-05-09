@@ -345,6 +345,7 @@ export function parseApprovalTransactionData(data: Hex):
       amountOrTokenId?: BigNumber;
       isApproveAll?: boolean;
       isRevokeAll?: boolean;
+      name: string;
       tokenAddress?: Hex;
     }
   | undefined {
@@ -352,7 +353,10 @@ export function parseApprovalTransactionData(data: Hex):
   const { args, name } = transactionDescription ?? {};
 
   if (
-    !['approve', 'increaseAllowance', 'setApprovalForAll'].includes(name ?? '')
+    !['approve', 'increaseAllowance', 'setApprovalForAll'].includes(
+      name ?? '',
+    ) ||
+    !name
   ) {
     return undefined;
   }
@@ -374,6 +378,7 @@ export function parseApprovalTransactionData(data: Hex):
     amountOrTokenId,
     isApproveAll,
     isRevokeAll,
+    name,
     tokenAddress,
   };
 }

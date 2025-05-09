@@ -1,22 +1,58 @@
+import {
+  buildApproveTransactionData,
+  buildIncreaseAllowanceTransactionData,
+  buildPermit2ApproveTransactionData,
+} from '../../../test/data/confirmations/token-approve';
 import { updateApprovalAmount } from './approvals';
 
-const DATA_LEGACY =
-  '0x095ea7b30000000000000000000000000c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb0000000000000000000000000000000000000000000000000000000000459480';
-
-const DATA_PERMIT2 =
-  '0x87517c45000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb000000000000000000000000000000000000000000000000000000000012C4B00000000000000000000000000000000000000000000000000000000068437af0';
+const SPENDER_MOCK = '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb';
+const TOKEN_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
+const AMOUNT_MOCK = 123;
+const EXPIRATION_MOCK = 456;
 
 describe('Approvals Utils', () => {
   describe('updateApprovalAmount', () => {
     it('updates legacy approval amount', () => {
-      expect(updateApprovalAmount(DATA_LEGACY, 1.23, 10)).toStrictEqual(
-        '0x095ea7b30000000000000000000000000c54fccd2e384b4bb6f2e405bf5cbc15a017aafb00000000000000000000000000000000000000000000000000000002dd231b00',
+      expect(
+        updateApprovalAmount(
+          buildApproveTransactionData(SPENDER_MOCK, AMOUNT_MOCK),
+          1.23,
+          5,
+        ),
+      ).toStrictEqual(buildApproveTransactionData(SPENDER_MOCK, 123000));
+    });
+
+    it('updates increaseAllowance amount', () => {
+      expect(
+        updateApprovalAmount(
+          buildIncreaseAllowanceTransactionData(SPENDER_MOCK, AMOUNT_MOCK),
+          1.23,
+          5,
+        ),
+      ).toStrictEqual(
+        buildIncreaseAllowanceTransactionData(SPENDER_MOCK, 123000),
       );
     });
 
     it('updates Permit2 approval amount', () => {
-      expect(updateApprovalAmount(DATA_PERMIT2, 1.23, 10)).toStrictEqual(
-        '0x87517c45000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000c54fccd2e384b4bb6f2e405bf5cbc15a017aafb00000000000000000000000000000000000000000000000000000002dd231b000000000000000000000000000000000000000000000000000000000068437af0',
+      expect(
+        updateApprovalAmount(
+          buildPermit2ApproveTransactionData(
+            SPENDER_MOCK,
+            TOKEN_ADDRESS_MOCK,
+            AMOUNT_MOCK,
+            EXPIRATION_MOCK,
+          ),
+          1.23,
+          5,
+        ),
+      ).toStrictEqual(
+        buildPermit2ApproveTransactionData(
+          SPENDER_MOCK,
+          TOKEN_ADDRESS_MOCK,
+          123000,
+          EXPIRATION_MOCK,
+        ),
       );
     });
   });

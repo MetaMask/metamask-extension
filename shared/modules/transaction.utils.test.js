@@ -483,6 +483,7 @@ describe('Transaction.utils', function () {
         amountOrTokenId: new BigNumber(AMOUNT_MOCK),
         isApproveAll: false,
         isRevokeAll: false,
+        name: 'approve',
         tokenAddress: undefined,
       });
     });
@@ -496,6 +497,7 @@ describe('Transaction.utils', function () {
         amountOrTokenId: new BigNumber(AMOUNT_MOCK),
         isApproveAll: false,
         isRevokeAll: false,
+        name: 'increaseAllowance',
         tokenAddress: undefined,
       });
     });
@@ -509,6 +511,7 @@ describe('Transaction.utils', function () {
         amountOrTokenId: undefined,
         isApproveAll: true,
         isRevokeAll: false,
+        name: 'setApprovalForAll',
         tokenAddress: undefined,
       });
     });
@@ -522,6 +525,7 @@ describe('Transaction.utils', function () {
         amountOrTokenId: undefined,
         isApproveAll: false,
         isRevokeAll: true,
+        name: 'setApprovalForAll',
         tokenAddress: undefined,
       });
     });
@@ -540,6 +544,7 @@ describe('Transaction.utils', function () {
         amountOrTokenId: new BigNumber(AMOUNT_MOCK),
         isApproveAll: false,
         isRevokeAll: false,
+        name: 'approve',
         tokenAddress: ADDRESS_MOCK,
       });
     });
