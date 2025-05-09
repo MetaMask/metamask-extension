@@ -1,12 +1,13 @@
-import { CaipChainId, Hex } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
+import { NetworkConfiguration } from '@metamask/network-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  getMultichainNetworkConfigurationsByChainId,
+  selectNetworkConfigurationByChainId,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
   selectTransactionValue,
@@ -48,12 +49,10 @@ export function useInsufficientBalanceAlerts(): Alert[] {
     selectTransactionFeeById(state, transactionId),
   );
 
-  const [multichainNetworks, evmNetworks] = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
+  const networkConfiguration: Record<Hex, NetworkConfiguration> = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
   );
-  const nativeCurrency = (
-    multichainNetworks[chainId as CaipChainId] ?? evmNetworks[chainId]
-  )?.nativeCurrency;
+  const nativeCurrency = networkConfiguration?.nativeCurrency;
 
   const insufficientBalance = !isBalanceSufficient({
     amount: totalValue,
