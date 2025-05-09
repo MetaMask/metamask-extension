@@ -21,7 +21,7 @@ describe('Block Explorer', function () {
             mockNetworkStateOld({
               chainId: '0x539',
               nickname: 'Localhost 8545',
-              rpcUrl: 'http://localhost:8545',
+              rpcUrl: 'http://localhost:8545/1',
               ticker: 'ETH',
               blockExplorerUrl: 'https://etherscan.io/',
             }),
@@ -63,7 +63,7 @@ describe('Block Explorer', function () {
             ...mockNetworkStateOld({
               chainId: '0x539',
               nickname: 'Localhost 8545',
-              rpcUrl: 'http://localhost:8545',
+              rpcUrl: 'http://localhost:8545/1',
               ticker: 'ETH',
               blockExplorerUrl: 'https://etherscan.io/',
             }),
@@ -111,7 +111,7 @@ describe('Block Explorer', function () {
               id: 'localhost-client-id',
               chainId: '0x539',
               nickname: 'Localhost 8545',
-              rpcUrl: 'http://localhost:8545',
+              rpcUrl: 'http://localhost:8545/1',
               ticker: 'ETH',
               blockExplorerUrl: 'https://etherscan.io',
             }),

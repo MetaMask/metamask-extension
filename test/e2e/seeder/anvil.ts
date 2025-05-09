@@ -1,65 +1,51 @@
+import type { AnvilParameters } from 'prool/instances' with { 'resolution-mode': 'import' };
 import { delimiter, join } from 'path';
 import { execSync } from 'child_process';
-import { createAnvil, Anvil as AnvilType } from '@viem/anvil';
 import { createAnvilClients } from './anvil-clients';
 
-type Hardfork =
-  | 'Frontier'
-  | 'Homestead'
-  | 'Dao'
-  | 'Tangerine'
-  | 'SpuriousDragon'
-  | 'Byzantium'
-  | 'Constantinople'
-  | 'Petersburg'
-  | 'Istanbul'
-  | 'Muirglacier'
-  | 'Berlin'
-  | 'London'
-  | 'ArrowGlacier'
-  | 'GrayGlacier'
-  | 'Paris'
-  | 'Shanghai'
-  | 'Latest';
+const proolPromise = import('prool');
+const proolInstancesPromise = import('prool/instances');
+
+type CreateServerType = Awaited<typeof proolPromise>['createServer'];
+type ProolServerReturnType = ReturnType<CreateServerType>;
 
 type Hex = `0x${string}`;
 
-const defaultOptions = {
+const PORT = 8545;
+const HOST = '127.0.0.1';
+const CHAIN_ID = 1337;
+
+const defaultOptions: Partial<AnvilParameters> = {
   balance: 25,
-  chainId: 1337,
+  chainId: CHAIN_ID,
   gasLimit: 30000000,
   gasPrice: 2000000000,
-  hardfork: 'Muirglacier' as Hardfork,
-  host: '127.0.0.1',
+  hardfork: 'Muirglacier',
+  host: HOST,
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
-  port: 8545,
-  noMining: false,
+  port: PORT,
 };
 
 export class Anvil {
-  #server: AnvilType | undefined;
+  #server: ProolServerReturnType | undefined;
+
+  #options: AnvilParameters | undefined;
 
   async start(
-    opts: {
-      balance?: number;
-      blockTime?: number;
-      chainId?: number;
-      gasLimit?: number;
-      gasPrice?: number;
-      hardfork?: Hardfork;
-      host?: string;
-      mnemonic?: string;
-      port?: number;
-      noMining?: boolean;
-    } = {},
+    opts: Partial<AnvilParameters> = {},
   ): Promise<void> {
-    const options = { ...defaultOptions, ...opts };
+    const options: AnvilParameters = {
+      ...defaultOptions,
+      ...opts,
+    };
 
     // Set blockTime if noMining is disabled, as those 2 options are incompatible
-    if (!opts?.noMining && !opts?.blockTime) {
+    if (!opts.noMining && !opts.blockTime) {
       options.blockTime = 2;
     }
+
+    this.#options = options;
 
     // Determine the path to the anvil binary directory
     const anvilBinaryDir = join(process.cwd(), 'node_modules', '.bin');
@@ -72,25 +58,40 @@ export class Anvil {
       const versionOutput = execSync('anvil --version', { encoding: 'utf-8' });
       console.log(`Anvil version: ${versionOutput}`);
       console.log(
-        `Anvil server started on port: ${options.port} with chainId: ${options.chainId}`,
+        `Anvil server started on port: ${this.#options.port} with chainId: ${this.#options.chainId}`,
       );
     } catch (error) {
       console.error('Failed to execute anvil:', error);
       throw new Error('Anvil binary is not accessible.');
     }
 
-    this.#server = createAnvil(options);
+    const { createServer } = await proolPromise;
+    const { anvil } = await proolInstancesPromise;
+
+    const anvilInstance = anvil(this.#options);
+
+    this.#server = createServer({
+      instance: anvilInstance,
+      host: this.#options.host ?? HOST,
+      port: this.#options.port ?? PORT,
+    });
     await this.#server.start();
   }
 
   getProvider() {
-    if (!this.#server) {
-      throw new Error('Server not running yet');
+    if (!this.#server || !this.#options) {
+      throw new Error('Server not running or options not set yet');
     }
+    const instance = {
+      host: this.#options.host ?? defaultOptions.host!,
+      port: this.#options.port ?? defaultOptions.port!,
+    };
+
+    // Pass the correct chainId and port from stored options
     const { walletClient, publicClient, testClient } = createAnvilClients(
-      this.#server,
-      this.#server.options.chainId ?? 1337,
-      this.#server.options.port ?? 8545,
+      instance,
+      this.#options.chainId ?? CHAIN_ID,
+      instance.port ?? PORT,
     );
 
     return { walletClient, publicClient, testClient };
