@@ -108,7 +108,7 @@ const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
 const useReadOnlyNetworkStore =
-  inTest && getManifestFlags().testing?.forceExtensionStore === false;
+  inTest && getManifestFlags().testing?.forceExtensionStore !== true;
 const localStore = useReadOnlyNetworkStore
   ? new ReadOnlyNetworkStore()
   : new ExtensionStore();
