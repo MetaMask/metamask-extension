@@ -68,7 +68,7 @@ exports[`Unlock Page should match snapshot 1`] = `
         </button>
       </form>
       <button
-        class="mm-box mm-text mm-button-base unlock-page__link mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-bottom-6 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        class="mm-box mm-text mm-button-base unlock-page-link mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-bottom-6 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
       >
         Forgot password?
       </button>
@@ -76,8 +76,8 @@ exports[`Unlock Page should match snapshot 1`] = `
         class="mm-box mm-text unlock-page__support mm-text--body-md mm-box--color-text-default"
       >
         <span>
-           
-          Need help? Contact 
+
+          Need help? Contact
           <a
             class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             href="https://support.metamask.io"
@@ -86,8 +86,8 @@ exports[`Unlock Page should match snapshot 1`] = `
           >
             MetaMask support
           </a>
-          
-           
+
+
         </span>
       </p>
     </div>

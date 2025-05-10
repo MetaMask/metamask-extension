@@ -106,7 +106,7 @@ describe('MetaMask Responsive UI', function () {
           text: 'Localhost 8545',
         });
         await driver.clickElement({
-          css: '.unlock-page__link',
+          css: '[data-testid="unlock-page-link"]',
           text: 'Forgot password?',
         });
 

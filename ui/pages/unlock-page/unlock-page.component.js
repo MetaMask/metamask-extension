@@ -176,7 +176,6 @@ export default class UnlockPage extends Component {
 
     return (
       <Box
-        className="unlock-page__container"
         display={Display.Flex}
         alignItems={AlignItems.stretch}
         justifyContent={JustifyContent.center}
@@ -229,7 +228,6 @@ export default class UnlockPage extends Component {
           </Text>
           <Box
             as="form"
-            className="unlock-page__form"
             onSubmit={this.handleSubmit}
             width={BlockSize.Full}
             marginBottom={6}
@@ -269,14 +267,14 @@ export default class UnlockPage extends Component {
             variant={ButtonVariant.Link}
             tabindex
             key="import-account"
-            className="unlock-page__link"
+            data-testid="unlock-page-link"
             onClick={() => onRestore()}
             marginBottom={6}
           >
             {t('forgotPassword')}
           </Button>
 
-          <Text className="unlock-page__support">
+          <Text>
             {t('needHelp', [
               <Button
                 variant={ButtonVariant.Link}
