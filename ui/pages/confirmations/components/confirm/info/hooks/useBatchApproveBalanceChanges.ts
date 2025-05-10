@@ -5,6 +5,8 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { add0x } from '@metamask/utils';
+import { useMemo } from 'react';
+
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAsyncResult } from '../../../../../../hooks/useAsync';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
@@ -40,18 +42,20 @@ export function useBatchApproveBalanceChanges() {
       },
     });
 
-  const finalBalanceChanges = (balanceChanges ?? []).map<ApprovalBalanceChange>(
-    (change, index) => {
-      const simulation = simulationBalanceChanges?.[index];
+  const finalBalanceChanges = useMemo(
+    () =>
+      (balanceChanges ?? []).map<ApprovalBalanceChange>((change, index) => {
+        const simulation = simulationBalanceChanges?.[index];
 
-      return {
-        ...change,
-        isApproval: true,
-        isAllApproval: simulation?.isAll ?? false,
-        isUnlimitedApproval: simulation?.isUnlimited ?? false,
-        nestedTransactionIndex: simulation?.nestedTransactionIndex ?? -1,
-      };
-    },
+        return {
+          ...change,
+          isApproval: true,
+          isAllApproval: simulation?.isAll ?? false,
+          isUnlimitedApproval: simulation?.isUnlimited ?? false,
+          nestedTransactionIndex: simulation?.nestedTransactionIndex ?? -1,
+        };
+      }),
+    [balanceChanges, simulationBalanceChanges],
   );
 
   const pending = pendingSimulationChanges || pendingBalanceChanges;
@@ -66,7 +70,7 @@ function useBatchApproveSimulationBalanceChanges({
 }) {
   return useAsyncResult(
     async () => buildSimulationTokenBalanceChanges({ nestedTransactions }),
-    [nestedTransactions],
+    [JSON.stringify(nestedTransactions)],
   );
 }
 

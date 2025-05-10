@@ -72,6 +72,13 @@ function writePrBodyAndInfoToFile(prInfo: PRInfo) {
   core.info(`PR body and info saved to ${prBodyPath}`);
 }
 
+function writeEmptyGitDiff() {
+  core.info('Not a PR, skipping git diff');
+  const outputPath = path.resolve(CHANGED_FILES_DIR, 'changed-files.json');
+  fs.writeFileSync(outputPath, '[]');
+  core.info(`Empty git diff results saved to ${outputPath}`);
+}
+
 /**
  * Main run function, stores the output of git diff and the body of the matching PR to a file.
  *
@@ -84,7 +91,7 @@ async function storeGitDiffOutputAndPrBody() {
 
     core.info(`Determining whether to run git diff...`);
     if (!PR_NUMBER) {
-      core.info('Not a PR, skipping git diff');
+      writeEmptyGitDiff();
       return;
     }
 
@@ -92,7 +99,7 @@ async function storeGitDiffOutputAndPrBody() {
 
     const baseRef = prInfo?.base.ref;
     if (!baseRef) {
-      core.info('Not a PR, skipping git diff');
+      writeEmptyGitDiff();
       return;
     }
     // We perform git diff even if the PR base is not main or skip-e2e-quality-gate label is applied

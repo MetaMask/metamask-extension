@@ -45,8 +45,13 @@ describe('Remove NFT', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints, contractRegistry }) => {
-        await loginWithBalanceValidation(driver);
+      async ({
+        driver,
+        localNodes,
+        mockedEndpoint: mockedEndpoints,
+        contractRegistry,
+      }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
