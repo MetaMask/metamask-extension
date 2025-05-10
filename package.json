@@ -227,7 +227,8 @@
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
     "@trezor/connect-web": "~9.4.7",
     "@metamask/network-controller@npm:^23.3.0": "patch:@metamask/network-controller@npm%3A23.5.1#~/.yarn/patches/@metamask-network-controller-npm-23.5.1-42017cc4f5.patch",
-    "@metamask/network-controller@npm:^23.1.0": "patch:@metamask/network-controller@npm%3A23.5.1#~/.yarn/patches/@metamask-network-controller-npm-23.5.1-42017cc4f5.patch"
+    "@metamask/network-controller@npm:^23.1.0": "patch:@metamask/network-controller@npm%3A23.5.1#~/.yarn/patches/@metamask-network-controller-npm-23.5.1-42017cc4f5.patch",
+    "nanoid@npm:^5.1.5": "^3.3.8"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -282,11 +283,15 @@
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/json-rpc-engine": "^10.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
+    "@metamask/kernel-browser-runtime": "^0.1.0",
+    "@metamask/kernel-shims": "^0.2.0",
+    "@metamask/kernel-utils": "^0.1.0",
     "@metamask/keyring-api": "^18.0.0",
     "@metamask/keyring-controller": "^22.0.2",
     "@metamask/keyring-internal-api": "^6.2.0",
     "@metamask/keyring-internal-snap-client": "^4.1.0",
     "@metamask/keyring-snap-client": "^5.0.0",
+    "@metamask/logger": "^0.2.0",
     "@metamask/logging-controller": "^6.0.4",
     "@metamask/logo": "^4.0.0",
     "@metamask/message-manager": "^12.0.1",
@@ -324,6 +329,7 @@
     "@metamask/snaps-utils": "^9.4.0",
     "@metamask/solana-wallet-snap": "^1.32.0",
     "@metamask/solana-wallet-standard": "^0.5.0",
+    "@metamask/streams": "^0.2.0",
     "@metamask/transaction-controller": "^57.0.0",
     "@metamask/user-operation-controller": "^36.0.0",
     "@metamask/utils": "^11.1.0",
@@ -760,7 +766,11 @@
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>bigint-buffer": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false,
-      "@testing-library/dom>aria-query>@babel/runtime-corejs3>core-js-pure": false
+      "@testing-library/dom>aria-query>@babel/runtime-corejs3>core-js-pure": false,
+      "@metamask/kernel-browser-runtime>@metamask/streams": false,
+      "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": false,
+      "@metamask/logger>@metamask/streams": false,
+      "@metamask/streams": false
     }
   },
   "packageManager": "yarn@4.9.1",
