@@ -158,6 +158,10 @@
   "addAccount": {
     "message": "Thêm tài khoản"
   },
+  "addAccountFromNetwork": {
+    "message": "Thêm tài khoản $1",
+    "description": "$1 is the network name, e.g. Bitcoin or Solana"
+  },
   "addAccountToMetaMask": {
     "message": "Thêm tài khoản vào MetaMask"
   },
@@ -353,6 +357,12 @@
   "alert": {
     "message": "Cảnh báo"
   },
+  "alertAccountTypeUpgradeMessage": {
+    "message": "Bạn đang nâng cấp tài khoản lên tài khoản thông minh. Địa chỉ tài khoản hiện tại của bạn sẽ được giữ nguyên, nhưng giao dịch sẽ nhanh hơn và phí mạng sẽ thấp hơn. $1."
+  },
+  "alertAccountTypeUpgradeTitle": {
+    "message": "Loại tài khoản"
+  },
   "alertActionBuyWithNativeCurrency": {
     "message": "Mua $1"
   },
@@ -542,6 +552,9 @@
   "asset": {
     "message": "Tài sản"
   },
+  "assetChartNoHistoricalPrices": {
+    "message": "Chúng tôi không thể tìm nạp bất kỳ dữ liệu lịch sử nào"
+  },
   "assetMultipleNFTsBalance": {
     "message": "$1 NFT"
   },
@@ -591,6 +604,48 @@
   "back": {
     "message": "Quay lại"
   },
+  "backupAndSync": {
+    "message": "Sao lưu và đồng bộ"
+  },
+  "backupAndSyncBasicFunctionalityNameMention": {
+    "message": "chức năng cơ bản"
+  },
+  "backupAndSyncEnable": {
+    "message": "Bật sao lưu và đồng bộ"
+  },
+  "backupAndSyncEnableConfirmation": {
+    "message": "Khi bạn bật sao lưu và đồng bộ, bạn cũng sẽ bật $1. Bạn có muốn tiếp tục không?",
+    "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
+  },
+  "backupAndSyncEnableDescription": {
+    "message": "Sao lưu và đồng bộ cho phép chúng tôi lưu trữ dữ liệu được mã hóa cho các chế độ cài đặt và tính năng tùy chỉnh của bạn. Điều này giúp trải nghiệm sử dụng MetaMask của bạn nhất quán trên các thiết bị, đồng thời giúp khôi phục chế độ cài đặt và tính năng nếu bạn cần cài đặt lại MetaMask. $1.",
+    "description": "$1 is link to the backup and sync privacy policy."
+  },
+  "backupAndSyncEnableDescriptionUpdatePreferences": {
+    "message": "Bạn có thể cập nhật tùy chọn của mình bất cứ lúc nào trong phần $1",
+    "description": "$1 is a bolded text that highlights the path to the settings page."
+  },
+  "backupAndSyncEnableDescriptionUpdatePreferencesPath": {
+    "message": "Cài đặt > Sao lưu và đồng bộ."
+  },
+  "backupAndSyncFeatureAccounts": {
+    "message": "Tài khoản"
+  },
+  "backupAndSyncManageWhatYouSync": {
+    "message": "Quản lý những gì được đồng bộ"
+  },
+  "backupAndSyncManageWhatYouSyncDescription": {
+    "message": "Bật những gì được đồng bộ giữa các thiết bị của bạn."
+  },
+  "backupAndSyncPrivacyLink": {
+    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn"
+  },
+  "backupAndSyncSlideDescription": {
+    "message": "Sao lưu tài khoản và đồng bộ các chế độ cài đặt của bạn."
+  },
+  "backupAndSyncSlideTitle": {
+    "message": "Giới thiệu về sao lưu và đồng bộ"
+  },
   "backupApprovalInfo": {
     "message": "Đây là mã bí mật bắt buộc phải dùng để khôi phục ví trong trường hợp bạn bị mất thiết bị, quên mật khẩu, phải cài đặt lại MetaMask hoặc muốn truy cập ví của mình trên một thiết bị khác."
   },
@@ -633,6 +688,16 @@
   },
   "basicConfigurationModalDisclaimerOff": {
     "message": "Điều này có nghĩa là bạn sẽ không thể tối ưu hoàn toàn thời gian sử dụng MetaMask. Các tính năng cơ bản (chẳng hạn như chi tiết token, cài đặt gas tối ưu và các tính năng khác) sẽ không khả dụng."
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalText": {
+    "message": "Tắt tùy chọn này cũng sẽ vô hiệu hóa tất cả các tính năng trong $1 và $2.",
+    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
+    "message": "bảo mật và quyền riêng tư, sao lưu và đồng bộ"
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
+    "message": "thông báo"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "Để tối ưu thời gian sử dụng MetaMask, bạn cần bật tính năng này. Các chức năng cơ bản (chẳng hạn như chi tiết token, cài đặt gas tối ưu và các chức năng khác) rất quan trọng đối với trải nghiệm web3."
@@ -703,6 +768,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "Nếu tiếp tục, tất cả tài sản bạn đã niêm yết trên Blur có thể gặp rủi ro."
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "Bạn đang tương tác với một trang web độc hại. Nếu tiếp tục, bạn sẽ bị mất tài sản."
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "Nếu tiếp tục, tất cả tài sản bạn đã niêm yết trên OpenSea có thể gặp rủi ro."
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "Nếu bạn xác nhận yêu cầu này, bạn có thể bị mất tài sản. Chúng tôi khuyên bạn nên hủy yêu cầu này."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "Bạn đang gửi tài sản của mình cho kẻ lừa đảo. Nếu tiếp tục, bạn sẽ bị mất những tài sản đó."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "Nếu bạn xác nhận yêu cầu này, bạn đang cho phép kẻ lừa đảo rút và chi tiêu tài sản của mình. Bạn sẽ không lấy lại được tài sản."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo có thể lấy hết tài sản của bạn."
   },
@@ -739,6 +822,9 @@
   "blockies": {
     "message": "Blockies"
   },
+  "borrowed": {
+    "message": "Đã vay"
+  },
   "boughtFor": {
     "message": "Đã mua với giá"
   },
@@ -759,6 +845,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "Bạn sẽ cần cho phép truy cập vào $1 $2 để thực hiện cầu nối, sau đó hãy phê duyệt việc thực hiện cầu nối sang $2. Điều này sẽ yêu cầu hai lần xác nhận riêng biệt."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "Đã sao chép liên kết trình khám phá khối!"
+  },
   "bridgeCalculatingAmount": {
     "message": "Đang tính toán..."
   },
@@ -773,6 +862,10 @@
   },
   "bridgeCreateSolanaAccountTitle": {
     "message": "Bạn sẽ cần có tài khoản Solana trước."
+  },
+  "bridgeDetailsTitle": {
+    "message": "Chi tiết cầu nối",
+    "description": "Title for the modal showing details about a bridge transaction."
   },
   "bridgeEnterAmount": {
     "message": "Nhập số tiền"
@@ -814,6 +907,21 @@
   "bridgeSelectTokenAndAmount": {
     "message": "Chọn token và số tiền"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "Đã tạo tài khoản Solana"
+  },
+  "bridgeStatusComplete": {
+    "message": "Hoàn tất",
+    "description": "Status text indicating a bridge transaction has successfully completed."
+  },
+  "bridgeStatusFailed": {
+    "message": "Thất bại",
+    "description": "Status text indicating a bridge transaction has failed."
+  },
+  "bridgeStatusInProgress": {
+    "message": "Đang tiến hành",
+    "description": "Status text indicating a bridge transaction is currently processing."
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "Đã nhận $1 trên $2",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +950,15 @@
   },
   "bridgeToChain": {
     "message": "Cầu nối đến $1"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "Nếu bạn đã thêm token này theo cách thủ công, hãy đảm bảo rằng bạn nhận thức được các rủi ro đối với tiền của mình trước khi thực hiện cầu nối."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "Chúng tôi không thể xác minh token này."
+  },
+  "bridgeTransactionProgress": {
+    "message": "Giao dịch $1/2"
   },
   "bridgeTxDetailsBridging": {
     "message": "Cầu nối"
@@ -954,8 +1071,11 @@
     "message": "Chọn mạng của bạn"
   },
   "chooseYourNetworkDescription": {
-    "message": "Chúng tôi sử dụng Infura làm nhà cung cấp dịch vụ gọi hàm từ xa (RPC) để cung cấp quyền truy cập riêng tư và đáng tin cậy nhất vào dữ liệu Ethereum mà chúng tôi có thể. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ thu thập địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Đọc $1 của chúng tôi để tìm hiểu thêm về cách Infura xử lý dữ liệu.",
+    "message": "Khi bạn sử dụng các cài đặt và cấu hình mặc định của chúng tôi, chúng tôi sử dụng Infura làm nhà cung cấp gọi hàm từ xa (RPC) mặc định để cung cấp quyền truy cập dữ liệu Ethereum đáng tin cậy và riêng tư nhất có thể. Trong một số trường hợp giới hạn, chúng tôi có thể sử dụng các nhà cung cấp RPC khác nhằm mang đến trải nghiệm tốt nhất cho người dùng. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ nhận được địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Để tìm hiểu thêm về cách Infura xử lý dữ liệu cho các tài khoản EVM, hãy đọc $1, và đối với các tài khoản Solana, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
+  },
+  "chooseYourNetworkDescriptionCallToAction": {
+    "message": "nhấp vào đây"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Bạn cần sử dụng MetaMask trên Google Chrome để kết nối với Ví cứng của bạn."
@@ -1061,6 +1181,12 @@
   "confirmGasFeeTokenTooltip": {
     "message": "Khoản này được thanh toán cho mạng để xử lý giao dịch của bạn. Bao gồm phí $1 của MetaMask cho các token không phải ETH."
   },
+  "confirmInfoAccountNow": {
+    "message": "Bây giờ"
+  },
+  "confirmInfoSwitchingTo": {
+    "message": "Chuyển sang"
+  },
   "confirmNestedTransactionTitle": {
     "message": "Giao dịch $1"
   },
@@ -1073,6 +1199,9 @@
   "confirmSimulationApprove": {
     "message": "Bạn chấp thuận"
   },
+  "confirmTitleAccountTypeSwitch": {
+    "message": "Cập nhật tài khoản"
+  },
   "confirmTitleApproveTransactionNFT": {
     "message": "Yêu cầu rút tiền"
   },
@@ -1081,6 +1210,12 @@
   },
   "confirmTitleDescApproveTransaction": {
     "message": "Trang web này muốn được cấp quyền để rút NFT của bạn"
+  },
+  "confirmTitleDescDelegationRevoke": {
+    "message": "Bạn đang chuyển về tài khoản tiêu chuẩn (EOA)."
+  },
+  "confirmTitleDescDelegationUpgrade": {
+    "message": "Bạn đang chuyển sang tài khoản thông minh"
   },
   "confirmTitleDescDeployContract": {
     "message": "Trang web này muốn bạn triển khai hợp đồng"
@@ -1518,6 +1653,15 @@
   "defaultSettingsTitle": {
     "message": "Cài đặt quyền riêng tư mặc định"
   },
+  "defi": {
+    "message": "DeFi"
+  },
+  "defiTabErrorContent": {
+    "message": "Tiền của bạn vẫn an toàn, hãy thử truy cập lại trang này sau."
+  },
+  "defiTabErrorTitle": {
+    "message": "Rất tiếc! Đã xảy ra sự cố."
+  },
   "delete": {
     "message": "Xóa"
   },
@@ -1591,6 +1735,10 @@
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "Địa chỉ nhận"
   },
+  "destinationTransactionIdLabel": {
+    "message": "ID giao dịch đích",
+    "description": "Label for the destination transaction ID field."
+  },
   "details": {
     "message": "Chi tiết"
   },
@@ -1652,6 +1800,12 @@
   "dismissReminderField": {
     "message": "Tắt lời nhắc sao lưu Cụm từ khôi phục bí mật"
   },
+  "dismissSmartAccountSuggestionEnabledDescription": {
+    "message": "Bật tùy chọn này để không còn thấy gợi ý \"Chuyển sang Tài khoản thông minh\" trên bất kỳ tài khoản nào. Tài khoản thông minh mở khóa giao dịch nhanh hơn, phí mạng thấp hơn và linh hoạt hơn trong việc thanh toán."
+  },
+  "dismissSmartAccountSuggestionEnabledTitle": {
+    "message": "Tắt gợi ý \"Chuyển sang Tài khoản thông minh\""
+  },
   "displayNftMedia": {
     "message": "Hiển thị phương tiện NFT"
   },
@@ -1694,8 +1848,40 @@
   "duplicateContactWarning": {
     "message": "Bạn có liên hệ bị trùng"
   },
+  "durationSuffixDay": {
+    "message": "Ngày",
+    "description": "Shortened form of 'day'"
+  },
+  "durationSuffixHour": {
+    "message": "Giờ",
+    "description": "Shortened form of 'hour'"
+  },
+  "durationSuffixMillisecond": {
+    "message": "Mili giây",
+    "description": "Shortened form of 'millisecond'"
+  },
+  "durationSuffixMinute": {
+    "message": "Phút",
+    "description": "Shortened form of 'minute'"
+  },
+  "durationSuffixMonth": {
+    "message": "Tháng",
+    "description": "Shortened form of 'month'"
+  },
+  "durationSuffixSecond": {
+    "message": "Giây",
+    "description": "Shortened form of 'second'"
+  },
+  "durationSuffixWeek": {
+    "message": "Tuần",
+    "description": "Shortened form of 'week'"
+  },
+  "durationSuffixYear": {
+    "message": "Năm",
+    "description": "Shortened form of 'year'"
+  },
   "earn": {
-    "message": "Earn"
+    "message": "Kiếm lợi nhuận"
   },
   "edit": {
     "message": "Chỉnh sửa"
@@ -2029,6 +2215,12 @@
   "failedToFetchChainId": {
     "message": "Không thể tìm nạp ID chuỗi. URL RPC của bạn có chính xác không?"
   },
+  "failover": {
+    "message": "Chuyển đổi dự phòng"
+  },
+  "failoverRpcUrl": {
+    "message": "URL RPC chuyển đổi dự phòng"
+  },
   "failureMessage": {
     "message": "Đã xảy ra sự cố và chúng tôi không thể hoàn tất hành động"
   },
@@ -2213,6 +2405,15 @@
   "hardwareWalletLegacyDescription": {
     "message": "(cũ)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletSubmissionWarningStep1": {
+    "message": "Nhớ cắm thiết bị $1 và chọn ứng dụng Ethereum."
+  },
+  "hardwareWalletSubmissionWarningStep2": {
+    "message": "Bật \"dữ liệu hợp đồng thông minh\" hoặc \"ký mù\" trên thiết bị $1 của bạn."
+  },
+  "hardwareWalletSubmissionWarningTitle": {
+    "message": "Trước khi nhấn Gửi:"
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "nhấp vào đây"
@@ -2445,6 +2646,10 @@
   "importWalletOrAccountHeader": {
     "message": "Nhập ví hoặc tài khoản"
   },
+  "importWalletSuccess": {
+    "message": "Cụm từ khôi phục bí mật $1 đã được nhập",
+    "description": "$1 is the index of the secret recovery phrase"
+  },
   "importWithCount": {
     "message": "Nhập $1",
     "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
@@ -2458,6 +2663,9 @@
   },
   "included": {
     "message": "đã bao gồm"
+  },
+  "includesXTransactions": {
+    "message": "Bao gồm $1 giao dịch"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask không thể kết nối với máy chủ chuỗi khối. Hãy xem xét các lý do tiềm ẩn $1.",
@@ -2501,11 +2709,17 @@
   "insufficientTokens": {
     "message": "Không đủ token."
   },
+  "interactWithSmartContract": {
+    "message": "Hợp đồng thông minh"
+  },
   "interactingWith": {
     "message": "Đang tương tác với"
   },
   "interactingWithTransactionDescription": {
     "message": "Đây là hợp đồng mà bạn đang tương tác. Nhớ xác minh các thông tin để bảo vệ bản thân trước những kẻ lừa đảo."
+  },
+  "interaction": {
+    "message": "Tương tác"
   },
   "invalidAddress": {
     "message": "Địa chỉ không hợp lệ"
@@ -2660,6 +2874,9 @@
   "learnMoreAboutPrivacy": {
     "message": "Tìm hiểu thêm về các cách thức bảo mật tốt nhất."
   },
+  "learnMoreAboutSolanaAccounts": {
+    "message": "Tìm hiểu thêm về tài khoản Solana"
+  },
   "learnMoreKeystone": {
     "message": "Tìm hiểu thêm"
   },
@@ -2713,6 +2930,12 @@
   },
   "ledgerLocked": {
     "message": "Không thể kết nối với thiết bị Ledger. Vui lòng đảm bảo bạn đã mở khóa thiết bị và mở ứng dụng Ethereum."
+  },
+  "ledgerMultipleDevicesUnsupportedInfoDescription": {
+    "message": "Để kết nối thiết bị mới, hãy ngắt kết nối thiết bị trước đó."
+  },
+  "ledgerMultipleDevicesUnsupportedInfoTitle": {
+    "message": "Bạn chỉ có thể kết nối một thiết bị Ledger tại một thời điểm"
   },
   "ledgerTimeout": {
     "message": "Ledger Live mất quá nhiều thời gian để phản hồi hoặc đã hết thời gian chờ kết nối. Hãy đảm bảo bạn đã mở ứng dụng Ledger Live và đã mở khóa thiết bị."
@@ -2810,6 +3033,15 @@
   },
   "manageDefaultSettings": {
     "message": "Quản lý chế độ cài đặt quyền riêng tư mặc định"
+  },
+  "manageInstitutionalWallets": {
+    "message": "Quản lý Ví tổ chức"
+  },
+  "manageInstitutionalWalletsDescription": {
+    "message": "Bật tùy chọn này để sử dụng ví tổ chức."
+  },
+  "manageNetworksMenuHeading": {
+    "message": "Quản lý mạng"
   },
   "managePermissions": {
     "message": "Quản lý quyền"
@@ -3094,6 +3326,9 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
+  },
+  "networkNameBitcoinTestnet": {
+    "message": "Mạng thử nghiệm Bitcoin"
   },
   "networkNameDefinition": {
     "message": "Tên được liên kết với mạng này."
@@ -3572,7 +3807,10 @@
     "message": "URL cổng IPFS hợp lệ"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "Chúng tôi sử dụng Infura làm nhà cung cấp dịch vụ gọi hàm từ xa (RPC) để cung cấp quyền truy cập riêng tư và đáng tin cậy nhất vào dữ liệu Ethereum mà chúng tôi có thể. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ thu thập địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Đọc $1 của chúng tôi để tìm hiểu thêm về cách Infura xử lý dữ liệu."
+    "message": "Khi bạn sử dụng các cài đặt và cấu hình mặc định của chúng tôi, chúng tôi sử dụng Infura làm nhà cung cấp gọi hàm từ xa (RPC) mặc định để cung cấp quyền truy cập dữ liệu Ethereum đáng tin cậy và riêng tư nhất có thể. Trong một số trường hợp giới hạn, chúng tôi có thể sử dụng các nhà cung cấp RPC khác nhằm mang đến trải nghiệm tốt nhất cho người dùng. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ nhận được địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Để tìm hiểu thêm về cách Infura xử lý dữ liệu cho các tài khoản EVM, hãy đọc $1; đối với các tài khoản Solana, $2."
+  },
+  "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
+    "message": "nhấn vào đây"
   },
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Chọn mạng của bạn"
@@ -3664,6 +3902,9 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Quá trình cài đặt MetaMask đã hoàn tất!"
+  },
+  "onekey": {
+    "message": "OneKey"
   },
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng. $1",
@@ -4279,6 +4520,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "Bảo vệ tiền của bạn"
   },
+  "redeposit": {
+    "message": "Nạp lại"
+  },
   "refreshList": {
     "message": "Làm mới danh sách"
   },
@@ -4490,6 +4734,9 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "Bạn đang xóa quyền chi tiêu token của người khác khỏi tài khoản của bạn."
+  },
+  "reward": {
+    "message": "Phần thưởng"
   },
   "rpcNameOptional": {
     "message": "Tên RPC (Không bắt buộc)"
@@ -4925,11 +5172,74 @@
   "slideFundWalletTitle": {
     "message": "Nạp tiền vào ví của bạn"
   },
+  "slideMultiSrpDescription": {
+    "message": "Nhập và sử dụng nhiều ví trong MetaMask"
+  },
+  "slideMultiSrpTitle": {
+    "message": "Thêm nhiều Cụm từ khôi phục bí mật"
+  },
+  "slideRemoteModeDescription": {
+    "message": "Sử dụng ví lạnh không dây"
+  },
+  "slideRemoteModeTitle": {
+    "message": "Kho lạnh, truy cập nhanh"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Địa chỉ giữ nguyên, tính năng thông minh hơn"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Bắt đầu sử dụng tài khoản thông minh"
+  },
+  "slideSolanaDescription": {
+    "message": "Tạo tài khoản Solana để bắt đầu"
+  },
+  "slideSolanaTitle": {
+    "message": "Solana hiện đã được hỗ trợ"
+  },
   "slideSweepStakeDescription": {
     "message": "Đúc NFT ngay để có cơ hội trúng thưởng"
   },
   "slideSweepStakeTitle": {
     "message": "Tham gia chương trình Tặng thưởng $5000 USDC!"
+  },
+  "smartAccountAccept": {
+    "message": "Sử dụng tài khoản thông minh"
+  },
+  "smartAccountBetterTransaction": {
+    "message": "Giao dịch nhanh hơn, phí thấp hơn"
+  },
+  "smartAccountBetterTransactionDescription": {
+    "message": "Tiết kiệm thời gian và tiền bạc bằng cách xử lý nhiều giao dịch cùng lúc."
+  },
+  "smartAccountFeaturesDescription": {
+    "message": "Giữ nguyên địa chỉ tài khoản và bạn có thể chuyển đổi lại bất kỳ lúc nào."
+  },
+  "smartAccountLabel": {
+    "message": "Tài khoản thông minh"
+  },
+  "smartAccountPayToken": {
+    "message": "Thanh toán bằng bất kỳ token nào, bất kỳ lúc nào"
+  },
+  "smartAccountPayTokenDescription": {
+    "message": "Sử dụng token bạn đang có để thanh toán phí mạng."
+  },
+  "smartAccountReject": {
+    "message": "Không sử dụng tài khoản thông minh"
+  },
+  "smartAccountRequestFor": {
+    "message": "Yêu cầu cho"
+  },
+  "smartAccountSameAccount": {
+    "message": "Tài khoản giữ nguyên, tính năng thông minh hơn."
+  },
+  "smartAccountSplashTitle": {
+    "message": "Sử dụng tài khoản thông minh?"
+  },
+  "smartAccountUpgradeBannerDescription": {
+    "message": "Cùng địa chỉ. Tính năng thông minh hơn."
+  },
+  "smartAccountUpgradeBannerTitle": {
+    "message": "Chuyển sang tài khoản thông minh"
   },
   "smartContracts": {
     "message": "Hợp đồng thông minh"
@@ -5138,6 +5448,12 @@
   "snapsUIError": {
     "message": "Liên hệ với những người tạo ra $1 để được hỗ trợ thêm.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaAccountRequested": {
+    "message": "Trang web này yêu cầu tài khoản Solana."
+  },
+  "solanaAccountRequired": {
+    "message": "Cần có tài khoản Solana để kết nối với trang web này."
   },
   "solanaImportAccounts": {
     "message": "Nhập tài khoản Solana"
@@ -5355,6 +5671,18 @@
   "stake": {
     "message": "Stake"
   },
+  "staked": {
+    "message": "Đã ký gửi"
+  },
+  "standardAccountLabel": {
+    "message": "Tài khoản tiêu chuẩn"
+  },
+  "stateCorruptionDetectedErrorMessage": {
+    "message": "Tệp trạng thái của MetaMask bị hỏng hoặc bị thiếu. Các tệp này có thể khôi phục được, vì vậy đừng gỡ cài đặt tiện ích mở rộng MetaMask!"
+  },
+  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
+    "message": "Nếu bạn muốn tự thử khôi phục cụm từ khôi phục bí mật của mình, hãy làm theo các hướng dẫn này."
+  },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái."
   },
@@ -5476,6 +5804,9 @@
   },
   "suggestedTokenName": {
     "message": "Tên đề xuất:"
+  },
+  "supplied": {
+    "message": "Đã cung cấp"
   },
   "support": {
     "message": "Hỗ trợ"
@@ -6102,6 +6433,13 @@
   "transactionHistoryTotalGasFee": {
     "message": "Tổng phí gas"
   },
+  "transactionIdLabel": {
+    "message": "ID giao dịch",
+    "description": "Label for the source transaction ID field."
+  },
+  "transactionIncludesTypes": {
+    "message": "Giao dịch này bao gồm: $1."
+  },
   "transactionResubmitted": {
     "message": "Đã gửi lại giao dịch với mức phí gas ước tính tăng lên $1 lúc $2"
   },
@@ -6110,6 +6448,10 @@
   },
   "transactionSubmitted": {
     "message": "Đã gửi giao dịch với mức phí gas ước tính $1 lúc $2."
+  },
+  "transactionTotalGasFee": {
+    "message": "Tổng phí gas",
+    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactionUpdated": {
     "message": "Đã cập nhật giao dịch lúc $2."
@@ -6207,6 +6549,9 @@
   },
   "unapproved": {
     "message": "Chưa chấp thuận"
+  },
+  "unexpectedBehavior": {
+    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục đúng cách. Sử dụng liên kết bên dưới để gửi báo cáo lỗi cho MetaMask."
   },
   "units": {
     "message": "đơn vị"
@@ -6362,6 +6707,9 @@
   "viewOnOpensea": {
     "message": "Xem trên Opensea"
   },
+  "viewSolanaAccount": {
+    "message": "Xem tài khoản Solana"
+  },
   "viewTransaction": {
     "message": "Xem giao dịch"
   },
@@ -6486,6 +6834,14 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bạn cần cho phép truy cập vào máy ảnh để sử dụng tính năng này."
+  },
+  "youReceived": {
+    "message": "Bạn đã nhận",
+    "description": "Label indicating the amount and asset the user received."
+  },
+  "youSent": {
+    "message": "Bạn đã gửi",
+    "description": "Label indicating the amount and asset the user sent."
   },
   "yourAccounts": {
     "message": "Tài khoản của bạn"
