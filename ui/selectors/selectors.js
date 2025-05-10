@@ -540,15 +540,52 @@ export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
-    // keep existing keyring order
-    const internalAccounts = keyrings
-      .map(({ accounts: addresses }) => addresses)
-      .flat()
-      .map((address) => {
-        return accounts[address];
-      });
+    const thirdPartySnaps = 'thirdPartySnaps';
+    // Create a map of entropySource map to accounts for quick lookup
+    const entropySourceToAccountsMap = Object.values(accounts).reduce(
+      (map, account) => {
+        if (account.metadata?.keyring?.type === KeyringTypes.snap) {
+          const { entropySource = thirdPartySnaps } = account.options || {};
+          if (!map[entropySource]) {
+            map[entropySource] = [];
+          }
+          map[entropySource].push(account);
+        }
+        return map;
+      },
+      {},
+    );
 
-    return internalAccounts;
+    // keep existing keyring order
+    return keyrings.reduce((internalAccounts, keyring) => {
+      // Get regular accounts for this keyring
+      const keyringAccounts = keyring.accounts.map(
+        (address) => accounts[address],
+      );
+
+      // If it's an HD keyring, add any snap accounts that belong to it
+      if (keyring.type === KeyringTypes.hd) {
+        const snapAccounts =
+          entropySourceToAccountsMap[keyring.metadata.id] || [];
+        internalAccounts.push(...keyringAccounts, ...snapAccounts);
+        return internalAccounts;
+      } else if (keyring.type === KeyringTypes.snap) {
+        const thirdpartySnapAccounts =
+          entropySourceToAccountsMap[thirdPartySnaps] || [];
+        // In a scenario where there are multiple snap keyrings, which isn't the case for today
+        // There would be duplicate third party snap accounts that are being pushed into internalAccounts again
+        // This will only be run once, when there is only one snap keyring
+        const accountsToAdd = thirdpartySnapAccounts.filter(
+          (account) =>
+            !internalAccounts.some((existing) => existing.id === account.id),
+        );
+
+        internalAccounts.push(...accountsToAdd);
+        return internalAccounts;
+      }
+      internalAccounts.push(...keyringAccounts);
+      return internalAccounts;
+    }, []);
   },
 );
 
@@ -1165,6 +1202,15 @@ export const selectDefaultRpcEndpointByChainId = createSelector(
     const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
     return rpcEndpoints[defaultRpcEndpointIndex];
   },
+);
+
+/**
+ * @type (state: RemoteFeatureFlagsState) => boolean
+ */
+export const getIsRpcFailoverEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
 );
 
 /**
