@@ -60,7 +60,7 @@ exports[`Unlock Page should match snapshot 1`] = `
         </div>
       </form>
       <button
-        class="button btn--rounded btn-default"
+        class="button btn-default"
         data-testid="unlock-submit"
         disabled=""
         style="margin-top: 20px; height: 56px; font-weight: 500; box-shadow: none; border-radius: 100px;"
