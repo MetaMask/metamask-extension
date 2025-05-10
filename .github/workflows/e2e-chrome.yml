@@ -87,7 +87,7 @@ jobs:
     needs:
       - test-e2e-chrome-api-specs
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
+    if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
     env:
       GH_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
@@ -132,7 +132,7 @@ jobs:
     needs:
       - test-e2e-chrome-api-specs-multichain
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
+    if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
     env:
       GH_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
