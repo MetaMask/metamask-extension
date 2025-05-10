@@ -87,6 +87,16 @@
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
+  "accountAlreadyExistsLogin": {
+    "message": "Log in"
+  },
+  "accountAlreadyExistsLoginDescription": {
+    "message": "An account with “$1” already exists. Do you want to try logging in instead?",
+    "description": "$1 is the account email"
+  },
+  "accountAlreadyExistsTitle": {
+    "message": "Account already exists"
+  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -106,6 +116,16 @@
   "accountNameReserved": {
     "message": "This account name is reserved",
     "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
+  },
+  "accountNotFoundCreateOne": {
+    "message": "Yes, create a new wallet"
+  },
+  "accountNotFoundDescription": {
+    "message": "No existing wallet found for “$1.” Want to create one now with this social login?",
+    "description": "$1 is the account email"
+  },
+  "accountNotFoundTitle": {
+    "message": "Account not found"
   },
   "accountOptions": {
     "message": "Account options"
@@ -1193,11 +1213,32 @@
   "confirmPassword": {
     "message": "Confirm password"
   },
+  "confirmPasswordPlaceholder": {
+    "message": "Re-enter your password"
+  },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
+  "confirmRecoveryPhraseDetails": {
+    "message": "Select the missing words in the correct order."
+  },
+  "confirmRecoveryPhraseTitle": {
+    "message": "Confirm your Secret Recovery Phrase"
+  },
   "confirmSimulationApprove": {
     "message": "You approve"
+  },
+  "confirmSrpErrorDescription": {
+    "message": "Double-check your Secret Recovery Phrase and try again."
+  },
+  "confirmSrpErrorTitle": {
+    "message": "Not quite right"
+  },
+  "confirmSrpSuccessDescription": {
+    "message": "That’s right! And remember: never share this phrase with anyone, ever."
+  },
+  "confirmSrpSuccessTitle": {
+    "message": "Perfect"
   },
   "confirmTitleAccountTypeSwitch": {
     "message": "Account update"
@@ -2070,6 +2111,9 @@
   "enterOptionalPassword": {
     "message": "Enter optional password"
   },
+  "enterPassword": {
+    "message": "Enter password"
+  },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
@@ -2084,6 +2128,18 @@
   },
   "enterYourPassword": {
     "message": "Enter your password"
+  },
+  "eraseWalletButton": {
+    "message": "Erase wallet"
+  },
+  "eraseWalletDescription": {
+    "message": "Your wallet, accounts, and assets will be permanently removed from this app. This action can’t be undone."
+  },
+  "eraseWalletDescription2": {
+    "message": "You can only get this wallet back with the info used when creating it, such as your Secret Recovery Phrase, Google account, or Apple account. MetaMask doesn’t have this info."
+  },
+  "eraseWalletTitle": {
+    "message": "Are you sure you want to erase your wallet?"
   },
   "errorCode": {
     "message": "Code: $1",
@@ -2562,6 +2618,9 @@
     "message": "Import",
     "description": "Button to import an account from a selected file"
   },
+  "importAWallet": {
+    "message": "Import a wallet"
+  },
   "importAccountError": {
     "message": "Error importing account."
   },
@@ -2773,6 +2832,9 @@
   },
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
+  },
+  "invalidSeedPhraseNotFound": {
+    "message": "Secret Recovery Phrase not found."
   },
   "ipfsGateway": {
     "message": "IPFS gateway"
@@ -3032,7 +3094,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
-    "message": "Manage default privacy settings"
+    "message": "Manage default settings"
   },
   "manageInstitutionalWallets": {
     "message": "Manage Institutional Wallets"
@@ -3442,7 +3504,10 @@
     "message": "NFT was successfully added!"
   },
   "newPassword": {
-    "message": "New password (8 characters min)"
+    "message": "New password"
+  },
+  "newPasswordPlaceholder": {
+    "message": "Enter a strong password"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
@@ -3815,17 +3880,21 @@
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
   },
+  "onboardingContinueWith": {
+    "message": "Continue with $1",
+    "description": "$1 is the type of login used Google, Apple, etc."
+  },
   "onboardingCreateWallet": {
-    "message": "Create a new wallet"
+    "message": "Create new wallet"
   },
   "onboardingImportWallet": {
-    "message": "Import an existing wallet"
+    "message": "I have an existing wallet"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
   },
   "onboardingMetametricsDescription": {
-    "message": "We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here."
+    "message": "We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:"
   },
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
@@ -3838,21 +3907,21 @@
     "message": "Privacy Policy"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 clicks and views on the app are stored, but other details (like your public address) are not.",
+    "message": "$1 Clicks and views on the app are stored, but other details (like your public address) are not.",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Private:"
   },
   "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 we temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
+    "message": "$1 We temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
   },
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "General:"
   },
   "onboardingMetametricsNeverSellData": {
-    "message": "$1 you decide if you want to share or delete your usage data via settings any time.",
+    "message": "$1 You decide if you want to share or delete your usage data via settings any time.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
@@ -3861,11 +3930,18 @@
   "onboardingMetametricsPrivacyDescription": {
     "message": "Learn how we protect your privacy while collecting usage data for your profile."
   },
+  "onboardingMetametricsTerms": {
+    "message": "We’ll let you know if we plan to use this data for other purposes. You can review our $1 any time (we never sell the data you provide here).",
+    "description": "$1 represents `onboardingMetametricsPrivacyPolicy`"
+  },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
+  "onboardingOptionTitle": {
+    "message": "Choose an option to continue"
   },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full access"
@@ -3883,13 +3959,13 @@
     "message": "Click the browser extension icon"
   },
   "onboardingPinExtensionDescription": {
-    "message": "Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations."
+    "message": "Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "You can open MetaMask by clicking on the extension and access your wallet with 1 click."
+    "message": "Access your MetaMask wallet with 1 click by clicking on the extension."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Click browser extension icon to access it instantly"
+    "message": "Click Chrome extension icon to access it instantly"
   },
   "onboardingPinExtensionLabel": {
     "message": "Pin MetaMask"
@@ -3901,7 +3977,32 @@
     "message": "2"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Your MetaMask install is complete!"
+    "message": "Installation is complete!"
+  },
+  "onboardingSignInWith": {
+    "message": "Sign in with $1",
+    "description": "$1 is the type of login used Google, Apple, etc."
+  },
+  "onboardingSrpCreate": {
+    "message": "Continue with Secret Recovery Phrase"
+  },
+  "onboardingSrpImport": {
+    "message": "Import using Secret Recovery Phrase"
+  },
+  "onboardingSrpImportError": {
+    "message": "Not quite right. Double-check your Secret Recovery Phrase and try again."
+  },
+  "onboardingSrpInputClearAll": {
+    "message": "Clear all"
+  },
+  "onboardingSrpInputHideAll": {
+    "message": "Hide all"
+  },
+  "onboardingSrpInputPlaceholder": {
+    "message": "Add a space between each word and make sure no one is watching"
+  },
+  "onboardingSrpInputShowAll": {
+    "message": "Show all"
   },
   "onekey": {
     "message": "OneKey"
@@ -3922,6 +4023,9 @@
   },
   "options": {
     "message": "Options"
+  },
+  "or": {
+    "message": "Or"
   },
   "origin": {
     "message": "Origin"
@@ -3961,6 +4065,24 @@
   "password": {
     "message": "Password"
   },
+  "passwordHintCreate": {
+    "message": "Create a password hint"
+  },
+  "passwordHintDescription": {
+    "message": "Leave yourself a hint to help remember where your Secret Recovery Phrase is stored. This hint is stored on your device, and won’t be shared."
+  },
+  "passwordHintError": {
+    "message": "You can’t use the password as a hint"
+  },
+  "passwordHintLeaveHint": {
+    "message": "Leave yourself a hint to help remember where your Secret Recovery Phrase is stored."
+  },
+  "passwordHintSaved": {
+    "message": "Password hint saved"
+  },
+  "passwordHintTitle": {
+    "message": "Password hint"
+  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
@@ -3975,10 +4097,13 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "I understand that MetaMask cannot recover this password for me. $1"
+    "message": "MetaMask can’t recover this password."
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
+  },
+  "paste": {
+    "message": "Paste"
   },
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
@@ -4628,6 +4753,28 @@
   "reset": {
     "message": "Reset"
   },
+  "resetPassword": {
+    "message": "Reset your password"
+  },
+  "resetPasswordAnotherOption": {
+    "message": "Another option: Erase your wallet"
+  },
+  "resetPasswordDescription": {
+    "message": "If you have a mobile device where you’re already logged in, you can reset your password there."
+  },
+  "resetPasswordStep1": {
+    "message": "Open MetaMask mobile app and go to $1",
+    "description": "$1 is bold Settings > Security and passwords."
+  },
+  "resetPasswordStep1Settings": {
+    "message": "Settings > Security and passwords."
+  },
+  "resetPasswordStep2": {
+    "message": "Select “Change password” and update your password with Face ID."
+  },
+  "resetPasswordStep3": {
+    "message": "Login with your new password on any device."
+  },
   "resetWallet": {
     "message": "Reset wallet"
   },
@@ -4784,6 +4931,19 @@
   "secureWallet": {
     "message": "Secure wallet"
   },
+  "secureWalletGetStartedButton": {
+    "message": "Get started"
+  },
+  "secureWalletRemindLaterButton": {
+    "message": "Remind me later"
+  },
+  "secureWalletWalletRecover": {
+    "message": "It’s the only way to recover your wallet if you get locked out of the app or get a new device."
+  },
+  "secureWalletWalletSaveSrp": {
+    "message": "Don’t risk losing your funds. Protect your wallet by saving your $1 in a place you trust.",
+    "description": "The $1 is the button text 'Secret Recovery Phrase'"
+  },
   "security": {
     "message": "Security"
   },
@@ -4861,6 +5021,16 @@
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
+  },
+  "seedPhraseReviewDetails": {
+    "message": "This is your $1. Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. $2",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
+  },
+  "seedPhraseReviewDetails2": {
+    "message": "Don’t share it with anyone, ever."
+  },
+  "seedPhraseReviewTitle": {
+    "message": "Save your Secret Recovery Phrase"
   },
   "seedPhraseWriteDownDetails": {
     "message": "Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access."
@@ -5146,7 +5316,13 @@
     "message": "Skip account security?"
   },
   "skipAccountSecurityDetails": {
-    "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
+    "message": "If you lose this Secret Recovery Phrase, you won’t be able to access this wallet."
+  },
+  "skipAccountSecuritySecureNow": {
+    "message": "Secure now"
+  },
+  "skipAccountSecuritySkip": {
+    "message": "Skip"
   },
   "slideBridgeDescription": {
     "message": "Move across 9 chains, all within your wallet"
@@ -5569,6 +5745,24 @@
   "spendingCaps": {
     "message": "Spending caps"
   },
+  "srpDetailsDescription": {
+    "message": "A Secret Recovery Phrase, also called a seed phrase or mnemonic, is a set of words that lets you access and control your crypto wallet. To move your wallet to MetaMask, you need this phrase."
+  },
+  "srpDetailsOwnsAccessListItemOne": {
+    "message": "Take all your money"
+  },
+  "srpDetailsOwnsAccessListItemThree": {
+    "message": "Change your login information"
+  },
+  "srpDetailsOwnsAccessListItemTwo": {
+    "message": "Confirm transactions"
+  },
+  "srpDetailsOwnsAccessListTitle": {
+    "message": "Anyone with your Secret Recovery Phrase can:"
+  },
+  "srpDetailsTitle": {
+    "message": "What’s a Secret Recovery Phrase?"
+  },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
@@ -5731,6 +5925,10 @@
   "step2LedgerWalletMsg": {
     "message": "Plug your Ledger directly into your computer, then  unlock it and open the Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "stepOf": {
+    "message": "Step $1 of $2",
+    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Still getting this message?"
@@ -6247,6 +6445,12 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
   },
+  "tapToReveal": {
+    "message": "Tap to reveal"
+  },
+  "tapToRevealNote": {
+    "message": "Make sure no one is watching your screen."
+  },
   "tenPercentIncreased": {
     "message": "10% increase"
   },
@@ -6256,6 +6460,9 @@
   "termsOfService": {
     "message": "Terms of service"
   },
+  "termsOfUseAgree": {
+    "message": "Agree"
+  },
   "termsOfUseAgreeText": {
     "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
   },
@@ -6263,7 +6470,7 @@
     "message": "Please scroll to read all sections"
   },
   "termsOfUseTitle": {
-    "message": "Our Terms of Use have updated"
+    "message": "Review our Terms of Use"
   },
   "testnets": {
     "message": "Testnets"
@@ -6543,6 +6750,9 @@
   "twelveHrTitle": {
     "message": "12hr:"
   },
+  "typeYourSRP": {
+    "message": "Enter your Secret Recovery Phrase"
+  },
   "u2f": {
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
@@ -6577,6 +6787,10 @@
   },
   "unlockMessage": {
     "message": "The decentralized web awaits"
+  },
+  "unlockPageHint": {
+    "message": "Hint: $1",
+    "description": "$1 is the password hint"
   },
   "unpin": {
     "message": "Unpin"
@@ -6745,6 +6959,19 @@
     "message": "Your wallet is protected and ready to use. You can find your Secret Recovery Phrase in $1 ",
     "description": "$1 is the menu path to be shown with font weight bold"
   },
+  "walletReadyLearn": {
+    "message": "$1 you can keep this phrase safe so you never lose access to your money.",
+    "description": "$1 is the link to Learn how"
+  },
+  "walletReadyLearnRemind": {
+    "message": "You can back up your wallets or see your Secret Recovery Phrase in Settings > Security & Password."
+  },
+  "walletReadyLoseSrp": {
+    "message": "If you lose your Secret Recovery Phrase, you won’t be able to use your wallet."
+  },
+  "walletReadyLoseSrpRemind": {
+    "message": "If you don’t back up your Secret Recovery Phrase, you’ll lose access to your funds if you get locked out of the app or get a new device."
+  },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
   },
@@ -6790,17 +7017,26 @@
   "welcomeBack": {
     "message": "Welcome back"
   },
+  "welcomeDescription": {
+    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
+  },
   "welcomeExploreDescription": {
     "message": "Store, send, and spend crypto currencies and assets."
   },
   "welcomeExploreTitle": {
     "message": "Explore decentralized apps"
   },
+  "welcomeGetStarted": {
+    "message": "Get started"
+  },
   "welcomeLoginDescription": {
     "message": "Use your MetaMask to login to decentralized apps - no signup needed."
   },
   "welcomeLoginTitle": {
     "message": "Say hello to your wallet"
+  },
+  "welcomeTitle": {
+    "message": "Welcome to MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Let's get started"
@@ -6871,7 +7107,10 @@
     "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
   },
   "yourWalletIsReady": {
-    "message": "Your wallet is ready"
+    "message": "Your wallet is ready!"
+  },
+  "yourWalletIsReadyRemind": {
+    "message": "We’ll remind you later"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

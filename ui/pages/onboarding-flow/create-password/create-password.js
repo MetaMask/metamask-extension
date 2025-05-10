@@ -1,38 +1,29 @@
-import React, { useState, useMemo, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import zxcvbn from 'zxcvbn';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Button from '../../../components/ui/button';
 import {
   JustifyContent,
   AlignItems,
   TextVariant,
-  TextAlign,
-  FontWeight,
+  TextColor,
+  BlockSize,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  ONBOARDING_METAMETRICS,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
-import FormField from '../../../components/ui/form-field';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import {
-  ThreeStepProgressBar,
-  threeStepStages,
-  TwoStepProgressBar,
-  twoStepStages,
-} from '../../../components/app/step-progress-bar';
-///: END:ONLY_INCLUDE_IF
-import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   getFirstTimeFlowType,
   getCurrentKeyring,
   getMetaMetricsId,
+  getParticipateInMetaMetrics,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -41,13 +32,22 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   Box,
-  ButtonLink,
+  Button,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
   Checkbox,
-  Icon,
   IconName,
   Text,
 } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
+import PasswordForm from '../../../components/app/password-form/password-form';
+///: END:ONLY_INCLUDE_IF
 
 export default function CreatePassword({
   createNewAccount,
@@ -55,14 +55,8 @@ export default function CreatePassword({
   secretRecoveryPhrase,
 }) {
   const t = useI18nContext();
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [passwordStrength, setPasswordStrength] = useState('');
-  const [passwordStrengthText, setPasswordStrengthText] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [termsChecked, setTermsChecked] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
   const history = useHistory();
@@ -70,9 +64,7 @@ export default function CreatePassword({
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
 
-  const participateInMetaMetrics = useSelector((state) =>
-    Boolean(state.metamask.participateInMetaMetrics),
-  );
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const metametricsId = useSelector(getMetaMetricsId);
   const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
     'base64',
@@ -92,7 +84,7 @@ export default function CreatePassword({
     if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
+        history.replace(ONBOARDING_METAMETRICS);
         ///: END:ONLY_INCLUDE_IF
       } else {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -107,88 +99,10 @@ export default function CreatePassword({
     newAccountCreationInProgress,
   ]);
 
-  const isValid = useMemo(() => {
-    if (!password || !confirmPassword || password !== confirmPassword) {
-      return false;
-    }
-
-    if (password.length < PASSWORD_MIN_LENGTH) {
-      return false;
-    }
-
-    return !passwordError && !confirmPasswordError;
-  }, [password, confirmPassword, passwordError, confirmPasswordError]);
-
-  const getPasswordStrengthLabel = (isTooShort, score) => {
-    if (isTooShort) {
-      return {
-        className: 'create-password__weak',
-        dataTestId: 'short-password-error',
-        text: t('passwordNotLongEnough'),
-        description: '',
-      };
-    }
-    if (score >= 4) {
-      return {
-        className: 'create-password__strong',
-        dataTestId: 'strong-password',
-        text: t('strong'),
-        description: '',
-      };
-    }
-    if (score === 3) {
-      return {
-        className: 'create-password__average',
-        dataTestId: 'average-password',
-        text: t('average'),
-        description: t('passwordStrengthDescription'),
-      };
-    }
-    return {
-      className: 'create-password__weak',
-      dataTestId: 'weak-password',
-      text: t('weak'),
-      description: t('passwordStrengthDescription'),
-    };
-  };
-
-  const handlePasswordChange = (passwordInput) => {
-    const isTooShort =
-      passwordInput.length && passwordInput.length < PASSWORD_MIN_LENGTH;
-    const { score } = zxcvbn(passwordInput);
-    const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
-    const passwordStrengthComponent = t('passwordStrength', [
-      <span
-        key={score}
-        data-testid={passwordStrengthLabel.dataTestId}
-        className={passwordStrengthLabel.className}
-      >
-        {passwordStrengthLabel.text}
-      </span>,
-    ]);
-    const confirmError =
-      !confirmPassword || passwordInput === confirmPassword
-        ? ''
-        : t('passwordsDontMatch');
-
-    setPassword(passwordInput);
-    setPasswordStrength(passwordStrengthComponent);
-    setPasswordStrengthText(passwordStrengthLabel.description);
-    setConfirmPasswordError(confirmError);
-  };
-
-  const handleConfirmPasswordChange = (confirmPasswordInput) => {
-    const error =
-      password === confirmPasswordInput ? '' : t('passwordsDontMatch');
-
-    setConfirmPassword(confirmPasswordInput);
-    setConfirmPasswordError(error);
-  };
-
   const handleCreate = async (event) => {
     event?.preventDefault();
 
-    if (!isValid) {
+    if (!password) {
       return;
     }
 
@@ -204,7 +118,9 @@ export default function CreatePassword({
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      history.push(ONBOARDING_COMPLETION_ROUTE);
+      getPlatform() === PLATFORM_FIREFOX
+        ? history.push(ONBOARDING_COMPLETION_ROUTE)
+        : history.push(ONBOARDING_METAMETRICS);
       ///: END:ONLY_INCLUDE_IF
     } else {
       // Otherwise we are in create new wallet flow
@@ -213,11 +129,17 @@ export default function CreatePassword({
           setNewAccountCreationInProgress(true);
           await createNewAccount(password);
         }
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
-        ///: END:ONLY_INCLUDE_IF
+        if (firstTimeFlowType === FirstTimeFlowType.seedless) {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+          history.push(ONBOARDING_COMPLETION_ROUTE);
+          ///: END:ONLY_INCLUDE_IF
+        } else {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+          history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+          ///: END:ONLY_INCLUDE_IF
+        }
       } catch (error) {
-        setPasswordError(error.message);
+        console.error(error);
       }
     }
   };
@@ -231,142 +153,92 @@ export default function CreatePassword({
       rel="noopener noreferrer"
     >
       <span className="create-password__link-text">
-        {t('learnMoreUpperCase')}
+        {t('learnMoreUpperCaseWithDot')}
       </span>
     </a>
   );
 
   return (
-    <div className="create-password__wrapper" data-testid="create-password">
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        secretRecoveryPhrase &&
-        firstTimeFlowType === FirstTimeFlowType.import ? (
-          <TwoStepProgressBar
-            stage={twoStepStages.PASSWORD_CREATE}
-            marginBottom={4}
-          />
-        ) : (
-          <ThreeStepProgressBar
-            stage={threeStepStages.PASSWORD_CREATE}
-            marginBottom={4}
-          />
-        )
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      <Text variant={TextVariant.headingLg} marginBottom={3}>
-        {t('createPassword')}
-      </Text>
-
-      <Text
-        variant={TextVariant.headingSm}
-        textAlign={TextAlign.Center}
-        fontWeight={FontWeight.Normal}
-      >
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-          t('passwordSetupDetails')
-          ///: END:ONLY_INCLUDE_IF
-        }
-      </Text>
-      <Box justifyContent={JustifyContent.center} marginTop={3}>
-        <form className="create-password__form" onSubmit={handleCreate}>
-          <FormField
-            dataTestId="create-password-new"
-            autoFocus
-            passwordStrength={passwordStrength}
-            passwordStrengthText={passwordStrengthText}
-            onChange={handlePasswordChange}
-            password={!showPassword}
-            titleText={t('newPassword')}
-            value={password}
-            titleDetail={
-              <ButtonLink
-                variant={TextVariant.bodySm}
-                data-testid="show-password"
-                className="create-password__form--password-button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowPassword(!showPassword);
-                }}
-                marginBottom={1}
-                // This type="a" prop is needed so that the button doesn't submit the form
-                // or keep the "Show/Hide" alive when clicked outside of the button
-                type="a"
-                href="#"
-              >
-                {showPassword ? t('hide') : t('show')}
-              </ButtonLink>
-            }
-          />
-          <FormField
-            dataTestId="create-password-confirm"
-            marginTop={3}
-            onChange={handleConfirmPasswordChange}
-            password={!showPassword}
-            error={confirmPasswordError}
-            titleText={t('confirmPassword')}
-            value={confirmPassword}
-            titleDetail={
-              isValid && (
-                <div className="create-password__form--checkmark">
-                  <Icon name={IconName.Check} />
-                </div>
-              )
-            }
-          />
+    <div className="create-password" data-testid="create-password">
+      <form className="create-password__form" onSubmit={handleCreate}>
+        <div className="create-password__content">
           <Box
+            justifyContent={JustifyContent.flexStart}
+            marginBottom={4}
+            width={BlockSize.Full}
+          >
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              color={IconColor.iconDefault}
+              size={ButtonIconSize.Md}
+              data-testid="create-password-back-button"
+              onClick={() => history.goBack()}
+              ariaLabel="back"
+            />
+          </Box>
+          <Box
+            justifyContent={JustifyContent.flexStart}
+            marginBottom={4}
+            width={BlockSize.Full}
+          >
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('stepOf', [
+                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
+                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
+              ])}
+            </Text>
+            <Text variant={TextVariant.headingLg} as="h2">
+              {t('createPassword')}
+            </Text>
+          </Box>
+          <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
+        </div>
+        <div className="create-password__footer">
+          <Box
+            className="create-password__terms-container"
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
-            marginTop={4}
             marginBottom={4}
           >
             <Checkbox
-              className="create-password__form__terms-checkbox"
               inputProps={{ 'data-testid': 'create-password-terms' }}
               alignItems={AlignItems.flexStart}
               isChecked={termsChecked}
-              onChange={(e) => {
-                e.preventDefault();
+              onChange={() => {
                 setTermsChecked(!termsChecked);
               }}
               label={
                 <Text variant={TextVariant.bodyMd} marginLeft={2}>
                   {
                     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                    t('passwordTermsWarning', [createPasswordLink])
+                    t('passwordTermsWarning')
                     ///: END:ONLY_INCLUDE_IF
                   }
+                  &nbsp;
+                  {createPasswordLink}
                 </Text>
               }
             />
           </Box>
-
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <Button
-              data-testid={
-                secretRecoveryPhrase &&
-                firstTimeFlowType === FirstTimeFlowType.import
-                  ? 'create-password-import'
-                  : 'create-password-wallet'
-              }
-              type="primary"
-              large
+              data-testid="create-password-submit"
+              variant={ButtonVariant.Primary}
+              width={BlockSize.Full}
+              size={ButtonSize.Lg}
               className="create-password__form--submit-button"
-              disabled={!isValid || !termsChecked}
-              onClick={handleCreate}
+              disabled={!password || !termsChecked}
             >
-              {secretRecoveryPhrase &&
-              firstTimeFlowType === FirstTimeFlowType.import
-                ? t('importMyWallet')
-                : t('createNewWallet')}
+              {t('confirm')}
             </Button>
             ///: END:ONLY_INCLUDE_IF
           }
-        </form>
-      </Box>
+        </div>
+      </form>
       {shouldInjectMetametricsIframe ? (
         <iframe
           src={analyticsIframeUrl}

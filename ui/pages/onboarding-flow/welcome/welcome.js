@@ -1,57 +1,49 @@
-import EventEmitter from 'events';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { Carousel } from 'react-responsive-carousel';
-///: END:ONLY_INCLUDE_IF
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import Mascot from '../../../components/ui/mascot';
-import Button from '../../../components/ui/button';
-import { Text } from '../../../components/component-library';
-import CheckBox from '../../../components/ui/check-box';
-import Box from '../../../components/ui/box';
 import {
-  TextVariant,
-  AlignItems,
-  TextAlign,
-  FontWeight,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
+import {
+  getCurrentKeyring,
+  getFirstTimeFlowType,
+  getShowTermsOfUse,
+} from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { setFirstTimeFlowType } from '../../../store/actions';
+import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  setFirstTimeFlowType,
-  setTermsOfUseLastAgreed,
-} from '../../../store/actions';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  ONBOARDING_METAMETRICS,
-  ///: END:ONLY_INCLUDE_IF
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-} from '../../../helpers/constants/routes';
-import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { isFlask, isBeta } from '../../../helpers/utils/build-types';
+import WelcomeLogin from './welcome-login';
+import WelcomeBanner from './welcome-banner';
+import { LOGIN_OPTION, LOGIN_TYPE } from './types';
+
+const WelcomePageState = {
+  Banner: 'Banner',
+  Login: 'Login',
+};
 
 export default function OnboardingWelcome() {
-  const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const [eventEmitter] = useState(new EventEmitter());
   const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const [termsChecked, setTermsChecked] = useState(false);
+  const showTermsOfUse = useSelector(getShowTermsOfUse);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
+
+  // If the user has not agreed to the terms of use, we show the banner
+  // Otherwise, we show the login page
+  const [pageState, setPageState] = useState(
+    showTermsOfUse ? WelcomePageState.Banner : WelcomePageState.Login,
+  );
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
@@ -75,6 +67,7 @@ export default function OnboardingWelcome() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const onCreateClick = async () => {
+    setIsLoggingIn(true);
     setNewAccountCreationInProgress(true);
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
@@ -84,32 +77,14 @@ export default function OnboardingWelcome() {
         account_type: 'metamask',
       },
     });
-    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(
-      getPlatform() === PLATFORM_FIREFOX
-        ? ONBOARDING_CREATE_PASSWORD_ROUTE
-        : ONBOARDING_METAMETRICS,
-    );
+    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
     ///: END:ONLY_INCLUDE_IF
   };
-  const toggleTermsCheck = () => {
-    setTermsChecked((currentTermsChecked) => !currentTermsChecked);
-  };
-  const termsOfUse = t('agreeTermsOfUse', [
-    <a
-      className="create-new-vault__terms-link"
-      key="create-new-vault__link-text"
-      href="https://metamask.io/terms.html"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {t('terms')}
-    </a>,
-  ]);
 
   const onImportClick = async () => {
+    setIsLoggingIn(true);
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -118,153 +93,54 @@ export default function OnboardingWelcome() {
         account_type: 'imported',
       },
     });
-    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(
-      getPlatform() === PLATFORM_FIREFOX
-        ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
-        : ONBOARDING_METAMETRICS,
-    );
+    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
     ///: END:ONLY_INCLUDE_IF
   };
 
-  const renderMascot = () => {
-    if (isFlask()) {
-      return (
-        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
-      );
+  const handleLogin = (loginType, loginOption) => {
+    if (loginType === LOGIN_TYPE.SRP) {
+      if (loginOption === LOGIN_OPTION.NEW) {
+        onCreateClick();
+      } else {
+        onImportClick();
+      }
+    } else {
+      console.log('login with social login', loginType, loginOption);
+      setIsLoggingIn(true);
     }
-    if (isBeta()) {
-      return (
-        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
-      );
-    }
-    return (
-      <Mascot animationEventEmitter={eventEmitter} width="250" height="300" />
-    );
   };
 
-  return (
-    <div className="onboarding-welcome" data-testid="onboarding-welcome">
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        <Carousel showThumbs={false} showStatus={false} showArrows>
-          <div>
-            <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              textAlign={TextAlign.Center}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('welcomeToMetaMask')}
-            </Text>
-            <Text textAlign={TextAlign.Center} marginLeft={6} marginRight={6}>
-              {t('welcomeToMetaMaskIntro')}
-            </Text>
-            <div className="onboarding-welcome__mascot">{renderMascot()}</div>
-          </div>
-          <div>
-            <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              textAlign={TextAlign.Center}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('welcomeExploreTitle')}
-            </Text>
-            <Text textAlign={TextAlign.Center}>
-              {t('welcomeExploreDescription')}
-            </Text>
-            <div className="onboarding-welcome__image">
-              <img
-                src="/images/onboarding-welcome-say-hello.png"
-                width="200"
-                height="275"
-                style={{
-                  objectFit: 'contain',
-                }}
-                alt="onboarding-welcome-say-hello"
-              />
-            </div>
-          </div>
-          <div>
-            <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              textAlign={TextAlign.Center}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('welcomeLoginTitle')}
-            </Text>
-            <Text textAlign={TextAlign.Center}>
-              {t('welcomeLoginDescription')}
-            </Text>
-            <div className="onboarding-welcome__image">
-              <img
-                src="/images/onboarding-welcome-decentralised-apps.png"
-                width="200"
-                height="275"
-                alt="onboarding-welcome-decentralised-apps"
-                style={{
-                  objectFit: 'contain',
-                }}
-              />
-            </div>
-          </div>
-        </Carousel>
-        ///: END:ONLY_INCLUDE_IF
+  useEffect(() => {
+    const container = document.getElementById('app-content');
+    if (container) {
+      if (pageState === WelcomePageState.Banner) {
+        container.classList.remove('app-content--welcome-login');
+        container.classList.add('app-content--welcome-banner');
+      } else {
+        container.classList.remove('app-content--welcome-banner');
+        container.classList.add('app-content--welcome-login');
       }
+    }
 
-      <ul className="onboarding-welcome__buttons">
-        <li>
-          <Box
-            alignItems={AlignItems.center}
-            className="onboarding__terms-of-use"
-          >
-            <CheckBox
-              id="onboarding__terms-checkbox"
-              className="onboarding__terms-checkbox"
-              dataTestId="onboarding-terms-checkbox"
-              checked={termsChecked}
-              onClick={toggleTermsCheck}
-            />
-            <label
-              className="onboarding__terms-label"
-              htmlFor="onboarding__terms-checkbox"
-            >
-              <Text variant={TextVariant.bodyMd} marginLeft={2} as="span">
-                {termsOfUse}
-              </Text>
-            </label>
-          </Box>
-        </li>
+    return () => {
+      if (container) {
+        container.classList.remove('app-content--welcome-banner');
+        container.classList.remove('app-content--welcome-login');
+      }
+    };
+  }, [pageState]);
 
-        <li>
-          <Button
-            data-testid="onboarding-create-wallet"
-            type="primary"
-            onClick={onCreateClick}
-            disabled={!termsChecked}
-          >
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-              t('onboardingCreateWallet')
-              ///: END:ONLY_INCLUDE_IF
-            }
-          </Button>
-        </li>
-        <li>
-          <Button
-            data-testid="onboarding-import-wallet"
-            type="secondary"
-            onClick={onImportClick}
-            disabled={!termsChecked}
-          >
-            {t('onboardingImportWallet')}
-          </Button>
-        </li>
-      </ul>
-    </div>
+  return (
+    <>
+      {pageState === WelcomePageState.Banner && (
+        <WelcomeBanner onAccept={() => setPageState(WelcomePageState.Login)} />
+      )}
+      {pageState === WelcomePageState.Login && (
+        <WelcomeLogin onLogin={handleLogin} />
+      )}
+      {isLoggingIn && <LoadingScreen />}
+    </>
   );
 }
