@@ -158,6 +158,10 @@
   "addAccount": {
     "message": "계정 추가"
   },
+  "addAccountFromNetwork": {
+    "message": "$1 계정 추가",
+    "description": "$1 is the network name, e.g. Bitcoin or Solana"
+  },
   "addAccountToMetaMask": {
     "message": "MetaMask에 계정 추가"
   },
@@ -353,6 +357,12 @@
   "alert": {
     "message": "경고"
   },
+  "alertAccountTypeUpgradeMessage": {
+    "message": "스마트 계정으로 업그레이드 중입니다. 계정 주소는 그대로 유지되며, 더욱 빠른 속도의 트랜잭션을 더 낮은 네트워크 수수료로 이용할 수 있습니다. $1."
+  },
+  "alertAccountTypeUpgradeTitle": {
+    "message": "계정 유형"
+  },
   "alertActionBuyWithNativeCurrency": {
     "message": "$1 매수"
   },
@@ -542,6 +552,9 @@
   "asset": {
     "message": "자산"
   },
+  "assetChartNoHistoricalPrices": {
+    "message": "과거 데이터를 불러올 수 없습니다"
+  },
   "assetMultipleNFTsBalance": {
     "message": "NFT $1개"
   },
@@ -591,6 +604,48 @@
   "back": {
     "message": "뒤로"
   },
+  "backupAndSync": {
+    "message": "백업 및 동기화"
+  },
+  "backupAndSyncBasicFunctionalityNameMention": {
+    "message": "기본 기능"
+  },
+  "backupAndSyncEnable": {
+    "message": "백업 및 동기화 켜기"
+  },
+  "backupAndSyncEnableConfirmation": {
+    "message": "백업 및 동기화를 켜면 $1도 함께 켜집니다. 계속하시겠습니까?",
+    "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
+  },
+  "backupAndSyncEnableDescription": {
+    "message": "백업 및 동기화를 사용하면 맞춤 설정과 기능을 암호화된 상태로 저장할 수 있습니다. 이 기능은 MetaMask를 여러 기기에서 동일하게 사용할 수 있게 해주며, MetaMask를 재설치할 경우 설정과 기능을 복원해 줍니다. $1.",
+    "description": "$1 is link to the backup and sync privacy policy."
+  },
+  "backupAndSyncEnableDescriptionUpdatePreferences": {
+    "message": "언제든지 $1에서 설정을 변경할 수 있습니다",
+    "description": "$1 is a bolded text that highlights the path to the settings page."
+  },
+  "backupAndSyncEnableDescriptionUpdatePreferencesPath": {
+    "message": "설정 > 백업 및 동기화."
+  },
+  "backupAndSyncFeatureAccounts": {
+    "message": "계정"
+  },
+  "backupAndSyncManageWhatYouSync": {
+    "message": "동기화할 항목 관리"
+  },
+  "backupAndSyncManageWhatYouSyncDescription": {
+    "message": "기기 간에 동기화할 항목을 선택해 켜세요."
+  },
+  "backupAndSyncPrivacyLink": {
+    "message": "개인 정보 보호 방법 알아보기"
+  },
+  "backupAndSyncSlideDescription": {
+    "message": "계정을 백업하고 설정을 동기화하세요."
+  },
+  "backupAndSyncSlideTitle": {
+    "message": "백업 및 동기화 소개"
+  },
   "backupApprovalInfo": {
     "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
   },
@@ -633,6 +688,16 @@
   },
   "basicConfigurationModalDisclaimerOff": {
     "message": "이렇게 하면 MetaMask에서 시간을 완전히 최적화할 수 없습니다. 기본 기능(토큰 세부 정보, 최적의 가스 설정 등)을 사용할 수 없게 됩니다."
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalText": {
+    "message": "이 기능을 끄면 $1 및 $2에 포함된 모든 기능도 함께 비활성화됩니다.",
+    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
+    "message": "보안 및 개인정보 보호, 백업 및 동기화"
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
+    "message": "알림"
   },
   "basicConfigurationModalDisclaimerOn": {
     "message": "MetaMask에서 시간을 최적화하려면 이 기능을 켜야 합니다. 기본 기능(토큰 세부 정보, 최적의 가스 설정 등)은 웹3 경험에 중요한 요소입니다."
@@ -703,6 +768,24 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertDescriptionBlur": {
+    "message": "계속하면 Blur에 등록한 모든 자산이 위험에 처할 수 있습니다."
+  },
+  "blockaidAlertDescriptionMalicious": {
+    "message": "악성 사이트와 인터렉션하고 있습니다. 계속하면 자산을 잃게 됩니다."
+  },
+  "blockaidAlertDescriptionOpenSea": {
+    "message": "계속하면 OpenSea에 등록한 모든 자산이 위험에 처할 수 있습니다."
+  },
+  "blockaidAlertDescriptionOthers": {
+    "message": "이 요청을 컨펌하면, 자산을 잃을 수 있습니다. 이 요청을 취소할 것을 권장합니다."
+  },
+  "blockaidAlertDescriptionTokenTransfer": {
+    "message": "지금 자산을 사기범에게 보내고 있습니다. 계속하면 해당 자산을 잃게 됩니다."
+  },
+  "blockaidAlertDescriptionWithdraw": {
+    "message": "이 요청을 컨펌하면, 사기범이 자산을 인출하고 사용할 수 있게 됩니다. 그러한 자산은 돌려받을 수 없습니다."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "이 요청을 승인하면 스캠으로 알려진 타사가 회원님의 모든 자산을 가져갈 수 있습니다."
   },
@@ -739,6 +822,9 @@
   "blockies": {
     "message": "Blockies"
   },
+  "borrowed": {
+    "message": "차입함"
+  },
   "boughtFor": {
     "message": "매수:"
   },
@@ -759,6 +845,9 @@
   "bridgeApprovalWarningForHardware": {
     "message": "브릿지를 위해 $1 $2에 대한 접근을 허용한 다음 $2(으)로의 브릿지를 승인해야 합니다. 두 차례의 별도 컨펌이 필요합니다."
   },
+  "bridgeBlockExplorerLinkCopied": {
+    "message": "블록 탐색기 링크 복사 완료!"
+  },
   "bridgeCalculatingAmount": {
     "message": "계산 중..."
   },
@@ -773,6 +862,10 @@
   },
   "bridgeCreateSolanaAccountTitle": {
     "message": "우선 솔라나 계정이 필요합니다."
+  },
+  "bridgeDetailsTitle": {
+    "message": "브릿지 세부 정보",
+    "description": "Title for the modal showing details about a bridge transaction."
   },
   "bridgeEnterAmount": {
     "message": "금액 입력"
@@ -814,6 +907,21 @@
   "bridgeSelectTokenAndAmount": {
     "message": "토큰 및 금액 선택"
   },
+  "bridgeSolanaAccountCreated": {
+    "message": "솔라나 계정을 생성했습니다"
+  },
+  "bridgeStatusComplete": {
+    "message": "완료",
+    "description": "Status text indicating a bridge transaction has successfully completed."
+  },
+  "bridgeStatusFailed": {
+    "message": "실패",
+    "description": "Status text indicating a bridge transaction has failed."
+  },
+  "bridgeStatusInProgress": {
+    "message": "진행 중",
+    "description": "Status text indicating a bridge transaction is currently processing."
+  },
   "bridgeStepActionBridgeComplete": {
     "message": "$2에서 $1 받음",
     "description": "$1 is the amount of the destination asset, $2 is the name of the destination network"
@@ -842,6 +950,15 @@
   },
   "bridgeToChain": {
     "message": "$1(으)로 브릿지"
+  },
+  "bridgeTokenCannotVerifyDescription": {
+    "message": "이 토큰을 직접 추가했다면, 브리지를 진행하기 전에 자금에 대한 위험을 충분히 인지하고 계셔야 합니다."
+  },
+  "bridgeTokenCannotVerifyTitle": {
+    "message": "이 토큰은 검증할 수 없습니다."
+  },
+  "bridgeTransactionProgress": {
+    "message": "트랜잭션 $1/2"
   },
   "bridgeTxDetailsBridging": {
     "message": "브릿징"
@@ -953,9 +1070,8 @@
   "chooseYourNetwork": {
     "message": "네트워크 선택"
   },
-  "chooseYourNetworkDescription": {
-    "message": "가능한 가장 안정적인 비공개 이더리움 액세스를 위해 Infura를 원격 프로시저 호출(RPC) 공급업체로 선정하였습니다. 사용자는 개인적으로 원하는 RPC를 선택할 수 있습니다. 하지만, 모든 RPC가 트랜잭션을 위해 사용자의 IP 주소와 이더리움 지갑을 받게된다는 점을 잊지 말아야 합니다. Infura의 데이터 처리 방법은 $1에서 상세히 확인할 수 있습니다.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
+  "chooseYourNetworkDescriptionCallToAction": {
+    "message": "여기를 클릭"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 MetaMask를 사용해야 합니다."
@@ -1061,6 +1177,12 @@
   "confirmGasFeeTokenTooltip": {
     "message": "이 수수료는 트랜잭션 처리를 위해 네트워크에 지불하는 것으로, ETH 토큰이 아닌 경우 $1의 MetaMask 수수료가 포함됩니다."
   },
+  "confirmInfoAccountNow": {
+    "message": "지금"
+  },
+  "confirmInfoSwitchingTo": {
+    "message": "다음으로 전환 중"
+  },
   "confirmNestedTransactionTitle": {
     "message": "트랜잭션 $1"
   },
@@ -1073,6 +1195,9 @@
   "confirmSimulationApprove": {
     "message": "승인:"
   },
+  "confirmTitleAccountTypeSwitch": {
+    "message": "계정 업데이트"
+  },
   "confirmTitleApproveTransactionNFT": {
     "message": "출금 요청"
   },
@@ -1081,6 +1206,12 @@
   },
   "confirmTitleDescApproveTransaction": {
     "message": "이 사이트에서 NFT 인출 권한을 요청합니다"
+  },
+  "confirmTitleDescDelegationRevoke": {
+    "message": "표준 계정으로 전환(EOA)으로 전환 중입니다."
+  },
+  "confirmTitleDescDelegationUpgrade": {
+    "message": "스마트 계정으로 전환 중입니다"
   },
   "confirmTitleDescDeployContract": {
     "message": "이 사이트에서 계약을 배포하려고 합니다"
@@ -1518,6 +1649,15 @@
   "defaultSettingsTitle": {
     "message": "기본 개인정보 보호 설정"
   },
+  "defi": {
+    "message": "디파이"
+  },
+  "defiTabErrorContent": {
+    "message": "회원님의 자금은 안전합니다. 나중에 이 페이지를 다시 방문하세요."
+  },
+  "defiTabErrorTitle": {
+    "message": "죄송합니다! 문제가 발생했습니다."
+  },
   "delete": {
     "message": "삭제"
   },
@@ -1591,6 +1731,10 @@
   "destinationAccountPickerSearchPlaceholderToSolana": {
     "message": "수신 주소"
   },
+  "destinationTransactionIdLabel": {
+    "message": "대상 Tx ID",
+    "description": "Label for the destination transaction ID field."
+  },
   "details": {
     "message": "세부 정보"
   },
@@ -1652,6 +1796,12 @@
   "dismissReminderField": {
     "message": "비밀복구구문 백업 알림 해지"
   },
+  "dismissSmartAccountSuggestionEnabledDescription": {
+    "message": "이 옵션을 켜면 어떤 계정에서도 '스마트 계정으로 전환' 제안이 더 이상 표시되지 않습니다. 스마트 계정을 사용하면 더 빠른 트랜잭션을 더 낮은 네트워크 수수료로 이용할 수 있으며, 수수료 지불 방식도 더욱 유연해집니다."
+  },
+  "dismissSmartAccountSuggestionEnabledTitle": {
+    "message": "'스마트 계정으로 전환' 제안 끄기"
+  },
   "displayNftMedia": {
     "message": "NFT 미디어 표시"
   },
@@ -1693,6 +1843,41 @@
   },
   "duplicateContactWarning": {
     "message": "중복된 연락처가 있습니다"
+  },
+  "durationSuffixDay": {
+    "message": "일",
+    "description": "Shortened form of 'day'"
+  },
+  "durationSuffixHour": {
+    "message": "시간",
+    "description": "Shortened form of 'hour'"
+  },
+  "durationSuffixMillisecond": {
+    "message": "밀리초",
+    "description": "Shortened form of 'millisecond'"
+  },
+  "durationSuffixMinute": {
+    "message": "분",
+    "description": "Shortened form of 'minute'"
+  },
+  "durationSuffixMonth": {
+    "message": "개월",
+    "description": "Shortened form of 'month'"
+  },
+  "durationSuffixSecond": {
+    "message": "초",
+    "description": "Shortened form of 'second'"
+  },
+  "durationSuffixWeek": {
+    "message": "주일",
+    "description": "Shortened form of 'week'"
+  },
+  "durationSuffixYear": {
+    "message": "년",
+    "description": "Shortened form of 'year'"
+  },
+  "earn": {
+    "message": "수익 얻기"
   },
   "edit": {
     "message": "편집"
@@ -2211,6 +2396,15 @@
     "message": "(레거시)",
     "description": "Text representing the MEW path"
   },
+  "hardwareWalletSubmissionWarningStep1": {
+    "message": "$1(이)가 연결되어 있고 이더리움 앱을 선택했는지 확인하세요."
+  },
+  "hardwareWalletSubmissionWarningStep2": {
+    "message": "$1 장치에서 '스마트 계약 데이터' 또는 '블라인드 서명'을 활성화하세요."
+  },
+  "hardwareWalletSubmissionWarningTitle": {
+    "message": "제출을 클릭하기 전:"
+  },
   "hardwareWalletSupportLinkConversion": {
     "message": "여기를 클릭"
   },
@@ -2442,6 +2636,10 @@
   "importWalletOrAccountHeader": {
     "message": "지갑 또는 계정 가져오기"
   },
+  "importWalletSuccess": {
+    "message": "비밀복구구문 $1 가져옴",
+    "description": "$1 is the index of the secret recovery phrase"
+  },
   "importWithCount": {
     "message": "$1 불러오기",
     "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
@@ -2455,6 +2653,9 @@
   },
   "included": {
     "message": "포함됨"
+  },
+  "includesXTransactions": {
+    "message": "$1건의 트랜잭션 포함"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask이 블록체인 호스트에 연결할 수 없습니다. $1 오류 가능성을 검토하세요.",
@@ -2498,11 +2699,17 @@
   "insufficientTokens": {
     "message": "토큰이 부족합니다."
   },
+  "interactWithSmartContract": {
+    "message": "스마트 계약"
+  },
   "interactingWith": {
     "message": "다음과 상호 작용:"
   },
   "interactingWithTransactionDescription": {
     "message": "지금 상호작용하고 있는 계약입니다. 세부 정보를 확인하여 사기를 방지하세요."
+  },
+  "interaction": {
+    "message": "상호작용"
   },
   "invalidAddress": {
     "message": "잘못된 주소"
@@ -2657,6 +2864,9 @@
   "learnMoreAboutPrivacy": {
     "message": "개인정보 보호 모범 사례에 대해 자세히 알아보세요."
   },
+  "learnMoreAboutSolanaAccounts": {
+    "message": "솔라나 계정에 대해 더 자세히 알아보기"
+  },
   "learnMoreKeystone": {
     "message": "자세히 알아보기"
   },
@@ -2710,6 +2920,12 @@
   },
   "ledgerLocked": {
     "message": "Ledger 장치에 연결할 수 없습니다. 장치의 잠금이 해제되어 있고 이더리움 앱이 열려 있는지 확인하세요."
+  },
+  "ledgerMultipleDevicesUnsupportedInfoDescription": {
+    "message": "새 장치를 연결하려면 이전 장치의 연결을 해제하세요."
+  },
+  "ledgerMultipleDevicesUnsupportedInfoTitle": {
+    "message": "한 번에 하나의 Ledger만 연결할 수 있습니다"
   },
   "ledgerTimeout": {
     "message": "Ledger Live의 응답 시간이 너무 길거나 연결 시간을 초과했습니다. Ledger Live 앱이 열려 있고 장치의 잠금이 해제되어 있는지 확인하세요."
@@ -2807,6 +3023,12 @@
   },
   "manageDefaultSettings": {
     "message": "기본 개인정보 보호 설정 관리"
+  },
+  "manageInstitutionalWallets": {
+    "message": "Institutional 지갑 관리"
+  },
+  "manageInstitutionalWalletsDescription": {
+    "message": "이 옵션을 켜면 Institutional 지갑이 활성화됩니다"
   },
   "managePermissions": {
     "message": "권한 관리"
@@ -3091,6 +3313,9 @@
   },
   "networkNameBitcoin": {
     "message": "비트코인"
+  },
+  "networkNameBitcoinTestnet": {
+    "message": "비트코인 테스트넷"
   },
   "networkNameDefinition": {
     "message": "이 네트워크와 연결된 이름입니다."
@@ -3568,8 +3793,8 @@
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "PFS 게이트웨이 URL이 유효합니다"
   },
-  "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "가능한 가장 안정적인 비공개 이더리움 액세스를 위해 Infura를 원격 프로시저 호출(RPC) 공급업체로 선정하였습니다. 사용자는 개인적으로 원하는 RPC를 선택할 수 있습니다. 하지만, 모든 RPC는 거래를 위해 사용자의 IP 주소와 이더리움 지갑을 수령한다는 점을 잊지 말아야 합니다. Infura의 데이터 처리 방법은 $1에서 상세히 확인할 수 있습니다."
+  "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
+    "message": "여기를 클릭하세요"
   },
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "네트워크 선택"
@@ -3661,6 +3886,9 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMask 설치가 완료되었습니다!"
+  },
+  "onekey": {
+    "message": "OneKey"
   },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요. $1",
@@ -4276,6 +4504,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "자신의 자금을 지키세요"
   },
+  "redeposit": {
+    "message": "재입금"
+  },
   "refreshList": {
     "message": "새로 고침 목록"
   },
@@ -4487,6 +4718,9 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "계정에서 토큰을 사용할 수 있는 다른 사람의 권한을 제거합니다."
+  },
+  "reward": {
+    "message": "보상"
   },
   "rpcNameOptional": {
     "message": "RPC 이름(선택)"
@@ -4922,11 +5156,74 @@
   "slideFundWalletTitle": {
     "message": "지갑에 자금 추가"
   },
+  "slideMultiSrpDescription": {
+    "message": "MetaMask에서 여러 지갑을 가져와 사용하세요"
+  },
+  "slideMultiSrpTitle": {
+    "message": "여러 비밀복구구문 추가"
+  },
+  "slideRemoteModeDescription": {
+    "message": "콜드 월렛을 무선으로 사용하세요"
+  },
+  "slideRemoteModeTitle": {
+    "message": "콜드 스토리지, 빠른 접근"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "같은 주소, 더욱 스마트한 기능"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "스마트 계정 사용을 시작하세요"
+  },
+  "slideSolanaDescription": {
+    "message": "시작하려면 솔라나 계정을 생성하세요"
+  },
+  "slideSolanaTitle": {
+    "message": "이제 솔라나가 지원됩니다"
+  },
   "slideSweepStakeDescription": {
     "message": "NFT를 민팅하고 당첨 기회를 잡으세요"
   },
   "slideSweepStakeTitle": {
     "message": "$5000 USDC 경품 이벤트에 참여하세요!"
+  },
+  "smartAccountAccept": {
+    "message": "스마트 계정 사용"
+  },
+  "smartAccountBetterTransaction": {
+    "message": "더욱 빠른 트랜잭션, 더욱 낮은 수수료"
+  },
+  "smartAccountBetterTransactionDescription": {
+    "message": "여러 트랜잭션을 한꺼번에 처리하여 비용과 시간을 절약하세요."
+  },
+  "smartAccountFeaturesDescription": {
+    "message": "계정 주소는 그대로 유지되며, 언제든지 다시 전환할 수 있습니다"
+  },
+  "smartAccountLabel": {
+    "message": "스마트 계정"
+  },
+  "smartAccountPayToken": {
+    "message": "언제든지, 원하는 토큰으로 결제하세요"
+  },
+  "smartAccountPayTokenDescription": {
+    "message": "보유 중인 토큰으로 네트워크 수수료를 결제하세요."
+  },
+  "smartAccountReject": {
+    "message": "스마트 계정을 사용하지 마세요"
+  },
+  "smartAccountRequestFor": {
+    "message": "요청 계정:"
+  },
+  "smartAccountSameAccount": {
+    "message": "같은 계정, 더 똑똑한 기능."
+  },
+  "smartAccountSplashTitle": {
+    "message": "스마트 계정을 사용하시겠어요?"
+  },
+  "smartAccountUpgradeBannerDescription": {
+    "message": "같은 주소. 더욱 스마트한 기능."
+  },
+  "smartAccountUpgradeBannerTitle": {
+    "message": "스마트 계정으로 전환"
   },
   "smartContracts": {
     "message": "스마트 계약"
@@ -5135,6 +5432,12 @@
   "snapsUIError": {
     "message": "$1 작성자에게 연락하여 향후 지원을 요청하세요.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "solanaAccountRequested": {
+    "message": "이 사이트에서는 솔라나 계정이 필요합니다."
+  },
+  "solanaAccountRequired": {
+    "message": "이 사이트에 연결하려면 솔라나 계정이 필요합니다."
   },
   "solanaImportAccounts": {
     "message": "솔라나 계정 가져오기"
@@ -5352,6 +5655,18 @@
   "stake": {
     "message": "스테이크"
   },
+  "staked": {
+    "message": "스테이킹됨"
+  },
+  "standardAccountLabel": {
+    "message": "표준 계정"
+  },
+  "stateCorruptionDetectedErrorMessage": {
+    "message": "MetaMask의 상태 파일이 손상되었거나 누락되었습니다. 파일이 복구될 가능성이 있으니 MetaMask 확장 프로그램을 삭제하지 마세요!"
+  },
+  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
+    "message": "비밀복구구문을 직접 복원하려면 다음 지침을 따르세요."
+  },
   "stateLogError": {
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."
   },
@@ -5473,6 +5788,9 @@
   },
   "suggestedTokenName": {
     "message": "추천 이름:"
+  },
+  "supplied": {
+    "message": "예치함"
   },
   "support": {
     "message": "지원"
@@ -6099,6 +6417,13 @@
   "transactionHistoryTotalGasFee": {
     "message": "총 가스비"
   },
+  "transactionIdLabel": {
+    "message": "트랜잭션 ID",
+    "description": "Label for the source transaction ID field."
+  },
+  "transactionIncludesTypes": {
+    "message": "이 트랜잭션에 포함된 사항: $1."
+  },
   "transactionResubmitted": {
     "message": "$2에서 가스비를 $1(으)로 올린 트랜잭션이 다시 제출되었습니다."
   },
@@ -6107,6 +6432,10 @@
   },
   "transactionSubmitted": {
     "message": "$2에서 가스비가 $1인 트랜잭션이 제출되었습니다."
+  },
+  "transactionTotalGasFee": {
+    "message": "가스비 합계",
+    "description": "Label for the total gas fee incurred in the transaction."
   },
   "transactionUpdated": {
     "message": "$2에서 트랜잭션이 업데이트되었습니다."
@@ -6204,6 +6533,9 @@
   },
   "unapproved": {
     "message": "승인되지 않음"
+  },
+  "unexpectedBehavior": {
+    "message": "이 동작은 예상치 못한 것으로, 계정이 정상적으로 복구되었더라도 버그로 신고해야 합니다. 아래 링크를 통해 MetaMask에 버그를 신고해 주세요."
   },
   "units": {
     "message": "단위"
@@ -6359,6 +6691,9 @@
   "viewOnOpensea": {
     "message": "Opensea에서 보기"
   },
+  "viewSolanaAccount": {
+    "message": "솔라나 계정 보기"
+  },
   "viewTransaction": {
     "message": "트랜잭션 보기"
   },
@@ -6483,6 +6818,14 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "이 기능을 사용하려면 카메라 액세스를 허용해야 합니다."
+  },
+  "youReceived": {
+    "message": "받음:",
+    "description": "Label indicating the amount and asset the user received."
+  },
+  "youSent": {
+    "message": "보냄:",
+    "description": "Label indicating the amount and asset the user sent."
   },
   "yourAccounts": {
     "message": "계정"
