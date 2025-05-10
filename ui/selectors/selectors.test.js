@@ -3,9 +3,11 @@ import {
   BtcAccountType,
   EthAccountType,
   EthMethod,
+  SolAccountType,
 } from '@metamask/keyring-api';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { KeyringType } from '../../shared/constants/keyring';
 import mockState from '../../test/data/mock-state.json';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
@@ -16,6 +18,10 @@ import { selectSwitchedNetworkNeverShowMessage } from '../components/app/toast-m
 import * as networkSelectors from '../../shared/modules/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 
+import {
+  SOLANA_WALLET_NAME,
+  SOLANA_WALLET_SNAP_ID,
+} from '../../shared/lib/accounts';
 import * as selectors from './selectors';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
@@ -2492,5 +2498,116 @@ describe('getNativeTokenInfo', () => {
       decimals: 18,
       name: 'Native Token',
     });
+  });
+});
+
+describe('getInternalAccountsSortedByKeyring', () => {
+  const hdAccountFromHdKeyring1 = {
+    ...createMockInternalAccount({
+      address: '0x67B2fAf7959fB61eb9746571041476Bbd0672569',
+      keyringType: KeyringTypes.hd,
+    }),
+    balance: '0x0',
+  };
+  const hdAccountFromHdKeyring2 = {
+    ...createMockInternalAccount({
+      address: '0x38b00C1620c260cc683F0C89bda9b0D985A233a7',
+      keyringType: KeyringTypes.hd,
+    }),
+    balance: '0x0',
+  };
+  const solanaAccount1 = {
+    ...createMockInternalAccount({
+      address: 'eVFCkMPMevHrWfkvAixLcjsJnpGTkuU4HAP3S3RXU3b',
+      type: SolAccountType.DataAccount,
+      keyringType: KeyringTypes.snap,
+      snapOptions: {
+        id: SOLANA_WALLET_SNAP_ID,
+        name: SOLANA_WALLET_NAME,
+        enabled: true,
+      },
+      options: {
+        entropySource: 'mockHdKeyring1',
+      },
+    }),
+    balance: '0',
+  };
+  const solanaAccount2 = {
+    ...createMockInternalAccount({
+      address: 'DdHGa63k3vcH6kqDbX834GpeRUUef81Q8bUrBPdF937k',
+      type: SolAccountType.DataAccount,
+      keyringType: KeyringTypes.snap,
+      snapOptions: {
+        id: SOLANA_WALLET_SNAP_ID,
+        name: SOLANA_WALLET_NAME,
+        enabled: true,
+      },
+      options: {
+        entropySource: 'mockHdKeyring2',
+      },
+    }),
+    balance: '0',
+  };
+
+  const mockHdKeyring1 = {
+    type: KeyringTypes.hd,
+    accounts: [hdAccountFromHdKeyring1.address],
+  };
+
+  const mockHdKeyring2 = {
+    type: KeyringTypes.hd,
+    accounts: [hdAccountFromHdKeyring2.address],
+  };
+  const mockSnapKeyring = {
+    type: KeyringTypes.snap,
+    accounts: [solanaAccount1.address, solanaAccount2.address],
+  };
+
+  const mockHdKeyring1Metadata = {
+    id: 'mockHdKeyring1',
+    name: '',
+  };
+  const mockHdKeyring2Metadata = {
+    id: 'mockHdKeyring2',
+    name: '',
+  };
+  const mockSnapKeyringMetadata = {
+    id: 'mockSnapKeyring',
+    name: '',
+  };
+
+  it('returns internal accounts sorted by keyring', () => {
+    const mockStateWithSnapAccounts = {
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            [hdAccountFromHdKeyring1.id]: hdAccountFromHdKeyring1,
+            [hdAccountFromHdKeyring2.id]: hdAccountFromHdKeyring2,
+            [solanaAccount1.id]: solanaAccount1,
+            [solanaAccount2.id]: solanaAccount2,
+          },
+          selectedAccount: solanaAccount1.id,
+        },
+        keyrings: [mockHdKeyring1, mockHdKeyring2, mockSnapKeyring],
+        keyringsMetadata: [
+          mockHdKeyring1Metadata,
+          mockHdKeyring2Metadata,
+          mockSnapKeyringMetadata,
+        ],
+        networkConfigurationsByChainId:
+          mockState.metamask.networkConfigurationsByChainId,
+        selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+      },
+    };
+
+    const result = selectors.getInternalAccountsSortedByKeyring(
+      mockStateWithSnapAccounts,
+    );
+    expect(result).toStrictEqual([
+      hdAccountFromHdKeyring1,
+      solanaAccount1,
+      hdAccountFromHdKeyring2,
+      solanaAccount2,
+    ]);
   });
 });
