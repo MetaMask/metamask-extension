@@ -87,6 +87,8 @@ jobs:
     if: ${{ github.event_name == 'pull_request' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
       HTML_REPORT_PATH: html-report
@@ -112,7 +114,7 @@ jobs:
 
       - name: Comment on PR with html report
         run: |
-          gh pr comment "${PR_NUMBER}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
+          gh pr comment "${PR_NUMBER}" --repo "${OWNER}/${REPOSITORY}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
 
   test-e2e-chrome-api-specs-multichain:
     uses: ./.github/workflows/run-e2e.yml
@@ -130,6 +132,8 @@ jobs:
     if: ${{ github.event_name == 'pull_request' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
       HTML_REPORT_PATH: html-report-multichain
@@ -155,7 +159,7 @@ jobs:
 
       - name: Comment on PR with html report
         run: |
-          gh pr comment "${PR_NUMBER}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
+          gh pr comment "${PR_NUMBER}" --repo "${OWNER}/${REPOSITORY}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
 
   test-e2e-chrome-report:
     needs:
