@@ -95,7 +95,6 @@ jobs:
       JOB_NAME: test-e2e-chrome-api-specs
     permissions:
       contents: read
-      # id-token permission is required for uploading to s3
       id-token: write
     steps:
       - name: Download html report
