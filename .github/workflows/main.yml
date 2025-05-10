@@ -286,6 +286,8 @@ jobs:
       contents: read
       # id-token permission is required for uploading to s3
       id-token: write
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
   e2e-firefox:
     needs:
