@@ -73,29 +73,89 @@ jobs:
 
   test-e2e-chrome-api-specs:
     uses: ./.github/workflows/run-e2e.yml
-    permissions:
-      contents: read
-      # id-token permission is required for uploading to s3
-      id-token: write
     with:
       test-suite-name: test-e2e-chrome-api-specs
       build-artifact: prep-build-test-browserify-chrome
       build-command: yarn build:test
       test-command: yarn test:api-specs
-      html-report-path: html-report
+      test-artifacts-path: html-report
 
-  test-e2e-chrome-api-specs-multichain:
-    uses: ./.github/workflows/run-e2e.yml
+  test-e2e-chrome-api-specs-alert-on-failure:
+    needs:
+      - test-e2e-chrome-api-specs
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+      HTML_REPORT_PATH: html-report
+      JOB_NAME: test-e2e-chrome-api-specs
     permissions:
       contents: read
       # id-token permission is required for uploading to s3
       id-token: write
+    steps:
+      - name: Download html report
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          pattern: ${{ env.JOB_NAME }}
+
+      - name: Upload html report to S3
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ env.HTML_REPORT_PATH }}
+          path: ${{ env.HTML_REPORT_PATH }}
+
+      - name: Comment on PR with html report
+        run: |
+          gh pr comment "${PR_NUMBER}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
+
+  test-e2e-chrome-api-specs-multichain:
+    uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-api-specs-multichain
       build-artifact: prep-build-test-flask-browserify-chrome
       build-command: yarn build:test:flask
       test-command: yarn test:api-specs-multichain
-      html-report-path: html-report-multichain
+      test-artifacts-path: html-report-multichain
+
+  test-e2e-chrome-api-specs-multichain-alert-on-failure:
+    needs:
+      - test-e2e-chrome-api-specs-multichain
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
+      HTML_REPORT_PATH: html-report-multichain
+      JOB_NAME: test-e2e-chrome-api-specs-multichain
+    permissions:
+      contents: read
+      # id-token permission is required for uploading to s3
+      id-token: write
+    steps:
+      - name: Download html report
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          pattern: ${{ env.JOB_NAME }}
+
+      - name: Upload html report to S3
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ env.HTML_REPORT_PATH }}
+          path: ${{ env.HTML_REPORT_PATH }}
+
+      - name: Comment on PR with html report
+        run: |
+          gh pr comment "${PR_NUMBER}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
 
   test-e2e-chrome-report:
     needs:

@@ -31,10 +31,12 @@ on:
         type: number
         default: 1
         description: The total number of jobs in the matrix
-      html-report-path:
+      test-artifacts-path:
         type: string
-        default: ''
-        description: The path to the HTML report
+        default: |
+          ./test-artifacts
+          ./test/test-results/e2e
+        description: The path to the test artifacts
 
 jobs:
   run-e2e:
@@ -112,28 +114,9 @@ jobs:
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
           PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
 
-      - name: Upload test results and artifacts
+      - name: Upload test artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.JOB_NAME }}
-          path: |
-            ./test-artifacts
-            ./test/test-results/e2e
-
-      - name: Upload html report to S3
-        if: ${{ inputs.html-report-path != '' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ inputs.html-report-path }}
-          path: ${{ inputs.html-report-path }}
-
-      - name: Comment on PR with html report
-        if: ${{ failure() && inputs.html-report-path != '' && env.PR_NUMBER != '' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        env:
-          HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
-          HTML_REPORT_PATH: ${{ inputs.html-report-path }}
-        run: |
-          gh pr comment "${PR_NUMBER}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
+          path: ${{ inputs.test-artifacts-path }}
