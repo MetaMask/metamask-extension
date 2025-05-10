@@ -6,6 +6,7 @@
 // startup.
 @use "react-responsive-carousel/lib/styles/carousel";
 
+@import 'account-exist/index';
 @import 'recovery-phrase/index';
 @import 'onboarding-app-header/index';
 @import 'secure-your-wallet/index';
