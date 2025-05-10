@@ -17,6 +17,7 @@ import {
 import { getCurrencyRates } from '../../../../../selectors';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import { TokenFiatDisplayInfo } from '../../types';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type TokenCellSecondaryDisplayProps = {
   token: TokenFiatDisplayInfo;
@@ -30,6 +31,7 @@ export const TokenCellSecondaryDisplay = React.memo(
     handleScamWarningModal,
     privacyMode,
   }: TokenCellSecondaryDisplayProps) => {
+    const t = useI18nContext();
     const isEvm = useSelector(getMultichainIsEvm);
     const currencyRates = useSelector(getCurrencyRates);
 
@@ -59,15 +61,15 @@ export const TokenCellSecondaryDisplay = React.memo(
     // secondary display text
     return (
       <SensitiveText
-        fontWeight={FontWeight.Medium}
-        variant={TextVariant.bodyMd}
+        fontWeight={token.secondary ? FontWeight.Medium : FontWeight.Normal}
+        variant={token.secondary ? TextVariant.bodyMd : TextVariant.bodySm}
         textAlign={TextAlign.End}
         data-testid="multichain-token-list-item-secondary-value"
         ellipsis={token.isStakeable}
         isHidden={privacyMode}
         length={SensitiveTextLength.Medium}
       >
-        {token.secondary}
+        {token.secondary || t('noConversionRateAvailable')}
       </SensitiveText>
     );
   },
