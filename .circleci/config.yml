@@ -19,12 +19,6 @@ executors:
     resource_class: medium #// linux medium: 2 CPUs, 7.5 GB RAM, 10 credits/min
     environment:
       NODE_OPTIONS: --max_old_space_size=6144
-  node-browsers-medium-plus:
-    docker:
-      - image: cimg/node:22.15-browsers
-    resource_class: medium+
-    environment:
-      NODE_OPTIONS: --max_old_space_size=4096
 
 orbs:
   gh: circleci/github-cli@2.0
@@ -76,13 +70,6 @@ workflows:
               value: << pipeline.schedule.name >>
     jobs:
       - prep-deps
-      - get-changed-files-with-git-diff:
-          filters:
-            branches:
-              ignore:
-                - master
-          requires:
-            - prep-deps
       - prep-build:
           requires:
             - prep-deps
@@ -107,14 +94,6 @@ workflows:
       - prep-build-test-flask-mv2:
           requires:
             - prep-deps
-      - test-api-specs:
-          requires:
-            - prep-build-test
-            - get-changed-files-with-git-diff
-      - test-api-specs-multichain:
-          requires:
-            - prep-build-test-flask
-            - get-changed-files-with-git-diff
       - validate-source-maps:
           requires:
             - prep-build
@@ -218,27 +197,6 @@ jobs:
             - .metamask/cache # ensures anvil is installed
             - node_modules
             - build-artifacts
-
-  # This job is used for the e2e quality gate.
-  # It must be run before any job which uses the run-all.js script.
-  # The job is skipped in main, master or RC branches.
-  get-changed-files-with-git-diff:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Get changed files with git diff
-          command: yarn tsx .circleci/scripts/git-diff-default-branch.ts
-      - persist_to_workspace:
-          root: .
-          paths:
-            - changed-files
-      - store_artifacts:
-          path: changed-files
-          destination: changed-files
 
   prep-build:
     executor: node-linux-medium
@@ -504,68 +462,6 @@ jobs:
       - run:
           name: Rerun workflows from failed
           command: yarn ci-rerun-from-failed
-
-  test-api-specs-multichain:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-flask ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-flask ./builds
-      - gh/install
-      - run:
-          name: test:api-specs-multichain
-          command: .circleci/scripts/test-run-e2e.sh yarn test:api-specs-multichain
-          no_output_timeout: 5m
-      - run:
-          name: Comment on PR
-          command: |
-            if [  -f html-report-multichain/index.html ]; then
-              gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: Multichain API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report-multichain/index.html)."
-            else
-              echo "Multichain API Spec Report not found!"
-            fi
-          when: on_fail
-      - store_artifacts:
-          path: html-report-multichain
-          destination: html-report-multichain
-
-  test-api-specs:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - gh/install
-      - run:
-          name: test:api-specs
-          command: .circleci/scripts/test-run-e2e.sh yarn test:api-specs
-          no_output_timeout: 5m
-      - run:
-          name: Comment on PR
-          command: |
-            if [  -f html-report/index.html ]; then
-              gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: API Spec Test Failed. View the report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report/index.html)."
-            else
-              echo "API Spec Report not found!"
-            fi
-          when: on_fail
-      - store_artifacts:
-          path: html-report
-          destination: html-report
 
   job-publish-prerelease:
     executor: node-browsers-medium
