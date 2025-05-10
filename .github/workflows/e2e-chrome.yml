@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
     env:
-      GH_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
     env:
-      GH_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
