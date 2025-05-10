@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { CaipAccountId } from '@metamask/utils';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { CaipAccountId, parseCaipChainId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -112,6 +113,18 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
 
   const defaultSet = new Set(defaultSelectedAccountAddresses);
   const selectedSet = new Set(selectedAccountAddresses);
+
+  const handleNewAccount = useCallback(
+    async (completed: boolean, newAccount?: InternalAccount) => {
+      if (completed && newAccount) {
+        const { namespace, reference } = parseCaipChainId(newAccount.scopes[0]);
+        const newAccountCaipAccountId: CaipAccountId = `${namespace}:${reference}:${newAccount.address}`;
+        onSubmit([...selectedAccountAddresses, newAccountCaipAccountId]);
+        onClose();
+      }
+    },
+    [selectedAccountAddresses, onSubmit, onClose],
+  );
 
   return (
     <Modal
@@ -262,9 +275,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
         <EditAccountAddAccountForm
           onBack={() => setModalStage(EditAccountModalStage.AddNewAccount)}
           onClose={() => setModalStage(EditAccountModalStage.AccountList)}
-          onActionComplete={async () => {
-            setModalStage(EditAccountModalStage.AccountList);
-          }}
+          onActionComplete={handleNewAccount}
           accountType={accountType}
         />
       )}
