@@ -63,14 +63,6 @@ async function main() {
           'console-streaming',
           new HtmlReporter({ autoOpen: !process.env.CI }),
         ],
-        skip: [
-          'eth_coinbase',
-          // these methods below are not supported by MetaMask extension yet and
-          // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
-          'eth_getBlockReceipts',
-          'eth_maxPriorityFeePerGas',
-          'wallet_swapAsset',
-        ],
         rules: [
           new JsonSchemaFakerRule({
             only: [],

@@ -96,10 +96,6 @@ jobs:
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
       HTML_REPORT_PATH: html-report
       JOB_NAME: test-e2e-chrome-api-specs
-    permissions:
-      contents: read
-      # id-token permission is required for uploading to s3
-      id-token: write
     steps:
       - name: Download html report
         uses: actions/download-artifact@v4
@@ -141,10 +137,6 @@ jobs:
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
       HTML_REPORT_PATH: html-report-multichain
       JOB_NAME: test-e2e-chrome-api-specs-multichain
-    permissions:
-      contents: read
-      # id-token permission is required for uploading to s3
-      id-token: write
     steps:
       - name: Download html report
         uses: actions/download-artifact@v4
