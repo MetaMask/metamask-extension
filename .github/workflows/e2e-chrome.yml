@@ -99,8 +99,8 @@ jobs:
       - name: Download html report
         uses: actions/download-artifact@v4
         with:
-          path: .
-          pattern: ${{ env.JOB_NAME }}
+          name: ${{ env.JOB_NAME }}
+          path: ${{ env.HTML_REPORT_PATH }}
 
       - name: Upload html report to S3
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
@@ -142,8 +142,8 @@ jobs:
       - name: Download html report
         uses: actions/download-artifact@v4
         with:
-          path: .
-          pattern: ${{ env.JOB_NAME }}
+          name: ${{ env.JOB_NAME }}
+          path: ${{ env.HTML_REPORT_PATH }}
 
       - name: Upload html report to S3
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
