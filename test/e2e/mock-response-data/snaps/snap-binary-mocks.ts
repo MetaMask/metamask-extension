@@ -27,14 +27,18 @@ function getLocalSnapVersion(snapNamePrefix: string): string {
   return foundVersion;
 }
 
-async function createSnapMock(mockServer: Mockttp, snapNamePrefix: string) {
-  const VERSION = getLocalSnapVersion(snapNamePrefix);
+async function createSnapMock(
+  mockServer: Mockttp,
+  snapNamePrefix: string,
+  specificVersion?: string,
+) {
+  const VERSION = specificVersion ?? getLocalSnapVersion(snapNamePrefix);
   const SNAP_PATH = `${SNAP_ASSETS_RELATIVE_PATH}/${snapNamePrefix}-${VERSION}.txt`;
   const SNAP_HEADERS_PATH = `${SNAP_ASSETS_RELATIVE_PATH}/${snapNamePrefix}-${VERSION}-headers.json`;
 
   return mockServer
     .forGet(
-      new RegExp(`${NPM_REGISTRY_METAMASK_BASE_URL}/${snapNamePrefix}/.*`, 'u'),
+      `${NPM_REGISTRY_METAMASK_BASE_URL}/${snapNamePrefix}/-/${snapNamePrefix}-${VERSION}.tgz`,
     )
     .thenCallback(() => {
       return {
@@ -193,9 +197,14 @@ export async function mockWebpackPluginOldSnap(mockServer: Mockttp) {
   return createSnapMock(
     mockServer,
     snapConfigurations.mockWebpackPluginOldSnap,
+    '2.0.0',
   );
 }
 
 export async function mockWebpackPluginSnap(mockServer: Mockttp) {
-  return createSnapMock(mockServer, snapConfigurations.mockWebpackPluginSnap);
+  return createSnapMock(
+    mockServer,
+    snapConfigurations.mockWebpackPluginSnap,
+    '2.1.3',
+  );
 }
