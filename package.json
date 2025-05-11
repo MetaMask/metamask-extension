@@ -324,6 +324,7 @@
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
+    "@metamask/seedless-onboarding-controller": "./seedless-onboarding-controller.tgz",
     "@metamask/selected-network-controller": "^19.0.0",
     "@metamask/signature-controller": "^27.1.0",
     "@metamask/smart-transactions-controller": "^16.3.1",
