@@ -424,6 +424,7 @@ import {
 } from './lib/network-controller/messenger-action-handlers';
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import OAuthController from './controllers/oauth/oauth-controller';
+import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2010,6 +2011,7 @@ export default class MetamaskController extends EventEmitter {
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
+      SeedlessOnboardingController: SeedlessOnboardingControllerInit,
     };
 
     const {
@@ -2061,6 +2063,8 @@ export default class MetamaskController extends EventEmitter {
     this.notificationServicesPushController =
       controllersByName.NotificationServicesPushController;
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
+    this.seedlessOnboardingController =
+      controllersByName.SeedlessOnboardingController;
 
     this.notificationServicesController.init();
 
@@ -2267,6 +2271,7 @@ export default class MetamaskController extends EventEmitter {
       AlertController: this.alertController,
       OnboardingController: this.onboardingController,
       OAuthController: this.oauthController,
+      SeedlessOnboardingController: this.seedlessOnboardingController,
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,
       SubjectMetadataController: this.subjectMetadataController,
@@ -2327,6 +2332,7 @@ export default class MetamaskController extends EventEmitter {
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
         OAuthController: this.oauthController,
+        SeedlessOnboardingController: this.seedlessOnboardingController,
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController,
         SubjectMetadataController: this.subjectMetadataController,
@@ -3705,6 +3711,9 @@ export default class MetamaskController extends EventEmitter {
         getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
       ///: END:ONLY_INCLUDE_IF
 
+      // seedless onboarding
+      startOAuthLogin: this.startOAuthLogin.bind(this),
+
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
@@ -4836,6 +4845,31 @@ export default class MetamaskController extends EventEmitter {
       return details?.symbol;
     } catch (e) {
       return null;
+    }
+  }
+
+  /**
+   * Login with social login provider and get User Onboarding details.
+   *
+   * AuthenticationResult is an object that contains the temporary Auth token for next step of onboarding flow
+   * and user's onboarding status to indicate whether the user has already completed the seedless onboarding flow.
+   *
+   * @param {AuthConnection} provider - social login provider, `google` | `apple`
+   * @returns {Promise<boolean>} true if user has not completed the seedless onboarding flow, false otherwise
+   */
+  async startOAuthLogin(provider) {
+    try {
+      const oAuthLoginResult = await this.oauthController.startOAuthLogin(
+        provider,
+      );
+
+      const { isNewUser } =
+        await this.seedlessOnboardingController.authenticate(oAuthLoginResult);
+
+      return isNewUser;
+    } catch (error) {
+      log.error('Error while starting social login', error);
+      throw error;
     }
   }
 
