@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import classnames from 'classnames';
 import Mascot from '../../../components/ui/mascot';
 import {
   ButtonBase,
@@ -12,7 +13,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import LoginOptions from './login-options';
 import { LoginOptionType, LoginType } from './types';
-import classnames from 'classnames';
 
 export default function WelcomeLogin({
   onLogin,
@@ -45,7 +45,10 @@ export default function WelcomeLogin({
   };
 
   const handleLogin = (loginType: LoginType) => {
-    if (loginOption) onLogin(loginType, loginOption);
+    if (!loginOption) {
+      return;
+    }
+    onLogin(loginType, loginOption);
   };
 
   return (
