@@ -108,8 +108,8 @@ export default function OnboardingWelcome() {
       setNewAccountCreationInProgress(true);
       dispatch(setFirstTimeFlowType(FirstTimeFlowType.seedless));
 
-      const isNewUser = dispatch(startOAuthLogin(socialConnectionType));
-      setIsLoggingIn(false);
+      const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
+
       // if user is not new user and login option is new, redirect to account exist page
       if (loginOption === 'new' && !isNewUser) {
         history.push(ONBOARDING_ACCOUNT_EXIST);

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
@@ -22,18 +23,32 @@ import {
   ButtonIconSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
+
+import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function AccountNotFound() {
   const history = useHistory();
   const t = useI18nContext();
-  // TODO: get account email from controllers
-  const accountEmail = 'username@gmail.com';
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
   const onCreateOne = async () => {
     // TODO: process the creation of a new wallet using the social login
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
   };
+
+  useEffect(() => {
+    if (firstTimeFlowType !== FirstTimeFlowType.seedless) {
+      // if the onboarding flow is not seedless, redirect to the welcome page
+      history.push(ONBOARDING_WELCOME_ROUTE);
+    }
+  }, [firstTimeFlowType, history]);
+
   return (
     <Box
       className="account-not-found"
@@ -88,7 +103,7 @@ export default function AccountNotFound() {
             />
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {t('accountNotFoundDescription', [accountEmail])}
+            {t('accountNotFoundDescription', [userSocialLoginEmail])}
           </Text>
         </Box>
       </div>
