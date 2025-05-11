@@ -181,6 +181,60 @@ class SmartTransactionHook {
       return useRegularTransactionSubmit; // Fallback to regular transaction submission.
     }
     try {
+      // ADDED: Debug log before duplicate check
+      log.debug('Smart Transaction: About to check for potential duplicates', {
+        txId: this.#transactionMeta.id,
+        params: this.#txParams,
+        isSmartTx: this.#isSmartTransaction,
+      });
+
+      // Check for potential duplicates regardless of feature flag
+      // First, check if we have the required transaction parameters
+      if (!this.#txParams.from || !this.#txParams.to || !this.#txParams.data) {
+        log.debug('Smart Transaction: Missing required transaction parameters, skipping duplicate check', {
+          txId: this.#transactionMeta.id,
+          hasFrom: Boolean(this.#txParams.from),
+          hasTo: Boolean(this.#txParams.to),
+          hasData: Boolean(this.#txParams.data)
+        });
+      } else {
+        // ADDED: Debug log after parameters verified
+        log.debug('Smart Transaction: Parameters verified, proceeding with duplicate check', {
+          txId: this.#transactionMeta.id,
+          params: {
+            from: this.#txParams.from,
+            to: this.#txParams.to,
+            dataPrefix: this.#txParams.data.substring(0, 10), // Just log the function signature
+          }
+        });
+
+        // Only perform the duplicate check if we have all required parameters
+        const potentialDuplicateCheck = await this.#smartTransactionsController.checkForPotentialDuplicates({
+          from: this.#txParams.from,
+          to: this.#txParams.to,
+          data: this.#txParams.data,
+          value: this.#txParams.value,
+          chainId: this.#chainId,
+          networkClientId: this.#transactionMeta.networkClientId,
+        });
+
+        // ADDED: Debug log after duplicate check
+        log.debug('Smart Transaction: Duplicate check completed', {
+          txId: this.#transactionMeta.id,
+          result: potentialDuplicateCheck
+        });
+
+        // If duplicates found, handle them appropriately
+        if (potentialDuplicateCheck.hasDuplicates) {
+          log.error('Smart Transaction: Potential duplicate transaction detected', {
+            txId: this.#transactionMeta.id,
+            reason: potentialDuplicateCheck.reason
+          });
+          this.#onApproveOrReject();
+          throw new Error(`Transaction would likely fail: ${potentialDuplicateCheck.reason}`);
+        }
+      }
+
       const submitTransactionResponse = await this.#signAndSubmitTransactions({
         getFeesResponse,
       });
@@ -192,15 +246,43 @@ class SmartTransactionHook {
 
       await this.#processApprovalIfNeeded(uuid);
 
-      const extensionReturnTxHashAsap =
-        this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsap;
+      // UPDATED: Set to true for testing and add debug log
+      const extensionReturnTxHashAsap = true;
+      // this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsap;
+
+      // ADDED: Debug log for feature flag
+      log.debug('Smart Transaction: Feature flag value', {
+        txId: this.#transactionMeta.id,
+        extensionReturnTxHashAsap,
+        source: 'hardcoded'
+      });
+
+      // remove
+      log.debug('Smart Transaction: Checking feature flag for returning txHash', {
+        txId: this.#transactionMeta.id,
+        extensionReturnTxHashAsap,
+        hasTxHash: Boolean(submitTransactionResponse?.txHash),
+        uuid: submitTransactionResponse?.uuid
+      }); // remove
 
       let transactionHash: string | undefined | null;
       if (extensionReturnTxHashAsap && submitTransactionResponse?.txHash) {
         transactionHash = submitTransactionResponse.txHash;
+        log.debug('Smart Transaction: Returning txHash early due to feature flag', {
+          txId: this.#transactionMeta.id,
+          transactionHash
+        });
       } else {
+        log.debug('Smart Transaction: Waiting for transaction hash', {
+          txId: this.#transactionMeta.id,
+          uuid: submitTransactionResponse?.uuid
+        });
         transactionHash = await this.#waitForTransactionHash({
           uuid,
+        });
+        log.debug('Smart Transaction: Received transaction hash after waiting', {
+          txId: this.#transactionMeta.id,
+          transactionHash
         });
       }
 
@@ -211,8 +293,21 @@ class SmartTransactionHook {
       }
       return { transactionHash };
     } catch (error) {
-      log.error('Error in smart transaction publish hook', error);
+      log.error('Error in smart transaction publish hook', error, {
+        txId: this.#transactionMeta.id,
+        errorName: (error as Error).name,
+        errorMessage: (error as Error).message,
+        step: 'submitTransaction',
+        featureFlagEnabled: this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsap
+      });
       this.#onApproveOrReject();
+
+      // Log before throwing the error
+      log.debug('Smart Transaction: About to throw error from submit hook', {
+        txId: this.#transactionMeta.id,
+        willFallbackToRegular: false
+      });
+
       throw error;
     }
   }
