@@ -19,6 +19,8 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_ACCOUNT_EXIST,
+  ONBOARDING_ACCOUNT_NOT_FOUND,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -54,6 +56,8 @@ import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
+import AccountExist from './account-exist/account-exist';
+import AccountNotFound from './account-not-found/account-not-found';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 
@@ -145,6 +149,11 @@ export default function OnboardingFlow() {
         })}
       >
         <Switch>
+          <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
+          <Route
+            path={ONBOARDING_ACCOUNT_NOT_FOUND}
+            component={AccountNotFound}
+          />
           <Route
             path={ONBOARDING_CREATE_PASSWORD_ROUTE}
             render={(routeProps) => (

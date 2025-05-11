@@ -6,6 +6,9 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_ACCOUNT_EXIST,
+  ONBOARDING_ACCOUNT_NOT_FOUND,
+  ONBOARDING_UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCurrentKeyring,
@@ -14,7 +17,7 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { setFirstTimeFlowType } from '../../../store/actions';
+import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventCategory,
@@ -99,6 +102,47 @@ export default function OnboardingWelcome() {
     ///: END:ONLY_INCLUDE_IF
   };
 
+  const onSocialLoginClick = async (socialConnectionType, loginOption) => {
+    setIsLoggingIn(true);
+    try {
+      setNewAccountCreationInProgress(true);
+      dispatch(setFirstTimeFlowType(FirstTimeFlowType.seedless));
+
+      const isNewUser = dispatch(startOAuthLogin(socialConnectionType));
+      setIsLoggingIn(false);
+      // if user is not new user and login option is new, redirect to account exist page
+      if (loginOption === 'new' && !isNewUser) {
+        history.push(ONBOARDING_ACCOUNT_EXIST);
+        return;
+      } else if (loginOption === 'existing' && isNewUser) {
+        // if user is new user and login option is existing, redirect to account not found page
+        history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
+        return;
+      }
+
+      if (!isNewUser) {
+        // redirect to login page
+        history.push(ONBOARDING_UNLOCK_ROUTE);
+        return;
+      }
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        // TODO: add seedless onboarding event to MetaMetrics?
+        event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+        properties: {
+          account_type: 'metamask',
+        },
+      });
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+      ///: END:ONLY_INCLUDE_IF
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
   const handleLogin = (loginType, loginOption) => {
     if (loginType === LOGIN_TYPE.SRP) {
       if (loginOption === LOGIN_OPTION.NEW) {
@@ -107,8 +151,7 @@ export default function OnboardingWelcome() {
         onImportClick();
       }
     } else {
-      console.log('login with social login', loginType, loginOption);
-      setIsLoggingIn(true);
+      onSocialLoginClick(loginType, loginOption);
     }
   };
 
