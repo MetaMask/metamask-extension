@@ -1,14 +1,31 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from '../../components/component-library';
+import {
+  Text,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  FormTextField,
+  FormTextFieldSize,
+  TextFieldType,
+  Box,
+} from '../../components/component-library';
 import {
   FontWeight,
   TextVariant,
   TextColor,
+  BlockSize,
+  Display,
+  FlexDirection,
+  AlignItems,
+  JustifyContent,
+  TextAlign,
+  BackgroundColor,
+  Color,
+  BorderRadius,
+  TextTransform,
 } from '../../helpers/constants/design-system';
-import Button from '../../components/ui/button';
-import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -130,32 +147,6 @@ export default class UnlockPage extends Component {
     }
   }
 
-  renderSubmitButton() {
-    const style = {
-      backgroundColor: 'var(--color-primary-default)',
-      color: 'var(--color-primary-inverse)',
-      marginTop: '20px',
-      height: '56px',
-      fontWeight: '500',
-      boxShadow: 'none',
-      borderRadius: '100px',
-    };
-
-    return (
-      <Button
-        type="submit"
-        data-testid="unlock-submit"
-        style={style}
-        disabled={!this.state.password}
-        variant="contained"
-        size="large"
-        onClick={this.handleSubmit}
-      >
-        {this.context.t('unlock')}
-      </Button>
-    );
-  }
-
   renderMascot = () => {
     if (isFlask()) {
       return (
@@ -184,16 +175,38 @@ export default class UnlockPage extends Component {
     const needHelpText = t('needHelpLinkText');
 
     return (
-      <div className="unlock-page__container">
-        <div className="unlock-page" data-testid="unlock-page">
-          <div className="unlock-page__mascot-container">
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.stretch}
+        justifyContent={JustifyContent.center}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        width={BlockSize.Full}
+      >
+        <Box
+          className="unlock-page"
+          data-testid="unlock-page"
+          width={BlockSize.Full}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.center}
+          paddingLeft={4}
+          paddingRight={4}
+        >
+          <Box className="unlock-page__mascot-container" marginTop={6}>
             {this.renderMascot()}
             {isBeta() ? (
-              <div className="unlock-page__mascot-container__beta">
+              <Text
+                className="unlock-page__mascot-container__beta"
+                backgroundColor={BackgroundColor.primaryDefault}
+                color={Color.primaryInverse}
+                padding={1}
+                borderRadius={BorderRadius.LG}
+                textTransform={TextTransform.Uppercase}
+              >
                 {t('beta')}
-              </div>
+              </Text>
             ) : null}
-          </div>
+          </Box>
           <Text
             data-testid="unlock-page-title"
             as="h1"
@@ -202,40 +215,69 @@ export default class UnlockPage extends Component {
             marginTop={1}
             marginBottom={1}
             color={TextColor.textDefault}
+            textAlign={TextAlign.Center}
           >
             {t('welcomeBack')}
           </Text>
-
-          <Text color={TextColor.textAlternative}>{t('unlockMessage')}</Text>
-          <form className="unlock-page__form" onSubmit={this.handleSubmit}>
-            <TextField
+          <Text
+            color={TextColor.textAlternative}
+            marginBottom={[4, 4, 8]}
+            textAlign={TextAlign.Center}
+          >
+            {t('unlockMessage')}
+          </Text>
+          <Box
+            as="form"
+            onSubmit={this.handleSubmit}
+            width={BlockSize.Full}
+            marginBottom={6}
+          >
+            <FormTextField
               id="password"
-              data-testid="unlock-password"
+              inputProps={{
+                'data-testid': 'unlock-password',
+              }}
               label={t('password')}
-              type="password"
+              placeholder={t('enterPasswordContinue')}
+              type={TextFieldType.Password}
               value={password}
-              onChange={(event) => this.handleInputChange(event)}
-              error={error}
+              onChange={(e) => this.handleInputChange(e)}
+              error={Boolean(error)}
+              helpText={error}
               autoFocus
               autoComplete="current-password"
               theme="material"
-              fullWidth
+              width={BlockSize.Full}
+              size={FormTextFieldSize.Lg}
+              marginBottom={4}
             />
-          </form>
-          {this.renderSubmitButton()}
-          <div className="unlock-page__links">
             <Button
-              type="link"
-              key="import-account"
-              className="unlock-page__link"
-              onClick={() => onRestore()}
+              type="submit"
+              data-testid="unlock-submit"
+              disabled={!this.state.password}
+              size={ButtonSize.Lg}
+              onClick={this.handleSubmit}
+              block
             >
-              {t('forgotPassword')}
+              {this.context.t('unlock')}
             </Button>
-          </div>
-          <div className="unlock-page__support">
+          </Box>
+
+          <Button
+            variant={ButtonVariant.Link}
+            tabindex
+            key="import-account"
+            data-testid="unlock-page-link"
+            onClick={() => onRestore()}
+            marginBottom={6}
+          >
+            {t('forgotPassword')}
+          </Button>
+
+          <Text>
             {t('needHelp', [
-              <a
+              <Button
+                variant={ButtonVariant.Link}
                 href={SUPPORT_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -258,11 +300,11 @@ export default class UnlockPage extends Component {
                 }}
               >
                 {needHelpText}
-              </a>,
+              </Button>,
             ])}
-          </div>
-        </div>
-      </div>
+          </Text>
+        </Box>
+      </Box>
     );
   }
 }
