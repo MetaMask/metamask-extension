@@ -5,7 +5,7 @@ const SNAP_ASSETS_RELATIVE_PATH =
   'test/e2e/mock-response-data/snaps/snap-binaries-and-headers';
 const NPM_REGISTRY_METAMASK_BASE_URL = 'https://registry.npmjs.org/@metamask';
 
-function getSnapVersion(snapNamePrefix: string): string {
+function getLocalSnapVersion(snapNamePrefix: string): string {
   const files = fs.readdirSync(SNAP_ASSETS_RELATIVE_PATH);
   const versionRegex = new RegExp(
     `${snapNamePrefix}-(\\d+\\.\\d+\\.\\d+)\\.txt`,
@@ -28,7 +28,7 @@ function getSnapVersion(snapNamePrefix: string): string {
 }
 
 async function createSnapMock(mockServer: Mockttp, snapNamePrefix: string) {
-  const VERSION = getSnapVersion(snapNamePrefix);
+  const VERSION = getLocalSnapVersion(snapNamePrefix);
   const SNAP_PATH = `${SNAP_ASSETS_RELATIVE_PATH}/${snapNamePrefix}-${VERSION}.txt`;
   const SNAP_HEADERS_PATH = `${SNAP_ASSETS_RELATIVE_PATH}/${snapNamePrefix}-${VERSION}-headers.json`;
 
