@@ -380,3 +380,11 @@ env:
 
   # Address of enforcer used for gasless EIP-7702 transactions
   - GASLESS_7702_ENFORCER_ADDRESS: null
+
+  # OAuth (Soial login)
+  - AUTH_CONNECTION_ID: ''
+  - GROUPED_AUTH_CONNECTION_ID: ''
+  - GOOGLE_CLIENT_ID: ''
+  - APPLE_CLIENT_ID: ''
+  - WEB3AUTH_NETWORK: ''
+  - AUTH_SERVER_URL: ''
