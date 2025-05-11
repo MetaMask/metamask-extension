@@ -126,7 +126,7 @@
     "download-builds:test": "tsx .devcontainer/download-builds.ts prep-build-test",
     "master-sync": "node development/master-sync.js",
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
-    "update-snap-binary": "ts-node test/e2e/mock-response-data/snaps/update-snap-binary.ts",
+    "update-snap-binary": "tsx test/e2e/mock-response-data/snaps/update-snap-binary.ts",
     "attributions:check": "./development/attributions-check.sh",
     "attributions:generate": "./development/generate-attributions.sh",
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
