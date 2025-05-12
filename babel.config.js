@@ -16,6 +16,16 @@ module.exports = function (api) {
       // operators 😭)
       '@babel/plugin-transform-logical-assignment-operators',
       [
+        'module-resolver',
+        {
+          root: ['.'],
+          alias: {
+            '~/app': './app',
+            '~ui': './ui',
+          },
+        },
+      ],
+      [
         path.resolve(
           __dirname,
           'development/build/transforms/import-meta-url.js',
