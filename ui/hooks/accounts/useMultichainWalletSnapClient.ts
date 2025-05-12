@@ -10,7 +10,6 @@ import {
   createSnapAccount,
   getNextAvailableAccountName,
   handleSnapRequest,
-  multichainUpdateBalance,
   multichainUpdateTransactions,
 } from '../../store/actions';
 import {

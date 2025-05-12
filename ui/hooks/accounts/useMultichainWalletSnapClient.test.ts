@@ -23,7 +23,6 @@ import {
 
 jest.mock('../../store/actions', () => ({
   createSnapAccount: jest.fn(),
-  multichainUpdateBalance: jest.fn(),
   multichainUpdateTransactions: jest.fn(),
 }));
 
