@@ -189,10 +189,11 @@ export default class UnlockPage extends Component {
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
           paddingLeft={4}
           paddingRight={4}
         >
-          <Box className="unlock-page__mascot-container" marginTop={6}>
+          <Box className="unlock-page__mascot-container">
             {this.renderMascot()}
             {isBeta() ? (
               <Text
@@ -221,7 +222,7 @@ export default class UnlockPage extends Component {
           </Text>
           <Text
             color={TextColor.textAlternative}
-            marginBottom={[4, 4, 8]}
+            marginBottom={12}
             textAlign={TextAlign.Center}
           >
             {t('unlockMessage')}
@@ -236,8 +237,8 @@ export default class UnlockPage extends Component {
               id="password"
               inputProps={{
                 'data-testid': 'unlock-password',
+                'aria-label': t('password'),
               }}
-              label={t('password')}
               placeholder={t('enterPasswordContinue')}
               type={TextFieldType.Password}
               value={password}
@@ -274,7 +275,7 @@ export default class UnlockPage extends Component {
             {t('forgotPassword')}
           </Button>
 
-          <Text>
+          <Text marginBottom={8}>
             {t('needHelp', [
               <Button
                 variant={ButtonVariant.Link}

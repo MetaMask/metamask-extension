@@ -6,11 +6,11 @@ exports[`Unlock Page should match snapshot 1`] = `
     class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-stretch mm-box--width-full mm-box--background-color-background-default"
   >
     <div
-      class="mm-box unlock-page mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+      class="mm-box unlock-page mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       data-testid="unlock-page"
     >
       <div
-        class="mm-box unlock-page__mascot-container mm-box--margin-top-6"
+        class="mm-box unlock-page__mascot-container"
       >
         <div
           style="z-index: 0;"
@@ -25,7 +25,7 @@ exports[`Unlock Page should match snapshot 1`] = `
         Welcome back
       </h1>
       <p
-        class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--margin-bottom-4 mm-box--sm:margin-bottom-4 mm-box--md:margin-bottom-8 mm-box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--margin-bottom-12 mm-box--color-text-alternative"
       >
         The decentralized web awaits
       </p>
@@ -36,16 +36,11 @@ exports[`Unlock Page should match snapshot 1`] = `
           class="mm-box mm-form-text-field mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
           theme="material"
         >
-          <label
-            class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
-            for="password"
-          >
-            Password
-          </label>
           <div
             class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
+              aria-label="Password"
               autocomplete="on"
               class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
               data-testid="unlock-password"
