@@ -454,13 +454,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   const isNetworkEnabled = useCallback(
     (network: MultichainNetworkConfiguration): boolean => {
-      console.log({
-        network,
-        hasAnyAccountsInNetwork: hasAnyAccountsInNetwork(network.chainId),
-      });
       return network.isEvm || hasAnyAccountsInNetwork(network.chainId);
     },
-    [hasAnyAccountsInNetwork, isUnlocked],
+    [hasAnyAccountsInNetwork],
   );
 
   const getItemCallbacks = useCallback(
