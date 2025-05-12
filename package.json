@@ -131,6 +131,8 @@
     "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
   },
   "resolutions": {
+    "@metamask/bridge-status-controller@*": "npm:@metamask-previews/bridge-status-controller@19.0.0-preview-1da9e003",
+    "@metamask/bridge-controller@*": "npm:@metamask-previews/bridge-controller@22.0.0-preview-1da9e003",
     "base-x@^3.0.x": "^3.0.11",
     "base-x@3.0.9": "^3.0.11",
     "base-x@^5.0.x": "^5.0.1",
@@ -268,8 +270,8 @@
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A60.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-60.0.0-7fc404c3fc.patch",
     "@metamask/base-controller": "^8.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.12.1",
-    "@metamask/bridge-controller": "^20.0.0",
-    "@metamask/bridge-status-controller": "^17.0.1",
+    "@metamask/bridge-controller": "*",
+    "@metamask/bridge-status-controller": "*",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
