@@ -210,7 +210,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.createAndBackupSeedPhrase('password'));
+      await store.dispatch(actions.createNewVaultAndSyncWithSocial('password'));
 
       expect(store.getActions()).toStrictEqual(expectedActions);
       expect(getSeedPhraseStub.callCount).toStrictEqual(1);

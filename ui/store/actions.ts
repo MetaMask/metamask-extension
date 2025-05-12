@@ -199,7 +199,7 @@ export function startOAuthLogin(
  * @param password - The password.
  * @returns The seed phrase.
  */
-export function createAndBackupSeedPhrase(
+export function createNewVaultAndSyncWithSocial(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
