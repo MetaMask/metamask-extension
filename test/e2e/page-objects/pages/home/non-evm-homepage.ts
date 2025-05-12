@@ -15,14 +15,10 @@ class NonEvmHomepage extends HomePage {
   async check_pageIsLoaded(amount: string = ''): Promise<void> {
     await super.check_pageIsLoaded();
     if (amount) {
-      try {
-        await this.driver.waitForSelector({
-          text: `${amount}`,
-          tag: 'span',
-        });
-      } catch (e) {
-        console.log('Error in check_pageIsLoaded', e);
-      }
+      await this.driver.waitForSelector({
+        text: `${amount}`,
+        tag: 'span',
+      });
     }
   }
 

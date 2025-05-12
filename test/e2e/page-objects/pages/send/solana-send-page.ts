@@ -42,16 +42,16 @@ class SendSolanaPage {
     await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
     console.log('check_pageIsLoaded after waitForSelector');
     if (amount) {
-      await this.driver.wait( async () => {
-       try{
-        await this.driver.waitForSelector(
-          {
-            text: `${amount}`,
-            tag: 'p',
-          },
-          { timeout: 1000 },
-        );
-        return true;
+      await this.driver.wait(async () => {
+        try {
+          await this.driver.waitForSelector(
+            {
+              text: `${amount}`,
+              tag: 'p',
+            },
+            { timeout: 1000 },
+          );
+          return true;
         } catch (e) {
           await this.driver.refresh();
           return false;
