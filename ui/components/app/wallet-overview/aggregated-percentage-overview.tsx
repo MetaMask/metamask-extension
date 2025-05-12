@@ -20,10 +20,16 @@ import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   Display,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, SensitiveText, Text } from '../../component-library';
+import {
+  Box,
+  SensitiveText,
+  SensitiveTextLength,
+  Text,
+} from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { getMultichainBalances } from '../../../selectors/multichain';
 import {
@@ -33,6 +39,7 @@ import {
   getMultichainAggregatedBalance,
   getMultiChainAssets,
 } from '../../../selectors/assets';
+import { formatWithThreshold } from '../assets/util/formatWithThreshold';
 
 // core already has this exported type but its not yet available in this version
 // todo remove this and use core type once available
@@ -164,22 +171,71 @@ export const AggregatedPercentageOverview = () => {
   );
 };
 
-// const isValidAmount = (amount: number | null | undefined): boolean =>
-//   amount !== null && amount !== undefined && !Number.isNaN(amount);
-
 export const AggregatedMultichainPercentageOverview = ({
   privacyMode = false,
 }: {
   privacyMode?: boolean;
 }) => {
+  const locale = useSelector(getIntlLocale);
+  const currentCurrency = useSelector(getCurrentCurrency);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const historicalAggregatedBalances = useSelector((state) =>
     getHistoricalMultichainAggregatedBalance(state, selectedAccount),
   );
 
+  let color = TextColor.textAlternative;
+
+  const singleDayPercentChange = historicalAggregatedBalances.P1D.percentChange;
+  const singleDayAmountChange = historicalAggregatedBalances.P1D.amountChange;
+  const signPrefix = singleDayPercentChange > 0 ? '+' : '-';
+
+  if (!privacyMode && isValidAmount(singleDayPercentChange)) {
+    if ((singleDayPercentChange as number) === 0) {
+      color = TextColor.textAlternative;
+    } else if ((singleDayPercentChange as number) > 0) {
+      color = TextColor.successDefault;
+    } else {
+      color = TextColor.errorDefault;
+    }
+  } else {
+    color = TextColor.textAlternative;
+  }
+
+  const localizedAmountChange = formatWithThreshold(
+    singleDayAmountChange,
+    0.01,
+    locale,
+    {
+      style: 'currency',
+      currency: currentCurrency,
+    },
+  );
+
   return (
-    <Box>
-      <Text>{historicalAggregatedBalances.P1D.percentChange}%</Text>
+    <Box display={Display.Flex}>
+      <SensitiveText
+        variant={TextVariant.bodyMdMedium}
+        color={color}
+        data-testid="aggregated-value-change"
+        style={{ whiteSpace: 'pre' }}
+        isHidden={privacyMode}
+        ellipsis
+        length="10"
+      >
+        {signPrefix}
+        {localizedAmountChange}{' '}
+      </SensitiveText>
+      <SensitiveText
+        variant={TextVariant.bodyMdMedium}
+        color={color}
+        data-testid="aggregated-percentage-change"
+        isHidden={privacyMode}
+        ellipsis
+        length="10"
+      >
+        ({signPrefix}
+        {singleDayPercentChange}%)
+      </SensitiveText>
     </Box>
   );
 };

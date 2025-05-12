@@ -329,7 +329,7 @@ export const CoinOverview = ({
 
     const renderNonEvmView = () => (
       <Box className="wallet-overview__currency-wrapper">
-        <AggregatedMultichainPercentageOverview />
+        <AggregatedMultichainPercentageOverview privacyMode={privacyMode} />
         {renderPortfolioButton()}
       </Box>
     );

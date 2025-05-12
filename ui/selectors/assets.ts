@@ -323,6 +323,7 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
 export type HistoricalBalanceData = {
   balance: number;
   percentChange: number;
+  amountChange: number;
 };
 
 export type HistoricalBalances = {
@@ -351,13 +352,13 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
 
     // Initialize historical balances object with zeros
     const historicalBalances: HistoricalBalances = {
-      PT1H: { balance: 0, percentChange: 0 },
-      P1D: { balance: 0, percentChange: 0 },
-      P7D: { balance: 0, percentChange: 0 },
-      P14D: { balance: 0, percentChange: 0 },
-      P30D: { balance: 0, percentChange: 0 },
-      P200D: { balance: 0, percentChange: 0 },
-      P1Y: { balance: 0, percentChange: 0 },
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
     };
 
     // Track total current balance for calculating overall percent changes
@@ -398,7 +399,7 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
       }
     });
 
-    // Calculate overall percent changes for each period
+    // Calculate overall percent changes and amount changes for each period
     const totalCurrentBalanceNum = totalCurrentBalance.toNumber();
     Object.entries(historicalBalances).forEach(([_period, data]) => {
       if (totalCurrentBalanceNum !== 0) {
@@ -406,6 +407,10 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
         const percentChange =
           ((totalCurrentBalanceNum - data.balance) / data.balance) * 100;
         data.percentChange = Number(percentChange.toFixed(2));
+        // Calculate amount change
+        data.amountChange = Number(
+          (totalCurrentBalanceNum - data.balance).toFixed(2),
+        );
       }
     });
 
