@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
@@ -12,7 +11,6 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -20,25 +18,12 @@ import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   Display,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  SensitiveText,
-  SensitiveTextLength,
-  Text,
-} from '../../component-library';
+import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
-import { getMultichainBalances } from '../../../selectors/multichain';
-import {
-  getAccountAssets,
-  getAssetsRates,
-  getHistoricalMultichainAggregatedBalance,
-  getMultichainAggregatedBalance,
-  getMultiChainAssets,
-} from '../../../selectors/assets';
+import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';
 
 // core already has this exported type but its not yet available in this version

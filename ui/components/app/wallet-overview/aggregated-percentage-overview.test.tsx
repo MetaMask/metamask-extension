@@ -8,9 +8,11 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getPreferences,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
 
 jest.mock('react-redux', () => ({
@@ -30,6 +32,7 @@ jest.mock('../../../selectors', () => ({
   getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokensMarketData: jest.fn(),
+  getSelectedInternalAccount: jest.fn(),
 }));
 
 jest.mock('../../../../shared/modules/selectors/networks', () => ({
@@ -38,6 +41,10 @@ jest.mock('../../../../shared/modules/selectors/networks', () => ({
 
 jest.mock('../../../hooks/useAccountTotalFiatBalance', () => ({
   useAccountTotalFiatBalance: jest.fn(),
+}));
+
+jest.mock('../../../selectors/assets', () => ({
+  getHistoricalMultichainAggregatedBalance: jest.fn(),
 }));
 
 const mockGetIntlLocale = jest.mocked(getIntlLocale);
@@ -49,6 +56,10 @@ const mockGetShouldHideZeroBalanceTokens = jest.mocked(
 );
 const mockGetTokensMarketData = getTokensMarketData as jest.Mock;
 const mockGetCurrentChainId = jest.mocked(getCurrentChainId);
+const mockGetHistoricalMultichainAggregatedBalance = jest.mocked(
+  getHistoricalMultichainAggregatedBalance,
+);
+const mockGetSelectedInternalAccount = jest.mocked(getSelectedInternalAccount);
 
 const selectedAccountMock = {
   id: 'd51c0116-de36-4e77-b35b-408d4ea82d01',
@@ -177,6 +188,33 @@ describe('AggregatedPercentageOverview', () => {
     mockGetTokensMarketData.mockReturnValue(marketDataMock);
     mockGetCurrentChainId.mockReturnValue('0x1');
     jest.clearAllMocks();
+    mockGetSelectedInternalAccount.mockReturnValue({
+      id: 'd51c0116-de36-4e77-b35b-408d4ea82d01',
+      address: '0xa259af9db8172f62ef0373d7dfa893a3e245ace9',
+      options: {},
+      methods: [],
+      type: 'eip155:eoa',
+      metadata: {
+        name: '',
+        importTime: 0,
+        keyring: {
+          type: '',
+        },
+        nameLastUpdatedAt: undefined,
+        snap: undefined,
+        lastSelected: undefined,
+      },
+      scopes: [],
+    });
+    mockGetHistoricalMultichainAggregatedBalance.mockReturnValue({
+      PT1H: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P7D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P14D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P30D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P200D: { balance: 0, percentChange: 0, amountChange: 0 },
+      P1Y: { balance: 0, percentChange: 0, amountChange: 0 },
+    });
   });
 
   describe('render', () => {
