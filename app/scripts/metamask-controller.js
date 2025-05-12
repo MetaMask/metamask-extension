@@ -177,9 +177,8 @@ import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
-
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { RecoveryError } from '@metamask/seedless-onboarding-controller';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
