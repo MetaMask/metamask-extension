@@ -1,19 +1,19 @@
+import { Mockttp } from 'mockttp';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import NotificationsListPage from '../../page-objects/pages/notifications-list-page';
 import { Driver } from '../../webdriver/driver';
 import { completeOnboardFlowIdentity } from '../identity/flows';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import NotificationDetailsPage from '../../page-objects/pages/notification-details-page';
 import {
   getMockFeatureAnnouncementItemId,
   getMockWalletNotificationItemId,
   mockNotificationServices,
 } from './mocks';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
-import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { Mockttp } from 'mockttp';
-import NotificationDetailsPage from '../../page-objects/pages/notification-details-page';
 
 describe('Notification List - View Items and Details', function () {
   async function onboard(driver: Driver) {
