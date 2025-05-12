@@ -9,6 +9,7 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getPreferences,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
@@ -22,8 +23,16 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, SensitiveText } from '../../component-library';
+import { Box, SensitiveText, Text } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
+import { getMultichainBalances } from '../../../selectors/multichain';
+import {
+  getAccountAssets,
+  getAssetsRates,
+  getHistoricalMultichainAggregatedBalance,
+  getMultichainAggregatedBalance,
+  getMultiChainAssets,
+} from '../../../selectors/assets';
 
 // core already has this exported type but its not yet available in this version
 // todo remove this and use core type once available
@@ -151,6 +160,26 @@ export const AggregatedPercentageOverview = () => {
       >
         {formattedPercentChange}
       </SensitiveText>
+    </Box>
+  );
+};
+
+// const isValidAmount = (amount: number | null | undefined): boolean =>
+//   amount !== null && amount !== undefined && !Number.isNaN(amount);
+
+export const AggregatedMultichainPercentageOverview = ({
+  privacyMode = false,
+}: {
+  privacyMode?: boolean;
+}) => {
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const historicalAggregatedBalances = useSelector((state) =>
+    getHistoricalMultichainAggregatedBalance(state, selectedAccount),
+  );
+
+  return (
+    <Box>
+      <Text>{historicalAggregatedBalances.P1D.percentChange}</Text>
     </Box>
   );
 };

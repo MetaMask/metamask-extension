@@ -80,7 +80,10 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
-import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
+import {
+  AggregatedMultichainPercentageOverview,
+  AggregatedPercentageOverview,
+} from './aggregated-percentage-overview';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 export type CoinOverviewProps = {
@@ -326,6 +329,7 @@ export const CoinOverview = ({
 
     const renderNonEvmView = () => (
       <Box className="wallet-overview__currency-wrapper">
+        <AggregatedMultichainPercentageOverview />
         {renderPortfolioButton()}
       </Box>
     );

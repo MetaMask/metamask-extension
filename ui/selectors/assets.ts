@@ -41,6 +41,9 @@ export type AssetsRatesState = {
   metamask: MultichainAssetsRatesControllerState;
 };
 
+// Configure BigNumber to handle precision
+BigNumber.config({ DECIMAL_PLACES: 8, ROUNDING_MODE: BigNumber.ROUND_DOWN });
+
 /**
  * Gets non-EVM accounts assets.
  *
@@ -317,6 +320,99 @@ export const getMultichainAggregatedBalance = createDeepEqualSelector(
     });
 
     return aggregatedBalance.toNumber();
+  },
+);
+
+export type HistoricalBalanceData = {
+  balance: number;
+  percentChange: number;
+};
+
+export type HistoricalBalances = {
+  PT1H: HistoricalBalanceData;
+  P1D: HistoricalBalanceData;
+  P7D: HistoricalBalanceData;
+  P14D: HistoricalBalanceData;
+  P30D: HistoricalBalanceData;
+  P200D: HistoricalBalanceData;
+  P1Y: HistoricalBalanceData;
+};
+
+export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
+  (_state, selectedAccount: { id: string }) => selectedAccount,
+  getMultichainBalances,
+  getAccountAssets,
+  getAssetsRates,
+  (
+    selectedAccountAddress: { id: string },
+    multichainBalances,
+    accountAssets,
+    assetRates: ReturnType<typeof getAssetsRates>,
+  ) => {
+    const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
+    const balances = multichainBalances?.[selectedAccountAddress.id];
+
+    // Initialize historical balances object with zeros
+    const historicalBalances: HistoricalBalances = {
+      PT1H: { balance: 0, percentChange: 0 },
+      P1D: { balance: 0, percentChange: 0 },
+      P7D: { balance: 0, percentChange: 0 },
+      P14D: { balance: 0, percentChange: 0 },
+      P30D: { balance: 0, percentChange: 0 },
+      P200D: { balance: 0, percentChange: 0 },
+      P1Y: { balance: 0, percentChange: 0 },
+    };
+
+    // Track total current balance for calculating overall percent changes
+    let totalCurrentBalance = new BigNumber(0);
+
+    assetIds.forEach((assetId: CaipAssetId) => {
+      const balance = balances?.[assetId] || zeroBalanceAssetFallback;
+      const assetRate = assetRates?.[assetId];
+
+      if (!assetRate?.marketData?.pricePercentChange) {
+        return;
+      }
+
+      if (assetRate.rate) {
+        const { pricePercentChange } = assetRate.marketData;
+        // Calculate current balance in fiat
+        const currentBalanceInFiat = new BigNumber(balance.amount).times(
+          assetRate.rate || '0',
+        );
+
+        // Add to total current balance
+        totalCurrentBalance = totalCurrentBalance.plus(currentBalanceInFiat);
+
+        // For each time period, calculate the historical balance
+        Object.entries(pricePercentChange).forEach(
+          ([period, percentChange]) => {
+            if (period in historicalBalances) {
+              // Calculate historical balance by adjusting current balance by the percent change
+              const historicalBalance = currentBalanceInFiat
+                .times(Number((1 + (percentChange as number) / 100).toFixed(8)))
+                .toNumber();
+
+              historicalBalances[period as keyof HistoricalBalances].balance +=
+                historicalBalance;
+            }
+          },
+        );
+      }
+    });
+
+    // Calculate overall percent changes for each period
+    const totalCurrentBalanceNum = totalCurrentBalance.toNumber();
+    Object.entries(historicalBalances).forEach(([_period, data]) => {
+      if (totalCurrentBalanceNum !== 0) {
+        // Calculate percent change and limit to 2 decimal places
+        const percentChange =
+          ((totalCurrentBalanceNum - data.balance) / data.balance) * 100;
+        data.percentChange = Number(percentChange.toFixed(2));
+      }
+    });
+
+    return historicalBalances;
   },
 );
 
