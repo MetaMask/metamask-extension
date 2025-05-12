@@ -65,7 +65,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 
 const METRICS_LOCATION = 'Global Menu';
 
