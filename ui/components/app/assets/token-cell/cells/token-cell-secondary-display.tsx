@@ -14,7 +14,10 @@ import {
   SensitiveText,
   SensitiveTextLength,
 } from '../../../../component-library';
-import { getCurrencyRates } from '../../../../../selectors';
+import {
+  getCurrencyRates,
+  getUseCurrencyRateCheck,
+} from '../../../../../selectors';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import { TokenFiatDisplayInfo } from '../../types';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -38,6 +41,15 @@ export const TokenCellSecondaryDisplay = React.memo(
     const isOriginalTokenSymbol = token.symbol && currencyRates[token.symbol];
 
     const showScamWarning = token.isNative && !isOriginalTokenSymbol && isEvm;
+
+    const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+
+    const getSecondaryDisplayText = () => {
+      if (!useCurrencyRateCheck) {
+        return '';
+      }
+      return token.secondary || t('noConversionRateAvailable');
+    };
 
     // show scam warning
     if (showScamWarning) {
@@ -69,7 +81,7 @@ export const TokenCellSecondaryDisplay = React.memo(
         isHidden={privacyMode}
         length={SensitiveTextLength.Medium}
       >
-        {token.secondary || t('noConversionRateAvailable')}
+        {getSecondaryDisplayText()}
       </SensitiveText>
     );
   },
