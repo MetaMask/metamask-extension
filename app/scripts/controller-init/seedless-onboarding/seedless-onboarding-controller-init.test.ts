@@ -10,6 +10,9 @@ import {
 } from '../messengers/seedless-onboarding';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controller-init';
+import { keyFromPassword } from '@metamask/browser-passworder';
+import mockEncryptor from '../../../../test/lib/mock-encryptor';
+import { encryptorFactory } from '../../lib/encryptor-factory';
 
 jest.mock('@metamask/seedless-onboarding-controller');
 
@@ -51,6 +54,14 @@ describe('SeedlessOnboardingControllerInit', () => {
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.SeedlessOnboardingController,
       network: Web3AuthNetwork.Devnet,
+      encryptor: {
+        decrypt: expect.any(Function),
+        decryptWithDetail: expect.any(Function),
+        decryptWithKey: expect.any(Function),
+        encrypt: expect.any(Function),
+        encryptWithDetail: expect.any(Function),
+        importKey: expect.any(Function),
+      },
     });
   });
 });

@@ -42,6 +42,7 @@ import { Controller as NotificationServicesPushController } from '@metamask/noti
 import { DelegationController } from '@metamask/delegation-controller';
 
 import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-controller';
+import { EncryptionKey } from '@metamask/browser-passworder';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -75,7 +76,7 @@ export type Controller =
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
-  | SeedlessOnboardingController
+  | SeedlessOnboardingController<EncryptionKey>
   | SmartTransactionsController
   | SnapController
   | SnapInterfaceController
@@ -116,7 +117,7 @@ export type ControllerFlatState = AccountsController['state'] &
   >['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
-  SeedlessOnboardingController['state'] &
+  SeedlessOnboardingController<EncryptionKey>['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
