@@ -124,7 +124,7 @@ export const useTokenDisplayInfo = ({
     primary: formattedPrimary,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    secondary,
+    secondary: showFiat ? token.secondary : undefined,
     isStakeable: false,
     tokenChainImage: token.image as string,
   };
