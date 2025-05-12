@@ -170,7 +170,7 @@ export const MultichainBridgeQuoteCard = () => {
               </Text>
               <Text>
                 {formatCurrencyAmount(
-                  activeQuote.totalNetworkFee?.valueInCurrency,
+                  activeQuote.totalMaxNetworkFee?.valueInCurrency,
                   currency,
                   2,
                 )}
