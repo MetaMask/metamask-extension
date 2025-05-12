@@ -3,6 +3,11 @@ import { Driver } from '../../../webdriver/driver';
 class SettingsPage {
   private readonly driver: Driver;
 
+  private readonly aboutViewButton = {
+    text: 'About',
+    css: '.tab-bar__tab__content__title',
+  };
+
   private readonly closeSettingsPageButton =
     '.settings-page__header__title-container__close-button';
 
@@ -16,6 +21,11 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
+  private readonly noMatchingResultsFoundMessage = {
+    text: 'No matching results found',
+    tag: 'span',
+  };
+
   private readonly privacySettingsButton = {
     text: 'Security & privacy',
     css: '.tab-bar__tab__content__title',
@@ -25,6 +35,11 @@ class SettingsPage {
     text: 'Preinstalled Example Snap',
     css: '.tab-bar__tab__content__title',
   };
+
+  private readonly searchResultItem =
+    '.settings-page__header__search__list__item__tab';
+
+  private readonly searchSettingsInput = '#search-settings';
 
   private readonly settingsPageTitle = {
     text: 'Settings',
@@ -36,18 +51,18 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
+  private readonly backupAndSyncSettingsButton = {
+    text: 'Backup and sync',
+    css: '.tab-bar__tab__content__title',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async check_pageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.settingsPageTitle);
-    } catch (e) {
-      console.log('Timeout while waiting for Settings page to be loaded', e);
-      throw e;
-    }
-    console.log('Settings page is loaded');
+    console.log('Check settings page is loaded');
+    await this.driver.waitForSelector(this.settingsPageTitle);
   }
 
   async clickAdvancedTab(): Promise<void> {
@@ -56,6 +71,11 @@ class SettingsPage {
       css: '.tab-bar__tab__content__title',
       text: 'Advanced',
     });
+  }
+
+  async fillSearchSettingsInput(text: string): Promise<void> {
+    console.log(`Filling search settings input with ${text}`);
+    await this.driver.fill(this.searchSettingsInput, text);
   }
 
   async toggleShowFiatOnTestnets(): Promise<void> {
@@ -84,8 +104,13 @@ class SettingsPage {
     await this.driver.clickElement(this.closeSettingsPageButton);
   }
 
-  async goToDevelopOptionSettings(): Promise<void> {
-    console.log('Navigating to Develop options page');
+  async goToAboutPage(): Promise<void> {
+    console.log('Navigating to About page');
+    await this.driver.clickElement(this.aboutViewButton);
+  }
+
+  async goToDeveloperOptions(): Promise<void> {
+    console.log('Navigating to Developer Options page');
     await this.driver.clickElement(this.developerOptionsButton);
   }
 
@@ -95,7 +120,7 @@ class SettingsPage {
   }
 
   async goToPrivacySettings(): Promise<void> {
-    console.log('Navigating to Privacy & Security Settings page');
+    console.log('Navigating to Privacy Settings page');
     await this.driver.clickElement(this.privacySettingsButton);
   }
 
@@ -107,6 +132,26 @@ class SettingsPage {
   async goToNotificationsSettings(): Promise<void> {
     console.log('Navigating to Notifications Settings page');
     await this.driver.clickElement(this.notificationsSettingsButton);
+  }
+
+  async goToBackupAndSyncSettings(): Promise<void> {
+    console.log('Navigating to Backup & Sync Settings page');
+    await this.driver.clickElement(this.backupAndSyncSettingsButton);
+  }
+
+  async goToSearchResultPage(page: string): Promise<void> {
+    console.log(`Navigating to ${page} settings page from search results`);
+    await this.driver.clickElement({
+      css: this.searchResultItem,
+      text: page,
+    });
+  }
+
+  async check_noMatchingResultsFoundMessageIsDisplayed(): Promise<void> {
+    console.log(
+      'Checking no matching results found message is displayed on settings page',
+    );
+    await this.driver.waitForSelector(this.noMatchingResultsFoundMessage);
   }
 }
 

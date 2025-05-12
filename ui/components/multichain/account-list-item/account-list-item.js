@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { BigNumber } from 'bignumber.js';
-///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
@@ -57,10 +54,8 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
   getMetaMaskKeyrings,
+  isSolanaAccount,
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { getIntlLocale } from '../../../ducks/locale/locale';
-///: END:ONLY_INCLUDE_IF
 import {
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
@@ -78,12 +73,9 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getAccountLabels } from '../../../helpers/utils/accounts';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
+
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
-///: END:ONLY_INCLUDE_IF
+
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -104,12 +96,11 @@ const AccountListItem = ({
   startAccessory,
   onActionClick,
   shouldScrollToWhenSelected = true,
+  showConnectedStatus = true,
   privacyMode = false,
 }) => {
   const t = useI18nContext();
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  const locale = useSelector(getIntlLocale);
-  ///: END:ONLY_INCLUDE_IF
+
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
@@ -148,11 +139,9 @@ const AccountListItem = ({
   const accountTotalFiatBalances =
     useMultichainAccountTotalFiatBalance(account);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, account),
   );
-  ///: END:ONLY_INCLUDE_IF
 
   // cross chain agg balance
   const shouldHideZeroBalanceTokens = useSelector(
@@ -187,23 +176,7 @@ const AccountListItem = ({
         ? account.balance
         : totalFiatBalance;
   } else {
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     balanceToTranslate = multichainAggregatedBalance;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    const balanceOrFallback = accountTotalFiatBalances?.totalBalance ?? 0;
-    const bnBalance = new BigNumber(balanceOrFallback);
-    const formattedBalanceToTranslate = formatWithThreshold(
-      bnBalance.toNumber(),
-      0.00001,
-      locale,
-      {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 5,
-      },
-    );
-    balanceToTranslate = formattedBalanceToTranslate;
-    ///: END:ONLY_INCLUDE_IF
   }
 
   // If this is the selected item in the Account menu,
@@ -232,28 +205,15 @@ const AccountListItem = ({
   const isSingleAccount = accountsCount === 1;
 
   const getIsAggregatedFiatOverviewBalanceProp = () => {
-    let isAggregatedFiatOverviewBalance;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    isAggregatedFiatOverviewBalance =
+    const isAggregatedFiatOverviewBalance =
       (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
       !isEvmNetwork;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    isAggregatedFiatOverviewBalance =
-      !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat;
-    ///: END:ONLY_INCLUDE_IF
+
     return isAggregatedFiatOverviewBalance;
   };
 
   const getPreferredCurrencyValue = () => {
-    let value;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    value = account.balance;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    value = isEvmNetwork ? account.balance : balanceToTranslate;
-    ///: END:ONLY_INCLUDE_IF
-    return value;
+    return account.balance;
   };
 
   return (
@@ -294,7 +254,11 @@ const AccountListItem = ({
           display={[Display.Flex, Display.None]}
           data-testid="account-list-item-badge"
         >
-          <ConnectedStatus address={account.address} isActive={isActive} />
+          <ConnectedStatus
+            address={account.address}
+            isActive={isActive}
+            showConnectedStatus={showConnectedStatus}
+          />
         </Box>
         <Box display={[Display.None, Display.Flex]}>
           {
@@ -495,7 +459,10 @@ const AccountListItem = ({
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={account.metadata.keyring.type !== KeyringType.hdKeyTree}
+          isRemovable={
+            account.metadata.keyring.type !== KeyringType.hdKeyTree &&
+            !isSolanaAccount(account)
+          }
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
@@ -593,6 +560,10 @@ AccountListItem.propTypes = {
    * Determines if list balance should be obfuscated
    */
   privacyMode: PropTypes.bool,
+  /**
+   * Determines if the connected status should be shown
+   */
+  showConnectedStatus: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

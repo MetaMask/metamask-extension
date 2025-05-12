@@ -4132,18 +4132,6 @@
   "productAnnouncements": {
     "message": "产品公告"
   },
-  "profileSync": {
-    "message": "配置文件同步"
-  },
-  "profileSyncConfirmation": {
-    "message": "如果您关闭配置文件同步，您将无法收到通知。"
-  },
-  "profileSyncDescription": {
-    "message": "创建配置文件，MetaMask 用以在您的不同设备之间同步某些设置。这是获取通知的必需条件。$1。"
-  },
-  "profileSyncPrivacyLink": {
-    "message": "了解我们如何保护您的隐私"
-  },
   "proposedApprovalLimit": {
     "message": "拟议的审批上限"
   },
