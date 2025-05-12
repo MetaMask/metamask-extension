@@ -43,7 +43,7 @@ export default function AccountNotFound() {
   };
 
   useEffect(() => {
-    if (firstTimeFlowType !== FirstTimeFlowType.seedless) {
+    if (firstTimeFlowType !== FirstTimeFlowType.social) {
       // if the onboarding flow is not seedless, redirect to the welcome page
       history.push(ONBOARDING_WELCOME_ROUTE);
     }

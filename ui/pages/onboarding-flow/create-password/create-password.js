@@ -129,7 +129,7 @@ export default function CreatePassword({
           setNewAccountCreationInProgress(true);
           await createNewAccount(password);
         }
-        if (firstTimeFlowType === FirstTimeFlowType.seedless) {
+        if (firstTimeFlowType === FirstTimeFlowType.social) {
           ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           history.push(ONBOARDING_COMPLETION_ROUTE);
           ///: END:ONLY_INCLUDE_IF
