@@ -58,7 +58,7 @@ export default function CreationSuccessful() {
 
   const renderTitle = () => {
     if (
-      firstTimeFlowType === FirstTimeFlowType.seedless ||
+      firstTimeFlowType === FirstTimeFlowType.social ||
       seedPhraseBackedUp
     ) {
       return t('yourWalletIsReady');
@@ -69,7 +69,7 @@ export default function CreationSuccessful() {
 
   const renderFoxPath = () => {
     if (
-      firstTimeFlowType === FirstTimeFlowType.seedless ||
+      firstTimeFlowType === FirstTimeFlowType.social ||
       seedPhraseBackedUp
     ) {
       return 'images/animations/fox/celebrating.lottie.json';

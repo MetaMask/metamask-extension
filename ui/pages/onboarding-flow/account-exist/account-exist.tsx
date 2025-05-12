@@ -41,7 +41,7 @@ export default function AccountExist() {
   };
 
   useEffect(() => {
-    if (firstTimeFlowType !== FirstTimeFlowType.seedless) {
+    if (firstTimeFlowType !== FirstTimeFlowType.social) {
       history.push(ONBOARDING_WELCOME_ROUTE);
     }
   }, [firstTimeFlowType, history]);

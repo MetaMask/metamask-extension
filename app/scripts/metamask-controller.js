@@ -179,6 +179,7 @@ import {
 } from '@metamask/bridge-status-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { RecoveryError } from '@metamask/seedless-onboarding-controller';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
@@ -3713,6 +3714,9 @@ export default class MetamaskController extends EventEmitter {
 
       // seedless onboarding
       startOAuthLogin: this.startOAuthLogin.bind(this),
+      createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
+      fetchAllSeedPhrases: this.fetchAllSeedPhrases.bind(this),
+      updateBackupMetadataState: this.updateBackupMetadataState.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -4873,6 +4877,72 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * Creates a seed phrase backup for the user.
+   *
+   * Generate Encryption Key from the password using the Threshold OPRF and encrypt the seed phrase with the key.
+   * Save the encrypted seed phrase in the metadata store.
+   *
+   * @param {string} password - The user's password.
+   * @param {number[]} encodedSeedPhrase - The seed phrase to backup.
+   * @param {string} keyringId - The keyring id of the backup seed phrase.
+   */
+  async createSeedPhraseBackup(password, encodedSeedPhrase, keyringId) {
+    try {
+      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
+
+      const seedPhrase =
+        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
+
+      await this.seedlessOnboardingController.createToprfKeyAndBackupSeedPhrase(
+        password,
+        seedPhrase,
+        keyringId,
+      );
+    } catch (error) {
+      log.error('[createSeedPhraseBackup] error', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Fetches and restores the seed phrase metadata.
+   *
+   * If the seedphrase is not found in the metadata store, it creates new seedphrase and saves it in the metadata store.
+   *
+   * Otherwise, it creates a new vault using the restored seedphrase from metadata store.
+   *
+   * @param {string} password - The user's password.
+   * @returns {Promise<Buffer[]>} The seed phrase.
+   */
+  async fetchAllSeedPhrases(password) {
+    try {
+      // fetch all seed phrases
+      // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
+      const allSeedPhrases =
+        await this.seedlessOnboardingController.fetchAllSeedPhrases(password);
+
+      if (allSeedPhrases.length === 0) {
+        return null;
+      }
+
+      return allSeedPhrases.map((phrase) =>
+        this._convertEnglishWordlistIndicesToCodepoints(phrase),
+      );
+    } catch (error) {
+      log.error(
+        'Error while fetching and restoring seed phrase metadata.',
+        error,
+      );
+
+      if (error instanceof RecoveryError) {
+        throw new JsonRpcError(-32603, error.message, error.data);
+      }
+
+      throw error;
+    }
+  }
+
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS
   //=============================================================================
@@ -4888,12 +4958,14 @@ export default class MetamaskController extends EventEmitter {
    * For example, a mnemonic phrase can generate many accounts, and is a keyring.
    *
    * @param {string} password
-   * @returns {object} vault
+   * @returns {Array} created keyrings metadata
    */
   async createNewVaultAndKeychain(password) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      return await this.keyringController.createNewVaultAndKeychain(password);
+      await this.keyringController.createNewVaultAndKeychain(password);
+
+      return this.keyringController.state.keyringsMetadata;
     } finally {
       releaseLock();
     }
@@ -5040,6 +5112,8 @@ export default class MetamaskController extends EventEmitter {
           async (keyring) => this.setLedgerTransportPreference(keyring),
         );
       }
+
+      return this.keyringController.state.keyringsMetadata;
     } finally {
       releaseLock();
     }
