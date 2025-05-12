@@ -55,7 +55,6 @@ import {
   getSnapsMetadata,
   getMetaMaskKeyrings,
   isSolanaAccount,
-  getMultichainNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import {
   getMultichainBalances,
