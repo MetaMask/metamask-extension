@@ -42,15 +42,22 @@ class SendSolanaPage {
     await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
     console.log('check_pageIsLoaded after waitForSelector');
     if (amount) {
-      await this.driver.waitForSelector(
-        {
-          text: `${amount}`,
-          tag: 'p',
-        },
-        { timeout: 60000 },
-      );
+      await this.driver.wait( async () => {
+       try{
+        await this.driver.waitForSelector(
+          {
+            text: `${amount}`,
+            tag: 'p',
+          },
+          { timeout: 1000 },
+        );
+        return true;
+        } catch (e) {
+          await this.driver.refresh();
+          return false;
+        }
+      }, 10000);
     }
-    await this.driver.delay(1000); // Added because of https://consensyssoftware.atlassian.net/browse/SOL-116
   }
 
   async check_tokenBalanceIsDisplayed(
