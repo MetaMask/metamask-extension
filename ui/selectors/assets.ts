@@ -41,9 +41,6 @@ export type AssetsRatesState = {
   metamask: MultichainAssetsRatesControllerState;
 };
 
-// Configure BigNumber to handle precision
-BigNumber.config({ DECIMAL_PLACES: 8, ROUNDING_MODE: BigNumber.ROUND_DOWN });
-
 /**
  * Gets non-EVM accounts assets.
  *

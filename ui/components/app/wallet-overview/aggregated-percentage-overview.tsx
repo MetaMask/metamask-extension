@@ -179,7 +179,7 @@ export const AggregatedMultichainPercentageOverview = ({
 
   return (
     <Box>
-      <Text>{historicalAggregatedBalances.P1D.percentChange}</Text>
+      <Text>{historicalAggregatedBalances.P1D.percentChange}%</Text>
     </Box>
   );
 };
