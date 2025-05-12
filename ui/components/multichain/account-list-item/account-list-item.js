@@ -149,7 +149,7 @@ const AccountListItem = ({
   );
 
   const multichainBalances = useSelector(getMultichainBalances);
-  const accountMultichainBalances = multichainBalances[account.id];
+  const accountMultichainBalances = multichainBalances?.[account.id];
   const accountMultichainNativeBalance =
     accountMultichainBalances?.[`${multichainChainId}/slip44:501`]?.amount;
   // cross chain agg balance
