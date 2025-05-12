@@ -81,7 +81,7 @@ const useLatestBalance = (
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {
-          chainId: formatChainIdToCaip(currentChainId),
+          srcChainId: caipCurrentChainId,
           isNative: isNativeAddress(token?.address),
         },
         startTime: Date.now(),
