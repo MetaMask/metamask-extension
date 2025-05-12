@@ -193,6 +193,90 @@ export function startOAuthLogin(
   };
 }
 
+/**
+ * Creates a new vault and backups/syncs the seed phrase with social login.
+ *
+ * @param password - The password.
+ * @returns The seed phrase.
+ */
+export function createAndBackupSeedPhrase(
+  password: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      const [firstKeyring] = await createNewVault(password);
+      const seedPhrase = await getSeedPhrase(password);
+
+      if (!firstKeyring) {
+        throw new Error('No keyring found');
+      }
+
+      await createSeedPhraseBackup(password, seedPhrase, firstKeyring.id);
+      return seedPhrase;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        throw new Error(getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Fetches and restores the seed phrase from the metadata store and restore the vault using the seed phrase.
+ *
+ * @param password - The password.
+ * @returns The seed phrase.
+ */
+export function restoreBackupAndGetSeedPhrase(
+  password: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      // fetch all the backup seed phrases
+      const seedPhrases = await fetchAllSeedPhrases(password);
+      if (seedPhrases === null || seedPhrases.length === 0) {
+        return null;
+      }
+
+      // get the first seed phrase from the array
+      const firstSeedPhrase = seedPhrases[seedPhrases.length - 1];
+      const encodedSeedPhrase = Array.from(
+        Buffer.from(firstSeedPhrase).values(),
+      );
+
+      // restore the vault using the seed phrase
+      const [firstKeyring] = await submitRequestToBackground<KeyringMetadata[]>(
+        'createNewVaultAndRestore',
+        [password, encodedSeedPhrase],
+      );
+
+      if (!firstKeyring) {
+        throw new Error('No keyring found');
+      }
+
+      // update the backup metadata state for the seedless onboarding flow
+      await updateBackupMetadataState(firstKeyring.id, firstSeedPhrase);
+
+      await forceUpdateMetamaskState(dispatch);
+      return firstSeedPhrase;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function tryUnlockMetamask(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -390,17 +474,77 @@ export function submitPassword(password: string): Promise<void> {
   });
 }
 
-export function createNewVault(password: string): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    callBackgroundMethod('createNewVaultAndKeychain', [password], (error) => {
-      if (error) {
-        reject(error);
-        return;
-      }
+/**
+ * Creates a seed phrase backup in the metadata store for seedless onboarding flow.
+ *
+ * @param password - The password.
+ * @param seedPhrase - The seed phrase.
+ * @param keyringId - The keyring id of the backup seed phrase.
+ */
+export async function createSeedPhraseBackup(
+  password: string,
+  seedPhrase: string,
+  keyringId: string,
+): Promise<void> {
+  const encodedSeedPhrase = Array.from(
+    Buffer.from(seedPhrase, 'utf8').values(),
+  );
+  await submitRequestToBackground('createSeedPhraseBackup', [
+    password,
+    encodedSeedPhrase,
+    keyringId,
+  ]);
+}
 
-      resolve(true);
-    });
-  });
+/**
+ * Fetches all seed phrases from the metadata store.
+ *
+ * Seedphrases are sorted by creation date, the latest seed phrase is the first one in the array.
+ *
+ * @param password - The password.
+ * @returns The seed phrases.
+ */
+export async function fetchAllSeedPhrases(
+  password: string,
+): Promise<Buffer[] | null> {
+  const encodedSeedPhrases = await submitRequestToBackground<Buffer[]>(
+    'fetchAllSeedPhrases',
+    [password],
+  );
+  return encodedSeedPhrases;
+}
+
+/**
+ * Updates the Seedless Onboarding backup metadata state, with backup seed phrase id and backup seed phrase.
+ *
+ * @param keyringId - The keyring id of the backup seed phrase.
+ * @param seedPhrase - The backup seed phrase.
+ */
+export async function updateBackupMetadataState(
+  keyringId: string,
+  seedPhrase: string,
+): Promise<void> {
+  // Encode the secret recovery phrase as an array of integers so that it is
+  // serialized as JSON properly.
+  const encodedSeedPhrase = Array.from(
+    Buffer.from(seedPhrase, 'utf8').values(),
+  );
+
+  await submitRequestToBackground('updateBackupMetadataState', [
+    keyringId,
+    encodedSeedPhrase,
+  ]);
+}
+
+export async function createNewVault(
+  password: string,
+): Promise<KeyringMetadata[]> {
+  const keyringsMetadata = await submitRequestToBackground<KeyringMetadata[]>(
+    'createNewVaultAndKeychain',
+    [password],
+  );
+
+  return keyringsMetadata;
 }
 
 export function verifyPassword(password: string): Promise<boolean> {
