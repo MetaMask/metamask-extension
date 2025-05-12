@@ -542,6 +542,7 @@
     "addons-linter": "^6.28.0",
     "autoprefixer": "^10.4.19",
     "axios": "^1.8.2",
+    "babel-plugin-module-resolver": "^5.0.2",
     "babelify": "^10.0.0",
     "bify-module-groups": "^2.0.0",
     "browserify": "^17.0.0",
