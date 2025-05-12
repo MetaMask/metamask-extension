@@ -1,6 +1,6 @@
 # This suite originally ran on 7 individual VMs that each took about 1m30s to execute
 # It's now combined onto a single VM that takes about 1m20s
-# The `if: always()` statements make all independent tests run, even if one fails.
+# The `if: ${{ !cancelled() }}` statements make all independent tests run, even if one fails.
 name: Repository health checks
 
 on:
@@ -19,7 +19,7 @@ jobs:
 
       # test-lint-shellcheck
       - name: ShellCheck Lint
-        if: always()
+        if: ${{ !cancelled() }}
         run: ./development/shellcheck.sh
 
       # test-lint-changelog
@@ -37,35 +37,35 @@ jobs:
 
       # test-lint-lockfile
       - name: Lint lockfile
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn lint:lockfile
 
       - name: Check yarn resolutions
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn --check-resolutions
 
       # test-deps-audit
       - name: Run audit
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn audit
 
       # test-yarn-dedupe
       - name: Detect yarn lock deduplications
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn dedupe --check
 
       # test-deps-depcheck
       - name: Run depcheck
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn depcheck
 
       # validate-lavamoat-allow-scripts
       - name: Validate allow-scripts config
-        if: always()
+        if: ${{ !cancelled() }}
         run: yarn allow-scripts auto
 
       - name: Check working tree
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           if ! git diff --exit-code; then
               echo "::error::Working tree dirty."
