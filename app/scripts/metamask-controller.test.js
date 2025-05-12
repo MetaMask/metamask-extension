@@ -785,6 +785,33 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#changePassword', () => {
+      it('should change the password for both seedless onboarding and keyring controller', async () => {
+        const oldPassword = 'old-password';
+        const newPassword = 'new-password';
+
+        await metamaskController.createNewVaultAndKeychain(oldPassword);
+
+        const changePwdSeedlessOnboardingSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'changePassword',
+          )
+          .mockResolvedValueOnce();
+        const changePwdKeyringControllerSpy = jest
+          .spyOn(metamaskController.keyringController, 'changePassword')
+          .mockResolvedValueOnce();
+
+        await metamaskController.changePassword(newPassword, oldPassword);
+
+        expect(changePwdSeedlessOnboardingSpy).toHaveBeenCalledWith(
+          newPassword,
+          oldPassword,
+        );
+        expect(changePwdKeyringControllerSpy).toHaveBeenCalledWith(newPassword);
+      });
+    });
+
     describe('#createNewVaultAndRestore', () => {
       it('should be able to call newVaultAndRestore despite a mistake.', async () => {
         const password = 'what-what-what';

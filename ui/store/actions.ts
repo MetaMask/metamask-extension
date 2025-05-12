@@ -277,6 +277,39 @@ export function restoreBackupAndGetSeedPhrase(
   };
 }
 
+/**
+ * Changes the password of the currently unlocked account.
+ *
+ * This function changes the password of the currently unlocked account (Keyring Vault) and
+ * also change the wallet password of the social login account.
+ *
+ * This changes affects the multiple devices sync, i.e. users will have to unlock the account
+ * using new password on any other devices where the account is unlocked.
+ *
+ * @param newPassword - The new password.
+ * @param oldPassword - The old password.
+ */
+export function changePassword(
+  newPassword: string,
+  oldPassword: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground<void>('changePassword', [
+        newPassword,
+        oldPassword,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function tryUnlockMetamask(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

@@ -3716,6 +3716,7 @@ export default class MetamaskController extends EventEmitter {
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
       fetchAllSeedPhrases: this.fetchAllSeedPhrases.bind(this),
       updateBackupMetadataState: this.updateBackupMetadataState.bind(this),
+      changePassword: this.changePassword.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -4954,6 +4955,24 @@ export default class MetamaskController extends EventEmitter {
       keyringId,
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
     );
+  }
+
+  /**
+   * Changes the password for the seedless onboarding.
+   *
+   * @param {string} newPassword - The new password.
+   * @param {string} oldPassword - The old password.
+   * @returns {Promise<void>}
+   */
+  async changePassword(newPassword, oldPassword) {
+    // change password for the seedless onboarding flow
+    await this.seedlessOnboardingController.changePassword(
+      newPassword,
+      oldPassword,
+    );
+
+    // also update the vault password for keyring controller
+    await this.keyringController.changePassword(newPassword);
   }
 
   //=============================================================================
