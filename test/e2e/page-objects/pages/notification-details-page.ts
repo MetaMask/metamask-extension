@@ -13,10 +13,6 @@ class NotificationDetailsPage {
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([this.detailsPageBackButton]);
-
-      // Short delay to simulate notification page to load
-      // Also allows QA/Devs to inspect page content, before other e2e scripts are ran
-      await this.driver.delay(500);
     } catch (e) {
       console.log(
         'Timeout while waiting for Notifications Details page to be loaded',
