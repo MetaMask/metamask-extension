@@ -40,11 +40,6 @@ export default function AccountExist() {
     history.push(ONBOARDING_UNLOCK_ROUTE);
   };
 
-  const onLoginWithDifferentMethod = async () => {
-    // TODO: Cleanup social login state and redirect to welcome page
-    console.log('onLoginWithDifferentMethod');
-  };
-
   useEffect(() => {
     if (firstTimeFlowType !== FirstTimeFlowType.seedless) {
       history.push(ONBOARDING_WELCOME_ROUTE);
@@ -105,7 +100,7 @@ export default function AccountExist() {
             />
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
-          {t('accountAlreadyExistsLoginDescription', [userSocialLoginEmail])}
+            {t('accountAlreadyExistsLoginDescription', [userSocialLoginEmail])}
           </Text>
         </Box>
       </div>

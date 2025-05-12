@@ -1,7 +1,4 @@
-import {
-  KeyringControllerState,
-  KeyringMetadata,
-} from '@metamask/keyring-controller';
+import { KeyringControllerState } from '@metamask/keyring-controller';
 import { SeedlessOnboardingControllerState } from '@metamask/seedless-onboarding-controller';
 
 export type BackupState = {

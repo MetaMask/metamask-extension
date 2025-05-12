@@ -38,6 +38,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
@@ -434,6 +435,10 @@ describe('MetaMaskController', () => {
         metamaskController.keyringController,
         'createNewVaultAndRestore',
       );
+      jest.spyOn(
+        metamaskController.seedlessOnboardingController,
+        'authenticate',
+      );
     });
 
     describe('should reset states on first time profile load', () => {
@@ -671,6 +676,41 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController.keyringController.state.isUnlocked,
         ).toStrictEqual(false);
+      });
+    });
+
+    describe('#startOAuthLogin', () => {
+      it('should start the OAuth login flow', async () => {
+        const startOAuthLoginSpy = jest
+          .spyOn(metamaskController.oauthController, 'startOAuthLogin')
+          .mockResolvedValueOnce({
+            idTokens: ['mocked-id-token'],
+            authConnection: AuthConnection.Google,
+            authConnectionId: 'mocked-auth-connection-id',
+            groupedAuthConnectionId: 'mocked-grouped-auth-connection-id',
+            userId: 'mocked-user-id',
+            socialLoginEmail: 'user@gmail.com',
+          });
+        const authenticateSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'authenticate',
+          )
+          .mockResolvedValueOnce({
+            isNewUser: true,
+          });
+
+        await metamaskController.startOAuthLogin(AuthConnection.Google);
+
+        expect(startOAuthLoginSpy).toHaveBeenCalledWith(AuthConnection.Google);
+        expect(authenticateSpy).toHaveBeenCalledWith({
+          idTokens: ['mocked-id-token'],
+          authConnection: AuthConnection.Google,
+          authConnectionId: 'mocked-auth-connection-id',
+          groupedAuthConnectionId: 'mocked-grouped-auth-connection-id',
+          userId: 'mocked-user-id',
+          socialLoginEmail: 'user@gmail.com',
+        });
       });
     });
 
