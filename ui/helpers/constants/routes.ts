@@ -71,6 +71,10 @@ export const REVEAL_SRP_LIST_ROUTE =
 PATH_NAME_MAP[REVEAL_SRP_LIST_ROUTE] =
   'Reveal Secret Recovery Phrase List Page';
 
+export const SECURITY_PASSWORD_HINT_ROUTE =
+  '/settings/security-and-privacy/password-hint';
+PATH_NAME_MAP[SECURITY_PASSWORD_HINT_ROUTE] = 'Password Hint';
+
 export const BACKUPANDSYNC_ROUTE =
   '/settings/security-and-privacy/backup-and-sync';
 PATH_NAME_MAP[BACKUPANDSYNC_ROUTE] = 'Backup And Sync Settings Page';
@@ -277,6 +281,7 @@ export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
+export const ONBOARDING_PASSWORD_HINT = '/onboarding/password-hint';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';

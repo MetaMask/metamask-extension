@@ -1,0 +1,18 @@
+@use "design-system";
+
+.settings-password-hint {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+
+  &__form {
+    display: contents;
+  }
+
+  @include design-system.screen-sm-max {
+    height: 100%;
+  }
+}
+

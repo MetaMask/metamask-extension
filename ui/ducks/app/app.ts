@@ -125,6 +125,8 @@ type AppState = {
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
+  passwordHint?: string;
+  showPasswordHintSavedToast: boolean;
 };
 
 export type AppSliceState = {
@@ -223,6 +225,8 @@ const initialState: AppState = {
   isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
   showNewSrpAddedToast: false,
+  passwordHint: '',
+  showPasswordHintSavedToast: false,
 };
 
 export default function reduceApp(
@@ -752,6 +756,12 @@ export default function reduceApp(
       return {
         ...appState,
         showNewSrpAddedToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_PASSWORD_HINT_SAVED_TOAST:
+      return {
+        ...appState,
+        showPasswordHintSavedToast: action.payload,
       };
 
     default:

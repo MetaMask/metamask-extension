@@ -19,6 +19,7 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_PASSWORD_HINT,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -28,6 +29,7 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
+  setPasswordHash,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRouteAfterUnlock } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -54,6 +56,7 @@ import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
+import PasswordHint from './password-hint/password-hint';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 
@@ -104,6 +107,8 @@ export default function OnboardingFlow() {
       createNewVaultAndGetSeedPhrase(password),
     );
     setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+    // save `PasswordHash` in the preferences
+    dispatch(setPasswordHash(password));
   };
 
   const handleUnlock = async (password) => {
@@ -111,6 +116,8 @@ export default function OnboardingFlow() {
       unlockAndGetSeedPhrase(password),
     );
     setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+    // save `PasswordHash` in the preferences
+    dispatch(setPasswordHash(password));
     history.push(nextRoute);
   };
 
@@ -211,6 +218,7 @@ export default function OnboardingFlow() {
             path={ONBOARDING_METAMETRICS}
             component={MetaMetricsComponent}
           />
+          <Route path={ONBOARDING_PASSWORD_HINT} component={PasswordHint} />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           }
