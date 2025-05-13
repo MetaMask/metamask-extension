@@ -1,9 +1,6 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultOptionsForType2Transactions,
-  withFixtures,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -51,8 +48,8 @@ export function withTransactionEnvelopeTypeFixtures(
         .build(),
       localNodeOptions:
         transactionEnvelopeType === TransactionEnvelopeType.legacy
-          ? {}
-          : defaultOptionsForType2Transactions,
+          ? { hardfork: 'muirGlacier' }
+          : {},
       ...(smartContract && { smartContract }),
       testSpecificMock: combinedMocks,
       title,

@@ -142,6 +142,19 @@ async function mockedSnapUpdateFailed(mockServer) {
     });
 }
 
+async function mockedSnapExportUsed(mockServer) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [{ type: 'track', event: 'Snap Export Used' }],
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
+
 async function mockedNpmInstall(mockServer) {
   return await mockServer
     .forGet(/https:\/\/registry\.npmjs\.org/u)
@@ -171,6 +184,7 @@ describe('Test Snap Metrics', function () {
         await mockedSnapInstallStarted(mockServer),
         await mockedSnapInstall(mockServer),
         await mockNotificationSnap(mockServer),
+        await mockedSnapExportUsed(mockServer),
       ];
     }
 
@@ -237,6 +251,11 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
+        // switch to test Snaps
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        await driver.clickElement('#sendInAppNotification');
+
         // check that snap installed event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Install Started');
@@ -253,6 +272,17 @@ describe('Test Snap Metrics', function () {
           snap_id: 'npm:@metamask/notification-example-snap',
           origin: 'https://metamask.github.io',
           version: '2.3.0',
+          category: 'Snaps',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'background',
+        });
+        assert.deepStrictEqual(events[2].event, 'Snap Export Used');
+        assert.deepStrictEqual(events[2].properties, {
+          snap_id: 'npm:@metamask/notification-example-snap',
+          origin: 'https://metamask.github.io',
+          export: 'onRpcRequest',
+          success: true,
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',

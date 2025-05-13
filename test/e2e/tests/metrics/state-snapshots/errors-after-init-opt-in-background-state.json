@@ -63,26 +63,6 @@
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
     "assetExchangeRates": "object",
-    "bridgeFeatureFlags": {
-      "extensionConfig": {
-        "maxRefreshCount": "number",
-        "refreshRate": "number",
-        "support": "boolean",
-        "chains": {
-          "eip155:1": "object",
-          "eip155:10": "object",
-          "eip155:56": "object",
-          "eip155:137": "object",
-          "eip155:324": "object",
-          "eip155:8453": "object",
-          "eip155:42161": "object",
-          "eip155:43114": "object",
-          "eip155:59144": "object",
-          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "object"
-        }
-      },
-      "mobileConfig": "object"
-    },
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
@@ -191,7 +171,7 @@
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
-        "EIPS": { "1559": false },
+        "EIPS": { "1559": true },
         "status": "available"
       }
     },

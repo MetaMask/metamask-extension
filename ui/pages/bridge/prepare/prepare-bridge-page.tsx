@@ -19,6 +19,8 @@ import {
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
+  type BridgeController,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -29,6 +31,7 @@ import {
   updateQuoteRequestParams,
   resetBridgeState,
   setSlippage,
+  trackUnifiedSwapBridgeEvent,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -126,6 +129,7 @@ import {
   fetchAssetMetadata,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
+import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -157,6 +161,8 @@ const PrepareBridgePage = () => {
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
+
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
@@ -374,15 +380,26 @@ const PrepareBridgePage = () => {
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce((p: Partial<GenericQuoteRequest>) => {
-      dispatch(updateQuoteRequestParams(p));
-    }, 300),
+    debounce(
+      (
+        p: Partial<GenericQuoteRequest>,
+        c: Parameters<BridgeController['updateBridgeQuoteRequestParams']>[1],
+      ) => {
+        dispatch(updateQuoteRequestParams(p, c));
+      },
+      300,
+    ),
     [],
   );
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
-    debouncedUpdateQuoteRequestInController(quoteParams);
+    debouncedUpdateQuoteRequestInController(quoteParams, {
+      stx_enabled: smartTransactionsEnabled,
+      token_symbol_source: fromToken?.symbol ?? '',
+      token_symbol_destination: toToken?.symbol ?? '',
+      security_warnings: [],
+    });
   }, [quoteParams, debouncedUpdateQuoteRequestInController]);
 
   const trackInputEvent = useCallback(
@@ -637,6 +654,34 @@ const PrepareBridgePage = () => {
                 if (!isSwap && !isNetworkAdded(toChain)) {
                   return;
                 }
+                toChain?.chainId &&
+                  fromToken &&
+                  toToken &&
+                  dispatch(
+                    trackUnifiedSwapBridgeEvent(
+                      UnifiedSwapBridgeEventName.InputSourceDestinationFlipped,
+                      {
+                        token_symbol_source: toToken?.symbol ?? null,
+                        token_symbol_destination: fromToken?.symbol ?? null,
+                        token_address_source:
+                          toAssetId(
+                            toToken.address ?? '',
+                            formatChainIdToCaip(toToken.chainId ?? ''),
+                          ) ??
+                          getNativeAssetForChainId(toChain.chainId)?.assetId,
+                        token_address_destination:
+                          toAssetId(
+                            fromToken.address ?? '',
+                            formatChainIdToCaip(fromToken.chainId ?? ''),
+                          ) ?? null,
+                        chain_id_source: formatChainIdToCaip(toChain.chainId),
+                        chain_id_destination: fromChain?.chainId
+                          ? formatChainIdToCaip(fromChain?.chainId)
+                          : null,
+                        security_warnings: [],
+                      },
+                    ),
+                  );
                 setRotateSwitchTokens(!rotateSwitchTokens);
                 flippedRequestProperties &&
                   trackCrossChainSwapsEvent({
@@ -814,7 +859,12 @@ const PrepareBridgePage = () => {
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
                   onFetchNewQuotes={() => {
-                    debouncedUpdateQuoteRequestInController(quoteParams);
+                    debouncedUpdateQuoteRequestInController(quoteParams, {
+                      stx_enabled: smartTransactionsEnabled,
+                      token_symbol_source: fromToken?.symbol ?? '',
+                      token_symbol_destination: toToken?.symbol ?? '',
+                      security_warnings: [], // TODO populate security warnings
+                    });
                   }}
                   needsDestinationAddress={
                     isSolanaBridgeEnabled &&
