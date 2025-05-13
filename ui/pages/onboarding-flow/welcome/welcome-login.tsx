@@ -48,6 +48,7 @@ export default function WelcomeLogin({
     if (!loginOption) {
       return;
     }
+    setLoginOption(null);
     onLogin(loginType, loginOption);
   };
 
