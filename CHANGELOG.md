@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.17.3]
+### Changed
+- Update supported browser versions ([#32520](https://github.com/MetaMask/metamask-extension/pull/32520))
+  - The minimum supported browser versions are now Chromium v109 and Firefox v102
+  - The "outdated browser" in-app prompt now asks users below Chromium v113 or Firefox v115 to update
+ 
 ### Fixed
 - Stop emitting Dapp Viewed events on Firefox ([#32583](https://github.com/MetaMask/metamask-extension/pull/32583))
 - Make phishing warning events anonymous ([#32635](https://github.com/MetaMask/metamask-extension/pull/32635))
