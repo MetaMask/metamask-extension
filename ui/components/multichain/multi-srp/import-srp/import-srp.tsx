@@ -1,5 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -29,6 +35,9 @@ import { clearClipboard } from '../../../../helpers/utils/util';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import ShowHideToggle from '../../../ui/show-hide-toggle';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { getMetaMaskHdKeyrings } from '../../../../selectors';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -43,6 +52,7 @@ export const ImportSrp = ({
 }) => {
   const t = useI18nContext();
   const theme = useTheme();
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
@@ -56,6 +66,8 @@ export const ImportSrp = ({
   const [showSrp, setShowSrp] = useState(
     new Array(defaultNumberOfWords).fill(false),
   );
+  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
+  const newHdEntropyIndex = hdKeyrings.length;
 
   const [loading, setLoading] = useState(false);
 
@@ -381,6 +393,12 @@ export const ImportSrp = ({
             try {
               setLoading(true);
               await importWallet();
+              trackEvent({
+                event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+                properties: {
+                  hd_entropy_index: newHdEntropyIndex,
+                },
+              });
               onActionComplete(true);
               dispatch(setShowNewSrpAddedToast(true));
             } catch (e) {
