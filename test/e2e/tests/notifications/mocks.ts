@@ -58,7 +58,7 @@ mockListNotificationsResponse.response = [
   createMockNotificationLidoStakeCompleted(),
   createMockNotificationLidoWithdrawalRequested(),
   createMockNotificationLidoReadyToBeWithdrawn(),
-  createMockNotificationLidoWithdrawalCompleted(),
+ //createMockNotificationLidoWithdrawalCompleted(),
 ].map((n, i) => {
   const date = new Date();
   date.setDate(date.getDate() - i);
