@@ -476,6 +476,12 @@ export enum FontWeight {
   Normal = 'normal',
 }
 
+export enum FontFamily {
+  Default = 'default', // CentraNo1
+  Accent = 'accent', // MMSans
+  Hero = 'hero', // MMPoly
+}
+
 /**
  * @deprecated `FONT_WEIGHT` const has been deprecated in favor of the `FontWeight` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
