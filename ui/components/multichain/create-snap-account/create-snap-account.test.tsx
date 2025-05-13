@@ -62,6 +62,10 @@ const render = (props = defaultProps) => {
         {
           type: 'Snap Keyring',
           accounts: [mockSnapAccount.address],
+          metadata: {
+            id: 'test-keyring-id',
+            name: '',
+          },
         },
       ],
       accounts: {
