@@ -69,7 +69,7 @@ exports[`Unlock Page should match snapshot 1`] = `
         Forgot password?
       </button>
       <p
-        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-8 mm-box--color-text-default"
       >
         <span>
            
