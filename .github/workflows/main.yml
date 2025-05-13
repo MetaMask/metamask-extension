@@ -101,6 +101,19 @@ jobs:
           name: prep-build-test-browserify-chrome
           path: ./dist/**/chrome # it's really in dist/chrome, but the ** is there so that it's uploaded relative to `dist`
 
+  prep-build-test-mv2-browserify:
+    needs:
+      - prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - run: yarn build:test:mv2
+
       - name: Upload artifact prep-build-test-browserify-firefox
         uses: actions/upload-artifact@v4
         with:
@@ -154,10 +167,48 @@ jobs:
           name: prep-build-dist-browserify-chrome
           path: ./dist/**/chrome # it's really in dist/chrome, but the ** is there so that it's uploaded relative to `dist`
 
-      - name: Upload artifact prep-build-dist-browserify-firefox
+  prep-build-test-flask-browserify:
+    needs:
+      - prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - run: yarn build:test:flask
+
+      - name: Upload artifact prep-build-test-flask-browserify-chrome
         uses: actions/upload-artifact@v4
         with:
-          name: prep-build-dist-browserify-firefox
+          name: prep-build-test-flask-browserify-chrome
+          path: ./dist/**/chrome # it's really in dist/chrome, but the ** is there so that it's uploaded relative to `dist`
+
+  prep-build-test-flask-mv2-browserify:
+    needs:
+      - prep-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - run: yarn build:test:flask:mv2
+
+      - name: Upload artifact prep-build-test-flask-mv2-browserify-chrome
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-test-flask-mv2-browserify-chrome
+          path: ./dist/**/chrome # it's really in dist/chrome, but the ** is there so that it's uploaded relative to `dist`
+
+      - name: Upload artifact prep-build-test-flask-mv2-browserify-firefox
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-build-test-flask-mv2-browserify-firefox
           path: ./dist/**/firefox # it's really in dist/firefox, but the ** is there so that it's uploaded relative to `dist`
 
   run-benchmarks:
@@ -228,12 +279,15 @@ jobs:
       - prep-build-test-browserify
       - prep-build-test-webpack
       - prep-build-dist-browserify
+      - prep-build-test-flask-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
 
   e2e-firefox:
     needs:
       - needs-e2e
+      - prep-build-test-mv2-browserify
+      - prep-build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
 
@@ -326,7 +380,7 @@ jobs:
 
   all-jobs-pass:
     name: All jobs pass
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     needs:
       - all-jobs-completed

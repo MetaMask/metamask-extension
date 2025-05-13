@@ -758,6 +758,8 @@ export enum MetaMetricsEventName {
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
+  RpcServiceDegraded = 'RPC Service Degraded',
+  RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SecretRecoveryPhrasePickerDetailsClicked = 'Secret Recovery Phrase Details Clicked',
   SecretRecoveryPhrasePickerSelected = 'Secret Recovery Phrase Picker Selected',
