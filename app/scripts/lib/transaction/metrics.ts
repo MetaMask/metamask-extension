@@ -8,7 +8,6 @@ import {
 } from '@metamask/transaction-controller';
 import { Json, add0x } from '@metamask/utils';
 import { Hex } from 'viem';
-import { errorCodes } from '@metamask/rpc-errors';
 import {
   MESSAGE_TYPE,
   ORIGIN_METAMASK,
@@ -24,6 +23,7 @@ import {
   MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import {
+  EIP5792ErrorCode,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
@@ -1252,7 +1252,7 @@ async function addBatchProperties(
 
     properties.eip7702_upgrade_rejection =
       // @ts-expect-error Code has string type in controller
-      isUpgrade && error.code === errorCodes.rpc.methodNotSupported;
+      isUpgrade && error.code === EIP5792ErrorCode.RejectedUpgrade;
   }
 
   properties.eip7702_upgrade_transaction = isUpgrade;
