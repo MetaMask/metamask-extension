@@ -6724,7 +6724,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^54.4.0":
+"@metamask/transaction-controller@npm:^54.3.0":
   version: 54.4.0
   resolution: "@metamask/transaction-controller@npm:54.4.0"
   dependencies:
@@ -30121,7 +30121,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.10.0"
     "@metamask/test-dapp-solana": "npm:^0.1.0"
-    "@metamask/transaction-controller": "npm:^54.4.0"
+    "@metamask/transaction-controller": "npm:^54.3.0"
     "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"

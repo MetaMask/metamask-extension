@@ -4,11 +4,6 @@ import { keccak } from 'ethereumjs-util';
 import { getCaveatArrayPacketHash, type Caveat } from './caveat';
 import { resolveCaveats, type Caveats } from './caveatBuilder';
 import { concat, toFunctionSelector, toHex, type Hex } from './utils';
-import {
-  encodeExecutionCalldatas,
-  ExecutionMode,
-  ExecutionStruct,
-} from './execution';
 
 /**
  * To be used on a delegation as the root authority.
@@ -96,20 +91,11 @@ export type DelegationStruct = Omit<Delegation, 'salt'> & {
  * @returns
  */
 export const encodeDelegation = (delegations: Delegation[]): Hex => {
-  const flatDelegations = delegations
-    .map(toDelegationStruct)
-    .map((delegation) => [
-      delegation.delegate,
-      delegation.delegator,
-      delegation.authority,
-      delegation.caveats.map((c) => [c.enforcer, c.terms, c.args]),
-      delegation.salt,
-      delegation.signature,
-    ]);
+  const delegationStructs = delegations.map(toDelegationStruct);
   return toHex(
     encode(
       ['(address,address,bytes32,(address,bytes,bytes)[],uint256,bytes)[]'],
-      [flatDelegations],
+      [delegationStructs],
     ),
   );
 };
@@ -255,29 +241,6 @@ export const encodeDisableDelegation = ({
         ],
       ],
     ),
-  );
-
-  return concat([encodedSignature, encodedData]);
-};
-
-export const encodeRedeemDelegations = ({
-  delegations,
-  modes,
-  executions,
-}: {
-  delegations: Delegation[][];
-  modes: ExecutionMode[];
-  executions: ExecutionStruct[][];
-}) => {
-  const encodedSignature = toFunctionSelector(
-    'redeemDelegations(bytes[],bytes32[],bytes[])',
-  );
-
-  const contexts = encodePermissionContexts(delegations);
-  const calldatas = encodeExecutionCalldatas(executions);
-
-  const encodedData = toHex(
-    encode(['bytes[]', 'bytes32[]', 'bytes[]'], [contexts, modes, calldatas]),
   );
 
   return concat([encodedSignature, encodedData]);

@@ -4,7 +4,6 @@ import { SUPPORTED_HARDWARE_WALLET_TYPES } from '../../pages/remote-mode/remote.
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 
 export function isRemoteModeSupported(account: InternalAccount) {
-  return true;
   // todo: add check that account also implements signEip7702Authorization()
   return SUPPORTED_HARDWARE_WALLET_TYPES.includes(
     account.metadata.keyring.type,
