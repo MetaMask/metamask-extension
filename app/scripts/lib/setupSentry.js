@@ -86,6 +86,12 @@ function getClientOptions() {
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
+      Sentry.browserTracingIntegration({
+        shouldCreateSpanForRequest: (url) => {
+          // Do not create spans for outgoing requests to a 'sentry.io' domain.
+          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
+        },
+      }),
       filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
@@ -588,64 +594,7 @@ function addDebugListeners() {
   log('Added debug listeners');
 }
 
-export function fetchWithSentryInstrumentation(fetchFunction) {
-  return async (inputUrl, opts) => {
-    const url =
-      typeof inputUrl === 'string'
-        ? inputUrl
-        : inputUrl.toString() || String(inputUrl);
-    const { method = 'GET' } = opts ?? {};
-
-    const response = await fetchFunction(url, {
-      method,
-      ...opts,
-    });
-
-    // Do not create spans for outgoing requests to a 'sentry.io' domain.
-    if (url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u)) {
-      return response;
-    }
-
-    try {
-      Sentry.startSpan(
-        { op: 'http.client', name: `${method} ${url}` },
-        (span) => {
-          const parsedURL = new URL(url, globalThis.location?.origin);
-
-          span.setAttributes({
-            'http.request.method': method,
-            'server.address': parsedURL.hostname,
-            'server.port': parsedURL.port || undefined,
-            'http.response.status_code': response.status,
-            'http.response_content_length': Number(
-              response.headers?.get('content-length'),
-            ),
-          });
-
-          const cloudflareRayId =
-            response.headers?.get('CF-RAY') ??
-            response.headers?.get('CF-Ray') ??
-            response.headers?.get('CF-ray') ??
-            response.headers?.get('cf_ray');
-          if (cloudflareRayId !== null) {
-            span.setAttribute('CF-Ray', cloudflareRayId);
-            const scope = Sentry.getCurrentScope();
-            scope?.setTag('CF-Ray', cloudflareRayId);
-          }
-        },
-      );
-    } catch (error) {
-      log(error);
-    }
-
-    return response;
-  };
-}
-
 function makeTransport(options) {
-  const originalFetch = globalThis.fetch;
-  globalThis.fetch = fetchWithSentryInstrumentation(originalFetch);
-
   return Sentry.makeFetchTransport(options, async (...args) => {
     const metricsEnabled = await getMetaMetricsEnabled();
 
@@ -653,7 +602,7 @@ function makeTransport(options) {
       throw new Error('Network request skipped as metrics disabled');
     }
 
-    return await originalFetch(...args);
+    return await fetch(...args);
   });
 }
 
