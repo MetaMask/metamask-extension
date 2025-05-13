@@ -76,7 +76,7 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
 
   return (
     <ConfirmInfoAlertRow
-      ownerId={id}
+      ownerId={showContractLogo ? '' : id}
       alertKey={RowAlertKey.InteractingWith}
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
