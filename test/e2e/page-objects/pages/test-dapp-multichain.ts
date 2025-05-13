@@ -166,11 +166,11 @@ class TestDappMultichain {
   }
 
   /**
-   * Invokes a method and retrieves the result.
+   * Invokes a JSON-RPC method for a given scope and retrieves the result.
    *
-   * @param scope
-   * @param method
-   * @param params
+   * @param scope - The CAIP-2 scope.
+   * @param method - The JSON-RPC method to invoke.
+   * @param params - The parameters for the JSON-RPC method.
    * @returns The result as JSON.
    */
   async invokeMethod(
