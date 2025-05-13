@@ -424,7 +424,7 @@ export default function PrivacySettings() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            ,{t('privacyMsg')}
+                            {t('privacyMsg')}
                           </a>,
                           <a
                             href={ZENDESK_URLS.ADD_SOLANA_ACCOUNTS}

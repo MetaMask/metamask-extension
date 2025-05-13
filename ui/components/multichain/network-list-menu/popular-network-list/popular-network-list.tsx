@@ -197,6 +197,9 @@ const PopularNetworkList = ({
                         rpcUrl:
                           network.rpcEndpoints[network.defaultRpcEndpointIndex]
                             .url,
+                        failoverRpcUrls:
+                          network.rpcEndpoints[network.defaultRpcEndpointIndex]
+                            .failoverUrls,
                         ticker: network.nativeCurrency,
                         rpcPrefs: {
                           blockExplorerUrl:
