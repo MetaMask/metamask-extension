@@ -82,7 +82,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONNECT_HARDWARE_ROUTE,
+  IMPORT_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -126,7 +129,6 @@ import { CreateEthAccount } from '../create-eth-account';
 import { CreateSnapAccount } from '../create-snap-account';
 ///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
-import { ImportSrp } from '../multi-srp/import-srp';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { HiddenAccountList } from './hidden-account-list';
@@ -562,17 +564,6 @@ export const AccountListMenu = ({
             <ImportAccount onActionComplete={onActionComplete} />
           </Box>
         ) : null}
-        {actionMode === ACTION_MODES.IMPORT_SRP && (
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={0}
-            style={{ overflowY: 'scroll' }}
-          >
-            <ImportSrp onActionComplete={onActionComplete} />
-          </Box>
-        )}
         {actionMode === ACTION_MODES.SELECT_SRP && (
           <SrpList
             onActionComplete={(keyringId: string) => {
@@ -712,7 +703,14 @@ export const AccountListMenu = ({
                       event:
                         MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
                     });
-                    setActionMode(ACTION_MODES.IMPORT_SRP);
+                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                      global.platform.openExtensionInBrowser?.(
+                        IMPORT_SRP_ROUTE,
+                      );
+                    } else {
+                      history.push(IMPORT_SRP_ROUTE);
+                    }
+                    onClose();
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
                 >
