@@ -1,13 +1,14 @@
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { isStrictHexString } from '@metamask/utils';
 import {
   formatChainIdToCaip,
+  UnifiedSwapBridgeEventName,
   type SwapsTokenObject,
 } from '@metamask/bridge-controller';
-import { setBridgeFeatureFlags } from '../../ducks/bridge/actions';
+import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getDataCollectionForMarketing,
@@ -15,8 +16,7 @@ import {
   getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getUseExternalServices,
-  SwapsEthToken,
+  type SwapsEthToken,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -39,8 +39,8 @@ import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker
 ///: END:ONLY_INCLUDE_IF
 
 const useBridging = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
+  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
@@ -48,16 +48,9 @@ const useBridging = () => {
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const providerConfig = useSelector(getProviderConfig);
-  const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
   const isBridgeSupported = useSelector(getIsBridgeEnabled);
   const isBridgeChain = useSelector(getIsBridgeChain);
-
-  useEffect(() => {
-    if (isExternalServicesEnabled) {
-      dispatch(setBridgeFeatureFlags());
-    }
-  }, [dispatch, setBridgeFeatureFlags]);
 
   const openBridgeExperience = useCallback(
     (
@@ -85,15 +78,30 @@ const useBridging = () => {
           },
         });
         trackEvent({
-          event: MetaMetricsEventName.BridgeLinkClicked,
+          event: isSwap
+            ? MetaMetricsEventName.SwapLinkClicked
+            : MetaMetricsEventName.BridgeLinkClicked,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
             token_symbol: token.symbol,
             location,
-            text: 'Bridge',
+            text: isSwap ? 'Swap' : 'Bridge',
             chain_id: providerConfig.chainId,
           },
         });
+        dispatch(
+          trackUnifiedSwapBridgeEvent(
+            UnifiedSwapBridgeEventName.ButtonClicked,
+            {
+              location:
+                location === 'Home'
+                  ? MetaMetricsSwapsEventSource.MainView
+                  : MetaMetricsSwapsEventSource.TokenView,
+              token_symbol_source: token.symbol,
+              token_symbol_destination: null,
+            },
+          ),
+        );
         let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
         url += `?token=${
           isStrictHexString(token.address)
@@ -133,7 +141,6 @@ const useBridging = () => {
     [
       isBridgeSupported,
       isBridgeChain,
-      dispatch,
       history,
       metaMetricsId,
       trackEvent,

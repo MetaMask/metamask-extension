@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import {
-  TransactionMeta,
+  type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import {
-  BridgeHistoryItem,
+  type BridgeHistoryItem,
   ActionTypes,
 } from '@metamask/bridge-status-controller';
 import { StatusTypes, type Step } from '@metamask/bridge-controller';
@@ -19,7 +19,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  AllowedBridgeChainIds,
+  type AllowedBridgeChainIds,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
 

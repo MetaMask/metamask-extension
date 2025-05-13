@@ -3662,22 +3662,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Установка MetaMask завершена!"
   },
-  "oneDayAbbreviation": {
-    "message": "1 Д",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1 М",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1 Н",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1 Г",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4147,18 +4131,6 @@
   },
   "productAnnouncements": {
     "message": "Объявления о продуктах"
-  },
-  "profileSync": {
-    "message": "Синхронизация профиля"
-  },
-  "profileSyncConfirmation": {
-    "message": "Если вы отключите синхронизацию профиля, вы не сможете получать уведомления."
-  },
-  "profileSyncDescription": {
-    "message": "Создает профиль, который MetaMask использует для синхронизации некоторых настроек между вашими устройствами. Это необходимо для получения уведомлений. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Узнайте, как мы защищаем вашу конфиденциальность"
   },
   "proposedApprovalLimit": {
     "message": "Предлагаемый лимит одобрения"
@@ -5971,10 +5943,6 @@
   "thirdPartySoftware": {
     "message": "Уведомление о стороннем ПО",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3 М",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "Время"

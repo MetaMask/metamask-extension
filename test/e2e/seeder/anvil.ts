@@ -20,7 +20,7 @@ const defaultOptions: Partial<AnvilParameters> = {
   chainId: CHAIN_ID,
   gasLimit: 30000000,
   gasPrice: 2000000000,
-  hardfork: 'Muirglacier',
+  hardfork: 'Prague',
   host: HOST,
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',

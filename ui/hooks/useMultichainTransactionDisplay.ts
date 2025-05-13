@@ -87,9 +87,7 @@ export function useMultichainTransactionDisplay(
     baseFee,
     priorityFee,
     isRedeposit:
-      Boolean(from) === true &&
-      Boolean(to) === false &&
-      transaction.type === TransactionType.Send,
+      transaction.to.length === 0 && transaction.type === TransactionType.Send,
   };
 }
 

@@ -35,8 +35,10 @@ export function useNonContractAddressAlerts(): Alert[] {
     );
   }, [currentConfirmation?.txParams?.to]);
 
+  const isReadContractFailure = value?.contractCode === null;
+
   const isInteractingWithNonContractAddress =
-    !pending && value?.isContractAddress === false;
+    !pending && !isReadContractFailure && value?.isContractAddress === false;
 
   const isContractDeploymentTx =
     currentConfirmation?.type === TransactionType.deployContract;
@@ -61,5 +63,9 @@ export function useNonContractAddressAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [isSendingHexDataWhileInteractingWithNonContractAddress, isUpgrade]);
+  }, [
+    isSendingHexDataWhileInteractingWithNonContractAddress,
+    isUpgrade,
+    networkConfigurations,
+  ]);
 }

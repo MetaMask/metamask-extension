@@ -1,17 +1,17 @@
-import { cloneDeep } from 'lodash';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SolScope } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { cloneDeep } from 'lodash';
 import {
   AssetsRatesState,
   AssetsState,
   getAccountAssets,
-  getTokenByAccountAndAddressAndChainId,
   getAssetsMetadata,
   getAssetsRates,
+  getHistoricalPrices,
   getMultiChainAssets,
   getMultichainNativeAssetType,
-  getHistoricalPrices,
+  getTokenByAccountAndAddressAndChainId,
 } from './assets';
 
 const mockRatesState = {
@@ -160,7 +160,7 @@ describe('getMultiChainAssets', () => {
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           isNative: true,
           primary: '0.051724127',
-          secondary: 0,
+          secondary: null,
         }),
         expect.objectContaining({
           title: 'USDC',
@@ -172,7 +172,7 @@ describe('getMultiChainAssets', () => {
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           isNative: false,
           primary: '0',
-          secondary: 0,
+          secondary: null,
         }),
       ]),
     );
@@ -204,7 +204,7 @@ describe('getMultiChainAssets', () => {
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           isNative: true,
           primary: '0.051724127',
-          secondary: 0,
+          secondary: null,
         }),
       ]),
     );
@@ -347,11 +347,11 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
         isNative: true,
         isStakeable: false,
         primary: '0',
-        secondary: 0,
+        secondary: null,
         string: '',
         symbol: 'TKN1',
         title: 'Token 1',
-        tokenFiatAmount: 0,
+        tokenFiatAmount: null,
       });
     });
   });
@@ -378,11 +378,11 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
         isNative: true,
         isStakeable: false,
         primary: '0',
-        secondary: 0,
+        secondary: null,
         string: '',
         symbol: 'TKN1',
         title: 'Token 1',
-        tokenFiatAmount: 0,
+        tokenFiatAmount: null,
       });
     });
   });

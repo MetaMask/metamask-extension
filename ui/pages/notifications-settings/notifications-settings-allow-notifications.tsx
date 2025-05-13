@@ -20,7 +20,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../selectors/identity/backup-and-sync';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { Box, Text } from '../../components/component-library';
 import {
@@ -59,7 +59,7 @@ export function NotificationsSettingsAllowNotifications({
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   const { enableNotifications, error: errorEnableNotifications } =
     useEnableNotifications();
@@ -91,7 +91,7 @@ export function NotificationsSettingsAllowNotifications({
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
           settings_type: 'notifications',
-          was_profile_syncing_on: isProfileSyncingEnabled,
+          was_profile_syncing_on: isBackupAndSyncEnabled,
           old_value: true,
           new_value: false,
         },
@@ -103,7 +103,7 @@ export function NotificationsSettingsAllowNotifications({
         event: MetaMetricsEventName.NotificationsSettingsUpdated,
         properties: {
           settings_type: 'notifications',
-          was_profile_syncing_on: isProfileSyncingEnabled,
+          was_profile_syncing_on: isBackupAndSyncEnabled,
           old_value: false,
           new_value: true,
         },
@@ -118,6 +118,8 @@ export function NotificationsSettingsAllowNotifications({
     disableNotifications,
     enableNotifications,
     toggleValue,
+    isBackupAndSyncEnabled,
+    trackEvent,
   ]);
 
   const privacyLink = useMemo(
