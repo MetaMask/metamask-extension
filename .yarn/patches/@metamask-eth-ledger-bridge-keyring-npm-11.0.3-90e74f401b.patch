@@ -1,15 +1,15 @@
 diff --git a/dist/ledger-keyring.cjs b/dist/ledger-keyring.cjs
-index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9d93bdfe7dab04aae662a30e4f2342441d5a2261 100644
+index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9f8e5d625c04bed8132e5e824bffcf98a505b78d 100644
 --- a/dist/ledger-keyring.cjs
 +++ b/dist/ledger-keyring.cjs
 @@ -277,6 +277,12 @@ class LedgerKeyring {
              });
          }
          catch (error) {
-+            /********** 
-+            * Patch for error handling for Device Management kit 
-+            **********/
-+            if(error?.errorCode === "6985" && error?.message === 'Condition not satisfied'){
++             /********** 
+++            * Patch for error handling for Device Management kit 
+++            **********/
++            if (error?.errorCode === "6985" && error?.message === 'Condition not satisfied') {
 +                throw new Error('Ledger: User rejected the transaction');
 +            }
              throw error instanceof Error
@@ -19,14 +19,14 @@ index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9d93bdfe7dab04aae662a30e4f234244
              });
          }
          catch (error) {
-+            /********** 
-+            * Patch for error handling for Device Management kit 
-+            **********/
++               /********** 
++                 * Patch for error handling for Device Management kit 
++                **********/
 +            if(error?.errorCode === "6985" && error?.message === 'Condition not satisfied'){
-+                throw new Error('Ledger: User rejected the transaction');
++                 throw new Error('Ledger: User rejected the transaction');
 +            }
 +            if(error?.errorCode === "6a80" && error?.message === 'Invalid data'){
-+               throw new Error('Ledger: Blind signing not enabled');
++                 throw new Error('Ledger: Blind signing not enabled');
 +            }
              throw error instanceof Error
                  ? error
@@ -35,9 +35,9 @@ index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9d93bdfe7dab04aae662a30e4f234244
          });
      }
      catch (error) {
-+        /********** 
-+        * Patch for error handling for Device Management kit 
-+        **********/
++         /********** 
++         * Patch for error handling for Device Management kit 
++         **********/
 +        if(error?.errorCode === "6985" && error?.message === 'Condition not satisfied'){
 +            throw new Error('Ledger: User rejected the transaction');
 +        }
