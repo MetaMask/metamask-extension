@@ -64,6 +64,7 @@
     "snapsInstallPrivacyWarningShown": "boolean",
     "isAddingNewNetwork": "boolean",
     "isMultiRpcOnboarding": "boolean",
+    "isAccessedFromDappConnectedSitePopover": "boolean",
     "errorInSettings": null,
     "showNewSrpAddedToast": "boolean"
   },
@@ -176,7 +177,7 @@
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
-        "EIPS": { "1559": false },
+        "EIPS": { "1559": true },
         "status": "available"
       }
     },
