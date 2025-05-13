@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
@@ -15,30 +15,31 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getPasswordHint } from '../../../../selectors';
+import { setPasswordHint } from '../../../../store/actions';
 
 const PasswordHint = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const [isSamePasswordError, setIsSamePasswordError] = useState(false);
   const [hint, setHint] = useState(useSelector(getPasswordHint));
   // TODO: how to compare hint with current password?
   const currentPassword = null;
 
-  const handleSubmitHint = () => {
+  const handleSubmitHint = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (currentPassword === hint) {
       setIsSamePasswordError(true);
       return;
     }
-    console.log('handleSubmitHint');
+
+    dispatch(setPasswordHint(hint));
   };
 
   return (
     <div className="settings-password-hint">
       <form
         className="settings-password-hint__form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmitHint();
-        }}
+        onSubmit={handleSubmitHint}
       >
         <div className="settings-password-hint__content">
           <Text
