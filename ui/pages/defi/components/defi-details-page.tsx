@@ -2,12 +2,18 @@ import React, { useMemo } from 'react';
 import { useHistory, useParams, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
+  BackgroundColor,
   Display,
   FlexDirection,
   IconColor,
+  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  BadgeWrapper,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -24,6 +30,8 @@ import { getPreferences, getSelectedAccount } from '../../../selectors';
 import { getDefiPositions } from '../../../components/app/assets/defi-list/defi-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatWithThreshold } from '../../../components/app/assets/util/formatWithThreshold';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getImageForChainId } from '../../../selectors/multichain';
 import DefiDetailsList, {
   PositionTypeKeys,
   PositionTypeLabels,
@@ -51,6 +59,7 @@ const DeFiPage = () => {
 
   const defiPositions = useSelector(getDefiPositions);
   const selectedAccount = useSelector(getSelectedAccount);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const history = useHistory();
   const t = useI18nContext();
@@ -84,28 +93,57 @@ const DeFiPage = () => {
 
   return (
     <Box className="main-container asset__container">
-      <Box paddingLeft={2}>
-        <Box display={Display.Flex} paddingBottom={4} paddingTop={4}>
-          <ButtonIcon
-            data-testid="defi-details-page-back-button"
-            color={IconColor.iconAlternative}
-            marginRight={1}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('back')}
-            iconName={IconName.ArrowLeft}
-            onClick={() => history.push(DEFAULT_ROUTE)}
-          />
-        </Box>
+      <Box
+        paddingLeft={2}
+        display={Display.Flex}
+        paddingBottom={4}
+        paddingTop={4}
+      >
+        <ButtonIcon
+          data-testid="defi-details-page-back-button"
+          color={IconColor.iconAlternative}
+          marginRight={1}
+          size={ButtonIconSize.Sm}
+          ariaLabel={t('back')}
+          iconName={IconName.ArrowLeft}
+          onClick={() => history.push(DEFAULT_ROUTE)}
+        />
       </Box>
 
-      <Text
-        variant={TextVariant.headingLg}
-        paddingLeft={4}
-        paddingBottom={2}
-        data-testid="defi-details-page-title"
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        paddingRight={4}
       >
-        {protocolPosition.protocolDetails.name}
-      </Text>
+        <Text
+          variant={TextVariant.headingLg}
+          paddingLeft={4}
+          paddingBottom={2}
+          data-testid="defi-details-page-title"
+        >
+          {protocolPosition.protocolDetails.name}
+        </Text>
+        <BadgeWrapper
+          badge={
+            <AvatarNetwork
+              size={AvatarNetworkSize.Xs}
+              name={allNetworks?.[chainId]?.name}
+              src={getImageForChainId(chainId) || undefined}
+              backgroundColor={BackgroundColor.backgroundMuted}
+              borderWidth={2}
+            />
+          }
+          marginRight={4}
+          style={{ alignSelf: 'center' }}
+        >
+          <AvatarToken
+            name={protocolPosition.protocolDetails.name}
+            backgroundColor={BackgroundColor.backgroundMuted}
+            src={protocolPosition.protocolDetails.iconUrl}
+          />
+        </BadgeWrapper>
+      </Box>
       <Box paddingLeft={4} paddingBottom={4}>
         <SensitiveText
           data-testid="defi-details-page-market-value"

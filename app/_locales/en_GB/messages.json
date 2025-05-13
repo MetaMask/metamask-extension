@@ -3520,6 +3520,9 @@
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
+  "noDeFiPositions": {
+    "message": "No positions yet"
+  },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
@@ -5679,6 +5682,9 @@
   },
   "standardAccountLabel": {
     "message": "Standard Account"
+  },
+  "startEarning": {
+    "message": "Start earning"
   },
   "stateCorruptionDetectedErrorMessage": {
     "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"

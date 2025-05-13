@@ -16,7 +16,7 @@ class DeFiTab extends TokenList {
 
   private readonly groupIcon = '[data-testid="avatar-group"]';
 
-  private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
+  private readonly errorMessage = '[data-testid="defi-tab-error-message   "]';
 
   constructor(driver: Driver) {
     super(driver);

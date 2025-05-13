@@ -3,13 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTokenDisplayInfo } from '../hooks';
 import {
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
-import {
-  Box,
   ButtonSecondary,
   Modal,
   ModalBody,
@@ -28,8 +21,9 @@ import {
   useSafeChains,
 } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { TokenWithFiatAmount } from '../types';
+import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
+import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import {
-  TokenCellBadge,
   TokenCellTitle,
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
@@ -41,7 +35,6 @@ export type TokenCellProps = {
   privacyMode?: boolean;
   disableHover?: boolean;
   onClick?: () => void;
-  TokenCellPrimaryDisplayOverride?: React.ComponentType;
   fixCurrencyToUSD?: boolean;
 };
 
@@ -50,7 +43,6 @@ export default function TokenCell({
   privacyMode = false,
   onClick,
   disableHover = false,
-  TokenCellPrimaryDisplayOverride,
   fixCurrencyToUSD = false,
 }: TokenCellProps) {
   const dispatch = useDispatch();
@@ -59,7 +51,6 @@ export default function TokenCell({
   const isEvm = useSelector(getMultichainIsEvm);
   const { safeChains } = useSafeChains();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
 
@@ -83,88 +74,39 @@ export default function TokenCell({
     return null;
   }
 
-  const PrimaryDisplay = () =>
-    TokenCellPrimaryDisplayOverride ? (
-      <TokenCellPrimaryDisplayOverride />
-    ) : (
-      <TokenCellPrimaryDisplay
-        token={{ ...token, ...tokenDisplayInfo }}
-        privacyMode={privacyMode}
-      />
-    );
-
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      width={BlockSize.Full}
-      height={BlockSize.Full}
-      gap={4}
-    >
-      <Box
-        as="a"
-        onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-          e?.preventDefault();
-
-          if (!onClick || showScamWarningModal) {
-            return;
-          }
-
-          onClick();
-        }}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        paddingTop={2}
-        paddingBottom={2}
-        paddingLeft={4}
-        paddingRight={4}
-        width={BlockSize.Full}
-        style={{
-          height: 62,
-          cursor: onClick ? 'pointer' : 'auto',
-          backgroundColor:
-            !disableHover && isHovered
-              ? 'var(--color-background-default-hover)'
-              : 'transparent',
-          transition: 'background-color 0.2s ease-in-out',
-        }}
-        onMouseEnter={() => !disableHover && setIsHovered(true)}
-        onMouseLeave={() => !disableHover && setIsHovered(false)}
-        data-testid="multichain-token-list-button"
-      >
-        <TokenCellBadge token={{ ...token, ...tokenDisplayInfo }} />
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.Full}
-          style={{ flexGrow: 1, overflow: 'hidden' }}
-          justifyContent={JustifyContent.center}
-        >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <TokenCellTitle token={{ ...token, ...tokenDisplayInfo }} />
-            <TokenCellSecondaryDisplay
-              token={{ ...token, ...tokenDisplayInfo }}
-              handleScamWarningModal={handleScamWarningModal}
-              privacyMode={privacyMode}
-            />
-          </Box>
-
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
-            <PrimaryDisplay />
-          </Box>
-        </Box>
-      </Box>
-      {/* scam warning modal, this should be higher up in the component tree */}
-      {isEvm && showScamWarningModal ? (
+    <>
+      <GenericAssetCellLayout
+        onClick={showScamWarningModal ? undefined : onClick}
+        disableHover={disableHover}
+        badge={
+          <AssetCellBadge
+            chainId={token.chainId}
+            tokenImage={token.image}
+            symbol={token.symbol}
+          />
+        }
+        priaryDisplayLeft={
+          <TokenCellTitle token={{ ...token, ...tokenDisplayInfo }} />
+        }
+        secondaryDisplayLeft={
+          <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
+        }
+        primaryDisplayRight={
+          <TokenCellPrimaryDisplay
+            token={{ ...token, ...tokenDisplayInfo }}
+            privacyMode={privacyMode}
+          />
+        }
+        secondaryDisplayRight={
+          <TokenCellSecondaryDisplay
+            token={{ ...token, ...tokenDisplayInfo }}
+            handleScamWarningModal={handleScamWarningModal}
+            privacyMode={privacyMode}
+          />
+        }
+      />
+      {isEvm && showScamWarningModal && (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
           <ModalOverlay />
           <ModalContent>
@@ -174,10 +116,8 @@ export default function TokenCell({
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
                 token.symbol,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 safeChainDetails?.nativeCurrency?.symbol ||
-                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'), // never render "undefined" string value
+                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'),
               ])}
             </ModalBody>
             <ModalFooter>
@@ -193,7 +133,7 @@ export default function TokenCell({
             </ModalFooter>
           </ModalContent>
         </Modal>
-      ) : null}
-    </Box>
+      )}
+    </>
   );
 }
