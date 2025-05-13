@@ -8,7 +8,7 @@ import NFTDetailsPage from '../../page-objects/pages/nft-details-page';
 import NftListPage from '../../page-objects/pages/home/nft-list';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
@@ -32,7 +32,7 @@ describe('Settings', function () {
         testSpecificMock: mockIPFSRequest,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
