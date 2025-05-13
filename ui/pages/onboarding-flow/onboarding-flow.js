@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { keccak256 } from 'ethereumjs-util';
 import Unlock from '../unlock-page';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -19,6 +20,7 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_PASSWORD_HINT,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -54,10 +56,12 @@ import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
+import PasswordHint from './password-hint/password-hint';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 
 export default function OnboardingFlow() {
+  const [passwordHash, setPasswordHash] = useState(null);
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const dispatch = useDispatch();
   const { pathname, search } = useLocation();
@@ -99,6 +103,14 @@ export default function OnboardingFlow() {
     history,
   ]);
 
+  const getPasswordHash = (password) => {
+    const passwordAsBuffer = Buffer.from(password, 'utf8');
+    const passwordHashString = Buffer.from(
+      keccak256(passwordAsBuffer),
+    ).toString('hex');
+    return passwordHashString;
+  };
+
   const handleCreateNewAccount = async (password) => {
     const newSecretRecoveryPhrase = await dispatch(
       createNewVaultAndGetSeedPhrase(password),
@@ -107,6 +119,8 @@ export default function OnboardingFlow() {
   };
 
   const handleUnlock = async (password) => {
+    setPasswordHash(getPasswordHash(password));
+
     const retrievedSecretRecoveryPhrase = await dispatch(
       unlockAndGetSeedPhrase(password),
     );
@@ -116,6 +130,13 @@ export default function OnboardingFlow() {
 
   const handleImportWithRecoveryPhrase = async (password, srp) => {
     return await dispatch(createNewVaultAndRestore(password, srp));
+  };
+
+  const validatePasswordHint = (hint) => {
+    const hintHash = getPasswordHash(hint);
+    if (hintHash === passwordHash) {
+      throw new Error('Invalid password hint');
+    }
   };
 
   const showPasswordModalToAllowSRPReveal =
@@ -210,6 +231,16 @@ export default function OnboardingFlow() {
           <Route
             path={ONBOARDING_METAMETRICS}
             component={MetaMetricsComponent}
+          />
+          <Route
+            path={ONBOARDING_PASSWORD_HINT}
+            render={(routeProps) => (
+              <PasswordHint
+                {...routeProps}
+                passwordHash={passwordHash}
+                validatePasswordHint={validatePasswordHint}
+              />
+            )}
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
