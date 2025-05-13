@@ -3,13 +3,13 @@ version: 2.1
 executors:
   node-browsers-small:
     docker:
-      - image: cimg/node:22.14-browsers
+      - image: cimg/node:22.15-browsers
     resource_class: small
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-medium:
     docker:
-      - image: cimg/node:22.14-browsers
+      - image: cimg/node:22.15-browsers
     resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
@@ -21,7 +21,7 @@ executors:
       NODE_OPTIONS: --max_old_space_size=6144
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:22.14-browsers
+      - image: cimg/node:22.15-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
@@ -107,9 +107,6 @@ workflows:
       - prep-build-test-flask-mv2:
           requires:
             - prep-deps
-      - prep-build-ts-migration-dashboard:
-          requires:
-            - prep-deps
       - test-api-specs:
           requires:
             - prep-build-test
@@ -155,7 +152,6 @@ workflows:
             - prep-build-test-mv2
             - prep-build-test-flask
             - prep-build-test-flask-mv2
-            - prep-build-ts-migration-dashboard
             - all-tests-pass
       - job-publish-release:
           filters:
@@ -168,12 +164,6 @@ workflows:
             - prep-build-flask
             - prep-build-flask-mv2
             - all-tests-pass
-      - job-publish-ts-migration-dashboard:
-          filters:
-            branches:
-              only: main
-          requires:
-            - prep-build-ts-migration-dashboard
 
   rerun-from-failed:
     when:
@@ -504,21 +494,6 @@ jobs:
             - dist-test-mv2
             - builds-test-mv2
 
-  prep-build-ts-migration-dashboard:
-    executor: node-browsers-small
-    steps:
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build TypeScript migration dashboard
-          command: yarn ts-migration:dashboard:build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - development/ts-migration-dashboard/build/final
-
   rerun-workflows-from-failed:
     executor: node-browsers-small
     steps:
@@ -638,9 +613,6 @@ jobs:
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts
-      - store_artifacts:
-          path: development/ts-migration-dashboard/build/final
-          destination: ts-migration-dashboard
 
   job-publish-release:
     executor: node-browsers-small
@@ -670,24 +642,6 @@ jobs:
       - run:
           name: Push Firefox bundle script
           command: .circleci/scripts/push-firefox-bundle-script.sh
-
-  job-publish-ts-migration-dashboard:
-    executor: node-browsers-small
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
-      - run: *shallow-git-clone-and-enable-vnc
-      - run: sudo corepack enable
-      - attach_workspace:
-          at: .
-      - run:
-          name: ts-migration-dashboard:deploy
-          command: |
-            git remote add ts-migration-dashboard git@github.com:MetaMask/metamask-extension-ts-migration-dashboard.git
-            git config user.name "MetaMask Bot"
-            git config user.email metamaskbot@users.noreply.github.com
-            yarn ts-migration:dashboard:deploy
 
   validate-source-maps:
     executor: node-browsers-small

@@ -91,7 +91,7 @@ export type MetaMetricsEventPayload = {
   /**
    * The category to associate the event to.
    */
-  category: string;
+  category?: string;
   /**
    * The action ID to deduplicate event requests from the UI.
    */
@@ -205,7 +205,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event category to use for both the success and failure events.
    */
-  category: string;
+  category?: string;
   /**
    * Should this fragment be persisted in state and progressed after the
    * extension is locked and unlocked.
@@ -304,7 +304,7 @@ export type SegmentEventPayload = {
     params?: Record<string, string>;
     legacy_event?: boolean;
     locale: string;
-    chain_id: string;
+    chain_id: string | null;
     environment_type?: string;
     revenue?: number;
     value?: number;
@@ -671,6 +671,7 @@ export enum MetaMetricsEventName {
   BannerSelect = 'Banner Select',
   BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
+  SwapLinkClicked = 'Swap Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
   CurrentCurrency = 'Current Currency',
@@ -757,6 +758,8 @@ export enum MetaMetricsEventName {
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
+  RpcServiceDegraded = 'RPC Service Degraded',
+  RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SecretRecoveryPhrasePickerDetailsClicked = 'Secret Recovery Phrase Details Clicked',
   SecretRecoveryPhrasePickerSelected = 'Secret Recovery Phrase Picker Selected',

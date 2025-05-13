@@ -7,6 +7,8 @@ import { MetamaskIdentityProvider } from '../../../../contexts/identity';
 import * as useBackupAndSyncHook from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
 import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../modals/identity';
 import { showModal } from '../../../../store/actions';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   BackupAndSyncToggle,
   backupAndSyncToggleTestIds,
@@ -46,7 +48,34 @@ describe('BackupAndSyncToggle', () => {
     ).toBeInTheDocument();
   });
 
-  // Logic to disable backup and sync is not tested here because it happens in confirm-turn-off-profile-syncing.test.tsx
+  it('tracks the toggle event', () => {
+    const mockTrackEvent = jest.fn();
+    const store = initialStore();
+
+    store.metamask.isProfileSyncingEnabled = true;
+    arrangeMocks();
+
+    const { getByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <BackupAndSyncToggle />
+      </MetaMetricsContext.Provider>,
+      mockStore(store),
+    );
+
+    fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggleButton));
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      category: 'Settings',
+      event: 'Settings Updated',
+      properties: {
+        settings_group: 'backup_and_sync',
+        settings_type: 'main',
+        old_value: true,
+        new_value: false,
+        was_notifications_on: undefined,
+      },
+    });
+  });
+
   it('enables backup and sync when the toggle is turned on and basic functionality is already on', () => {
     const store = initialStore();
     store.metamask.isProfileSyncingEnabled = false;
@@ -58,7 +87,7 @@ describe('BackupAndSyncToggle', () => {
         <BackupAndSyncToggle />
       </Redux.Provider>,
     );
-    fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggle));
+    fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggleButton));
     expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
       BACKUPANDSYNC_FEATURES.main,
       true,
@@ -75,7 +104,7 @@ describe('BackupAndSyncToggle', () => {
         <BackupAndSyncToggle />
       </Redux.Provider>,
     );
-    fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggle));
+    fireEvent.click(getByTestId(backupAndSyncToggleTestIds.toggleButton));
     expect(setIsBackupAndSyncFeatureEnabledMock).not.toHaveBeenCalled();
     expect(mockDispatch).toHaveBeenCalledWith(
       showModal({

@@ -23,7 +23,7 @@ describe('BackupAndSyncDevSettings', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the ProfileSyncDevSettings component', () => {
+  it('renders the BackupAndSyncDevSettings component', () => {
     const { getByText } = render(<BackupAndSyncDevSettings />);
     expect(getByText('Backup and sync')).toBeInTheDocument();
   });

@@ -23,7 +23,6 @@ import {
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
-
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import {
@@ -195,6 +194,7 @@ import {
   NETWORK_TYPES,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
+  getFailoverUrlsForInfuraNetwork,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -217,6 +217,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
+  PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -313,6 +314,8 @@ import {
   getEnvironmentType,
   getMethodDataName,
   previousValueComparator,
+  initializeRpcProviderDomains,
+  getPlatform,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
@@ -376,11 +379,6 @@ import {
   rejectAllApprovals,
   rejectOriginApprovals,
 } from './lib/approval/utils';
-import {
-  handleBridgeTransactionComplete,
-  handleBridgeTransactionFailed,
-  handleTransactionFailedTypeBridge,
-} from './lib/bridge-status/metrics';
 import { InstitutionalSnapControllerInit } from './controller-init/institutional-snap/institutional-snap-controller-init';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -420,6 +418,11 @@ import {
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
+import {
+  onRpcEndpointUnavailable,
+  onRpcEndpointDegraded,
+} from './lib/network-controller/messenger-action-handlers';
+import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -575,14 +578,20 @@ export default class MetamaskController extends EventEmitter {
       name: 'NetworkController',
     });
 
+    const additionalDefaultNetworks = [ChainId['megaeth-testnet']];
+
     let initialNetworkControllerState = initState.NetworkController;
     if (!initialNetworkControllerState) {
-      initialNetworkControllerState = getDefaultNetworkControllerState();
+      initialNetworkControllerState = getDefaultNetworkControllerState(
+        additionalDefaultNetworks,
+      );
 
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
 
-      // TODO: It should be done on NetworkController level
+      // TODO: Consider changing `getDefaultNetworkControllerState` on the
+      // controller side to include some of these tweaks.
+
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
         // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
@@ -591,6 +600,12 @@ export default class MetamaskController extends EventEmitter {
         }
         network.defaultBlockExplorerUrlIndex = 0;
       });
+
+      // Add failovers for default Infura RPC endpoints
+      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
+      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('linea-mainnet');
 
       let network;
       if (process.env.IN_TEST) {
@@ -651,12 +666,79 @@ export default class MetamaskController extends EventEmitter {
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
-      getRpcServiceOptions: () => ({
-        fetch: globalThis.fetch.bind(globalThis),
-        btoa: globalThis.btoa.bind(globalThis),
-      }),
-      additionalDefaultNetworks: [ChainId['megaeth-testnet']],
+      getBlockTrackerOptions: () => {
+        return process.env.IN_TEST
+          ? {}
+          : {
+              pollingInterval: 20 * SECOND,
+              // The retry timeout is pretty short by default, and if the endpoint is
+              // down, it will end up exhausting the max number of consecutive
+              // failures quickly.
+              retryTimeout: 20 * SECOND,
+            };
+      },
+      getRpcServiceOptions: (rpcEndpointUrl) => {
+        const maxRetries = 4;
+        const commonOptions = {
+          fetch: globalThis.fetch.bind(globalThis),
+          btoa: globalThis.btoa.bind(globalThis),
+        };
+
+        if (getIsQuicknodeEndpointUrl(rpcEndpointUrl)) {
+          return {
+            ...commonOptions,
+            policyOptions: {
+              maxRetries,
+              // When we fail over to Quicknode, we expect it to be down at
+              // first while it is being automatically activated. If an endpoint
+              // is down, the failover logic enters a "cooldown period" of 30
+              // minutes. We'd really rather not enter that for Quicknode, so
+              // keep retrying longer.
+              maxConsecutiveFailures: (maxRetries + 1) * 14,
+            },
+          };
+        }
+
+        return {
+          ...commonOptions,
+          policyOptions: {
+            maxRetries,
+            // Ensure that the circuit does not break too quickly.
+            maxConsecutiveFailures: (maxRetries + 1) * 7,
+          },
+        };
+      },
+      additionalDefaultNetworks,
     });
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointUnavailable',
+      async ({ chainId, endpointUrl, error }) => {
+        onRpcEndpointUnavailable({
+          chainId,
+          endpointUrl,
+          error,
+          infuraProjectId: opts.infuraProjectId,
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+          metaMetricsId: this.metaMetricsController.state.metaMetricsId,
+        });
+      },
+    );
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointDegraded',
+      async ({ chainId, endpointUrl }) => {
+        onRpcEndpointDegraded({
+          chainId,
+          endpointUrl,
+          infuraProjectId: opts.infuraProjectId,
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+          metaMetricsId: this.metaMetricsController.state.metaMetricsId,
+        });
+      },
+    );
     this.networkController.initializeProvider();
 
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
@@ -1399,8 +1481,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
 
-    this._addBridgeStatusControllerListeners();
-
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
       messenger: this.controllerMessenger.getRestricted({
@@ -1602,6 +1682,7 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:findNetworkClientIdByChainId',
         'TokenRatesController:getState',
         'MultichainAssetsRatesController:getState',
+        'RemoteFeatureFlagController:getState',
         'CurrencyRateController:getState',
       ],
       allowedEvents: [],
@@ -1662,6 +1743,7 @@ export default class MetamaskController extends EventEmitter {
           url,
           fetchOptions: { method: 'GET', headers, signal },
           ...requestOptions,
+          cacheOptions: { cacheRefreshTime: 0 },
         }),
       addTransactionFn: (...args) => this.txController.addTransaction(...args),
       estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
@@ -1824,12 +1906,35 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // Initialize RemoteFeatureFlagController
-    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
-      messenger: this.controllerMessenger.getRestricted({
+    const remoteFeatureFlagControllerMessenger =
+      this.controllerMessenger.getRestricted({
         name: 'RemoteFeatureFlagController',
         allowedActions: [],
         allowedEvents: [],
-      }),
+      });
+    remoteFeatureFlagControllerMessenger.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (isRpcFailoverEnabled) => {
+        if (isRpcFailoverEnabled) {
+          console.log(
+            'isRpcFailoverEnabled = ',
+            isRpcFailoverEnabled,
+            ', enabling RPC failover',
+          );
+          this.networkController.enableRpcFailover();
+        } else {
+          console.log(
+            'isRpcFailoverEnabled = ',
+            isRpcFailoverEnabled,
+            ', disabling RPC failover',
+          );
+          this.networkController.disableRpcFailover();
+        }
+      },
+      (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
+    );
+    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
+      messenger: remoteFeatureFlagControllerMessenger,
       fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
       disabled: !this.preferencesController.state.useExternalServices,
       getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
@@ -4124,11 +4229,6 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      [BridgeBackgroundAction.SET_FEATURE_FLAGS]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.SET_FEATURE_FLAGS}`,
-        ),
       [BridgeBackgroundAction.RESET_STATE]: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,
@@ -4137,6 +4237,11 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
+        ),
+      [BridgeBackgroundAction.TRACK_METAMETRICS_EVENT]:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
         ),
 
       // Bridge Tx submission
@@ -4841,7 +4946,7 @@ export default class MetamaskController extends EventEmitter {
       this.permissionController.clearState();
 
       // Clear snap state
-      this.snapController.clearState();
+      await this.snapController.clearState();
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
@@ -6832,6 +6937,11 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions(
             { origin },
             requestedPermissions,
+            {
+              metadata: {
+                isEip1193Request: true,
+              },
+            },
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
           try {
@@ -7683,6 +7793,8 @@ export default class MetamaskController extends EventEmitter {
     const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
     const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
     if (cachedResponse) {
+      // Also initialize the known domains when we have chain data cached
+      await initializeRpcProviderDomains();
       return;
     }
     await setStorageItem(cacheKey, {
@@ -7690,6 +7802,8 @@ export default class MetamaskController extends EventEmitter {
       // Cached value is immediately invalidated
       cachedTime: 0,
     });
+    // Initialize domains after setting the chainlist cache
+    await initializeRpcProviderDomains();
   }
 
   /**
@@ -7740,58 +7854,6 @@ export default class MetamaskController extends EventEmitter {
       error.name = 'TestError';
       throw error;
     });
-  }
-
-  /**
-   * A method for setting BridgeStatusController event listeners
-   */
-  _addBridgeStatusControllerListeners() {
-    this.controllerMessenger.subscribe(
-      'BridgeStatusController:bridgeTransactionComplete',
-      (payload) =>
-        handleBridgeTransactionComplete(payload, {
-          backgroundState: this.getState(),
-          trackEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
-        }),
-    );
-
-    this.controllerMessenger.subscribe(
-      'BridgeStatusController:bridgeTransactionFailed',
-      (payload) =>
-        handleBridgeTransactionFailed(payload, {
-          backgroundState: this.getState(),
-          trackEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
-        }),
-    );
-    // Putting these TransactionController listeners here to keep it colocated with the other bridge events
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionFailed',
-      ({ transactionMeta }) => {
-        const { type, status } = transactionMeta;
-
-        const isBridgeTransaction = type === TransactionType.bridge;
-        const isIncompleteTransactionCleanup = [
-          TransactionStatus.approved,
-          TransactionStatus.signed,
-        ].includes(status);
-
-        if (isBridgeTransaction && !isIncompleteTransactionCleanup) {
-          handleTransactionFailedTypeBridge(
-            { transactionMeta },
-            {
-              backgroundState: this.getState(),
-              trackEvent: this.metaMetricsController.trackEvent.bind(
-                this.metaMetricsController,
-              ),
-            },
-          );
-        }
-      },
-    );
   }
 
   getTransactionMetricsRequest() {
@@ -7861,6 +7923,37 @@ export default class MetamaskController extends EventEmitter {
           .showConfirmationAdvancedDetails;
       },
       getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
+      getNetworkRpcUrl: (chainId) => {
+        // TODO: Move to @metamask/network-controller
+        try {
+          const networkClientId =
+            this.networkController.findNetworkClientIdByChainId(chainId);
+          const networkConfig =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+
+          // Try direct rpcUrl property first
+          if (networkConfig.rpcUrl) {
+            return networkConfig.rpcUrl;
+          }
+
+          // Try rpcEndpoints array
+          if (networkConfig.rpcEndpoints?.length > 0) {
+            const defaultEndpointIndex =
+              networkConfig.defaultRpcEndpointIndex || 0;
+            return (
+              networkConfig.rpcEndpoints[defaultEndpointIndex]?.url ||
+              networkConfig.rpcEndpoints[0].url
+            );
+          }
+
+          return 'unknown';
+        } catch (error) {
+          console.error('Error getting RPC URL:', error);
+          return 'unknown';
+        }
+      },
     };
     return {
       ...controllerActions,
@@ -8005,16 +8098,24 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - the domain to safelist
    */
   safelistPhishingDomain(origin) {
-    this.metaMetricsController.trackEvent({
-      category: MetaMetricsEventCategory.Phishing,
-      event: MetaMetricsEventName.ProceedAnywayClicked,
-      properties: {
-        url: origin,
-        referrer: {
-          url: origin,
+    const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+    if (!isFirefox) {
+      this.metaMetricsController.trackEvent(
+        {
+          category: MetaMetricsEventCategory.Phishing,
+          event: MetaMetricsEventName.ProceedAnywayClicked,
+          properties: {
+            url: origin,
+            referrer: {
+              url: origin,
+            },
+          },
         },
-      },
-    });
+        {
+          excludeMetaMetricsId: true,
+        },
+      );
+    }
 
     return this.phishingController.bypass(origin);
   }

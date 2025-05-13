@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -18,19 +18,27 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 
 export const backupAndSyncFeaturesTogglesTestIds = {
   container: 'backup-and-sync-features-toggles-container',
+  accountSyncingToggleContainer: 'account-syncing-toggle-container',
   accountSyncingToggleButton: 'account-syncing-toggle-button',
 };
 
 export const backupAndSyncFeaturesTogglesSections = [
   {
-    id: 'accountSyncing',
+    id: 'accounts',
     titleI18NKey: 'backupAndSyncFeatureAccounts',
     iconName: IconName.UserCircle,
     backupAndSyncfeatureKey: BACKUPANDSYNC_FEATURES.accountSyncing,
     featureReduxSelector: selectIsAccountSyncingEnabled,
+    toggleContainerTestId:
+      backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleContainer,
     toggleButtonTestId:
       backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleButton,
   },
@@ -46,11 +54,29 @@ const FeatureToggle = ({
   isBackupAndSyncEnabled: boolean;
 }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
   const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
 
   const isFeatureEnabled = useSelector(section.featureReduxSelector);
 
+  const trackBackupAndSyncToggleEvent = useCallback(
+    (newValue: boolean) => {
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.SettingsUpdated,
+        properties: {
+          settings_group: 'backup_and_sync',
+          settings_type: section.id,
+          old_value: isFeatureEnabled,
+          new_value: newValue,
+        },
+      });
+    },
+    [trackEvent, isFeatureEnabled, section.id],
+  );
+
   const handleToggleFeature = async () => {
+    trackBackupAndSyncToggleEvent(!isFeatureEnabled);
     await setIsBackupAndSyncFeatureEnabled(
       section.backupAndSyncfeatureKey,
       !isFeatureEnabled,
@@ -76,14 +102,17 @@ const FeatureToggle = ({
           <Preloader size={36} />
         </Box>
       ) : (
-        <div className="privacy-settings__setting__toggle">
+        <div
+          className="privacy-settings__setting__toggle"
+          data-testid={section.toggleContainerTestId}
+        >
           <ToggleButton
             value={isFeatureEnabled}
             disabled={!isBackupAndSyncEnabled}
-            dataTestId={section.toggleButtonTestId}
             onToggle={handleToggleFeature}
             offLabel={t('off')}
             onLabel={t('on')}
+            dataTestId={section.toggleButtonTestId}
           />
         </div>
       )}
