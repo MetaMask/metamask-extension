@@ -18,10 +18,13 @@ import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
   const {
-    metamask: { isUnlocked },
+    metamask: { isUnlocked, preferences, firstTimeFlow },
   } = state;
+  const { passwordHint } = preferences;
   return {
     isUnlocked,
+    passwordHint,
+    firstTimeFlow,
   };
 };
 
@@ -43,17 +46,19 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   } = dispatchProps;
   const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps;
 
+  // TODO: might remove this once new forget password flow is implemented
   const onImport = async () => {
     await markPasswordForgotten();
     history.push(RESTORE_VAULT_ROUTE);
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-      global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE);
+      global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
     }
   };
 
   const onSubmit = async (password) => {
     await tryUnlockMetamask(password);
+
     history.push(DEFAULT_ROUTE);
   };
 
