@@ -1,8 +1,8 @@
-import { Browser, By } from 'selenium-webdriver';
+import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
+import { Json } from '@metamask/utils';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { Json } from '@metamask/utils';
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
@@ -168,6 +168,9 @@ class TestDappMultichain {
   /**
    * Invokes a method and retrieves the result.
    *
+   * @param scope
+   * @param method
+   * @param params
    * @returns The result as JSON.
    */
   async invokeMethod(

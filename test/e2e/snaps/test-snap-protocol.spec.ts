@@ -1,9 +1,9 @@
+import { strict as assert } from 'assert';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { WINDOW_TITLES } from '../helpers';
 import TestDappMultichain from '../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../flask/multichain-api/testHelpers';
 import { withSolanaAccountSnap } from '../tests/solana/common-solana';
-import { strict as assert } from 'assert';
 
 describe('Test Protocol Snaps', function () {
   it('can call getBlockHeight exposed by Snap', async function () {
