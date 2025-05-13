@@ -1,5 +1,5 @@
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { withFixtures } from '../../helpers';
+import { regularDelayMs, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -19,7 +19,7 @@ const SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET =
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX_DEVNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/EtWTRABZaYq6iMfeYKouRu166VU2xqa1/u;
 const SOLANA_BITCOIN_MIN_API =
-  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti\?fsyms=btc&sol&tsyms=usd/u;
+  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti/u;
 export const SOLANA_TOKEN_API =
   /^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u;
 export const METAMASK_PHISHING_DETECTION_API =
@@ -174,25 +174,6 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
         pricePercentChange200d: 0.029482859180996183,
         pricePercentChange1y: -0.11068819291624574
       },
-    },
-  };
-  return await mockServer.forGet(SOLANA_SPOT_PRICE_API).thenCallback(() => {
-    return response;
-  });
-}
-
-export async function mockPriceApiSpotPriceDevnet(mockServer: Mockttp) {
-  console.log('mockPriceApiSpotPrice');
-  const response = {
-    statusCode: 200,
-    json: {
-      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501': {
-        usd: 198.42,
-      },
-      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
-        {
-          usd: 0.01157283,
-        },
     },
   };
   return await mockServer.forGet(SOLANA_SPOT_PRICE_API).thenCallback(() => {
@@ -727,12 +708,16 @@ export async function mockSolanaBalanceQuoteDevnet(
     });
 }
 
+<<<<<<< HEAD
 
 export async function mockGetMinimumBalanceForRentExemptionDevnet(
+=======
+export async function mockGetMinimumBalanceForRentExemption(
+>>>>>>> d04f69cd71 (fix: upgrade solana to v1.28.0 cp-12.18.0 (#32823))
   mockServer: Mockttp,
 ) {
   return await mockServer
-    .forPost(SOLANA_URL_REGEX_DEVNET)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getMinimumBalanceForRentExemption',
     })
@@ -1909,26 +1894,6 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
     });
 }
 
-export async function mockSendSolanaTransactionDevnet(mockServer: Mockttp) {
-  const response = {
-    statusCode: 200,
-    json: {
-      result:
-        '3nqGKH1ef8WkTgKXZ8q3xKsvjktWmHHhJpZMSdbB6hBqy5dA7aLVSAUjw5okezZjKMHiNg2MF5HAqtpmsesQtnpj',
-      id: '1337',
-      jsonrpc: '2.0',
-    },
-  };
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_DEVNET)
-    .withJsonBodyIncluding({
-      method: 'sendTransaction',
-    })
-    .thenCallback(() => {
-      return response;
-    });
-}
-
 /*
 export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
   return await mockServer
@@ -2181,7 +2146,7 @@ export async function mockGetAccountInfo(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
-    .withBody('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
+    .withBodyIncluding('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
     .thenCallback(() => {
       return response;
     });
@@ -2423,7 +2388,7 @@ export async function withSolanaAccountSnap(
             ...[
               await mockSolanaBalanceQuote(mockServer),
               await mockSolanaBalanceQuoteDevnet(mockServer),
-              await mockGetMinimumBalanceForRentExemptionDevnet(mockServer),
+              await mockGetMinimumBalanceForRentExemption(mockServer),
               await mockGetTokenAccountsByOwner(
                 mockServer,
                 '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
@@ -2460,10 +2425,12 @@ export async function withSolanaAccountSnap(
         if (simulateTransactionFailed) {
           mockList.push(await simulateSolanaTransactionFailed(mockServer));
         }
-        if (mockSendTransaction || simulateTransaction) {
+        if (simulateTransaction) {
+          mockList.push(await simulateSolanaTransaction(mockServer));
+        }
+        if (mockSendTransaction) {
           mockList.push(await simulateSolanaTransaction(mockServer));
           mockList.push(await mockSendSolanaTransaction(mockServer));
-          mockList.push(await mockSendSolanaTransactionDevnet(mockServer));
         } else if (sendFailedTransaction) {
           mockList.push(await simulateSolanaTransaction(mockServer));
           mockList.push(await mockSendSolanaFailedTransaction(mockServer));
@@ -2494,6 +2461,8 @@ export async function withSolanaAccountSnap(
       if (numberOfAccounts > 0) {
         await headerComponent.check_accountLabel(`Solana ${numberOfAccounts}`);
       }
+
+      await driver.delay(regularDelayMs); // workaround to avoid flakiness
       await test(driver, mockServer);
     },
   );

@@ -1,5 +1,6 @@
 import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
+import { regularDelayMs } from '../../../helpers';
 
 class SendSolanaPage {
   private driver: Driver;
@@ -29,11 +30,57 @@ class SendSolanaPage {
     this.driver = driver;
   }
 
+<<<<<<< HEAD
   async clickOnSwapCurrencyButton(): Promise<void> {
     await this.driver.waitForControllersLoaded();
     const swapCurrencyButton = await this.driver.waitForSelector(
       this.swapCurrencyButton,
       { timeout: 10000 },
+=======
+  async check_amountCurrencyIsDisplayed(currency: string): Promise<void> {
+    await this.driver.waitForSelector(this.amountCurrencyLabel(currency));
+  }
+
+  async check_pageIsLoaded(amount: string = '') {
+    await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
+    console.log('check_pageIsLoaded after waitForSelector');
+    if (amount) {
+      await this.driver.wait(async () => {
+        try {
+          await this.driver.waitForSelector(
+            {
+              text: `${amount}`,
+              tag: 'p',
+            },
+            { timeout: 1000 },
+          );
+          return true;
+        } catch (e) {
+          await this.driver.refresh();
+          return false;
+        }
+      }, 60000);
+    }
+  }
+
+  async check_tokenBalanceIsDisplayed(
+    amount: string,
+    tokenName: string,
+  ): Promise<void> {
+    await this.driver.clickElement({
+      text: `Balance: ${amount} ${tokenName}`,
+      tag: 'p',
+    });
+  }
+
+  async check_tokenByNameIsDisplayed(tokenName: string): Promise<void> {
+    await this.driver.waitForSelector(
+      {
+        text: tokenName,
+        tag: 'p',
+      },
+      { timeout: 2000 },
+>>>>>>> d04f69cd71 (fix: upgrade solana to v1.28.0 cp-12.18.0 (#32823))
     );
     await swapCurrencyButton.click();
   }
@@ -199,6 +246,7 @@ class SendSolanaPage {
     });
   }
 
+<<<<<<< HEAD
   async check_amountCurrencyIsDisplayed(currency: string): Promise<void> {
     await this.driver.waitForControllersLoaded();
     await this.driver.waitForSelector(this.amountCurrencyLabel(currency));
@@ -209,6 +257,11 @@ class SendSolanaPage {
     await this.driver.clickElement(
       By.xpath('//label[@for="send-asset-selector"]/../button'),
     );
+=======
+  async setToAddress(toAddress: string): Promise<void> {
+    await this.driver.delay(regularDelayMs);
+    await this.driver.fill(this.toAddressInput, toAddress);
+>>>>>>> d04f69cd71 (fix: upgrade solana to v1.28.0 cp-12.18.0 (#32823))
   }
 }
 
