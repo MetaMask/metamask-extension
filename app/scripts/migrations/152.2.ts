@@ -8,7 +8,7 @@ type VersionedData = {
 export const version = 158;
 
 /**
- * This migration deletes the preference `disabledUpgradeAccountsByChain` if the user has
+ * This migration deletes the preference `disabledUpgradeAccountsByChain`, `accountUpgradeDisabledChains` if the user has
  * existing data.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
