@@ -19,7 +19,6 @@ import {
   createMockNotificationLidoStakeCompleted,
   createMockNotificationLidoWithdrawalRequested,
   createMockNotificationLidoReadyToBeWithdrawn,
-  createMockNotificationLidoWithdrawalCompleted,
 } from '@metamask/notification-services-controller/notification-services/mocks';
 import {
   getMockRetrievePushNotificationLinksResponse,
@@ -58,7 +57,8 @@ mockListNotificationsResponse.response = [
   createMockNotificationLidoStakeCompleted(),
   createMockNotificationLidoWithdrawalRequested(),
   createMockNotificationLidoReadyToBeWithdrawn(),
- //createMockNotificationLidoWithdrawalCompleted(),
+  // TODO - add this back in once GH actions consumes correct secrets.
+  // createMockNotificationLidoWithdrawalCompleted(),
 ].map((n, i) => {
   const date = new Date();
   date.setDate(date.getDate() - i);

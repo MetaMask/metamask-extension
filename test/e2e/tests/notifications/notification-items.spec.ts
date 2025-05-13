@@ -49,7 +49,6 @@ describe('Notification List - View Items and Details', function () {
       TRIGGER_TYPES.LIDO_STAKE_COMPLETED,
       TRIGGER_TYPES.LIDO_WITHDRAWAL_REQUESTED,
       TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN,
-      TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED,
     ];
 
     for (const walletTrigger of walletNotifications) {
