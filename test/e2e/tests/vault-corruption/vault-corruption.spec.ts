@@ -17,7 +17,7 @@ describe('Vault Corruption', function () {
    * @param code - The code to run after the primary database has been broken.
    */
   const makeScript = (code: string) => `return new Promise((resolve) => {
-    const browser =  global.stateHooks.getBrowser();
+    const browser =  globalThis.stateHooks.getBrowser();
     browser.storage.local.get(({ data, meta }) => {
       delete data.KeyringController;
       browser.storage.local.set({ data: data, meta }, () => {
