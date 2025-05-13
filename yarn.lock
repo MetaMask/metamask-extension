@@ -5962,25 +5962,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-transactions-controller@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/multichain-transactions-controller@npm:0.9.0"
+"@metamask/multichain-transactions-controller@npm:@metamask-previews/multichain-transactions-controller@0.10.0-preview-7bf3a3b5":
+  version: 0.10.0-preview-7bf3a3b5
+  resolution: "@metamask-previews/multichain-transactions-controller@npm:0.10.0-preview-7bf3a3b5"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/keyring-api": "npm:^17.4.0"
     "@metamask/keyring-internal-api": "npm:^6.0.1"
     "@metamask/keyring-snap-client": "npm:^4.1.0"
     "@metamask/polling-controller": "npm:^13.0.0"
-    "@metamask/snaps-sdk": "npm:^6.17.1"
-    "@metamask/snaps-utils": "npm:^8.10.0"
+    "@metamask/snaps-sdk": "npm:^6.22.0"
+    "@metamask/snaps-utils": "npm:^9.2.0"
     "@metamask/utils": "npm:^11.2.0"
     "@types/uuid": "npm:^8.3.0"
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^27.0.0
-    "@metamask/snaps-controllers": ^9.19.0
-  checksum: 10/62492ff03c3880bafa955a4ce35a2d49b1ebace04297113b4b21e96ea29355fd9a7cd188bd84116618dcf59f09602ee2bbff5e87fa64b2f086da22ec76cf0078
+    "@metamask/accounts-controller": ^28.0.0
+    "@metamask/snaps-controllers": ^11.0.0
+  checksum: 10/ffd3aa6cc747b149690219e8e027119db81ae440a039c8600ecd5b07b8722fb0cc8b74a96b4244258c3a27675fb0e9056fc708f786c2ce682d1e7b07cb70b43a
   languageName: node
   linkType: hard
 
