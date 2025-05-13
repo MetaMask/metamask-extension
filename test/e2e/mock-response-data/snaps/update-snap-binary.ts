@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { getLocalSnapLatestVersion } from './snap-binary-mocks';
 
 // ANSI escape codes for colors
 const RESET = '\x1b[0m';
@@ -90,25 +91,53 @@ const saveSnapFiles = (
   console.log(`${GREEN}Successfully saved:${RESET} ${headersFilePath}`);
 };
 
-const deleteOldSnapFiles = (snapName: string, currentVersion: string) => {
-  const files = fs.readdirSync(SNAP_DIR);
-  files.forEach((file) => {
-    if (
-      file.startsWith(snapName) &&
-      !file.includes(currentVersion) &&
-      (file.endsWith('.txt') || file.endsWith('-headers.json'))
-    ) {
-      const filePath = path.join(SNAP_DIR, file);
-      try {
-        fs.unlinkSync(filePath);
-        console.log(
-          `${GREEN}Successfully deleted old file:${RESET} ${filePath}`,
-        );
-      } catch (error) {
-        console.error(`${RED}Error deleting file ${filePath}:${RESET}`, error);
-      }
+const deleteOldSnapFiles = (
+  snapName: string,
+  currentVersionBeingSaved: string,
+) => {
+  let versionToDelete: string | null = null;
+
+  try {
+    const latestExistingVersion = getLocalSnapLatestVersion(snapName);
+
+    if (latestExistingVersion !== currentVersionBeingSaved) {
+      versionToDelete = latestExistingVersion;
     }
-  });
+  } catch (error: unknown) {
+    console.log(
+      `${YELLOW}Info: No existing versions of ${snapName} found to check for deletion, or error: ${error.message}${RESET}`,
+    );
+  }
+
+  if (versionToDelete) {
+    console.log(
+      `${CYAN}Identified version to delete for ${snapName}: ${versionToDelete}${RESET}`,
+    );
+    const txtFilePath = path.join(
+      SNAP_DIR,
+      `${snapName}-${versionToDelete}.txt`,
+    );
+    const headersFilePath = path.join(
+      SNAP_DIR,
+      `${snapName}-${versionToDelete}-headers.json`,
+    );
+
+    [txtFilePath, headersFilePath].forEach((filePathToDelete) => {
+      if (fs.existsSync(filePathToDelete)) {
+        try {
+          fs.unlinkSync(filePathToDelete);
+          console.log(
+            `${GREEN}Successfully deleted old file:${RESET} ${filePathToDelete}`,
+          );
+        } catch (e) {
+          console.error(
+            `${RED}Error deleting file ${filePathToDelete}:${RESET}`,
+            e,
+          );
+        }
+      }
+    });
+  }
 };
 
 const printHelp = () => {
