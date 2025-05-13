@@ -124,10 +124,12 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         type: KeyringTypes;
         metadata: { id: string; name: string };
       }[] = useSelector(getMetaMaskHdKeyrings);
+      console.log('hdKeyrings', hdKeyrings);
 
       const selectedKeyring = useSelector((state) =>
         getSelectedKeyringByIdOrDefault(state, selectedKeyringId),
       );
+      console.log('selectedKeyring', selectedKeyring);
       const firstPartySnapAccounts = useSelector((state) =>
         getSnapAccountsByKeyringId(state, selectedKeyringId),
       );

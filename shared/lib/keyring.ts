@@ -7,7 +7,7 @@ export function findKeyringId(
   keyrings: KeyringObject[],
   selector: { address?: string; type?: KeyringTypes },
 ): string {
-  const keyring = keyrings.find((keyring) => {
+  const matchingKeyring = keyrings.find((keyring) => {
     if (selector.address && selector.type) {
       return (
         keyring.accounts.some((account) =>
@@ -26,11 +26,11 @@ export function findKeyringId(
 
     throw new Error('Must provide either address or type selector');
   });
-  if (!keyring) {
+  if (!matchingKeyring) {
     throw new Error('Could not find keyring with specified criteria');
   }
 
-  return keyring.metadata.id;
+  return matchingKeyring.metadata.id;
 }
 
 export function findKeyringIdByAddress(
