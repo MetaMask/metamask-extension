@@ -182,9 +182,9 @@ class TestDappMultichain {
   }> {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 
-    await this.driver.findScrollToAndClickElement(`[data-testid="${scope}-select"]`);
+    await this.driver.clickElement(`[data-testid="${scope}-select"]`);
 
-    await this.driver.findScrollToAndClickElement(`[data-testid="${scope}-${method}-option"]`);
+    await this.driver.clickElement(`[data-testid="${scope}-${method}-option"]`);
 
     const card = await this.driver.findElement(
       `[data-testid="scope-card-${scope}`,
@@ -209,7 +209,7 @@ class TestDappMultichain {
       JSON.stringify(request),
     );
 
-    await this.driver.findScrollToAndClickElement(
+    await this.driver.clickElement(
       `[data-testid="invoke-method-${scope}-btn"]`,
     );
 
