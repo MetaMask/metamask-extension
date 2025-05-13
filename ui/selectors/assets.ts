@@ -343,8 +343,11 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
   getAssetsRates,
   (
     selectedAccountAddress: { id: string },
-    multichainBalances,
-    accountAssets,
+    multichainBalances: Record<
+      string,
+      Record<string, { amount: string; unit: string }>
+    >,
+    accountAssets: Record<string, string[]>,
     assetRates: ReturnType<typeof getAssetsRates>,
   ) => {
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
@@ -364,9 +367,9 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
     // Track total current balance for calculating overall percent changes
     let totalCurrentBalance = new BigNumber(0);
 
-    assetIds.forEach((assetId: CaipAssetId) => {
+    assetIds.forEach((assetId: string) => {
       const balance = balances?.[assetId] || zeroBalanceAssetFallback;
-      const assetRate = assetRates?.[assetId];
+      const assetRate = assetRates?.[assetId as keyof typeof assetRates];
 
       if (!assetRate?.marketData?.pricePercentChange) {
         return;
@@ -382,15 +385,16 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
         // Add to total current balance
         totalCurrentBalance = totalCurrentBalance.plus(currentBalanceInFiat);
 
-        // For each time period, calculate the historical balance
+        // For each time period, reconstruct the historical balance for that period, based on current balance and percent change
         Object.entries(pricePercentChange).forEach(
           ([period, percentChange]) => {
             if (period in historicalBalances) {
               // Calculate historical balance by adjusting current balance by the percent change
               const historicalBalance = currentBalanceInFiat
-                .times(Number((1 + (percentChange as number) / 100).toFixed(8)))
+                .div(Number((1 + (percentChange as number) / 100).toFixed(8)))
                 .toNumber();
 
+              // aggregated the historical balance for that period with the running balance from the other balance
               historicalBalances[period as keyof HistoricalBalances].balance +=
                 historicalBalance;
             }
@@ -399,18 +403,21 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
       }
     });
 
-    // Calculate overall percent changes and amount changes for each period
+    // Calculate overall percent and amount change for each historical period
     const totalCurrentBalanceNum = totalCurrentBalance.toNumber();
+    console.log('totalCurrentBalanceNum', totalCurrentBalanceNum);
+
     Object.entries(historicalBalances).forEach(([_period, data]) => {
       if (totalCurrentBalanceNum !== 0) {
-        // Calculate percent change and limit to 2 decimal places
-        const percentChange =
-          ((totalCurrentBalanceNum - data.balance) / data.balance) * 100;
-        data.percentChange = Number(percentChange.toFixed(2));
-        // Calculate amount change
-        data.amountChange = Number(
-          (totalCurrentBalanceNum - data.balance).toFixed(2),
-        );
+        // Calculate amount change (current - historical)
+        const amountChange = totalCurrentBalanceNum - data.balance;
+
+        // Calculate percent change relative to historical balance
+        const percentChange = (amountChange / data.balance) * 100;
+
+        // Round to 8 decimal places for precision
+        data.amountChange = Number(amountChange.toFixed(8));
+        data.percentChange = Number(percentChange.toFixed(8));
       }
     });
 

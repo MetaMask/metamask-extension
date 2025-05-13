@@ -170,9 +170,11 @@ export const AggregatedMultichainPercentageOverview = ({
 
   let color = TextColor.textAlternative;
 
+  // console.log('historicalAggregatedBalances', historicalAggregatedBalances.P1D);
+
   const singleDayPercentChange = historicalAggregatedBalances.P1D.percentChange;
   const singleDayAmountChange = historicalAggregatedBalances.P1D.amountChange;
-  const signPrefix = singleDayPercentChange > 0 ? '+' : '-';
+  const signPrefix = singleDayPercentChange >= 0 ? '+' : '-';
 
   if (!privacyMode && isValidAmount(singleDayPercentChange)) {
     if ((singleDayPercentChange as number) === 0) {
@@ -187,12 +189,23 @@ export const AggregatedMultichainPercentageOverview = ({
   }
 
   const localizedAmountChange = formatWithThreshold(
-    singleDayAmountChange,
+    Math.abs(singleDayAmountChange),
     0.01,
     locale,
     {
       style: 'currency',
       currency: currentCurrency,
+    },
+  );
+
+  const localizedPercentChange = formatWithThreshold(
+    Math.abs(singleDayPercentChange) / 100,
+    0.0001,
+    locale,
+    {
+      style: 'percent',
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
     },
   );
 
@@ -219,7 +232,7 @@ export const AggregatedMultichainPercentageOverview = ({
         length="10"
       >
         ({signPrefix}
-        {singleDayPercentChange}%)
+        {localizedPercentChange})
       </SensitiveText>
     </Box>
   );
