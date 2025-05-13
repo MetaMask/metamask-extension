@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import { WINDOW_TITLES } from '../helpers';
+import { largeDelayMs, WINDOW_TITLES } from '../helpers';
 import TestDappMultichain from '../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../flask/multichain-api/testHelpers';
 import { withSolanaAccountSnap } from '../tests/solana/common-solana';
@@ -38,7 +38,8 @@ describe('Test Protocol Snaps', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+        await driver.delay(largeDelayMs);
+
         const blockHeight = await testDapp.invokeMethod(
           devnetScope,
           'getBlockHeight',
