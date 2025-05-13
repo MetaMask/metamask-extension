@@ -725,11 +725,11 @@ export async function mockSolanaBalanceQuoteDevnet(
     });
 }
 
-export async function mockGetMinimumBalanceForRentExemptionDevnet(
+export async function mockGetMinimumBalanceForRentExemption(
   mockServer: Mockttp,
 ) {
   return await mockServer
-    .forPost(SOLANA_URL_REGEX_DEVNET)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getMinimumBalanceForRentExemption',
     })
@@ -2429,7 +2429,7 @@ export async function withSolanaAccountSnap(
             ...[
               await mockSolanaBalanceQuote(mockServer),
               await mockSolanaBalanceQuoteDevnet(mockServer),
-              await mockGetMinimumBalanceForRentExemptionDevnet(mockServer),
+              await mockGetMinimumBalanceForRentExemption(mockServer),
               await mockGetTokenAccountsByOwner(
                 mockServer,
                 '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
