@@ -177,9 +177,7 @@ class TestDappMultichain {
     scope: string,
     method: string,
     params: Json,
-  ): Promise<{
-    sessionScopes: Record<string, NormalizedScopeObject>;
-  }> {
+  ): Promise<Json> {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 
     await this.driver.clickElement(`[data-testid="${scope}-select"]`);
