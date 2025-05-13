@@ -24,9 +24,6 @@ class AdvancedSettings {
     tag: 'button',
   };
 
-  private readonly fullSizeViewToggle =
-    '[data-testid="advanced-setting-show-extension-in-full-size-view"] .toggle-button > div';
-
   private readonly showConversionOnTestnetsToggle =
     '.show-fiat-on-testnets-toggle';
 
@@ -70,11 +67,6 @@ class AdvancedSettings {
   async downloadStateLogs(): Promise<void> {
     console.log('Downloading state logs on advanced settings page');
     await this.driver.clickElement(this.downloadStateLogsButton);
-  }
-
-  async toggleFullSizeViewSetting(): Promise<void> {
-    console.log('Toggling full size view setting in advanced settings');
-    await this.driver.clickElement(this.fullSizeViewToggle);
   }
 
   async toggleShowConversionOnTestnets(): Promise<void> {

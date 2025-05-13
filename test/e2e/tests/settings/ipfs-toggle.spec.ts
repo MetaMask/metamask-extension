@@ -55,7 +55,7 @@ describe('Settings', function () {
         // check for default image
         await nftDetailsPage.check_nftDefaultImageIsDisplayed();
 
-        // toggle on ipfs and show image
+        // toggle on ipfs to show image
         await nftDetailsPage.showNftImage();
 
         // should render image now
