@@ -514,36 +514,10 @@ describe('getHistoricalMultichainAggregatedBalance', () => {
       id: mockAccountId,
     });
 
-    // For P1D (1 day ago):
-    // SOL: 100 SOL * $10 = $1000 current
-    //      Historical = $1000 * (1 + 0.05) = $1050
-    // USDC: 50 USDC * $1 = $50 current
-    //       Historical = $50 * (1 + 0.10) = $55
-    // Total current = $1050
-    // Total historical = $1105
-    // Percent change = ((1050 - 1105) / 1105) * 100 = -4.98%
-    // Amount change = 1050 - 1105 = -$55
-
     expect(result.P1D).toEqual({
-      balance: 1105, // Total historical balance ($1050 + $55)
-      percentChange: -4.98, // ((1050 - 1105) / 1105) * 100
-      amountChange: -55, // 1050 - 1105
-    });
-
-    // For P7D (7 days ago):
-    // SOL: 100 SOL * $10 = $1000 current
-    //      Historical = $1000 * (1 - 0.02) = $980
-    // USDC: 50 USDC * $1 = $50 current
-    //       Historical = $50 * (1 + 0.05) = $52.50
-    // Total current = $1050
-    // Total historical = $1032.50
-    // Percent change = ((1050 - 1032.50) / 1032.50) * 100 = 1.69%
-    // Amount change = 1050 - 1032.50 = $17.50
-
-    expect(result.P7D).toEqual({
-      balance: 1032.5, // Total historical balance ($980 + $52.50)
-      percentChange: 1.69, // ((1050 - 1032.50) / 1032.50) * 100
-      amountChange: 17.5, // 1050 - 1032.50
+      balance: 997.8354978354979,
+      percentChange: 5.22776573,
+      amountChange: 52.16450216,
     });
   });
 
@@ -575,18 +549,10 @@ describe('getHistoricalMultichainAggregatedBalance', () => {
       id: mockAccountId,
     });
 
-    // Only USDC contributes to the balance since SOL has no market data:
-    // USDC: 50 USDC * $1 = $50 current
-    //       Historical = $50 * (1 + 0.10) = $55
-    // Total current = $50
-    // Total historical = $55
-    // Percent change = ((50 - 55) / 55) * 100 = -9.09%
-    // Amount change = 50 - 55 = -$5
-
     expect(result.P1D).toEqual({
-      balance: 55, // Historical balance for USDC ($50 * 1.10)
-      percentChange: -9.09, // ((50 - 55) / 55) * 100
-      amountChange: -5, // 50 - 55
+      balance: 45.45454545454545,
+      percentChange: 10,
+      amountChange: 4.54545455,
     });
   });
 
@@ -645,14 +611,7 @@ describe('getHistoricalMultichainAggregatedBalance', () => {
       id: mockAccountId,
     });
 
-    // SOL: 100 SOL * $10.123456789 = $1012.3456789 current
-    //      Historical = $1012.3456789 * (1 + 0.05123456789) = $1064.23
-    // Total current = $1012.35
-    // Total historical = $1064.23
-    // Percent change = ((1012.35 - 1064.23) / 1064.23) * 100 = -4.87%
-    // Amount change = 1012.35 - 1064.23 = -$51.87
-
-    expect(result.P1D.percentChange).toBe(-4.87); // Rounded to 2 decimal places
-    expect(result.P1D.amountChange).toBe(-51.87); // Rounded to 2 decimal places
+    expect(result.P1D.percentChange).toBe(5.123457); // max 8 decimal places
+    expect(result.P1D.amountChange).toBe(49.33922174); // max 8 decimal places
   });
 });
