@@ -1503,6 +1503,12 @@
   "createPassword": {
     "message": "Create password"
   },
+  "createPasswordCreating": {
+    "message": "Creating password..."
+  },
+  "createPasswordCreatingNote": {
+    "message": "This shouldn't take long"
+  },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
   },
@@ -3914,14 +3920,14 @@
     "message": "Private:"
   },
   "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 we temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
+    "message": "$1 We temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
   },
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "General:"
   },
   "onboardingMetametricsNeverSellData": {
-    "message": "$1 you decide if you want to share or delete your usage data via settings any time.",
+    "message": "$1 You decide if you want to share or delete your usage data via settings any time.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
@@ -4960,6 +4966,15 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "securityChangePasswordChange": {
+    "message": "Change password"
+  },
+  "securityChangePasswordDescription": {
+    "message": "Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet."
+  },
+  "securityChangePasswordTitle": {
+    "message": "Password"
+  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
@@ -4972,6 +4987,15 @@
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
+  },
+  "securitySrpBackupSrp": {
+    "message": "Back up Secret Recovery Phrase"
+  },
+  "securitySrpDescription": {
+    "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpWalletRecovery": {
+    "message": "Wallet recovery"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -6792,6 +6816,9 @@
     "message": "Hint: $1",
     "description": "$1 is the password hint"
   },
+  "unlockPageIncorrectPassword": {
+    "message": "Password is incorrect. Please try again."
+  },
   "unpin": {
     "message": "Unpin"
   },
@@ -6842,6 +6869,9 @@
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
+  },
+  "useDifferentLoginMethod": {
+    "message": "Use a different login method"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"

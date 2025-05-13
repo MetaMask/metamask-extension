@@ -1,9 +1,11 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
   DEFAULT_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../helpers/constants/routes';
 
@@ -15,16 +17,19 @@ import {
  * @returns {string} Route to redirect the user to
  */
 export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
-  const { firstTimeFlowType } = state.metamask;
+  const { firstTimeFlowType, restoreWithSocialLogin } = state.metamask;
 
   if (firstTimeFlowType === FirstTimeFlowType.create) {
-    return ONBOARDING_CREATE_PASSWORD_ROUTE;
+    return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_METAMETRICS;
   } else if (firstTimeFlowType === FirstTimeFlowType.social) {
-    return ONBOARDING_CREATE_PASSWORD_ROUTE;
+    if (restoreWithSocialLogin) {
+      return ONBOARDING_PIN_EXTENSION_ROUTE;
+    }
+    return ONBOARDING_COMPLETION_ROUTE;
   }
   return DEFAULT_ROUTE;
 }

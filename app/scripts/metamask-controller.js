@@ -3714,6 +3714,7 @@ export default class MetamaskController extends EventEmitter {
 
       // seedless onboarding
       startOAuthLogin: this.startOAuthLogin.bind(this),
+      resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
       fetchAllSeedPhrases: this.fetchAllSeedPhrases.bind(this),
       updateBackupMetadataState: this.updateBackupMetadataState.bind(this),
@@ -4880,6 +4881,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Resets the social login state and onboarding state.
+   */
+  resetOAuthLoginState() {
+    try {
+      this.seedlessOnboardingController.clearState();
+      this.onboardingController.setFirstTimeFlowType(null);
+    } catch (error) {
+      log.error('Error while resetting social login state', error);
+      throw error;
+    }
+  }
+
+  /**
    * Creates a seed phrase backup for the user.
    *
    * Generate Encryption Key from the password using the Threshold OPRF and encrypt the seed phrase with the key.
@@ -4960,18 +4974,24 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Changes the password for the seedless onboarding.
+   * Changes the password of the current wallet.
+   *
+   * If the wallet is created with social login, the password is changed for the seedless onboarding flow and sync across the devices too.
    *
    * @param {string} newPassword - The new password.
    * @param {string} oldPassword - The old password.
    * @returns {Promise<void>}
    */
   async changePassword(newPassword, oldPassword) {
-    // change password for the seedless onboarding flow
-    await this.seedlessOnboardingController.changePassword(
-      newPassword,
-      oldPassword,
-    );
+    const { firstTimeFlowType } = this.onboardingController.state;
+
+    if (firstTimeFlowType === FirstTimeFlowType.social) {
+      // change password for the social login flow
+      await this.seedlessOnboardingController.changePassword(
+        newPassword,
+        oldPassword,
+      );
+    }
 
     // also update the vault password for keyring controller
     await this.keyringController.changePassword(newPassword);
@@ -5218,6 +5238,11 @@ export default class MetamaskController extends EventEmitter {
         password,
         seedPhraseAsUint8Array,
       );
+
+      if (firstTimeFlowType === FirstTimeFlowType.social) {
+        // update the Onboarding state when user restore the existing wallet with social login
+        this.onboardingController.setRestoreWithSocialLogin(true);
+      }
 
       if (completedOnboarding) {
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
