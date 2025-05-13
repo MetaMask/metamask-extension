@@ -63,7 +63,7 @@ exports[`EditSpendingCapModal renders component 1`] = `
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--padding-top-1 mm-box--color-text-alternative"
             >
-              Account balance: 0.000000000001 TST
+              Account balance: 100 TST
             </p>
           </div>
           <div
