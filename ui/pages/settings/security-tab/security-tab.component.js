@@ -261,17 +261,10 @@ export default class SecurityTab extends PureComponent {
           >
             {t('securityChangePasswordChange')}
           </Button>
-        </div>
-        <div
-          ref={this.settingsRefs[2]}
-          className="settings-page__security-tab-sub-header"
-        >
-          {t('securityChangePasswordTitle')}
-        </div>
-        <div className="settings-page__content-padded">
           <Button
             variant={ButtonVariant.Secondary}
             width={BlockSize.Full}
+            marginTop={4}
             block
             onClick={() => {
               history.push(SECURITY_PASSWORD_HINT_ROUTE);
