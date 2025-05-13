@@ -3,7 +3,7 @@ import {
   type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { getDestTxStatus, getSrcTxStatus, type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { Box, Text } from '../../../components/component-library';
 import {
@@ -28,28 +28,6 @@ const getTxIndex = (srcTxStatus: StatusTypes) => {
   throw new Error('No more possible states for srcTxStatus');
 };
 
-const getSrcTxStatus = (initialTransaction: TransactionMeta) => {
-  return initialTransaction.status === TransactionStatus.confirmed
-    ? StatusTypes.COMPLETE
-    : StatusTypes.PENDING;
-};
-
-const getDestTxStatus = ({
-  bridgeTxHistoryItem,
-  srcTxStatus,
-}: {
-  bridgeTxHistoryItem?: BridgeHistoryItem;
-  srcTxStatus: StatusTypes;
-}) => {
-  if (srcTxStatus !== StatusTypes.COMPLETE) {
-    return null;
-  }
-
-  return bridgeTxHistoryItem?.status.destChain?.txHash &&
-    bridgeTxHistoryItem.status.status === StatusTypes.COMPLETE
-    ? StatusTypes.COMPLETE
-    : StatusTypes.PENDING;
-};
 
 /**
  * Renders the 2 transaction segments for a bridge activity item

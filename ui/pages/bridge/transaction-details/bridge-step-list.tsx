@@ -1,12 +1,13 @@
 import React from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import {
+  type BridgeHistoryItem,
+  getStepStatus,
+} from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { Box } from '../../../components/component-library';
 import { formatDate } from '../../../helpers/utils/util';
-import BridgeStepDescription, {
-  getStepStatus,
-} from './bridge-step-description';
+import BridgeStepDescription from './bridge-step-description';
 import StepProgressBarItem from './step-progress-bar-item';
 
 const getTime = (
