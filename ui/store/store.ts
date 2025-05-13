@@ -81,7 +81,14 @@ type TemporaryBackgroundState = NftControllerState &
       };
       selectedAccount: string;
     };
-    keyrings: { type: string; accounts: string[] }[];
+    keyrings: {
+      type: string;
+      accounts: string[];
+      metadata: {
+        id: string;
+        name: string;
+      };
+    }[];
   };
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;

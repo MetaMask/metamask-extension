@@ -133,10 +133,18 @@ describe('SendPageAccountPicker', () => {
             {
               type: 'HD Key Tree',
               accounts: [mockAccount.address],
+              metadata: {
+                id: 'test-keyring-id-1',
+                name: '',
+              },
             },
             {
               type: 'Snap Keyring',
               accounts: [mockBtcAccount.address],
+              metadata: {
+                id: 'test-keyring-id-2',
+                name: '',
+              },
             },
           ],
         },
