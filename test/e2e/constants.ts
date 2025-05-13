@@ -49,19 +49,19 @@ export const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 export const DAPP_ONE_URL = `http://${DAPP_ONE_ADDRESS}`;
 
 /* Default BTC address created using test SRP */
-export const DEFAULT_BTC_ACCOUNT = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
+export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 
-/* Default (mocked) block number. */
-export const DEFAULT_BTC_BLOCK_NUMBER = 101100110;
+/* Default BTC Account name */
+export const DEFAULT_ACCOUNT_NAME = 'Bitcoin Native SegWit';
 
 /* Default (mocked) BTC balance used by the Bitcoin RPC provider */
 export const DEFAULT_BTC_BALANCE = 1; // BTC
 
-/* Default BTC fees rate */
-export const DEFAULT_BTC_FEES_RATE = 0.00001; // BTC
+/* Default BTC fee rate */
+export const DEFAULT_BTC_FEE_RATE = 2.0060000000000002; // sat/vB
 
 /* Default BTC conversion rate to USD */
-export const DEFAULT_BTC_CONVERSION_RATE = 62000; // USD
+export const DEFAULT_BTC_CONVERSION_RATE = 82000; // USD
 
 /* Default SOL conversion rate to USD */
 export const DEFAULT_SOL_CONVERSION_RATE = 226; // USD

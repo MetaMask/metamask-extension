@@ -1,18 +1,17 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { DEFAULT_BTC_BALANCE } from '../../constants';
+import { DEFAULT_ACCOUNT_NAME, DEFAULT_BTC_BALANCE } from '../../constants';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Overview', function (this: Suite) {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('has balance displayed and has portfolio button enabled for BTC accounts', async function () {
+  it('has balance displayed and has portfolio button enabled for BTC accounts', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
-          text: 'Bitcoin Account',
+          text: DEFAULT_ACCOUNT_NAME,
         });
 
         await driver.waitForSelector({
@@ -41,9 +40,8 @@ describe('BTC Account - Overview', function (this: Suite) {
       },
     );
   });
-  // Skipping btc test for now because btc snap is outdated and does not yet allow for new assets fetching logic.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('has balance', async function () {
+
+  it('has balance', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
@@ -51,18 +49,14 @@ describe('BTC Account - Overview', function (this: Suite) {
           testId: 'account-value-and-suffix',
           text: `${DEFAULT_BTC_BALANCE}`,
         });
-        await driver.waitForSelector({
-          css: '.currency-display-component__suffix',
-          text: 'BTC',
-        });
 
         await driver.waitForSelector({
-          tag: 'p',
-          text: `${DEFAULT_BTC_BALANCE} BTC`,
+          testId: 'multichain-token-list-item-value',
+          text: `${DEFAULT_BTC_BALANCE} ₿`,
         });
         const homePage = new BitcoinHomepage(driver);
         await homePage.check_pageIsLoaded();
-        await homePage.headerNavbar.check_accountLabel('Bitcoin Account');
+        await homePage.headerNavbar.check_accountLabel(DEFAULT_ACCOUNT_NAME);
         await homePage.check_isExpectedBitcoinBalanceDisplayed(
           DEFAULT_BTC_BALANCE,
         );

@@ -55,9 +55,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        index: [0, 1, 2, 3, 4]
     with:
       test-suite-name: test-e2e-chrome-flask
+      build-artifact: prep-build-test-flask-browserify-chrome
       build-command: yarn build:test:flask
       test-command: yarn test:e2e:chrome:flask
       matrix-index: ${{ matrix.index }}

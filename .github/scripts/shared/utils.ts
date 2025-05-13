@@ -1,5 +1,5 @@
-import { setTimeout } from 'node:timers/promises';
 import humanizeDuration from 'humanize-duration';
+import { setTimeout } from 'node:timers/promises';
 import * as xml2js from 'xml2js';
 
 // This helper function checks if version has the correct format: "x.y.z" where "x", "y" and "z" are numbers.
@@ -63,7 +63,9 @@ export async function retry<T extends (...args: any[]) => any>(
     } catch (err) {
       if (attempt === retries) throw err;
       console.log(
-        `Attempt ${attempt} failed: ${err.message}. Retrying in ${delay}ms...`,
+        `Attempt ${attempt} failed: ${
+          (err as Error).message
+        }. Retrying in ${delay}ms...`,
       );
       await setTimeout(delay);
       delay *= 2;

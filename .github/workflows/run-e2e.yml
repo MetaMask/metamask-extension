@@ -21,7 +21,7 @@ on:
         description: The test command to run
       test-timeout-minutes:
         type: number
-        default: 40
+        default: 30
         description: The timeout in minutes for the test command
       matrix-index:
         type: number
@@ -48,6 +48,7 @@ jobs:
       JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
       RUN_ID: ${{ github.run_id }}
       PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+      TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
     steps:
       - name: Install dependencies
         run: |
@@ -92,6 +93,13 @@ jobs:
       # if the changed-files artifact does not exist, we get the diff
       - run: yarn tsx .github/scripts/git-diff-default-branch.ts
         if: ${{ steps.download-changed-files.outcome == 'failure' }}
+
+      - name: Download test-runs-for-splitting
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: test-runs-for-splitting
+          path: test/test-results/
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}

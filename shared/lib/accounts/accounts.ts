@@ -101,6 +101,7 @@ export type WalletSnapOptions = {
   derivationPath?: DiscoveredAccount['derivationPath'];
   entropySource?: string;
   accountNameSuggestion?: string;
+  synchronize?: boolean;
 };
 
 export type WalletSnapClient = {

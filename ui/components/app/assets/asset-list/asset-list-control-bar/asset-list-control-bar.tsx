@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Hex } from '@metamask/utils';
 import {
   getAllChainsToPoll,
-  getCurrentNetwork,
   getIsLineaMainnet,
   getIsMainnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
-  getSelectedInternalAccount,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
@@ -58,7 +57,6 @@ import {
   showImportTokensModal,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
-import { useMultichainSelector } from '../../../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
@@ -79,8 +77,8 @@ const AssetListControlBar = ({
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
-  const currentNetwork = useSelector(getCurrentNetwork);
   const useNftDetection = useSelector(getUseNftDetection);
+  const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -111,12 +109,11 @@ const AssetListControlBar = ({
     [shouldShowRefreshButtons, useNftDetection],
   );
 
-  const account = useSelector(getSelectedInternalAccount);
-  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
-
   const isTestNetwork = useMemo(() => {
-    return (TEST_CHAINS as string[]).includes(currentNetwork.chainId);
-  }, [currentNetwork.chainId]);
+    return (TEST_CHAINS as string[]).includes(
+      currentMultichainNetwork.network.chainId,
+    );
+  }, [currentMultichainNetwork.network.chainId]);
 
   const allOpts: Record<string, boolean> = {};
   Object.keys(allNetworks || {}).forEach((chainId) => {
@@ -125,10 +122,12 @@ const AssetListControlBar = ({
 
   useEffect(() => {
     if (isTestNetwork) {
-      const testnetFilter = { [currentNetwork.chainId]: true };
+      const testnetFilter = {
+        [currentMultichainNetwork.network.chainId]: true,
+      };
       dispatch(setTokenNetworkFilter(testnetFilter));
     }
-  }, [isTestNetwork, currentNetwork.chainId, dispatch]);
+  }, [isTestNetwork, currentMultichainNetwork.network.chainId, dispatch]);
 
   // TODO: This useEffect should be a migration
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
@@ -137,7 +136,11 @@ const AssetListControlBar = ({
     if (Object.keys(tokenNetworkFilter).length === 0) {
       dispatch(setTokenNetworkFilter(allOpts));
     } else {
-      dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
+      dispatch(
+        setTokenNetworkFilter({
+          [currentMultichainNetwork.network.chainId]: true,
+        }),
+      );
     }
   }, []);
 
@@ -145,7 +148,11 @@ const AssetListControlBar = ({
   // We only want to do this if the "Current Network" filter is selected
   useEffect(() => {
     if (Object.keys(tokenNetworkFilter).length === 1) {
-      dispatch(setTokenNetworkFilter({ [currentNetwork.chainId]: true }));
+      dispatch(
+        setTokenNetworkFilter({
+          [currentMultichainNetwork.network.chainId]: true,
+        }),
+      );
     } else {
       dispatch(setTokenNetworkFilter(allOpts));
     }
@@ -227,6 +234,17 @@ const AssetListControlBar = ({
     }
     checkAndUpdateAllNftsOwnershipStatus();
   };
+  const isDisabled = useMemo(() => {
+    const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(
+      currentMultichainNetwork.network.chainId as Hex,
+    );
+
+    return (
+      !currentMultichainNetwork.isEvmNetwork ||
+      isTestNetwork ||
+      !isPopularNetwork
+    );
+  }, [currentMultichainNetwork, isTestNetwork]);
 
   return (
     <Box
@@ -235,39 +253,29 @@ const AssetListControlBar = ({
       marginRight={2}
       ref={popoverRef}
     >
-      <Box
-        display={Display.Flex}
-        justifyContent={
-          isEvmNetwork ? JustifyContent.spaceBetween : JustifyContent.flexEnd
-        }
-      >
-        {/* TODO: Remove isEvmNetwork check when we are ready to show the network filter in all networks including non-EVM */}
-        {isEvmNetwork ? (
-          <ButtonBase
-            data-testid="sort-by-networks"
-            variant={TextVariant.bodyMdMedium}
-            className="asset-list-control-bar__button asset-list-control-bar__network_control"
-            onClick={toggleNetworkFilterPopover}
-            size={ButtonBaseSize.Sm}
-            disabled={
-              isTestNetwork ||
-              !FEATURED_NETWORK_CHAIN_IDS.includes(currentNetwork.chainId)
-            }
-            endIconName={IconName.ArrowDown}
-            backgroundColor={
-              isNetworkFilterPopoverOpen
-                ? BackgroundColor.backgroundPressed
-                : BackgroundColor.backgroundDefault
-            }
-            color={TextColor.textDefault}
-            marginRight={isFullScreen ? 2 : null}
-            ellipsis
-          >
-            {isTokenNetworkFilterEqualCurrentNetwork
-              ? currentNetwork?.nickname ?? t('currentNetwork')
-              : t('popularNetworks')}
-          </ButtonBase>
-        ) : null}
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+        <ButtonBase
+          data-testid="sort-by-networks"
+          variant={TextVariant.bodyMdMedium}
+          className="asset-list-control-bar__button asset-list-control-bar__network_control"
+          onClick={toggleNetworkFilterPopover}
+          size={ButtonBaseSize.Sm}
+          disabled={isDisabled}
+          endIconName={IconName.ArrowDown}
+          backgroundColor={
+            isNetworkFilterPopoverOpen
+              ? BackgroundColor.backgroundPressed
+              : BackgroundColor.backgroundDefault
+          }
+          color={TextColor.textDefault}
+          marginRight={isFullScreen ? 2 : null}
+          ellipsis
+        >
+          {isTokenNetworkFilterEqualCurrentNetwork ||
+          !currentMultichainNetwork.isEvmNetwork
+            ? currentMultichainNetwork?.nickname ?? t('currentNetwork')
+            : t('popularNetworks')}
+        </ButtonBase>
 
         <Box
           className="asset-list-control-bar__buttons"
