@@ -6374,7 +6374,7 @@ __metadata:
 
 "@metamask/seedless-onboarding-controller@file:./seedless-onboarding-controller.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/seedless-onboarding-controller@file:./seedless-onboarding-controller.tgz#./seedless-onboarding-controller.tgz::hash=1c8755&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/seedless-onboarding-controller@file:./seedless-onboarding-controller.tgz#./seedless-onboarding-controller.tgz::hash=6b47c9&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.1.0"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -6383,7 +6383,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/keyring-controller": ^21.0.0
-  checksum: 10/2d40a2de8032c2b2716c303c24971ed6e44123228b02c3e8ae864b42eacaa84d02a095022e46b28d0baaaf2749b59d370447e0b5a0bc6c4ca8ab18fdad17c177
+  checksum: 10/a185898cd4fc7df19d1653e3561e80b7bee4e745a0a42843d2d8b8e2286d48a6cc01ebf0188196020ec042c4ff343e10c77bc816467dfa2fdb368057fce7d660
   languageName: node
   linkType: hard
 

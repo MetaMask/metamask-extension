@@ -1,0 +1,70 @@
+@use "design-system";
+
+.protect-wallet {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+
+  &__container {
+    border-radius: 0.5rem;
+    background-color: var(--color-background-muted);
+  }
+
+  &__container-body {
+    border-top: 1px solid var(--color-background-default);
+  }
+}
+
+.change-password {
+  padding: 1rem;
+
+  &__form {
+    display: contents;
+  }
+
+  &__form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  &__spinner {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  @include design-system.screen-sm-max {
+    height: 100%;
+  }
+}
+
+.settings-password-hint {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+
+  &__form {
+    display: contents;
+  }
+
+  @include design-system.screen-sm-max {
+    height: 100%;
+  }
+}
+
+.srp-reveal-list {
+  &__divider {
+    height: 1px;
+    background-color: var(--color-border-muted);
+  }
+
+  &__social-login-card {
+    cursor: pointer;
+  }
+}

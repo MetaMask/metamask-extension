@@ -53,6 +53,7 @@ import { Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { keccak256 } from 'ethereumjs-util';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -181,6 +182,31 @@ export function startOAuthLogin(
         provider,
       ]);
       return isNewUser;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        throw new Error(getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Resets the social login state.
+ *
+ * This function is used to reset the social login state when the user
+ * wants to login with a different method after the successful social login.
+ */
+export function resetOAuthLoginState() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground('resetOAuthLoginState');
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
@@ -3550,6 +3576,25 @@ export function setTokenSortConfig(value: SortCriteria) {
 
 export function setTokenNetworkFilter(value: Record<string, boolean>) {
   return setPreference('tokenNetworkFilter', value, false);
+}
+
+export function setPasswordHint(hint: string, passwordHash: string) {
+  const hintAsBuffer = Buffer.from(hint, 'utf8');
+  const passwordHintHash = Buffer.from(keccak256(hintAsBuffer)).toString('hex');
+
+  if (passwordHintHash === passwordHash) {
+    throw new Error('Invalid password hint');
+  }
+
+  return setPreference('passwordHint', hint);
+}
+
+export function setPasswordHash(password: string) {
+  const passwordAsBuffer = Buffer.from(password, 'utf8');
+  const passwordHashString = Buffer.from(keccak256(passwordAsBuffer)).toString(
+    'hex',
+  );
+  return setPreference('passwordHash', passwordHashString);
 }
 
 export function setSmartTransactionsPreferenceEnabled(
