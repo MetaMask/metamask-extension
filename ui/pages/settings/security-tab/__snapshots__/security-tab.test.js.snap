@@ -201,97 +201,6 @@ exports[`Security Tab should match snapshot 1`] = `
     >
       Privacy
     </span>
-    <div
-      class="settings-page__content-padded"
-      data-testid="profile-sync"
-    >
-      <div
-        class="mm-box"
-      >
-        <div
-          class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-          data-testid="profileSyncToggle"
-        >
-          <div
-            class="settings-page__content-item"
-            id="profileSyncLabel"
-          >
-            <span>
-              Profile Sync
-            </span>
-            <div
-              class="settings-page__content-description"
-              data-testid="profileSyncDescription"
-            >
-              <span>
-                 
-                Creates a profile that MetaMask uses to sync some settings among your devices. This is required to get notifications. 
-                <a
-                  data-testid="privacyPolicyLink"
-                  href="https://support.metamask.io/privacy-and-security/profile-privacy"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Learn how we protect your privacy
-                </a>
-                .
-                 
-              </span>
-            </div>
-          </div>
-          <div
-            class="settings-page__content-item-col"
-          >
-            <label
-              class="toggle-button toggle-button--off toggle-button--disabled"
-              tabindex="0"
-            >
-              <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-              >
-                <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(133, 139, 154);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
-                <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
-                  />
-                </div>
-                <input
-                  data-testid="toggleButton"
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
-                />
-              </div>
-              <div
-                class="toggle-button__status"
-              >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
-              </div>
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
     <div>
       <span
         class="settings-page__security-tab-sub-header"
@@ -650,7 +559,7 @@ exports[`Security Tab should match snapshot 1`] = `
           >
             <span>
                
-              We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our 
+              When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our 
               <a
                 href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
@@ -658,7 +567,15 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Privacy policy
               </a>
-               to learn more about how Infura handles data.
+              , and for Solana accounts, 
+              <a
+                href="https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                click here
+              </a>
+              .
                
             </span>
           </div>

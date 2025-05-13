@@ -1,14 +1,9 @@
-import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import {
-  Content,
-  Footer,
-  Header,
-  Page,
-} from '../../../../components/multichain/pages/page';
+import { Hex } from '@metamask/utils';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -16,35 +11,39 @@ import {
   Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonVariant,
   ButtonSize,
-  Text,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
-  Tag,
+  Text,
 } from '../../../../components/component-library';
+import {
+  Content,
+  Footer,
+  Header,
+  Page,
+} from '../../../../components/multichain/pages/page';
+import Dropdown from '../../../../components/ui/dropdown';
 import Tooltip from '../../../../components/ui/tooltip';
 import UnitInput from '../../../../components/ui/unit-input';
-import Dropdown from '../../../../components/ui/dropdown';
 import {
   AlignItems,
-  FontWeight,
-  TextVariant,
-  TextAlign,
   BackgroundColor,
-  Display,
-  JustifyContent,
-  FlexDirection,
   BlockSize,
-  TextColor,
   BorderColor,
   BorderRadius,
+  Display,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Card from '../../../../components/ui/card';
 import { AccountPicker } from '../../../../components/multichain/account-picker';
 import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
-import { DailyAllowanceTokenTypes, DailyAllowance } from '../../remote.types';
 import {
   DEFAULT_ROUTE,
   REMOTE_ROUTE,
@@ -52,15 +51,28 @@ import {
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import {
-  getSelectedInternalAccount,
+  DailyAllowance,
+  REMOTE_MODES,
+  TokenSymbol,
+  TOKEN_DETAILS,
+} from '../../remote.types';
+
+import {
   getMetaMaskAccountsOrdered,
+  getSelectedInternalAccount,
 } from '../../../../selectors';
-import RemoteModeHardwareWalletConfirm from '../hardware-wallet-confirm-modal';
-import RemoteModeDailyAllowanceCard from '../daily-allowance-card';
-import StepIndicator from '../step-indicator/step-indicator.component';
+import {
+  RemoteModeDailyAllowanceCard,
+  RemoteModeHardwareWalletConfirm,
+  SmartAccountUpdateInformation,
+  StepIndicator,
+} from '../../components';
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { useRemoteMode } from '../../hooks/useRemoteMode';
 
 const TOTAL_STEPS = 3;
+const DAILY_ETH_LIMIT = 10;
 
 /**
  * A multi-step setup component for configuring daily allowances in remote mode
@@ -77,13 +89,19 @@ export default function RemoteModeSetupDailyAllowance() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
   const [dailyAllowance, setDailyAllowance] = useState<DailyAllowance[]>([]);
   const [selectedAllowanceToken, setSelectedAllowanceToken] =
-    useState<DailyAllowanceTokenTypes>(DailyAllowanceTokenTypes.ETH);
-  const [dailyLimit, setDailyLimit] = useState<string>('');
+    useState<TokenSymbol>(TokenSymbol.ETH);
+  const [dailyLimit, setDailyLimit] = useState<string>('0');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
   const [selectedAccount, setSelectedAccount] =
     useState<InternalAccount | null>(null);
-  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
+  const [allowanceError, setAllowanceError] = useState<boolean>(false);
+  const [storedAssets, setStoredAssets] = useState<typeof assetsWithBalance>(
+    [],
+  );
+  const [selectedAllowanceBalance, setSelectedAllowanceBalance] =
+    useState<string>('');
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
@@ -94,6 +112,19 @@ export default function RemoteModeSetupDailyAllowance() {
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
+  const { assetsWithBalance } = useMultichainBalances();
+
+  const updateSelectedTokenBalance = (value: string) => {
+    setSelectedAllowanceBalance(
+      storedAssets.find((asset) => asset.symbol.includes(value))?.balance ??
+        '0',
+    );
+  };
+
+  const { enableRemoteMode } = useRemoteMode({
+    account: selectedHardwareAccount.address as Hex,
+  });
+
   useEffect(() => {
     setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
   }, [selectedHardwareAccount]);
@@ -102,13 +133,21 @@ export default function RemoteModeSetupDailyAllowance() {
     if (authorizedAccounts.length > 0) {
       setSelectedAccount(authorizedAccounts[0]);
     }
-  }, []);
+  }, [authorizedAccounts]);
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
       history.push(DEFAULT_ROUTE);
     }
   }, [isRemoteModeEnabled, history]);
+
+  useEffect(() => {
+    setStoredAssets(assetsWithBalance);
+  }, [assetsWithBalance]);
+
+  useEffect(() => {
+    updateSelectedTokenBalance(selectedAllowanceToken);
+  }, [storedAssets, selectedAllowanceToken]);
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -125,41 +164,67 @@ export default function RemoteModeSetupDailyAllowance() {
   };
 
   const handleAddAllowance = () => {
-    if (!dailyLimit) {
+    if (!dailyLimit || parseFloat(dailyLimit) <= 0) {
+      setAllowanceError(true);
       return;
     }
 
     const newAllowance = {
-      from: selectedAllowanceToken,
+      tokenType: selectedAllowanceToken,
       amount: parseFloat(dailyLimit),
+      iconUrl: TOKEN_DETAILS[selectedAllowanceToken].iconUrl,
     };
 
     setDailyAllowance((prevAllowances) => {
       const filteredAllowances = prevAllowances.filter(
         (allowance) => allowance.tokenType !== selectedAllowanceToken,
       );
-      return [
-        ...filteredAllowances,
-        { ...newAllowance, tokenType: selectedAllowanceToken },
-      ];
+      return [...filteredAllowances, newAllowance];
     });
 
-    setSelectedAllowanceToken(DailyAllowanceTokenTypes.ETH);
+    setSelectedAllowanceToken(TokenSymbol.ETH);
     setDailyLimit('');
+    setAllowanceError(false);
   };
 
-  const handleRemoveAllowance = (tokenSymbol: DailyAllowanceTokenTypes) => {
+  const handleRemoveAllowance = (tokenSymbol: TokenSymbol) => {
     setDailyAllowance(
       dailyAllowance.filter((allowance) => allowance.tokenType !== tokenSymbol),
     );
   };
 
   const handleShowConfirmation = async () => {
+    // todo: replace with delegation controller integration
+    const remoteMode = localStorage.getItem('remoteMode');
+    const parsedRemoteMode = remoteMode ? JSON.parse(remoteMode) : null;
+    const updatedRemoteMode = {
+      ...parsedRemoteMode,
+      dailyAllowance: {
+        allowances: dailyAllowance,
+      },
+    };
+    localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
     setIsConfirmModalOpen(true);
   };
 
-  const handleConfigureRemoteSwaps = () => {
-    history.replace(REMOTE_ROUTE);
+  const handleConfigureDailyAllowance = async () => {
+    if (!selectedAccount) {
+      return;
+    }
+
+    try {
+      await enableRemoteMode({
+        selectedAccount: selectedHardwareAccount,
+        authorizedAccount: selectedAccount,
+        mode: REMOTE_MODES.DAILY_ALLOWANCE,
+        meta: JSON.stringify({ allowances: dailyAllowance }),
+      });
+      // TODO: check better way to route to remote mode if upgrade is needed
+      history.replace(REMOTE_ROUTE);
+    } catch (error) {
+      // TODO: show error on UI
+      console.error(error);
+    }
   };
 
   const onCancel = () => {
@@ -233,7 +298,6 @@ export default function RemoteModeSetupDailyAllowance() {
                   justifyContent={JustifyContent.spaceBetween}
                   gap={4}
                   width={BlockSize.Full}
-                  marginBottom={4}
                 >
                   <Box
                     width={BlockSize.Half}
@@ -243,17 +307,14 @@ export default function RemoteModeSetupDailyAllowance() {
                   >
                     <Text>Token</Text>
                     <Dropdown
-                      onChange={(value) =>
-                        setSelectedAllowanceToken(
-                          value as DailyAllowanceTokenTypes,
-                        )
-                      }
-                      options={[
-                        {
-                          name: 'ETH',
-                          value: 'ETH',
-                        },
-                      ]}
+                      onChange={(value) => {
+                        setSelectedAllowanceToken(value as TokenSymbol);
+                        updateSelectedTokenBalance(value);
+                      }}
+                      options={Object.values(TokenSymbol).map((value) => ({
+                        name: value,
+                        value,
+                      }))}
                       selectedOption={selectedAllowanceToken}
                       title="Select token"
                       style={{ width: '100%' }}
@@ -268,13 +329,40 @@ export default function RemoteModeSetupDailyAllowance() {
                       }
                       placeholder="Enter amount"
                       style={{ width: '100%' }}
+                      error={allowanceError}
                     />
+                  </Box>
+                </Box>
+                <Box marginTop={2} marginBottom={2}>
+                  <Box
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.flexEnd}
+                    gap={4}
+                    width={BlockSize.Full}
+                    marginBottom={4}
+                  >
+                    <Box
+                      width={BlockSize.Half}
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      gap={2}
+                    >
+                      <Text>Balance: {selectedAllowanceBalance}</Text>
+                    </Box>
+                    <Box
+                      width={BlockSize.Half}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.flexEnd}
+                    >
+                      <Text>Limit: {DAILY_ETH_LIMIT}</Text>
+                    </Box>
                   </Box>
                 </Box>
                 <Button
                   width={BlockSize.Full}
                   size={ButtonSize.Lg}
                   onClick={handleAddAllowance}
+                  disabled={selectedAllowanceBalance === '0'}
                 >
                   Add
                 </Button>
@@ -298,53 +386,9 @@ export default function RemoteModeSetupDailyAllowance() {
       case 2:
         return (
           <>
-            <Box
-              marginTop={2}
-              marginBottom={2}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.center}
-              gap={2}
-            >
-              <Tag
-                label="Includes 2 transactions"
-                style={{ padding: '0 1rem' }}
-              />
-            </Box>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>
-                  Account type <Icon name={IconName.Info} size={IconSize.Sm} />
-                </Text>
-                <Text>Smart account</Text>
-              </Box>
-            </Card>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box>
-                <Text>Estimated changes</Text>
-                <Text>
-                  Authorize {selectedAccount?.metadata.name} to swap from your{' '}
-                  {selectedHardwareAccount.metadata.name} balance.
-                </Text>
-              </Box>
-            </Card>
-
-            <Card backgroundColor={BackgroundColor.backgroundMuted}>
-              <Box
-                display={Display.Flex}
-                gap={2}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>Request from</Text>
-                <Text>MetaMask</Text>
-              </Box>
-            </Card>
+            <SmartAccountUpdateInformation
+              selectedHardwareAccount={selectedHardwareAccount}
+            />
 
             <Card backgroundColor={BackgroundColor.backgroundMuted}>
               <Box
@@ -531,8 +575,8 @@ export default function RemoteModeSetupDailyAllowance() {
           variant={TextVariant.headingMd}
           fontWeight={FontWeight.Bold}
         >
-          {currentStep === 1 && 'Enable Daily Allowances'}
-          {currentStep === 2 && 'Transaction Request'}
+          {currentStep === 1 && 'Set a withdrawl limit'}
+          {currentStep === 2 && 'Update to a smart account'}
           {currentStep === 3 && 'Review changes'}
         </Text>
 
@@ -540,7 +584,7 @@ export default function RemoteModeSetupDailyAllowance() {
 
         <RemoteModeHardwareWalletConfirm
           visible={isConfirmModalOpen}
-          onConfirm={handleConfigureRemoteSwaps}
+          onConfirm={handleConfigureDailyAllowance}
           onClose={() => {
             setIsConfirmModalOpen(false);
           }}
@@ -560,7 +604,7 @@ export default function RemoteModeSetupDailyAllowance() {
           onClick={currentStep === 3 ? handleShowConfirmation : handleNext}
           width={BlockSize.Half}
           size={ButtonSize.Lg}
-          disabled={!isHardwareAccount}
+          disabled={!isHardwareAccount || dailyAllowance.length === 0}
         >
           {currentStep === TOTAL_STEPS ? 'Confirm' : 'Next'}
         </Button>

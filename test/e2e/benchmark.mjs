@@ -34,7 +34,6 @@ async function measurePage(pageName, pageLoads) {
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      localNodeOptions: 'ganache',
       title: 'benchmark-pageload',
     },
     async ({ driver }) => {
@@ -107,6 +106,8 @@ async function profilePageLoad(pages, browserLoads, pageLoads, retries) {
         } not supported`,
       );
     }
+
+    console.info(JSON.stringify(runResults, null, 2));
 
     const result = {};
 

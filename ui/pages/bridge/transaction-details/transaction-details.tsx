@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { formatChainIdToHex } from '@metamask/bridge-controller';
+import { formatChainIdToHex, StatusTypes } from '@metamask/bridge-controller';
+import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -22,9 +23,8 @@ import {
 import { Content, Header } from '../../../components/multichain/pages/page';
 import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
 import useBridgeChainInfo from '../../../hooks/bridge/useBridgeChainInfo';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getTransactionBreakdownData } from '../../../components/app/transaction-breakdown/transaction-breakdown-utils';
-import { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { EtherDenomination } from '../../../../shared/constants/common';
@@ -32,10 +32,6 @@ import {
   PRIMARY,
   SUPPORT_REQUEST_LINK,
 } from '../../../helpers/constants/common';
-import {
-  BridgeHistoryItem,
-  StatusTypes,
-} from '../../../../shared/types/bridge-status';
 import {
   AlignItems,
   Display,
@@ -57,11 +53,11 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import TransactionActivityLog from '../../../components/app/transaction-activity-log';
 import {
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-  AllowedBridgeChainIds,
+  type AllowedBridgeChainIds,
 } from '../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { MINUTE } from '../../../../shared/constants/time';
@@ -173,10 +169,6 @@ const CrossChainSwapTxDetails = () => {
   const selectedAddressTxList = useSelector(
     selectedAddressTxListSelectorAllChain,
   ) as TransactionMeta[];
-
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
 
   const transactionGroup: TransactionGroup | null =
     location.state?.transactionGroup || null;
@@ -342,7 +334,6 @@ const CrossChainSwapTxDetails = () => {
               <BridgeStepList
                 bridgeHistoryItem={bridgeHistoryItem}
                 srcChainTxMeta={srcChainTxMeta}
-                networkConfigurationsByChainId={networkConfigurationsByChainId}
               />
             )}
 

@@ -23,8 +23,12 @@ import {
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { selectBridgeFeatureFlags } from '@metamask/bridge-controller';
+import {
+  KnownCaipNamespace,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -63,6 +67,8 @@ import {
   MOONRIVER_DISPLAY_NAME,
   TEST_NETWORK_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  NETWORK_TO_NAME_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -199,6 +205,10 @@ export function getEditedNetwork(state) {
 
 export function getIsAddingNewNetwork(state) {
   return state.appState.isAddingNewNetwork;
+}
+
+export function getIsAccessedFromDappConnectedSitePopover(state) {
+  return state.appState.isAccessedFromDappConnectedSitePopover;
 }
 
 export function getIsMultiRpcOnboarding(state) {
@@ -530,15 +540,52 @@ export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
-    // keep existing keyring order
-    const internalAccounts = keyrings
-      .map(({ accounts: addresses }) => addresses)
-      .flat()
-      .map((address) => {
-        return accounts[address];
-      });
+    const thirdPartySnaps = 'thirdPartySnaps';
+    // Create a map of entropySource map to accounts for quick lookup
+    const entropySourceToAccountsMap = Object.values(accounts).reduce(
+      (map, account) => {
+        if (account.metadata?.keyring?.type === KeyringTypes.snap) {
+          const { entropySource = thirdPartySnaps } = account.options || {};
+          if (!map[entropySource]) {
+            map[entropySource] = [];
+          }
+          map[entropySource].push(account);
+        }
+        return map;
+      },
+      {},
+    );
 
-    return internalAccounts;
+    // keep existing keyring order
+    return keyrings.reduce((internalAccounts, keyring) => {
+      // Get regular accounts for this keyring
+      const keyringAccounts = keyring.accounts.map(
+        (address) => accounts[address],
+      );
+
+      // If it's an HD keyring, add any snap accounts that belong to it
+      if (keyring.type === KeyringTypes.hd) {
+        const snapAccounts =
+          entropySourceToAccountsMap[keyring.metadata.id] || [];
+        internalAccounts.push(...keyringAccounts, ...snapAccounts);
+        return internalAccounts;
+      } else if (keyring.type === KeyringTypes.snap) {
+        const thirdpartySnapAccounts =
+          entropySourceToAccountsMap[thirdPartySnaps] || [];
+        // In a scenario where there are multiple snap keyrings, which isn't the case for today
+        // There would be duplicate third party snap accounts that are being pushed into internalAccounts again
+        // This will only be run once, when there is only one snap keyring
+        const accountsToAdd = thirdpartySnapAccounts.filter(
+          (account) =>
+            !internalAccounts.some((existing) => existing.id === account.id),
+        );
+
+        internalAccounts.push(...accountsToAdd);
+        return internalAccounts;
+      }
+      internalAccounts.push(...keyringAccounts);
+      return internalAccounts;
+    }, []);
   },
 );
 
@@ -793,11 +840,12 @@ export function getTokensAcrossChainsByAccountAddress(state, selectedAddress) {
  * @param {string} chainId - Chain ID
  * @returns {object} Native token information
  */
-function getNativeTokenInfo(state, chainId) {
+export function getNativeTokenInfo(state, chainId) {
   const { networkConfigurationsByChainId } = state.metamask;
 
   const networkConfig = networkConfigurationsByChainId?.[chainId];
 
+  // Fill native token info by network config (if a user has a network added)
   if (networkConfig) {
     const symbol = networkConfig.nativeCurrency || AssetType.native;
     const decimals = 18;
@@ -810,6 +858,7 @@ function getNativeTokenInfo(state, chainId) {
     };
   }
 
+  // Fill native token info by DApp provider
   const { provider } = state.metamask;
   if (provider?.chainId === chainId) {
     const symbol = provider.ticker || AssetType.native;
@@ -823,6 +872,14 @@ function getNativeTokenInfo(state, chainId) {
     };
   }
 
+  // Attempt to retried native token info from hardcoded known networks
+  const hardcodedSymbol = CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
+  const hardcodedName = NETWORK_TO_NAME_MAP[chainId];
+  if (hardcodedSymbol && hardcodedName) {
+    return { symbol: hardcodedSymbol, decimals: 18, name: hardcodedName };
+  }
+
+  // Fallback to "NATIVE" symbol as this is an unknown native token
   return { symbol: AssetType.native, decimals: 18, name: 'Native Token' };
 }
 
@@ -992,6 +1049,14 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
+export function getCompleteAddressBook(state) {
+  const addresses = state.metamask.addressBook;
+  const addressWithChainId = Object.fromEntries(
+    Object.entries(addresses).filter(([key]) => key !== '*'),
+  );
+  return Object.values(addressWithChainId);
+}
+
 export function getEnsResolutionByAddress(state, address) {
   if (state.metamask.ensResolutionsByAddress[address]) {
     const ensResolution = state.metamask.ensResolutionsByAddress[address];
@@ -1008,6 +1073,22 @@ export function getEnsResolutionByAddress(state, address) {
 }
 
 export function getAddressBookEntry(state, address) {
+  if (process.env.REMOVE_GNS) {
+    const addressBook = getCompleteAddressBook(state);
+
+    for (const item of addressBook) {
+      for (const key in item) {
+        if (Object.prototype.hasOwnProperty.call(item, key)) {
+          const contact = item[key];
+          if (isEqualCaseInsensitive(contact.address, address)) {
+            return contact;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
   const addressBook = getAddressBook(state);
   const entry = addressBook.find((contact) =>
     isEqualCaseInsensitive(contact.address, address),
@@ -1121,6 +1202,15 @@ export const selectDefaultRpcEndpointByChainId = createSelector(
     const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
     return rpcEndpoints[defaultRpcEndpointIndex];
   },
+);
+
+/**
+ * @type (state: RemoteFeatureFlagsState) => boolean
+ */
+export const getIsRpcFailoverEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
 );
 
 /**
@@ -1789,19 +1879,20 @@ export function getIsBridgeChain(state, overrideChainId) {
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
-function getBridgeFeatureFlags(state) {
-  return state.metamask.bridgeFeatureFlags;
-}
+const getBridgeFeatureFlags = createDeepEqualSelector(
+  [(state) => getRemoteFeatureFlags(state).bridgeConfig],
+  (bridgeConfig) => {
+    const validatedFlags = selectBridgeFeatureFlags({
+      remoteFeatureFlags: { bridgeConfig },
+    });
+    return validatedFlags;
+  },
+);
 
 export const getIsBridgeEnabled = createSelector(
   [getBridgeFeatureFlags, getUseExternalServices],
   (bridgeFeatureFlags, shouldUseExternalServices) => {
-    return (
-      (shouldUseExternalServices &&
-        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
-          ?.support) ??
-      false
-    );
+    return (shouldUseExternalServices && bridgeFeatureFlags?.support) ?? false;
   },
 );
 
@@ -2005,21 +2096,6 @@ export function getShouldShowAggregatedBalancePopover(state) {
   const { shouldShowAggregatedBalancePopover } = getPreferences(state);
   return shouldShowAggregatedBalancePopover;
 }
-
-export const getConnectedSnapsList = createDeepEqualSelector(
-  getSnapsList,
-  (snapsData) => {
-    const snapsList = {};
-
-    Object.values(snapsData).forEach((snap) => {
-      if (!snapsList[snap.name]) {
-        snapsList[snap.name] = snap;
-      }
-    });
-
-    return snapsList;
-  },
-);
 
 export const getMemoizedCurrentChainId = createDeepEqualSelector(
   getCurrentChainId,
@@ -2919,6 +2995,16 @@ export function getIsSolanaSupportEnabled(state) {
 export function getManageInstitutionalWallets(state) {
   return state.metamask.manageInstitutionalWallets;
 }
+/**
+ * Get the state of the `defiPositionsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `defiPositionsEnabled` remote feature flag.
+ */
+export function getIsDefiPositionsEnabled(state) {
+  const { assetsDefiPositionsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(assetsDefiPositionsEnabled);
+}
 
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
@@ -2927,15 +3013,15 @@ export function getIsCustomNetwork(state) {
 }
 
 /**
- * Get the state of the `nePortfolioDiscoverButton` remote feature flag.
+ * Get the state of the `neNetworkDiscoverButton` remote feature flag.
  * This flag determines whether the user should see a `Discover` button on the network menu list.
  *
  * @param {*} state
- * @returns The state of the `nePortfolioDiscoverButton` remote feature flag.
+ * @returns The state of the `neNetworkDiscoverButton` remote feature flag.
  */
-export function getIsPortfolioDiscoverButtonEnabled(state) {
-  const { nePortfolioDiscoverButton } = getRemoteFeatureFlags(state);
-  return Boolean(nePortfolioDiscoverButton);
+export function getNetworkDiscoverButtonEnabled(state) {
+  const { neNetworkDiscoverButton } = getRemoteFeatureFlags(state);
+  return neNetworkDiscoverButton;
 }
 
 export function getBlockExplorerLinkText(
@@ -2995,6 +3081,47 @@ export function getUnconnectedAccounts(state, activeTab) {
   });
   return unConnectedAccounts;
 }
+
+export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
+  (state) => state.activeTab,
+  (state) => state.metamask.permissionHistory,
+  getMetaMaskAccountsOrdered,
+  getAllPermittedAccountsForCurrentTab,
+  (activeTab, permissionHistory, orderedAccounts, connectedAccounts) => {
+    const permissionHistoryByAccount =
+      permissionHistory[activeTab.origin]?.eth_accounts?.accounts || {};
+
+    const connectedAccountsAddresses = connectedAccounts.map(
+      (caipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return address;
+      },
+    );
+
+    return orderedAccounts
+      .filter((account) => connectedAccountsAddresses.includes(account.address))
+      .map((account) => ({
+        ...account,
+        metadata: {
+          ...account.metadata,
+          lastActive: permissionHistoryByAccount?.[account.address],
+        },
+      }))
+      .sort(
+        ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
+          if (lastSelectedA === lastSelectedB) {
+            return 0;
+          } else if (lastSelectedA === undefined) {
+            return 1;
+          } else if (lastSelectedB === undefined) {
+            return -1;
+          }
+
+          return lastSelectedB - lastSelectedA;
+        },
+      );
+  },
+);
 
 export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
@@ -3567,43 +3694,6 @@ export function getAccountToConnectToActiveTab(state) {
   }
 
   return undefined;
-}
-
-export function getOrderedConnectedAccountsForActiveTab(state) {
-  const {
-    activeTab,
-    metamask: { permissionHistory },
-  } = state;
-
-  const permissionHistoryByAccount =
-    // eslint-disable-next-line camelcase
-    permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
-  const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedEVMAccountsForCurrentTab(state);
-
-  return orderedAccounts
-    .filter((account) => connectedAccounts.includes(account.address))
-    .filter((account) => isEvmAccountType(account.type))
-    .map((account) => ({
-      ...account,
-      metadata: {
-        ...account.metadata,
-        lastActive: permissionHistoryByAccount?.[account.address],
-      },
-    }))
-    .sort(
-      ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
-        if (lastSelectedA === lastSelectedB) {
-          return 0;
-        } else if (lastSelectedA === undefined) {
-          return 1;
-        } else if (lastSelectedB === undefined) {
-          return -1;
-        }
-
-        return lastSelectedB - lastSelectedA;
-      },
-    );
 }
 
 export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {

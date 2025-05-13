@@ -210,8 +210,11 @@ export const getMultiChainAssets = createDeepEqualSelector(
       const { chainId, assetNamespace } = parseCaipAssetType(assetId);
       const isNative = assetNamespace === 'slip44';
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
-      const rate = assetRates?.[assetId]?.rate || '0';
-      const balanceInFiat = new BigNumber(balance.amount).times(rate);
+      const rate = assetRates?.[assetId]?.rate;
+
+      const balanceInFiat = rate
+        ? new BigNumber(balance.amount).times(rate).toNumber()
+        : null;
 
       const assetMetadataFallback = {
         name: balance.unit,
@@ -232,9 +235,9 @@ export const getMultiChainAssets = createDeepEqualSelector(
           chainId,
           isNative,
           primary: balance.amount,
-          secondary: balanceInFiat.toNumber(),
+          secondary: balanceInFiat,
           string: '',
-          tokenFiatAmount: balanceInFiat.toNumber(), // for now we are keeping this is to satisfy sort, this should be fiat amount
+          tokenFiatAmount: balanceInFiat,
           isStakeable: false,
         });
       }
@@ -296,31 +299,21 @@ const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
-  getSelectedMultichainNetworkConfiguration,
   getMultichainBalances,
   getAccountAssets,
   getAssetsRates,
-  (
-    selectedAccountAddress,
-    currentNetwork,
-    multichainBalances,
-    accountAssets,
-    assetRates,
-  ) => {
+  (selectedAccountAddress, multichainBalances, accountAssets, assetRates) => {
     const assetIds = accountAssets?.[selectedAccountAddress.id] || [];
     const balances = multichainBalances?.[selectedAccountAddress.id];
 
     let aggregatedBalance = new BigNumber(0);
 
     assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId } = parseCaipAssetType(assetId);
-      if (chainId === currentNetwork.chainId) {
-        const balance = balances?.[assetId] || zeroBalanceAssetFallback;
-        const rate = assetRates?.[assetId]?.rate || '0';
-        const balanceInFiat = new BigNumber(balance.amount).times(rate);
+      const balance = balances?.[assetId] || zeroBalanceAssetFallback;
+      const rate = assetRates?.[assetId]?.rate || '0';
+      const balanceInFiat = new BigNumber(balance.amount).times(rate);
 
-        aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
-      }
+      aggregatedBalance = aggregatedBalance.plus(balanceInFiat);
     });
 
     return aggregatedBalance.toNumber();

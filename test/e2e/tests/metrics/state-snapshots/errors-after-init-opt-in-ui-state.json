@@ -64,6 +64,7 @@
     "snapsInstallPrivacyWarningShown": "boolean",
     "isAddingNewNetwork": "boolean",
     "isMultiRpcOnboarding": "boolean",
+    "isAccessedFromDappConnectedSitePopover": "boolean",
     "errorInSettings": null,
     "showNewSrpAddedToast": "boolean"
   },
@@ -127,7 +128,9 @@
     },
     "throttledOrigins": "object",
     "connectedStatusPopoverHasBeenShown": true,
+    "conversionRates": "object",
     "defaultHomeActiveTabName": null,
+    "delegations": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",
@@ -153,6 +156,7 @@
     "slides": "object",
     "qrHardware": {},
     "nftsDropdownState": {},
+    "nonEvmTransactions": "object",
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": null,
     "currentExtensionPopupId": "number",
@@ -165,11 +169,12 @@
     "marketData": "object",
     "multichainNetworkConfigurationsByChainId": "object",
     "selectedMultichainNetworkChainId": "string",
+    "networksWithTransactionActivity": "object",
     "isEvmSelected": "boolean",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
-        "EIPS": { "1559": false },
+        "EIPS": { "1559": true },
         "status": "available"
       }
     },
@@ -188,6 +193,7 @@
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",
+    "balances": "object",
     "bitcoinSupportEnabled": "boolean",
     "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
@@ -232,6 +238,7 @@
     "orderedNetworkList": { "0": "object", "1": "object" },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
+    "historicalPrices": "object",
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},
@@ -299,6 +306,8 @@
     },
     "cacheTimestamp": "number",
     "accounts": "object",
+    "accountsAssets": "object",
+    "assetsMetadata": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
@@ -337,26 +346,7 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
-    "bridgeFeatureFlags": {
-      "extensionConfig": {
-        "maxRefreshCount": "number",
-        "refreshRate": "number",
-        "support": "boolean",
-        "chains": {
-          "eip155:1": "object",
-          "eip155:10": "object",
-          "eip155:56": "object",
-          "eip155:137": "object",
-          "eip155:324": "object",
-          "eip155:8453": "object",
-          "eip155:42161": "object",
-          "eip155:43114": "object",
-          "eip155:59144": "object",
-          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "object"
-        }
-      },
-      "mobileConfig": "object"
-    },
+    "assetExchangeRates": "object",
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
@@ -366,7 +356,7 @@
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
     "quotesRefreshCount": 0,
-    "bridgeStatusState": { "txHistory": "object" },
+    "txHistory": "object",
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
@@ -377,7 +367,8 @@
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
     "encryptionKey": "string",
-    "encryptionSalt": "string"
+    "encryptionSalt": "string",
+    "allDeFiPositions": "object"
   },
   "ramps": "object",
   "send": "object",

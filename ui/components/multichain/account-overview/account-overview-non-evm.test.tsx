@@ -56,7 +56,6 @@ const render = (props: AccountOverviewNonEvmProps = defaultProps) => {
 describe('AccountOverviewBtc', () => {
   beforeEach(() => {
     setBackgroundConnection({
-      setBridgeFeatureFlags: jest.fn(),
       tokenBalancesStartPolling: jest.fn(),
     } as never);
   });
@@ -67,6 +66,7 @@ describe('AccountOverviewBtc', () => {
     expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__nfts-tab')).not.toBeInTheDocument();
     expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__defi-tab')).not.toBeInTheDocument();
   });
 
   it('does not show tokens links', () => {

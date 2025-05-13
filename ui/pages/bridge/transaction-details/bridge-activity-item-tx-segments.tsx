@@ -1,12 +1,10 @@
 import React from 'react';
 import {
-  TransactionMeta,
+  type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import {
-  BridgeHistoryItem,
-  StatusTypes,
-} from '../../../../shared/types/bridge-status';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
 import { Box, Text } from '../../../components/component-library';
 import {
   BlockSize,
@@ -14,7 +12,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Segment from './segment';
 

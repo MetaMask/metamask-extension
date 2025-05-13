@@ -14,8 +14,7 @@ class PrivacySettings {
   };
 
   private readonly confirmDeleteMetaMetricsDataButton =
-  '[data-testid="clear-metametrics-data"]';
-
+    '[data-testid="clear-metametrics-data"]';
 
   private readonly copiedSrpExclamation = {
     text: tEn('copiedExclamation'),
@@ -25,6 +24,19 @@ class PrivacySettings {
   private readonly copySrpButton = {
     text: tEn('copyToClipboard'),
     tag: 'button',
+  };
+
+  private readonly dataCollectionForMarketingToggle =
+    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
+
+  private readonly dataCollectionWarningAckButton = {
+    text: 'Okay',
+    tag: 'button',
+  };
+
+  private readonly dataCollectionWarningMessage = {
+    text: 'You turned off data collection for our marketing purposes. This only applies to this device. ',
+    tag: 'p',
   };
 
   private readonly deleteMetaMetricsDataButton =
@@ -100,9 +112,6 @@ class PrivacySettings {
   private readonly participateInMetaMetricsToggle =
     '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
 
-  private readonly dataCollectionForMarketingToggle =
-    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -127,7 +136,9 @@ class PrivacySettings {
     // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown in the background
     // we cannot wait for a UI conditon, so we a delay to mitigate this until another solution is found
     await this.driver.delay(3000);
-    await this.driver.clickElementAndWaitToDisappear(this.confirmDeleteMetaMetricsDataButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmDeleteMetaMetricsDataButton,
+    );
   }
 
   async closeRevealSrpDialog(): Promise<void> {
@@ -229,6 +240,17 @@ class PrivacySettings {
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
 
+  async optOutDataCollectionForMarketing(): Promise<void> {
+    console.log(
+      'Opt out data collection for marketing on privacy settings page',
+    );
+    await this.toggleDataCollectionForMarketing();
+    await this.driver.waitForSelector(this.dataCollectionWarningMessage);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.dataCollectionWarningAckButton,
+    );
+  }
+
   async toggleAutodetectNft(): Promise<void> {
     console.log('Toggle autodetect NFT on privacy settings page');
     await this.driver.clickElement(this.autodetectNftToggleButton);
@@ -240,16 +262,13 @@ class PrivacySettings {
    */
   async check_deleteMetaMetricsDataButtonEnabled(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(
-        this.deleteMetaMetricsDataButton,
-        {
-          waitAtLeastGuard: 2000,
-          timeout: 5000,
-        },
-      );
-      } catch (e) {
-        console.log('Delete MetaMetrics data button not enabled', e);
-        return false;
+      await this.driver.findClickableElement(this.deleteMetaMetricsDataButton, {
+        waitAtLeastGuard: 2000,
+        timeout: 5000,
+      });
+    } catch (e) {
+      console.log('Delete MetaMetrics data button not enabled', e);
+      return false;
     }
     console.log('Delete MetaMetrics data button is enabled');
     return true;

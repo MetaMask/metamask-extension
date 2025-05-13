@@ -23,7 +23,6 @@ describe('Test Snap Homepage', function (this: Suite) {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectHomePageButton',
-          false,
         );
 
         // switch to metamask page and open the three dots menu

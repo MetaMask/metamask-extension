@@ -24,6 +24,9 @@ class ActivityListPage {
   private readonly bridgeTransactionCompleted =
     '.transaction-status-label--confirmed';
 
+  private readonly bridgeTransactionPending =
+    '.bridge-transaction-details__segment--pending';
+
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
@@ -115,7 +118,7 @@ class ActivityListPage {
         this.confirmedTransactions,
       );
       return confirmedTxs.length === expectedNumber;
-    }, 10000);
+    }, 60000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
@@ -137,7 +140,7 @@ class ActivityListPage {
     await this.driver.wait(async () => {
       const failedTxs = await this.driver.findElements(this.failedTransactions);
       return failedTxs.length === expectedNumber;
-    }, 10000);
+    }, 60000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
     );
@@ -157,10 +160,34 @@ class ActivityListPage {
         expectedNumber - 1
       ].getText();
       return transactionActionText === expectedAction;
-    });
+    }, 60000);
 
     console.log(
       `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
+    );
+  }
+
+  /**
+   * This function checks the specified number of pending Birdge transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of pending transactions to be visible.
+   *
+   * @param expectedNumber - The number of pending Bridge transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of Bridge pending transactions is displayed within the timeout period.
+   */
+  async check_pendingBridgeTransactionActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} Bridge pending transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const completedTxs = await this.driver.findElements(
+        this.bridgeTransactionPending,
+      );
+      return completedTxs.length === expectedNumber;
+    }, 60000);
+    console.log(
+      `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
     );
   }
 
@@ -279,7 +306,9 @@ class ActivityListPage {
   }
 
   async click_confirmTransactionReplacement() {
-    await this.driver.clickElementAndWaitToDisappear(this.confirmTransactionReplacementButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmTransactionReplacementButton,
+    );
   }
 
   async check_waitForTransactionStatus(status: 'confirmed' | 'cancelled') {
