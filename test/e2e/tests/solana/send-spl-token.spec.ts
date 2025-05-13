@@ -7,6 +7,7 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 
 const splTokenName = 'PKIN';
+// Investigate why this test is flaky
 describe('Send flow - SPL Token', function (this: Suite) {
   it('user with more than 1 token in the token list', async function () {
     this.timeout(120000);
