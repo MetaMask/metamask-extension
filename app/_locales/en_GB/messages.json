@@ -4969,9 +4969,6 @@
   "securityChangePasswordHint": {
     "message": "Password hint"
   },
-  "securityChangePasswordTitle": {
-    "message": "Password"
-  },
   "securityChangePasswordChange": {
     "message": "Change password"
   },
@@ -4998,11 +4995,20 @@
     "description": "The security provider that is providing data"
   },
   "securitySocialLoginEnabled": {
-    "message": "Email recovery enabled"
+    "message": "Enabled"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Access your wallet anytime with your $1 login and password.",
-    "description": "The $1 is the text 'Apple/Google'"
+    "message": "This email and your MetaMask password will help you recover your account and recovery phrases."
+  },
+  "securitySocialLoginLabel": {
+    "message": "$1 RECOVERY",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securitySrpLabel": {
+    "message": "SECRET RECOVERY PHRASES"
+  },
+  "securityFooterText": {
+    "message": "Your wallet is most protected when both recovery methods are set up. If one fail, the other helps you recover your wallet."
   },
   "securitySrpBackupSrp": {
     "message": "Back up Secret Recovery Phrase"
@@ -5835,6 +5841,9 @@
   "srpPasteTip": {
     "message": "You can paste your entire secret recovery phrase into any field",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpRevealListTitle": {
+    "message": "Protect your wallet"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import { capitalize } from 'lodash';
 import {
   Box,
   Icon,
@@ -14,7 +13,6 @@ import { SrpList } from '../../../../components/multichain/multi-srp/srp-list/sr
 import Card from '../../../../components/ui/card';
 import {
   FlexDirection,
-  JustifyContent,
   Display,
   AlignItems,
   BlockSize,
@@ -22,6 +20,7 @@ import {
   TextColor,
   FontWeight,
   IconColor,
+  TextTransform,
 } from '../../../../helpers/constants/design-system';
 import {
   getSocialLoginEmail,
@@ -38,69 +37,100 @@ export const RevealSrpList = () => {
   const socialLoginEnabled = Boolean(socialLoginEmail);
   const socialLoginType = useSelector(getSocialLoginType);
 
-  const socialLoginCardTitle = () => {
-    return (
-      <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-        {socialLoginType === AuthConnection.Apple ? (
-          <Icon
-            name={IconName.Apple}
-            color={IconColor.iconDefault}
-            size={IconSize.Lg}
-          />
-        ) : (
-          <img
-            src={`images/icons/google.svg`}
-            className="srp-reveal-list__social-icon"
-            alt="Google icon"
-          />
-        )}
-        <Text fontWeight={FontWeight.Medium}>
-          {t('securitySocialLoginEnabled')}
-        </Text>
-      </Box>
-    );
-  };
-
   return (
     <Box className="srp-reveal-list">
       {socialLoginEnabled && (
         <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
-          <Card>
+          <Text
+            marginBottom={2}
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            textTransform={TextTransform.Uppercase}
+          >
+            {t('securitySocialLoginLabel', [socialLoginType])}
+          </Text>
+          <Card className="srp-reveal-list__social-login-card">
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
               alignItems={AlignItems.center}
-              justifyContent={JustifyContent.spaceBetween}
+              gap={3}
             >
-              {socialLoginCardTitle()}
-            </Box>
-            <Box>
               <Box
-                width={BlockSize.Full}
-                className="srp-reveal-list__divider"
-                marginTop={2}
-                marginBottom={2}
-              />
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                gap={2}
               >
-                {t('securitySocialLoginEnabledDescription', [
-                  capitalize(socialLoginType),
-                ])}
-              </Text>
+                {socialLoginType === AuthConnection.Apple ? (
+                  <Icon
+                    name={IconName.Apple}
+                    color={IconColor.iconDefault}
+                    size={IconSize.Lg}
+                  />
+                ) : (
+                  <img
+                    src={`images/icons/google.svg`}
+                    className="srp-reveal-list__social-icon"
+                    alt="Google icon"
+                  />
+                )}
+              </Box>
+              <Box flexDirection={FlexDirection.Column}>
+                <Text fontWeight={FontWeight.Medium}>
+                  {t('securitySocialLoginEnabled')}
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {socialLoginEmail}
+                </Text>
+              </Box>
             </Box>
           </Card>
+          <Text
+            marginTop={1}
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+          >
+            {t('securitySocialLoginEnabledDescription')}
+          </Text>
+          <Box
+            width={BlockSize.Full}
+            className="srp-reveal-list__divider"
+            marginTop={4}
+          />
         </Box>
       )}
-      <SrpList
-        onActionComplete={(keyringId) => {
-          // TODO: if srp is not backed up do the secure srp flow else reveal the srp flow
-          setSelectedKeyringId(keyringId);
-          setSrpQuizModalVisible(true);
-        }}
-        hideShowAccounts={false}
-      />
+      <Box paddingTop={4} paddingLeft={4} paddingRight={4} paddingBottom={0}>
+        <Text
+          marginBottom={2}
+          variant={TextVariant.bodyMd}
+          color={TextColor.textAlternative}
+          textTransform={TextTransform.Uppercase}
+        >
+          {t('securitySrpLabel')}
+        </Text>
+        <SrpList
+          onActionComplete={(keyringId) => {
+            // TODO: if srp is not backed up do the secure srp flow else reveal the srp flow
+            setSelectedKeyringId(keyringId);
+            setSrpQuizModalVisible(true);
+          }}
+          hideShowAccounts={false}
+        />
+      </Box>
+      <Box paddingBottom={4} paddingLeft={4} paddingRight={4}>
+        <Box
+          width={BlockSize.Full}
+          className="srp-reveal-list__divider"
+          marginTop={1}
+          marginBottom={4}
+        />
+        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          {t('securityFooterText')}
+        </Text>
+      </Box>
       {srpQuizModalVisible && selectedKeyringId && (
         <SRPQuizModal
           keyringId={selectedKeyringId}

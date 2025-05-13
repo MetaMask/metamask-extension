@@ -59,7 +59,7 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
-  [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
+  [REVEAL_SRP_LIST_ROUTE]: 'srpRevealListTitle',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [SECURITY_PASSWORD_HINT_ROUTE]: 'securityPasswordHint',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityPassword',
@@ -108,7 +108,11 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isAddPopularCustomNetwork) {
     backRoute = NETWORKS_ROUTE;
-  } else if (isRevealSrpListPage || isPasswordHintPage || isPasswordChangePage) {
+  } else if (
+    isRevealSrpListPage ||
+    isPasswordHintPage ||
+    isPasswordChangePage
+  ) {
     backRoute = SECURITY_ROUTE;
   }
 
