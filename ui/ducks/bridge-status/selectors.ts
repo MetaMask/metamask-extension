@@ -12,6 +12,8 @@ import {
 } from '../../../shared/modules/selectors/networks';
 import type { SmartTransactionsMetaMaskState } from '../../../shared/modules/selectors';
 
+// TODO move selectors to controller
+
 export type BridgeStatusAppState = {
   metamask: BridgeStatusControllerState;
 };

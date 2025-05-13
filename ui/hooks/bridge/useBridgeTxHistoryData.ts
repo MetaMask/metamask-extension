@@ -39,6 +39,7 @@ export function useBridgeTxHistoryData({
   const bridgeHistoryItem = bridgeHistory[srcTxMetaId];
 
   // By complete, this means BOTH source and dest tx are confirmed
+  // TODO fix this
   const isBridgeComplete = bridgeHistoryItem
     ? Boolean(
         bridgeHistoryItem?.status.srcChain.txHash &&
