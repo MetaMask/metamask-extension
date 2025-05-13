@@ -1,6 +1,7 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
   DEFAULT_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
@@ -19,7 +20,7 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
   const { firstTimeFlowType, restoreWithSocialLogin } = state.metamask;
 
   if (firstTimeFlowType === FirstTimeFlowType.create) {
-    return ONBOARDING_CREATE_PASSWORD_ROUTE;
+    return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
@@ -28,7 +29,7 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
     if (restoreWithSocialLogin) {
       return ONBOARDING_PIN_EXTENSION_ROUTE;
     }
-    return ONBOARDING_CREATE_PASSWORD_ROUTE;
+    return ONBOARDING_COMPLETION_ROUTE;
   }
   return DEFAULT_ROUTE;
 }

@@ -85,6 +85,7 @@ const ChangePassword = () => {
       setStep(ChangePasswordSteps.CreatingPassword);
     }
   };
+
   return (
     <div className="change-password">
       {step === ChangePasswordSteps.CurrentPassword && (
