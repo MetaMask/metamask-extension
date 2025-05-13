@@ -239,25 +239,6 @@ export const EditSpendingCapModal = ({
               </Text>
             </>
           )}
-          {showSpecialCharacterError && (
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.errorDefault}
-              paddingTop={1}
-            >
-              {t('editSpendingCapSpecialCharError')}
-            </Text>
-          )}
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-            paddingTop={1}
-          >
-            {t('editSpendingCapAccountBalance', [
-              accountBalance,
-              tokenSymbol || '',
-            ])}
-          </Text>
         </ModalBody>
         <ModalFooter
           onSubmit={handleSubmit}
