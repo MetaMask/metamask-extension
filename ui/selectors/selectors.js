@@ -619,9 +619,8 @@ export function getHDEntropyIndex(state) {
     const account = getSelectedInternalAccount(state);
     if (account) {
       const { entropySource } = account.options;
-      const keyringsMetadata = getMetaMaskKeyringsMetadata(state);
-      hdEntropyIndex = keyringsMetadata.findIndex(
-        (metadata) => metadata.id === entropySource,
+      hdEntropyIndex = keyrings.findIndex(
+        ({ metadata }) => metadata.id === entropySource,
       );
     }
   }
