@@ -105,7 +105,7 @@ const deleteOldSnapFiles = (
     }
   } catch (error: unknown) {
     console.log(
-      `${YELLOW}Info: No existing versions of ${snapName} found to check for deletion, or error: ${error.message}${RESET}`,
+      `${YELLOW}Info: No existing versions of ${snapName} found to check for deletion`,
     );
   }
 
