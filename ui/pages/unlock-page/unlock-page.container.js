@@ -38,15 +38,17 @@ const mapDispatchToProps = (dispatch) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
-    markPasswordForgotten: propsMarkPasswordForgotten,
-    tryUnlockMetamask: propsTryUnlockMetamask,
+    // eslint-disable-next-line no-shadow
+    markPasswordForgotten,
+    // eslint-disable-next-line no-shadow
+    tryUnlockMetamask,
     ...restDispatchProps
   } = dispatchProps;
   const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps;
 
   // TODO: might remove this once new forget password flow is implemented
   const onImport = async () => {
-    await propsMarkPasswordForgotten();
+    await markPasswordForgotten();
     history.push(RESTORE_VAULT_ROUTE);
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
       global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
@@ -54,7 +56,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 
   const onSubmit = async (password) => {
-    await propsTryUnlockMetamask(password);
+    await tryUnlockMetamask(password);
 
     history.push(DEFAULT_ROUTE);
   };
