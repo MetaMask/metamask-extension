@@ -1,21 +1,50 @@
 .onboarding-pin-extension {
-  .control-dots .dot {
-    background: var(--color-icon-muted);
-    box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  gap: 1rem;
 
-    &.selected {
-      background: var(--color-icon-default);
+  .carousel {
+    .control-dots {
+      bottom: -12px;
+
+      .dot {
+        background: var(--color-icon-muted);
+        box-shadow: none;
+
+        &.selected {
+          background: var(--color-icon-default);
+        }
+      }
+    }
+
+    .slide .onboarding-pin-extension__image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        width: 346px;
+        height: auto;
+        object-fit: contain;
+      }
     }
   }
 
-  &__diagram {
-    margin: 24px auto;
-    max-width: 799px;
-    height: 320px;
+  &__arrow {
+    position: absolute;
+    z-index: 2;
+    top: calc(50% - 15px);
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    left: 15px;
+    border: 2px solid var(--color-icon-default);
   }
 
-  &__buttons {
-    max-width: 50%;
-    margin: 40px auto 0 auto;
+  &__arrow--next {
+    right: 15px;
+    left: unset;
   }
 }
