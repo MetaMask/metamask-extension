@@ -4973,6 +4973,15 @@
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
+  "securitySrpDescription": {
+    "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpTitle": {
+    "message": "Secret Recovery Phrase"
+  },
+  "securitySrpWalletRecovery": {
+    "message": "Wallet recovery"
+  },
   "seeAllPermissions": {
     "message": "See all permissions",
     "description": "Used for revealing more content (e.g. permission list, etc.)"
