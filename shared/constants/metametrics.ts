@@ -304,7 +304,7 @@ export type SegmentEventPayload = {
     params?: Record<string, string>;
     legacy_event?: boolean;
     locale: string;
-    chain_id: string;
+    chain_id: string | null;
     environment_type?: string;
     revenue?: number;
     value?: number;
@@ -758,6 +758,8 @@ export enum MetaMetricsEventName {
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
+  RpcServiceDegraded = 'RPC Service Degraded',
+  RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SecretRecoveryPhrasePickerDetailsClicked = 'Secret Recovery Phrase Details Clicked',
   SecretRecoveryPhrasePickerSelected = 'Secret Recovery Phrase Picker Selected',

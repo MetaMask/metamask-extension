@@ -20,6 +20,7 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   type BridgeController,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -30,6 +31,7 @@ import {
   updateQuoteRequestParams,
   resetBridgeState,
   setSlippage,
+  trackUnifiedSwapBridgeEvent,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -652,6 +654,34 @@ const PrepareBridgePage = () => {
                 if (!isSwap && !isNetworkAdded(toChain)) {
                   return;
                 }
+                toChain?.chainId &&
+                  fromToken &&
+                  toToken &&
+                  dispatch(
+                    trackUnifiedSwapBridgeEvent(
+                      UnifiedSwapBridgeEventName.InputSourceDestinationFlipped,
+                      {
+                        token_symbol_source: toToken?.symbol ?? null,
+                        token_symbol_destination: fromToken?.symbol ?? null,
+                        token_address_source:
+                          toAssetId(
+                            toToken.address ?? '',
+                            formatChainIdToCaip(toToken.chainId ?? ''),
+                          ) ??
+                          getNativeAssetForChainId(toChain.chainId)?.assetId,
+                        token_address_destination:
+                          toAssetId(
+                            fromToken.address ?? '',
+                            formatChainIdToCaip(fromToken.chainId ?? ''),
+                          ) ?? null,
+                        chain_id_source: formatChainIdToCaip(toChain.chainId),
+                        chain_id_destination: fromChain?.chainId
+                          ? formatChainIdToCaip(fromChain?.chainId)
+                          : null,
+                        security_warnings: [],
+                      },
+                    ),
+                  );
                 setRotateSwitchTokens(!rotateSwitchTokens);
                 flippedRequestProperties &&
                   trackCrossChainSwapsEvent({
