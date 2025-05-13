@@ -171,7 +171,7 @@
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
-        "EIPS": { "1559": false },
+        "EIPS": { "1559": true },
         "status": "available"
       }
     },

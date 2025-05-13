@@ -212,4 +212,58 @@ describe('AggregatedBalance Component', () => {
     );
     expect(screen.getByText('SOL')).toBeInTheDocument();
   });
+
+  it('renders token balance when non evm rates are not available', () => {
+    renderWithProvider(
+      <AggregatedBalance
+        classPrefix="test"
+        balanceIsCached={false}
+        handleSensitiveToggle={jest.fn()}
+      />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          preferences: {
+            showNativeTokenAsMainBalance: false,
+          },
+          conversionRates: {},
+        },
+      }),
+    );
+
+    expect(screen.getByTestId('account-value-and-suffix')).toHaveTextContent(
+      '1',
+    );
+    expect(screen.getByText('SOL')).toBeInTheDocument();
+  });
+
+  it('renders token balance when setting prices is disabled', () => {
+    renderWithProvider(
+      <AggregatedBalance
+        classPrefix="test"
+        balanceIsCached={false}
+        handleSensitiveToggle={jest.fn()}
+      />,
+      getStore({
+        metamask: {
+          ...mockMetamaskStore,
+          useCurrencyRateCheck: false,
+          preferences: {
+            showNativeTokenAsMainBalance: false,
+          },
+          conversionRates: {
+            [MultichainNativeAssets.SOLANA]: {
+              rate: '1.000',
+              conversionDate: 0,
+            },
+          },
+        },
+      }),
+    );
+
+    expect(screen.getByTestId('account-value-and-suffix')).toHaveTextContent(
+      '1',
+    );
+    expect(screen.getByText('SOL')).toBeInTheDocument();
+  });
 });
