@@ -8,6 +8,7 @@ import {
 import LoginPage from '../../page-objects/pages/login-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
+import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 
 describe('Vault Corruption', function () {
   /**
@@ -109,11 +110,13 @@ describe('Vault Corruption', function () {
     );
     const initialAccount = await firstAccountDiv.getAttribute('textContent');
 
-    await driver.navigate(PAGES.BACKGROUND);
-    await driver.executeScript(script);
+    if (isManifestV3) {
+      await driver.navigate(PAGES.OFFSCREEN, { waitForControllers: false });
+    } else {
+      await driver.navigate(PAGES.BACKGROUND, { waitForControllers: false });
+    }
 
-    // TODO: how can we detect when it has reloaded?
-    // await driver.delay(10000);
+    await driver.executeScript(script);
 
     await driver.driver.switchTo().window(initialWindow);
 
