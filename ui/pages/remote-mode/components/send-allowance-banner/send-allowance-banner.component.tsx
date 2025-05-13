@@ -24,7 +24,7 @@ export default function SendAllowanceBanner({
   return (
     <Card backgroundColor={BackgroundColor.backgroundMuted} marginBottom={3}>
       <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
-        Send {`${allowance.amount} ${allowance.tokenType}`} without connecting
+        Send {`${allowance.amount} ${allowance.symbol}`} without connecting
         hardware wallet.
         <Text
           display={Display.InlineBlock}

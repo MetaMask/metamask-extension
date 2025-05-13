@@ -133,7 +133,7 @@ export const getRemoteModeConfig = createSelector(
 type GetRemoteSendAllowanceParams = {
   from: Address;
   chainId: Hex;
-  asset: Asset;
+  asset?: Asset;
 };
 
 export const getRemoteSendAllowance = (
@@ -167,9 +167,9 @@ export const getRemoteSendAllowance = (
     return null;
   }
 
-  const symbol = asset.details?.symbol ?? 'ETH';
+  const address = asset?.details?.address ?? '';
 
-  const allowance = meta.allowances.find((a) => a.tokenType === symbol);
+  const allowance = meta.allowances.find((a) => a.address === address);
 
   if (!allowance) {
     return null;
