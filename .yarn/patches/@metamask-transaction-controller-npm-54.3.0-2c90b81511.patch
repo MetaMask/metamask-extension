@@ -24,3 +24,51 @@ index 45129a2bdc8f5bcb3955eb7c1a82a1164364a084..138efb1d178be8d2c5dc623ecd18b499
  export class IncomingTransactionHelper {
      constructor({ getCache, getCurrentAccount, getLocalTransactions, includeTokenTransfers, isEnabled, queryEntireHistory, remoteTransactionSource, trimTransactions, updateCache, updateTransactions, }) {
          _IncomingTransactionHelper_instances.add(this);
+diff --git a/dist/utils/validation.cjs b/dist/utils/validation.cjs
+index 71521677f3b61f3cc19c78707b09cb83a9a8505c..15997a10940bdfdae2f0250b0af511c40c1c6ff9 100644
+--- a/dist/utils/validation.cjs
++++ b/dist/utils/validation.cjs
+@@ -32,19 +32,8 @@ const TRANSACTION_ENVELOPE_TYPES_FEE_MARKET = [
+  * @throws Throws an error if the transaction is not permitted.
+  */
+ async function validateTransactionOrigin({ data, from, internalAccounts, origin, permittedAddresses, selectedAddress, txParams, type, }) {
+-    const isInternal = origin === controller_utils_1.ORIGIN_METAMASK;
+     const isExternal = origin && origin !== controller_utils_1.ORIGIN_METAMASK;
+     const { authorizationList, to, type: envelopeType } = txParams;
+-    if (isInternal && from !== selectedAddress) {
+-        throw rpc_errors_1.rpcErrors.internal({
+-            message: `Internally initiated transaction is using invalid account.`,
+-            data: {
+-                origin,
+-                fromAddress: from,
+-                selectedAddress,
+-            },
+-        });
+-    }
+     if (isExternal && permittedAddresses && !permittedAddresses.includes(from)) {
+         throw rpc_errors_1.providerErrors.unauthorized({ data: { origin } });
+     }
+diff --git a/dist/utils/validation.mjs b/dist/utils/validation.mjs
+index 5d4d4cba5f494ce276eda44e96bb88467a39b21e..2ead49fc4359aede7eba724a70151671677b2e49 100644
+--- a/dist/utils/validation.mjs
++++ b/dist/utils/validation.mjs
+@@ -29,19 +29,8 @@ const TRANSACTION_ENVELOPE_TYPES_FEE_MARKET = [
+  * @throws Throws an error if the transaction is not permitted.
+  */
+ export async function validateTransactionOrigin({ data, from, internalAccounts, origin, permittedAddresses, selectedAddress, txParams, type, }) {
+-    const isInternal = origin === ORIGIN_METAMASK;
+     const isExternal = origin && origin !== ORIGIN_METAMASK;
+     const { authorizationList, to, type: envelopeType } = txParams;
+-    if (isInternal && from !== selectedAddress) {
+-        throw rpcErrors.internal({
+-            message: `Internally initiated transaction is using invalid account.`,
+-            data: {
+-                origin,
+-                fromAddress: from,
+-                selectedAddress,
+-            },
+-        });
+-    }
+     if (isExternal && permittedAddresses && !permittedAddresses.includes(from)) {
+         throw providerErrors.unauthorized({ data: { origin } });
+     }
