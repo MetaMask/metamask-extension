@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { getBridgeStatusKey } from '../../../../shared/lib/bridge-status/utils';
+import { getBridgeStatusKey } from '@metamask/bridge-status-controller';
 import {
   Display,
   FlexDirection,
