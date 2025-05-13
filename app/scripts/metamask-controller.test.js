@@ -714,6 +714,20 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#resetOAuthLoginState', () => {
+      it('should reset the social login state', async () => {
+        await metamaskController.resetOAuthLoginState();
+
+        const seedlessOnboardingState =
+          metamaskController.seedlessOnboardingController.state;
+        expect(seedlessOnboardingState.authConnection).toBe(undefined);
+        expect(seedlessOnboardingState.authConnectionId).toBe(undefined);
+        expect(seedlessOnboardingState.groupedAuthConnectionId).toBe(undefined);
+        expect(seedlessOnboardingState.userId).toBe(undefined);
+        expect(seedlessOnboardingState.socialLoginEmail).toBe(undefined);
+      });
+    });
+
     describe('#createNewVaultAndKeychain', () => {
       it('can only create new vault on keyringController once', async () => {
         const password = 'a-fake-password';

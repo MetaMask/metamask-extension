@@ -3713,6 +3713,7 @@ export default class MetamaskController extends EventEmitter {
 
       // seedless onboarding
       startOAuthLogin: this.startOAuthLogin.bind(this),
+      resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
       fetchAllSeedPhrases: this.fetchAllSeedPhrases.bind(this),
       updateBackupMetadataState: this.updateBackupMetadataState.bind(this),
@@ -4872,6 +4873,19 @@ export default class MetamaskController extends EventEmitter {
       return isNewUser;
     } catch (error) {
       log.error('Error while starting social login', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Resets the social login state and onboarding state.
+   */
+  resetOAuthLoginState() {
+    try {
+      this.seedlessOnboardingController.clearState();
+      this.onboardingController.setFirstTimeFlowType(null);
+    } catch (error) {
+      log.error('Error while resetting social login state', error);
       throw error;
     }
   }
