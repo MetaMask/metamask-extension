@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stop emitting Dapp Viewed events on Firefox ([#32583](https://github.com/MetaMask/metamask-extension/pull/32583))
 - Make phishing warning events anonymous ([#32635](https://github.com/MetaMask/metamask-extension/pull/32635))
 - Keep showing the approve row in the batch transaction confirmation ([#32658](https://github.com/MetaMask/metamask-extension/pull/32658))
+- Support permit2 approvals in batch simulation ([#32733](https://github.com/MetaMask/metamask-extension/pull/32733))
+- Adding metrics to check rejection of smart account update by user ([#32737](https://github.com/MetaMask/metamask-extension/pull/32737))
 
 ## [12.17.2]
 ### Changed
