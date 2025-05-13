@@ -5,7 +5,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { errorCodes } from '@metamask/rpc-errors';
 import { toHex } from '@metamask/controller-utils';
 import {
   createTestProviderTools,
@@ -17,6 +16,7 @@ import {
 } from '../../../../shared/constants/app';
 import {
   AssetType,
+  EIP5792ErrorCode,
   TokenStandard,
   TransactionMetaMetricsEvent,
 } from '../../../../shared/constants/transaction';
@@ -1201,7 +1201,7 @@ describe('Transaction metrics', () => {
             authorizationList: [{}],
           },
           error: {
-            code: errorCodes.rpc.methodNotSupported,
+            code: EIP5792ErrorCode.RejectedUpgrade,
           },
           status: TransactionStatus.rejected,
         } as unknown as TransactionMeta,
