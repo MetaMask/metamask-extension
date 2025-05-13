@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { escapeRegExp } from 'lodash';
 import { Mockttp } from 'mockttp';
 
 const SNAP_ASSETS_RELATIVE_PATH =
@@ -40,8 +41,9 @@ function sortFilesByVersion(versions: string[]): void {
  */
 export function getLocalSnapLatestVersion(snapNamePrefix: string): string {
   const files = fs.readdirSync(SNAP_ASSETS_RELATIVE_PATH);
+  const sanitizedSnapNamePrefix = escapeRegExp(snapNamePrefix);
   const versionRegex = new RegExp(
-    `${snapNamePrefix}-(\\d+\\.\\d+\\.\\d+)\\.txt`,
+    `${sanitizedSnapNamePrefix}-(\\d+\\.\\d+\\.\\d+)\\.txt`,
     'u',
   );
   const foundVersions: string[] = [];
