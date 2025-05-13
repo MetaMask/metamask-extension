@@ -3249,10 +3249,6 @@ export function setDefaultHomeActiveTabName(
   };
 }
 
-export function setPasswordHint(hint: string) {
-  return setPreference('passwordHint', hint);
-}
-
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
   return setPreference('showNativeTokenAsMainBalance', value);
 }
