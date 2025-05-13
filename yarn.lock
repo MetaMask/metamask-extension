@@ -5125,9 +5125,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@metamask/bridge-controller@npm:20.0.0"
+"@metamask/bridge-controller@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "@metamask/bridge-controller@npm:23.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5135,23 +5135,23 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/controller-utils": "npm:^11.8.0"
     "@metamask/gas-fee-controller": "npm:^23.0.0"
     "@metamask/keyring-api": "npm:^17.4.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-network-controller": "npm:^0.5.1"
+    "@metamask/multichain-network-controller": "npm:^0.6.0"
     "@metamask/polling-controller": "npm:^13.0.0"
     "@metamask/utils": "npm:^11.2.0"
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
   peerDependencies:
-    "@metamask/accounts-controller": ^27.0.0
-    "@metamask/assets-controllers": ^60.0.0
+    "@metamask/accounts-controller": ^28.0.0
+    "@metamask/assets-controllers": ^62.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.6.0
     "@metamask/snaps-controllers": ^11.0.0
-    "@metamask/transaction-controller": ^54.0.0
-  checksum: 10/4f74716fd09cbc9a70ad1f4a1c91fcc9b26ed0670d8568d7f9eef2978f43bc85d7e1f2d0ffb5cc14dd012c19a86625d585fa67a4cfa51dfa9031bd06aaff7dd6
+    "@metamask/transaction-controller": ^55.0.0
+  checksum: 10/a3e825fac2f4aa210fdf486a465b57304aa35abd199659f639b1cc91b4a3cd390f2e1786d5625540a4b0d3256ef0d2d427e3d10c5449a7c2e540f115edfcf0dc
   languageName: node
   linkType: hard
 
@@ -5980,6 +5980,24 @@ __metadata:
     "@metamask/accounts-controller": ^27.0.0
     "@metamask/network-controller": ^23.0.0
   checksum: 10/ebfcf3219d7abb6f826fbd1f0eaa6af7c667dfa89a671cec2eaf2b039602e038c5cb6f63681a5e5255165d13aaee736c72750348647f0c97c7e5fcb85932f7c8
+  languageName: node
+  linkType: hard
+
+"@metamask/multichain-network-controller@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/multichain-network-controller@npm:0.6.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/keyring-internal-api": "npm:^6.0.1"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.2.0"
+    "@solana/addresses": "npm:^2.0.0"
+  peerDependencies:
+    "@metamask/accounts-controller": ^28.0.0
+    "@metamask/network-controller": ^23.0.0
+  checksum: 10/300c431098e1dacaf75fdd5b63bdb07eaa02ad49b85c3563c0335fccd8180a8826ded2981255162f6e0c312301211c57a032352a9c4acdaca15255b936301325
   languageName: node
   linkType: hard
 
@@ -30019,7 +30037,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.12.1"
-    "@metamask/bridge-controller": "npm:^20.0.0"
+    "@metamask/bridge-controller": "npm:^23.0.0"
     "@metamask/bridge-status-controller": "npm:^20.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
