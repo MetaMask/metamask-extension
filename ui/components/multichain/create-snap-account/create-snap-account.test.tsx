@@ -121,11 +121,16 @@ describe('CreateSnapAccount', () => {
     fireEvent.click(createButton);
 
     await waitFor(() => {
-      expect(mockCreateAccount).toHaveBeenCalledWith({
-        scope: defaultProps.chainId,
-        entropySource: defaultProps.selectedKeyringId,
-        accountNameSuggestion: '',
-      });
+      expect(mockCreateAccount).toHaveBeenCalledWith(
+        {
+          scope: defaultProps.chainId,
+          entropySource: defaultProps.selectedKeyringId,
+          accountNameSuggestion: '',
+        },
+        {
+          setSelectedAccount: undefined,
+        },
+      );
     });
   });
 

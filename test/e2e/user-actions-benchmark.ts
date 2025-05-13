@@ -1,6 +1,5 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { Mockttp } from 'mockttp';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { exitWithError } from '../../development/lib/exit-with-error';
@@ -8,9 +7,8 @@ import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
 import { Driver } from './webdriver/driver';
 import FixtureBuilder from './fixture-builder';
 import HomePage from './page-objects/pages/home/homepage';
-import { mockFeatureFlag } from './tests/bridge/bridge-test-utils';
 import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
-import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './tests/bridge/constants';
+import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './tests/bridge/constants';
 import {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
@@ -118,14 +116,11 @@ async function bridgeUserActions(): Promise<{
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
       title: 'benchmark-userActions-bridgeUserActions',
-      testSpecificMock: async (mockServer: Mockttp) => [
-        await mockFeatureFlag(mockServer, {
-          'extension-config': {
-            ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
-            support: true,
-          },
-        }),
-      ],
+      manifestFlags: {
+        remoteFeatureFlags: {
+          bridgeConfig: DEFAULT_BRIDGE_FEATURE_FLAGS,
+        },
+      },
     },
     async ({ driver }: { driver: Driver }) => {
       await logInWithBalanceValidation(driver);

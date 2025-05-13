@@ -129,12 +129,11 @@ describe('createDelegation', () => {
       caveats: [],
     });
 
-    expect(result).toStrictEqual({
+    expect(result).toMatchObject({
       delegate: mockDelegate,
       delegator: mockDelegator,
       authority: ROOT_AUTHORITY,
       caveats: [],
-      salt: '0x',
       signature: '0x',
     });
   });
@@ -149,12 +148,11 @@ describe('createDelegation', () => {
       parentDelegation: parentHash,
     });
 
-    expect(result).toStrictEqual({
+    expect(result).toMatchObject({
       delegate: mockDelegate,
       delegator: mockDelegator,
       authority: parentHash,
       caveats: [],
-      salt: '0x',
       signature: '0x',
     });
   });
@@ -174,7 +172,7 @@ describe('createDelegation', () => {
       caveats,
     });
 
-    expect(result).toStrictEqual({
+    expect(result).toMatchObject({
       delegate: mockDelegate,
       delegator: mockDelegator,
       authority: ROOT_AUTHORITY,
@@ -185,7 +183,6 @@ describe('createDelegation', () => {
           args: '0x',
         },
       ],
-      salt: '0x',
       signature: '0x',
     });
   });

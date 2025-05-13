@@ -112,17 +112,16 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/plus-minus.svg');"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/plus-and-minus.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
-            Buy & Sell
+            Buy/Sell
           </p>
         </button>
         <button
@@ -132,15 +131,14 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
             Swap
           </p>
@@ -151,15 +149,14 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
             Bridge
           </p>
@@ -170,15 +167,14 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
             Send
           </p>
@@ -189,15 +185,14 @@ exports[`AssetPage should render a native asset 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/scan-barcode.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
             Receive
           </p>
@@ -541,17 +536,16 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/plus-minus.svg');"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/plus-and-minus.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
-            Buy & Sell
+            Buy/Sell
           </p>
         </button>
         <button
@@ -560,15 +554,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
             Send
           </p>
@@ -578,15 +571,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
             Swap
           </p>
@@ -597,15 +589,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
             Bridge
           </p>
@@ -982,17 +973,16 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
-              style="mask-image: url('./images/icons/plus-minus.svg');"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/plus-and-minus.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
-            Buy & Sell
+            Buy/Sell
           </p>
         </button>
         <button
@@ -1001,15 +991,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
             Send
           </p>
@@ -1019,15 +1008,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
             Swap
           </p>
@@ -1038,15 +1026,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         >
           <div
             class="icon-button__circle"
-            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
           >
             Bridge
           </p>

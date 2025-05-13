@@ -55,9 +55,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        index: [0, 1, 2, 3, 4]
     with:
       test-suite-name: test-e2e-chrome-flask
+      build-artifact: prep-build-test-flask-browserify-chrome
       build-command: yarn build:test:flask
       test-command: yarn test:e2e:chrome:flask
       matrix-index: ${{ matrix.index }}
@@ -81,14 +82,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !cancelled() }}
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       # For a `pull_request` event, the branch is `github.head_ref`.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
-      TEST_RESULTS_PATH: test/test-results/e2e
-      RUN_ID: ${{ github.run_id }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
+      TEST_RUNS_PATH: test/test-results/test-runs-chrome.json
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -110,4 +110,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-e2e-chrome-report
-          path: test/test-results/test-runs.json
+          path: ${{ env.TEST_RUNS_PATH }}
