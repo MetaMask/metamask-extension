@@ -137,7 +137,6 @@ async function defineAndRunBuildTasks() {
       'Promise',
       'JSON',
       'Date',
-      'getSelection',
       // globals sentry needs to function
       '__SENTRY__',
       'appState',
@@ -158,6 +157,7 @@ async function defineAndRunBuildTasks() {
         // in the future, more of the globals above can be put in this list
         'Proxy',
         'ret_nodes',
+        'getSelection',
       ];
     }
 
