@@ -43,9 +43,9 @@ const initialStore = () => ({
   metamask: {
     isSignedIn: false,
     useExternalServices: true,
-    isProfileSyncingEnabled: true,
+    isBackupAndSyncEnabled: true,
     participateInMetaMetrics: false,
-    isProfileSyncingUpdateLoading: false,
+    isBackupAndSyncUpdateLoading: false,
   },
   appState: {
     externalServicesOnboardingToggleState: true,
@@ -107,7 +107,7 @@ describe('TurnOnBackupAndSyncModal', () => {
 
   it('calls setIsBackupAndSyncFeatureEnabled and pushes to history when the button is clicked if basic functionality is already enabled', async () => {
     const store = initialStore();
-    store.metamask.isProfileSyncingEnabled = false;
+    store.metamask.isBackupAndSyncEnabled = false;
     store.metamask.useExternalServices = true;
 
     const { getByTestId } = render(
