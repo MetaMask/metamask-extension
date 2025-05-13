@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import React, { Component, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { SeedlessOnboardingControllerError } from '@metamask/seedless-onboarding-controller';
 import {
   Text,
   FormTextField,
@@ -24,7 +25,10 @@ import {
   TextAlign,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -93,7 +97,7 @@ export default class UnlockPage extends Component {
      */
     isUnlocked: PropTypes.bool,
     /**
-     * onClick handler for "Forgot password?" link
+     * onClick handler for "Forgot password?" button
      */
     onRestore: PropTypes.func,
     /**
@@ -104,11 +108,16 @@ export default class UnlockPage extends Component {
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
+    /**
+     * Password hint
+     */
+    passwordHint: PropTypes.string.optional,
   };
 
   state = {
     password: '',
     error: null,
+    showHint: false,
     isLocked: false,
   };
 
@@ -131,7 +140,7 @@ export default class UnlockPage extends Component {
     event.stopPropagation();
 
     const { password } = this.state;
-    const { onSubmit, forceUpdateMetamaskState } = this.props;
+    const { onSubmit } = this.props;
 
     if (password === '' || this.submitting) {
       return;
@@ -155,27 +164,63 @@ export default class UnlockPage extends Component {
         },
       );
     } catch (error) {
-      this.failed_attempts += 1;
-      const errorMessage = error instanceof Error ? error.message : error;
-
-      // TODO: add remainingTime and isPermanent on UI
-      // remainingTime: seconds
-      // isPermanent: boolean
-      if (errorMessage === 'Incorrect password') {
-        await forceUpdateMetamaskState();
-        this.context.trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.AppUnlockedFailed,
-          properties: {
-            reason: 'incorrect_password',
-            failed_attempts: this.failed_attempts,
-          },
-        });
-      }
-
-      this.setState({ error: errorMessage });
-      this.submitting = false;
+      await this.handleLoginError(error);
     }
+  };
+
+  handleLoginError = async (error) => {
+    const { t } = this.context;
+    this.failed_attempts += 1;
+    const { message, data } = error;
+    let finalErrorMessage = message;
+    let errorReason;
+    let isLocked = false;
+
+    switch (message) {
+      case 'Incorrect password':
+      case SeedlessOnboardingControllerError.IncorrectPassword:
+        finalErrorMessage = t('unlockPageIncorrectPassword');
+        errorReason = 'incorrect_password';
+        break;
+      case SeedlessOnboardingControllerError.TooManyLoginAttempts:
+        isLocked = true;
+
+        // TODO: check if we need to remove this
+        if (data.isPermanent) {
+          finalErrorMessage = t('unlockPageTooManyFailedAttemptsPermanent');
+        } else {
+          const initialRemainingTime = data.remainingTime;
+          finalErrorMessage = t('unlockPageTooManyFailedAttempts', [
+            <Counter
+              key="unlockPageTooManyFailedAttempts"
+              remainingTime={initialRemainingTime}
+              unlock={() => this.setState({ isLocked: false, error: '' })}
+            />,
+          ]);
+        }
+        errorReason = 'too_many_login_attempts';
+        break;
+      case 'Seed phrase not found':
+        this.props.history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+        return;
+      default:
+        finalErrorMessage = message;
+        break;
+    }
+
+    if (errorReason) {
+      await this.props.forceUpdateMetamaskState();
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.AppUnlockedFailed,
+        properties: {
+          reason: errorReason,
+          failed_attempts: this.failed_attempts,
+        },
+      });
+    }
+    this.setState({ error: finalErrorMessage, isLocked });
+    this.submitting = false;
   };
 
   handleInputChange(event) {
@@ -189,6 +234,32 @@ export default class UnlockPage extends Component {
       x: boundingRect.left + coordinates.left - element.scrollLeft,
       y: boundingRect.top + coordinates.top - element.scrollTop,
     });
+  }
+
+  renderSubmitButton() {
+    const style = {
+      backgroundColor: 'var(--color-primary-default)',
+      color: 'var(--color-primary-inverse)',
+      marginTop: '20px',
+      height: '56px',
+      fontWeight: '500',
+      boxShadow: 'none',
+      borderRadius: '100px',
+    };
+
+    return (
+      <Button
+        type="submit"
+        data-testid="unlock-submit"
+        style={style}
+        disabled={!this.state.password}
+        variant="contained"
+        size="large"
+        onClick={this.handleSubmit}
+      >
+        {this.context.t('unlock')}
+      </Button>
+    );
   }
 
   renderMascot = () => {
@@ -212,9 +283,11 @@ export default class UnlockPage extends Component {
   };
 
   renderHelpText = () => {
-    const { error } = this.state;
+    const { error, showHint } = this.state;
+    const { passwordHint } = this.props;
+    const { t } = this.context;
 
-    if (!error) {
+    if (!error && !showHint) {
       return null;
     }
 
@@ -233,14 +306,19 @@ export default class UnlockPage extends Component {
             {error}
           </Text>
         )}
+        {showHint && (
+          <Text textAlign={TextAlign.Left} color={TextColor.textMuted}>
+            {t('unlockPageHint', [passwordHint])}
+          </Text>
+        )}
       </Box>
     );
   };
 
   render() {
-    const { password, error, isLocked } = this.state;
+    const { password, error, showHint, isLocked } = this.state;
     const { t } = this.context;
-    const { onRestore } = this.props;
+    const { passwordHint, onRestore } = this.props;
 
     const needHelpText = t('needHelpLinkText');
 
@@ -268,6 +346,7 @@ export default class UnlockPage extends Component {
                 {t('welcomeBack')}
               </Text>
               <FormTextField
+                value={password}
                 id="password"
                 label={
                   <Box
@@ -280,6 +359,17 @@ export default class UnlockPage extends Component {
                     <Text variant={TextVariant.bodyMdMedium}>
                       {t('password')}
                     </Text>
+                    {passwordHint && (
+                      <ButtonLink
+                        onClick={() => {
+                          this.setState({ showHint: !showHint });
+                        }}
+                      >
+                        {showHint
+                          ? t('unlockPageHintHide')
+                          : t('unlockPageHintShow')}
+                      </ButtonLink>
+                    )}
                   </Box>
                 }
                 placeholder={t('enterPassword')}
@@ -291,7 +381,7 @@ export default class UnlockPage extends Component {
                 onChange={(event) => this.handleInputChange(event)}
                 error={Boolean(error)}
                 helpText={this.renderHelpText()}
-                autoComplete
+                autoComplete="current-password"
                 autoFocus
                 disabled={isLocked}
                 width={BlockSize.Full}

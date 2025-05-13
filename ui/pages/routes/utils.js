@@ -70,11 +70,19 @@ function onInitializationUnlockPage(props) {
 }
 
 export function showOnboardingHeader(location) {
-  return Boolean(
-    matchPath(location.pathname, {
-      path: ONBOARDING_ROUTE,
-      exact: false,
-    }),
+  return (
+    Boolean(
+      matchPath(location.pathname, {
+        path: ONBOARDING_ROUTE,
+        exact: false,
+      }),
+    ) &&
+    Boolean(
+      !matchPath(location.pathname, {
+        path: ONBOARDING_UNLOCK_ROUTE,
+        exact: false,
+      }),
+    )
   );
 }
 

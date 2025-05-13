@@ -6792,6 +6792,22 @@
     "message": "Hint: $1",
     "description": "$1 is the password hint"
   },
+  "unlockPageHintHide": {
+    "message": "Hide hint"
+  },
+  "unlockPageHintShow": {
+    "message": "Show hint"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "Password is incorrect. Please try again."
+  },
+  "unlockPageTooManyFailedAttempts": {
+    "message": "Too many failed attempts. Please try again in $1.",
+    "description": "$1 time to try again"
+  },
+  "unlockPageTooManyFailedAttemptsPermanent": {
+    "message": "Too many failed attempts. Your account is permanently locked."
+  },
   "unpin": {
     "message": "Unpin"
   },
