@@ -20,6 +20,8 @@ const useTokenDetectionPolling = () => {
 
   useMultiPolling({
     startPolling: tokenDetectionStartPolling,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenDetectionStopPollingByPollingToken,
     input: enabled ? [chainIds] : [],
   });
