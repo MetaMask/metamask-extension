@@ -13,6 +13,7 @@ import {
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const mockAccount = {
@@ -24,6 +25,16 @@ const mockAccount = {
 
 const mockBitcoinAccount = {
   ...mockAccount,
+  id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
+  address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
+  type: BtcAccountType.P2wpkh,
+};
+
+const mockNonEvmAccount = {
+  ...mockState.metamask.internalAccounts.accounts[
+    'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+  ],
+  balance: '1', // updating this  to 1 because the balance for native non evm networks comes from the multichainBalances controller in decimal format and not hex.
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: BtcAccountType.P2wpkh,
@@ -141,7 +152,16 @@ describe('AccountListItem', () => {
   });
 
   it('renders AccountListItem component and shows account name, address, and balance for non-EVM account', () => {
-    const { container } = render({ account: mockBitcoinAccount });
+    const { container } = render(
+      { account: mockNonEvmAccount },
+      {
+        metamask: {
+          accountsAssets: {
+            [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
+          },
+        },
+      },
+    );
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(
       screen.getByText(shortenAddress(mockBitcoinAccount.address)),
@@ -328,6 +348,9 @@ describe('AccountListItem', () => {
               preferences: {
                 showFiatInTestnets: false,
               },
+              accountsAssets: {
+                [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
+              },
             },
           },
         );
@@ -394,6 +417,9 @@ describe('AccountListItem', () => {
             metamask: {
               preferences: {
                 showFiatInTestnets: true,
+              },
+              accountsAssets: {
+                [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
               },
             },
           },
