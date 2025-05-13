@@ -1441,6 +1441,9 @@
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
+  "copyAddressShort": {
+    "message": "Copy address"
+  },
   "copyPrivateKey": {
     "message": "Copy private key"
   },

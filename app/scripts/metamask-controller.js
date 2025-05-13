@@ -2176,10 +2176,6 @@ export default class MetamaskController extends EventEmitter {
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
-          getDisabledUpgradeAccountsByChain:
-            this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
-              this.preferencesController,
-            ),
           getDismissSmartAccountSuggestionEnabled: () =>
             this.preferencesController.state.preferences
               .dismissSmartAccountSuggestionEnabled,
@@ -2200,10 +2196,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
       getCapabilities: getCapabilities.bind(null, {
-        getDisabledUpgradeAccountsByChain:
-          this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
-            this.preferencesController,
-          ),
         getDismissSmartAccountSuggestionEnabled: () =>
           this.preferencesController.state.preferences
             .dismissSmartAccountSuggestionEnabled,
@@ -3784,9 +3776,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      disableAccountUpgrade: preferencesController.disableAccountUpgrade.bind(
-        preferencesController,
-      ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
