@@ -119,8 +119,12 @@ export const BridgeQuoteCard = () => {
                             getNativeAssetForChainId(fromChain.chainId).assetId,
                           token_symbol_destination: toToken?.symbol ?? null,
                           price_impact: Number(
-                            activeQuote.quote?.priceData?.priceImpact ??
-                              '0',
+                            // TODO remove this once we bump to the latest version of the bridge controller
+                            (
+                              activeQuote.quote as unknown as {
+                                priceData: { priceImpact: string };
+                              }
+                            )?.priceData?.priceImpact ?? '0',
                           ),
                           gas_included: false,
                         },
