@@ -6843,6 +6843,9 @@
   "use4ByteResolution": {
     "message": "Decode smart contracts"
   },
+  "useDifferentLoginMethod": {
+    "message": "Use a different login method"
+  },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
   },

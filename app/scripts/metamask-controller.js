@@ -259,6 +259,7 @@ import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -3713,6 +3714,7 @@ export default class MetamaskController extends EventEmitter {
 
       // seedless onboarding
       startOAuthLogin: this.startOAuthLogin.bind(this),
+      resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
       fetchAllSeedPhrases: this.fetchAllSeedPhrases.bind(this),
       updateBackupMetadataState: this.updateBackupMetadataState.bind(this),
@@ -4878,6 +4880,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Resets the social login state and onboarding state.
+   */
+  resetOAuthLoginState() {
+    try {
+      this.seedlessOnboardingController.clearState();
+      this.onboardingController.setFirstTimeFlowType(null);
+    } catch (error) {
+      log.error('Error while resetting social login state', error);
+      throw error;
+    }
+  }
+
+  /**
    * Creates a seed phrase backup for the user.
    *
    * Generate Encryption Key from the password using the Threshold OPRF and encrypt the seed phrase with the key.
@@ -5097,7 +5112,8 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      const { completedOnboarding } = this.onboardingController.state;
+      const { completedOnboarding, firstTimeFlowType } =
+        this.onboardingController.state;
 
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
@@ -5128,6 +5144,11 @@ export default class MetamaskController extends EventEmitter {
         password,
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
+
+      if (firstTimeFlowType === FirstTimeFlowType.social) {
+        // update the Onboarding state when user restore the existing wallet with social login
+        this.onboardingController.setRestoreWithSocialLogin(true);
+      }
 
       if (completedOnboarding) {
         ///: BEGIN:ONLY_INCLUDE_IF(solana)

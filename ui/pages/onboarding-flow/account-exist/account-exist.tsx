@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
@@ -29,15 +29,23 @@ import {
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { resetOAuthLoginState } from '../../../store/actions';
 
 export default function AccountExist() {
   const history = useHistory();
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
   const onDone = async () => {
     history.push(ONBOARDING_UNLOCK_ROUTE);
+  };
+
+  const onLoginWithDifferentMethod = async () => {
+    // clear the social login state
+    await dispatch(resetOAuthLoginState());
+    history.push(ONBOARDING_WELCOME_ROUTE);
   };
 
   useEffect(() => {
@@ -112,6 +120,7 @@ export default function AccountExist() {
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
+        gap={2}
       >
         <Button
           data-testid="onboarding-complete-done"
@@ -121,6 +130,15 @@ export default function AccountExist() {
           onClick={onDone}
         >
           {t('accountAlreadyExistsLogin')}
+        </Button>
+        <Button
+          data-testid="account-exist-login-with-different-method"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          width={BlockSize.Full}
+          onClick={onLoginWithDifferentMethod}
+        >
+          {t('useDifferentLoginMethod')}
         </Button>
       </Box>
     </Box>
