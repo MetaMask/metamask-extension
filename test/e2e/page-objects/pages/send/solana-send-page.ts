@@ -1,5 +1,6 @@
 import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
+import { regularDelayMs } from '../../../helpers';
 
 class SendSolanaPage {
   private driver: Driver;
@@ -166,21 +167,8 @@ class SendSolanaPage {
   }
 
   async setToAddress(toAddress: string): Promise<void> {
-    let failed = true;
-    for (let i = 0; i < 5 && failed; i++) {
-      try {
-        await this.driver.fill(this.toAddressInput, toAddress);
-        const toAddressRequired = await this.driver.isElementPresent(
-          this.toAddressRequiredValidation,
-        );
-        if (!toAddressRequired) {
-          failed = false;
-        }
-      } catch (err: unknown) {
-        console.log('Error encountered, retrying...', err);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-    }
+    await this.driver.delay(regularDelayMs);
+    await this.driver.fill(this.toAddressInput, toAddress);
   }
 }
 
