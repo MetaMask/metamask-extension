@@ -263,7 +263,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
 
       // restore the remaining Mnemonics/SeedPhrases to the vault
       if (remainingSeedPhrases.length > 0) {
-        await restoreSeedPhrasesToVault(password, remainingSeedPhrases);
+        await restoreSeedPhrasesToVault(remainingSeedPhrases);
       }
 
       await forceUpdateMetamaskState(dispatch);
@@ -433,18 +433,13 @@ export function importMnemonicToVault(
 /**
  * Restores/syncs multiple seed phrases from the social login flow to the keyring vault.
  *
- * @param password - The password.
  * @param seedPhrases - The seed phrases.
  */
 export async function restoreSeedPhrasesToVault(
-  password: string,
   seedPhrases: Uint8Array[],
 ): Promise<void> {
   try {
-    await submitRequestToBackground('restoreSeedPhrasesToVault', [
-      password,
-      seedPhrases,
-    ]);
+    await submitRequestToBackground('restoreSeedPhrasesToVault', [seedPhrases]);
   } catch (error) {
     console.error('[restoreSeedPhrasesToVault] error', error);
     throw error;

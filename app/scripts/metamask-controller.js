@@ -4980,19 +4980,31 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Adds a new seed phrase backup for the user.
    *
+   * If `syncWithSocial` is false, it will only update the local state,
+   * and not sync the seed phrase to the server.
+   *
    * @param {string} mnemonic - The mnemonic to derive the seed phrase from.
    * @param {string} keyringId - The keyring id of the backup seed phrase.
+   * @param {boolean} syncWithSocial - whether to skip syncing with social login
    */
-  async addNewSeedPhraseBackup(mnemonic, keyringId) {
+  async addNewSeedPhraseBackup(mnemonic, keyringId, syncWithSocial = true) {
     const seedPhraseAsBuffer = Buffer.from(mnemonic, 'utf8');
 
     const seedPhraseAsUint8Array =
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
-    await this.seedlessOnboardingController.addNewSeedPhraseBackup(
-      seedPhraseAsUint8Array,
-      keyringId,
-    );
+    if (syncWithSocial) {
+      await this.seedlessOnboardingController.addNewSeedPhraseBackup(
+        seedPhraseAsUint8Array,
+        keyringId,
+      );
+    } else {
+      // Do not sync the seed phrase to the server, only update the local state
+      this.seedlessOnboardingController.updateBackupMetadataState({
+        keyringId,
+        seedPhrase: seedPhraseAsUint8Array,
+      });
+    }
   }
 
   //=============================================================================
@@ -5065,12 +5077,13 @@ export default class MetamaskController extends EventEmitter {
       );
 
       const { firstTimeFlowType } = this.onboardingController.state;
-      if (
-        shouldCreateSocialBackup &&
-        firstTimeFlowType === FirstTimeFlowType.seedless
-      ) {
+      if (firstTimeFlowType === FirstTimeFlowType.social) {
         // if social backup is requested, add the seed phrase backup
-        await this.addNewSeedPhraseBackup(mnemonic, id);
+        await this.addNewSeedPhraseBackup(
+          mnemonic,
+          id,
+          shouldCreateSocialBackup,
+        );
       }
 
       const [newAccountAddress] = await this.keyringController.withKeyring(
@@ -5099,11 +5112,10 @@ export default class MetamaskController extends EventEmitter {
    *
    * This method is used to restore seed phrases from the Social Backup.
    *
-   * @param {string} password - The password.
    * @param {number[][]} seedPhrases - The seed phrases to restore.
    * @returns {Promise<void>}
    */
-  async restoreSeedPhrasesToVault(password, seedPhrases) {
+  async restoreSeedPhrasesToVault(seedPhrases) {
     const { firstTimeFlowType } = this.onboardingController.state;
 
     if (firstTimeFlowType !== FirstTimeFlowType.social) {
@@ -5112,11 +5124,8 @@ export default class MetamaskController extends EventEmitter {
       return; // or throw error here?
     }
 
-    const newSocialBackupsMetadata = [];
-
     // These mnemonics are restored from the Social Backup, so we don't need to do it again
     const shouldCreateSocialBackup = false;
-
     // This is used to select the new account in the wallet.
     // During the restore seed phrases, we just do the import, but don't change the selected account.
     // Just let the user select the account manually after the restore.
@@ -5131,36 +5140,7 @@ export default class MetamaskController extends EventEmitter {
         shouldCreateSocialBackup,
         shouldSetSelectedAccount,
       );
-
-      const updatedKeyringsMetadata =
-        this.keyringController.state.keyringsMetadata;
-      // get the latest keyring metadata from the updated keyrings metadata after importing the mnemonic
-      const latestKeyringMetadata =
-        updatedKeyringsMetadata[updatedKeyringsMetadata.length - 1];
-
-      // extra check to ensure the mnemonic is restored correctly with the correct keyring id
-      // get the seed phrase from the vault with the latest keyring id
-      const seedPhraseFromVault = await this.getSeedPhrase(
-        password,
-        latestKeyringMetadata.id,
-      );
-      const mnemonicFromVault =
-        Buffer.from(seedPhraseFromVault).toString('utf8');
-      // if the mnemonic from the vault is not the same as the mnemonic restored, throw an error
-      if (mnemonicFromVault !== mnemonicToRestore) {
-        throw new Error('Failed to restore mnemonic to vault');
-      }
-
-      newSocialBackupsMetadata.push({
-        keyringId: latestKeyringMetadata.id,
-        seedPhrase: this._convertMnemonicToWordlistIndices(
-          Buffer.from(seedPhrase),
-        ),
-      });
     }
-    this.seedlessOnboardingController.updateBackupMetadataState(
-      newSocialBackupsMetadata,
-    );
   }
 
   /**
@@ -5493,7 +5473,7 @@ export default class MetamaskController extends EventEmitter {
     // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     if (completedOnboarding) {
-      if (firstTimeFlowType === FirstTimeFlowType.seedless) {
+      if (firstTimeFlowType === FirstTimeFlowType.social) {
         // unlock the seedless onboarding vault
         this.seedlessOnboardingController.submitPassword(password);
       }

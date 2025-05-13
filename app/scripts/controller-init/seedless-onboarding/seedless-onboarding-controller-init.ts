@@ -34,8 +34,7 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
         return encryptor.decryptWithKey(key as EncryptionKey, payload);
       },
       encrypt: (key, data) => encryptor.encrypt(key, data),
-      encryptWithDetail: (key, data) =>
-        encryptor.encryptWithDetail(key, data),
+      encryptWithDetail: (key, data) => encryptor.encryptWithDetail(key, data),
       importKey: (key) => encryptor.importKey(key),
     },
   });

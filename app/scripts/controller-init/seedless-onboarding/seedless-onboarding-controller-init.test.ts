@@ -10,9 +10,6 @@ import {
 } from '../messengers/seedless-onboarding';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controller-init';
-import { keyFromPassword } from '@metamask/browser-passworder';
-import mockEncryptor from '../../../../test/lib/mock-encryptor';
-import { encryptorFactory } from '../../lib/encryptor-factory';
 
 jest.mock('@metamask/seedless-onboarding-controller');
 
