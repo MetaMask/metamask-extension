@@ -3,7 +3,7 @@ import { getChecksumAddress } from '@metamask/utils';
 import { keccak } from 'ethereumjs-util';
 import { getCaveatArrayPacketHash, type Caveat } from './caveat';
 import { resolveCaveats, type Caveats } from './caveatBuilder';
-import { toHex, type Hex } from './utils';
+import { concat, toFunctionSelector, toHex, type Hex } from './utils';
 
 /**
  * To be used on a delegation as the root authority.
@@ -185,7 +185,7 @@ export const createDelegation = (
     delegator: options.from,
     authority: resolveAuthority(options.parentDelegation),
     caveats: resolveCaveats(options.caveats),
-    salt: '0x',
+    salt: `0x${Math.random().toString(16).slice(2, 10)}`,
     signature: '0x',
   };
 };
@@ -207,4 +207,41 @@ export const createOpenDelegation = (
     salt: '0x',
     signature: '0x',
   };
+};
+
+/**
+ * Encodes the calldata for a disableDelegation(delegation) call.
+ *
+ * @param params
+ * @param params.delegation - The delegation to disable.
+ * @returns The encoded calldata.
+ */
+export const encodeDisableDelegation = ({
+  delegation,
+}: {
+  delegation: Delegation;
+}) => {
+  const delegationStruct = toDelegationStruct(delegation);
+
+  const encodedSignature = toFunctionSelector(
+    'disableDelegation((address,address,bytes32,(address,bytes,bytes)[],uint256,bytes))',
+  );
+
+  const encodedData = toHex(
+    encode(
+      ['(address,address,bytes32,(address,bytes,bytes)[],uint256,bytes)'],
+      [
+        [
+          delegationStruct.delegate,
+          delegationStruct.delegator,
+          delegationStruct.authority,
+          delegationStruct.caveats.map((c) => [c.enforcer, c.terms, c.args]),
+          delegationStruct.salt,
+          delegationStruct.signature,
+        ],
+      ],
+    ),
+  );
+
+  return concat([encodedSignature, encodedData]);
 };
