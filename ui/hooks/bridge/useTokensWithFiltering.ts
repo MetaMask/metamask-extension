@@ -101,6 +101,9 @@ export const useTokensWithFiltering = (
             url: url as string,
             ...requestOptions,
             fetchOptions: { method: 'GET', headers },
+            cacheOptions: {
+              cacheRefreshTime: 10 * MINUTE,
+            },
             functionName: 'fetchBridgeTokens',
           });
         },
