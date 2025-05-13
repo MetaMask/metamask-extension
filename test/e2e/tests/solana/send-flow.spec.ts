@@ -74,7 +74,7 @@ describe('Send flow', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('50');
+        await homePage.check_getBalance('50', 'SOL');
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,
@@ -206,7 +206,7 @@ describe('Send flow', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('50');
+        await homePage.check_getBalance('50', 'SOL');
         assert.equal(
           await homePage.check_ifSendButtonIsClickable(),
           true,
@@ -330,7 +330,7 @@ describe('Send flow', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('50');
+        await homePage.check_getBalance('50', 'SOL');
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);
