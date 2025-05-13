@@ -230,8 +230,8 @@
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
     "@trezor/connect-web": "~9.4.7",
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@21.0.6-preview-1341545b",
-    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@28.0.0-preview-1341545b"
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@21.0.6-preview-aa280426",
+    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@28.0.0-preview-aa280426"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
