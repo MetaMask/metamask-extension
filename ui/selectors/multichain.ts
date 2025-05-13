@@ -451,11 +451,7 @@ export function getSelectedAccountMultichainTransactions(
   const currentChainId = providerConfig.chainId as MultichainNetworks;
 
   // And then return the transactions for the current chain
-  if (transactions && transactions[currentChainId]) {
-    return transactions[currentChainId];
-  }
-
-  return transactions;
+  return transactions?.[currentChainId];
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
