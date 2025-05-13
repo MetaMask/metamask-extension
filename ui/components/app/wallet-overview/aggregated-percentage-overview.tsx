@@ -170,8 +170,6 @@ export const AggregatedMultichainPercentageOverview = ({
 
   let color = TextColor.textAlternative;
 
-  // console.log('historicalAggregatedBalances', historicalAggregatedBalances.P1D);
-
   const singleDayPercentChange = historicalAggregatedBalances.P1D.percentChange;
   const singleDayAmountChange = historicalAggregatedBalances.P1D.amountChange;
   const signPrefix = singleDayPercentChange >= 0 ? '+' : '-';

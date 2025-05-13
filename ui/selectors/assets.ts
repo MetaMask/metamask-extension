@@ -405,7 +405,6 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
 
     // Calculate overall percent and amount change for each historical period
     const totalCurrentBalanceNum = totalCurrentBalance.toNumber();
-    console.log('totalCurrentBalanceNum', totalCurrentBalanceNum);
 
     Object.entries(historicalBalances).forEach(([_period, data]) => {
       if (totalCurrentBalanceNum !== 0) {
