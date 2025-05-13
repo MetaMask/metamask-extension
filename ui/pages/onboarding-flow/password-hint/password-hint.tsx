@@ -29,24 +29,19 @@ import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setPasswordHint } from '../../../store/actions';
 import { setShowPasswordHintSavedToast } from '../../../components/app/toast-master/utils';
-import { getPasswordHint } from '../../../selectors';
+import { getPasswordHint, getPasswordHash } from '../../../selectors';
 
-export default function PasswordHint({
-  validatePasswordHint,
-}: {
-  validatePasswordHint: (hint: string) => void;
-}) {
+export default function PasswordHint() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
   const [isSamePasswordError, setIsSamePasswordError] = useState(false);
   const [hint, setHint] = useState(useSelector(getPasswordHint));
+  const passwordHash = useSelector(getPasswordHash);
 
   const handleSubmitHint = () => {
     try {
-      validatePasswordHint(hint);
-
-      dispatch(setPasswordHint(hint));
+      dispatch(setPasswordHint(hint, passwordHash));
       dispatch(setShowPasswordHintSavedToast(true));
       history.push(ONBOARDING_COMPLETION_ROUTE);
     } catch (error) {

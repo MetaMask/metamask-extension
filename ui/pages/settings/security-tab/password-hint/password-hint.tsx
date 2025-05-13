@@ -14,7 +14,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getPasswordHint } from '../../../../selectors';
+import { getPasswordHint, getPasswordHash } from '../../../../selectors';
 import { setPasswordHint } from '../../../../store/actions';
 
 const PasswordHint = () => {
@@ -22,17 +22,15 @@ const PasswordHint = () => {
   const dispatch = useDispatch();
   const [isSamePasswordError, setIsSamePasswordError] = useState(false);
   const [hint, setHint] = useState(useSelector(getPasswordHint));
-  // TODO: how to compare hint with current password?
-  const currentPassword = null;
+  const passwordHash = useSelector(getPasswordHash);
 
   const handleSubmitHint = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (currentPassword === hint) {
+    try {
+      dispatch(setPasswordHint(hint, passwordHash));
+    } catch (error) {
       setIsSamePasswordError(true);
-      return;
     }
-
-    dispatch(setPasswordHint(hint));
   };
 
   return (
