@@ -33,11 +33,7 @@ class NonEvmHomepage extends HomePage {
    * Clicks the send button on the non-EVM account homepage.
    */
   async clickOnSendButton(): Promise<void> {
-<<<<<<< HEAD
-    await this.driver.waitForControllersLoaded();
-=======
     await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
->>>>>>> d04f69cd71 (fix: upgrade solana to v1.28.0 cp-12.18.0 (#32823))
     await this.driver.clickElement(this.sendButton);
   }
 

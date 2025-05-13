@@ -708,12 +708,7 @@ export async function mockSolanaBalanceQuoteDevnet(
     });
 }
 
-<<<<<<< HEAD
-
 export async function mockGetMinimumBalanceForRentExemptionDevnet(
-=======
-export async function mockGetMinimumBalanceForRentExemption(
->>>>>>> d04f69cd71 (fix: upgrade solana to v1.28.0 cp-12.18.0 (#32823))
   mockServer: Mockttp,
 ) {
   return await mockServer
