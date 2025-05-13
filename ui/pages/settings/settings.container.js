@@ -35,6 +35,7 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   SNAP_SETTINGS_ROUTE,
+  SECURITY_PASSWORD_HINT_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../helpers/constants/routes';
@@ -60,6 +61,7 @@ const ROUTES_TO_I18N_KEYS = {
   [NETWORKS_ROUTE]: 'networks',
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
+  [SECURITY_PASSWORD_HINT_ROUTE]: 'securityPasswordHint',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityPassword',
 };
 
@@ -79,6 +81,9 @@ const mapStateToProps = (state, ownProps) => {
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));
   const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
+  const isPasswordHintPage = Boolean(
+    pathname.match(SECURITY_PASSWORD_HINT_ROUTE),
+  );
   const isPasswordChangePage = Boolean(
     pathname.match(SECURITY_PASSWORD_CHANGE_ROUTE),
   );
@@ -103,7 +108,7 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isAddPopularCustomNetwork) {
     backRoute = NETWORKS_ROUTE;
-  } else if (isRevealSrpListPage || isPasswordChangePage) {
+  } else if (isRevealSrpListPage || isPasswordHintPage || isPasswordChangePage) {
     backRoute = SECURITY_ROUTE;
   }
 
