@@ -46,17 +46,17 @@
         "TextEncoder": true
       }
     },
-    "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "@metamask/eth-ledger-bridge-keyring>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "eth-onekey-bridge-keyring>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
@@ -74,7 +74,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -98,7 +98,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -111,7 +111,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -124,7 +124,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -137,7 +137,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -150,7 +150,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -163,7 +163,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -176,7 +176,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -189,7 +189,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -202,7 +202,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -228,7 +228,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -241,7 +241,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -254,7 +254,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -267,7 +267,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -280,7 +280,7 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -293,7 +293,20 @@
         "console.warn": true
       },
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
+        "browserify>buffer": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "webpack>events": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
+      }
+    },
+    "eth-onekey-bridge-keyring>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "browserify>buffer": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack>events": true,
@@ -769,7 +782,7 @@
     },
     "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
         "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/util": true,
         "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@keystonehq/bc-ur-registry-eth": true,
@@ -843,7 +856,7 @@
     },
     "@keystonehq/metamask-airgapped-keyring": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
         "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": true,
         "@keystonehq/metamask-airgapped-keyring>@keystonehq/bc-ur-registry-eth": true,
@@ -1522,7 +1535,7 @@
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1534,7 +1547,7 @@
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1546,7 +1559,7 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1570,7 +1583,7 @@
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1582,7 +1595,7 @@
     },
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1594,7 +1607,7 @@
     },
     "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1606,7 +1619,7 @@
     },
     "@metamask/keyring-controller>@metamask/eth-sig-util": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -1618,7 +1631,7 @@
     },
     "@metamask/signature-controller>@metamask/eth-sig-util": {
       "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@ethereumjs/util": true,
         "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
         "@metamask/utils": true,
@@ -2564,6 +2577,106 @@
         "crypto": true
       }
     },
+    "@onekeyfe/hd-core": {
+      "globals": {
+        "AbortController": true,
+        "ONEKEY_CONNECT_SRC": true,
+        "SuppressedError": true,
+        "TextEncoder": true,
+        "chrome": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "location": true,
+        "navigator": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@noble/hashes": true,
+        "@onekeyfe/hd-shared": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport": true,
+        "@onekeyfe/hd-core>axios": true,
+        "@onekeyfe/hd-core>bignumber.js": true,
+        "browserify>buffer": true,
+        "@onekeyfe/hd-core>bytebuffer": true,
+        "@onekeyfe/hd-core>jszip": true,
+        "lodash": true,
+        "@onekeyfe/hd-core>ripple-keypairs": true,
+        "semver": true
+      }
+    },
+    "@onekeyfe/hd-shared": {
+      "globals": {
+        "SuppressedError": true,
+        "setTimeout": true
+      }
+    },
+    "@onekeyfe/hd-core>@onekeyfe/hd-transport": {
+      "globals": {
+        "SuppressedError": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "@onekeyfe/hd-core>bytebuffer": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>long": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs": true
+      }
+    },
+    "@onekeyfe/hd-web-sdk": {
+      "globals": {
+        "$$onekeyAppStorage": true,
+        "$onekey": "write",
+        "AbortController": true,
+        "AggregateError": true,
+        "Blob": true,
+        "BlobBuilder": true,
+        "Buffer": true,
+        "DEBUG_LOGGER_STORAGE_KEY": true,
+        "FileReader": true,
+        "FinalizationRegistry": true,
+        "FormData": true,
+        "MSBlobBuilder": true,
+        "MessageChannel": true,
+        "MozBlobBuilder": true,
+        "ONEKEY_CONNECT_SRC": true,
+        "SuppressedError": true,
+        "TextEncoder": true,
+        "WeakRef": true,
+        "Web3RpcError": true,
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true,
+        "WebKitBlobBuilder": true,
+        "XMLHttpRequest": true,
+        "addEventListener": true,
+        "btoa": true,
+        "chrome": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "consoleErrorInDev": true,
+        "crypto": true,
+        "define": true,
+        "document": true,
+        "errorValues": true,
+        "global": "write",
+        "globalThis": true,
+        "localStorage": true,
+        "location": true,
+        "msCrypto": true,
+        "navigator": true,
+        "performance.now": true,
+        "process": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "process": true,
+        "browserify>timers-browserify": true
+      }
+    },
     "@open-rpc/schema-utils-js": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": true,
@@ -2586,18 +2699,18 @@
         "navigator.userAgent": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
+    "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/codegen": {
       "globals": {
         "console.log": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": {
+    "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/fetch": {
       "globals": {
         "XMLHttpRequest": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/aspromise": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/inquire": true
       }
     },
     "@reduxjs/toolkit": {
@@ -3325,13 +3438,30 @@
         "browserify>timers-browserify": true
       }
     },
+    "@onekeyfe/hd-core>axios": {
+      "globals": {
+        "Blob": true,
+        "FormData": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "console.warn": true,
+        "document": true,
+        "location.href": true,
+        "navigator": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "process": true
+      }
+    },
     "@metamask/snaps-controllers>tar-stream>b4a": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
       }
     },
-    "@ensdomains/content-hash>multihashes>multibase>base-x": {
+    "@onekeyfe/hd-core>ripple-keypairs>ripple-address-codec>base-x": {
       "packages": {
         "koa>content-disposition>safe-buffer": true
       }
@@ -3378,6 +3508,12 @@
       }
     },
     "@ngraveio/bc-ur>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@onekeyfe/hd-core>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
@@ -3435,7 +3571,7 @@
         "define": true
       }
     },
-    "@metamask/ppom-validator>elliptic>brorand": {
+    "@onekeyfe/hd-core>ripple-keypairs>brorand": {
       "globals": {
         "crypto": true,
         "msCrypto": true
@@ -3501,7 +3637,7 @@
     },
     "ethereumjs-util>ethereum-cryptography>bs58check>bs58": {
       "packages": {
-        "@ensdomains/content-hash>multihashes>multibase>base-x": true
+        "@onekeyfe/hd-core>ripple-keypairs>ripple-address-codec>base-x": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>bs58check": {
@@ -3543,6 +3679,15 @@
       "packages": {
         "process": true,
         "semver": true
+      }
+    },
+    "@onekeyfe/hd-core>bytebuffer": {
+      "globals": {
+        "console": true,
+        "define": true
+      },
+      "packages": {
+        "@onekeyfe/hd-core>bytebuffer>long": true
       }
     },
     "string.prototype.matchall>call-bind>call-bind-apply-helpers": {
@@ -3899,7 +4044,7 @@
     "@metamask/ppom-validator>elliptic": {
       "packages": {
         "bn.js": true,
-        "@metamask/ppom-validator>elliptic>brorand": true,
+        "@onekeyfe/hd-core>ripple-keypairs>brorand": true,
         "ethers>@ethersproject/sha2>hash.js": true,
         "@metamask/ppom-validator>elliptic>hmac-drbg": true,
         "pumpify>inherits": true,
@@ -3965,6 +4110,21 @@
       "packages": {
         "eth-method-registry>@metamask/ethjs-contract": true,
         "eth-method-registry>@metamask/ethjs-query": true
+      }
+    },
+    "eth-onekey-bridge-keyring": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "eth-onekey-bridge-keyring>@ethereumjs/util": true,
+        "@metamask/eth-sig-util": true,
+        "@onekeyfe/hd-core": true,
+        "@onekeyfe/hd-shared": true,
+        "@onekeyfe/hd-web-sdk": true,
+        "browserify>buffer": true,
+        "webpack>events": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography": {
@@ -4508,6 +4668,24 @@
         "react-router-dom>tiny-warning": true
       }
     },
+    "@onekeyfe/hd-core>jszip": {
+      "globals": {
+        "Blob": true,
+        "BlobBuilder": true,
+        "FileReader": true,
+        "MSBlobBuilder": true,
+        "MessageChannel": true,
+        "MozBlobBuilder": true,
+        "WebKitBlobBuilder": true,
+        "define": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "process": true,
+        "browserify>timers-browserify": true
+      }
+    },
     "ethereumjs-util>ethereum-cryptography>keccak": {
       "packages": {
         "browserify>buffer": true,
@@ -4562,6 +4740,17 @@
         "localStorage": true,
         "log": "write",
         "navigator": true
+      }
+    },
+    "@onekeyfe/hd-core>@onekeyfe/hd-transport>long": {
+      "globals": {
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true
+      }
+    },
+    "@onekeyfe/hd-core>bytebuffer>long": {
+      "globals": {
+        "define": true
       }
     },
     "lottie-web": {
@@ -4662,7 +4851,7 @@
     "crypto-browserify>diffie-hellman>miller-rabin": {
       "packages": {
         "bn.js": true,
-        "@metamask/ppom-validator>elliptic>brorand": true
+        "@onekeyfe/hd-core>ripple-keypairs>brorand": true
       }
     },
     "@ensdomains/content-hash>cids>multibase": {
@@ -4676,7 +4865,7 @@
     },
     "@ensdomains/content-hash>multihashes>multibase": {
       "packages": {
-        "@ensdomains/content-hash>multihashes>multibase>base-x": true,
+        "@onekeyfe/hd-core>ripple-keypairs>ripple-address-codec>base-x": true,
         "browserify>buffer": true,
         "@ensdomains/content-hash>multihashes>web-encoding": true
       }
@@ -4922,22 +5111,40 @@
         "watchify>xtend": true
       }
     },
+    "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs": {
+      "globals": {
+        "process": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/aspromise": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/base64": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/codegen": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/eventemitter": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/fetch": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/float": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/inquire": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/path": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/pool": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/utf8": true
+      }
+    },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": {
       "globals": {
         "process": true,
         "setTimeout": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/base64": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/eventemitter": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/float": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/path": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/pool": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/utf8": true
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/aspromise": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/base64": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/codegen": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/eventemitter": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/fetch": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/float": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/inquire": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/path": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/pool": true,
+        "@onekeyfe/hd-core>@onekeyfe/hd-transport>protobufjs>@protobufjs/utf8": true
       }
     },
     "crypto-browserify>public-encrypt": {
@@ -5474,6 +5681,25 @@
         "browserify>buffer": true,
         "ethereumjs-util>create-hash>ripemd160>hash-base": true,
         "pumpify>inherits": true
+      }
+    },
+    "@onekeyfe/hd-core>ripple-keypairs>ripple-address-codec": {
+      "packages": {
+        "browserify>assert": true,
+        "@onekeyfe/hd-core>ripple-keypairs>ripple-address-codec>base-x": true,
+        "browserify>buffer": true,
+        "ethereumjs-util>create-hash": true
+      }
+    },
+    "@onekeyfe/hd-core>ripple-keypairs": {
+      "packages": {
+        "browserify>assert": true,
+        "bn.js": true,
+        "@onekeyfe/hd-core>ripple-keypairs>brorand": true,
+        "browserify>buffer": true,
+        "@metamask/ppom-validator>elliptic": true,
+        "ethers>@ethersproject/sha2>hash.js": true,
+        "@onekeyfe/hd-core>ripple-keypairs>ripple-address-codec": true
       }
     },
     "eth-lattice-keyring>rlp": {

@@ -168,6 +168,16 @@
       "globals": {
         "crypto": true
       }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": {
+      "packages": {
+        "eth-onekey-bridge-keyring>@ethereumjs/rlp": true
+      }
+    },
+    "eth-onekey-bridge-keyring": {
+      "packages": {
+        "@ethereumjs/rlp": true
+      }
     }
   }
 }
