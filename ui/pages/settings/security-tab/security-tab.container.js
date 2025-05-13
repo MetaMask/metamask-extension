@@ -49,11 +49,14 @@ const mapStateToProps = (state) => {
     use4ByteResolution,
     useExternalServices,
     useExternalNameSources,
+    socialLoginEmail,
   } = metamask;
 
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   const hasMultipleHdKeyrings = getMetaMaskHdKeyrings(state).length > 1;
+
+  const socialLoginEnabled = Boolean(socialLoginEmail);
 
   return {
     networkConfigurations,
@@ -76,6 +79,8 @@ const mapStateToProps = (state) => {
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
     hasMultipleHdKeyrings,
+    socialLoginEmail,
+    socialLoginEnabled,
   };
 };
 

@@ -4973,8 +4973,18 @@
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
+  "securitySocialLoginEnabled": {
+    "message": "Email recovery enabled"
+  },
+  "securitySocialLoginEnabledDescription": {
+    "message": "Access your wallet anytime with your $1 login and password.",
+    "description": "The $1 is the text 'Apple/Google'"
+  },
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpSocialLoginDescription": {
+    "message": "Back up your Secret Recovery Phrase and link your wallet to an Apple or Google account. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
   },
   "securitySrpTitle": {
     "message": "Secret Recovery Phrase"
