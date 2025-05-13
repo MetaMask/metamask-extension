@@ -6,9 +6,9 @@ index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9f8e5d625c04bed8132e5e824bffcf98
              });
          }
          catch (error) {
-+             /********** 
-++            * Patch for error handling for Device Management kit 
-++            **********/
++             /**********
++            * Patch for error handling for Device Management kit
++            **********/
 +            if (error?.errorCode === "6985" && error?.message === 'Condition not satisfied') {
 +                throw new Error('Ledger: User rejected the transaction');
 +            }
@@ -19,8 +19,8 @@ index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9f8e5d625c04bed8132e5e824bffcf98
              });
          }
          catch (error) {
-+               /********** 
-+                 * Patch for error handling for Device Management kit 
++               /**********
++                 * Patch for error handling for Device Management kit
 +                **********/
 +            if(error?.errorCode === "6985" && error?.message === 'Condition not satisfied'){
 +                 throw new Error('Ledger: User rejected the transaction');
@@ -35,8 +35,8 @@ index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9f8e5d625c04bed8132e5e824bffcf98
          });
      }
      catch (error) {
-+         /********** 
-+         * Patch for error handling for Device Management kit 
++         /**********
++         * Patch for error handling for Device Management kit
 +         **********/
 +        if(error?.errorCode === "6985" && error?.message === 'Condition not satisfied'){
 +            throw new Error('Ledger: User rejected the transaction');
