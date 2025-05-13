@@ -18,6 +18,7 @@ import {
 import {
   lockMetamask,
   showConfirmTurnOnMetamaskNotifications,
+  toggleNetworkMenu,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -267,6 +268,17 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           data-testid="global-menu-expand"
         >
           {t('expandView')}
+        </MenuItem>
+      )}
+      {process.env.REMOVE_GNS && (
+        <MenuItem
+          iconName={IconName.Hierarchy}
+          onClick={() => {
+            dispatch(toggleNetworkMenu());
+            closeMenu();
+          }}
+        >
+          {t('networks')}
         </MenuItem>
       )}
       <MenuItem

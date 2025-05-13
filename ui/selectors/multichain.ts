@@ -59,6 +59,7 @@ import {
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getShowFiatInTestnets,
+  getUseCurrencyRateCheck,
 } from './selectors';
 import {
   getSelectedMultichainNetworkConfiguration,
@@ -336,10 +337,12 @@ export function getMultichainShouldShowFiat(
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const isTestnet = getMultichainIsTestnet(state, selectedAccount);
   const isMainnet = !isTestnet;
+  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
 
   return getMultichainIsEvm(state, selectedAccount)
     ? getShouldShowFiat(state)
-    : isMainnet || (isTestnet && getShowFiatInTestnets(state));
+    : (useCurrencyRateCheck && isMainnet) ||
+        (useCurrencyRateCheck && isTestnet && getShowFiatInTestnets(state));
 }
 
 export function getMultichainDefaultToken(

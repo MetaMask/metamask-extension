@@ -153,9 +153,7 @@
     "conversionRates": "object",
     "historicalPrices": "object"
   },
-  "MultichainBalancesController": {
-    "balances": "object"
-  },
+  "MultichainBalancesController": { "balances": "object" },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "fiatCurrency": "usd",
@@ -171,7 +169,7 @@
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
-        "EIPS": { "1559": false },
+        "EIPS": { "1559": true },
         "status": "available"
       }
     },
@@ -266,8 +264,7 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean",
-    "disabledUpgradeAccountsByChain": "object"
+    "manageInstitutionalWallets": "boolean"
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
@@ -356,8 +353,8 @@
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
-    "isProfileSyncingEnabled": null,
-    "isProfileSyncingUpdateLoading": "boolean",
+    "isBackupAndSyncEnabled": false,
+    "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
