@@ -128,6 +128,13 @@ export default function RemoteModeSetupDailyAllowance() {
     getDelegationEntry(state as DelegationState, delegationHash as Hex),
   );
 
+  const updateSelectedTokenBalance = (value: string) => {
+    setSelectedAllowanceBalance(
+      storedAssets.find((asset) => asset.symbol.includes(value))?.balance ??
+        '0',
+    );
+  };
+
   useEffect(() => {
     if (delegation?.meta) {
       const allowances = JSON.parse(delegation.meta);
@@ -160,13 +167,6 @@ export default function RemoteModeSetupDailyAllowance() {
   useEffect(() => {
     updateSelectedTokenBalance(selectedAllowanceToken);
   }, [storedAssets, selectedAllowanceToken]);
-
-  const updateSelectedTokenBalance = (value: string) => {
-    setSelectedAllowanceBalance(
-      storedAssets.find((asset) => asset.symbol.includes(value))?.balance ??
-        '0',
-    );
-  };
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
