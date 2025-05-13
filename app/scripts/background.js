@@ -117,6 +117,12 @@ const persistenceManager = new PersistenceManager({ localStore });
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
 
+if (inTest) {
+  global.stateHooks.getBrowser = () => {
+    return browser;
+  }
+}
+
 /**
  * A helper function to log the current state of the vault. Useful for debugging
  * purposes, to, in the case of database corruption, an possible way for an end
