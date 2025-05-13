@@ -383,7 +383,7 @@ describe('Send flow', function (this: Suite) {
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('and transaction simulation fails', async function () {
+  it('and transaction simulation fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
       {

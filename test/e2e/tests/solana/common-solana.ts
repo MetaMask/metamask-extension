@@ -1,5 +1,5 @@
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { withFixtures } from '../../helpers';
+import { regularDelayMs, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -2500,6 +2500,8 @@ export async function withSolanaAccountSnap(
       if (numberOfAccounts > 0) {
         await headerComponent.check_accountLabel(`Solana ${numberOfAccounts}`);
       }
+
+      await driver.delay(regularDelayMs); // workaround to avoid flakiness
       await test(driver, mockServer);
     },
   );
