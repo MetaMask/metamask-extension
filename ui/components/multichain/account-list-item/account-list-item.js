@@ -79,17 +79,11 @@ import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTok
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getNetworksWithTransactionActivity } from '../../../selectors/multichain/networks';
 import { getAccountLabels } from '../../../helpers/utils/accounts';
-
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
-///: END:ONLY_INCLUDE_IF
 import {
   CHAIN_ID_TO_NAME_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../../../shared/constants/network';
-
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
