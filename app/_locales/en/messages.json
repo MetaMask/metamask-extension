@@ -4069,13 +4069,13 @@
     "message": "Create a password hint"
   },
   "passwordHintDescription": {
-    "message": "Leave yourself a hint to help remember where your Secret Recovery Phrase is stored. This hint is stored on your device, and won’t be shared."
+    "message": "Leave yourself a hint to help remember your password. This hint won’t be shared."
   },
   "passwordHintError": {
     "message": "You can’t use the password as a hint"
   },
   "passwordHintLeaveHint": {
-    "message": "Leave yourself a hint to help remember where your Secret Recovery Phrase is stored."
+    "message": "Remember: If you lose your password, you won’t be able to use your wallet."
   },
   "passwordHintSaved": {
     "message": "Password hint saved"
@@ -4960,11 +4960,20 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "securityChangePasswordHint": {
+    "message": "Password hint"
+  },
+  "securityChangePasswordTitle": {
+    "message": "Password"
+  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
+  },
+  "securityPasswordHint": {
+    "message": "Password Hint"
   },
   "securityPrivacyPath": {
     "message": "Settings > Security & Privacy."
@@ -4972,6 +4981,15 @@
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
+  },
+  "securitySrpBackupSrp": {
+    "message": "Back up Secret Recovery Phrase"
+  },
+  "securitySrpDescription": {
+    "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpWalletRecovery": {
+    "message": "Wallet recovery"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
