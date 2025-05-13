@@ -3,10 +3,7 @@ import { act } from '@testing-library/react';
 import configureStore from '../../../../../../store/store';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
-import {
-  CHAIN_ID,
-  genUnapprovedContractInteractionConfirmation,
-} from '../../../../../../../test/data/confirmations/contract-interaction';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { rejectPendingApproval } from '../../../../../../store/actions';
 import { EIP5792ErrorCode } from '../../../../../../../shared/constants/transaction';
 import { UpgradeCancelModal } from './upgrade-cancel-modal';
