@@ -28,7 +28,8 @@ export const METAMASK_CLIENT_SIDE_DETECTION_REGEX =
   /^https:\/\/client-side-detection\.api\.cx\.metamask\.io\/$/u;
 export const ACCOUNTS_API =
   /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/0x5cfe73b6021e818b776b421b1c4db2474086a7e1\/$/u;
-export const SOLANA_TOKEN_PROGRAM = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+export const SOLANA_TOKEN_PROGRAM =
+  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export enum SendFlowPlaceHolders {
   AMOUNT = 'Enter amount to send',
   RECIPIENT = 'Enter receiving address',
@@ -76,13 +77,13 @@ export const commonSolanaTxFailedDetailsFixture = {
 export async function mockAccountsApi(mockServer: Mockttp) {
   const response = {
     pageInfo: {
-        count: 0,
-        cursor: null,
-        hasNextPage: false
+      count: 0,
+      cursor: null,
+      hasNextPage: false,
     },
     data: [],
-    unprocessedNetworks: []
-};
+    unprocessedNetworks: [],
+  };
   return await mockServer
     .forGet(ACCOUNTS_API)
     .withQuery({
@@ -91,7 +92,7 @@ export async function mockAccountsApi(mockServer: Mockttp) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: response
+        json: response,
       };
     });
 }
@@ -132,7 +133,7 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
     statusCode: 200,
     json: {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        id: "solana",
+        id: 'solana',
         price: 112.87,
         marketCap: 58245152246,
         allTimeHigh: 293.31,
@@ -150,30 +151,30 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
         pricePercentChange14d: -17.42211401987578,
         pricePercentChange30d: -7.317068682545842,
         pricePercentChange200d: -22.09390252653303,
-        pricePercentChange1y: -31.856951873653344
+        pricePercentChange1y: -31.856951873653344,
       },
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
         {
-        id: "usd-coin",
-        price: 0.9999,
-        marketCap: 59878237545,
-        allTimeHigh: 1.17,
-        allTimeLow: 0.877647,
-        totalVolume: 15910794136,
-        high1d: 1.001,
-        low1d: 0.999781,
-        circulatingSupply: 59884477611.62816,
-        dilutedMarketCap: 59993084685,
-        marketCapPercentChange1d: -0.54935,
-        priceChange1d: -0.00000967395266227,
-        pricePercentChange1h: -0.0036230127807169886,
-        pricePercentChange1d: -0.0009674830537401128,
-        pricePercentChange7d: -0.0040353282511238105,
-        pricePercentChange14d: 0.008577550625780632,
-        pricePercentChange30d: 0.004483705121822349,
-        pricePercentChange200d: 0.029482859180996183,
-        pricePercentChange1y: -0.11068819291624574
-      },
+          id: 'usd-coin',
+          price: 0.9999,
+          marketCap: 59878237545,
+          allTimeHigh: 1.17,
+          allTimeLow: 0.877647,
+          totalVolume: 15910794136,
+          high1d: 1.001,
+          low1d: 0.999781,
+          circulatingSupply: 59884477611.62816,
+          dilutedMarketCap: 59993084685,
+          marketCapPercentChange1d: -0.54935,
+          priceChange1d: -0.00000967395266227,
+          pricePercentChange1h: -0.0036230127807169886,
+          pricePercentChange1d: -0.0009674830537401128,
+          pricePercentChange7d: -0.0040353282511238105,
+          pricePercentChange14d: 0.008577550625780632,
+          pricePercentChange30d: 0.004483705121822349,
+          pricePercentChange200d: 0.029482859180996183,
+          pricePercentChange1y: -0.11068819291624574,
+        },
     },
   };
   return await mockServer.forGet(SOLANA_SPOT_PRICE_API).thenCallback(() => {
@@ -519,11 +520,9 @@ export async function mockTokenApiMainnetTest(mockServer: Mockttp) {
       },
     ],
   };
-  return await mockServer
-    .forGet(SOLANA_TOKEN_API)
-    .thenCallback(() => {
-      return response;
-    });
+  return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
+    return response;
+  });
 }
 
 export async function mockTokenApiMainnet(mockServer: Mockttp) {
@@ -557,18 +556,18 @@ export async function mockTokenApiMainnet2(mockServer: Mockttp) {
     statusCode: 200,
     json: [
       {
-          decimals: 9,
-          assetId: "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
-          name: "Solana",
-          symbol: "SOL"
+        decimals: 9,
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        name: 'Solana',
+        symbol: 'SOL',
       },
       {
-          decimals: 9,
-          assetId: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501",
-          name: "Solana",
-          symbol: "SOL"
-      }
-  ]
+        decimals: 9,
+        assetId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+    ],
   };
   return await mockServer
     .forGet(SOLANA_TOKEN_API)
@@ -597,8 +596,7 @@ export async function mockTokenApiDevnet2(mockServer: Mockttp) {
   return await mockServer
     .forGet(SOLANA_TOKEN_API)
     .withQuery({
-      assetIds:
-        'solana%3AEtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501',
+      assetIds: 'solana%3AEtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501',
     })
     .thenCallback(() => {
       return response;
@@ -708,7 +706,7 @@ export async function mockSolanaBalanceQuoteDevnet(
     });
 }
 
-export async function mockGetMinimumBalanceForRentExemptionDevnet(
+export async function mockGetMinimumBalanceForRentExemption(
   mockServer: Mockttp,
 ) {
   return await mockServer
@@ -739,22 +737,22 @@ export async function simulateSolanaTransactionFailed(mockServer: Mockttp) {
           context: {
             slot: 12345678,
           },
-          "value": {
-            "err": {
-              "InstructionError": [
+          value: {
+            err: {
+              InstructionError: [
                 1,
                 {
-                  "Custom": 1
-                }
-              ]
+                  Custom: 1,
+                },
+              ],
             },
-            "logs": [
-              "Program 11111111111111111111111111111111 invoke [1]",
-              "Program 11111111111111111111111111111111 failed: custom program error: 0x1"
+            logs: [
+              'Program 11111111111111111111111111111111 invoke [1]',
+              'Program 11111111111111111111111111111111 failed: custom program error: 0x1',
             ],
-            "accounts": null,
-            "unitsConsumed": 200000
-          }
+            accounts: null,
+            unitsConsumed: 200000,
+          },
         },
       },
     },
@@ -1751,7 +1749,9 @@ export async function mockGetFailedSignaturesForAddress(mockServer: Mockttp) {
       };
     });
 }
-export async function mockGetFailedSignaturesForAddressDevnet(mockServer: Mockttp) {
+export async function mockGetFailedSignaturesForAddressDevnet(
+  mockServer: Mockttp,
+) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_DEVNET)
     .withBodyIncluding('getSignaturesForAddress')
@@ -1804,7 +1804,9 @@ export async function mockGetSuccessSignaturesForAddress(mockServer: Mockttp) {
     });
 }
 
-export async function mockGetSuccessSignaturesForAddressDevnet(mockServer: Mockttp) {
+export async function mockGetSuccessSignaturesForAddressDevnet(
+  mockServer: Mockttp,
+) {
   return await mockServer
     .forPost(SOLANA_URL_REGEX_DEVNET)
     .withBodyIncluding('getSignaturesForAddress')
@@ -1838,24 +1840,25 @@ export async function mockSendSolanaFailedTransaction(mockServer: Mockttp) {
       jsonrpc: '2.0',
       error: {
         code: -32002,
-        message: "Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1",
+        message:
+          'Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1',
         data: {
           accounts: null,
           err: {
             InstructionError: [
               0,
               {
-                Custom: 1
-              }
-            ]
+                Custom: 1,
+              },
+            ],
           },
           logs: [
-            "Program 11111111111111111111111111111111 invoke [1]",
-            "Program 11111111111111111111111111111111 failed: custom program error: 0x1"
+            'Program 11111111111111111111111111111111 invoke [1]',
+            'Program 11111111111111111111111111111111 failed: custom program error: 0x1',
           ],
           unitsConsumed: 200000,
-          returnData: null
-        }
+          returnData: null,
+        },
       },
     },
   };
@@ -1992,7 +1995,7 @@ export async function mockGetTokenAccountsByOwner(
       params: [
         account,
         {
-          programId: programId,
+          programId,
         },
         {
           encoding: 'jsonParsed',
@@ -2317,7 +2320,6 @@ export async function withSolanaAccountSnap(
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockZeroBalance,
-    simulateFailedTransaction,
     sendFailedTransaction,
     dappPaths,
   }: {
@@ -2331,7 +2333,6 @@ export async function withSolanaAccountSnap(
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
     mockZeroBalance?: boolean;
-    simulateFailedTransaction?: boolean;
     sendFailedTransaction?: boolean;
     dappPaths?: string[];
   },
@@ -2362,20 +2363,26 @@ export async function withSolanaAccountSnap(
         if (mockGetTransactionSuccess && !mockGetTransactionFailed) {
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
-          mockList.push(await mockGetSuccessSignaturesForAddressDevnet(mockServer));
+          mockList.push(
+            await mockGetSuccessSignaturesForAddressDevnet(mockServer),
+          );
           mockList.push(await mockGetSuccessTransactionDevnet(mockServer));
         }
         if (mockGetTransactionFailed && !mockGetTransactionSuccess) {
           mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
           mockList.push(await mockGetFailedTransaction(mockServer));
-          mockList.push(await mockGetFailedSignaturesForAddressDevnet(mockServer));
+          mockList.push(
+            await mockGetFailedSignaturesForAddressDevnet(mockServer),
+          );
           mockList.push(await mockGetFailedTransactionDevnet(mockServer));
         }
         if (!mockGetTransactionSuccess && !mockGetTransactionFailed) {
           // success tx by default
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
-          mockList.push(await mockGetSuccessSignaturesForAddressDevnet(mockServer));
+          mockList.push(
+            await mockGetSuccessSignaturesForAddressDevnet(mockServer),
+          );
           mockList.push(await mockGetSuccessTransactionDevnet(mockServer));
         }
         if (mockCalls) {
