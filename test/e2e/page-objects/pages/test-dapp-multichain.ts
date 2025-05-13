@@ -1,7 +1,8 @@
-import { Browser } from 'selenium-webdriver';
+import { Browser, By } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { Json } from '@metamask/utils';
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
@@ -162,6 +163,57 @@ class TestDappMultichain {
    */
   async revokeSession(): Promise<void> {
     await this.clickWalletRevokeSessionButton();
+  }
+
+  /**
+   * Invokes a method and retrieves the result.
+   *
+   * @returns The result as JSON.
+   */
+  async invokeMethod(
+    scope: string,
+    method: string,
+    params: Json,
+  ): Promise<{
+    sessionScopes: Record<string, NormalizedScopeObject>;
+  }> {
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+
+    await this.driver.clickElement(`[data-testid="${scope}-select"]`);
+
+    await this.driver.clickElement(`[data-testid="${scope}-${method}-option"]`);
+
+    const card = await this.driver.findElement(
+      `[data-testid="scope-card-${scope}`,
+    );
+    const collapsible = await card.findElement({ css: '.collapsible-section' });
+
+    await collapsible.click();
+
+    const request = {
+      method: 'wallet_invokeMethod',
+      params: {
+        scope,
+        request: {
+          method,
+          params,
+        },
+      },
+    };
+
+    await this.driver.pasteIntoField(
+      `[data-testid="${scope}-collapsible-content-textarea"]`,
+      JSON.stringify(request),
+    );
+
+    await this.driver.clickElement(
+      `[data-testid="invoke-method-${scope}-btn"]`,
+    );
+
+    const invokeResult = await this.driver.findElement(
+      `[id="invoke-method-${scope}-${method}-result-0"]`,
+    );
+    return JSON.parse(await invokeResult.getText());
   }
 }
 

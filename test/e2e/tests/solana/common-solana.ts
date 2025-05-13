@@ -2336,7 +2336,7 @@ export async function withSolanaAccountSnap(
     sendFailedTransaction?: boolean;
     dappPaths?: string[];
   },
-  test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
+  test: (driver: Driver, mockServer: Mockttp, extensionId: string) => Promise<void>,
 ) {
   console.log('Starting withSolanaAccountSnap');
   let fixtures = new FixtureBuilder();
@@ -2446,7 +2446,7 @@ export async function withSolanaAccountSnap(
         'No Infura network client was found with the ID "linea-mainnet"',
       ],
     },
-    async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
+    async ({ driver, mockServer, extensionId }: { driver: Driver; mockServer: Mockttp; extensionId: string; }) => {
       await loginWithoutBalanceValidation(driver);
       const headerComponent = new HeaderNavbar(driver);
       const accountListPage = new AccountListPage(driver);
@@ -2465,7 +2465,7 @@ export async function withSolanaAccountSnap(
       }
 
       await driver.delay(regularDelayMs); // workaround to avoid flakiness
-      await test(driver, mockServer);
+      await test(driver, mockServer, extensionId);
     },
   );
 }
