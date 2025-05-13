@@ -3,14 +3,8 @@ import { act } from '@testing-library/react';
 import configureStore from '../../../../../../store/store';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
-import {
-  CHAIN_ID,
-  genUnapprovedContractInteractionConfirmation,
-} from '../../../../../../../test/data/confirmations/contract-interaction';
-import {
-  disableAccountUpgradeForChain,
-  rejectPendingApproval,
-} from '../../../../../../store/actions';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
+import { rejectPendingApproval } from '../../../../../../store/actions';
 import { EIP5792ErrorCode } from '../../../../../../../shared/constants/transaction';
 import { UpgradeCancelModal } from './upgrade-cancel-modal';
 
@@ -29,14 +23,9 @@ const STORE_MOCK = configureStore(
 describe('UpgradeCancelModal', () => {
   const rejectPendingApprovalMock = jest.mocked(rejectPendingApproval);
 
-  const disableAccountUpgradeForChainMock = jest.mocked(
-    disableAccountUpgradeForChain,
-  );
-
   beforeEach(() => {
     jest.resetAllMocks();
     rejectPendingApprovalMock.mockReturnValue({ type: 'mockAction' } as never);
-    disableAccountUpgradeForChainMock.mockResolvedValue({});
   });
 
   it('renders cancel buttons', () => {
@@ -99,27 +88,5 @@ describe('UpgradeCancelModal', () => {
       expect.any(String),
       expect.objectContaining({ code: EIP5792ErrorCode.RejectedUpgrade }),
     );
-  });
-
-  it('disables upgrade for chain when reject upgrade button is clicked', async () => {
-    const onReject = jest.fn();
-
-    const { getByTestId } = renderWithConfirmContextProvider(
-      <UpgradeCancelModal
-        isOpen={true}
-        onClose={() => {
-          // Intentionally empty
-        }}
-        onReject={onReject}
-      />,
-      STORE_MOCK,
-    );
-
-    await act(async () => {
-      getByTestId('upgrade-cancel-reject-upgrade').click();
-    });
-
-    expect(disableAccountUpgradeForChainMock).toHaveBeenCalledTimes(1);
-    expect(disableAccountUpgradeForChainMock).toHaveBeenCalledWith(CHAIN_ID);
   });
 });

@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.17.3]
+### Changed
+- Update supported browser versions ([#32520](https://github.com/MetaMask/metamask-extension/pull/32520))
+
+### Fixed
+- Stop emitting Dapp Viewed events on Firefox ([#32583](https://github.com/MetaMask/metamask-extension/pull/32583))
+- Make phishing warning events anonymous ([#32635](https://github.com/MetaMask/metamask-extension/pull/32635))
+- Fix momentary disappearance of approve row in batch transaction confirmation ([#32658](https://github.com/MetaMask/metamask-extension/pull/32658))
+- Support permit2 approvals in batch simulation ([#32733](https://github.com/MetaMask/metamask-extension/pull/32733))
+- Allow users to upgrade to a smart contract account after rejecting it once in the past ([#32697](https://github.com/MetaMask/metamask-extension/pull/32697))
+
 ## [12.17.2]
 ### Changed
 - Increasing polling interval for incoming transactions ([#32547](https://github.com/MetaMask/metamask-extension/pull/32547))
@@ -6089,7 +6100,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.3...HEAD
+[12.17.3]: https://github.com/MetaMask/metamask-extension/compare/v12.17.2...v12.17.3
 [12.17.2]: https://github.com/MetaMask/metamask-extension/compare/v12.17.1...v12.17.2
 [12.17.1]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...v12.17.1
 [12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.2...v12.17.0
