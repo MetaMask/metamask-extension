@@ -75,6 +75,7 @@ import {
   getManageInstitutionalWallets,
   getHDEntropyIndex,
   getAllChainsToPoll,
+  getUseExternalServices,
 } from '../../../selectors';
 import {
   detectNfts,
@@ -282,6 +283,7 @@ export const AccountListMenu = ({
   );
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
+  const useExternalServices = useSelector(getUseExternalServices);
 
   const filteredUpdatedAccountList = useMemo(
     () =>
@@ -511,6 +513,7 @@ export const AccountListMenu = ({
     setPreviousActionMode(actionMode);
     setActionMode(ACTION_MODES.SELECT_SRP);
   }, [setActionMode, actionMode, trackEvent]);
+  console.log('useExternalServices:', useExternalServices);
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const { clientType, chainId } = SNAP_CLIENT_CONFIG_MAP[actionMode] || {
@@ -518,12 +521,15 @@ export const AccountListMenu = ({
     chainId: null,
   };
   ///: END:ONLY_INCLUDE_IF(multichain)
-
   useEffect(() => {
-    if (process.env.REMOVE_GNS && filteredAccounts.length > 0) {
+    if (
+      process.env.REMOVE_GNS &&
+      filteredAccounts.length > 0 &&
+      useExternalServices
+    ) {
       dispatch(getNetworksWithTransactionActivityByAccounts());
     }
-  }, [dispatch, filteredAccounts.length]);
+  }, [dispatch, filteredAccounts.length, useExternalServices]);
 
   return (
     <Modal isOpen onClose={onClose}>
