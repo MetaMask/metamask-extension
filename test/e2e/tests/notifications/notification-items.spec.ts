@@ -99,10 +99,9 @@ describe('Notification List - View Items and Details', function () {
         await onboard(driver);
         await enableNotificationsThroughCTA(driver);
         await visitEachWalletNotificationItemAndDetailsPage(driver);
-        // TODO - see why this fails
-        // await visitEachFeatureAnnouncementNotificationItemAndDetailsPage(
-        //   driver,
-        // );
+        await visitEachFeatureAnnouncementNotificationItemAndDetailsPage(
+          driver,
+        );
       },
     );
   });
