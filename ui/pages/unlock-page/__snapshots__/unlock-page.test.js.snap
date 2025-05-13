@@ -10,7 +10,7 @@ exports[`Unlock Page should match snapshot 1`] = `
       data-testid="unlock-page"
     >
       <div
-        class="mm-box unlock-page__mascot-container"
+        class="mm-box unlock-page__mascot-container mm-box--margin-bottom-4"
       >
         <div
           style="z-index: 0;"
@@ -30,7 +30,7 @@ exports[`Unlock Page should match snapshot 1`] = `
         The decentralized web awaits
       </p>
       <form
-        class="mm-box mm-box--margin-bottom-6 mm-box--width-full"
+        class="mm-box mm-box--margin-bottom-6 mm-box--padding-top-4 mm-box--width-full"
       >
         <div
           class="mm-box mm-form-text-field mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"

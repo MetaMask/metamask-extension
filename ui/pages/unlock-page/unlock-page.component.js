@@ -193,7 +193,7 @@ export default class UnlockPage extends Component {
           paddingLeft={4}
           paddingRight={4}
         >
-          <Box className="unlock-page__mascot-container">
+          <Box className="unlock-page__mascot-container" marginBottom={4}>
             {this.renderMascot()}
             {isBeta() ? (
               <Text
@@ -213,7 +213,6 @@ export default class UnlockPage extends Component {
             as="h1"
             variant={TextVariant.displayMd}
             fontWeight={FontWeight.Medium}
-            marginTop={1}
             marginBottom={1}
             color={TextColor.textDefault}
             textAlign={TextAlign.Center}
@@ -231,6 +230,7 @@ export default class UnlockPage extends Component {
             as="form"
             onSubmit={this.handleSubmit}
             width={BlockSize.Full}
+            paddingTop={4}
             marginBottom={6}
           >
             <FormTextField
