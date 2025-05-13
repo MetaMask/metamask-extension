@@ -19,7 +19,7 @@ const SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET =
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX_DEVNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/EtWTRABZaYq6iMfeYKouRu166VU2xqa1/u;
 const SOLANA_BITCOIN_MIN_API =
-  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti\?fsyms=btc&sol&tsyms=usd/u;
+  /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti/u;
 export const SOLANA_TOKEN_API =
   /^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u;
 export const METAMASK_PHISHING_DETECTION_API =
@@ -2144,7 +2144,7 @@ export async function mockGetAccountInfo(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
-    .withBody('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
+    .withBodyIncluding('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
     .thenCallback(() => {
       return response;
     });
