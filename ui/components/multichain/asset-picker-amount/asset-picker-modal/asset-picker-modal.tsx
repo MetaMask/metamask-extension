@@ -420,11 +420,11 @@ export function AssetPickerModal({
       const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
       const isMatchedBySearchQuery = Boolean(
         !trimmedSearchQuery ||
-          symbol?.toLowerCase().includes(trimmedSearchQuery) ||
-          address?.toLowerCase().includes(trimmedSearchQuery),
+          symbol?.toLowerCase().indexOf(trimmedSearchQuery) !== -1 ||
+          address?.toLowerCase().indexOf(trimmedSearchQuery) !== -1,
       );
       const isTokenInSelectedChain = isMultiselectEnabled
-        ? tokenChainId && selectedChainIds?.includes(tokenChainId)
+        ? tokenChainId && selectedChainIds?.indexOf(tokenChainId) !== -1
         : selectedNetwork?.chainId === tokenChainId;
 
       return Boolean(

@@ -288,7 +288,7 @@ export const useTokensWithFiltering = (
           const token = buildTokenData(token_);
           if (
             token &&
-            !token.symbol.includes('$') &&
+            token.symbol.indexOf('$') === -1 &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             if (token) {
