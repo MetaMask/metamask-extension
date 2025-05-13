@@ -1,5 +1,5 @@
 import { SnapController } from '@metamask/snaps-controllers';
-import { hasProperty } from '@metamask/utils';
+import { hasProperty, Json } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -13,6 +13,15 @@ import {
   SnapControllerMessenger,
 } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
+
+// Copied from `@metamask/snaps-controllers`, since it is not exported.
+type TrackingEventPayload = {
+  event: string;
+  category: string;
+  properties: Record<string, Json | undefined>;
+};
+
+type TrackEventHook = (event: TrackingEventPayload) => void;
 
 /**
  * Initialize the Snap controller.
@@ -111,7 +120,11 @@ export const SnapControllerInit: ControllerInitFunction<
 
     preinstalledSnaps,
     getFeatureFlags,
-    trackEvent,
+
+    // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
+    // properties, but `MetaMetricsEventPayload` uses `Json`, even though
+    // `undefined` is supported.
+    trackEvent: trackEvent as TrackEventHook,
   });
 
   return {
