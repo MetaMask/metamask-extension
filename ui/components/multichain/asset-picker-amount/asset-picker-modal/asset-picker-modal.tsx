@@ -536,12 +536,21 @@ export function AssetPickerModal({
     <Modal
       className="asset-picker-modal"
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => {
+        setSearchQuery('');
+        onClose();
+      }}
       data-testid="asset-picker-modal"
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader onClose={onClose} onBack={asset ? undefined : onBack}>
+        <ModalHeader
+          onClose={() => {
+            setSearchQuery('');
+            onClose();
+          }}
+          onBack={asset ? undefined : onBack}
+        >
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {header}
           </Text>
@@ -645,7 +654,10 @@ export function AssetPickerModal({
                 />
                 <AssetList
                   network={network}
-                  handleAssetChange={handleAssetChange}
+                  handleAssetChange={(asset) => {
+                    setSearchQuery('');
+                    handleAssetChange(asset);
+                  }}
                   asset={asset?.type === AssetType.NFT ? undefined : asset}
                   tokenList={displayedTokens}
                   isTokenDisabled={getIsDisabled}
