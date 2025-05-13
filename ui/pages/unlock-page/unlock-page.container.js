@@ -50,6 +50,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const onImport = async () => {
     await markPasswordForgotten();
     history.push(RESTORE_VAULT_ROUTE);
+
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
       global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
     }
