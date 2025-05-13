@@ -6260,9 +6260,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@13.0.0-preview-36565d85":
-  version: 13.0.0-preview-36565d85
-  resolution: "@metamask-previews/profile-sync-controller@npm:13.0.0-preview-36565d85"
+"@metamask/profile-sync-controller@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@metamask/profile-sync-controller@npm:14.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/keyring-api": "npm:^17.4.0"
@@ -6280,8 +6280,13 @@ __metadata:
     "@metamask/providers": ^21.0.0
     "@metamask/snaps-controllers": ^11.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/629aac52b285c0d9c42656387182b5b7e1a2b388ca3c07978b624683aac185331eddc0ec27f2dbf34013da2f8187d1fae5ff0671acf585a03bb45188bf6f05be
+  checksum: 10/45a4e78e30f67259e0e8f02f1c244f89ace3b9b0c8c712c1ceaf5e58f9114679226e8a614e74ac8684576fc34615c3ed8053e2954c40679b8ff8b7dc7a4dd342
   languageName: node
+  linkType: hard
+
+"@metamask/providers@npm:^22.0.1, @metamask/providers@npm:^22.1.0":
+  version: 22.1.0
+  resolution: "@metamask/providers@npm:22.1.0"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
@@ -30095,7 +30100,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.3.0"
-    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@13.0.0-preview-36565d85"
+    "@metamask/profile-sync-controller": "npm:^14.0.0"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
