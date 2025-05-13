@@ -18,13 +18,14 @@ import {
 import {
   lockMetamask,
   showConfirmTurnOnMetamaskNotifications,
+  toggleNetworkMenu,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {
   Box,
   IconName,
@@ -91,7 +92,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
@@ -149,7 +150,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         event: MetaMetricsEventName.NotificationsActivated,
         properties: {
           action_type: 'started',
-          is_profile_syncing_enabled: isProfileSyncingEnabled,
+          is_profile_syncing_enabled: isBackupAndSyncEnabled,
         },
       });
       dispatch(showConfirmTurnOnMetamaskNotifications());
@@ -184,7 +185,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         minWidth: 225,
       }}
       borderStyle={BorderStyle.none}
-      position={PopoverPosition.BottomEnd}
+      position={PopoverPosition.Auto}
     >
       {basicFunctionality && (
         <>
@@ -267,6 +268,17 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           data-testid="global-menu-expand"
         >
           {t('expandView')}
+        </MenuItem>
+      )}
+      {process.env.REMOVE_GNS && (
+        <MenuItem
+          iconName={IconName.Hierarchy}
+          onClick={() => {
+            dispatch(toggleNetworkMenu());
+            closeMenu();
+          }}
+        >
+          {t('networks')}
         </MenuItem>
       )}
       <MenuItem

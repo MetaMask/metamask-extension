@@ -210,19 +210,13 @@ describe('MetaMetricsController', function () {
   });
 
   describe('createEventFragment', function () {
-    it('should throw an error if the param is missing successEvent or category', async function () {
+    it('should throw an error if the param is missing successEvent', async function () {
       await withController(async ({ controller }) => {
         await expect(() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
-          controller.createEventFragment({ event: 'test' });
-        }).toThrow(/Must specify success event and category\./u);
-
-        await expect(() => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error because we are testing the error case
           controller.createEventFragment({ category: 'test' });
-        }).toThrow(/Must specify success event and category\./u);
+        }).toThrow(/Must specify success event\./u);
       });
     });
 
@@ -791,19 +785,13 @@ describe('MetaMetricsController', function () {
       });
     });
 
-    it('should throw if event or category not provided', async function () {
+    it('should throw if event not provided', async function () {
       await withController(({ controller }) => {
         expect(() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
-          controller.trackEvent({ event: 'test' });
-        }).toThrow(/Must specify event and category\./u);
-
-        expect(() => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error because we are testing the error case
           controller.trackEvent({ category: 'test' });
-        }).toThrow(/Must specify event and category\./u);
+        }).toThrow(/Must specify event\./u);
       });
     });
 
@@ -873,6 +861,7 @@ describe('MetaMetricsController', function () {
   });
 
   describe('Change Signature XXX anonymous event names', function () {
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['Signature Requested', 'Signature Requested Anon'],
       ['Signature Rejected', 'Signature Rejected Anon'],

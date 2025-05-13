@@ -29,7 +29,7 @@ const defaultOptions = {
   chainId: 1337,
   gasLimit: 30000000,
   gasPrice: 2000000000,
-  hardfork: 'Muirglacier' as Hardfork,
+  hardfork: 'Prague' as Hardfork,
   host: '127.0.0.1',
   mnemonic:
     'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
@@ -135,7 +135,7 @@ export class Anvil {
 
     if (!provider) {
       console.log('No provider found');
-      return;
+      return undefined;
     }
     const { publicClient } = provider;
 
@@ -153,10 +153,7 @@ export class Anvil {
     return Number(fiatBalance);
   }
 
-  async setAccountBalance(
-    address: Hex,
-    balance: string,
-  ): Promise<void> {
+  async setAccountBalance(address: Hex, balance: string): Promise<void> {
     const provider = this.getProvider();
     const { testClient } = provider;
 

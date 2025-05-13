@@ -323,11 +323,11 @@ export default function createRPCMethodTrackingMiddleware({
     const eventType = EVENT_NAME_MAP[invokedMethod];
 
     const eventProperties = {
-      requested_through: requestedThrough,
+      api_source: requestedThrough,
     };
 
     if (multichainApiRequestScope) {
-      eventProperties.multichain_api_request_scope = multichainApiRequestScope;
+      eventProperties.chain_id_caip = multichainApiRequestScope;
     }
 
     let sensitiveEventProperties;

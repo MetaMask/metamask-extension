@@ -13,7 +13,7 @@ import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
-  CaipAssetType,
+  type CaipAssetType,
   type CaipChainId,
   type Hex,
   type Json,
@@ -53,7 +53,7 @@ import { Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
-import switchDirection from '../../shared/lib/switch-direction';
+import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
@@ -133,6 +133,7 @@ import { EndTraceRequest } from '../../shared/lib/trace';
 import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -2709,7 +2710,7 @@ export function rollbackToPreviousProvider(): ThunkAction<
 }
 
 export function removeNetwork(
-  chainId: Hex,
+  chainId: CaipChainId,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
@@ -2725,12 +2726,12 @@ export function addToAddressBook(
   recipient: string,
   nickname = '',
   memo = '',
+  customChainId?: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
-    const { chainId } = getProviderConfig(getState());
-
+    const chainId = customChainId || getProviderConfig(getState()).chainId;
     let set;
     try {
       set = await submitRequestToBackground('setAddressBook', [
@@ -3283,8 +3284,26 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
-export function setDismissSmartAccountSuggestionEnabled(value: boolean) {
-  return setPreference('dismissSmartAccountSuggestionEnabled', value);
+export function setDismissSmartAccountSuggestionEnabled(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch, getState) => {
+    const prevDismissSmartAccountSuggestionEnabled =
+      getDismissSmartAccountSuggestionEnabled(getState());
+    trackMetaMetricsEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        dismiss_smt_acc_suggestion_enabled: value,
+        prev_dismiss_smt_acc_suggestion_enabled:
+          prevDismissSmartAccountSuggestionEnabled,
+      },
+    });
+    await dispatch(
+      setPreference('dismissSmartAccountSuggestionEnabled', value),
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 
 export function setTokenSortConfig(value: SortCriteria) {
@@ -3415,6 +3434,7 @@ export function toggleAccountMenu() {
 export function toggleNetworkMenu(payload?: {
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
+  isAccessedFromDappConnectedSitePopover?: boolean;
 }) {
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,
@@ -4805,13 +4825,15 @@ export async function tokenBalancesStopPollingByPollingToken(
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
  *
- * @param chainId - The chain id to poll token rates on.
+ * @param chainIds - An array of chain ids to poll token rates on.
  * @returns polling token that can be used to stop polling
  */
-export async function tokenRatesStartPolling(chainId: string): Promise<string> {
+export async function tokenRatesStartPolling(
+  chainIds: string[],
+): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'tokenRatesStartPolling',
-    [{ chainId }],
+    [{ chainIds }],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
@@ -5235,10 +5257,16 @@ export function cancelSmartTransaction(
 }
 
 // TODO: Not a thunk but rather a wrapper around a background call
-export function fetchSmartTransactionsLiveness() {
+export function fetchSmartTransactionsLiveness({
+  networkClientId,
+}: {
+  networkClientId?: string;
+} = {}) {
   return async () => {
     try {
-      await submitRequestToBackground('fetchSmartTransactionsLiveness');
+      await submitRequestToBackground('fetchSmartTransactionsLiveness', [
+        { networkClientId },
+      ]);
     } catch (err) {
       logErrorWithMessage(err);
     }
@@ -5667,7 +5695,7 @@ export function performSignOut(): ThunkAction<
  *
  * @param feature - The feature to enable or disable.
  * @param enabled - A boolean indicating whether to enable or disable the feature.
- * @returns A thunk action that, when dispatched, attempts to enable profile syncing.
+ * @returns A thunk action that, when dispatched, attempts to enable or disable a backup and sync feature.
  */
 export function setIsBackupAndSyncFeatureEnabled(
   feature: keyof typeof BACKUPANDSYNC_FEATURES,
@@ -5944,28 +5972,6 @@ export function checkAccountsPresence(
     }
   };
 }
-
-/**
- * Triggers a modal to confirm the action of turning off profile syncing.
- * This function dispatches an action to show a modal dialog asking the user to confirm if they want to turn off profile syncing.
- *
- * @returns A thunk action that, when dispatched, shows the confirmation modal.
- */
-export function showConfirmTurnOffProfileSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      showModal({
-        name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
-      }),
-    );
-  };
-}
-
 /**
  * Triggers a modal to confirm the action of turning on MetaMask notifications.
  * This function dispatches an action to show a modal dialog asking the user to confirm if they want to turn on MetaMask notifications.

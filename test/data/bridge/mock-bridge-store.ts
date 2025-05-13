@@ -3,7 +3,7 @@ import {
   getDefaultBridgeControllerState,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { DEFAULT_BRIDGE_STATUS_STATE } from '../../../app/scripts/controllers/bridge-status/constants';
+import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
@@ -79,11 +79,14 @@ export const createBridgeMockStore = ({
       ...metamaskStateOverrides,
       ...{
         ...getDefaultBridgeControllerState(),
-        bridgeFeatureFlags: {
+        remoteFeatureFlags: {
           ...featureFlagOverrides,
-          extensionConfig: {
+          bridgeConfig: {
             support: false,
+            refreshRate: 5000,
+            maxRefreshCount: 5,
             ...featureFlagOverrides?.extensionConfig,
+            ...featureFlagOverrides?.bridgeConfig,
             chains: {
               [formatChainIdToCaip('0x1')]: {
                 isActiveSrc: true,
@@ -91,7 +94,9 @@ export const createBridgeMockStore = ({
               },
               ...Object.fromEntries(
                 Object.entries(
-                  featureFlagOverrides?.extensionConfig?.chains ?? {},
+                  featureFlagOverrides?.extensionConfig?.chains ??
+                    featureFlagOverrides?.bridgeConfig?.chains ??
+                    {},
                 ).map(([chainId, config]) => [
                   formatChainIdToCaip(chainId),
                   config,
@@ -103,7 +108,7 @@ export const createBridgeMockStore = ({
       },
       ...bridgeStateOverrides,
       bridgeStatusState: {
-        ...DEFAULT_BRIDGE_STATUS_STATE,
+        ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
         ...bridgeStatusStateOverrides,
       },
     },
