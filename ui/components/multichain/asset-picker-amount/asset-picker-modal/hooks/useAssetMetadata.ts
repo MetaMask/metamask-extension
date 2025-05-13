@@ -70,7 +70,7 @@ export const useAssetMetadata = (
       return undefined;
     }
     return undefined;
-  }, [shouldFetchMetadata, searchQuery]);
+  }, [shouldFetchMetadata]);
 
   return assetMetadata;
 };
