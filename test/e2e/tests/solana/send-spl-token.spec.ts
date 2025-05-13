@@ -140,7 +140,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
-        mockSendTransaction: false,
+        simulateTransaction: true,
         sendFailedTransaction: true,
       },
       async (driver) => {
@@ -208,7 +208,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: false,
-        simulateTransaction: false,
+        simulateTransactionFailed: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);

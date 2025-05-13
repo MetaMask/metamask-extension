@@ -182,25 +182,6 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
   });
 }
 
-export async function mockPriceApiSpotPriceDevnet(mockServer: Mockttp) {
-  console.log('mockPriceApiSpotPrice');
-  const response = {
-    statusCode: 200,
-    json: {
-      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501': {
-        usd: 198.42,
-      },
-      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/token:2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv':
-        {
-          usd: 0.01157283,
-        },
-    },
-  };
-  return await mockServer.forGet(SOLANA_SPOT_PRICE_API).thenCallback(() => {
-    return response;
-  });
-}
-
 export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
   console.log('mockPriceApiExchangeRates');
   const response = {
@@ -1911,26 +1892,6 @@ export async function mockSendSolanaTransaction(mockServer: Mockttp) {
     });
 }
 
-export async function mockSendSolanaTransactionDevnet(mockServer: Mockttp) {
-  const response = {
-    statusCode: 200,
-    json: {
-      result:
-        '3nqGKH1ef8WkTgKXZ8q3xKsvjktWmHHhJpZMSdbB6hBqy5dA7aLVSAUjw5okezZjKMHiNg2MF5HAqtpmsesQtnpj',
-      id: '1337',
-      jsonrpc: '2.0',
-    },
-  };
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_DEVNET)
-    .withJsonBodyIncluding({
-      method: 'sendTransaction',
-    })
-    .thenCallback(() => {
-      return response;
-    });
-}
-
 /*
 export async function mockGetTokenAccountsByOwner(mockServer: Mockttp) {
   return await mockServer
@@ -2466,10 +2427,12 @@ export async function withSolanaAccountSnap(
         if (simulateTransactionFailed) {
           mockList.push(await simulateSolanaTransactionFailed(mockServer));
         }
-        if (mockSendTransaction || simulateTransaction) {
+        if (simulateTransaction) {
+          mockList.push(await simulateSolanaTransaction(mockServer));
+        }
+        if (mockSendTransaction) {
           mockList.push(await simulateSolanaTransaction(mockServer));
           mockList.push(await mockSendSolanaTransaction(mockServer));
-          mockList.push(await mockSendSolanaTransactionDevnet(mockServer));
         } else if (sendFailedTransaction) {
           mockList.push(await simulateSolanaTransaction(mockServer));
           mockList.push(await mockSendSolanaFailedTransaction(mockServer));

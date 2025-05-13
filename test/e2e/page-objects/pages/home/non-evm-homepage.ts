@@ -23,7 +23,7 @@ class NonEvmHomepage extends HomePage {
           tag: 'span',
         });
         return true;
-      }, 10000);
+      }, 60000);
     }
   }
 

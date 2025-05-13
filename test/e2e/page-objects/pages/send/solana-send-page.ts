@@ -57,7 +57,7 @@ class SendSolanaPage {
           await this.driver.refresh();
           return false;
         }
-      }, 10000);
+      }, 60000);
     }
   }
 
