@@ -284,8 +284,7 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean",
-    "disabledUpgradeAccountsByChain": "object"
+    "manageInstitutionalWallets": "boolean"
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
