@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { valid as semverValid } from 'semver';
 import { getLocalSnapLatestVersion } from './snap-binary-mocks';
 
 // ANSI escape codes for colors
@@ -12,7 +13,7 @@ const RED = '\x1b[31m';
 const SNAP_DIR = path.join(__dirname, 'snap-binaries-and-headers');
 
 type Arguments = {
-  snapNameAndVersion?: string;
+  snapIdentifier?: string;
   help?: boolean;
 };
 
@@ -21,11 +22,15 @@ const getArgs = (): Arguments => {
   const result: Arguments = {};
   for (const arg of args) {
     if (arg.startsWith('--')) {
-      const [key] = arg.substring(2).split('=');
-      if (key === 'help') {
+      const rawArg = arg.substring(2);
+      if (rawArg === 'help') {
         result.help = true;
+      } else if (rawArg.includes('@')) {
+        result.snapIdentifier = rawArg;
       } else {
-        result.snapNameAndVersion = key;
+        console.warn(
+          `${YELLOW}Warning: Unrecognized argument format: ${arg}${RESET}`,
+        );
       }
     }
   }
@@ -104,8 +109,13 @@ const deleteOldSnapFiles = (
       versionToDelete = latestExistingVersion;
     }
   } catch (error: unknown) {
+    let errorMessage =
+      'An unknown error occurred while checking for old versions';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
     console.log(
-      `${YELLOW}Info: No existing versions of ${snapName} found to check for deletion`,
+      `${YELLOW}Info: No existing versions of ${snapName} found to check for deletion, or error: ${errorMessage}${RESET}`,
     );
   }
 
@@ -142,13 +152,13 @@ const deleteOldSnapFiles = (
 
 const printHelp = () => {
   console.log(
-    `${YELLOW}Usage:${RESET} yarn update-snap-binary ${CYAN}--<snapName>-<version>${RESET}`,
+    `${YELLOW}Usage:${RESET} yarn update-snap-binary ${CYAN}--<snapName>@<version>${RESET}`,
   );
   console.log(
-    `${YELLOW}Example:${RESET} yarn update-snap-binary ${CYAN}--bip32-example-snap-2.3.0${RESET}`,
+    `${YELLOW}Example:${RESET} yarn update-snap-binary ${CYAN}--bip32-example-snap@2.3.0${RESET}`,
   );
   console.log(
-    `Please ensure the version format is x.y.z (e.g., 1.2.3)${RESET}`,
+    `Please ensure the version is a valid semantic version (e.g., 1.2.3).${RESET}`,
   );
 };
 
@@ -160,42 +170,31 @@ const main = async () => {
     process.exit(0);
   }
 
-  if (!args.snapNameAndVersion) {
+  if (!args.snapIdentifier) {
     console.error(
-      `${RED}Error: Snap name and version not provided. Use --help for usage.${RESET}`,
+      `${RED}Error: Snap identifier not provided. Use --help for usage.${RESET}`,
     );
     process.exit(1);
   }
 
-  const nameAndVersionArg = args.snapNameAndVersion;
-  const parts = nameAndVersionArg.split('-');
-
-  if (parts.length < 2) {
+  const parts = args.snapIdentifier.split('@');
+  if (parts.length !== 2 || !parts[0] || !parts[1]) {
     console.error(
-      `${RED}Error: Invalid format for snap name and version: "${nameAndVersionArg}". Expected format: <snapName>-<version> (e.g., bip32-example-snap-2.3.0). Use --help for usage.${RESET}`,
+      `${RED}Error: Invalid format for snap identifier: "${args.snapIdentifier}". Expected format: <snapName>@<version> (e.g., bip32-example-snap@2.3.0). Use --help for usage.${RESET}`,
     );
     process.exit(1);
   }
 
-  const versionCandidate = parts[parts.length - 1];
-  const snapNameParts = parts.slice(0, -1);
+  const snapName = parts[0];
+  const versionCandidate = parts[1];
 
-  if (!/^\d+\.\d+\.\d+$/u.test(versionCandidate)) {
+  if (!semverValid(versionCandidate)) {
     console.error(
-      `${RED}Error: Invalid version format in "${nameAndVersionArg}". Version part "${versionCandidate}" is not in x.y.z format. Use --help for usage.${RESET}`,
+      `${RED}Error: Invalid version format in "${args.snapIdentifier}". Version "${versionCandidate}" is not a valid semantic version. Use --help for usage.${RESET}`,
     );
     process.exit(1);
   }
-
   const version = versionCandidate;
-  const snapName = snapNameParts.join('-');
-
-  if (!snapName) {
-    console.error(
-      `${RED}Error: Could not extract snap name from "${nameAndVersionArg}". Use --help for usage.${RESET}`,
-    );
-    process.exit(1);
-  }
 
   console.log(
     `Fetching snap: ${CYAN}${snapName}${RESET} version: ${CYAN}${version}${RESET}`,
