@@ -1,4 +1,3 @@
-import { browser } from 'webextension-polyfill';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
@@ -20,19 +19,39 @@ const callbackProcessor = new CallbackProcessor();
 const BROWSER_TAB_URL = 'http://localhost:5173/';
 
 let browserTab: Window | null = null;
+let isBrowserTabOnline = false;
+
+// Queue to store messages when browserTab is not online
+const messageQueue: {
+  message: unknown;
+  origin: string;
+}[] = [];
 
 function setupMessageListeners() {
   // This listener receives action responses from the live ledger iframe
   // Then forwards the response to the offscreen bridge
   window.addEventListener('message', (msg) => {
-    const { origin, data, source } = msg;
-    console.log('msg', msg);
-    console.log('message', origin, data, source);
+    const { data, source } = msg;
+
     if (source !== browserTab) {
       return;
     }
 
     if (data) {
+      // Handle heartbeat response
+      if (
+        data.action === 'heartbeat-response' &&
+        data.payload &&
+        data.payload.online === true
+      ) {
+        console.log('Browser tab is online');
+        isBrowserTabOnline = true;
+
+        // Process any queued messages
+        processMessageQueue();
+        return;
+      }
+
       if (data.action === LEDGER_KEYRING_IFRAME_CONNECTED_EVENT) {
         chrome.runtime.sendMessage({
           action: OffscreenCommunicationEvents.ledgerDeviceConnect,
@@ -46,6 +65,7 @@ function setupMessageListeners() {
         // Dapp close, we need to reset the callback processor
         console.log('ledger-bridge-close', data);
         browserTab = null;
+        isBrowserTabOnline = false;
         callbackProcessor.resetCurrentMessageId();
 
         return;
@@ -119,11 +139,31 @@ function setupMessageListeners() {
       if (browserTab) {
         // This line ensures the tab is focused, but will not be 100% reliable due to browser security policies
         browserTab.focus();
-      }
 
-      setTimeout(() => {
-        browserTab?.postMessage(iframeMsg, KnownOrigins.ledger);
-      }, 1000);
+        // Send heartbeat check
+        sendHeartbeat();
+
+        // If browserTab is online, send message immediately
+        if (isBrowserTabOnline) {
+          browserTab.postMessage(iframeMsg, KnownOrigins.ledger);
+        } else {
+          // Otherwise, queue the message and wait for online status
+          messageQueue.push({
+            message: iframeMsg,
+            origin: KnownOrigins.ledger,
+          });
+
+          // If we've queued a message, set a fallback timeout in case we never get the heartbeat
+          setTimeout(() => {
+            if (!isBrowserTabOnline && browserTab) {
+              console.log(
+                'Fallback: Sending message after timeout without online confirmation',
+              );
+              browserTab.postMessage(iframeMsg, KnownOrigins.ledger);
+            }
+          }, 1000);
+        }
+      }
 
       // This keeps sendResponse function valid after return
       // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
@@ -140,9 +180,57 @@ export default async function init() {
   });
 }
 
+/**
+ * Sends a heartbeat message to check if the browser tab is online
+ */
+function sendHeartbeat() {
+  if (browserTab) {
+    console.log('Sending heartbeat message');
+    browserTab.postMessage(
+      {
+        target: LEDGER_FRAME_TARGET,
+        action: 'heartbeat-check',
+        params: {},
+      },
+      KnownOrigins.ledger,
+    );
+  }
+}
+
+/**
+ * Process any queued messages when the browser tab comes online
+ */
+function processMessageQueue() {
+  if (isBrowserTabOnline && browserTab && messageQueue.length > 0) {
+    console.log(`Processing ${messageQueue.length} queued messages`);
+
+    while (messageQueue.length > 0) {
+      const queuedMessage = messageQueue.shift();
+      if (queuedMessage) {
+        browserTab.postMessage(queuedMessage.message, queuedMessage.origin);
+      }
+    }
+  }
+}
+
 function openConnectorTab(url: string) {
   browserTab = window.open(url);
   if (!browserTab) {
     throw new Error('Failed to open Lattice connector.');
   }
+
+  // Reset online status when opening a new tab
+  isBrowserTabOnline = false;
+
+  // Start heartbeat checks
+  sendHeartbeat();
+
+  // Set up periodic heartbeat checks
+  const heartbeatInterval = setInterval(() => {
+    if (browserTab) {
+      sendHeartbeat();
+    } else {
+      clearInterval(heartbeatInterval);
+    }
+  }, 1000); // Check every 1 seconds
 }
