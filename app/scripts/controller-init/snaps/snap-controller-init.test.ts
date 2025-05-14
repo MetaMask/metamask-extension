@@ -53,6 +53,7 @@ describe('SnapControllerInit', () => {
       getFeatureFlags: expect.any(Function),
       getMnemonicSeed: expect.any(Function),
       preinstalledSnaps: expect.any(Array),
+      trackEvent: expect.any(Function),
     });
   });
 });
