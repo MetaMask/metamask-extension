@@ -75,10 +75,6 @@ import {
   getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
 } from '../../../../selectors';
-import {
-  getDelegationEntry,
-  type DelegationState,
-} from '../../../../selectors/delegation';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import { useRemoteMode } from '../../hooks/useRemoteMode';
 
@@ -121,23 +117,19 @@ export default function RemoteModeSetupSwaps() {
   const history = useHistory();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const delegationHash = params.get('delegationHash');
+  const isUpdate = params.get('update') === 'true';
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-  const { enableRemoteMode, disableRemoteMode } = useRemoteMode({
-    account: selectedHardwareAccount.address as Hex,
-  });
-
-  const delegation = useSelector((state) =>
-    getDelegationEntry(state as DelegationState, delegationHash as Hex),
-  );
+  const { enableRemoteMode, disableRemoteMode, remoteModeConfig } =
+    useRemoteMode({
+      account: selectedHardwareAccount.address as Hex,
+    });
 
   useEffect(() => {
-    if (delegation?.meta) {
-      const allowances = JSON.parse(delegation.meta);
-      setSwapAllowance(allowances.allowances);
+    if (remoteModeConfig?.swapAllowance) {
+      setSwapAllowance(remoteModeConfig.swapAllowance.allowances);
     }
-  }, [delegation]);
+  }, []);
 
   useEffect(() => {
     setIsHardwareAccount(
@@ -234,7 +226,7 @@ export default function RemoteModeSetupSwaps() {
       return;
     }
 
-    if (delegationHash) {
+    if (isUpdate) {
       await disableRemoteMode({
         mode: REMOTE_MODES.SWAP,
       });

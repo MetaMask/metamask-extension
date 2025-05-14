@@ -62,10 +62,6 @@ import {
   getSelectedInternalAccount,
 } from '../../../../selectors';
 import {
-  getDelegationEntry,
-  type DelegationState,
-} from '../../../../selectors/delegation';
-import {
   RemoteModeDailyAllowanceCard,
   RemoteModeHardwareWalletConfirm,
   StepIndicator,
@@ -114,19 +110,16 @@ export default function RemoteModeSetupDailyAllowance() {
   const history = useHistory();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const delegationHash = params.get('delegationHash');
+  const isUpdate = params.get('update') === 'true';
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
   const { assetsWithBalance } = useMultichainBalances();
 
-  const { enableRemoteMode, disableRemoteMode } = useRemoteMode({
-    account: selectedHardwareAccount.address as Hex,
-  });
-
-  const delegation = useSelector((state) =>
-    getDelegationEntry(state as DelegationState, delegationHash as Hex),
-  );
+  const { enableRemoteMode, disableRemoteMode, remoteModeConfig } =
+    useRemoteMode({
+      account: selectedHardwareAccount.address as Hex,
+    });
 
   const updateSelectedTokenBalance = (value: string) => {
     setSelectedAllowanceBalance(
@@ -136,9 +129,8 @@ export default function RemoteModeSetupDailyAllowance() {
   };
 
   useEffect(() => {
-    if (delegation?.meta) {
-      const allowances = JSON.parse(delegation.meta);
-      setDailyAllowance(allowances.allowances);
+    if (remoteModeConfig?.dailyAllowance) {
+      setDailyAllowance(remoteModeConfig.dailyAllowance.allowances);
     }
   }, []);
 
@@ -221,7 +213,7 @@ export default function RemoteModeSetupDailyAllowance() {
       return;
     }
 
-    if (delegationHash) {
+    if (isUpdate) {
       await disableRemoteMode({
         mode: REMOTE_MODES.DAILY_ALLOWANCE,
       });
