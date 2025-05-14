@@ -8,16 +8,10 @@ class GeneralSettings {
     text: 'Blockies',
   };
 
-  private readonly blockiesActiveIcon =
-    '[data-testid="blockie_icon"] .settings-page__content-item__identicon__item__icon--active';
-
   private readonly generalSettingsPageTitle = {
     text: 'General',
     tag: 'h4',
   };
-
-  private readonly jazziconActiveIcon =
-    '[data-testid="jazz_icon"] .settings-page__content-item__identicon__item__icon--active';
 
   private readonly jazziconsAccountIdenticon = {
     tag: 'h6',
