@@ -277,9 +277,7 @@ export const useTokensWithFiltering = (
             token &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            if (token) {
-              yield token;
-            }
+            yield token;
           }
         }
 
@@ -291,9 +289,7 @@ export const useTokensWithFiltering = (
             !token.symbol.includes('$') &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            if (token) {
-              yield token;
-            }
+            yield token;
           }
         }
       })(),
