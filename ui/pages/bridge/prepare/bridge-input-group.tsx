@@ -84,7 +84,6 @@ export const BridgeInputGroup = ({
   >;
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
-  // onAssetChange: (token: BridgeToken) => void;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
   | 'networkProps'
