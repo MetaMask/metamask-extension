@@ -1,9 +1,15 @@
 import { isEqual } from 'lodash';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateSlides } from '../../store/actions';
-import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
+
+import { isSolanaAddress } from '../../../shared/lib/multichain/accounts';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
+import { updateSlides } from '../../store/actions';
+import {
+  getSelectedAccountCachedBalance,
+  getSelectedInternalAccount,
+  getSlides,
+} from '../../selectors';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
   FUND_SLIDE,
@@ -40,6 +46,7 @@ export const useCarouselManagement = ({
   const slides = useSelector(getSlides);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const hasZeroBalance = totalBalance === ZERO_BALANCE;
 
@@ -57,7 +64,9 @@ export const useCarouselManagement = ({
     };
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
+    if (!isSolanaAddress(selectedAccount.address)) {
+      defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
+    }
     defaultSlides.push(BRIDGE_SLIDE);
     ///: END:ONLY_INCLUDE_IF
     defaultSlides.push(CARD_SLIDE);
