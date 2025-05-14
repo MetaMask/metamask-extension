@@ -850,7 +850,7 @@ async function setupMocking(
       };
     });
 
-  // Client Side Detecition: Request Blocklist
+  // Client Side Detection: Request Blocklist
   const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
     CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
   );
@@ -862,6 +862,21 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: JSON.parse(CLIENT_SIDE_DETECTION_BLOCKLIST),
+      };
+    });
+
+  // Nft API: tokens
+  await server
+    .forGet(
+      'https://nft.api.cx.metamask.io/users/0x0cc5261ab8ce458dc977078a3623e2badd27afd3/tokens',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+          continuation: null,
+        },
       };
     });
 
