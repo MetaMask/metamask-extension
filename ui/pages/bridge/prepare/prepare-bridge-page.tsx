@@ -84,7 +84,10 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import { formatTokenAmount } from '../utils/quote';
+import {
+  formatTokenAmount,
+  isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
+} from '../utils/quote';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -181,49 +184,18 @@ const PrepareBridgePage = () => {
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  // A quote is considered invalid if it is expired or if its destination token/chain
-  // no longer matches the current user selection. This prevents a race condition
-  // where a stale quote (e.g., for SOL→USDC) could be used after the user has
-  // already switched the destination token (e.g., to SOL→AI).
-  const isQuoteExpiredOrInvalid = () => {
-    // 1. Expired quotes should be ignored
-    if (
-      isQuoteExpired &&
-      (!quoteRequest.insufficientBal ||
-        // `insufficientBal` is always true for Solana
-        (fromChain && isSolanaChainId(fromChain.chainId)))
-    ) {
-      return true;
-    }
+  // Determine if the current quote is expired or does not match the currently
+  // selected destination asset/chain.
+  const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
+    activeQuote: activeQuote_,
+    toToken,
+    toChain,
+    fromChain,
+    isQuoteExpired,
+    insufficientBal: quoteRequest.insufficientBal,
+  });
 
-    // 2. If the quote's destination asset or chain no longer matches the UI
-    //    selection, treat it as invalid.
-    if (activeQuote_ && toToken) {
-      const quoteDestAddress = (
-        activeQuote_.quote?.destAsset?.address || zeroAddress()
-      ).toLowerCase();
-      const selectedDestAddress = (
-        toToken.address || zeroAddress()
-      ).toLowerCase();
-      const quoteDestChainIdCaip = activeQuote_.quote?.destChainId
-        ? formatChainIdToCaip(activeQuote_.quote.destChainId)
-        : '';
-      const selectedDestChainIdCaip = toChain?.chainId
-        ? formatChainIdToCaip(toChain.chainId)
-        : '';
-
-      if (
-        quoteDestAddress !== selectedDestAddress ||
-        quoteDestChainIdCaip !== selectedDestChainIdCaip
-      ) {
-        return true;
-      }
-    }
-
-    return false;
-  };
-
-  const activeQuote = isQuoteExpiredOrInvalid() ? undefined : activeQuote_;
+  const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);

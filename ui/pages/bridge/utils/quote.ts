@@ -3,6 +3,10 @@ import { type QuoteResponse } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import {
+  isSolanaChainId,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
 
 export const formatTokenAmount = (
   locale: string,
@@ -39,3 +43,50 @@ export const formatProviderLabel = (args?: {
   bridgeId: QuoteResponse['quote']['bridgeId'];
   bridges: QuoteResponse['quote']['bridges'];
 }): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
+
+export const isQuoteExpiredOrInvalid = ({
+  activeQuote,
+  toToken,
+  toChain,
+  fromChain,
+  isQuoteExpired,
+  insufficientBal,
+}: {
+  activeQuote: any;
+  toToken: any;
+  toChain: any;
+  fromChain: any;
+  isQuoteExpired: boolean;
+  insufficientBal?: boolean;
+}): boolean => {
+  // 1. Ignore quotes that are expired (unless the only reason is an `insufficientBal` override for non-Solana chains)
+  if (
+    isQuoteExpired &&
+    (!insufficientBal ||
+      // `insufficientBal` is always true for Solana
+      (fromChain && isSolanaChainId(fromChain.chainId)))
+  ) {
+    return true;
+  }
+
+  // 2. Ensure the quote still matches the currently selected destination asset / chain
+  if (activeQuote && toToken) {
+    const quoteDestAddress =
+      activeQuote.quote?.destAsset?.address?.toLowerCase() || '';
+    const selectedDestAddress = toToken.address?.toLowerCase() || '';
+
+    const quoteDestChainIdCaip = activeQuote.quote?.destChainId
+      ? formatChainIdToCaip(activeQuote.quote.destChainId)
+      : '';
+    const selectedDestChainIdCaip = toChain?.chainId
+      ? formatChainIdToCaip(toChain.chainId)
+      : '';
+
+    return !(
+      quoteDestAddress === selectedDestAddress &&
+      quoteDestChainIdCaip === selectedDestChainIdCaip
+    );
+  }
+
+  return false;
+};
