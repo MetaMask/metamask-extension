@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
+  formatChainIdToHex,
   isNativeAddress,
+  isSolanaChainId,
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import {
@@ -82,13 +84,14 @@ export const BridgeInputGroup = ({
   >;
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
+  // onAssetChange: (token: BridgeToken) => void;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
   | 'networkProps'
   | 'header'
   | 'customTokenListGenerator'
-  | 'onAssetChange'
   | 'isTokenListLoading'
+  | 'onAssetChange'
   | 'isMultiselectEnabled'
 >) => {
   const t = useI18nContext();
@@ -163,6 +166,19 @@ export const BridgeInputGroup = ({
     }
   };
 
+  const standardizedToken = useMemo(
+    () =>
+      token
+        ? {
+            ...token,
+            chainId: isSolanaChainId(token?.chainId)
+              ? formatChainIdToCaip(token?.chainId)
+              : formatChainIdToHex(token?.chainId),
+          }
+        : null,
+    [token],
+  );
+
   return (
     <Column paddingInline={6} gap={1}>
       <Row gap={4}>
@@ -229,7 +245,7 @@ export const BridgeInputGroup = ({
         <AssetPicker
           header={header}
           visibleTabs={[TabName.TOKENS]}
-          asset={(token as never) ?? undefined}
+          asset={standardizedToken ?? undefined}
           onAssetChange={onAssetChange}
           networkProps={networkProps}
           customTokenListGenerator={customTokenListGenerator}
@@ -253,7 +269,7 @@ export const BridgeInputGroup = ({
               <BridgeAssetPickerButton
                 onClick={onClickHandler}
                 networkImageSrc={networkImageSrc}
-                asset={(token as never) ?? undefined}
+                asset={standardizedToken ?? undefined}
                 networkProps={networkProps}
                 data-testid={buttonProps.testId}
               />
