@@ -1298,19 +1298,6 @@
         "reselect": true
       }
     },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/utils>@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": true
-      }
-    },
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -1909,7 +1896,7 @@
         "@metamask/message-manager>jsonschema": true
       }
     },
-    "@metamask/multichain-network-controller": {
+    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
       "globals": {
         "URL": true
       },
@@ -1919,7 +1906,7 @@
         "@metamask/network-controller": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/multichain-network-controller>@solana/addresses": true
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": true
       }
     },
     "@metamask/multichain-transactions-controller": {
