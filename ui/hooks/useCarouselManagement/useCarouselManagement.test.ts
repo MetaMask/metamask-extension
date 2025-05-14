@@ -504,7 +504,6 @@ describe('useCarouselManagement', () => {
         CARD_SLIDE,
         CASH_SLIDE,
         MULTI_SRP_SLIDE,
-        BACKUPANDSYNC_SLIDE,
         SOLANA_SLIDE,
       ]);
     });
