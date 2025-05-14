@@ -1,10 +1,10 @@
 import { BigNumber } from 'bignumber.js';
+import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   formatTokenAmount,
   formatCurrencyAmount,
   formatProviderLabel,
 } from './quote';
-import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 describe('Bridge quote utils', () => {
   describe('getNativeAssetForChainId', () => {
