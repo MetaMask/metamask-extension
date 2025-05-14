@@ -514,7 +514,7 @@ describe('useCarouselManagement', () => {
         CASH_SLIDE,
         MULTI_SRP_SLIDE,
         BACKUPANDSYNC_SLIDE,
-        SOLANA_SLIDE
+        SOLANA_SLIDE,
       ]);
     });
   });
