@@ -11,7 +11,7 @@ body:
        ## **Before Submitting:**
 
        * Please search to make sure this issue has not been opened already.
-       * If this is a question about how to integrate MetaMask with your project, please ask in our [Community forum](https://community.metamask.io/c/developer-questions/) instead. This will get your question answered more quickly and make it easier for other devs to find the answer in the future.
+       * If this is a question about how to integrate MetaMask with your project, please ask in our [Community forum](https://community.metamask.io/c/developer-discussion/11) instead. This will get your question answered more quickly and make it easier for other devs to find the answer in the future.
  - type: textarea
    id: what-happened
    attributes:
