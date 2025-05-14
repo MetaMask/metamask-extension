@@ -55,8 +55,8 @@ export const BridgeCTAButton = ({
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
 
-  const isQuoteExpired = useSelector((state) =>
-    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  const isQuoteExpired = useSelector((state: BridgeAppState) =>
+    getIsQuoteExpired(state, Date.now()),
   );
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);

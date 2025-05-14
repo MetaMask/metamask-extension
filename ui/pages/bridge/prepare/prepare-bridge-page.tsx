@@ -175,8 +175,8 @@ const PrepareBridgePage = () => {
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
-  const isQuoteExpired = useSelector((state) =>
-    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  const isQuoteExpired = useSelector((state: BridgeAppState) =>
+    getIsQuoteExpired(state, Date.now()),
   );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
