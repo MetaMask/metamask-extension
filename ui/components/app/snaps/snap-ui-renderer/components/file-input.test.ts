@@ -1,8 +1,6 @@
 import { Box, Form, Field, FileInput, Button } from '@metamask/snaps-sdk/jsx';
 import { fireEvent } from '@testing-library/react';
-// TODO: Fix default import
-// eslint-disable-next-line import/no-named-as-default
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import * as backgroundConnection from '../../../../../store/background-connection';
 import {
   MOCK_INTERFACE_ID,

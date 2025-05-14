@@ -1,8 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-// TODO: Fix default import
-// eslint-disable-next-line import/no-named-as-default
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import AddRpcUrlModal from './add-rpc-url-modal';
 
