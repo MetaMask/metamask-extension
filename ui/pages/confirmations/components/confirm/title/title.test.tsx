@@ -18,7 +18,7 @@ import {
 } from '../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../test/lib/i18n-helpers';
-import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
+import { upgradeAccountConfirmationOnly } from '../../../../../../test/data/confirmations/batch-transaction';
 import {
   Alert,
   ConfirmAlertsState,
@@ -100,7 +100,7 @@ describe('ConfirmTitle', () => {
   it('should render the title and description for smart account upgrade correctly', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
+        upgradeAccountConfirmationOnly as Confirmation,
       ),
     );
     const { getByText } = renderWithConfirmContextProvider(
