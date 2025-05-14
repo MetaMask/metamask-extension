@@ -15,7 +15,7 @@ describe('Sign in with ethereum', function () {
     const expectedSigninMessageTitle =
       'This site is requesting to sign in with Account 1';
     const expectedSigninMessage =
-      'I accept the MetaMask Terms of Service: https://community.metamask.io/tos';
+      'I accept the MetaMask Terms of Service: https://https://metamask.io/terms-of-use';
     const expectedSignInResult =
       '0xef8674a92d62a1876624547bdccaef6c67014ae821de18fa910fbff56577a65830f68848585b33d1f4b9ea1c3da1c1b11553b6aabe8446717daf7cd1e38a68271c';
     await withFixtures(

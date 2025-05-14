@@ -56,7 +56,7 @@ const msgParams = {
       domain: 'localhost:8080',
       address: selectedAddress,
       statement:
-        'Click to sign in and accept the Terms of Service: https://community.metamask.io/tos',
+        'Click to sign in and accept the Terms of Service: https://https://metamask.io/terms-of-use',
       uri: 'http://localhost:8080',
       version: '1',
       nonce: 'STMt6KQMwwdOXE306',
@@ -81,7 +81,7 @@ const badDomainParams = {
       domain: 'baddomain.com',
       address: selectedAddress,
       statement:
-        'Click to sign in and accept the Terms of Service: https://community.metamask.io/tos',
+        'Click to sign in and accept the Terms of Service: https://https://metamask.io/terms-of-use',
       uri: 'http://localhost:8080',
       version: '1',
       nonce: 'STMt6KQMwwdOXE306',
@@ -106,7 +106,7 @@ const badAddressParams = {
       domain: 'localhost:8080',
       address: selectedAddress,
       statement:
-        'Click to sign in and accept the Terms of Service: https://community.metamask.io/tos',
+        'Click to sign in and accept the Terms of Service: https://https://metamask.io/terms-of-use',
       uri: 'http://localhost:8080',
       version: '1',
       nonce: 'STMt6KQMwwdOXE306',

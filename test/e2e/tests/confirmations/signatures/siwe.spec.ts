@@ -114,7 +114,7 @@ async function assertInfoValues(driver: Driver) {
   await driver.clickElement('[data-testid="sectionCollapseButton"]');
   const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
   const message = driver.findElement({
-    text: 'I accept the MetaMask Terms of Service: https://community.metamask.io/tos',
+    text: 'I accept the MetaMask Terms of Service: https://https://metamask.io/terms-of-use',
   });
 
   assert.ok(await origin);

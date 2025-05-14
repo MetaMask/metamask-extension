@@ -16,7 +16,7 @@ export default {
       {
         label: 'Message:',
         value:
-          'Click to sign in and accept the Terms of Service: https://community.metamask.io/tos',
+          'Click to sign in and accept the Terms of Service: https://https://metamask.io/terms-of-use',
       },
       {
         label: 'URI:',

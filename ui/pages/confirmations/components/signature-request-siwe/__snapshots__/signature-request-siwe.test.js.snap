@@ -41,9 +41,9 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
             class="confirm-page-container-navigation__navtext"
           >
             0
-             
+
             of
-             
+
             1
           </div>
           <div
@@ -168,7 +168,7 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
         >
           966.987986
-           
+
           GoerliETH
         </h6>
       </div>
@@ -298,7 +298,7 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           <p
             class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
-            Click to sign in and accept the Terms of Service: https://community.metamask.io/tos
+            Click to sign in and accept the Terms of Service: https://https://metamask.io/terms-of-use
           </p>
         </div>
         <div
