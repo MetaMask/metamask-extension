@@ -1,15 +1,13 @@
 import { createSelector } from 'reselect';
 import { Hex } from '@metamask/utils';
-import {
-  BridgeHistoryItem,
-  BridgeStatusAppState,
-} from '../../../shared/types/bridge-status';
+import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { getSelectedAddress } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
+import { BridgeStatusAppState } from '../../../shared/types/bridge-status';
 
 export const selectBridgeStatusState = (state: BridgeStatusAppState) =>
-  state.metamask.bridgeStatusState;
+  state.metamask;
 
 /**
  * Returns a mapping of srcTxMetaId to txHistoryItem for the selected address
@@ -29,6 +27,19 @@ export const selectBridgeHistoryForAccount = createSelector(
         return acc;
       },
       {},
+    );
+  },
+);
+
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * Returns a bridge history item for a given approval tx id
+ */
+export const selectBridgeHistoryForApprovalTxId = createSelector(
+  [selectBridgeHistoryForAccount, (_, approvalTxId: string) => approvalTxId],
+  (bridgeHistory, approvalTxId) => {
+    return Object.values(bridgeHistory).find(
+      (bridgeHistoryItem) => bridgeHistoryItem.approvalTxId === approvalTxId,
     );
   },
 );

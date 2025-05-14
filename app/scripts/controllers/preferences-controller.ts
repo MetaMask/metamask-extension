@@ -106,6 +106,7 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   shouldShowAggregatedBalancePopover: boolean;
+  dismissSmartAccountSuggestionEnabled: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -148,7 +149,7 @@ export type PreferencesControllerState = Omit<
   enableMV3TimestampSave: boolean;
   useExternalServices: boolean;
   textDirection?: string;
-  accountUpgradeDisabledChains?: string[];
+  manageInstitutionalWallets: boolean;
 };
 
 /**
@@ -200,6 +201,7 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       shouldShowAggregatedBalancePopover: true, // by default user should see popover;
+      dismissSmartAccountSuggestionEnabled: false,
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
@@ -252,6 +254,7 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
+    manageInstitutionalWallets: false,
   });
 
 /**
@@ -422,7 +425,7 @@ const controllerMetadata = {
   },
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
-  accountUpgradeDisabledChains: { persist: true, anonymous: false },
+  manageInstitutionalWallets: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -523,6 +526,7 @@ export class PreferencesController extends BaseController<
     this.setUseAddressBarEnsResolution(useExternalServices);
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
+    this.setUseSafeChainsListValidation(useExternalServices);
   }
 
   /**
@@ -940,26 +944,20 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  setServiceWorkerKeepAlivePreference(value: boolean): void {
+  /**
+   * A setter for the user preference to manage institutional wallets
+   *
+   * @param manageInstitutionalWallets - User preference for managing institutional wallets.
+   */
+  setManageInstitutionalWallets(manageInstitutionalWallets: boolean): void {
     this.update((state) => {
-      state.enableMV3TimestampSave = value;
+      state.manageInstitutionalWallets = manageInstitutionalWallets;
     });
   }
 
-  getDisabledAccountUpgradeChains(): string[] {
-    return this.state.accountUpgradeDisabledChains ?? [];
-  }
-
-  disableAccountUpgradeForChain(chainId: string): void {
+  setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
-      const { accountUpgradeDisabledChains: existingDisabledChains } = state;
-
-      if (!existingDisabledChains?.includes(chainId)) {
-        state.accountUpgradeDisabledChains = [
-          ...(existingDisabledChains ?? []),
-          chainId,
-        ];
-      }
+      state.enableMV3TimestampSave = value;
     });
   }
 

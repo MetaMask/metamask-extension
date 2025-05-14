@@ -48,7 +48,11 @@ describe('Token List', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomToken(tokenAddress, symbol);
+        await assetListPage.importCustomTokenByChain(
+          tokenAddress,
+          symbol,
+          chainId,
+        );
 
         await assetListPage.check_tokenGeneralChangePercentageNotPresent(
           zeroAddress(),
@@ -101,7 +105,11 @@ describe('Token List', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomToken(tokenAddress, symbol);
+        await assetListPage.importCustomTokenByChain(
+          tokenAddress,
+          symbol,
+          chainId,
+        );
 
         await assetListPage.check_tokenGeneralChangePercentage(
           zeroAddress(),

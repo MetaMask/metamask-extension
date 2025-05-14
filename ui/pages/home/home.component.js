@@ -82,15 +82,13 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 
 function shouldCloseNotificationPopup({
   isNotification,
-  totalUnapprovedAndQueuedRequestCount,
+  totalUnapprovedCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
 }) {
-  // we can't use totalUnapproved because there are also queued requests
-
   const shouldClose =
     isNotification &&
-    totalUnapprovedAndQueuedRequestCount === 0 &&
+    totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
@@ -836,7 +834,7 @@ export default class Home extends PureComponent {
     ///: END:ONLY_INCLUDE_IF
 
     return (
-      <div className="main-container">
+      <div className="main-container main-container--has-shadow">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
         <Route
           path={CONNECTED_ACCOUNTS_ROUTE}

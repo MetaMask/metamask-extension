@@ -1,3 +1,27 @@
+export const REMOTE_MODE_SLIDE = {
+  id: 'remoteMode',
+  title: 'slideRemoteModeTitle',
+  description: 'slideRemoteModeDescription',
+  image: './images/slide-cold-storage.svg',
+  href: '/home.html#remote',
+};
+
+///: BEGIN:ONLY_INCLUDE_IF(solana)
+export const SOLANA_SLIDE = {
+  id: 'solana',
+  title: 'slideSolanaTitle',
+  description: 'slideSolanaDescription',
+  image: './images/slide-solana-icon.svg',
+};
+///: END:ONLY_INCLUDE_IF
+
+export const SMART_ACCOUNT_UPGRADE_SLIDE = {
+  id: 'smartAccountUpgrade',
+  title: 'slideSmartAccountUpgradeTitle',
+  description: 'slideSmartAccountUpgradeDescription',
+  image: './images/smart-account-upgrade.png',
+};
+
 export const SWEEPSTAKES_SLIDE = {
   id: 'sweepStake',
   title: 'slideSweepStakeTitle',
@@ -39,7 +63,21 @@ export const CASH_SLIDE = {
   href: 'https://portfolio.metamask.io/sell',
 };
 
-export const ZERO_BALANCE = '0x00';
+export const MULTI_SRP_SLIDE = {
+  id: 'multiSrp',
+  title: 'slideMultiSrpTitle',
+  description: 'slideMultiSrpDescription',
+  image: './images/slide-multi-srp-icon.svg',
+};
+
+export const BACKUPANDSYNC_SLIDE = {
+  id: 'backupAndSync',
+  title: 'backupAndSyncSlideTitle',
+  description: 'backupAndSyncSlideDescription',
+  image: './images/slide-backup-and-sync-icon.png',
+};
+
+export const ZERO_BALANCE = '0x0';
 
 export const SWEEPSTAKES_START = new Date('2025-04-09T00:00:00Z');
-export const SWEEPSTAKES_END = new Date('2025-04-15T23:59:59Z');
+export const SWEEPSTAKES_END = new Date('2025-04-28T23:59:59Z');

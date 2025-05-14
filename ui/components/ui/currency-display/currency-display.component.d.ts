@@ -16,13 +16,16 @@ export type CurrencyDisplayProps = OverridingUnion<
     prefixComponent?: ReactElement;
     suffix?: string | boolean;
     value?: string;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     prefixComponentWrapperProps?: Record<string, any>;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     textProps?: Record<string, any>;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     suffixProps?: Record<string, any>;
   }

@@ -492,9 +492,28 @@ class Driver {
   /**
    * Quits the browser session, closing all windows and tabs.
    *
+   * This was previously implemented as just `await this.driver.quit()`, but on Windows,
+   * that was causing Google Chrome for Testing to not close, and sit open indefinitely
+   * taking CPU load. It is also possible that this was causing some cascading errors on CI.
+   *
    * @returns {Promise} promise resolving after quitting
    */
   async quit() {
+    if (this.browser === 'chrome') {
+      try {
+        const handles = await this.driver.getAllWindowHandles();
+
+        for (const handle of handles) {
+          await this.driver.switchTo().window(handle);
+          await this.driver.close();
+        }
+      } catch (e) {
+        console.info(
+          'Problem encountered closing Chrome windows/tabs, but continuing anyway',
+        );
+      }
+    }
+
     await this.driver.quit();
   }
 
@@ -545,10 +564,19 @@ class Driver {
    * Finds a clickable element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - Timeout in milliseconds
+   * @param {object} guards
+   * @param {number} [guards.waitAtLeastGuard] - Minimum milliseconds to wait before passing
+   * @param {number} [guards.timeout]  - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
    */
-  async findClickableElement(rawLocator, timeout = this.timeout) {
+  async findClickableElement(
+    rawLocator,
+    { waitAtLeastGuard = 0, timeout = this.timeout } = {},
+  ) {
+    assert(timeout > waitAtLeastGuard);
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
     const element = await this.findElement(rawLocator, timeout);
     await Promise.all([
       this.driver.wait(until.elementIsVisible(element), timeout),
@@ -671,7 +699,7 @@ class Driver {
    * @param {string} testTitle - The title of the test
    */
   #getArtifactDir(testTitle) {
-    return `./test-artifacts/${this.browser}/${lodash.escape(testTitle)}`;
+    return `./test-artifacts/${this.browser}/${sanitizeTestTitle(testTitle)}`;
   }
 
   /**
@@ -1553,6 +1581,20 @@ function collectMetrics() {
     ...results,
     ...window.stateHooks.getCustomTraces(),
   };
+}
+
+/**
+ * @param {string} testTitle - The title of the test
+ */
+function sanitizeTestTitle(testTitle) {
+  return testTitle
+    .toLowerCase()
+    .replace(/[<>:"/\\|?*\r\n]/gu, '') // Remove invalid characters
+    .trim()
+    .replace(/\s+/gu, '-') // Replace whitespace with dashes
+    .replace(/[^a-z0-9-]+/gu, '-') // Replace non-alphanumerics (excluding dash) with dash
+    .replace(/--+/gu, '-') // Collapse multiple dashes
+    .replace(/^-+|-+$/gu, ''); // Trim leading/trailing dashes
 }
 
 module.exports = { Driver, PAGES };

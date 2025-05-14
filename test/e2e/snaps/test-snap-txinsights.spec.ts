@@ -121,7 +121,7 @@ describe('Test Snap TxInsights', function () {
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
         await testDapp.clickERC1155SetApprovalForAllButton();
-        
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapTxInsights.check_transactionInsightsTitle();
         await snapTxInsights.check_transactionAddress('0x5CfE7...6a7e1');

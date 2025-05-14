@@ -1,7 +1,5 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { CaipChainId } from '@metamask/utils';
-import { KeyringTypes } from '@metamask/keyring-controller';
-import { getNextAvailableAccountName } from '../../../store/actions';
 import { CreateAccount } from '../create-account';
 import {
   WalletClientType,
@@ -13,7 +11,6 @@ type CreateSnapAccountProps = {
    * Executes when the Create button is clicked
    */
   onActionComplete: (completed: boolean) => Promise<void>;
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   /**
    * Callback to select the SRP
    */
@@ -22,7 +19,6 @@ type CreateSnapAccountProps = {
    * The keyring ID to create the account
    */
   selectedKeyringId?: string;
-  ///: END:ONLY_INCLUDE_IF(multi-srp)
   /**
    * The type of snap client to use
    */
@@ -31,47 +27,41 @@ type CreateSnapAccountProps = {
    * The chain ID to create the account
    */
   chainId: CaipChainId;
+  /**
+   * Whether to set the newly created account as the selected account
+   */
+  setNewlyCreatedAccountAsSelected?: boolean;
 };
 
 export const CreateSnapAccount = ({
   onActionComplete,
-  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   onSelectSrp,
   selectedKeyringId,
-  ///: END:ONLY_INCLUDE_IF(multi-srp)
   clientType,
   chainId,
+  setNewlyCreatedAccountAsSelected,
 }: CreateSnapAccountProps) => {
-  const snapClient = useMultichainWalletSnapClient(clientType);
-  const isCreatingAccount = useRef(false);
+  const client = useMultichainWalletSnapClient(clientType);
 
   const onCreateAccount = useCallback(
-    async (_accountNameSuggestion?: string) => {
-      if (isCreatingAccount.current) {
-        return;
-      }
-
-      try {
-        isCreatingAccount.current = true;
-        await snapClient.createAccount({
+    async (accountNameSuggestion?: string) => {
+      await client.createAccount(
+        {
           scope: chainId,
-          ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
           entropySource: selectedKeyringId,
-          accountNameSuggestion: _accountNameSuggestion,
-          ///: END:ONLY_INCLUDE_IF(multi-srp)
-        });
-        onActionComplete(true);
-      } catch (error) {
-        onActionComplete(false);
-      } finally {
-        isCreatingAccount.current = false;
-      }
+          accountNameSuggestion,
+        },
+        { setSelectedAccount: setNewlyCreatedAccountAsSelected },
+      );
+      onActionComplete(true);
     },
-    [snapClient, chainId, selectedKeyringId, onActionComplete],
+    [client, chainId, selectedKeyringId, onActionComplete],
   );
 
   const getNextAccountName = async () => {
-    return getNextAvailableAccountName(KeyringTypes.snap);
+    return await client.getNextAvailableAccountName({
+      chainId,
+    });
   };
 
   return (
@@ -79,10 +69,9 @@ export const CreateSnapAccount = ({
       onActionComplete={onActionComplete}
       onCreateAccount={onCreateAccount}
       getNextAvailableAccountName={getNextAccountName}
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
+      scope={chainId}
       onSelectSrp={onSelectSrp}
       selectedKeyringId={selectedKeyringId}
-      ///: END:ONLY_INCLUDE_IF(multi-srp)
     />
   );
 };

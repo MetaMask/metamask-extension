@@ -187,18 +187,23 @@ describe('requestEthereumAccountsHandler', () => {
       MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
 
       await handler(baseRequest);
-      expect(sendMetrics).toHaveBeenCalledWith({
-        category: 'inpage_provider',
-        event: 'Dapp Viewed',
-        properties: {
-          is_first_visit: true,
-          number_of_accounts: 3,
-          number_of_accounts_connected: 2,
+      expect(sendMetrics).toHaveBeenCalledWith(
+        {
+          category: 'inpage_provider',
+          event: 'Dapp Viewed',
+          properties: {
+            is_first_visit: true,
+            number_of_accounts: 3,
+            number_of_accounts_connected: 2,
+          },
+          referrer: {
+            url: 'http://test.com',
+          },
         },
-        referrer: {
-          url: 'http://test.com',
+        {
+          excludeMetaMetricsId: true,
         },
-      });
+      );
     });
 
     it('does not emit the dapp viewed metrics event when shouldEmitDappViewedEvent returns false', async () => {

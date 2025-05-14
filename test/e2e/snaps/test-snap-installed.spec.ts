@@ -10,7 +10,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
 
-export type TestSuiteArguments = {
+type TestSuiteArguments = {
   driver: Driver;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };
@@ -64,11 +64,7 @@ describe('Test Snap installed', function () {
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectDialogsButton',
-          false,
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
 
         // Check installation success
         await testSnaps.check_installationComplete(

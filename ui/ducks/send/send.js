@@ -12,6 +12,7 @@ import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { toHex } from '@metamask/controller-utils';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   decimalToHex,
@@ -1608,8 +1609,11 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const { tokens, tokenAddressList, isProbablyAnAssetContract } =
-            action.payload;
+          const {
+            tokens,
+            tokenAddressList = [],
+            isProbablyAnAssetContract,
+          } = action.payload;
 
           if (
             isBurnAddress(state.recipientInput) ||
@@ -2731,9 +2735,7 @@ export function updateSendAsset(
 
           if (isCurrentOwner) {
             asset.error = null;
-            asset.balance = details.balance
-              ? addHexPrefix(details.balance)
-              : '0x1';
+            asset.balance = details.balance ? toHex(details.balance) : '0x1';
           } else {
             throw new Error(
               'Send slice initialized as NFT send with an NFT not currently owned by the select account',
@@ -2878,6 +2880,7 @@ export function resetSendState() {
 export function signTransaction(history) {
   return async (dispatch, getState) => {
     const state = getState();
+    const globalNetworkClientId = getSelectedNetworkClientId(state);
     const { stage, eip1559support, amountMode } = state[name];
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
@@ -3053,6 +3056,7 @@ export function signTransaction(history) {
           const { id } = await addTransactionAndWaitForPublish(
             { ...bestQuote.approvalNeeded, amount: '0x0' },
             {
+              networkClientId: globalNetworkClientId,
               requireApproval: false,
               // TODO: create new type for swap+send approvals; works as stopgap bc swaps doesn't use this type for STXs in `submitSmartTransactionHook` (via `TransactionController`)
               type: TransactionType.swapApproval,
@@ -3071,6 +3075,7 @@ export function signTransaction(history) {
         const { id: swapAndSendTxId } = await addTransactionAndWaitForPublish(
           txParams,
           {
+            networkClientId: globalNetworkClientId,
             requireApproval: false,
             sendFlowHistory: draftTransaction.history,
             type: TransactionType.swapAndSend,
@@ -3088,6 +3093,7 @@ export function signTransaction(history) {
         // basic send
         const { id: basicSendTxId } = await dispatch(
           addTransactionAndRouteToConfirmationPage(txParams, {
+            networkClientId: globalNetworkClientId,
             sendFlowHistory: draftTransaction.history,
             type: transactionType,
           }),

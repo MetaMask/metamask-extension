@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import NftGrid from './nft-grid';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockVar = any;
 

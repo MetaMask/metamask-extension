@@ -4,7 +4,10 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import mockDefaultState from '../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
-import { getShouldShowSeedPhraseReminder } from './multi-srp';
+import {
+  getSnapAccountsByKeyringId,
+  getShouldShowSeedPhraseReminder,
+} from './multi-srp';
 
 const mockGetSelectedAccountTokensAcrossChains = jest.fn();
 const mockGetCrossChainMetaMaskCachedBalances = jest.fn();
@@ -162,7 +165,7 @@ describe('Multi SRP Selectors', () => {
       expect(result).toBe(true);
     });
 
-    it.only('returns true for EVM account with cross chain balance', () => {
+    it('returns true for EVM account with cross chain balance', () => {
       const mockState = generateMockState({
         account: mockHdAccount,
         seedPhraseBackedUp: false,
@@ -284,6 +287,35 @@ describe('Multi SRP Selectors', () => {
       );
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe('getFirstPartySnapAccountsByKeyringId', () => {
+    it('returns the correct accounts', () => {
+      const mockState = generateMockState({
+        account: mockSnapAccount,
+        seedPhraseBackedUp: false,
+        dismissSeedBackUpReminder: false,
+      });
+
+      const result = getSnapAccountsByKeyringId(mockState, mockKeyringId);
+
+      expect(result).toStrictEqual([mockSnapAccount]);
+    });
+
+    it("returns an empty array if there aren't any first party snap accounts", () => {
+      const mockState = generateMockState({
+        account: mockHdAccount,
+        seedPhraseBackedUp: false,
+        dismissSeedBackUpReminder: false,
+      });
+
+      const result = getSnapAccountsByKeyringId(
+        mockState,
+        'mock-id-with-no-snap-accounts',
+      );
+
+      expect(result).toStrictEqual([]);
     });
   });
 });
