@@ -67,6 +67,25 @@ export const UserStorageControllerInit: ControllerInitFunction<
           });
         },
       },
+      addressBookSyncing: {
+        onContactUpdated: (profileId) => {
+          console.log('MetaMetrics:: Address book sync: contact updated for profileId:', profileId);
+        },
+        onContactDeleted: (profileId) => {
+          console.log('MetaMetrics:: Address book sync: contact deleted for profileId:', profileId);
+        },
+        onAddressBookSyncErroneousSituation: (
+          profileId,
+          situationMessage,
+          sentryContext,
+        ) => {
+          captureException(
+            new Error(`Address book sync - ${situationMessage}`),
+            sentryContext,
+          );
+          console.log('MetaMetrics:: Address book sync: error for profileId:', profileId, 'situationMessage:', situationMessage);
+        },
+      },
     },
   });
 
