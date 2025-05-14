@@ -654,9 +654,9 @@ export function AssetPickerModal({
                 />
                 <AssetList
                   network={network}
-                  handleAssetChange={(asset) => {
+                  handleAssetChange={(selectedAsset) => {
                     setSearchQuery('');
-                    handleAssetChange(asset);
+                    handleAssetChange(selectedAsset);
                   }}
                   asset={asset?.type === AssetType.NFT ? undefined : asset}
                   tokenList={displayedTokens}
