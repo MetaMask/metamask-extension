@@ -9,7 +9,7 @@ import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 const splTokenName = 'PKIN';
 // Investigate why this test is flaky https://consensyssoftware.atlassian.net/browse/MMQA-549
 // eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Send flow - SPL Token', function (this: Suite) {
+describe('Send flow - SPL Token', function (this: Suite) {
   it('user with more than 1 token in the token list', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
