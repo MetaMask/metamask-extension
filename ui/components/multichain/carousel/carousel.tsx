@@ -56,6 +56,8 @@ export const Carousel = React.forwardRef(
     const selectedAccount = useSelector(getSelectedAccount);
     ///: END:ONLY_INCLUDE_IF
 
+    const isSweepstakesActive = getSweepstakesCampaignActive();
+
     const visibleSlides = slides
       .filter((slide) => {
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
@@ -79,10 +81,6 @@ export const Carousel = React.forwardRef(
           return 1;
         }
         ///: END:ONLY_INCLUDE_IF
-
-        const isSweepstakesActive = getSweepstakesCampaignActive(
-          new Date(new Date().toISOString()),
-        );
 
         if (isSweepstakesActive) {
           if (a.id === 'sweepStake') {
