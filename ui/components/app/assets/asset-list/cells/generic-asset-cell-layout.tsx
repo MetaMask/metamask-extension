@@ -11,20 +11,20 @@ export type GenericAssetCellLayoutProps = {
   onClick?: () => void;
   disableHover?: boolean;
   badge: ReactNode;
-  priaryDisplayLeft: ReactNode;
-  secondaryDisplayRight: ReactNode;
-  secondaryDisplayLeft: ReactNode;
-  primaryDisplayRight: ReactNode;
+  headerLeftDisplay: ReactNode;
+  headerRightDisplay: ReactNode;
+  footerLeftDisplay: ReactNode;
+  footerRightDisplay: ReactNode;
 };
 
 export default function GenericAssetCellLayout({
   onClick,
   disableHover = false,
   badge,
-  priaryDisplayLeft,
-  secondaryDisplayLeft,
-  primaryDisplayRight,
-  secondaryDisplayRight,
+  headerLeftDisplay,
+  headerRightDisplay,
+  footerLeftDisplay,
+  footerRightDisplay,
 }: GenericAssetCellLayoutProps) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -77,8 +77,8 @@ export default function GenericAssetCellLayout({
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
           >
-            {priaryDisplayLeft}
-            {secondaryDisplayLeft}
+            {headerLeftDisplay}
+            {headerRightDisplay}
           </Box>
 
           <Box
@@ -86,8 +86,8 @@ export default function GenericAssetCellLayout({
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
           >
-            {primaryDisplayRight}
-            {secondaryDisplayRight}
+            {footerLeftDisplay}
+            {footerRightDisplay}
           </Box>
         </Box>
       </Box>

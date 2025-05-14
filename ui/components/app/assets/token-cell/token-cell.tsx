@@ -86,22 +86,22 @@ export default function TokenCell({
             symbol={token.symbol}
           />
         }
-        priaryDisplayLeft={
+        headerLeftDisplay={
           <TokenCellTitle token={{ ...token, ...tokenDisplayInfo }} />
         }
-        secondaryDisplayLeft={
-          <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
-        }
-        primaryDisplayRight={
-          <TokenCellPrimaryDisplay
-            token={{ ...token, ...tokenDisplayInfo }}
-            privacyMode={privacyMode}
-          />
-        }
-        secondaryDisplayRight={
+        headerRightDisplay={
           <TokenCellSecondaryDisplay
             token={{ ...token, ...tokenDisplayInfo }}
             handleScamWarningModal={handleScamWarningModal}
+            privacyMode={privacyMode}
+          />
+        }
+        footerLeftDisplay={
+          <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
+        }
+        footerRightDisplay={
+          <TokenCellPrimaryDisplay
+            token={{ ...token, ...tokenDisplayInfo }}
             privacyMode={privacyMode}
           />
         }

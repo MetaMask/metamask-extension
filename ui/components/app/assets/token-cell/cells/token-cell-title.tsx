@@ -3,7 +3,7 @@ import { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { Box } from '../../../../component-library';
-import { TextAlign } from '../../../../../helpers/constants/design-system';
+import { Display } from '../../../../../helpers/constants/design-system';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
@@ -12,9 +12,11 @@ type TokenCellTitleProps = {
 export const TokenCellTitle = React.memo(
   ({ token }: TokenCellTitleProps) => {
     return (
-      <Box textAlign={TextAlign.Left}>
+      <Box display={Display.Flex}>
         <AssetCellTitle title={token.title} />
-        <StakeableLink chainId={token.chainId} symbol={token.symbol} />
+        {token.isStakeable ?? (
+          <StakeableLink chainId={token.chainId} symbol={token.symbol} />
+        )}
       </Box>
     );
   },

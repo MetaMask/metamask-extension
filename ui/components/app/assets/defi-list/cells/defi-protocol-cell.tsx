@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { DeFiProtocolPosition } from '../defi-list';
 import GenericAssetCellLayout from '../../asset-list/cells/generic-asset-cell-layout';
-import { useSelector } from 'react-redux';
 import { getPreferences } from '../../../../../selectors';
 
 import {
@@ -58,16 +58,17 @@ export function DefiProtocolCell({ onClick, position }: DeFiProtocolCellProps) {
           symbol={position.protocolId}
         />
       }
-      priaryDisplayLeft={<AssetCellTitle title={position.title} />}
-      secondaryDisplayRight={
-        <AvatarGroup
-          avatarType={AvatarType.TOKEN}
-          limit={4}
-          members={position.iconGroup}
-          data-testid="defi-list-avatar-group"
-        />
+      headerLeftDisplay={<AssetCellTitle title={position.title} />}
+      headerRightDisplay={
+        <SensitiveText
+          color={TextColor.textAlternativeSoft}
+          variant={TextVariant.bodySmMedium}
+          isHidden={privacyMode}
+        >
+          {position.marketValue}
+        </SensitiveText>
       }
-      secondaryDisplayLeft={
+      footerLeftDisplay={
         <SensitiveText
           variant={TextVariant.bodyMd}
           textAlign={TextAlign.End}
@@ -78,14 +79,13 @@ export function DefiProtocolCell({ onClick, position }: DeFiProtocolCellProps) {
           {position.symbolGroup}
         </SensitiveText>
       }
-      primaryDisplayRight={
-        <SensitiveText
-          color={TextColor.textAlternativeSoft}
-          variant={TextVariant.bodySmMedium}
-          isHidden={privacyMode}
-        >
-          {position.marketValue}
-        </SensitiveText>
+      footerRightDisplay={
+        <AvatarGroup
+          avatarType={AvatarType.TOKEN}
+          limit={4}
+          members={position.iconGroup}
+          data-testid="defi-list-avatar-group"
+        />
       }
     />
   );

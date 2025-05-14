@@ -178,7 +178,7 @@ export default function DefiList({ onClick }: DefiListProps) {
     tokenSortConfig,
   ]);
 
-  if (true) {
+  if (sortedFilteredDefi === undefined) {
     return (
       <Box
         display={Display.Flex}

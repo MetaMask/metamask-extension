@@ -14,10 +14,9 @@ import Tooltip from '../../../../ui/tooltip';
 
 type AssetCellTitleProps = {
   title: string;
-  titleLink?: React.ReactNode;
 };
 
-export const AssetCellTitle = ({ title, titleLink }: AssetCellTitleProps) => {
+export const AssetCellTitle = ({ title }: AssetCellTitleProps) => {
   const t = useI18nContext();
 
   if (title && title.length > 12) {
@@ -36,7 +35,6 @@ export const AssetCellTitle = ({ title, titleLink }: AssetCellTitleProps) => {
           ellipsis
         >
           {networkTitleOverrides(t as TranslateFunction, { title })}
-          {titleLink}
         </Text>
       </Tooltip>
     );
@@ -51,7 +49,6 @@ export const AssetCellTitle = ({ title, titleLink }: AssetCellTitleProps) => {
       data-testid="multichain-token-list-item-token-name"
     >
       {networkTitleOverrides(t as TranslateFunction, { title })}
-      {titleLink}
     </Text>
   );
 };
