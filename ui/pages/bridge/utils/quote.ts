@@ -3,6 +3,7 @@ import {
   type QuoteResponse,
   isSolanaChainId,
   formatChainIdToCaip,
+  isNativeAddress,
 } from '@metamask/bridge-controller';
 import type {
   NetworkConfiguration,
@@ -88,7 +89,11 @@ export const isQuoteExpiredOrInvalid = ({
       : '';
 
     return !(
-      quoteDestAddress === selectedDestAddress &&
+      (quoteDestAddress === selectedDestAddress ||
+        // Extension's native asset address may be different from bridge-api's native
+        // asset address so if both assets are native, we should still return true
+        (isNativeAddress(quoteDestAddress) &&
+          isNativeAddress(selectedDestAddress))) &&
       quoteDestChainIdCaip === selectedDestChainIdCaip
     );
   }
