@@ -74,6 +74,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       keyring: { type: keyringType },
     },
     options: { entropySource },
+    type,
   } = account;
 
   const snapId = account.metadata.snap?.id;
@@ -159,6 +160,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
               <AccountDetailsDisplay
                 accounts={accounts}
                 accountName={name}
+                accountType={type}
                 address={address}
                 onExportClick={(attemptExportMode: AttemptExportState) => {
                   if (attemptExportMode === AttemptExportState.SRP) {

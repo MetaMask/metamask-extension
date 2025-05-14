@@ -1,10 +1,6 @@
 const fs = require('fs');
 
 const {
-  BRIDGE_DEV_API_BASE_URL,
-  BRIDGE_PROD_API_BASE_URL,
-} = require('../../shared/constants/bridge');
-const {
   ACCOUNTS_DEV_API_BASE_URL,
   ACCOUNTS_PROD_API_BASE_URL,
 } = require('../../shared/constants/accounts');
@@ -16,9 +12,6 @@ const {
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const { MOCK_META_METRICS_ID } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
-const {
-  DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
-} = require('./tests/bridge/constants');
 
 const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 
@@ -39,8 +32,6 @@ const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
-const BRIDGE_GET_ALL_FEATURE_FLAGS_PATH =
-  'test/e2e/mock-response-data/bridge-get-all-feature-flags.json';
 const CHAIN_ID_NETWORKS_PATH =
   'test/e2e/mock-response-data/chain-id-network-chains.json';
 const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
@@ -389,19 +380,6 @@ async function setupMocking(
         },
       };
     });
-
-  [
-    `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
-    `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
-  ].forEach(
-    async (url) =>
-      await server.forGet(url).thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
-        };
-      }),
-  );
 
   [
     `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
@@ -869,19 +847,6 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: JSON.parse(ACCOUNTS_API_TOKENS),
-      };
-    });
-
-  // Bridge Feature Flags
-  const BRIDGE_GET_ALL_FEATURE_FLAGS = fs.readFileSync(
-    BRIDGE_GET_ALL_FEATURE_FLAGS_PATH,
-  );
-  await server
-    .forGet('https://bridge.api.cx.metamask.io/getAllFeatureFlags')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(BRIDGE_GET_ALL_FEATURE_FLAGS),
       };
     });
 

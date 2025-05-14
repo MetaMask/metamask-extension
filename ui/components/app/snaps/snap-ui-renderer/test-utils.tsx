@@ -1,6 +1,7 @@
 import React from 'react';
 import { DeepPartial, Reducer } from 'redux';
 import { RenderResult } from '@testing-library/react';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { JSXElement } from '@metamask/snaps-sdk/jsx';
 import configureStore, { MetaMaskReduxState } from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -86,7 +87,7 @@ export function renderInterface(
           ...storeState.metamask,
           interfaces: {
             [MOCK_INTERFACE_ID]: {
-              snapId: MOCK_SNAP_ID,
+              snapId: MOCK_SNAP_ID as SnapId,
               content: action.content,
               state: action.state ?? reduxState,
               context: null,

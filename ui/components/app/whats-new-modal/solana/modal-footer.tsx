@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -14,6 +14,7 @@ import {
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { hasCreatedSolanaAccount } from '../../../../selectors';
+import { selectIsAccountSyncingReadyToBeDispatched } from '../../../../selectors/identity/backup-and-sync';
 import { getLastSelectedSolanaAccount } from '../../../../selectors/multichain';
 import { setSelectedAccount } from '../../../../store/actions';
 import {
@@ -33,14 +34,10 @@ const GOT_IT_ACTION = 'got-it';
 export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const isLoading = !useSelector(selectIsAccountSyncingReadyToBeDispatched);
   const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
   const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
   const trackEvent = useContext(MetaMetricsContext);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
 
   const handleCreateSolanaAccount = async () => {
     trackEvent({
@@ -105,6 +102,10 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
           size={ButtonSize.Md}
           variant={ButtonVariant.Primary}
           data-testid={buttonTestId}
+          loading={isLoading}
+          disabled={isLoading}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={
             hasSolanaAccount
               ? handleViewSolanaAccount
@@ -118,6 +119,8 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
           size={ButtonSize.Sm}
           variant={ButtonVariant.Link}
           data-testid="not-now-button"
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={onCancel}
         >
           {t('notNow')}
