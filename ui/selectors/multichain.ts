@@ -218,7 +218,7 @@ export function getMultichainNetwork(
 
   if (selectedChainId) {
     nonEvmNetwork = nonEvmNetworks.find(
-      (provider) => provider.chainId === selectedChainId
+      (provider) => provider.chainId === selectedChainId,
     );
   }
 
