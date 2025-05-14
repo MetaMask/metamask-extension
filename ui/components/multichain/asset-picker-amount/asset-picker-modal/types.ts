@@ -35,13 +35,13 @@ export type NFT = {
  * these fields need to be set before passing an asset to the AssetPicker
  */
 export type ERC20Asset = {
-  type: AssetType.token;
+  type: AssetType;
   image: string;
   chainId: Hex | CaipChainId;
 } & Pick<TokenListToken, 'address' | 'symbol'>;
 
 export type NativeAsset = {
-  type: AssetType.native;
+  type: AssetType;
   address?: null | string;
   image: typeof CHAIN_ID_TOKEN_IMAGE_MAP extends Record<string, infer V>
     ? V

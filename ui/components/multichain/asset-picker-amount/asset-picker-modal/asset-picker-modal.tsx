@@ -451,11 +451,11 @@ export function AssetPickerModal({
         !customTokenListGenerator && isStrictHexString(token.address)
           ? getRenderableTokenData(
               token.address
-                ? ({
+                ? {
                     ...token,
                     ...evmTokenMetadataByAddress[token.address.toLowerCase()],
                     type: AssetType.token,
-                  } as AssetWithDisplayData<ERC20Asset>)
+                  }
                 : token,
               tokenConversionRates,
               conversionRate,
@@ -463,7 +463,7 @@ export function AssetPickerModal({
               token.chainId,
               evmTokenMetadataByAddress,
             )
-          : (token as unknown as AssetWithDisplayData<ERC20Asset>);
+          : token;
 
       // Add selected asset to the top of the list if it is the selected asset
       if (
