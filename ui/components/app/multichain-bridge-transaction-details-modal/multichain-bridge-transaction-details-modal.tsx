@@ -5,6 +5,7 @@ import {
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { isNumber } from 'lodash';
 import { getBridgeStatusKey } from '../../../../shared/lib/bridge-status/utils';
 import {
   Display,
@@ -65,7 +66,6 @@ import {
   ExtendedTransaction,
   BridgeOriginatedItem,
 } from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
-import { isNumber } from 'lodash';
 
 type MultichainBridgeTransactionDetailsModalProps = {
   transaction: ExtendedTransaction | BridgeOriginatedItem;
