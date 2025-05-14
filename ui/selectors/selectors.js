@@ -618,9 +618,20 @@ export function getHDEntropyIndex(state) {
   const hdKeyrings = keyrings.filter(
     (keyring) => keyring.type === KeyringType.hdKeyTree,
   );
-  const hdEntropyIndex = hdKeyrings.findIndex((keyring) =>
+  let hdEntropyIndex = hdKeyrings.findIndex((keyring) =>
     keyring.accounts.includes(selectedAddress),
   );
+  // if the account is not found in the hd keyring, we should try to get entropySource from the accounts options
+  if (hdEntropyIndex === -1) {
+    const account = getSelectedInternalAccount(state);
+    if (account) {
+      const { entropySource } = account.options;
+      const keyringsMetadata = getMetaMaskKeyringsMetadata(state);
+      hdEntropyIndex = keyringsMetadata.findIndex(
+        (metadata) => metadata.id === entropySource,
+      );
+    }
+  }
   return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
@@ -2990,6 +3001,17 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
 export function getIsSolanaSupportEnabled(state) {
   const { addSolanaAccount } = getRemoteFeatureFlags(state);
   return Boolean(addSolanaAccount);
+}
+
+/**
+ * Checks if the new settings redesign is enabled
+ *
+ * @param state - The state of the application
+ * @returns true if the new settings redesign is enabled, false otherwise
+ */
+export function getIsNewSettingsEnabled(state) {
+  const { settingsRedesign } = getRemoteFeatureFlags(state);
+  return Boolean(settingsRedesign);
 }
 
 export function getManageInstitutionalWallets(state) {
