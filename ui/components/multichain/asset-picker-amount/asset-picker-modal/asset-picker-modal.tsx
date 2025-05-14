@@ -96,9 +96,7 @@ type AssetPickerModalProps = {
     | NativeAsset
     | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>;
   onBack?: () => void;
-  onAssetChange: (
-    asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
-  ) => void;
+  onAssetChange: (asset: AssetWithDisplayData) => void;
   /**
    * Sending asset for UI treatments; only for dest component
    */
@@ -114,9 +112,7 @@ type AssetPickerModalProps = {
       address?: null | string,
       chainId?: string,
     ) => boolean,
-  ) => Generator<
-    AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
-  >;
+  ) => Generator<AssetWithDisplayData>;
   isTokenListLoading?: boolean;
   autoFocus: boolean;
 } & Pick<
@@ -251,13 +247,7 @@ export function AssetPickerModal({
   }, [selectedNetwork?.chainId, allowExternalServices]);
 
   const getIsDisabled = useCallback(
-    ({
-      address,
-      symbol,
-    }:
-      | TokenListToken
-      | AssetWithDisplayData<ERC20Asset>
-      | AssetWithDisplayData<NativeAsset>) => {
+    ({ address, symbol }: TokenListToken | AssetWithDisplayData) => {
       const isDisabled = sendingAsset?.symbol
         ? !isEqualCaseInsensitive(sendingAsset.symbol, symbol) &&
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -290,7 +280,7 @@ export function AssetPickerModal({
         tokenChainId?: string,
       ) => boolean,
     ): Generator<
-      | AssetWithDisplayData<NativeAsset>
+      | AssetWithDisplayData
       | ((Token | TokenListToken) & {
           chainId: string;
           balance?: string;
@@ -322,7 +312,7 @@ export function AssetPickerModal({
       }
 
       // Yield the native token for the selected chain
-      const nativeToken: AssetWithDisplayData<NativeAsset> = {
+      const nativeToken: AssetWithDisplayData = {
         address: '',
         symbol: nativeCurrency,
         decimals: 18,
@@ -400,10 +390,7 @@ export function AssetPickerModal({
   );
 
   const filteredTokenList = useMemo(() => {
-    const filteredTokens: (
-      | AssetWithDisplayData<ERC20Asset>
-      | AssetWithDisplayData<NativeAsset>
-    )[] = [];
+    const filteredTokens: AssetWithDisplayData[] = [];
     // List of token identifiers formatted like `chainId:address`
     const filteredTokensAddresses = new Set<string | undefined>();
     const getTokenKey = (address?: string | null, tokenChainId?: string) =>

@@ -1,15 +1,16 @@
-import { Token, TokenListToken } from '@metamask/assets-controllers';
-import { type Hex, type CaipChainId } from '@metamask/utils';
+import { type Token, type TokenListToken } from '@metamask/assets-controllers';
+import {
+  type Hex,
+  type CaipChainId,
+  type CaipAssetType,
+} from '@metamask/utils';
 import type {
   AssetType,
   TokenStandard,
 } from '../../../../../shared/constants/transaction';
 import type { Asset } from '../../../../ducks/send';
-import {
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-} from '../../../../../shared/constants/network';
-import { TokenWithFiatAmount } from '../../../app/assets/types';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../../../../shared/constants/network';
+import { type TokenWithFiatAmount } from '../../../app/assets/types';
 
 export type NFT = {
   address: string;
@@ -43,9 +44,7 @@ export type ERC20Asset = {
 export type NativeAsset = {
   type: AssetType;
   address?: null | string;
-  image: typeof CHAIN_ID_TOKEN_IMAGE_MAP extends Record<string, infer V>
-    ? V
-    : never; // only allow wallet's hardcoded images
+  image: string;
   symbol: typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP extends Record<string, infer V>
     ? V
     : never; // only allow wallet's hardcoded symbols
@@ -55,10 +54,14 @@ export type NativeAsset = {
 /**
  * ERC20Asset or NativeAsset, plus additional fields for display purposes in the Asset component
  */
-export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
+export type AssetWithDisplayData = {
+  type: AssetType;
+  image: string;
+  chainId: Hex | CaipChainId;
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number
-} & Pick<TokenListToken, 'decimals'> & {
+  assetId?: CaipAssetType;
+} & Pick<TokenListToken, 'decimals' | 'address' | 'symbol'> & {
     tokenFiatAmount?: TokenWithFiatAmount['tokenFiatAmount'];
   };
 
