@@ -83,7 +83,7 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
                   <p>{t('transactionDetailGasTooltipExplanation')}</p>
                   <p>
                     <a
-                      href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
+                      href="https://support.metamask.io/more-web3/learn/user-guide-gas/"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
