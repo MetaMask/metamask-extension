@@ -1,4 +1,4 @@
-import { DeviceManagementKit } from '@ledgerhq/device-management-kit';
+import type { DeviceManagementKit } from '@ledgerhq/device-management-kit';
 import { createSlice } from '@reduxjs/toolkit';
 import { type BLE, WEBHID } from './constants';
 

@@ -27,14 +27,18 @@ function setupMessageListeners() {
         case LedgerAction.makeApp:
           sendResponse({
             success: true,
-            payload: {},
+            payload: {
+              success: true,
+            },
           });
 
           break;
         case LedgerAction.updateTransport:
           sendResponse({
             success: true,
-            payload: {},
+            payload: {
+              success: true,
+            },
           });
 
           break;

@@ -84,6 +84,7 @@ const useLedgerDMK = () => {
   };
 
   const connectLedger = () => {
+    console.log('connectLedger');
     if (!dmk) {
       return;
     }
