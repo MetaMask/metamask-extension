@@ -27,7 +27,6 @@ import {
   DAPP_URL,
   ACCOUNT_1,
 } from './helpers';
-import { MultichainAuthorizationConfirmation } from './api-specs/MultichainAuthorizationConfirmation';
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
@@ -95,6 +94,12 @@ async function main() {
     {} as { [method: string]: string },
   );
 
+  const mockedServer = mockServer(
+    port,
+    await parseOpenRPCDocument(transformedDoc),
+  );
+  mockedServer.start();
+
   // Multichain API excluding `wallet_invokeMethod`
   await withFixtures(
     {
@@ -117,12 +122,6 @@ async function main() {
 
       // Open Dapp
       await openDapp(driver, undefined, DAPP_URL);
-
-      const server = mockServer(
-        port,
-        await parseOpenRPCDocument(transformedDoc),
-      );
-      server.start();
 
       const getSession = doc.methods.find(
         (m) => (m as MethodObject).name === 'wallet_getSession',

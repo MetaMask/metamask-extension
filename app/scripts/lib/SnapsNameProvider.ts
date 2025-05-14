@@ -56,6 +56,8 @@ export class SnapsNameProvider implements NameProvider {
 
         return {
           ...acc,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           [snap.id]: snapName || snap.id,
         };
       },

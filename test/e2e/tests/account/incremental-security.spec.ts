@@ -1,6 +1,8 @@
-import { Browser } from 'selenium-webdriver';
 import { Suite } from 'mocha';
-import { withFixtures, WALLET_PASSWORD } from '../../helpers';
+import { Browser } from 'selenium-webdriver';
+import { Anvil } from '../../seeder/anvil';
+import { withFixtures } from '../../helpers';
+import { WALLET_PASSWORD } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -20,11 +22,15 @@ describe('Incremental Security', function (this: Suite) {
         title: this.test?.fullTitle(),
         dappPath: 'send-eth-with-private-key-test',
       },
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      async ({ driver, localNodes }: { driver: Driver; localNodes: any[] }) => {
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: Anvil[];
+      }) => {
         // Seed Account
-        await localNodes[0].setAccountBalance(
+        await localNodes?.[0]?.setAccountBalance(
           '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3',
           '0x100000000000000000000',
         );

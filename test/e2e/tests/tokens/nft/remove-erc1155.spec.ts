@@ -6,10 +6,10 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import { setupAutoDetectMocking } from './mocks';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
+import { setupAutoDetectMocking } from './mocks';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
@@ -33,8 +33,8 @@ describe('Remove ERC1155 NFT', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockIPFSRequest,
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Open the NFT details page and click to remove NFT
         await new Homepage(driver).goToNftTab();

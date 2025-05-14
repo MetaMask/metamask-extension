@@ -124,7 +124,7 @@ export default class TokenList extends Component {
                           isChecked={
                             selectedTokens[address] || tokenAlreadyAdded
                           }
-                          marginRight={2}
+                          marginRight={4}
                           onClick={onClick}
                         />
 
@@ -144,6 +144,7 @@ export default class TokenList extends Component {
                                       ]
                                 }
                                 backgroundColor={testNetworkBackgroundColor}
+                                borderWidth={2}
                                 className="token-list__token_component__network-badge"
                               />
                             }

@@ -107,6 +107,7 @@ function useNativeGasFeeToken(): GasFeeToken {
     balance,
     decimals: 18,
     gas: gas as Hex,
+    gasTransfer: '0x0',
     maxFeePerGas: maxFeePerGas as Hex,
     maxPriorityFeePerGas: maxPriorityFeePerGas as Hex,
     rateWei: RATE_WEI_NATIVE,
@@ -143,6 +144,7 @@ function getTransferTransaction(
 
   return {
     data,
+    gas: gasFeeToken.gasTransfer,
     maxFeePerGas: gasFeeToken.maxFeePerGas,
     maxPriorityFeePerGas: gasFeeToken.maxPriorityFeePerGas,
     to: gasFeeToken.tokenAddress,

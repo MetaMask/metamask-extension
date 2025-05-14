@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { BtcAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 import { SEND_STAGES } from '../../ducks/send';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
@@ -61,10 +61,6 @@ jest.mock('react-redux', () => {
     useDispatch: () => mockDispatch,
   };
 });
-
-jest.mock('../../ducks/bridge/actions', () => ({
-  setBridgeFeatureFlags: () => jest.fn(),
-}));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -202,6 +198,12 @@ describe('toast display', () => {
     id: '4174eb0c-0a73-4213-b807-a2e5a5c4ebfd',
     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
   });
+  const mockSolanaAccount = createMockInternalAccount({
+    name: 'Solana Account 1',
+    address: '2byhg1jregmqQx2VfLGLn7hb5mStJw2iVVU8sfM5xTYj',
+    id: 'xx-solana-account',
+    type: SolAccountType.DataAccount,
+  });
   const mockOrigin = 'https://metamask.github.io';
 
   const getToastDisplayTestState = (date) => ({
@@ -274,6 +276,7 @@ describe('toast display', () => {
           [mockAccount.id]: mockAccount,
           [mockNonEvmAccount.id]: mockNonEvmAccount,
           [mockAccount2.id]: mockAccount2,
+          [mockSolanaAccount.id]: mockSolanaAccount,
         },
         selectedAccount: selectedAccountId ?? mockAccount.id,
       },
@@ -304,6 +307,21 @@ describe('toast display', () => {
             },
           },
         },
+      },
+      conversionRates: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          conversionTime: 1745405595549,
+          currency: 'swift:0/iso4217:USD',
+          expirationTime: 1745409195549,
+          rate: '151.36',
+        },
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+          {
+            conversionTime: 1745405595549,
+            currency: 'swift:0/iso4217:USD',
+            expirationTime: 1745409195549,
+            rate: '1.00',
+          },
       },
     },
     activeTab: {
@@ -352,6 +370,15 @@ describe('toast display', () => {
     const { getByTestId } = await render(
       [DEFAULT_ROUTE],
       getToastConnectAccountDisplayTestState(mockAccount2.id),
+    );
+    const toastContainer = getByTestId('connect-account-toast');
+    expect(toastContainer).toBeInTheDocument();
+  });
+
+  it('does render toastContainer if the unconnected selected account is Solana', async () => {
+    const { getByTestId } = await render(
+      [DEFAULT_ROUTE],
+      getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
     );
     const toastContainer = getByTestId('connect-account-toast');
     expect(toastContainer).toBeInTheDocument();

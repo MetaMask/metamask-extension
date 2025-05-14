@@ -17,6 +17,7 @@ export const ARG_TYPES_SIGNATURE = {
 };
 
 export function ConfirmStoryTemplate(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskState: any = {},
 ): JSX.Element {
@@ -36,6 +37,7 @@ export function ConfirmStoryTemplate(
 }
 
 export function SignatureStoryTemplate(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metamaskState: any = {},
 ): JSX.Element {

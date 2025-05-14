@@ -100,7 +100,7 @@ export const useAccountTotalFiatBalance = (
     const result = [];
 
     _tokensWithBalances.forEach((token) => {
-      const matchingToken = tokenList[token.address.toLowerCase()];
+      const matchingToken = tokenList?.[token.address.toLowerCase()];
 
       if (matchingToken) {
         result.push({

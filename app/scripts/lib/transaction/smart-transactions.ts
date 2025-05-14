@@ -388,6 +388,8 @@ class SmartTransactionHook {
   async #addListenerToUpdateStatusPage({ uuid }: { uuid: string }) {
     this.#controllerMessenger.subscribe(
       'SmartTransactionsController:smartTransaction',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (smartTransaction: SmartTransaction) => {
         if (smartTransaction.uuid === uuid) {
           const { status } = smartTransaction;
@@ -408,6 +410,8 @@ class SmartTransactionHook {
     return new Promise((resolve) => {
       this.#controllerMessenger.subscribe(
         'SmartTransactionsController:smartTransaction',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async (smartTransaction: SmartTransaction) => {
           if (smartTransaction.uuid === uuid) {
             const { status, statusMetadata } = smartTransaction;
@@ -502,6 +506,8 @@ class SmartTransactionHook {
 
     const transactionsWithChainId = unsignedTransactions.map((tx) => ({
       ...tx,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       chainId: tx.chainId || this.#chainId,
     }));
 

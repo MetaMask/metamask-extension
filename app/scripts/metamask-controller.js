@@ -14,15 +14,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import {
-  debounce,
-  throttle,
-  memoize,
-  wrap,
-  pick,
-  cloneDeep,
-  uniq,
-} from 'lodash';
+import { debounce, pick, uniq } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -30,8 +22,7 @@ import {
 } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { JsonRpcError, providerErrors, rpcErrors } from '@metamask/rpc-errors';
-
+import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import {
@@ -92,6 +83,7 @@ import {
   ERC20,
   ERC721,
   BlockExplorerUrl,
+  ChainId,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -123,11 +115,6 @@ import {
   LensNameProvider,
 } from '@metamask/name-controller';
 
-import {
-  QueuedRequestController,
-  createQueuedRequestMiddleware,
-} from '@metamask/queued-request-controller';
-
 import { UserOperationController } from '@metamask/user-operation-controller';
 import {
   BridgeController,
@@ -135,6 +122,7 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
   BridgeClientId,
+  UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
 } from '@metamask/bridge-controller';
 
 import {
@@ -146,7 +134,13 @@ import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import { isEvmAccountType, SolAccountType } from '@metamask/keyring-api';
+import {
+  isEvmAccountType,
+  SolAccountType,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  SolScope,
+  ///: END:ONLY_INCLUDE_IF
+} from '@metamask/keyring-api';
 import {
   hasProperty,
   hexToBigInt,
@@ -178,12 +172,11 @@ import {
   getPermittedAccountsForScopes,
   KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
-
 import {
-  methodsRequiringNetworkSwitch,
-  methodsThatCanSwitchNetworkWithoutApproval,
-  methodsThatShouldBeEnqueued,
-} from '../../shared/constants/methods-tags';
+  BridgeStatusController,
+  BRIDGE_STATUS_CONTROLLER_NAME,
+  BridgeStatusAction,
+} from '@metamask/bridge-status-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -200,9 +193,8 @@ import {
   CHAIN_SPEC_URL,
   NETWORK_TYPES,
   NetworkStatus,
-  MAINNET_DISPLAY_NAME,
-  DEFAULT_CUSTOM_TESTNET_MAP,
   UNSUPPORTED_RPC_METHODS,
+  getFailoverUrlsForInfuraNetwork,
 } from '../../shared/constants/network';
 import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 
@@ -252,7 +244,6 @@ import {
   getIsSmartTransaction,
   getFeatureFlagsByChainId,
 } from '../../shared/modules/selectors';
-import { createCaipStream } from '../../shared/modules/caip-stream';
 import { BaseUrl } from '../../shared/constants/urls';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
@@ -264,9 +255,8 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
-import { BridgeStatusAction } from '../../shared/types/bridge-status';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
-import { addDiscoveredSolanaAccounts } from '../../shared/lib/accounts';
+import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -321,8 +311,10 @@ import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
   addHexPrefix,
+  getEnvironmentType,
   getMethodDataName,
   previousValueComparator,
+  initializeRpcProviderDomains,
   getPlatform,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
@@ -362,7 +354,11 @@ import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
 ///: END:ONLY_INCLUDE_IF
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
-import { METAMASK_COOKIE_HANDLER } from './constants/stream';
+import {
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  METAMASK_COOKIE_HANDLER,
+  METAMASK_EIP_1193_PROVIDER,
+} from './constants/stream';
 
 // Notification controllers
 import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
@@ -379,17 +375,10 @@ import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddle
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import { walletCreateSession } from './lib/rpc-method-middleware/handlers/wallet-createSession';
-import BridgeStatusController from './controllers/bridge-status/bridge-status-controller';
-import { BRIDGE_STATUS_CONTROLLER_NAME } from './controllers/bridge-status/constants';
 import {
   rejectAllApprovals,
   rejectOriginApprovals,
 } from './lib/approval/utils';
-import {
-  handleBridgeTransactionComplete,
-  handleBridgeTransactionFailed,
-  handleTransactionFailedTypeBridge,
-} from './lib/bridge-status/metrics';
 import { InstitutionalSnapControllerInit } from './controller-init/institutional-snap/institutional-snap-controller-init';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -420,6 +409,7 @@ import {
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
+import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
 import {
   getCallsStatus,
   getCapabilities,
@@ -427,6 +417,12 @@ import {
 } from './lib/transaction/eip5792';
 import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
 import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
+import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
+import {
+  onRpcEndpointUnavailable,
+  onRpcEndpointDegraded,
+} from './lib/network-controller/messenger-action-handlers';
+import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -438,7 +434,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
   APP_STATE_UNLOCK_CHANGE: 'AppStateController:unlockChange',
-  QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
   METAMASK_NOTIFICATIONS_LIST_UPDATED:
     'NotificationServicesController:notificationsListUpdated',
   METAMASK_NOTIFICATIONS_MARK_AS_READ:
@@ -512,9 +507,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.LoggingController,
     });
 
-    // instance of a class that wraps the extension's storage local API.
-    this.localStoreApiWrapper = opts.persistanceManager;
-
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
     // observable state store
@@ -558,15 +550,6 @@ export default class MetamaskController extends EventEmitter {
       currentAppVersion: version,
     });
 
-    // next, we will initialize the controllers
-    // controller initialization order matters
-    const clearPendingConfirmations = () => {
-      this.encryptionPublicKeyController.clearUnapproved();
-      this.decryptMessageController.clearUnapproved();
-      this.signatureController.clearUnapproved();
-      this.approvalController.clear(providerErrors.userRejectedRequest());
-    };
-
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'ApprovalController',
@@ -584,28 +567,6 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    this.queuedRequestController = new QueuedRequestController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'QueuedRequestController',
-        allowedActions: [
-          'NetworkController:getState',
-          'NetworkController:setActiveNetwork',
-          'SelectedNetworkController:getNetworkClientIdForDomain',
-        ],
-        allowedEvents: ['SelectedNetworkController:stateChange'],
-      }),
-      shouldRequestSwitchNetwork: ({ method }) =>
-        methodsRequiringNetworkSwitch.includes(method),
-      canRequestSwitchNetworkWithoutApproval: ({ method }) =>
-        methodsThatCanSwitchNetworkWithoutApproval.includes(method),
-      clearPendingConfirmations,
-      showApprovalRequest: () => {
-        if (this.approvalController.getTotalApprovalCount() > 0) {
-          opts.showUserConfirmation();
-        }
-      },
-    });
-
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.mmiConfigurationController = new MmiConfigurationController({
       initState: initState.MmiConfigurationController,
@@ -617,34 +578,34 @@ export default class MetamaskController extends EventEmitter {
       name: 'NetworkController',
     });
 
+    const additionalDefaultNetworks = [ChainId['megaeth-testnet']];
+
     let initialNetworkControllerState = initState.NetworkController;
     if (!initialNetworkControllerState) {
-      initialNetworkControllerState = getDefaultNetworkControllerState();
+      initialNetworkControllerState = getDefaultNetworkControllerState(
+        additionalDefaultNetworks,
+      );
 
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
 
-      // Note: Consider changing `getDefaultNetworkControllerState`
-      // on the controller side to include some of these tweaks.
-      networks[CHAIN_IDS.MAINNET].name = MAINNET_DISPLAY_NAME;
-      delete networks[CHAIN_IDS.GOERLI];
-      delete networks[CHAIN_IDS.LINEA_GOERLI];
-
-      // Due to the MegaETH Testnet not being included in getDefaultNetworkControllerState().
-      // and it is not using Infura as a provider, we need to add it manually.
-      networks[CHAIN_IDS.MEGAETH_TESTNET] = cloneDeep(
-        DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET],
-      );
+      // TODO: Consider changing `getDefaultNetworkControllerState` on the
+      // controller side to include some of these tweaks.
 
       Object.values(networks).forEach((network) => {
         const id = network.rpcEndpoints[0].networkClientId;
         // Process only if the default network has a corresponding networkClientId in BlockExplorerUrl.
-        // Note: The MegaETH Testnet is currently the only network that is not included.
         if (hasProperty(BlockExplorerUrl, id)) {
           network.blockExplorerUrls = [BlockExplorerUrl[id]];
         }
         network.defaultBlockExplorerUrlIndex = 0;
       });
+
+      // Add failovers for default Infura RPC endpoints
+      networks[CHAIN_IDS.MAINNET].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
+      networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('linea-mainnet');
 
       let network;
       if (process.env.IN_TEST) {
@@ -676,25 +637,120 @@ export default class MetamaskController extends EventEmitter {
         network.rpcEndpoints[network.defaultRpcEndpointIndex].networkClientId;
     }
 
+    // Fix the network controller state (selectedNetworkClientId) if it is invalid and report the error
+    if (
+      initialNetworkControllerState.networkConfigurationsByChainId &&
+      !Object.values(
+        initialNetworkControllerState.networkConfigurationsByChainId,
+      )
+        .flatMap((networkConfiguration) =>
+          networkConfiguration.rpcEndpoints.map(
+            (rpcEndpoint) => rpcEndpoint.networkClientId,
+          ),
+        )
+        .includes(initialNetworkControllerState.selectedNetworkClientId)
+    ) {
+      captureException(
+        new Error(
+          `NetworkController state is invalid: \`selectedNetworkClientId\` '${initialNetworkControllerState.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`,
+        ),
+      );
+
+      initialNetworkControllerState.selectedNetworkClientId =
+        initialNetworkControllerState.networkConfigurationsByChainId[
+          CHAIN_IDS.MAINNET
+        ].rpcEndpoints[0].networkClientId;
+    }
+
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
+      getBlockTrackerOptions: () => {
+        return process.env.IN_TEST
+          ? {}
+          : {
+              pollingInterval: 20 * SECOND,
+              // The retry timeout is pretty short by default, and if the endpoint is
+              // down, it will end up exhausting the max number of consecutive
+              // failures quickly.
+              retryTimeout: 20 * SECOND,
+            };
+      },
+      getRpcServiceOptions: (rpcEndpointUrl) => {
+        const maxRetries = 4;
+        const commonOptions = {
+          fetch: globalThis.fetch.bind(globalThis),
+          btoa: globalThis.btoa.bind(globalThis),
+        };
+
+        if (getIsQuicknodeEndpointUrl(rpcEndpointUrl)) {
+          return {
+            ...commonOptions,
+            policyOptions: {
+              maxRetries,
+              // When we fail over to Quicknode, we expect it to be down at
+              // first while it is being automatically activated. If an endpoint
+              // is down, the failover logic enters a "cooldown period" of 30
+              // minutes. We'd really rather not enter that for Quicknode, so
+              // keep retrying longer.
+              maxConsecutiveFailures: (maxRetries + 1) * 14,
+            },
+          };
+        }
+
+        return {
+          ...commonOptions,
+          policyOptions: {
+            maxRetries,
+            // Ensure that the circuit does not break too quickly.
+            maxConsecutiveFailures: (maxRetries + 1) * 7,
+          },
+        };
+      },
+      additionalDefaultNetworks,
     });
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointUnavailable',
+      async ({ chainId, endpointUrl, error }) => {
+        onRpcEndpointUnavailable({
+          chainId,
+          endpointUrl,
+          error,
+          infuraProjectId: opts.infuraProjectId,
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+          metaMetricsId: this.metaMetricsController.state.metaMetricsId,
+        });
+      },
+    );
+    networkControllerMessenger.subscribe(
+      'NetworkController:rpcEndpointDegraded',
+      async ({ chainId, endpointUrl }) => {
+        onRpcEndpointDegraded({
+          chainId,
+          endpointUrl,
+          infuraProjectId: opts.infuraProjectId,
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+          metaMetricsId: this.metaMetricsController.state.metaMetricsId,
+        });
+      },
+    );
     this.networkController.initializeProvider();
 
-    if (process.env.MULTICHAIN_API) {
-      this.multichainSubscriptionManager = new MultichainSubscriptionManager({
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+    this.multichainSubscriptionManager = new MultichainSubscriptionManager({
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
+      findNetworkClientIdByChainId:
+        this.networkController.findNetworkClientIdByChainId.bind(
           this.networkController,
         ),
-        findNetworkClientIdByChainId:
-          this.networkController.findNetworkClientIdByChainId.bind(
-            this.networkController,
-          ),
-      });
-      this.multichainMiddlewareManager = new MultichainMiddlewareManager();
-    }
+    });
+    this.multichainMiddlewareManager = new MultichainMiddlewareManager();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
@@ -713,9 +769,8 @@ export default class MetamaskController extends EventEmitter {
         'MultichainNetworkController:networkDidChange',
       ],
       allowedActions: [
-        'KeyringController:getAccounts',
+        'KeyringController:getState',
         'KeyringController:getKeyringsByType',
-        'KeyringController:getKeyringForAccount',
       ],
     });
 
@@ -1426,8 +1481,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
 
-    this._addBridgeStatusControllerListeners();
-
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
       messenger: this.controllerMessenger.getRestricted({
@@ -1627,6 +1680,10 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',
         'NetworkController:findNetworkClientIdByChainId',
+        'TokenRatesController:getState',
+        'MultichainAssetsRatesController:getState',
+        'RemoteFeatureFlagController:getState',
+        'CurrencyRateController:getState',
       ],
       allowedEvents: [],
     });
@@ -1641,6 +1698,21 @@ export default class MetamaskController extends EventEmitter {
           fetchOptions: { method: 'GET', headers, signal },
           ...requestOptions,
         }),
+      trackMetaMetricsFn: (event, properties) => {
+        const actionId = (Date.now() + Math.random()).toString();
+        const trackEvent = this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        );
+        trackEvent({
+          category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
+          event,
+          properties: {
+            ...(properties ?? {}),
+            environmentType: getEnvironmentType(),
+            actionId,
+          },
+        });
+      },
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
@@ -1654,6 +1726,11 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getNetworkClientById',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getState',
+          'BridgeController:getBridgeERC20Allowance',
+          'BridgeController:trackUnifiedSwapBridgeEvent',
+          'GasFeeController:getState',
+          'AccountsController:getAccountByAddress',
+          'SnapController:handleRequest',
           'TransactionController:getState',
         ],
         allowedEvents: [],
@@ -1661,6 +1738,20 @@ export default class MetamaskController extends EventEmitter {
     this.bridgeStatusController = new BridgeStatusController({
       messenger: bridgeStatusControllerMessenger,
       state: initState.BridgeStatusController,
+      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
+        await fetchWithCache({
+          url,
+          fetchOptions: { method: 'GET', headers, signal },
+          ...requestOptions,
+          cacheOptions: { cacheRefreshTime: 0 },
+        }),
+      addTransactionFn: (...args) => this.txController.addTransaction(...args),
+      estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
+      addUserOperationFromTransactionFn: (...args) =>
+        this.userOperationController.addUserOperationFromTransaction(...args),
+      config: {
+        customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      },
     });
 
     const smartTransactionsControllerMessenger =
@@ -1799,12 +1890,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    // clear unapproved transactions and messages when the network will change
-    networkControllerMessenger.subscribe(
-      'NetworkController:networkWillChange',
-      clearPendingConfirmations.bind(this),
-    );
-
     // RemoteFeatureFlagController has subscription for preferences changes
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
@@ -1821,12 +1906,35 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // Initialize RemoteFeatureFlagController
-    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
-      messenger: this.controllerMessenger.getRestricted({
+    const remoteFeatureFlagControllerMessenger =
+      this.controllerMessenger.getRestricted({
         name: 'RemoteFeatureFlagController',
         allowedActions: [],
         allowedEvents: [],
-      }),
+      });
+    remoteFeatureFlagControllerMessenger.subscribe(
+      'RemoteFeatureFlagController:stateChange',
+      (isRpcFailoverEnabled) => {
+        if (isRpcFailoverEnabled) {
+          console.log(
+            'isRpcFailoverEnabled = ',
+            isRpcFailoverEnabled,
+            ', enabling RPC failover',
+          );
+          this.networkController.enableRpcFailover();
+        } else {
+          console.log(
+            'isRpcFailoverEnabled = ',
+            isRpcFailoverEnabled,
+            ', disabling RPC failover',
+          );
+          this.networkController.disableRpcFailover();
+        }
+      },
+      (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
+    );
+    this.remoteFeatureFlagController = new RemoteFeatureFlagController({
+      messenger: remoteFeatureFlagControllerMessenger,
       fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
       disabled: !this.preferencesController.state.useExternalServices,
       getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
@@ -1881,6 +1989,8 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
+      DeFiPositionsController: DeFiPositionsControllerInit,
+      DelegationController: DelegationControllerInit,
     };
 
     const {
@@ -1926,10 +2036,12 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MultichainNetworkController;
     this.authenticationController = controllersByName.AuthenticationController;
     this.userStorageController = controllersByName.UserStorageController;
+    this.delegationController = controllersByName.DelegationController;
     this.notificationServicesController =
       controllersByName.NotificationServicesController;
     this.notificationServicesPushController =
       controllersByName.NotificationServicesPushController;
+    this.deFiPositionsController = controllersByName.DeFiPositionsController;
 
     this.notificationServicesController.init();
 
@@ -2158,6 +2270,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationServicesPushController:
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
+      DeFiPositionsController: this.deFiPositionsController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -2217,10 +2330,10 @@ export default class MetamaskController extends EventEmitter {
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
         NotificationServicesController: this.notificationServicesController,
-        QueuedRequestController: this.queuedRequestController,
         NotificationServicesPushController:
           this.notificationServicesPushController,
         RemoteFeatureFlagController: this.remoteFeatureFlagController,
+        DeFiPositionsController: this.deFiPositionsController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -2397,38 +2510,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Tracks snaps export usage.
-   * Note: This function is throttled to 1 call per 60 seconds per snap id + handler combination.
-   *
-   * @param {string} snapId - The ID of the snap the handler is being triggered on.
-   * @param {string} handler - The handler to trigger on the snap for the request.
-   * @param {boolean} success - Whether the invocation was successful or not.
-   * @param {string} origin - The origin of the request.
-   */
-  _trackSnapExportUsage = wrap(
-    memoize(
-      () =>
-        throttle(
-          (snapId, handler, success, origin) =>
-            this.metaMetricsController.trackEvent({
-              event: MetaMetricsEventName.SnapExportUsed,
-              category: MetaMetricsEventCategory.Snaps,
-              properties: {
-                snap_id: snapId,
-                export: handler,
-                snap_category: this._getSnapMetadata(snapId)?.category,
-                success,
-                origin,
-              },
-            }),
-          SECOND * 60,
-        ),
-      (snapId, handler, _, origin) => `${snapId}${handler}${origin}`,
-    ),
-    (getFunc, ...args) => getFunc(...args)(...args),
-  );
-
-  /**
    * Passes a JSON-RPC request object to the SnapController for execution.
    *
    * @param {object} args - A bag of options.
@@ -2439,17 +2520,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   async handleSnapRequest(args) {
-    try {
-      const response = await this.controllerMessenger.call(
-        'SnapController:handleRequest',
-        args,
-      );
-      this._trackSnapExportUsage(args.snapId, args.handler, true, args.origin);
-      return response;
-    } catch (error) {
-      this._trackSnapExportUsage(args.snapId, args.handler, false, args.origin);
-      throw error;
-    }
+    return await this.controllerMessenger.call(
+      'SnapController:handleRequest',
+      args,
+    );
   }
 
   /**
@@ -2694,16 +2768,14 @@ export default class MetamaskController extends EventEmitter {
     let lastSelectedAddress;
     let lastSelectedSolanaAccountAddress;
 
-    if (process.env.MULTICHAIN_API) {
-      // this throws if there is no solana account... perhaps we should handle this better at the controller level
-      try {
-        lastSelectedSolanaAccountAddress =
-          this.accountsController.getSelectedMultichainAccount(
-            MultichainNetworks.SOLANA,
-          )?.address;
-      } catch {
-        // noop
-      }
+    // this throws if there is no solana account... perhaps we should handle this better at the controller level
+    try {
+      lastSelectedSolanaAccountAddress =
+        this.accountsController.getSelectedMultichainAccount(
+          MultichainNetworks.SOLANA,
+        )?.address;
+    } catch {
+      // noop
     }
 
     this.controllerMessenger.subscribe(
@@ -2743,214 +2815,203 @@ export default class MetamaskController extends EventEmitter {
 
     // This handles CAIP-25 authorization changes every time relevant permission state
     // changes, for any reason.
-    if (process.env.MULTICHAIN_API) {
-      // wallet_sessionChanged and eth_subscription setup/teardown
-      this.controllerMessenger.subscribe(
-        `${this.permissionController.name}:stateChange`,
-        async (currentValue, previousValue) => {
-          const changedAuthorizations = getChangedAuthorizations(
-            currentValue,
-            previousValue,
-          );
+    // wallet_sessionChanged and eth_subscription setup/teardown
+    this.controllerMessenger.subscribe(
+      `${this.permissionController.name}:stateChange`,
+      async (currentValue, previousValue) => {
+        const changedAuthorizations = getChangedAuthorizations(
+          currentValue,
+          previousValue,
+        );
 
-          const removedAuthorizations = getRemovedAuthorizations(
-            currentValue,
-            previousValue,
-          );
+        const removedAuthorizations = getRemovedAuthorizations(
+          currentValue,
+          previousValue,
+        );
 
-          // remove any existing notification subscriptions for removed authorizations
-          for (const [
-            origin,
-            authorization,
-          ] of removedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization, {
-              getNonEvmSupportedMethods:
-                this.getNonEvmSupportedMethods.bind(this),
-            });
-            // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-            // then remove middleware and unsubscribe
-            Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-              if (
-                scopeObject.notifications.includes('eth_subscription') &&
-                scopeObject.methods.includes('eth_subscribe')
-              ) {
-                this.removeMultichainApiEthSubscriptionMiddleware({
-                  scope,
-                  origin,
-                });
-              }
-            });
-          }
-
-          // add new notification subscriptions for added/changed authorizations
-          for (const [
-            origin,
-            authorization,
-          ] of changedAuthorizations.entries()) {
-            const sessionScopes = getSessionScopes(authorization, {
-              getNonEvmSupportedMethods:
-                this.getNonEvmSupportedMethods.bind(this),
-            });
-
-            // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
-            // then get the subscriptionManager going for that scope
-            Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
-              if (
-                scopeObject.notifications.includes('eth_subscription') &&
-                scopeObject.methods.includes('eth_subscribe')
-              ) {
-                // for each tabId
-                Object.values(this.connections[origin]).forEach(({ tabId }) => {
-                  this.addMultichainApiEthSubscriptionMiddleware({
-                    scope,
-                    origin,
-                    tabId,
-                  });
-                });
-              } else {
-                this.removeMultichainApiEthSubscriptionMiddleware({
-                  scope,
-                  origin,
-                });
-              }
-            });
-            this._notifyAuthorizationChange(origin, authorization);
-          }
-        },
-        getAuthorizedScopesByOrigin,
-      );
-
-      // wallet_notify for solana accountChanged when permission changes
-      this.controllerMessenger.subscribe(
-        `${this.permissionController.name}:stateChange`,
-        async (currentValue, previousValue) => {
-          const origins = uniq([
-            ...previousValue.keys(),
-            ...currentValue.keys(),
-          ]);
-          origins.forEach((origin) => {
-            const previousCaveatValue = previousValue.get(origin);
-            const currentCaveatValue = currentValue.get(origin);
-
-            const previousSolanaAccountChangedNotificationsEnabled = Boolean(
-              previousCaveatValue?.sessionProperties?.[
-                KnownSessionProperties.SolanaAccountChangedNotifications
-              ],
-            );
-            const currentSolanaAccountChangedNotificationsEnabled = Boolean(
-              currentCaveatValue?.sessionProperties?.[
-                KnownSessionProperties.SolanaAccountChangedNotifications
-              ],
-            );
-
+        // remove any existing notification subscriptions for removed authorizations
+        for (const [origin, authorization] of removedAuthorizations.entries()) {
+          const sessionScopes = getSessionScopes(authorization, {
+            getNonEvmSupportedMethods:
+              this.getNonEvmSupportedMethods.bind(this),
+          });
+          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+          // then remove middleware and unsubscribe
+          Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
             if (
-              !previousSolanaAccountChangedNotificationsEnabled &&
-              !currentSolanaAccountChangedNotificationsEnabled
+              scopeObject.notifications.includes('eth_subscription') &&
+              scopeObject.methods.includes('eth_subscribe')
             ) {
-              return;
-            }
-
-            const previousSolanaCaipAccountIds = previousCaveatValue
-              ? getPermittedAccountsForScopes(previousCaveatValue, [
-                  MultichainNetworks.SOLANA,
-                  MultichainNetworks.SOLANA_DEVNET,
-                  MultichainNetworks.SOLANA_TESTNET,
-                ])
-              : [];
-            const previousNonUniqueSolanaHexAccountAddresses =
-              previousSolanaCaipAccountIds.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
-            const previousSolanaHexAccountAddresses = uniq(
-              previousNonUniqueSolanaHexAccountAddresses,
-            );
-            const [previousSelectedSolanaAccountAddress] =
-              this.sortMultichainAccountsByLastSelected(
-                previousSolanaHexAccountAddresses,
-              );
-
-            const currentSolanaCaipAccountIds = currentCaveatValue
-              ? getPermittedAccountsForScopes(currentCaveatValue, [
-                  MultichainNetworks.SOLANA,
-                  MultichainNetworks.SOLANA_DEVNET,
-                  MultichainNetworks.SOLANA_TESTNET,
-                ])
-              : [];
-            const currentNonUniqueSolanaHexAccountAddresses =
-              currentSolanaCaipAccountIds.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
-            const currentSolanaHexAccountAddresses = uniq(
-              currentNonUniqueSolanaHexAccountAddresses,
-            );
-            const [currentSelectedSolanaAccountAddress] =
-              this.sortMultichainAccountsByLastSelected(
-                currentSolanaHexAccountAddresses,
-              );
-
-            if (
-              previousSelectedSolanaAccountAddress !==
-              currentSelectedSolanaAccountAddress
-            ) {
-              this._notifySolanaAccountChange(
+              this.removeMultichainApiEthSubscriptionMiddleware({
+                scope,
                 origin,
-                currentSelectedSolanaAccountAddress
-                  ? [currentSelectedSolanaAccountAddress]
-                  : [],
-              );
+              });
             }
           });
-        },
-        getAuthorizedScopesByOrigin,
-      );
+        }
 
-      // wallet_notify for solana accountChanged when selected account changes
-      this.controllerMessenger.subscribe(
-        `${this.accountsController.name}:selectedAccountChange`,
-        async (account) => {
+        // add new notification subscriptions for added/changed authorizations
+        for (const [origin, authorization] of changedAuthorizations.entries()) {
+          const sessionScopes = getSessionScopes(authorization, {
+            getNonEvmSupportedMethods:
+              this.getNonEvmSupportedMethods.bind(this),
+          });
+
+          // if the eth_subscription notification is in the scope and eth_subscribe is in the methods
+          // then get the subscriptionManager going for that scope
+          Object.entries(sessionScopes).forEach(([scope, scopeObject]) => {
+            if (
+              scopeObject.notifications.includes('eth_subscription') &&
+              scopeObject.methods.includes('eth_subscribe')
+            ) {
+              // for each tabId
+              Object.values(this.connections[origin]).forEach(({ tabId }) => {
+                this.addMultichainApiEthSubscriptionMiddleware({
+                  scope,
+                  origin,
+                  tabId,
+                });
+              });
+            } else {
+              this.removeMultichainApiEthSubscriptionMiddleware({
+                scope,
+                origin,
+              });
+            }
+          });
+          this._notifyAuthorizationChange(origin, authorization);
+        }
+      },
+      getAuthorizedScopesByOrigin,
+    );
+
+    // wallet_notify for solana accountChanged when permission changes
+    this.controllerMessenger.subscribe(
+      `${this.permissionController.name}:stateChange`,
+      async (currentValue, previousValue) => {
+        const origins = uniq([...previousValue.keys(), ...currentValue.keys()]);
+        origins.forEach((origin) => {
+          const previousCaveatValue = previousValue.get(origin);
+          const currentCaveatValue = currentValue.get(origin);
+
+          const previousSolanaAccountChangedNotificationsEnabled = Boolean(
+            previousCaveatValue?.sessionProperties?.[
+              KnownSessionProperties.SolanaAccountChangedNotifications
+            ],
+          );
+          const currentSolanaAccountChangedNotificationsEnabled = Boolean(
+            currentCaveatValue?.sessionProperties?.[
+              KnownSessionProperties.SolanaAccountChangedNotifications
+            ],
+          );
+
           if (
-            account.type === SolAccountType.DataAccount &&
-            account.address !== lastSelectedSolanaAccountAddress
+            !previousSolanaAccountChangedNotificationsEnabled &&
+            !currentSolanaAccountChangedNotificationsEnabled
           ) {
-            lastSelectedSolanaAccountAddress = account.address;
+            return;
+          }
 
-            const originsWithSolanaAccountChangedNotifications =
-              getOriginsWithSessionProperty(
-                this.permissionController.state,
-                KnownSessionProperties.SolanaAccountChangedNotifications,
-              );
-
-            // returns a map of origins to permitted solana accounts
-            const solanaAccounts = getPermittedAccountsForScopesByOrigin(
-              this.permissionController.state,
-              [
+          const previousSolanaCaipAccountIds = previousCaveatValue
+            ? getPermittedAccountsForScopes(previousCaveatValue, [
                 MultichainNetworks.SOLANA,
                 MultichainNetworks.SOLANA_DEVNET,
                 MultichainNetworks.SOLANA_TESTNET,
-              ],
+              ])
+            : [];
+          const previousNonUniqueSolanaHexAccountAddresses =
+            previousSolanaCaipAccountIds.map((caipAccountId) => {
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
+            });
+          const previousSolanaHexAccountAddresses = uniq(
+            previousNonUniqueSolanaHexAccountAddresses,
+          );
+          const [previousSelectedSolanaAccountAddress] =
+            this.sortMultichainAccountsByLastSelected(
+              previousSolanaHexAccountAddresses,
             );
 
-            if (solanaAccounts.size > 0) {
-              for (const [origin, accounts] of solanaAccounts.entries()) {
-                const parsedSolanaAddresses = accounts.map((caipAccountId) => {
-                  const { address } = parseCaipAccountId(caipAccountId);
-                  return address;
-                });
+          const currentSolanaCaipAccountIds = currentCaveatValue
+            ? getPermittedAccountsForScopes(currentCaveatValue, [
+                MultichainNetworks.SOLANA,
+                MultichainNetworks.SOLANA_DEVNET,
+                MultichainNetworks.SOLANA_TESTNET,
+              ])
+            : [];
+          const currentNonUniqueSolanaHexAccountAddresses =
+            currentSolanaCaipAccountIds.map((caipAccountId) => {
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
+            });
+          const currentSolanaHexAccountAddresses = uniq(
+            currentNonUniqueSolanaHexAccountAddresses,
+          );
+          const [currentSelectedSolanaAccountAddress] =
+            this.sortMultichainAccountsByLastSelected(
+              currentSolanaHexAccountAddresses,
+            );
 
-                if (
-                  parsedSolanaAddresses.includes(account.address) &&
-                  originsWithSolanaAccountChangedNotifications[origin]
-                ) {
-                  this._notifySolanaAccountChange(origin, [account.address]);
-                }
+          if (
+            previousSelectedSolanaAccountAddress !==
+            currentSelectedSolanaAccountAddress
+          ) {
+            this._notifySolanaAccountChange(
+              origin,
+              currentSelectedSolanaAccountAddress
+                ? [currentSelectedSolanaAccountAddress]
+                : [],
+            );
+          }
+        });
+      },
+      getAuthorizedScopesByOrigin,
+    );
+
+    // wallet_notify for solana accountChanged when selected account changes
+    this.controllerMessenger.subscribe(
+      `${this.accountsController.name}:selectedAccountChange`,
+      async (account) => {
+        if (
+          account.type === SolAccountType.DataAccount &&
+          account.address !== lastSelectedSolanaAccountAddress
+        ) {
+          lastSelectedSolanaAccountAddress = account.address;
+
+          const originsWithSolanaAccountChangedNotifications =
+            getOriginsWithSessionProperty(
+              this.permissionController.state,
+              KnownSessionProperties.SolanaAccountChangedNotifications,
+            );
+
+          // returns a map of origins to permitted solana accounts
+          const solanaAccounts = getPermittedAccountsForScopesByOrigin(
+            this.permissionController.state,
+            [
+              MultichainNetworks.SOLANA,
+              MultichainNetworks.SOLANA_DEVNET,
+              MultichainNetworks.SOLANA_TESTNET,
+            ],
+          );
+
+          if (solanaAccounts.size > 0) {
+            for (const [origin, accounts] of solanaAccounts.entries()) {
+              const parsedSolanaAddresses = accounts.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+
+              if (
+                parsedSolanaAddresses.includes(account.address) &&
+                originsWithSolanaAccountChangedNotifications[origin]
+              ) {
+                this._notifySolanaAccountChange(origin, [account.address]);
               }
             }
           }
-        },
-      );
-    }
+        }
+      },
+    );
 
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
@@ -2962,16 +3023,22 @@ export default class MetamaskController extends EventEmitter {
         for (const [origin, chains] of changedChains.entries()) {
           const currentNetworkClientIdForOrigin =
             this.selectedNetworkController.getNetworkClientIdForDomain(origin);
-          const { chainId: currentChainIdForOrigin } =
+
+          const networkConfig =
             this.networkController.getNetworkConfigurationByNetworkClientId(
               currentNetworkClientIdForOrigin,
             );
-          // if(chains.length === 0) {
-          // TODO: This particular case should also occur at the same time
-          // that eth_accounts is revoked. When eth_accounts is revoked,
-          // the networkClientId for that origin should be reset to track
-          // the globally selected network.
-          // }
+
+          // Guard clause: skip this iteration or handle the case if networkConfig is undefined.
+          if (!networkConfig) {
+            log.warn(
+              `No network configuration found for clientId: ${currentNetworkClientIdForOrigin}`,
+            );
+            continue;
+          }
+
+          const { chainId: currentChainIdForOrigin } = networkConfig;
+
           if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
             const networkClientId =
               this.networkController.findNetworkClientIdByChainId(chains[0]);
@@ -3185,6 +3252,42 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     );
+
+    this.controllerMessenger.subscribe(
+      `MultichainTransactionsController:transactionConfirmed`,
+      (transaction) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.TransactionFinalized,
+          category: MetaMetricsEventCategory.Transactions,
+          properties: {
+            id: transaction.id,
+            timestamp: transaction.timestamp,
+            chain_id_caip: transaction.chain,
+            status: transaction.status,
+            type: transaction.type,
+            fees: transaction.fees,
+          },
+        });
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      `MultichainTransactionsController:transactionSubmitted`,
+      (transaction) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.TransactionSubmitted,
+          category: MetaMetricsEventCategory.Transactions,
+          properties: {
+            id: transaction.id,
+            timestamp: transaction.timestamp,
+            chain_id_caip: transaction.chain,
+            status: transaction.status,
+            type: transaction.type,
+            fees: transaction.fees,
+          },
+        });
+      },
+    );
   }
 
   /**
@@ -3276,7 +3379,7 @@ export default class MetamaskController extends EventEmitter {
   async getProviderState(origin) {
     const providerNetworkState = await this.getProviderNetworkState(origin);
     const metadata = {};
-    if (process.env.MULTICHAIN_API && isManifestV3) {
+    if (isManifestV3) {
       const { chrome } = globalThis;
       metadata.extensionId = chrome?.runtime?.id;
     }
@@ -3564,6 +3667,12 @@ export default class MetamaskController extends EventEmitter {
         // in the case that the ID is an EVM network client ID.
         return await this.multichainNetworkController.setActiveNetwork(id);
       },
+
+      // active networks by accounts
+      getNetworksWithTransactionActivityByAccounts:
+        this.multichainNetworkController.getNetworksWithTransactionActivityByAccounts.bind(
+          this.multichainNetworkController,
+        ),
       // Avoids returning the promise so that initial call to switch network
       // doesn't block on the network lookup step
       setActiveNetworkConfigurationId: (networkConfigurationId) => {
@@ -3583,8 +3692,8 @@ export default class MetamaskController extends EventEmitter {
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
-      removeNetwork: this.networkController.removeNetwork.bind(
-        this.networkController,
+      removeNetwork: this.multichainNetworkController.removeNetwork.bind(
+        this.multichainNetworkController,
       ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
@@ -4070,32 +4179,26 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge
-      [BridgeBackgroundAction.SET_FEATURE_FLAGS]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.SET_FEATURE_FLAGS}`,
-        ),
       [BridgeBackgroundAction.RESET_STATE]: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.RESET_STATE}`,
       ),
-      [BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE]:
-        this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE}`,
-        ),
       [BridgeUserAction.UPDATE_QUOTE_PARAMS]:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
         ),
-
-      // Bridge Status
-      [BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS]:
+      [BridgeBackgroundAction.TRACK_METAMETRICS_EVENT]:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          `${BRIDGE_STATUS_CONTROLLER_NAME}:${BridgeStatusAction.START_POLLING_FOR_BRIDGE_TX_STATUS}`,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
         ),
+
+      // Bridge Tx submission
+      [BridgeStatusAction.SUBMIT_TX]: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_STATUS_CONTROLLER_NAME}:${BridgeStatusAction.SUBMIT_TX}`,
+      ),
 
       // Smart Transactions
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
@@ -4229,6 +4332,12 @@ export default class MetamaskController extends EventEmitter {
         tokenDetectionController,
       ),
 
+      // MultichainAssetsRatesController
+      fetchHistoricalPricesForAsset: (...args) =>
+        this.multichainAssetsRatesController.fetchHistoricalPricesForAsset(
+          ...args,
+        ),
+
       // DetectCollectibleController
       detectNfts: nftDetectionController.detectNfts.bind(
         nftDetectionController,
@@ -4251,12 +4360,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // UserStorageController
-      enableProfileSyncing: userStorageController.enableProfileSyncing.bind(
-        userStorageController,
-      ),
-      disableProfileSyncing: userStorageController.disableProfileSyncing.bind(
-        userStorageController,
-      ),
+      setIsBackupAndSyncFeatureEnabled:
+        userStorageController.setIsBackupAndSyncFeatureEnabled.bind(
+          userStorageController,
+        ),
       syncInternalAccountsWithUserStorage:
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
@@ -4395,8 +4502,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const { tokenList } = this.tokenListController.state;
-    const { tokens } = this.tokensController.state;
+    const currentChainId = this.#getGlobalChainId();
+
+    const { tokensChainsCache } = this.tokenListController.state;
+    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
+    const { allTokens } = this.tokensController.state;
+
+    const tokens = allTokens?.[currentChainId]?.[userAddress] || [];
 
     const staticTokenListDetails =
       STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
@@ -4516,7 +4628,10 @@ export default class MetamaskController extends EventEmitter {
   ) {
     const { tokensChainsCache } = this.tokenListController.state;
     const tokenList = tokensChainsCache?.[chainId]?.data || {};
-    const { tokens } = this.tokensController.state;
+
+    const { allTokens } = this.tokensController.state;
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
 
     let staticTokenListDetails = {};
     if (chainId === CHAIN_IDS.MAINNET) {
@@ -4781,7 +4896,14 @@ export default class MetamaskController extends EventEmitter {
       this.permissionController.clearState();
 
       // Clear snap state
-      this.snapController.clearState();
+      await this.snapController.clearState();
+
+      // Currently, the account-order-controller is not in sync with
+      // the accounts-controller. To properly persist the hidden state
+      // of accounts, we should add a new flag to the account struct
+      // to indicate if it is hidden or not.
+      // TODO: Update @metamask/accounts-controller to support this.
+      this.accountOrderController.updateHiddenAccountsList([]);
 
       // clear accounts in AccountTrackerController
       this.accountTrackerController.clearAccounts();
@@ -4817,6 +4939,20 @@ export default class MetamaskController extends EventEmitter {
       releaseLock();
     }
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  async _getSolanaWalletSnapClient() {
+    const keyring = await this.getSnapKeyring();
+    const messenger = this.controllerMessenger;
+
+    return new MultichainWalletSnapClient(
+      SOLANA_WALLET_SNAP_ID,
+      [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet],
+      keyring,
+      messenger,
+    );
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   async _addAccountsWithBalance(keyringId) {
     try {
@@ -4888,12 +5024,8 @@ export default class MetamaskController extends EventEmitter {
         );
       }
       ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      const keyring = await this.getSnapKeyring();
-      await addDiscoveredSolanaAccounts(
-        this.controllerMessenger,
-        entropySource,
-        keyring,
-      );
+      const client = await this._getSolanaWalletSnapClient();
+      await client.discoverAccounts(entropySource);
       ///: END:ONLY_INCLUDE_IF
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
@@ -4911,30 +5043,34 @@ export default class MetamaskController extends EventEmitter {
    */
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   async _addSolanaAccount(keyringId) {
-    const snapId = SOLANA_WALLET_SNAP_ID;
     let entropySource = keyringId;
-    if (!entropySource) {
-      // Get the entropy source from the first HD keyring
-      const id = await this.keyringController.withKeyring(
-        { type: KeyringTypes.hd },
-        async ({ metadata }) => {
-          return metadata.id;
+    try {
+      if (!entropySource) {
+        // Get the entropy source from the first HD keyring
+        const id = await this.keyringController.withKeyring(
+          { type: KeyringTypes.hd },
+          async ({ metadata }) => {
+            return metadata.id;
+          },
+        );
+        entropySource = id;
+      }
+
+      const client = await this._getSolanaWalletSnapClient();
+      return await client.createAccount(
+        { entropySource },
+        {
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
         },
       );
-      entropySource = id;
+    } catch (e) {
+      // Do not block the onboarding flow if this fails
+      log.warn(`Failed to add Solana account. Error: ${e}`);
+      captureException(e);
+      return null;
     }
-
-    const keyring = await this.getSnapKeyring();
-
-    return await keyring.createAccount(
-      snapId,
-      { entropySource },
-      {
-        displayConfirmation: false,
-        displayAccountNameSuggestion: false,
-        setSelectedAccount: false,
-      },
-    );
   }
   ///: END:ONLY_INCLUDE_IF
 
@@ -4973,7 +5109,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {Provider} provider - The provider instance to use when asking the network
    */
   async getBalance(address, provider) {
-    const cached = this.accountTrackerController.state.accounts[address];
+    const accounts =
+      this.accountTrackerController.state.accountsByChainId[
+        this.#getGlobalChainId()
+      ];
+    const cached = accounts?.[address];
 
     if (cached && cached.balance) {
       return cached.balance;
@@ -5491,8 +5631,13 @@ export default class MetamaskController extends EventEmitter {
 
     const internalAccountCount = internalAccounts.length;
 
+    const accountsForCurrentChain =
+      this.accountTrackerController.state.accountsByChainId[
+        this.#getGlobalChainId()
+      ];
+
     const accountTrackerCount = Object.keys(
-      this.accountTrackerController.state.accounts || {},
+      accountsForCurrentChain || {},
     ).length;
 
     captureException(
@@ -6168,10 +6313,11 @@ export default class MetamaskController extends EventEmitter {
 
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
+    mux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
 
     // messages between inpage and background
     this.setupProviderConnectionEip1193(
-      mux.createStream('metamask-provider'),
+      mux.createStream(METAMASK_EIP_1193_PROVIDER),
       sender,
       inputSubjectType,
     );
@@ -6192,10 +6338,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
   setupUntrustedCommunicationCaip({ connectionStream, sender, subjectType }) {
-    if (!process.env.MULTICHAIN_API) {
-      return;
-    }
-
     let inputSubjectType;
     if (subjectType) {
       inputSubjectType = subjectType;
@@ -6205,10 +6347,12 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType = SubjectType.Website;
     }
 
-    const caipStream = createCaipStream(connectionStream);
-
     // messages between subject and background
-    this.setupProviderConnectionCaip(caipStream, sender, inputSubjectType);
+    this.setupProviderConnectionCaip(
+      connectionStream,
+      sender,
+      inputSubjectType,
+    );
   }
 
   /**
@@ -6494,10 +6638,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
   setupProviderConnectionCaip(outStream, sender, subjectType) {
-    if (!process.env.MULTICHAIN_API) {
-      return;
-    }
-
     let origin;
     if (subjectType === SubjectType.Internal) {
       origin = ORIGIN_METAMASK;
@@ -6594,22 +6734,6 @@ export default class MetamaskController extends EventEmitter {
 
     // Append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
-
-    // Add a middleware that will switch chain on each request (as needed)
-    if (process.env.EVM_MULTICHAIN_ENABLED !== true) {
-      const requestQueueMiddleware = createQueuedRequestMiddleware({
-        enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
-          this.queuedRequestController,
-        ),
-        shouldEnqueueRequest: (request) => {
-          return methodsThatShouldBeEnqueued.includes(request.method);
-        },
-        // This will be removed once we can actually remove useRequestQueue state
-        // i.e. unrevert https://github.com/MetaMask/core/pull/5065
-        useRequestQueue: () => true,
-      });
-      engine.push(requestQueueMiddleware);
-    }
 
     // If the origin is not in the selectedNetworkController's `domains` state
     // when the provider engine is created, the selectedNetworkController will
@@ -6763,6 +6887,11 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions(
             { origin },
             requestedPermissions,
+            {
+              metadata: {
+                isEip1193Request: true,
+              },
+            },
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
           try {
@@ -6964,6 +7093,9 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:get',
         ),
+        trackEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
         getAllSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:getAll',
@@ -7062,10 +7194,6 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngineCaip({ origin, sender, subjectType, tabId }) {
-    if (!process.env.MULTICHAIN_API) {
-      return null;
-    }
-
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
@@ -7091,6 +7219,25 @@ export default class MetamaskController extends EventEmitter {
       }
       return next();
     });
+
+    engine.push(
+      createRPCMethodTrackingMiddleware({
+        getAccountType: this.getAccountType.bind(this),
+        getDeviceModel: this.getDeviceModel.bind(this),
+        getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
+        getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
+        snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
+          name: 'SnapAndHardwareMessenger',
+          allowedActions: [
+            'KeyringController:getKeyringForAccount',
+            'SnapController:get',
+            'AccountsController:getSelectedAccount',
+          ],
+        }),
+        appStateController: this.appStateController,
+        metaMetricsController: this.metaMetricsController,
+      }),
+    );
 
     engine.push(multichainMethodCallValidatorMiddleware);
     const middlewareMaker = makeMethodMiddlewareMaker([
@@ -7146,20 +7293,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       }),
     );
-
-    // Add a middleware that will switch chain on each request (as needed)
-    const requestQueueMiddleware = createQueuedRequestMiddleware({
-      enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
-        this.queuedRequestController,
-      ),
-      // This will be removed once we can actually remove useRequestQueue state
-      // i.e. unrevert https://github.com/MetaMask/core/pull/5065
-      useRequestQueue: () => true,
-      shouldEnqueueRequest: (request) => {
-        return methodsRequiringNetworkSwitch.includes(request.method);
-      },
-    });
-    engine.push(requestQueueMiddleware);
 
     engine.push(
       createUnsupportedMethodMiddleware(
@@ -7613,6 +7746,8 @@ export default class MetamaskController extends EventEmitter {
     const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
     const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
     if (cachedResponse) {
+      // Also initialize the known domains when we have chain data cached
+      await initializeRpcProviderDomains();
       return;
     }
     await setStorageItem(cacheKey, {
@@ -7620,6 +7755,8 @@ export default class MetamaskController extends EventEmitter {
       // Cached value is immediately invalidated
       cachedTime: 0,
     });
+    // Initialize domains after setting the chainlist cache
+    await initializeRpcProviderDomains();
   }
 
   /**
@@ -7672,58 +7809,6 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  /**
-   * A method for setting BridgeStatusController event listeners
-   */
-  _addBridgeStatusControllerListeners() {
-    this.controllerMessenger.subscribe(
-      'BridgeStatusController:bridgeTransactionComplete',
-      (payload) =>
-        handleBridgeTransactionComplete(payload, {
-          backgroundState: this.getState(),
-          trackEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
-        }),
-    );
-
-    this.controllerMessenger.subscribe(
-      'BridgeStatusController:bridgeTransactionFailed',
-      (payload) =>
-        handleBridgeTransactionFailed(payload, {
-          backgroundState: this.getState(),
-          trackEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
-        }),
-    );
-    // Putting these TransactionController listeners here to keep it colocated with the other bridge events
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionFailed',
-      ({ transactionMeta }) => {
-        const { type, status } = transactionMeta;
-
-        const isBridgeTransaction = type === TransactionType.bridge;
-        const isIncompleteTransactionCleanup = [
-          TransactionStatus.approved,
-          TransactionStatus.signed,
-        ].includes(status);
-
-        if (isBridgeTransaction && !isIncompleteTransactionCleanup) {
-          handleTransactionFailedTypeBridge(
-            { transactionMeta },
-            {
-              backgroundState: this.getState(),
-              trackEvent: this.metaMetricsController.trackEvent.bind(
-                this.metaMetricsController,
-              ),
-            },
-          );
-        }
-      },
-    );
-  }
-
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Metametrics Actions
@@ -7761,8 +7846,8 @@ export default class MetamaskController extends EventEmitter {
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
-      getIsSmartTransaction: () => {
-        return getIsSmartTransaction(this._getMetaMaskState());
+      getIsSmartTransaction: (chainId) => {
+        return getIsSmartTransaction(this._getMetaMaskState(), chainId);
       },
       getSmartTransactionByMinedTxHash: (txHash) => {
         return this.smartTransactionsController.getSmartTransactionByMinedTxHash(
@@ -7791,6 +7876,37 @@ export default class MetamaskController extends EventEmitter {
           .showConfirmationAdvancedDetails;
       },
       getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
+      getNetworkRpcUrl: (chainId) => {
+        // TODO: Move to @metamask/network-controller
+        try {
+          const networkClientId =
+            this.networkController.findNetworkClientIdByChainId(chainId);
+          const networkConfig =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+
+          // Try direct rpcUrl property first
+          if (networkConfig.rpcUrl) {
+            return networkConfig.rpcUrl;
+          }
+
+          // Try rpcEndpoints array
+          if (networkConfig.rpcEndpoints?.length > 0) {
+            const defaultEndpointIndex =
+              networkConfig.defaultRpcEndpointIndex || 0;
+            return (
+              networkConfig.rpcEndpoints[defaultEndpointIndex]?.url ||
+              networkConfig.rpcEndpoints[0].url
+            );
+          }
+
+          return 'unknown';
+        } catch (error) {
+          console.error('Error getting RPC URL:', error);
+          return 'unknown';
+        }
+      },
     };
     return {
       ...controllerActions,
@@ -7812,7 +7928,7 @@ export default class MetamaskController extends EventEmitter {
       txParams: { from },
     } = transactionMeta;
     this.accountTrackerController.updateAccountByAddress({
-      from,
+      address: from,
       networkClientId,
     });
   }
@@ -8391,6 +8507,10 @@ export default class MetamaskController extends EventEmitter {
   _trackTransactionFailure(transactionMeta) {
     const { txReceipt } = transactionMeta;
     const metamaskState = this.getState();
+    const { allTokens } = this.tokensController.state;
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const tokens =
+      allTokens?.[transactionMeta.chainId]?.[selectedAccount.address] || [];
 
     if (!txReceipt || txReceipt.status !== '0x0') {
       return;
@@ -8403,7 +8523,8 @@ export default class MetamaskController extends EventEmitter {
         properties: {
           action: 'Transactions',
           errorMessage: transactionMeta.simulationFails?.reason,
-          numberOfTokens: metamaskState.tokens.length,
+          numberOfTokens: tokens.length,
+          // TODO: remove this once we have migrated to the new account balances state
           numberOfAccounts: Object.keys(metamaskState.accounts).length,
         },
       },
@@ -8624,6 +8745,7 @@ export default class MetamaskController extends EventEmitter {
       updateAccountBalanceForTransactionNetwork:
         this.updateAccountBalanceForTransactionNetwork.bind(this),
       offscreenPromise: this.offscreenPromise,
+      preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
       removeAllConnections: this.removeAllConnections.bind(this),
       setupUntrustedCommunicationEip1193:

@@ -21,6 +21,7 @@ import {
 } from '@metamask/network-controller';
 import {
   NON_EVM_TESTNET_IDS,
+  toEvmCaipChainId,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import {
@@ -29,6 +30,7 @@ import {
   parseCaipChainId,
   KnownCaipNamespace,
 } from '@metamask/utils';
+import { ChainId } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { NetworkListItem } from '../network-list-item';
@@ -63,13 +65,14 @@ import {
   getOrderedNetworksList,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
+  getIsAccessedFromDappConnectedSitePopover,
   getAllDomains,
   getPermittedEVMChainsForSelectedTab,
   getPermittedEVMAccountsForSelectedTab,
   getPreferences,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
-  getIsPortfolioDiscoverButtonEnabled,
+  getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
@@ -107,6 +110,7 @@ import {
   sortNetworks,
   getNetworkIcon,
   getRpcDataByChainId,
+  sortNetworksByPrioity,
 } from '../../../../shared/modules/network.utils';
 import {
   getCompletedOnboarding,
@@ -115,6 +119,7 @@ import {
 import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import PopularNetworkList from './popular-network-list/popular-network-list';
 import NetworkListSearch from './network-list-search/network-list-search';
 import AddRpcUrlModal from './add-rpc-url-modal/add-rpc-url-modal';
@@ -137,7 +142,11 @@ export enum ACTION_MODE {
   ADD_NON_EVM_ACCOUNT,
 }
 
-export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
+type NetworkListMenuProps = {
+  onClose: () => void;
+};
+
+export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -151,13 +160,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const isAddingNewNetwork = useSelector(getIsAddingNewNetwork);
   const isMultiRpcOnboarding = useSelector(getIsMultiRpcOnboarding);
+  const isAccessedFromDappConnectedSitePopover = useSelector(
+    getIsAccessedFromDappConnectedSitePopover,
+  );
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
   // This selector provides the indication if the "Discover" button
   // is enabled based on the remote feature flag.
-  const isPortfolioDiscoverButtonEnabled = useSelector(
-    getIsPortfolioDiscoverButtonEnabled,
+  const isNetworkDiscoverButtonEnabled = useSelector(
+    getNetworkDiscoverButtonEnabled,
   );
   // This selector provides an array with two elements.
   // 1 - All network configurations including EVM and non-EVM with the data type
@@ -180,6 +192,16 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
+  const canSelectNetwork: boolean =
+    !process.env.REMOVE_GNS ||
+    (Boolean(process.env.REMOVE_GNS) &&
+      Boolean(selectedTabOrigin) &&
+      Boolean(domains[selectedTabOrigin]) &&
+      isAccessedFromDappConnectedSitePopover);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.NetworkList });
+  }, []);
 
   const currentlyOnTestnet = useMemo(() => {
     const { namespace } = parseCaipChainId(currentChainId);
@@ -301,12 +323,25 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     Object.values(testNetworks),
     searchQuery,
   );
+  // A sorted list of test networks that put Sepolia first then Linea Sepolia at the top
+  // and the rest of the test networks in alphabetical order.
+  const sortedTestNetworks = useMemo(() => {
+    return sortNetworksByPrioity(searchedTestNetworks, [
+      toEvmCaipChainId(ChainId.sepolia),
+      toEvmCaipChainId(ChainId['linea-sepolia']),
+    ]);
+  }, [searchedTestNetworks]);
 
-  const handleEvmNetworkChange = (chainId: CaipChainId) => {
+  const handleEvmNetworkChange = (
+    chainId: CaipChainId,
+    networkClientId?: string,
+  ) => {
     const hexChainId = convertCaipToHexChainId(chainId);
     const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
-    const { networkClientId } = defaultRpcEndpoint;
-    dispatch(setActiveNetwork(networkClientId));
+    const finalNetworkClientId =
+      networkClientId ?? defaultRpcEndpoint.networkClientId;
+
+    dispatch(setActiveNetwork(finalNetworkClientId));
     dispatch(updateCustomNonce(''));
     dispatch(setNextNonce(''));
     dispatch(detectNfts(allChainIds));
@@ -335,7 +370,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
       // to ensure that the isConnected value can be accurately inferred from
       // NetworkController.state.networksMetadata in return value of
       // `metamask_getProviderState` requests and `metamask_chainChanged` events.
-      setNetworkClientIdForDomain(selectedTabOrigin, networkClientId);
+      setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId);
     }
 
     if (permittedAccountAddresses.length > 0) {
@@ -399,14 +434,15 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   const isDiscoverBtnEnabled = useCallback(
     (hexChainId: Hex): boolean => {
-      // For now, the "Discover" button should be enabled only for Linea network base on
-      // the feature flag and the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
+      // The "Discover" button should be enabled when the mapping for the chainId is enabled in the feature flag json
+      // and in the constants `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`.
       return (
-        isPortfolioDiscoverButtonEnabled &&
-        CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
+        (isNetworkDiscoverButtonEnabled as Record<Hex, boolean>)?.[
+          hexChainId
+        ] && CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP[hexChainId] !== undefined
       );
     },
-    [isPortfolioDiscoverButtonEnabled],
+    [isNetworkDiscoverButtonEnabled],
   );
 
   const hasMultiRpcOptions = useCallback(
@@ -507,22 +543,27 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
-        selected={isCurrentNetwork && !focusSearch}
-        focus={isCurrentNetwork && !focusSearch}
+        selected={canSelectNetwork && isCurrentNetwork && !focusSearch}
+        focus={canSelectNetwork && isCurrentNetwork && !focusSearch}
         rpcEndpoint={
           hasMultiRpcOptions(network)
             ? getRpcDataByChainId(network.chainId, evmNetworks)
                 .defaultRpcEndpoint
             : undefined
         }
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={async () => {
-          await handleNetworkChange(network.chainId);
+          if (canSelectNetwork) {
+            await handleNetworkChange(network.chainId);
+          }
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
         onRpcEndpointClick={onRpcConfigEdit}
         disabled={!isNetworkEnabled(network)}
+        notSelectable={!canSelectNetwork}
       />
     );
   };
@@ -537,7 +578,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               setSearchQuery={setSearchQuery}
               setFocusSearch={setFocusSearch}
             />
-            {completedOnboarding &&
+            {!process.env.REMOVE_GNS &&
+              completedOnboarding &&
               !onboardedInThisUISession &&
               showNetworkBanner &&
               !searchQuery && (
@@ -561,6 +603,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                       />
                     </Box>
                   }
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClose={() => hideNetworkBanner()}
                   description={t('dragAndDropBanner')}
                 />
@@ -658,7 +702,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
               {showTestnets || currentlyOnTestnet ? (
                 <Box className="multichain-network-list-menu">
-                  {searchedTestNetworks.map((network) =>
+                  {sortedTestNetworks.map((network) =>
                     generateMultichainNetworkListItem(network),
                   )}
                 </Box>
@@ -745,7 +789,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   let title;
   if (actionMode === ACTION_MODE.LIST) {
-    title = t('networkMenuHeading');
+    title = process.env.REMOVE_GNS
+      ? t('manageNetworksMenuHeading')
+      : t('networkMenuHeading');
   } else if (actionMode === ACTION_MODE.ADD_EDIT && !editedNetwork) {
     title = t('addACustomNetwork');
   } else if (actionMode === ACTION_MODE.ADD_RPC) {

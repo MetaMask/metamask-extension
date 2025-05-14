@@ -19,10 +19,10 @@ exports[`Unlock Page should match snapshot 1`] = `
         </div>
       </div>
       <h1
-        class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-1 mm-box--color-text-default"
+        class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-box--margin-top-1 mm-box--margin-bottom-1 mm-box--color-text-default"
         data-testid="unlock-page-title"
       >
-        Welcome back!
+        Welcome back
       </h1>
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
@@ -63,7 +63,7 @@ exports[`Unlock Page should match snapshot 1`] = `
         class="button btn--rounded btn-default"
         data-testid="unlock-submit"
         disabled=""
-        style="margin-top: 20px; height: 60px; font-weight: 400; box-shadow: none; border-radius: 100px;"
+        style="margin-top: 20px; height: 56px; font-weight: 500; box-shadow: none; border-radius: 100px;"
         variant="contained"
       >
         Unlock
