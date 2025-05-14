@@ -120,7 +120,7 @@ global.stateHooks.getMostRecentPersistedState = () =>
 if (inTest) {
   global.stateHooks.getBrowser = () => {
     return browser;
-  }
+  };
 }
 
 /**
