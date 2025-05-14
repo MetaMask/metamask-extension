@@ -193,8 +193,10 @@ export const useTokensWithFiltering = (
           filterCondition(symbol, address, tokenChainId) &&
           (tokenToExclude && tokenChainId
             ? !(
-                tokenToExclude.symbol === symbol &&
-                tokenToExclude.address === address &&
+                ((tokenToExclude.symbol === symbol &&
+                  tokenToExclude.address === address) ||
+                  (isNativeAddress(tokenToExclude.address) &&
+                    isNativeAddress(address))) &&
                 tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
               )
             : true);
