@@ -43,11 +43,7 @@ export const SENTRY_BACKGROUND_STATE = {
   AuthenticationController: {
     isSignedIn: false,
     sessionData: {
-      token: {
-        accessToken: false,
-        expiresIn: true,
-        obtainedAt: true,
-      },
+      token: false,
       profile: true,
     },
   },
@@ -112,13 +108,6 @@ export const SENTRY_BACKGROUND_STATE = {
     assetsRates: false,
   },
   BridgeController: {
-    bridgeFeatureFlags: {
-      extensionConfig: {
-        support: false,
-        chains: {},
-      },
-      mobileConfig: false,
-    },
     assetExchangeRates: false,
     quoteRequest: {
       walletAddress: false,
@@ -391,8 +380,8 @@ export const SENTRY_BACKGROUND_STATE = {
     userOperations: false,
   },
   UserStorageController: {
-    isProfileSyncingEnabled: true,
-    isProfileSyncingUpdateLoading: false,
+    isBackupAndSyncEnabled: true,
+    isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,

@@ -1,5 +1,6 @@
 import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
+import { regularDelayMs } from '../../../helpers';
 
 class SendSolanaPage {
   private driver: Driver;
@@ -42,15 +43,22 @@ class SendSolanaPage {
     await this.driver.waitForSelector(this.toAddressInput, { timeout: 10000 });
     console.log('check_pageIsLoaded after waitForSelector');
     if (amount) {
-      await this.driver.waitForSelector(
-        {
-          text: `${amount}`,
-          tag: 'p',
-        },
-        { timeout: 60000 },
-      );
+      await this.driver.wait(async () => {
+        try {
+          await this.driver.waitForSelector(
+            {
+              text: `${amount}`,
+              tag: 'p',
+            },
+            { timeout: 1000 },
+          );
+          return true;
+        } catch (e) {
+          await this.driver.refresh();
+          return false;
+        }
+      }, 60000);
     }
-    await this.driver.delay(1000); // Added because of https://consensyssoftware.atlassian.net/browse/SOL-116
   }
 
   async check_tokenBalanceIsDisplayed(
@@ -159,21 +167,8 @@ class SendSolanaPage {
   }
 
   async setToAddress(toAddress: string): Promise<void> {
-    let failed = true;
-    for (let i = 0; i < 5 && failed; i++) {
-      try {
-        await this.driver.fill(this.toAddressInput, toAddress);
-        const toAddressRequired = await this.driver.isElementPresent(
-          this.toAddressRequiredValidation,
-        );
-        if (!toAddressRequired) {
-          failed = false;
-        }
-      } catch (err: unknown) {
-        console.log('Error encountered, retrying...', err);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-    }
+    await this.driver.delay(regularDelayMs);
+    await this.driver.fill(this.toAddressInput, toAddress);
   }
 }
 

@@ -5,7 +5,6 @@ import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { IconName } from '@metamask/snaps-sdk/jsx';
 import type { CaipChainId } from '@metamask/utils';
 import {
   Display,
@@ -27,6 +26,7 @@ import {
   Checkbox,
   Text,
   AvatarNetworkSize,
+  IconName,
 } from '../../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
