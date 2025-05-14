@@ -1,34 +1,11 @@
 import fs from 'fs';
 import { escapeRegExp } from 'lodash';
 import { Mockttp } from 'mockttp';
+import { sort as semverSort } from 'semver';
 
 const SNAP_ASSETS_RELATIVE_PATH =
   'test/e2e/mock-response-data/snaps/snap-binaries-and-headers';
 const NPM_REGISTRY_METAMASK_BASE_URL = 'https://registry.npmjs.org/@metamask';
-
-/**
- * Sorts an array of file names by version strings semantically (e.g., 1.2.0, 1.10.0, 2.0.0).
- * Modifies the array in place.
- *
- * @param versions - An array of version strings to sort.
- */
-function sortFilesByVersion(versions: string[]): void {
-  versions.sort((a, b) => {
-    const partsA = a.split('.').map(Number);
-    const partsB = b.split('.').map(Number);
-    for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
-      const valA = partsA[i] ?? 0;
-      const valB = partsB[i] ?? 0;
-      if (valA < valB) {
-        return -1;
-      }
-      if (valA > valB) {
-        return 1;
-      }
-    }
-    return 0;
-  });
-}
 
 /**
  * Retrieves the latest version of a snap from the local file system based on its name prefix.
@@ -60,10 +37,10 @@ export function getLocalSnapLatestVersion(snapNamePrefix: string): string {
     );
   }
 
-  sortFilesByVersion(foundVersions);
+  const sortedVersions = semverSort(foundVersions);
 
   // The last element after sorting will be the latest version
-  return foundVersions[foundVersions.length - 1];
+  return sortedVersions[sortedVersions.length - 1];
 }
 
 /**
