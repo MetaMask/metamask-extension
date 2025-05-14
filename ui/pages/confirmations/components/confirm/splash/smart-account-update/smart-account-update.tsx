@@ -152,6 +152,8 @@ export function SmartAccountUpdate() {
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={handleRejectUpgrade}
           width={BlockSize.Full}
         >
