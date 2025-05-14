@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.17.2",
+  "version": "12.17.3",
   "private": true,
   "repository": {
     "type": "git",
@@ -302,7 +302,7 @@
     "@metamask/message-manager": "^12.0.1",
     "@metamask/message-signing-snap": "1.1.2",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain-api-client": "^0.5.0",
+    "@metamask/multichain-api-client": "^0.6.0",
     "@metamask/multichain-api-middleware": "^0.1.1",
     "@metamask/multichain-network-controller": "^0.5.1",
     "@metamask/multichain-transactions-controller": "^0.9.0",
@@ -332,7 +332,7 @@
     "@metamask/snaps-rpc-methods": "^12.2.0",
     "@metamask/snaps-sdk": "^6.23.0",
     "@metamask/snaps-utils": "^9.2.2",
-    "@metamask/solana-wallet-snap": "^1.28.0",
+    "@metamask/solana-wallet-snap": "^1.28.3",
     "@metamask/solana-wallet-standard": "^0.4.1",
     "@metamask/transaction-controller": "^55.0.2",
     "@metamask/user-operation-controller": "^31.0.0",

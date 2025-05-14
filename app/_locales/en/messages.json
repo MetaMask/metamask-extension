@@ -3288,7 +3288,7 @@
     "message": "Cannot send negative or zero amounts of asset."
   },
   "network": {
-    "message": "Network:"
+    "message": "Network"
   },
   "networkChanged": {
     "message": "Network changed"
@@ -5462,7 +5462,7 @@
     "message": "Import Solana accounts"
   },
   "solanaImportAccountsDescription": {
-    "message": "Import a Secret Recovery Phrase to migrate your Solana account from an other wallet."
+    "message": "Import a Secret Recovery Phrase to migrate your Solana account from another wallet."
   },
   "solanaMoreFeaturesComingSoon": {
     "message": "More features coming soon"
