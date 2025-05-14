@@ -130,7 +130,7 @@ const CancelSpeedupPopover = () => {
                   </Text>
                   <ButtonLink
                     variant={TextVariant.bodySm}
-                    href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
+                    href="https://support.metamask.io/manage-crypto/transactions/how-to-speed-up-or-cancel-a-pending-transaction"
                     target="_blank"
                   >
                     {t('learnMoreUpperCase')}
