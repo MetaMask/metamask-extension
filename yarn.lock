@@ -6590,10 +6590,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.28.0":
-  version: 1.28.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.28.0"
-  checksum: 10/4e9868d2657fd9de427f43c1072434a6e512f12d28e5d48fa1642cc25d0440358d5ebecf705754c6c04b2741114f3fc70caa37b1643d75acb63368479d06aab5
+"@metamask/solana-wallet-snap@npm:^1.28.3":
+  version: 1.28.3
+  resolution: "@metamask/solana-wallet-snap@npm:1.28.3"
+  checksum: 10/1541fa9af2de6817aa393e29a9de9bb535e827e46d48ba30a8af7ca86d2ec91c59597d67913bcc60cdd0388d93a2dfd5f64d5c2ffd3430aedbf5280ecc777bda
   languageName: node
   linkType: hard
 
@@ -30073,7 +30073,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^12.2.0"
     "@metamask/snaps-sdk": "npm:^6.23.0"
     "@metamask/snaps-utils": "npm:^9.2.2"
-    "@metamask/solana-wallet-snap": "npm:^1.28.0"
+    "@metamask/solana-wallet-snap": "npm:^1.28.3"
     "@metamask/solana-wallet-standard": "npm:^0.4.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
