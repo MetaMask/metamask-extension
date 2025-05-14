@@ -21,11 +21,11 @@ const NETWORK_NAME_SEPOLIA = 'Sepolia';
 const SEPOLIA_NATIVE_TOKEN = 'SepoliaETH';
 
 describe('Multichain Aggregated Balances', function (this: Suite) {
-  if (!process.env.PORTFOLIO_VIEW) {
-    return;
-  }
-
   it('shows correct aggregated balance when "Current Network" is selected', async function () {
+    if (!process.env.PORTFOLIO_VIEW) {
+      this.skip();
+    }
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

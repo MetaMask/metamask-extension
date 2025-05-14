@@ -406,7 +406,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitleContainsOrigin = true;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
-    title = t('bridgeToChain', [destChainName || '']);
+    title = destChainName ? t('bridgeToChain', [destChainName]) : t('bridge');
     category = bridgeTokenDisplayData.category;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
     primaryDisplayValue = formatAmount(
@@ -464,7 +464,8 @@ export function useTransactionDisplayData(transactionGroup) {
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
       ([TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
-        !swapTokenFiatAmount)
+        !swapTokenFiatAmount) ||
+      (type === TransactionType.bridge && !secondaryDisplayValue)
         ? undefined
         : secondaryCurrency,
     displayedStatusKey,

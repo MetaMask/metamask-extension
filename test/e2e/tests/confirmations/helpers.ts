@@ -1,9 +1,6 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptionsForType2Transactions,
-  withFixtures,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -43,8 +40,8 @@ export function withTransactionEnvelopeTypeFixtures(
         .build(),
       localNodeOptions:
         transactionEnvelopeType === TransactionEnvelopeType.legacy
-          ? {}
-          : defaultGanacheOptionsForType2Transactions,
+          ? { hardfork: 'muirGlacier' }
+          : {},
       ...(smartContract && { smartContract }),
       ...(mocks && { testSpecificMock: mocks }),
       title,
@@ -215,7 +212,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet(
-        'https://defiadapters.dev-api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       )
       .thenCallback(() => {
         return {
@@ -560,7 +557,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet(
-        'https://defiadapters.dev-api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       )
       .thenCallback(() => {
         return {
@@ -589,7 +586,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet(
-        'https://defiadapters.dev-api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       )
       .thenCallback(() => {
         return {

@@ -69,7 +69,7 @@ type SignatureEventProperty = {
   ui_customizations?: string[];
   location?: string;
   hd_entropy_index?: number;
-  requested_through?: string;
+  api_source?: string;
 };
 
 const signatureAnonProperties = {
@@ -124,7 +124,7 @@ function getSignatureEventProperty(
     security_alert_source: securityAlertSource,
     ui_customizations: uiCustomizations,
     hd_entropy_index: 0,
-    requested_through: requestedThrough,
+    api_source: requestedThrough,
   };
 
   if (primaryType !== '') {

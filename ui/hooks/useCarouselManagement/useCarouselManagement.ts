@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSlides } from '../../store/actions';
@@ -17,6 +18,7 @@ import {
   SWEEPSTAKES_END,
   ZERO_BALANCE,
   MULTI_SRP_SLIDE,
+  BACKUPANDSYNC_SLIDE,
   SWEEPSTAKES_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
@@ -62,6 +64,7 @@ export const useCarouselManagement = ({
     defaultSlides.push(CARD_SLIDE);
     defaultSlides.push(CASH_SLIDE);
     defaultSlides.push(MULTI_SRP_SLIDE);
+    defaultSlides.push(BACKUPANDSYNC_SLIDE);
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     defaultSlides.push(SOLANA_SLIDE);
     ///: END:ONLY_INCLUDE_IF
@@ -99,7 +102,9 @@ export const useCarouselManagement = ({
       defaultSlides.push(dismissedSweepstakesSlide);
     }
 
-    dispatch(updateSlides(defaultSlides));
+    if (!isEqual(slides, defaultSlides)) {
+      dispatch(updateSlides(defaultSlides));
+    }
   }, [dispatch, hasZeroBalance, isRemoteModeEnabled, slides, testDate, inTest]);
 
   return { slides };

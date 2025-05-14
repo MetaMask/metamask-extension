@@ -32,6 +32,7 @@ jest.mock('../../store/actions', () => ({
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
   setOnboardingDate: jest.fn(() => ({ type: 'TEST_DISPATCH' })),
+  hideLoadingIndication: jest.fn(() => ({ type: 'HIDE_LOADING_INDICATION' })),
 }));
 
 describe('Onboarding Flow', () => {

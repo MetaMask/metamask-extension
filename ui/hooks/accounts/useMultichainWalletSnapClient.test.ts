@@ -13,22 +13,20 @@ import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wal
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
 import {
   createSnapAccount,
-  multichainUpdateBalance,
   multichainUpdateTransactions,
 } from '../../store/actions';
 import {
+  MultichainWalletSnapOptions,
   useMultichainWalletSnapClient,
   WalletClientType,
 } from './useMultichainWalletSnapClient';
 
 jest.mock('../../store/actions', () => ({
   createSnapAccount: jest.fn(),
-  multichainUpdateBalance: jest.fn(),
   multichainUpdateTransactions: jest.fn(),
 }));
 
 const mockCreateSnapAccount = createSnapAccount as jest.Mock;
-const mockMultichainUpdateBalance = multichainUpdateBalance as jest.Mock;
 const mockMultichainUpdateTransactions =
   multichainUpdateTransactions as jest.Mock;
 
@@ -67,10 +65,13 @@ describe('useMultichainWalletSnapClient', () => {
   ];
 
   testCases.forEach(({ clientType, network, snapId, mockAccount }) => {
-    const options = {
+    const options: MultichainWalletSnapOptions = {
       scope: network,
       entropySource: 'test-entropy-source',
     };
+    if (clientType === WalletClientType.Bitcoin) {
+      options.synchronize = true;
+    }
 
     it(`creates a ${clientType} account`, async () => {
       const { result } = renderHook(() =>
@@ -107,18 +108,6 @@ describe('useMultichainWalletSnapClient', () => {
         options,
         internalOptions,
       );
-    });
-
-    it(`force fetches the balance after creating a ${clientType} account`, async () => {
-      const { result } = renderHook(() =>
-        useMultichainWalletSnapClient(clientType),
-      );
-      const multichainWalletSnapClient = result.current;
-
-      mockCreateSnapAccount.mockResolvedValue(mockAccount);
-
-      await multichainWalletSnapClient.createAccount({ scope: network });
-      expect(mockMultichainUpdateBalance).toHaveBeenCalledWith(mockAccount.id);
     });
 
     it(`force fetches the transactions after creating a ${clientType} account`, async () => {

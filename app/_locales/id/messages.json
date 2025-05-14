@@ -3662,22 +3662,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Pemasangan MetaMask Anda selesai!"
   },
-  "oneDayAbbreviation": {
-    "message": "1H",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1B",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1M",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1T",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4147,18 +4131,6 @@
   },
   "productAnnouncements": {
     "message": "Pengumuman produk"
-  },
-  "profileSync": {
-    "message": "Sinkronisasi Profil"
-  },
-  "profileSyncConfirmation": {
-    "message": "Jika sinkronisasi profil dinonaktifkan, Anda tidak dapat menerima notifikasi."
-  },
-  "profileSyncDescription": {
-    "message": "Membuat profil yang digunakan MetaMask untuk menyinkronkan beberapa pengaturan di antara perangkat Anda. Ini diperlukan untuk mendapatkan notifikasi. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Pelajari cara kami melindungi privasi Anda"
   },
   "proposedApprovalLimit": {
     "message": "Batas persetujuan yang diajukan"
@@ -5971,10 +5943,6 @@
   "thirdPartySoftware": {
     "message": "Pemberitahuan perangkat lunak pihak ketiga",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3B",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "Waktu"

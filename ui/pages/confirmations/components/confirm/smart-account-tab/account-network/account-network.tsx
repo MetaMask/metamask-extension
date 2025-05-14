@@ -33,9 +33,11 @@ export const AccountNetwork = ({
   networkConfiguration: EIP7702NetworkConfiguration;
 }) => {
   const t = useI18nContext();
-  const { downgradeAccount, upgradeAccount } = useEIP7702Account();
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfiguration;
+  const { downgradeAccount, upgradeAccount } = useEIP7702Account({
+    chainId: chainIdHex,
+  });
   const [addressSupportSmartAccount, setAddressSupportSmartAccount] =
     useState(isSupported);
   const networkIcon = getNetworkIcon(networkConfiguration);
@@ -110,6 +112,8 @@ export const AccountNetwork = ({
           <Preloader size={12} />
         </Box>
       ) : (
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         <ButtonLink onClick={onSwitch} data-testid={`switch_account-${name}`}>
           {t('switch')}
         </ButtonLink>
