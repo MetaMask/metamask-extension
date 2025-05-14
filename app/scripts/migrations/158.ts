@@ -1,36 +1,62 @@
+import { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
-type VersionedData = {
-  meta: { version: number };
-  data: Record<string, unknown>;
+export type VersionedData = {
+  meta: {
+    version: number;
+  };
+  data: {
+    UserStorageController?: Partial<UserStorageControllerState> & {
+      // These properties are not in the UserStorageControllerState type anymore
+      isProfileSyncingEnabled?: boolean;
+      isProfileSyncingUpdateLoading?: boolean;
+    };
+  };
 };
 
 export const version = 158;
 
-type TransactionStateEntry = {
-  transactions: unknown[];
-  next: string | null;
-  lastUpdated: number;
-};
+function transformState(state: VersionedData['data']) {
+  if (
+    !hasProperty(state, 'UserStorageController') ||
+    !isObject(state.UserStorageController)
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Invalid UserStorageController state: ${typeof state.UserStorageController}`,
+      ),
+    );
+    return state;
+  }
 
-type LegacyTransactionsState = {
-  [accountId: string]: TransactionStateEntry;
-};
+  if (hasProperty(state.UserStorageController, 'isProfileSyncingEnabled')) {
+    state.UserStorageController.isBackupAndSyncEnabled = Boolean(
+      state.UserStorageController.isProfileSyncingEnabled,
+    );
+    delete state.UserStorageController.isProfileSyncingEnabled;
+  }
 
-type NewTransactionsState = {
-  [accountId: string]: {
-    [chainId: string]: TransactionStateEntry;
-  };
-};
+  if (
+    hasProperty(state.UserStorageController, 'isProfileSyncingUpdateLoading')
+  ) {
+    state.UserStorageController.isBackupAndSyncUpdateLoading = Boolean(
+      state.UserStorageController.isProfileSyncingUpdateLoading,
+    );
+    delete state.UserStorageController.isProfileSyncingUpdateLoading;
+  }
+
+  return state;
+}
 
 /**
- * This migration transforms the MultichainTransactionsController state structure
- * to support per-chain transaction storage. It moves transactions from directly
- * under the account to be nested under the chainId (Solana in this case).
+ * This migration updates UserStorageController's state to replace the
+ * profile syncing state keys with the backup and sync ones.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to disk.
+ * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
+ * @param originalVersionedData.meta - State metadata.
+ * @param originalVersionedData.meta.version - The current state version.
+ * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
  * @returns Updated versioned MetaMask extension state.
  */
 export async function migrate(
@@ -40,54 +66,4 @@ export async function migrate(
   versionedData.meta.version = version;
   transformState(versionedData.data);
   return versionedData;
-}
-
-function transformState(
-  state: Record<string, unknown>,
-): Record<string, unknown> {
-  if (
-    !hasProperty(state, 'MultichainTransactionsController') ||
-    !isObject(state.MultichainTransactionsController)
-  ) {
-    return state;
-  }
-
-  const transactionsController = state.MultichainTransactionsController;
-
-  if (
-    !hasProperty(transactionsController, 'nonEvmTransactions') ||
-    !isObject(transactionsController.nonEvmTransactions)
-  ) {
-    return state;
-  }
-
-  const { nonEvmTransactions } = transactionsController;
-  const newNonEvmTransactions: NewTransactionsState = {};
-
-  // Migrate each account's transactions to the new nested structure
-  for (const [accountId, accountTransactions] of Object.entries(nonEvmTransactions as LegacyTransactionsState)) {
-    // If the account already has the new structure, meaning the accountTransactions
-    // doesn't have a direct transactions property, instead it has a chainId as a key,
-    // so we can skip it and continue to the next account
-    if (isObject(accountTransactions) && !Array.isArray(accountTransactions.transactions)) {
-      newNonEvmTransactions[accountId] = accountTransactions as any;
-      continue;
-    }
-
-    // Creates the new structure for this account
-    // Since we know the transactions are from Solana, we use the Solana chainId
-    // 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' is Solana mainnet (the only supported so far)
-    newNonEvmTransactions[accountId] = {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-        transactions: Array.isArray(accountTransactions.transactions) ? accountTransactions.transactions : [],
-        next: accountTransactions.next || null,
-        lastUpdated: typeof accountTransactions.lastUpdated === 'number' ? accountTransactions.lastUpdated : Date.now(),
-      },
-    };
-  }
-
-  // Update the state with the new structure
-  transactionsController.nonEvmTransactions = newNonEvmTransactions;
-
-  return state;
 }
