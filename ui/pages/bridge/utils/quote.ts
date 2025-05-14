@@ -1,12 +1,17 @@
 import { BigNumber } from 'bignumber.js';
-import { type QuoteResponse } from '@metamask/bridge-controller';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
-import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import {
+  type QuoteResponse,
   isSolanaChainId,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
+import type {
+  NetworkConfiguration,
+  AddNetworkFields,
+} from '@metamask/network-controller';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
+import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 
 export const formatTokenAmount = (
   locale: string,
@@ -52,10 +57,10 @@ export const isQuoteExpiredOrInvalid = ({
   isQuoteExpired,
   insufficientBal,
 }: {
-  activeQuote: any;
-  toToken: any;
-  toChain: any;
-  fromChain: any;
+  activeQuote: QuoteResponse | null;
+  toToken: BridgeToken | null;
+  toChain?: NetworkConfiguration | AddNetworkFields;
+  fromChain?: NetworkConfiguration;
   isQuoteExpired: boolean;
   insufficientBal?: boolean;
 }): boolean => {
