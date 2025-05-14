@@ -73,10 +73,10 @@ const saveSnapFiles = (
   version: string,
   data: { headers: Record<string, string>; body: Buffer },
 ) => {
-  const txtFilePath = path.join(SNAP_DIR, `${snapName}-${version}.txt`);
+  const txtFilePath = path.join(SNAP_DIR, `${snapName}@${version}.txt`);
   const headersFilePath = path.join(
     SNAP_DIR,
-    `${snapName}-${version}-headers.json`,
+    `${snapName}@${version}-headers.json`,
   );
 
   const relevantHeaders = {
@@ -115,7 +115,7 @@ const deleteOldSnapFiles = (
       errorMessage = error.message;
     }
     console.log(
-      `${YELLOW}Info: No existing versions of ${snapName} found to check for deletion, or error: ${errorMessage}${RESET}`,
+      `${YELLOW}Info: No existing versions of ${snapName} (using @version format) found to check for deletion, or error: ${errorMessage}${RESET}`,
     );
   }
 
@@ -125,11 +125,11 @@ const deleteOldSnapFiles = (
     );
     const txtFilePath = path.join(
       SNAP_DIR,
-      `${snapName}-${versionToDelete}.txt`,
+      `${snapName}@${versionToDelete}.txt`,
     );
     const headersFilePath = path.join(
       SNAP_DIR,
-      `${snapName}-${versionToDelete}-headers.json`,
+      `${snapName}@${versionToDelete}-headers.json`,
     );
 
     [txtFilePath, headersFilePath].forEach((filePathToDelete) => {

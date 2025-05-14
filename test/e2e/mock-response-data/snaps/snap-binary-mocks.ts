@@ -9,7 +9,7 @@ const NPM_REGISTRY_METAMASK_BASE_URL = 'https://registry.npmjs.org/@metamask';
 
 /**
  * Retrieves the latest version of a snap from the local file system based on its name prefix.
- * It looks for files named `<snapNamePrefix>-<version>.txt`, collects all versions,
+ * It looks for files named `<snapNamePrefix>@<version>.txt`, collects all versions,
  * sorts them semantically, and returns the latest one.
  *
  * @param snapNamePrefix - The prefix of the snap name (e.g., 'bip32-example-snap').
@@ -20,7 +20,7 @@ export function getLocalSnapLatestVersion(snapNamePrefix: string): string {
   const files = fs.readdirSync(SNAP_ASSETS_RELATIVE_PATH);
   const sanitizedSnapNamePrefix = escapeRegExp(snapNamePrefix);
   const versionRegex = new RegExp(
-    `${sanitizedSnapNamePrefix}-(\\d+\\.\\d+\\.\\d+)\\.txt`,
+    `${sanitizedSnapNamePrefix}@(\\d+\\.\\d+\\.\\d+)\\.txt`,
     'u',
   );
   const foundVersions: string[] = [];
@@ -33,7 +33,7 @@ export function getLocalSnapLatestVersion(snapNamePrefix: string): string {
 
   if (foundVersions.length === 0) {
     throw new Error(
-      `No version found for snap "${snapNamePrefix}" in directory "${SNAP_ASSETS_RELATIVE_PATH}".`,
+      `No version found for snap "${snapNamePrefix}" (using @version format) in directory "${SNAP_ASSETS_RELATIVE_PATH}".`,
     );
   }
 
@@ -61,8 +61,8 @@ async function createSnapMock(options: {
 }) {
   const { mockServer, snapNamePrefix, specificVersion } = options;
   const VERSION = specificVersion ?? getLocalSnapLatestVersion(snapNamePrefix);
-  const SNAP_PATH = `${SNAP_ASSETS_RELATIVE_PATH}/${snapNamePrefix}-${VERSION}.txt`;
-  const SNAP_HEADERS_PATH = `${SNAP_ASSETS_RELATIVE_PATH}/${snapNamePrefix}-${VERSION}-headers.json`;
+  const SNAP_PATH = `${SNAP_ASSETS_RELATIVE_PATH}/${snapNamePrefix}@${VERSION}.txt`;
+  const SNAP_HEADERS_PATH = `${SNAP_ASSETS_RELATIVE_PATH}/${snapNamePrefix}@${VERSION}-headers.json`;
 
   return mockServer
     .forGet(
