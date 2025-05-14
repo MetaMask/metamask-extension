@@ -167,6 +167,9 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
+        style={{
+          overflow: 'hidden',
+        }}
         className={classnames({
           'snap-ui-renderer__field': label !== undefined,
         })}

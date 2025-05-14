@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.17.2",
+  "version": "12.17.3",
   "private": true,
   "repository": {
     "type": "git",
@@ -269,7 +269,7 @@
     "@metamask/base-controller": "^8.0.0",
     "@metamask/bitcoin-wallet-snap": "^0.12.1",
     "@metamask/bridge-controller": "^20.0.0",
-    "@metamask/bridge-status-controller": "^17.0.1",
+    "@metamask/bridge-status-controller": "^20.0.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
@@ -334,7 +334,7 @@
     "@metamask/snaps-utils": "^9.2.2",
     "@metamask/solana-wallet-snap": "^1.28.3",
     "@metamask/solana-wallet-standard": "^0.4.1",
-    "@metamask/transaction-controller": "^54.3.0",
+    "@metamask/transaction-controller": "^55.0.2",
     "@metamask/user-operation-controller": "^31.0.0",
     "@metamask/utils": "^11.1.0",
     "@ngraveio/bc-ur": "^1.1.13",
