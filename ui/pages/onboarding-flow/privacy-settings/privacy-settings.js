@@ -7,7 +7,6 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
-
 import { useBackupAndSync } from '../../../hooks/identity/useBackupAndSync';
 import {
   MetaMetricsEventCategory,
@@ -59,7 +58,6 @@ import {
   setUse4ByteResolution,
   setUseTokenDetection,
   setUseAddressBarEnsResolution,
-  showModal,
   toggleNetworkMenu,
   setUseTransactionSimulations,
   setUseExternalNameSources,
@@ -74,6 +72,7 @@ import {
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
+import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
@@ -174,24 +173,6 @@ export default function PrivacySettings() {
     });
 
     history.push(ONBOARDING_COMPLETION_ROUTE);
-  };
-
-  const handleProfileSyncToggleSetValue = async () => {
-    if (isBackupAndSyncEnabled) {
-      dispatch(
-        showModal({
-          name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
-          turnOffProfileSyncing: () => {
-            setIsBackupAndSyncFeatureEnabled(
-              BACKUPANDSYNC_FEATURES.main,
-              false,
-            );
-          },
-        }),
-      );
-    } else {
-      setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);
-    }
   };
 
   const handleIPFSChange = (url) => {
@@ -417,23 +398,7 @@ export default function PrivacySettings() {
                     ])}
                   />
 
-                  <Setting
-                    dataTestId="profile-sync-toggle"
-                    disabled={!externalServicesOnboardingToggleState}
-                    value={isBackupAndSyncEnabled}
-                    setValue={handleProfileSyncToggleSetValue}
-                    title={t('profileSync')}
-                    description={t('profileSyncDescription', [
-                      <a
-                        href="https://support.metamask.io/privacy-and-security/profile-privacy"
-                        key="link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {t('profileSyncPrivacyLink')}
-                      </a>,
-                    ])}
-                  />
+                  <BackupAndSyncToggle />
 
                   {backupAndSyncError && (
                     <Box paddingBottom={4}>
@@ -459,7 +424,7 @@ export default function PrivacySettings() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            ,{t('privacyMsg')}
+                            {t('privacyMsg')}
                           </a>,
                           <a
                             href={ZENDESK_URLS.ADD_SOLANA_ACCOUNTS}

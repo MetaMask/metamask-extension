@@ -200,6 +200,7 @@ const getFilteredTransactionGroupsAllChains = (
 const groupTransactionsByDate = (
   transactionGroups,
   getTransactionTimestamp,
+  shouldSort = true,
 ) => {
   const groupedTransactions = [];
 
@@ -217,12 +218,14 @@ const groupTransactionsByDate = (
 
     if (existingGroup) {
       existingGroup.transactionGroups.push(transactionGroup);
-      // Sort transactions within the group by timestamp (newest first)
-      existingGroup.transactionGroups.sort((a, b) => {
-        const aTime = getTransactionTimestamp(a);
-        const bTime = getTransactionTimestamp(b);
-        return bTime - aTime; // Descending order (newest first)
-      });
+      if (shouldSort) {
+        // Sort transactions within the group by timestamp (newest first)
+        existingGroup.transactionGroups.sort((a, b) => {
+          const aTime = getTransactionTimestamp(a);
+          const bTime = getTransactionTimestamp(b);
+          return bTime - aTime; // Descending order (newest first)
+        });
+      }
     } else {
       groupedTransactions.push({
         date,
@@ -230,8 +233,10 @@ const groupTransactionsByDate = (
         transactionGroups: [transactionGroup],
       });
     }
-    // Sort date groups by timestamp (newest first)
-    groupedTransactions.sort((a, b) => b.dateMillis - a.dateMillis);
+    if (shouldSort) {
+      // Sort date groups by timestamp (newest first)
+      groupedTransactions.sort((a, b) => b.dateMillis - a.dateMillis);
+    }
   });
 
   return groupedTransactions;
@@ -241,6 +246,7 @@ const groupEvmTransactionsByDate = (transactionGroups) =>
   groupTransactionsByDate(
     transactionGroups,
     (transactionGroup) => transactionGroup.primaryTransaction.time,
+    false, // maintains nonce ordering for EVM
   );
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -248,6 +254,7 @@ const groupNonEvmTransactionsByDate = (nonEvmTransactions) =>
   groupTransactionsByDate(
     nonEvmTransactions?.transactions,
     (transaction) => transaction.timestamp * 1000,
+    true, // timestamp sorting for non-EVM
   );
 
 /**
