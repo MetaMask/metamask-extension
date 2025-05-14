@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import zxcvbn from 'zxcvbn';
 import {
   Box,
@@ -192,10 +191,3 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
     </Box>
   );
 }
-
-PasswordForm.propTypes = {
-  /**
-   * Only returns a valid password or empty string
-   */
-  onChange: PropTypes.func.isRequired,
-};
