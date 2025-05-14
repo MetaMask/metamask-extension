@@ -44,6 +44,7 @@ import {
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
+import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
   // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
@@ -98,7 +99,8 @@ export const BridgeInputGroup = ({
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  const selectedChainId = networkProps?.network?.chainId;
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
   const balanceAmount = useLatestBalance(token);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
