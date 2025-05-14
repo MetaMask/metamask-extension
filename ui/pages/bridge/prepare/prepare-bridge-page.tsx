@@ -538,7 +538,10 @@ const PrepareBridgePage = () => {
             };
             dispatch(setFromToken(bridgeToken));
             dispatch(setFromTokenInputValue(null));
-            if (token.address === toToken?.address) {
+            if (
+              token.address === toToken?.address ||
+              token.assetId === toToken?.assetId
+            ) {
               dispatch(setToToken(null));
             }
             bridgeToken.address &&
