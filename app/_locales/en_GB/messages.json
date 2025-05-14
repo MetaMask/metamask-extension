@@ -1441,6 +1441,9 @@
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
+  "copyAddressShort": {
+    "message": "Copy address"
+  },
   "copyPrivateKey": {
     "message": "Copy private key"
   },
@@ -6045,7 +6048,7 @@
     "message": "Quotes timeout"
   },
   "swapQuotesNotAvailableDescription": {
-    "message": "Reduce the size of your trade or use a different token."
+    "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "Try adjusting the amount or slippage settings and try again."
