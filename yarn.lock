@@ -30348,7 +30348,7 @@ __metadata:
     react-devtools: "npm:^4.11.0"
     react-dom: "npm:^17.0.2"
     react-focus-lock: "npm:^2.9.4"
-    react-idle-timer: "npm:^5.7.2"
+    react-idle-timer: "npm:^4.2.5"
     react-markdown: "npm:^6.0.3"
     react-popper: "npm:^2.2.3"
     react-redux: "npm:^7.2.9"
@@ -34830,13 +34830,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-idle-timer@npm:^5.7.2":
-  version: 5.7.2
-  resolution: "react-idle-timer@npm:5.7.2"
+"react-idle-timer@npm:^4.2.5":
+  version: 4.6.4
+  resolution: "react-idle-timer@npm:4.6.4"
   peerDependencies:
+    prop-types: ">=15"
     react: ">=16"
     react-dom: ">=16"
-  checksum: 10/271c9320579da888ea61b3e0c2d44bbd9741ad823e0a0bb1256475a225f1b36f27bdfa6af8f5f089f6c2a5c96062bc268f68e06b206bd7ee832d29521f2e25a9
+  checksum: 10/11857c0eb593a02f51c85e5fcaee0e9308d4717044637a54c7b2fb387d918a7f44ca64a82065827195a235bbfd3dab9660fefaecd4f3ad8f503909d34ca35ef1
   languageName: node
   linkType: hard
 
