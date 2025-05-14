@@ -3288,7 +3288,7 @@
     "message": "Cannot send negative or zero amounts of asset."
   },
   "network": {
-    "message": "Network:"
+    "message": "Network"
   },
   "networkChanged": {
     "message": "Network changed"
