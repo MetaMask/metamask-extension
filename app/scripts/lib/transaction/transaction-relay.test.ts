@@ -43,7 +43,7 @@ describe('Transaction Relay Utils', () => {
     fetchMock.mockResolvedValueOnce({
       json: async () => ({
         1: {
-          confirmations: true,
+          relayTransactions: true,
           network: 'test',
         },
       }),

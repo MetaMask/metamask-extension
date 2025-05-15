@@ -30,12 +30,12 @@ export type RelayWaitResponse = {
 
 export enum RelayStatus {
   Pending = 'PENDING',
-  Success = 'SUCCESS',
+  Success = 'VALIDATED',
 }
 
 type RelayNetwork = {
   network: string;
-  confirmations: boolean;
+  relayTransactions: boolean;
 };
 
 type RelayNetworkResponse = {
@@ -133,7 +133,7 @@ async function getRelayUrl(chainId: Hex): Promise<string | undefined> {
   const chainIdDecimal = hexToDecimal(chainId);
   const network = networkData[chainIdDecimal];
 
-  if (!network?.confirmations) {
+  if (!network?.relayTransactions) {
     log('Chain is not supported', chainId);
     return undefined;
   }
