@@ -73,17 +73,10 @@ describe('Multichain API', function () {
                 `[data-testid="invoke-method-${scope}-btn"]`,
               );
 
-              const resultElement = await driver.findElement(
-                `#invoke-method-${escapeColon(scope)}-${invokeMethod}-result-0`,
-              );
-
-              const result = await resultElement.getText();
-
-              assert.strictEqual(
-                result,
-                `"${EXPECTED_RESULTS[scope]}"`,
-                `${scope} method ${invokeMethod} expected "${EXPECTED_RESULTS[scope]}", got ${result} instead`,
-              );
+              await driver.waitForSelector({
+                css: `[id="invoke-method-${scope}-${invokeMethod}-result-0"]`,
+                text: `"${EXPECTED_RESULTS[scope]}"`,
+              });
             }
           },
         );
@@ -201,7 +194,7 @@ describe('Multichain API', function () {
             for (let i = 0; i < totalNumberOfScopes; i++) {
               await driver.delay(largeDelayMs);
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-              await driver.clickElementAndWaitForWindowToClose({
+              await driver.clickElement({
                 text: 'Confirm',
                 tag: 'button',
               });
