@@ -48,7 +48,7 @@ export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   if (firstTimeFlowType === FirstTimeFlowType.create) {
     return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
-    return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
+    return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_SECURE_YOUR_WALLET_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.social) {
