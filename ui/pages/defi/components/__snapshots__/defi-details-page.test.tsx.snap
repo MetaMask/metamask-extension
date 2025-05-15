@@ -30,7 +30,6 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
       </h2>
       <div
         class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"
-        data-testid="defi-details-page-protocol-badge"
         style="align-self: center;"
       >
         <div

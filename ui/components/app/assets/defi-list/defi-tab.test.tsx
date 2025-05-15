@@ -107,15 +107,19 @@ describe('DefiList', () => {
     });
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId('defi-list-protocol-badge'),
-      ).toBeInTheDocument();
+      const image = screen.getByAltText('stETH logo');
+
+
       expect(screen.getByTestId('defi-list-market-value')).toHaveTextContent(
         '$20,000.00',
       );
-      expect(screen.getByTestId('defi-list-symbol-group')).toHaveTextContent(
-        'stETH only',
+
+      expect(image).toBeInTheDocument();
+      expect(image).toHaveAttribute(
+        'src',
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png',
       );
+
       expect(screen.getByTestId('avatar-group')).toBeInTheDocument();
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
       expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
@@ -167,12 +171,8 @@ describe('DefiList', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('defi-tab-no-positions')).toHaveTextContent(
-        'No positions yet',
-      );
-      expect(screen.getByTestId('defi-tab-no-positions')).toHaveTextContent(
-        'Start earning',
-      );
+      expect(screen.queryByText('No positions yet')).toBeInTheDocument();
+      expect(screen.queryByText('Start earning')).toBeInTheDocument();
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
       expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
 

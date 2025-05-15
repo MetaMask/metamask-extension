@@ -23,13 +23,7 @@ type AssetCellBadgeProps = {
 };
 
 export const AssetCellBadge = React.memo(
-  ({
-    chainId,
-    isNative,
-    tokenImage,
-    symbol,
-    ...restProps
-  }: AssetCellBadgeProps) => {
+  ({ chainId, isNative, tokenImage, symbol }: AssetCellBadgeProps) => {
     const isEvm = useSelector(getMultichainIsEvm);
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
@@ -52,7 +46,6 @@ export const AssetCellBadge = React.memo(
         }
         marginRight={4}
         style={{ alignSelf: 'center' }}
-        {...restProps}
       >
         <AvatarToken
           name={symbol}
