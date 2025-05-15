@@ -44,8 +44,10 @@ describe('Multichain API', function () {
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
-            await driver.delay(largeDelayMs);
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
@@ -171,9 +173,10 @@ describe('Multichain API', function () {
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
-
-            await driver.delay(largeDelayMs);
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
@@ -198,13 +201,12 @@ describe('Multichain API', function () {
             for (let i = 0; i < totalNumberOfScopes; i++) {
               await driver.delay(largeDelayMs);
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-              await driver.clickElement({
+              await driver.clickElementAndWaitForWindowToClose({
                 text: 'Confirm',
                 tag: 'button',
               });
             }
 
-            await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
