@@ -133,4 +133,32 @@ describe('useCurrencyRatePolling', () => {
     expect(currencyRateStartPolling).toHaveBeenCalledTimes(0);
     expect(currencyRateStopPollingByPollingToken).toHaveBeenCalledTimes(0);
   });
+
+  it('should not poll when native token does not match ticker', async () => {
+    const state = {
+      metamask: {
+        isUnlocked: true,
+        completedOnboarding: true,
+        useCurrencyRateCheck: true,
+        selectedNetworkClientId: 'selectedNetworkClientId',
+        networkConfigurationsByChainId: {
+          '0x1': {
+            nativeCurrency: 'BTC', // Invalid Currency
+            chainId: '0x1',
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [{ networkClientId: 'selectedNetworkClientId' }],
+          },
+        },
+      },
+    };
+
+    renderHookWithProvider(() => useCurrencyRatePolling(), state);
+
+    // Wait for the asynchronous effect(s) to complete.
+    await new Promise((r) => setTimeout(r, 0));
+    await Promise.all(mockPromises);
+
+    expect(currencyRateStartPolling).toHaveBeenCalledTimes(0);
+    expect(currencyRateStopPollingByPollingToken).toHaveBeenCalledTimes(0);
+  });
 });

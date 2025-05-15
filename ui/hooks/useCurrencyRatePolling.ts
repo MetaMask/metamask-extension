@@ -25,23 +25,17 @@ const useCurrencyRatePolling = () => {
 
   useEffect(() => {
     const fetchNativeCurrencies = async () => {
-      const currencyRateCheckPromises = Object.values(
-        networkConfigurations,
-      ).map(async (n) => {
-        const isOriginal = await isOriginalNativeTokenSymbol({
-          ticker: n.nativeCurrency,
-          chainId: n.chainId,
-        });
-        return isOriginal && chainIds.includes(n.chainId)
-          ? n.nativeCurrency
-          : null;
-      });
-
-      // Wait for all asynchronous calls to complete.
       const nativeCurrenciesArray = await Promise.all(
-        currencyRateCheckPromises,
+        Object.values(networkConfigurations).map(async (n) => {
+          const isOriginal = await isOriginalNativeTokenSymbol({
+            ticker: n.nativeCurrency,
+            chainId: n.chainId,
+          }).catch(() => false);
+          return isOriginal && chainIds.includes(n.chainId)
+            ? n.nativeCurrency
+            : null;
+        }),
       );
-      console.log('nativeCurrenciesArray ***********', nativeCurrenciesArray);
 
       // Use a type predicate to filter out null values.
       const filteredCurrencies = nativeCurrenciesArray.filter(
