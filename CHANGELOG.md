@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unify confirmation page styles and responsive behavior ([#31454](https://github.com/MetaMask/metamask-extension/pull/31454))
 - Integrate @metamask/bridge-status-controller@^14.0.0 and replace existing BridgeStatusController instance ([#31907](https://github.com/MetaMask/metamask-extension/pull/31907))
 - Add RPC (sub)domain tracking to transaction event metrics for RPC endpoints usage ([#32076](https://github.com/MetaMask/metamask-extension/pull/32076))
+- Integrate dynamic content banners ([#32101](https://github.com/MetaMask/metamask-extension/pull/32101))
 
 ### Changed
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
