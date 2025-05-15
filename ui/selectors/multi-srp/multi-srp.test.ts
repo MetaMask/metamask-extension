@@ -92,14 +92,26 @@ const generateMockState = ({
         {
           type: KeyringTypes.hd,
           accounts: [mockHdAccount.address],
+          metadata: {
+            id: mockKeyringId,
+            name: '',
+          },
         },
         {
           type: KeyringTypes.hd,
           accounts: [mockHdAccountFromSecondSrp.address],
+          metadata: {
+            id: mockKeyringIdFromSecondSrp,
+            name: '',
+          },
         },
         {
           type: KeyringTypes.simple,
           accounts: [mockPrivateKeyAccount.address],
+          metadata: {
+            id: mockKeyringIdForPrivateKeyAccount,
+            name: '',
+          },
         },
         {
           type: KeyringTypes.snap,
@@ -107,24 +119,10 @@ const generateMockState = ({
             mockSnapAccount.address,
             mockThirdPartySnapAccount.address,
           ],
-        },
-      ],
-      keyringsMetadata: [
-        {
-          id: mockKeyringId,
-          name: '',
-        },
-        {
-          id: mockKeyringIdFromSecondSrp,
-          name: '',
-        },
-        {
-          id: mockKeyringIdForPrivateKeyAccount,
-          name: '',
-        },
-        {
-          id: mockSnapKeyringId,
-          name: '',
+          metadata: {
+            id: mockSnapKeyringId,
+            name: '',
+          },
         },
       ],
       seedPhraseBackedUp,

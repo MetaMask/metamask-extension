@@ -65,6 +65,7 @@ import {
   getOrderedNetworksList,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
+  getIsAccessedFromDappConnectedSitePopover,
   getAllDomains,
   getPermittedEVMChainsForSelectedTab,
   getPermittedEVMAccountsForSelectedTab,
@@ -141,7 +142,11 @@ export enum ACTION_MODE {
   ADD_NON_EVM_ACCOUNT,
 }
 
-export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
+type NetworkListMenuProps = {
+  onClose: () => void;
+};
+
+export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -155,6 +160,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const isAddingNewNetwork = useSelector(getIsAddingNewNetwork);
   const isMultiRpcOnboarding = useSelector(getIsMultiRpcOnboarding);
+  const isAccessedFromDappConnectedSitePopover = useSelector(
+    getIsAccessedFromDappConnectedSitePopover,
+  );
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
@@ -184,6 +192,12 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
+  const canSelectNetwork: boolean =
+    !process.env.REMOVE_GNS ||
+    (Boolean(process.env.REMOVE_GNS) &&
+      Boolean(selectedTabOrigin) &&
+      Boolean(domains[selectedTabOrigin]) &&
+      isAccessedFromDappConnectedSitePopover);
 
   useEffect(() => {
     endTrace({ name: TraceName.NetworkList });
@@ -194,7 +208,7 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
     if (namespace === KnownCaipNamespace.Eip155) {
       return TEST_CHAINS.includes(convertCaipToHexChainId(currentChainId));
     }
-    return false;
+    return NON_EVM_TESTNET_IDS.includes(currentChainId);
   }, [currentChainId]);
 
   const [nonTestNetworks, testNetworks] = useMemo(
@@ -439,9 +453,14 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
   );
 
   const isNetworkEnabled = useCallback(
-    (network: MultichainNetworkConfiguration): boolean =>
-      network.isEvm || isUnlocked || hasAnyAccountsInNetwork(network.chainId),
-    [hasAnyAccountsInNetwork, isUnlocked],
+    (network: MultichainNetworkConfiguration): boolean => {
+      return (
+        network.isEvm ||
+        completedOnboarding ||
+        hasAnyAccountsInNetwork(network.chainId)
+      );
+    },
+    [hasAnyAccountsInNetwork, completedOnboarding],
   );
 
   const getItemCallbacks = useCallback(
@@ -529,22 +548,27 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
         name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
-        selected={isCurrentNetwork && !focusSearch}
-        focus={isCurrentNetwork && !focusSearch}
+        selected={canSelectNetwork && isCurrentNetwork && !focusSearch}
+        focus={canSelectNetwork && isCurrentNetwork && !focusSearch}
         rpcEndpoint={
           hasMultiRpcOptions(network)
             ? getRpcDataByChainId(network.chainId, evmNetworks)
                 .defaultRpcEndpoint
             : undefined
         }
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={async () => {
-          await handleNetworkChange(network.chainId);
+          if (canSelectNetwork) {
+            await handleNetworkChange(network.chainId);
+          }
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
         onRpcEndpointClick={onRpcConfigEdit}
         disabled={!isNetworkEnabled(network)}
+        notSelectable={!canSelectNetwork}
       />
     );
   };
@@ -559,7 +583,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
               setSearchQuery={setSearchQuery}
               setFocusSearch={setFocusSearch}
             />
-            {completedOnboarding &&
+            {!process.env.REMOVE_GNS &&
+              completedOnboarding &&
               !onboardedInThisUISession &&
               showNetworkBanner &&
               !searchQuery && (
@@ -583,6 +608,8 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
                       />
                     </Box>
                   }
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClose={() => hideNetworkBanner()}
                   description={t('dragAndDropBanner')}
                 />
@@ -767,7 +794,9 @@ export const NetworkListMenu = ({ onClose }: { onClose: () => void }) => {
 
   let title;
   if (actionMode === ACTION_MODE.LIST) {
-    title = t('networkMenuHeading');
+    title = process.env.REMOVE_GNS
+      ? t('manageNetworksMenuHeading')
+      : t('networkMenuHeading');
   } else if (actionMode === ACTION_MODE.ADD_EDIT && !editedNetwork) {
     title = t('addACustomNetwork');
   } else if (actionMode === ACTION_MODE.ADD_RPC) {
