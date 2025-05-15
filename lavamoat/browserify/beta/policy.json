@@ -2051,8 +2051,7 @@
     },
     "@metamask/keyring-controller": {
       "globals": {
-        "console.error": true,
-        "console.log": true
+        "console.error": true
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
@@ -2064,6 +2063,7 @@
         "@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "lodash": true,
         "@metamask/keyring-controller>ulid": true
       }
     },
