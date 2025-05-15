@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
-import { useMemo } from 'react';
+import { type BigNumber } from 'bignumber.js';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -12,7 +11,6 @@ import {
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { useMultichainSelector } from '../useMultichainSelector';
 import { useIsMultichainSwap } from '../../pages/bridge/hooks/useIsMultichainSwap';
-import { BigNumber } from 'bignumber.js';
 
 export const useIsTxSubmittable = (
   nativeAssetBalance?: BigNumber,
@@ -31,11 +29,6 @@ export const useIsTxSubmittable = (
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
   } = useSelector(getValidationErrors);
-
-  const nativeAsset = useMemo(
-    () => getNativeAssetForChainId(fromChainId),
-    [fromChainId],
-  );
 
   return Boolean(
     fromToken &&
