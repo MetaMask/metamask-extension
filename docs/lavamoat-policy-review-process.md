@@ -48,3 +48,15 @@ When there's a need to change policy (because of new or updated packages that re
 ### (optional) Phase 3: L2 Security Reviewer:
 
 1.  Review the dependency in question and inform the PR reviewers whether it’s deemed malicious or safe.
+
+1. This is a numbered list example (one space after the period before the letter T).
+   This sentence is indented three spaces.
+   This code block is indented three spaces.
+
+- This is a bulleted list example (one space after the bullet before the letter T).
+  This sentence is indented two spaces.
+  > [!TIP]
+  > This tip is indented two spaces.
+  - This is a second-level bullet (indented two spaces, with one space after the bullet before the letter T).
+    This sentence is indented four spaces.
+    > This quote block is indented four spaces.
