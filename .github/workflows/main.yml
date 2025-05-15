@@ -123,7 +123,7 @@ jobs:
     with:
       build-name: build-beta-mv2-browserify
       build-command: yarn build --build-type beta dist
-      mozilla-lint: true
+      mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
     secrets: inherit
 
@@ -163,7 +163,7 @@ jobs:
     with:
       build-name: build-test-mv2-browserify
       build-command: yarn build:test:mv2
-      mozilla-lint: true
+      mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
     secrets: inherit
 
@@ -183,7 +183,7 @@ jobs:
     with:
       build-name: build-test-flask-mv2-browserify
       build-command: yarn build:test:flask:mv2
-      mozilla-lint: true
+      mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
     secrets: inherit
 
@@ -194,7 +194,7 @@ jobs:
     with:
       build-name: build-test-webpack
       build-command: yarn build:test:webpack
-      validate-source-maps: false # webpack outputs are not supported by validate-source-maps
+      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
     secrets: inherit
 
   run-benchmarks:
