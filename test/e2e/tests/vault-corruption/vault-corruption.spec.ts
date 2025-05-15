@@ -16,14 +16,14 @@ describe('Vault Corruption', function () {
    *
    * @param code - The code to run after the primary database has been broken.
    */
-  const makeScript = (code: string) => `return new Promise((resolve) => {
-    const browser =  globalThis.browser||chrome;
+  const makeScript = (code: string) => `
+    const callback = arguments[arguments.length - 1];
+    const browser =  globalThis.browser ?? globalThis.chrome;
     browser.storage.local.get(({ data, meta }) => {
       delete data.KeyringController;
       browser.storage.local.set({ data: data, meta }, () => {
         ${code}
       });
-    });
   });`;
 
   /**
@@ -31,7 +31,7 @@ describe('Vault Corruption', function () {
    */
   const breakPrimaryOnlyScript = makeScript(`
     browser.runtime.reload();
-    resolve();
+    callback();
   `);
 
   /**
@@ -51,7 +51,7 @@ describe('Vault Corruption', function () {
       store.delete('KeyringController');
       transaction.oncomplete = () => {
         browser.runtime.reload();
-        resolve();
+        callback();
       };
     };`);
 
@@ -116,7 +116,7 @@ describe('Vault Corruption', function () {
       await driver.navigate(PAGES.BACKGROUND, { waitForControllers: false });
     }
 
-    await driver.executeScript(script);
+    await driver.executeAsyncScript(script);
 
     await driver.driver.switchTo().window(initialWindow);
 
