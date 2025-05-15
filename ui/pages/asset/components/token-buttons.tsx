@@ -27,6 +27,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getNetworkConfigurationIdByChainId,
   getSelectedInternalAccount,
+  getSelectedMultichainNetworkConfiguration,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
@@ -61,10 +62,7 @@ import {
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../selectors/multichain';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
@@ -95,8 +93,9 @@ const TokenButtons = ({
 
   const account = useSelector(getSelectedInternalAccount, isEqual);
 
-  const { chainId: multichainChainId } =
-    useMultichainSelector(getMultichainNetwork);
+  const { chainId: multichainChainId } = useSelector(
+    getSelectedMultichainNetworkConfiguration,
+  );
 
   const currentChainId = useSelector(getCurrentChainId);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
@@ -107,7 +106,9 @@ const TokenButtons = ({
     getIsSwapsChain(state, isEvm ? currentChainId : multichainChainId),
   );
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const isBridgeChain = useSelector(getIsBridgeChain);
+  const isBridgeChain = useSelector((state) =>
+    getIsBridgeChain(state, isEvm ? currentChainId : multichainChainId),
+  );
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
@@ -296,7 +297,7 @@ const TokenButtons = ({
           className="token-overview__button"
           Icon={
             <Icon
-              name={IconName.PlusMinus}
+              name={IconName.PlusAndMinus}
               color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
@@ -327,40 +328,39 @@ const TokenButtons = ({
         disabled={token.isERC721}
         tooltipRender={null}
       />
-      {isSwapsChain && (
+
+      <IconButton
+        className="token-overview__button"
+        Icon={
+          <Icon
+            name={IconName.SwapHorizontal}
+            color={IconColor.iconDefault}
+            size={IconSize.Sm}
+          />
+        }
+        onClick={handleSwapOnClick}
+        label={t('swap')}
+        tooltipRender={null}
+        disabled={!isSwapsChain}
+      />
+
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className="token-overview__button"
+          data-testid="token-overview-bridge"
           Icon={
             <Icon
-              name={IconName.SwapHorizontal}
+              name={IconName.Bridge}
               color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
           }
-          onClick={handleSwapOnClick}
-          label={t('swap')}
+          label={t('bridge')}
+          onClick={() => handleBridgeOnClick(false)}
           tooltipRender={null}
+          disabled={!isBridgeChain}
         />
-      )}
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        isBridgeChain && (
-          <IconButton
-            className="token-overview__button"
-            data-testid="token-overview-bridge"
-            Icon={
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            }
-            label={t('bridge')}
-            onClick={() => handleBridgeOnClick(false)}
-            tooltipRender={null}
-          />
-        )
         ///: END:ONLY_INCLUDE_IF
       }
     </Box>

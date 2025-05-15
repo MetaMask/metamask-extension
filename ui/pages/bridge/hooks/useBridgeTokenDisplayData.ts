@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';

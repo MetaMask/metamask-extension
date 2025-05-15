@@ -11,6 +11,7 @@ import {
   getTokenList,
   getPreferences,
   getCurrencyRates,
+  getUseCurrencyRateCheck,
 } from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -150,6 +151,9 @@ describe('Token Cell', () => {
     }
     if (selector === getCurrencyRates) {
       return { POL: '' };
+    }
+    if (selector === getUseCurrencyRateCheck) {
+      return true;
     }
     return undefined;
   });

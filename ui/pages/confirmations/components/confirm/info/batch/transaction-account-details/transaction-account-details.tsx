@@ -38,22 +38,26 @@ export function TransactionAccountDetails() {
           <ConfirmInfoRowAddress chainId={chainId} address={from} />
         </ConfirmInfoRow>
       )}
+      {isUpgradeOnly && (
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.AccountTypeUpgrade}
+          label={t('confirmInfoAccountNow')}
+          ownerId={id}
+        >
+          <ConfirmInfoRowText
+            text={t('confirmAccountTypeStandard')}
+            data-testid="tx-type"
+          />
+        </ConfirmInfoAlertRow>
+      )}
       {isUpgrade && (
-        <>
-          <ConfirmInfoAlertRow
-            alertKey={RowAlertKey.AccountTypeUpgrade}
-            label={t('confirmInfoAccountNow')}
-            ownerId={id}
-          >
-            <ConfirmInfoRowText
-              text={t('confirmAccountTypeStandard')}
-              data-testid="tx-type"
-            />
-          </ConfirmInfoAlertRow>
-          <ConfirmInfoRow label={t('confirmInfoSwitchingTo')}>
-            <ConfirmInfoRowText text={t('confirmAccountTypeSmartContract')} />
-          </ConfirmInfoRow>
-        </>
+        <ConfirmInfoAlertRow
+          alertKey={isUpgradeOnly ? '' : RowAlertKey.AccountTypeUpgrade}
+          label={t('confirmInfoSwitchingTo')}
+          ownerId={isUpgradeOnly ? '' : id}
+        >
+          <ConfirmInfoRowText text={t('confirmAccountTypeSmartContract')} />
+        </ConfirmInfoAlertRow>
       )}
       {isDowngrade && (
         <>

@@ -22,14 +22,6 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
         };
       }),
     await mockServer
-      .forGet('https://bridge.api.cx.metamask.io/getAllFeatureFlags')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [{ fakedata: true }],
-        };
-      }),
-    await mockServer
       .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
       .thenCallback(() => {
         return {

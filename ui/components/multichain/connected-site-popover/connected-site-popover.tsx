@@ -92,11 +92,19 @@ export const ConnectedSitePopover = ({
                 }
               />
               <ButtonLink
-                onClick={() => dispatch(toggleNetworkMenu())}
                 size={ButtonLinkSize.Sm}
                 textProps={{
                   variant: TextVariant.bodySm,
                 }}
+                onClick={() =>
+                  dispatch(
+                    toggleNetworkMenu({
+                      isAccessedFromDappConnectedSitePopover: true,
+                      isAddingNewNetwork: false,
+                      isMultiRpcOnboarding: false,
+                    }),
+                  )
+                }
               >
                 {currentNetwork?.nickname}
               </ButtonLink>

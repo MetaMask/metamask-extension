@@ -76,8 +76,10 @@ async function main() {
         });
         const buffer = Buffer.from(response.data as ArrayBuffer);
         const zip = await unzipper.Open.buffer(buffer);
-        const file = zip.files.find((file) => file.path === 'test-runs.json');
-        if (!file) throw new Error(`'test-runs.json' file in zip not found!`);
+        const file = zip.files.find((file) =>
+          file.path.startsWith('test-runs'),
+        );
+        if (!file) throw new Error(`test-runs file in zip not found!`);
         const content = await file.buffer();
         return JSON.parse(content.toString());
       }),
@@ -124,7 +126,9 @@ async function main() {
       }
       return summary;
     }, {}),
-  ).sort((a, b) => b.count - a.count);
+  )
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
 
   const options = { year: 'numeric', month: 'long', day: 'numeric' } as const;
   const fromDateString = from.toLocaleDateString('en-US', options);
@@ -137,7 +141,7 @@ async function main() {
   branchUrl.pathname += `/tree/${env.BRANCH}`;
 
   console.log(
-    `❌ Failed tests on the ${env.REPOSITORY} repository ${env.BRANCH} branch from ${fromDateString} to ${toDateString}`,
+    `❌ Top 10 failed tests on the ${env.REPOSITORY} repository ${env.BRANCH} branch from ${fromDateString} to ${toDateString}`,
   );
   const blocks: AnyBlock[] = [
     {
@@ -152,7 +156,7 @@ async function main() {
             },
             {
               type: 'text',
-              text: ' Failed tests on the ',
+              text: ' Top 10 failed tests on the ',
             },
             {
               type: 'link',
@@ -170,7 +174,7 @@ async function main() {
             },
             {
               type: 'text',
-              text: ` branch from ${fromDateString} to ${toDateString} on GitHub Actions`,
+              text: ` branch from ${fromDateString} to ${toDateString}`,
             },
           ],
         },
