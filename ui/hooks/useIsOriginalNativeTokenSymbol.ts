@@ -5,15 +5,15 @@ import {
   getMultichainIsEvm,
   getMultichainCurrentNetwork,
 } from '../selectors/multichain';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+
 import { getValidUrl } from '../../app/scripts/lib/util';
 import { isOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
+import { CaipChainId, Hex } from '@metamask/utils';
 
 export function useIsOriginalNativeTokenSymbol(
-  chainId,
-  ticker,
-  type,
+  chainId: Hex | CaipChainId,
+  ticker: string,
+  type: string,
   rpcUrl = '',
 ) {
   const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(false);
@@ -21,22 +21,27 @@ export function useIsOriginalNativeTokenSymbol(
     useSafeChainsListValidationSelector,
   );
 
-  const isLocalhost = (urlString) => {
-    const url = getValidUrl(urlString);
-
-    return (
-      url !== null &&
-      (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
-    );
-  };
-
   const isEvm = useSelector(getMultichainIsEvm);
   const providerConfig = useSelector(getMultichainCurrentNetwork);
 
   useEffect(() => {
-    async function getNativeTokenSymbol(networkId) {
+    const isLocalhost = (urlString: string) => {
+      const url = getValidUrl(urlString);
+
+      return (
+        url !== null &&
+        (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
+      );
+    };
+
+    async function getNativeTokenSymbol(networkId: Hex | CaipChainId) {
       if (!isEvm) {
         setIsOriginalNativeSymbol(ticker === providerConfig?.ticker);
+        return;
+      }
+
+      if (!useSafeChainsListValidation) {
+        setIsOriginalNativeSymbol(true);
         return;
       }
 
@@ -67,7 +72,7 @@ export function useIsOriginalNativeTokenSymbol(
     rpcUrl,
     useSafeChainsListValidation,
     isEvm,
-    providerConfig,
+    providerConfig?.ticker,
   ]);
 
   return isOriginalNativeSymbol;

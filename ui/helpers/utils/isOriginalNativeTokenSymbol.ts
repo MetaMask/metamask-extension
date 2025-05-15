@@ -1,4 +1,4 @@
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
@@ -12,7 +12,7 @@ export const isOriginalNativeTokenSymbol = async ({
   chainId,
 }: {
   ticker: string;
-  chainId: Hex;
+  chainId: Hex | CaipChainId;
 }) => {
   try {
     const mappedCurrencySymbol =
