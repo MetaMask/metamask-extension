@@ -11,9 +11,11 @@ import {
 } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
+  tryUnlockMetamaskWithGlobalSeedlessPassword,
   markPasswordForgotten,
   forceUpdateMetamaskState,
 } from '../../store/actions';
+import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -21,16 +23,20 @@ const mapStateToProps = (state) => {
     metamask: { isUnlocked, preferences, firstTimeFlow },
   } = state;
   const { passwordHint } = preferences;
+  const isSeedlessPasswordOutdated = getIsSeedlessPasswordOutdated(state);
   return {
     isUnlocked,
     passwordHint,
     firstTimeFlow,
+    isSeedlessPasswordOutdated,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
+    tryUnlockMetamaskWithGlobalSeedlessPassword: (globalPassword) =>
+      dispatch(tryUnlockMetamaskWithGlobalSeedlessPassword(globalPassword)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
   };
@@ -38,17 +44,17 @@ const mapDispatchToProps = (dispatch) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
-    // eslint-disable-next-line no-shadow
-    markPasswordForgotten,
-    // eslint-disable-next-line no-shadow
-    tryUnlockMetamask,
+    markPasswordForgotten: propsMarkPasswordForgotten,
+    tryUnlockMetamask: propsTryUnlockMetamask,
+    tryUnlockMetamaskWithGlobalSeedlessPassword:
+      propsTryUnlockMetamaskWithGlobalSeedlessPassword,
     ...restDispatchProps
   } = dispatchProps;
   const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps;
 
   // TODO: might remove this once new forget password flow is implemented
   const onImport = async () => {
-    await markPasswordForgotten();
+    await propsMarkPasswordForgotten();
     history.push(RESTORE_VAULT_ROUTE);
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -57,7 +63,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 
   const onSubmit = async (password) => {
-    await tryUnlockMetamask(password);
+    const { isSeedlessPasswordOutdated } = stateProps;
+    if (isSeedlessPasswordOutdated) {
+      // use global seedless password to unlock the vault if seedless password is outdated
+      await propsTryUnlockMetamaskWithGlobalSeedlessPassword(password);
+    } else {
+      await propsTryUnlockMetamask(password);
+    }
 
     history.push(DEFAULT_ROUTE);
   };

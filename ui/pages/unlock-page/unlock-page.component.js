@@ -136,6 +136,7 @@ export default class UnlockPage extends Component {
 
     if (isUnlocked) {
       history.push(DEFAULT_ROUTE);
+      return;
     }
 
     if (isSeedlessPasswordOutdated) {
