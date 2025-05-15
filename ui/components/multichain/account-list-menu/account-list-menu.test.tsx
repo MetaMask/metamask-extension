@@ -79,6 +79,9 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      remoteFeatureFlags: {
+        addBitcoinAccount: true,
+      },
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {

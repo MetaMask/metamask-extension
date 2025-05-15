@@ -103,6 +103,7 @@ const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
 const mockMetamaskStore = {
   ...mockState.metamask,
   remoteFeatureFlags: {
+    addBitcoinAccount: true,
     bridgeConfig: {
       support: true,
     },
@@ -417,7 +418,7 @@ describe('NonEvmOverview', () => {
     );
   });
 
-  it.only('disables the Send and Bridge buttons if external services are disabled', () => {
+  it('disables the Send and Bridge buttons if external services are disabled', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore({

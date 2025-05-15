@@ -5,12 +5,12 @@ import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import FixtureBuilder from '../../fixture-builder';
 import {
   mockExchangeRates,
   mockInitialFullScan,
   mockRampsDynamicFeatureFlag,
 } from './mocks';
-import FixtureBuilder from '../../fixture-builder';
 
 export async function withBtcAccountSnap(
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
