@@ -595,21 +595,13 @@ export function getNumberOfTokens(state) {
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings.map((keyring, index) => ({
-    ...keyring,
-    metadata: state.metamask.keyringsMetadata?.[index] ?? {},
-  }));
+  return state.metamask.keyrings;
 }
 
-export const getMetaMaskHdKeyrings = createSelector(
-  getMetaMaskKeyrings,
-  (keyrings) => {
-    return keyrings.filter((keyring) => keyring.type === KeyringTypes.hd);
-  },
-);
-
-export function getMetaMaskKeyringsMetadata(state) {
-  return state.metamask.keyringsMetadata;
+export function getMetaMaskHdKeyrings(state) {
+  return state.metamask.keyrings.filter(
+    (keyring) => keyring.type === KeyringTypes.hd,
+  );
 }
 
 export function getHDEntropyIndex(state) {
@@ -626,9 +618,8 @@ export function getHDEntropyIndex(state) {
     const account = getSelectedInternalAccount(state);
     if (account) {
       const { entropySource } = account.options;
-      const keyringsMetadata = getMetaMaskKeyringsMetadata(state);
-      hdEntropyIndex = keyringsMetadata.findIndex(
-        (metadata) => metadata.id === entropySource,
+      hdEntropyIndex = keyrings.findIndex(
+        ({ metadata }) => metadata.id === entropySource,
       );
     }
   }
