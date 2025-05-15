@@ -25,12 +25,17 @@ const { cloneDeep, merge, uniqWith } = require('lodash');
 
 const BUILDS_YML_PATH = path.resolve(__dirname, '../../builds.yml');
 
-// This is in fact a valid jsdoc tag.
-/* eslint-disable jsdoc/check-tag-names */
 /**
- * @import { Infer, Struct, StructError } from '@metamask/superstruct';
+ * @template {unknown} T
+ * @typedef {import('@metamask/superstruct').Struct<T>} Struct
  */
-/* eslint-enable jsdoc/check-tag-names */
+
+/**
+ * @template {Struct<any>} T
+ * @typedef {import('@metamask/superstruct').Infer<T>} Infer
+ */
+
+/** @typedef {import('@metamask/superstruct').StructError} StructError */
 
 /**
  * @type {Infer<typeof BuildTypesStruct> | null}
@@ -163,6 +168,10 @@ const BuildTypeStruct = object({
 });
 
 /**
+ * @typedef {Infer<typeof BuildTypeStruct>} BuildType
+ */
+
+/**
  * @type {Struct<{
  *   src: string,
  *   dest: string,
@@ -209,7 +218,7 @@ const FeaturesStruct = record(
 /**
  * @type {Struct<{
  *   default: string,
- *   buildTypes: Record<string, Infer<typeof BuildTypeStruct>>,
+ *   buildTypes: Record<string, BuildType>,
  *   features: Infer<typeof FeaturesStruct>,
  *   env: Infer<typeof EnvObjectStruct>,
  * }>} BuildTypesStruct
@@ -243,11 +252,15 @@ const BuildTypesStruct = refine(
 );
 
 /**
+ * @typedef {Infer<typeof BuildTypesStruct>} BuildConfig
+ */
+
+/**
  * Loads and parses the `builds.yml` file, which contains the definitions of
  * our build types.
  *
- * @param {Infer<typeof BuildTypesStruct> | null} cachedBuildTypes - The cached build types, if any.
- * @returns {Infer<typeof BuildTypesStruct>} The parsed builds configuration.
+ * @param {BuildConfig | null} cachedBuildTypes - The cached build types, if any.
+ * @returns {BuildConfig} The parsed builds configuration.
  */
 module.exports.loadBuildTypesConfig = function loadBuildTypesConfig(
   cachedBuildTypes = _cachedBuildTypes,
@@ -275,7 +288,7 @@ module.exports.loadBuildTypesConfig = function loadBuildTypesConfig(
  * Extends any extended build types with their parent build types. This is accomplished
  * by merging the extending build type into a copy of its parent build type.
  *
- * @param {Infer<typeof BuildTypesStruct>} buildsConfig
+ * @param {BuildConfig} buildsConfig
  */
 function applyBuildTypeExtensions({ buildTypes }) {
   for (const [buildType, config] of Object.entries(buildTypes)) {

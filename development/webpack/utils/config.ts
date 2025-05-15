@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
+import type { BuildConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
 
@@ -155,21 +156,6 @@ export function getVariables(
   return { variables, safeVariables, version };
 }
 
-export type BuildType = {
-  id: number;
-  features?: string[];
-  env?: Record<string, unknown>;
-  isPrerelease?: boolean;
-  buildNameOverride?: string;
-  extends?: string;
-};
-
-export type BuildConfig = {
-  buildTypes: Record<string, BuildType>;
-  env: Record<string, unknown>;
-  features: Record<string, null | { env?: Record<string, unknown> }>;
-};
-
 /**
  * Loads configuration variables from process.env, .metamaskrc, and build.yml.
  *
@@ -184,17 +170,15 @@ export type BuildConfig = {
  * @param activeBuild
  * @param build
  * @param build.env
- * @param build.features
  * @returns
  */
 function loadConfigVars(
   activeBuild: Pick<BuildType, 'env' | 'features'>,
-  { env, features }: BuildConfig,
+  { env }: BuildConfig,
 ) {
   const definitions = loadEnv();
   addRc(definitions, join(__dirname, '../../../.metamaskrc'));
   addVars(activeBuild.env);
-  activeBuild.features?.forEach((feature) => addVars(features[feature]?.env));
   addVars(env);
 
   function addVars(pairs: Record<string, unknown> = {}): void {
