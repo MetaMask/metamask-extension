@@ -24,7 +24,7 @@ import { extractUniqueIconAndSymbols } from '../util/extractDeFiIconAndSymbol';
 import { buildSymbolGroup } from '../util/buildDefiSymbolGroup';
 import { DefiProtocolCell } from './cells/defi-protocol-cell';
 import { DeFiErrorMessage } from './cells/defi-error-message';
-import { DeFiEmptyState } from './cells/defi-empty-state';
+import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 
 export type DefiState = {
   metamask: DeFiPositionsControllerState;
@@ -159,7 +159,7 @@ export default function DefiList({ onClick }: DefiListProps) {
           );
         })
       ) : (
-        <DeFiEmptyState
+        <DeFiEmptyStateMessage
           primaryText={t('noDeFiPositions')}
           secondaryText={t('startEarning')}
         />

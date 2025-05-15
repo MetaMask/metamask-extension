@@ -16,7 +16,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
 
-export function DeFiEmptyState({
+export function DeFiEmptyStateMessage({
   primaryText,
   secondaryText,
 }: {
