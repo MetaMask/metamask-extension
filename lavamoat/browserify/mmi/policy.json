@@ -5152,25 +5152,22 @@
     },
     "react-idle-timer": {
       "globals": {
-        "Blob": true,
         "BroadcastChannel": true,
-        "MessageChannel": true,
-        "URL.createObjectURL": true,
-        "URL.revokeObjectURL": true,
-        "Worker": true,
         "addEventListener": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console.warn": true,
-        "define": true,
+        "console.error": true,
+        "dispatchEvent": true,
         "document": true,
         "localStorage": true,
-        "performance.now": true,
+        "navigator.userAgent.toLowerCase": true,
         "removeEventListener": true,
         "setInterval": true,
         "setTimeout": true
       },
       "packages": {
+        "@babel/runtime": true,
+        "prop-types": true,
         "react": true
       }
     },
