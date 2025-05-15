@@ -229,7 +229,8 @@
     "gridplus-sdk/elliptic": "^6.6.1",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
-    "@trezor/connect-web": "~9.4.7"
+    "@trezor/connect-web": "~9.4.7",
+    "@metamask/controller-utils@npm:^11.7.1-backport": "11.7.1-backport"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -273,7 +274,7 @@
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
-    "@metamask/controller-utils": "^11.7.0",
+    "@metamask/controller-utils": "11.7.1-backport",
     "@metamask/design-tokens": "^7.0.0",
     "@metamask/ens-controller": "^15.0.2",
     "@metamask/ens-resolver-snap": "^0.1.2",
@@ -305,7 +306,7 @@
     "@metamask/multichain-network-controller": "^0.5.1",
     "@metamask/multichain-transactions-controller": "^0.9.0",
     "@metamask/name-controller": "^8.0.3",
-    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.2.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch",
+    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.2.1-backport#~/.yarn/patches/@metamask-network-controller-npm-23.2.1-backport-52eed19c47.patch",
     "@metamask/notification-services-controller": "patch:@metamask/notification-services-controller@npm%3A6.0.0#~/.yarn/patches/@metamask-notification-services-controller-npm-6.0.0-d0cefeaee1.patch",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",

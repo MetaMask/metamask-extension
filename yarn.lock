@@ -5263,6 +5263,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/controller-utils@npm:11.7.1-backport":
+  version: 11.7.1-backport
+  resolution: "@metamask/controller-utils@npm:11.7.1-backport"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.2.0"
+    "@spruceid/siwe-parser": "npm:2.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    cockatiel: "npm:^3.1.2"
+    eth-ens-namehash: "npm:^2.0.8"
+    fast-deep-equal: "npm:^3.1.3"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 10/1998ddca950adaeafa2bf2098269d61d10421294cd3bfb76adc69818927d9d15c594da2acd3d7c250eb6abc0f45876b8e1518094209f52ed82a2b2b47d3810ba
+  languageName: node
+  linkType: hard
+
 "@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.7.0, @metamask/controller-utils@npm:^11.8.0":
   version: 11.8.0
   resolution: "@metamask/controller-utils@npm:11.8.0"
@@ -6004,7 +6025,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:23.2.0, @metamask/network-controller@npm:^23.1.0":
+"@metamask/network-controller@npm:23.2.1-backport":
+  version: 23.2.1-backport
+  resolution: "@metamask/network-controller@npm:23.2.1-backport"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.7.1-backport"
+    "@metamask/eth-block-tracker": "npm:^11.0.3"
+    "@metamask/eth-json-rpc-infura": "npm:^10.1.1"
+    "@metamask/eth-json-rpc-middleware": "npm:^16.0.1"
+    "@metamask/eth-json-rpc-provider": "npm:^4.1.8"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/json-rpc-engine": "npm:^10.0.3"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/swappable-obj-proxy": "npm:^2.3.0"
+    "@metamask/utils": "npm:^11.2.0"
+    async-mutex: "npm:^0.5.0"
+    fast-deep-equal: "npm:^3.1.3"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    reselect: "npm:^5.1.1"
+    uri-js: "npm:^4.4.1"
+    uuid: "npm:^8.3.2"
+  checksum: 10/0a61d9b5849e58717fdeaebabbebd50e85a8221fad8d61fed7407205a578dd46a8226f15df824d70a114768ba71f49aba358b90e7a166d4855dd5a8f237c6a48
+  languageName: node
+  linkType: hard
+
+"@metamask/network-controller@npm:^23.1.0":
   version: 23.2.0
   resolution: "@metamask/network-controller@npm:23.2.0"
   dependencies:
@@ -6030,12 +6077,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@patch:@metamask/network-controller@npm%3A23.2.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch":
-  version: 23.2.0
-  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A23.2.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch::version=23.2.0&hash=61b816"
+"@metamask/network-controller@patch:@metamask/network-controller@npm%3A23.2.1-backport#~/.yarn/patches/@metamask-network-controller-npm-23.2.1-backport-52eed19c47.patch":
+  version: 23.2.1-backport
+  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A23.2.1-backport#~/.yarn/patches/@metamask-network-controller-npm-23.2.1-backport-52eed19c47.patch::version=23.2.1-backport&hash=21cfa1"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/controller-utils": "npm:^11.7.1-backport"
     "@metamask/eth-block-tracker": "npm:^11.0.3"
     "@metamask/eth-json-rpc-infura": "npm:^10.1.1"
     "@metamask/eth-json-rpc-middleware": "npm:^16.0.1"
@@ -6052,7 +6099,7 @@ __metadata:
     reselect: "npm:^5.1.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/1f314b8fd33247591f1d9e23adb07cc3d832c6508b902faec1dd38a27112f287543f95ce3de9ba292809079b433b24a817f901d192d6b2c8729b71b29c9764b2
+  checksum: 10/035784cb591e22629fdce2c0d5cb33a4cf15ef21d8738f3fd7b70cc9cab075c133f6091f2bcd2983316974cadb4d696cae33789c90b7b87f03d760df0760a4b2
   languageName: node
   linkType: hard
 
@@ -30112,7 +30159,7 @@ __metadata:
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
-    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/controller-utils": "npm:11.7.1-backport"
     "@metamask/design-tokens": "npm:^7.0.0"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
@@ -30152,7 +30199,7 @@ __metadata:
     "@metamask/multichain-network-controller": "npm:^0.5.1"
     "@metamask/multichain-transactions-controller": "npm:^0.9.0"
     "@metamask/name-controller": "npm:^8.0.3"
-    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.2.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch"
+    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.2.1-backport#~/.yarn/patches/@metamask-network-controller-npm-23.2.1-backport-52eed19c47.patch"
     "@metamask/notification-services-controller": "patch:@metamask/notification-services-controller@npm%3A6.0.0#~/.yarn/patches/@metamask-notification-services-controller-npm-6.0.0-d0cefeaee1.patch"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
