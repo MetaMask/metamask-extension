@@ -314,6 +314,8 @@ jobs:
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
+    env:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
