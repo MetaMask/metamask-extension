@@ -115,6 +115,8 @@ async function withController<ReturnValue>(
     } as InternalAccount);
   messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getSelectedAccount || getSelectedAccountStub,
   );
 
@@ -146,6 +148,8 @@ async function withController<ReturnValue>(
   });
   messenger.registerActionHandler(
     'NetworkController:getNetworkClientById',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getNetworkClientById || getNetworkClientByIdStub,
   );
 

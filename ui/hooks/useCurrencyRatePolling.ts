@@ -63,6 +63,8 @@ const useCurrencyRatePolling = () => {
   // usePolling is a custom hook that is invoked synchronously.
   usePolling({
     startPolling: currencyRateStartPolling,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
     input: nativeCurrencies,
     enabled,

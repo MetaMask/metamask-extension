@@ -57,6 +57,7 @@ const useBlockaidAlerts = (): Alert[] => {
     (state: SecurityAlertResponsesState) =>
       state.metamask.transactions.find(
         (transaction) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (transaction.securityAlertResponse as any)?.securityAlertId ===
           securityAlertId,
@@ -64,6 +65,8 @@ const useBlockaidAlerts = (): Alert[] => {
   );
 
   const securityAlertResponse =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     signatureSecurityAlertResponse || transactionSecurityAlertResponse;
 
   const isTransactionTypeSupported =

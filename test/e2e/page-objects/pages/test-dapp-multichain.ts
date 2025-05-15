@@ -1,4 +1,6 @@
+import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
+import { Json } from '@metamask/utils';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
@@ -17,15 +19,11 @@ class TestDappMultichain {
 
   private readonly firstSessionMethodResult = '#session-method-result-0';
 
-  private readonly walletCreateSessionButton = {
-    text: 'wallet_createSession',
-    tag: 'span',
-  };
+  private readonly walletCreateSessionButton = '#create-session-btn';
 
-  private readonly walletGetSessionButton = {
-    text: 'wallet_getSession',
-    tag: 'span',
-  };
+  private readonly walletGetSessionButton = '#get-session-btn';
+
+  private readonly walletRevokeSessionButton = '#revoke-session-btn';
 
   private readonly resultSummary = '.result-summary';
 
@@ -34,7 +32,7 @@ class TestDappMultichain {
   }
 
   addCustomAccountAddressInput(i: number) {
-    return `#add-custom-address-button-${i}`;
+    return `#add-custom-caip\\ address-button-${i}`;
   }
 
   addCustomScopeButton(i: number) {
@@ -42,7 +40,7 @@ class TestDappMultichain {
   }
 
   customAccountAddressInput(i: number) {
-    return `#custom-Address-input-${i}`;
+    return `#custom-CAIP\\ Address-input-${i}`;
   }
 
   customScopeInput(i: number) {
@@ -65,6 +63,10 @@ class TestDappMultichain {
 
   async clickWalletGetSessionButton() {
     await this.driver.clickElement(this.walletGetSessionButton);
+  }
+
+  async clickWalletRevokeSessionButton() {
+    await this.driver.clickElement(this.walletRevokeSessionButton);
   }
 
   async fillExtensionIdInput(extensionId: string) {
@@ -93,7 +95,11 @@ class TestDappMultichain {
    */
   async connectExternallyConnectable(extensionId: string) {
     console.log('Connect multichain test dapp to Multichain API');
-    await this.fillExtensionIdInput(extensionId);
+    await this.fillExtensionIdInput(
+      process.env.SELENIUM_BROWSER === Browser.FIREFOX
+        ? 'window.postMessage'
+        : extensionId,
+    );
     await this.clickConnectExternallyConnectableButton();
     await this.driver.delay(largeDelayMs);
   }
@@ -150,6 +156,65 @@ class TestDappMultichain {
       this.firstSessionMethodResult,
     );
     return JSON.parse(await getSessionRawResult.getText());
+  }
+
+  /**
+   * Revokes permitted session.
+   */
+  async revokeSession(): Promise<void> {
+    await this.clickWalletRevokeSessionButton();
+  }
+
+  /**
+   * Invokes a JSON-RPC method for a given scope and retrieves the result.
+   *
+   * @param scope - The CAIP-2 scope.
+   * @param method - The JSON-RPC method to invoke.
+   * @param params - The parameters for the JSON-RPC method.
+   * @returns The result as JSON.
+   */
+  async invokeMethod(
+    scope: string,
+    method: string,
+    params: Json,
+  ): Promise<Json> {
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+
+    await this.driver.clickElement(`[data-testid="${scope}-select"]`);
+
+    await this.driver.clickElement(`[data-testid="${scope}-${method}-option"]`);
+
+    const card = await this.driver.findElement(
+      `[data-testid="scope-card-${scope}`,
+    );
+    const collapsible = await card.findElement({ css: '.collapsible-section' });
+
+    await collapsible.click();
+
+    const request = {
+      method: 'wallet_invokeMethod',
+      params: {
+        scope,
+        request: {
+          method,
+          params,
+        },
+      },
+    };
+
+    await this.driver.pasteIntoField(
+      `[data-testid="${scope}-collapsible-content-textarea"]`,
+      JSON.stringify(request),
+    );
+
+    await this.driver.clickElement(
+      `[data-testid="invoke-method-${scope}-btn"]`,
+    );
+
+    const invokeResult = await this.driver.findElement(
+      `[id="invoke-method-${scope}-${method}-result-0"]`,
+    );
+    return JSON.parse(await invokeResult.getText());
   }
 }
 

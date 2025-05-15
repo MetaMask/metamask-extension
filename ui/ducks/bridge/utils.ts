@@ -114,13 +114,14 @@ const fetchTokenExchangeRates = async (
       },
       {} as Record<string, number>,
     );
-  } else {
-    exchangeRates = await fetchTokenExchangeRatesUtil(
-      currency,
-      tokenAddresses,
-      formatChainIdToHex(chainId),
-    );
+    return exchangeRates;
   }
+  // EVM chains
+  exchangeRates = await fetchTokenExchangeRatesUtil(
+    currency,
+    tokenAddresses,
+    formatChainIdToHex(chainId),
+  );
 
   return Object.keys(exchangeRates).reduce(
     (acc: Record<string, number | undefined>, address) => {

@@ -1,20 +1,18 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
+import { WebElement } from 'selenium-webdriver';
 import FixtureBuilder from '../../fixture-builder';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { Driver } from '../../webdriver/driver';
+import type { Quote } from '../../../../ui/ducks/send/swap-and-send-utils';
 import { SWAP_SEND_QUOTES_RESPONSE_ETH_TST } from './mocks/eth-data';
 
 export const NATIVE_TOKEN_SYMBOL = 'ETH';
-
 export class SwapSendPage {
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  driver: any;
+  driver: Driver;
 
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(driver: any) {
+  constructor(driver: Driver) {
     this.driver = driver;
   }
 
@@ -60,7 +58,7 @@ export class SwapSendPage {
     const searchInputField = await this.driver.waitForSelector(
       '[data-testid="asset-picker-modal-search-input"]',
     );
-    const searchValue = await searchInputField.getProperty('value');
+    const searchValue = await searchInputField.getAttribute('value');
     if (searchValue) {
       const clearButton = await this.driver.findElement(
         '[data-testid="text-field-search-clear-button"]',
@@ -74,7 +72,7 @@ export class SwapSendPage {
       const f = await this.driver.waitForSelector(
         '[data-testid="asset-picker-modal-search-input"]',
       );
-      await f.press(i);
+      await f.sendKeys(i);
     }
     // Search input is debounced, so we need to wait for the token list to update
     await this.driver.elementCountBecomesN(
@@ -127,17 +125,15 @@ export class SwapSendPage {
     const inputAmounts = await this.driver.findElements('.asset-picker-amount');
     assert.equal(inputAmounts.length, 2);
     await Promise.all(
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      inputAmounts.map(async (e: any, index: number) => {
+      inputAmounts.map(async (e: WebElement, index: number) => {
         await this.driver.delay(delayInMs);
         const i = await this.driver.findNestedElement(e, 'input');
         assert.ok(i);
-        const v = await i.getProperty('value');
+        const v = await i.getAttribute('value');
         assert.equal(v, expectedInputValues[index]);
         if (index > 0) {
-          const isDisabled = await i.getProperty('disabled');
-          assert.equal(isDisabled, true);
+          const isDisabled = await i.getAttribute('disabled');
+          assert.equal(isDisabled, 'true');
         }
       }),
     );
@@ -277,8 +273,7 @@ export class SwapSendPage {
 }
 
 export const mockSwapsApi =
-  (quotes: typeof SWAP_SEND_QUOTES_RESPONSE_ETH_TST, query: string) =>
-  async (mockServer: Mockttp) => {
+  (quotes: Quote[], query: string) => async (mockServer: Mockttp) => {
     await mockServer
       .forGet(`${SWAPS_API_V2_BASE_URL}/v2/networks/1337/quotes`)
       .withExactQuery(query)
@@ -293,7 +288,7 @@ export const mockSwapsApi =
 
 export const getSwapSendFixtures = (
   title?: string,
-  swapsQuotes = SWAP_SEND_QUOTES_RESPONSE_ETH_TST,
+  swapsQuotes: Quote[] = SWAP_SEND_QUOTES_RESPONSE_ETH_TST,
   swapsQuery = '?sourceAmount=1000000000000000000&sourceToken=0x0000000000000000000000000000000000000000&destinationToken=0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947&sender=0x5cfe73b6021e818b776b421b1c4db2474086a7e1&recipient=0xc427D562164062a23a5cFf596A4a3208e72Acd28&slippage=2',
 ) => {
   const ETH_CONVERSION_RATE_USD = 3010;
@@ -328,14 +323,9 @@ export const getSwapSendFixtures = (
     smartContract: SMART_CONTRACTS.HST,
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
     testSpecificMock: mockSwapsApi(swapsQuotes, swapsQuery),
-    localNodeOptions: [
-      {
-        type: 'ganache',
-        options: {
-          hardfork: 'london',
-        },
-      },
-    ],
+    localNodeOptions: {
+      hardfork: 'london',
+    },
     title,
   };
 };

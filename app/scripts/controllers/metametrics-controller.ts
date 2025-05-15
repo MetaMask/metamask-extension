@@ -38,6 +38,7 @@ import {
   ControllerStateChangeEvent,
   RestrictedMessenger,
 } from '@metamask/base-controller';
+import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { AddressBookControllerState } from '@metamask/address-book-controller';
 import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
@@ -179,6 +180,7 @@ export type MetaMaskState = {
   };
   ///: END:ONLY_INCLUDE_IF
   keyrings: { type: string; accounts: string[] }[];
+  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
 };
 
 /**
@@ -444,6 +446,8 @@ export default class MetaMetricsController extends BaseController<
 
     // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
     if (isManifestV3) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       Object.values(state.segmentApiCalls || {}).forEach(
         ({ eventType, payload }) => {
           try {
@@ -497,6 +501,8 @@ export default class MetaMetricsController extends BaseController<
    */
   #getCurrentChainId(networkClientId?: NetworkClientId): Hex {
     const selectedNetworkClientId =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       networkClientId ||
       this.messagingSystem.call('NetworkController:getState')
         .selectedNetworkClientId;
@@ -540,13 +546,11 @@ export default class MetaMetricsController extends BaseController<
   createEventFragment(
     options: Omit<MetaMetricsEventFragment, 'id'>,
   ): MetaMetricsEventFragment {
-    if (!options.successEvent || !options.category) {
+    if (!options.successEvent) {
       throw new Error(
-        `Must specify success event and category. Success event was: ${
+        `Must specify success event. Success event was: ${
           options.event
-        }. Category was: ${options.category}. Payload keys were: ${Object.keys(
-          options,
-        )}. ${
+        }. Payload keys were: ${Object.keys(options)}. ${
           typeof options.properties === 'object'
             ? `Payload property keys were: ${Object.keys(options.properties)}`
             : ''
@@ -988,13 +992,11 @@ export default class MetaMetricsController extends BaseController<
    */
   #validatePayload(payload: MetaMetricsEventPayload): void {
     // event and category are required fields for all payloads
-    if (!payload.event || !payload.category) {
+    if (!payload.event) {
       throw new Error(
-        `Must specify event and category. Event was: ${
+        `Must specify event. Event was: ${
           payload.event
-        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
-          payload,
-        )}. ${
+        }. Payload keys were: ${Object.keys(payload)}. ${
           typeof payload.properties === 'object'
             ? `Payload property keys were: ${Object.keys(payload.properties)}`
             : ''
@@ -1129,6 +1131,23 @@ export default class MetaMetricsController extends BaseController<
     }
     ///: END:ONLY_INCLUDE_IF
 
+    let chainId;
+    if (
+      properties &&
+      'chain_id_caip' in properties &&
+      typeof properties.chain_id_caip === 'string'
+    ) {
+      chainId = null;
+    } else if (
+      properties &&
+      'chain_id' in properties &&
+      typeof properties.chain_id === 'string'
+    ) {
+      chainId = properties.chain_id;
+    } else {
+      chainId = this.chainId;
+    }
+
     return {
       event,
       messageId: buildUniqueMessageId(rawPayload),
@@ -1145,12 +1164,7 @@ export default class MetaMetricsController extends BaseController<
         currency,
         category,
         locale: this.locale,
-        chain_id:
-          properties &&
-          'chain_id' in properties &&
-          typeof properties.chain_id === 'string'
-            ? properties.chain_id
-            : this.chainId,
+        chain_id: chainId,
         environment_type: environmentType,
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         ...mmiProps,
@@ -1184,6 +1198,8 @@ export default class MetaMetricsController extends BaseController<
         Object.values(metamaskState.addressBook).map(size),
       ),
       [MetaMetricsUserTrait.InstallDateExt]:
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
       [MetaMetricsUserTrait.LedgerConnectionType]:
         metamaskState.ledgerTransportType,
@@ -1195,6 +1211,13 @@ export default class MetaMetricsController extends BaseController<
       )
         .filter(({ nativeCurrency }) => !nativeCurrency)
         .map(({ chainId }) => chainId),
+      // caip-2 formatted
+      [MetaMetricsUserTrait.ChainIdList]: [
+        ...Object.keys(metamaskState.networkConfigurationsByChainId).map(
+          (hexChainId) => `eip155:${parseInt(hexChainId, 16)}`,
+        ),
+        ...Object.keys(metamaskState.multichainNetworkConfigurationsByChainId), // the state here is already caip-2 formatted
+      ],
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,
       [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
@@ -1440,6 +1463,8 @@ export default class MetaMetricsController extends BaseController<
       metaMetricsId: metaMetricsIdOverride,
       matomoEvent,
       flushImmediately,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     } = options || {};
     let idType: 'userId' | 'anonymousId' = 'userId';
     let idValue = this.state.metaMetricsId;
@@ -1526,6 +1551,8 @@ export default class MetaMetricsController extends BaseController<
       return;
     }
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const messageId = payload.messageId || generateRandomId();
     let timestamp = new Date();
     if (payload.timestamp) {

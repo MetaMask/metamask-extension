@@ -210,6 +210,8 @@ export type ControllerInitRequest<
 /**
  * A single background API method available to the UI.
  */
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ControllerApi = (...args: any[]) => unknown;
 

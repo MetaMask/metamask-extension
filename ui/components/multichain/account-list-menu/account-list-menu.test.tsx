@@ -42,7 +42,6 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
-    getNextAvailableAccountName: () => mockNextAccountName(),
     generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
     detectNfts: () => mockDetectNfts,
   };
@@ -59,6 +58,7 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   ),
   useMultichainWalletSnapClient: () => ({
     createAccount: mockBitcoinClientCreateAccount,
+    getNextAvailableAccountName: () => mockNextAccountName(),
     getSnapId: () => 'bitcoin-snap-id',
     getSnapName: () => 'bitcoin-snap-name',
   }),
@@ -653,6 +653,7 @@ describe('AccountListMenu', () => {
     const mockBtcAccount = createMockInternalAccount({
       name: 'Bitcoin Account',
       type: BtcAccountType.P2wpkh,
+      keyringType: KeyringTypes.snap,
       address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
     });
     const defaultMockState = {

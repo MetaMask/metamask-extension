@@ -3,9 +3,15 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { toHex } from '@metamask/controller-utils';
+import { useSelector } from 'react-redux';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as UseGetAssetImageUrlModule from '../../../../../hooks/useGetAssetImageUrl';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { getAllNfts } from '../../../../../ducks/metamask/metamask';
+import { getIpfsGateway, getOpenSeaEnabled } from '../../../../../selectors';
 import NftFullImage from './nft-full-image';
 
 const selectedAddress =
@@ -29,8 +35,35 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+  return {
+    ...actual,
+    useSelector: jest.fn(),
+  };
+});
+
 describe('NFT full image', () => {
   const mockStore = configureMockStore([thunk])(mockState);
+
+  useSelector.mockImplementation((selector) => {
+    if (selector === getAllNfts) {
+      return { ...mockState.metamask.allNfts[selectedAddress], chainId: 5 };
+    }
+    if (selector === getIpfsGateway) {
+      return 'dweb.link';
+    }
+    if (selector === getOpenSeaEnabled) {
+      return true;
+    }
+    if (selector === getNetworkConfigurationsByChainId) {
+      return mockNetworkState(
+        { chainId: CHAIN_IDS.MAINNET },
+        { chainId: CHAIN_IDS.GOERLI },
+      );
+    }
+    return undefined;
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();

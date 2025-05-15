@@ -11,6 +11,7 @@ import {
   getTokenList,
   getPreferences,
   getCurrencyRates,
+  getUseCurrencyRateCheck,
 } from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -177,6 +178,9 @@ describe('Token Cell', () => {
         ticker: 'ETH',
         rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
       };
+    }
+    if (selector === getUseCurrencyRateCheck) {
+      return true;
     }
     return undefined;
   });

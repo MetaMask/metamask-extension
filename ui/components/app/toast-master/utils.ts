@@ -13,7 +13,7 @@ import { submitRequestToBackground } from '../../../store/background-connection'
  * @returns true if the privacy policy toast was shown either never, or less than a day ago
  */
 export function getIsPrivacyToastRecent(
-  newPrivacyPolicyToastShownDate?: number,
+  newPrivacyPolicyToastShownDate?: number | null,
 ): boolean {
   if (!newPrivacyPolicyToastShownDate) {
     return true;
@@ -63,6 +63,8 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 // May move this to a different file after discussion with team
 export function submitRequestToBackgroundAndCatch(
   method: string,
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args?: any[],
 ) {

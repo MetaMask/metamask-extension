@@ -89,6 +89,35 @@ const renderUseMultichainAccountTotalFiatBalance = (
           conversionRate: '100000',
         },
       },
+      tokensChainsCache: {
+        [CHAIN_IDS.MAINNET]: {
+          data: {
+            '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': {
+              address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+              symbol: 'YFI',
+              decimals: 18,
+              name: 'yearn.finance',
+              occurrences: 12,
+              aggregators: [
+                'airswapLight',
+                'bancor',
+                'cmc',
+                'coinGecko',
+                'kleros',
+                'oneInch',
+                'paraswap',
+                'pmm',
+                'totle',
+                'zapper',
+                'zerion',
+                'zeroEx',
+              ],
+              iconUrl:
+                'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png',
+            },
+          },
+        },
+      },
       conversionRates: {
         'bip122:000000000019d6689c085ae165831e93/slip44:0': {
           rate: '100000',
@@ -125,7 +154,7 @@ const renderUseMultichainAccountTotalFiatBalance = (
         },
       },
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-      detectedTokens: {
+      allDetectedTokens: {
         [CHAIN_IDS.MAINNET]: {
           '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da': [
             {

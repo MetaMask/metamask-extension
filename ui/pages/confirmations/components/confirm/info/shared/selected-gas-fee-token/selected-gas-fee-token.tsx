@@ -59,10 +59,11 @@ export function SelectedGasFeeToken() {
         borderRadius={BorderRadius.pill}
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
-        paddingInline={2}
+        paddingInlineStart={1}
         gap={1}
         style={{
           cursor: hasGasFeeTokens ? 'pointer' : 'default',
+          paddingInlineEnd: '6px',
         }}
       >
         <GasFeeTokenIcon
