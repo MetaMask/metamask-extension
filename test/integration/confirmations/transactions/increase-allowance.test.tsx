@@ -125,6 +125,8 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 
   mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     createMockImplementation({ addKnownMethodData: {} }),
   );
 };
@@ -144,7 +146,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
-      getTokenStandardAndDetails: {
+      getTokenStandardAndDetailsByChain: {
         standard: TokenStandard.ERC20,
       },
     });

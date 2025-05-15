@@ -260,9 +260,9 @@ const config = {
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
-      // treats JSON files loaded via `new URL('./file.json', import.meta.url)` as assets.
+      // treats JSON and compressed JSON files loaded via `new URL('./file.json(?:\.gz)', import.meta.url)` as assets.
       {
-        test: /\.json$/u,
+        test: /\.json(?:\.gz)?$/u,
         dependency: 'url',
         type: 'asset/resource',
       },

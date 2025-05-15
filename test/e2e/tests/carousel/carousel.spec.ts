@@ -1,16 +1,17 @@
 import { strict as assert } from 'assert';
-import { until } from 'selenium-webdriver';
 import { tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { MAX_SLIDES } from '../../../../ui/components/multichain/carousel/constants';
 
 describe('Carousel component e2e tests', function () {
-  const MAX_VISIBLE_SLIDES = 5;
+  const MAX_VISIBLE_SLIDES = MAX_SLIDES;
   const SLIDE_IDS = [
+    'solana',
     'smartAccountUpgrade',
     'bridge',
-    'card',
     'fund',
+    'card',
     'cash',
     'multiSrp',
     'backupAndSync',
@@ -24,7 +25,6 @@ describe('Carousel component e2e tests', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-
         await driver.waitForSelector(
           '[data-testid="eth-overview__primary-currency"]',
         );
@@ -39,7 +39,6 @@ describe('Carousel component e2e tests', function () {
 
         const firstSlideSelector = `[data-testid="slide-${slideIds[0]}"]`;
         await driver.waitForSelector(firstSlideSelector);
-
         for (
           let i = 0;
           i < Math.min(slideIds.length, MAX_VISIBLE_SLIDES);
@@ -104,8 +103,8 @@ describe('Carousel component e2e tests', function () {
 
         const initialSlides = await driver.findElements('.mm-carousel-slide');
         assert.equal(initialSlides.length, visibleSlideCount);
-
-        for (let i = 0; i < totalSlidesCount; i++) {
+        for (let i = 0; i < SLIDE_IDS.length; i++) {
+          await driver.delay(tinyDelayMs);
           const currentSlides = await driver.findElements('.mm-carousel-slide');
           const remainingSlides = Math.min(
             totalSlidesCount - i,
@@ -117,19 +116,25 @@ describe('Carousel component e2e tests', function () {
             remainingSlides,
             `Expected ${remainingSlides} slides remaining`,
           );
-
           await driver.delay(tinyDelayMs);
-          const dismissButton = await driver.findElement(
-            '.mm-carousel-slide:first-child .mm-carousel-slide__close-button',
+          const dismissButton = await driver.waitForSelector(
+            `[data-testid="slide-${SLIDE_IDS[i]}"] button`,
           );
           await dismissButton.click();
-
+          await driver.wait(async () => {
+            try {
+              const isDisplayed = await dismissButton.isDisplayed();
+              return !isDisplayed;
+            } catch (e) {
+              return true;
+            }
+          }, 1000);
           const slideCountAfterOneDismissed =
             totalSlidesCount - i > MAX_VISIBLE_SLIDES
               ? MAX_VISIBLE_SLIDES
               : totalSlidesCount - i - 1;
 
-          await driver.wait(until.stalenessOf(dismissButton), 5e3);
+          // await driver.wait(until.stalenessOf(dismissButton), 5e3);
 
           if (i < slideCountAfterOneDismissed) {
             await driver.wait(async () => {

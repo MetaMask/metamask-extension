@@ -12,7 +12,6 @@ import useMultiPolling from '../../../hooks/useMultiPolling';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { setBackgroundConnection } from '../../../store/background-connection';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -88,6 +87,11 @@ describe('EthOverview', () => {
   const mockStore = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: true,
+        },
+      },
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: mockEvmAccount1.address, balance: '0x1F4' },
@@ -173,7 +177,6 @@ describe('EthOverview', () => {
         },
       });
       openTabSpy = jest.spyOn(global.platform, 'openTab');
-      setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() });
     });
 
     beforeEach(() => {
@@ -281,8 +284,8 @@ describe('EthOverview', () => {
             },
           },
           useExternalServices: true,
-          bridgeFeatureFlags: {
-            extensionConfig: {
+          remoteFeatureFlags: {
+            bridgeConfig: {
               support: false,
             },
           },

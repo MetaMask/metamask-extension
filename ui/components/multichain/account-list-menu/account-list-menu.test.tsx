@@ -655,6 +655,7 @@ describe('AccountListMenu', () => {
     const mockBtcAccount = createMockInternalAccount({
       name: 'Bitcoin Account',
       type: BtcAccountType.P2wpkh,
+      keyringType: KeyringTypes.snap,
       address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
     });
     const defaultMockState = {
@@ -729,10 +730,10 @@ describe('AccountListMenu', () => {
       const secondHdKeyring = {
         accounts: [accountInSecondSrp.address],
         type: KeyringTypes.hd,
-      };
-      const secondHdKeyringMetadata = {
-        id: '01JN2RD391JM4K7Q5T4RP3JXMA',
-        name: '',
+        metadata: {
+          id: '01JN2RD391JM4K7Q5T4RP3JXMA',
+          name: '',
+        },
       };
 
       const { getByTestId } = render({
@@ -745,10 +746,6 @@ describe('AccountListMenu', () => {
             },
           },
           keyrings: [...mockState.metamask.keyrings, secondHdKeyring],
-          keyringsMetadata: [
-            ...mockState.metamask.keyringsMetadata,
-            secondHdKeyringMetadata,
-          ],
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {

@@ -57,11 +57,6 @@
     "33": { "id": 33, "date": "2024-04-09", "isShown": false }
   },
   "approvalFlows": [],
-  "bridgeFeatureFlags": {
-    "extensionConfig": {
-      "support": false
-    }
-  },
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
   "completedOnboarding": false,
   "confirmationExchangeRates": {},

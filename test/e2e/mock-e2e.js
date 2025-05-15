@@ -1,9 +1,6 @@
 const fs = require('fs');
+const path = require('path');
 
-const {
-  BRIDGE_DEV_API_BASE_URL,
-  BRIDGE_PROD_API_BASE_URL,
-} = require('../../shared/constants/bridge');
 const {
   ACCOUNTS_DEV_API_BASE_URL,
   ACCOUNTS_PROD_API_BASE_URL,
@@ -16,9 +13,6 @@ const {
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const { MOCK_META_METRICS_ID } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
-const {
-  DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
-} = require('./tests/bridge/constants');
 
 const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 
@@ -39,14 +33,36 @@ const ACCOUNTS_API_TOKENS_PATH =
   'test/e2e/mock-response-data/accounts-api-tokens.json';
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
-const BRIDGE_GET_ALL_FEATURE_FLAGS_PATH =
-  'test/e2e/mock-response-data/bridge-get-all-feature-flags.json';
 const CHAIN_ID_NETWORKS_PATH =
   'test/e2e/mock-response-data/chain-id-network-chains.json';
 const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
   'test/e2e/mock-response-data/client-side-detection-blocklist.json';
 const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
+
+const snapsExecutionEnvBasePath = path.dirname(
+  require.resolve('@metamask/snaps-execution-environments/package.json'),
+);
+const snapsExecutionEnvHtmlPath = path.join(
+  snapsExecutionEnvBasePath,
+  'dist',
+  'webpack',
+  'iframe',
+  'index.html',
+);
+const snapsExecutionEnvHtml = fs.readFileSync(
+  snapsExecutionEnvHtmlPath,
+  'utf-8',
+);
+
+const snapsExecutionEnvJsPath = path.join(
+  snapsExecutionEnvBasePath,
+  'dist',
+  'webpack',
+  'iframe',
+  'bundle.js',
+);
+const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
@@ -389,19 +405,6 @@ async function setupMocking(
         },
       };
     });
-
-  [
-    `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
-    `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
-  ].forEach(
-    async (url) =>
-      await server.forGet(url).thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
-        };
-      }),
-  );
 
   [
     `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
@@ -872,19 +875,6 @@ async function setupMocking(
       };
     });
 
-  // Bridge Feature Flags
-  const BRIDGE_GET_ALL_FEATURE_FLAGS = fs.readFileSync(
-    BRIDGE_GET_ALL_FEATURE_FLAGS_PATH,
-  );
-  await server
-    .forGet('https://bridge.api.cx.metamask.io/getAllFeatureFlags')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: JSON.parse(BRIDGE_GET_ALL_FEATURE_FLAGS),
-      };
-    });
-
   // Client Side Detecition: Request Blocklist
   const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
     CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
@@ -913,12 +903,50 @@ async function setupMocking(
       };
     });
 
+  // Snaps: Execution environment html
+  await server
+    .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/index\.html$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapsExecutionEnvHtml,
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      };
+    });
+
+  // Snaps: Execution environment js
+  await server
+    .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/bundle\.js$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapsExecutionEnvJs,
+        headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+      };
+    });
+
   // Token Icons
   await server
     .forGet('https://static.cx.metamask.io/api/v1/tokenIcons')
     .thenCallback(() => {
       return {
         statusCode: 200,
+      };
+    });
+
+  // Dynamic Banner Content
+  await server
+    .forGet(/^https:\/\/(cdn|preview)\.contentful\.com\/.*$/u)
+    .withQuery({
+      content_type: 'promotionalBanner',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          items: [],
+          includes: { Asset: [] },
+        },
       };
     });
 

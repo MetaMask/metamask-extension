@@ -150,6 +150,10 @@ const baseStore = {
       {
         type: KeyringType.hdKeyTree,
         accounts: ['0x0'],
+        metadata: {
+          id: 'test-keyring-id',
+          name: '',
+        },
       },
     ],
     ...mockNetworkState({

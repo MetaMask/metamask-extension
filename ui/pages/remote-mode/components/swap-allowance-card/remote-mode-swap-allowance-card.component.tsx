@@ -108,6 +108,16 @@ export default function RemoteModeSwapAllowanceCard({
             {getChainNamesForDisplayByIds(SUPPORTED_CHAINS_IDS)}
           </Text>
         </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          gap={2}
+        >
+          <Text variant={TextVariant.bodyMd}>Available on</Text>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            MetaMask Extension
+          </Text>
+        </Box>
       </Box>
     </Card>
   );
