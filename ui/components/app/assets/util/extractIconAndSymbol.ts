@@ -3,6 +3,8 @@ import { GroupedDeFiPositions } from '@metamask/assets-controllers';
 /**
  * Extracts unique token icons and symbols from nested protocol position data, and orders by ETH or WETH.
  * This function is used within `useMemo` based on `protocolPositions`
+ *
+ * @param protocolPositions
  */
 export const extractUniqueIconAndSymbols = (
   protocolPositions: GroupedDeFiPositions['protocols'][keyof GroupedDeFiPositions['protocols']],

@@ -20,8 +20,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 
-import { extractUniqueIconAndSymbols } from '../util/extractDeFiIconAndSymbol';
-import { buildSymbolGroup } from '../util/buildDefiSymbolGroup';
+import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
+import { buildSymbolGroup } from '../util/buildSymbolGroup';
 import { DefiProtocolCell } from './cells/defi-protocol-cell';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
