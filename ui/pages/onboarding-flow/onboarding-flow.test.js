@@ -252,7 +252,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_WELCOME_ROUTE,
     );
 
-    const onboardingWelcome = queryByTestId('onboarding-welcome');
+    const onboardingWelcome = queryByTestId('onboarding-welcome-banner-title');
     expect(onboardingWelcome).toBeInTheDocument();
   });
 
