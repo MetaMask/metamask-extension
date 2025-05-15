@@ -1,5 +1,5 @@
 import { fetchManifestFlagsFromPRAndGit } from '../../development/lib/get-manifest-flag';
-import { filterE2eChangedFiles, readChangedAndNewFilesWithStatus, getChangedAndNewFiles } from '../../test/e2e/changedFilesUtil';
+import { readChangedAndFilterE2eChangedFiles } from '../../test/e2e/changedFilesUtil';
 
 fetchManifestFlagsFromPRAndGit().then((manifestFlags) => {
   let timeout;
@@ -7,9 +7,7 @@ fetchManifestFlagsFromPRAndGit().then((manifestFlags) => {
   if (manifestFlags.circleci?.timeoutMinutes) {
     timeout = manifestFlags.circleci?.timeoutMinutes;
   } else {
-    const changedAndNewFilesWithStatus = readChangedAndNewFilesWithStatus();
-    const changedAndNewFiles = getChangedAndNewFiles(changedAndNewFilesWithStatus);
-    const changedOrNewTests = filterE2eChangedFiles(changedAndNewFiles);
+    const changedOrNewTests = readChangedAndFilterE2eChangedFiles();
 
     // 20 minutes, plus 3 minutes for every changed file, up to a maximum of 30 minutes
     timeout = Math.min(20 + changedOrNewTests.length * 3, 30);

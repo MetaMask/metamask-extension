@@ -157,7 +157,6 @@ export type ControllerStatePropertiesEnumerated = {
   isUnlocked: KeyringControllerState['isUnlocked'];
   vault?: KeyringControllerState['vault'];
   keyrings: KeyringControllerState['keyrings'];
-  keyringsMetadata: KeyringControllerState['keyringsMetadata'];
   encryptionKey?: KeyringControllerState['encryptionKey'];
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
@@ -292,8 +291,8 @@ export type ControllerStatePropertiesEnumerated = {
   transactions: TransactionControllerState['transactions'];
   submitHistory: TransactionControllerState['submitHistory'];
   userOperations: UserOperationControllerState['userOperations'];
-  isProfileSyncingEnabled: UserStorageController.UserStorageControllerState['isProfileSyncingEnabled'];
-  isProfileSyncingUpdateLoading: UserStorageController.UserStorageControllerState['isProfileSyncingUpdateLoading'];
+  isBackupAndSyncEnabled: UserStorageController.UserStorageControllerState['isBackupAndSyncEnabled'];
+  isBackupAndSyncUpdateLoading: UserStorageController.UserStorageControllerState['isBackupAndSyncUpdateLoading'];
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
   hasAccountSyncingSyncedAtLeastOnce: UserStorageController.UserStorageControllerState['hasAccountSyncingSyncedAtLeastOnce'];
   isAccountSyncingReadyToBeDispatched: UserStorageController.UserStorageControllerState['isAccountSyncingReadyToBeDispatched'];
