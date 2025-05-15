@@ -1363,9 +1363,6 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
-          ///: BEGIN:ONLY_INCLUDE_IF(solana)
-          await this._addSolanaAccount();
-          ///: END:ONLY_INCLUDE_IF
           await this._addAccountsWithBalance();
 
           this.postOnboardingInitialization();
@@ -4836,9 +4833,6 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
-      ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      await this._addSolanaAccount(id);
-      ///: END:ONLY_INCLUDE_IF
       await this._addAccountsWithBalance(id);
 
       return newAccountAddress;
@@ -4921,9 +4915,6 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (completedOnboarding) {
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
-        await this._addSolanaAccount();
-        ///: END:ONLY_INCLUDE_IF
         await this._addAccountsWithBalance();
 
         // This must be set as soon as possible to communicate to the
@@ -5035,44 +5026,6 @@ export default class MetamaskController extends EventEmitter {
       );
     }
   }
-
-  /**
-   * Adds Solana account to the keyring.
-   *
-   * @param {string} keyringId - The ID of the keyring to add the account to.
-   */
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  async _addSolanaAccount(keyringId) {
-    let entropySource = keyringId;
-    try {
-      if (!entropySource) {
-        // Get the entropy source from the first HD keyring
-        const id = await this.keyringController.withKeyring(
-          { type: KeyringTypes.hd },
-          async ({ metadata }) => {
-            return metadata.id;
-          },
-        );
-        entropySource = id;
-      }
-
-      const client = await this._getSolanaWalletSnapClient();
-      return await client.createAccount(
-        { entropySource },
-        {
-          displayConfirmation: false,
-          displayAccountNameSuggestion: false,
-          setSelectedAccount: false,
-        },
-      );
-    } catch (e) {
-      // Do not block the onboarding flow if this fails
-      log.warn(`Failed to add Solana account. Error: ${e}`);
-      captureException(e);
-      return null;
-    }
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.

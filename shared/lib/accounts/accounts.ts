@@ -216,8 +216,19 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     for (let index = 0; ; index++) {
       const discovered = await this.#discoverAccountsOn(entropySource, index);
 
-      // We stop discovering accounts if none got discovered for that index.
+      // We stop discovering if none got discovered for that index.
       if (discovered.length === 0) {
+        // We create a new account if none got discovered for the first index.
+        if (index === 0) {
+          await this.createAccount(
+            { entropySource },
+            {
+              displayConfirmation: false,
+              displayAccountNameSuggestion: false,
+              setSelectedAccount: false,
+            },
+          );
+        }
         break;
       }
 
