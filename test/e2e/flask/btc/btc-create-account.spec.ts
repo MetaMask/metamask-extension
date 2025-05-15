@@ -8,31 +8,29 @@ import LoginPage from '../../page-objects/pages/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { ACCOUNT_TYPE } from '../../constants';
+import { ACCOUNT_TYPE, DEFAULT_ACCOUNT_NAME } from '../../constants';
 import { withBtcAccountSnap } from './common-btc';
 
 describe('Create BTC Account', function (this: Suite) {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('create BTC account from the menu', async function () {
+  it('create BTC account from the menu', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.check_accountLabel('Bitcoin Account');
+        await headerNavbar.check_accountLabel(DEFAULT_ACCOUNT_NAME);
       },
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('cannot create multiple BTC accounts', async function () {
+  it('cannot create multiple BTC accounts', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
         // check that we have one BTC account
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.check_accountLabel('Bitcoin Account');
+        await headerNavbar.check_accountLabel(DEFAULT_ACCOUNT_NAME);
 
         // check user cannot create second BTC account
         await headerNavbar.openAccountMenu();
@@ -48,22 +46,21 @@ describe('Create BTC Account', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('can cancel the removal of BTC account', async function () {
+  it('can cancel the removal of BTC account', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
         // check that we have one BTC account
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.check_accountLabel('Bitcoin Account');
+        await headerNavbar.check_accountLabel(DEFAULT_ACCOUNT_NAME);
 
         // check user can cancel the removal of the BTC account
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.removeAccount('Bitcoin Account', false);
-        await headerNavbar.check_accountLabel('Bitcoin Account');
+        await accountListPage.removeAccount(DEFAULT_ACCOUNT_NAME, false);
+        await headerNavbar.check_accountLabel(DEFAULT_ACCOUNT_NAME);
 
         // check the number of accounts. it should be 2.
         await headerNavbar.openAccountMenu();
@@ -73,27 +70,26 @@ describe('Create BTC Account', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('can recreate BTC account after deleting it', async function () {
+  it('can recreate BTC account after deleting it', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
         // check that we have one BTC account
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.check_accountLabel('Bitcoin Account');
+        await headerNavbar.check_accountLabel(DEFAULT_ACCOUNT_NAME);
 
         // get the address of the BTC account and remove it
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.openAccountDetailsModal('Bitcoin Account');
+        await accountListPage.openAccountDetailsModal(DEFAULT_ACCOUNT_NAME);
 
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
         const accountAddress = await accountDetailsModal.getAccountAddress();
         await headerNavbar.openAccountMenu();
-        await accountListPage.removeAccount('Bitcoin Account');
+        await accountListPage.removeAccount(DEFAULT_ACCOUNT_NAME);
 
         // Recreate account and check that the address is the same
         await headerNavbar.openAccountMenu();
@@ -105,11 +101,11 @@ describe('Create BTC Account', function (this: Suite) {
         await accountListPage.closeAccountModal();
         await headerNavbar.openAccountMenu();
         await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
-        await headerNavbar.check_accountLabel('Bitcoin Account');
+        await headerNavbar.check_accountLabel(DEFAULT_ACCOUNT_NAME);
 
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.openAccountDetailsModal('Bitcoin Account');
+        await accountListPage.openAccountDetailsModal(DEFAULT_ACCOUNT_NAME);
         await accountDetailsModal.check_pageIsLoaded();
         const recreatedAccountAddress =
           await accountDetailsModal.getAccountAddress();
@@ -119,20 +115,19 @@ describe('Create BTC Account', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('can recreate BTC account after restoring wallet with SRP', async function () {
+  it('can recreate BTC account after restoring wallet with SRP', async function () {
     await withBtcAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {
         // check that we have one BTC account
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.check_accountLabel('Bitcoin Account');
+        await headerNavbar.check_accountLabel(DEFAULT_ACCOUNT_NAME);
 
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.openAccountDetailsModal('Bitcoin Account');
+        await accountListPage.openAccountDetailsModal(DEFAULT_ACCOUNT_NAME);
         const accountDetailsModal = new AccountDetailsModal(driver);
         await accountDetailsModal.check_pageIsLoaded();
         const accountAddress = await accountDetailsModal.getAccountAddress();
@@ -162,11 +157,11 @@ describe('Create BTC Account', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
         await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
-        await headerNavbar.check_accountLabel('Bitcoin Account');
+        await headerNavbar.check_accountLabel(DEFAULT_ACCOUNT_NAME);
 
         await headerNavbar.openAccountMenu();
         await accountListPage.check_pageIsLoaded();
-        await accountListPage.openAccountDetailsModal('Bitcoin Account');
+        await accountListPage.openAccountDetailsModal(DEFAULT_ACCOUNT_NAME);
         await accountDetailsModal.check_pageIsLoaded();
         const recreatedAccountAddress =
           await accountDetailsModal.getAccountAddress();

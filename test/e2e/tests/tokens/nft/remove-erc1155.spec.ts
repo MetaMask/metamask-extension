@@ -33,8 +33,8 @@ describe('Remove ERC1155 NFT', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockIPFSRequest,
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Open the NFT details page and click to remove NFT
         await new Homepage(driver).goToNftTab();

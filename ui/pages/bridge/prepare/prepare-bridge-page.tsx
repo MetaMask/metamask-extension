@@ -84,7 +84,12 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import { formatTokenAmount } from '../utils/quote';
+import {
+  formatTokenAmount,
+  isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
+} from '../utils/quote';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Footer } from '../../../components/multichain/pages/page';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
@@ -174,15 +179,19 @@ const PrepareBridgePage = () => {
   );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
-  // If latest quote is expired and user has sufficient balance
-  // set activeQuote to undefined to hide stale quotes but keep inputs filled
-  const activeQuote =
-    isQuoteExpired &&
-    (!quoteRequest.insufficientBal ||
-      // insufficientBal is always true for solana
-      (fromChain && isSolanaChainId(fromChain.chainId)))
-      ? undefined
-      : activeQuote_;
+
+  // Determine if the current quote is expired or does not match the currently
+  // selected destination asset/chain.
+  const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
+    activeQuote: activeQuote_,
+    toToken,
+    toChain,
+    fromChain,
+    isQuoteExpired,
+    insufficientBal: quoteRequest.insufficientBal,
+  });
+
+  const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);

@@ -758,6 +758,8 @@ export enum MetaMetricsEventName {
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
+  RpcServiceDegraded = 'RPC Service Degraded',
+  RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SecretRecoveryPhrasePickerDetailsClicked = 'Secret Recovery Phrase Details Clicked',
   SecretRecoveryPhrasePickerSelected = 'Secret Recovery Phrase Picker Selected',
@@ -967,7 +969,7 @@ export enum MetaMetricsEventCategory {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
   Phishing = 'Phishing',
-  ProfileSyncing = 'Profile Syncing',
+  BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
   Send = 'Send',

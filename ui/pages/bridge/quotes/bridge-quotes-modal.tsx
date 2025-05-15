@@ -99,8 +99,12 @@ export const BridgeQuotesModal = ({
                       {
                         sort_order: sortOrder,
                         price_impact: Number(
-                          recommendedQuote.quote?.bridgePriceData
-                            ?.priceImpact ?? '0',
+                          // TODO remove this once we bump to the latest version of the bridge controller
+                          (
+                            recommendedQuote.quote as unknown as {
+                              priceData: { priceImpact: string };
+                            }
+                          )?.priceData?.priceImpact ?? '0',
                         ),
                         gas_included: false,
                         token_symbol_source:
@@ -195,7 +199,12 @@ export const BridgeQuotesModal = ({
                             usd_quoted_return: Number(quote.toTokenAmount.usd),
                             provider: formatProviderLabel(quote.quote),
                             price_impact: Number(
-                              quote.quote.bridgePriceData?.priceImpact ?? '0',
+                              // TODO remove this once we bump to the latest version of the bridge controller
+                              (
+                                quote.quote as unknown as {
+                                  priceData: { priceImpact: string };
+                                }
+                              )?.priceData?.priceImpact ?? '0',
                             ),
                             gas_included: false,
                           },
