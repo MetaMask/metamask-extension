@@ -29,8 +29,8 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
-import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
+import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming
