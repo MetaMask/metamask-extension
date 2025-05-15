@@ -27,9 +27,7 @@ import {
 type TestState = AccountsState &
   MultichainNetworkControllerState &
   NetworkState &
-  RemoteFeatureFlagsState & {
-    metamask: { bitcoinSupportEnabled: boolean };
-  };
+  RemoteFeatureFlagsState;
 
 const mockNonEvmNetworks: Record<CaipChainId, MultichainNetworkConfiguration> =
   {
@@ -127,7 +125,6 @@ const mockState: TestState = {
       addSolanaAccount: true,
       addBitcoinAccount: true,
     },
-    bitcoinSupportEnabled: true,
     multichainNetworkConfigurationsByChainId: {
       ...mockNonEvmNetworks,
     },
@@ -272,7 +269,6 @@ describe('Multichain network selectors', () => {
             addSolanaAccount: false,
             addBitcoinAccount: true,
           },
-          bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {
@@ -308,7 +304,6 @@ describe('Multichain network selectors', () => {
             addSolanaAccount: false,
             addBitcoinAccount: true,
           },
-          bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {

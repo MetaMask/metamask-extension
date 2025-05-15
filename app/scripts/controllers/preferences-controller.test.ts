@@ -571,21 +571,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setBitcoinSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-
-    it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
-      controller.setBitcoinSupportEnabled(true);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(true);
-
-      controller.setBitcoinSupportEnabled(false);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});
@@ -647,21 +632,6 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       controller.setWatchEthereumAccountEnabled(true);
       expect(controller.state.watchEthereumAccountEnabled).toStrictEqual(true);
-    });
-  });
-
-  describe('bitcoinTestnetSupportEnabled', () => {
-    it('defaults bitcoinTestnetSupportEnabled to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(
-        false,
-      );
-    });
-
-    it('setBitcoinTestnetSupportEnabled to true', () => {
-      const { controller } = setupController({});
-      controller.setBitcoinTestnetSupportEnabled(true);
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(true);
     });
   });
 

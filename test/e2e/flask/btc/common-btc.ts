@@ -10,6 +10,7 @@ import {
   mockInitialFullScan,
   mockRampsDynamicFeatureFlag,
 } from './mocks';
+import FixtureBuilder from '../../fixture-builder';
 
 export async function withBtcAccountSnap(
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
@@ -17,6 +18,7 @@ export async function withBtcAccountSnap(
 ) {
   await withFixtures(
     {
+      fixtures: new FixtureBuilder().build(),
       title,
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [

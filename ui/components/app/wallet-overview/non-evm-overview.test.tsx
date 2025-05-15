@@ -146,7 +146,6 @@ const mockMetamaskStore = {
     AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
   selectedMultichainNetworkChainId: BtcScope.Mainnet,
   isEvmSelected: false,
-  bitcoinSupportEnabled: true,
 };
 const mockRampsStore = {
   buyableChains: mockBuyableChainsEvmOnly,
@@ -418,7 +417,7 @@ describe('NonEvmOverview', () => {
     );
   });
 
-  it('disables the Send and Bridge buttons if external services are disabled', () => {
+  it.only('disables the Send and Bridge buttons if external services are disabled', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore({

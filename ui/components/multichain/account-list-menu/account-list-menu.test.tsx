@@ -114,7 +114,6 @@ const render = (
           },
         },
       },
-      bitcoinSupportEnabled: true,
     },
     activeTab: {
       id: 113,
