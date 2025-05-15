@@ -12,7 +12,9 @@ import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { mockEip7702FeatureFlag } from '../helpers';
+import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 
+const UUID = '1234-5678';
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
 
@@ -33,7 +35,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         testSpecificMock: (mockServer: MockttpServer) => {
           mockSimulationResponse(mockServer);
           mockEip7702FeatureFlag(mockServer);
-          mockTransactionRelay(mockServer);
+          mockTransactionRelayNetworks(mockServer);
+          mockTransactionRelaySubmit(mockServer);
+          mockTransactionRelayStatus(mockServer);
           mockSmartTransactionFeatureFlags(mockServer);
         },
         title: this.test?.fullTitle(),
@@ -93,7 +97,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         testSpecificMock: (mockServer: MockttpServer) => {
           mockSimulationResponse(mockServer);
           mockEip7702FeatureFlag(mockServer);
-          mockTransactionRelay(mockServer, { success: false });
+          mockTransactionRelayNetworks(mockServer);
+          mockTransactionRelaySubmit(mockServer);
+          mockTransactionRelayStatus(mockServer, { success: false });
           mockSmartTransactionFeatureFlags(mockServer);
         },
         title: this.test?.fullTitle(),
@@ -127,112 +133,138 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
 });
 
 async function mockSimulationResponse(mockServer: MockttpServer) {
-  return [
-    await mockServer
-      .forPost(TX_SENTINEL_URL)
-      .withBodyIncluding('simulateTransactions')
-      .thenCallback(() => {
-        return {
-          ok: true,
-          statusCode: 200,
-          json: {
-            jsonrpc: '2.0',
-            result: {
-              transactions: [
-                {
-                  return:
-                    '0x0000000000000000000000000000000000000000000000000000000000000000',
-                  status: '0x1',
-                  gasUsed: '0x5de2',
-                  gasLimit: '0x5f34',
-                  fees: [
-                    {
-                      maxFeePerGas: '0xf19b9f48d',
-                      maxPriorityFeePerGas: '0x9febc9',
-                      balanceNeeded: '0x59d9d3b865ed8',
-                      currentBalance: '0x77f9fd8d99e7e0',
-                      error: '',
-                      tokenFees: [
-                        {
-                          token: {
-                            address:
-                              '0x1234567890abcdef1234567890abcdef12345678',
-                            decimals: 6,
-                            symbol: 'USDC',
-                          },
-                          balanceNeededToken: '0x12C4B0',
-                          currentBalanceToken: '0x4C4B40',
-                          feeRecipient:
-                            '0xBAB951a55b61dfAe21Ff7C3501142B397367F026',
-                          rateWei: '0x216FF33813A80',
+  await mockServer
+    .forPost(TX_SENTINEL_URL)
+    .withBodyIncluding('simulateTransactions')
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          result: {
+            transactions: [
+              {
+                return:
+                  '0x0000000000000000000000000000000000000000000000000000000000000000',
+                status: '0x1',
+                gasUsed: '0x5de2',
+                gasLimit: '0x5f34',
+                fees: [
+                  {
+                    maxFeePerGas: '0xf19b9f48d',
+                    maxPriorityFeePerGas: '0x9febc9',
+                    balanceNeeded: '0x59d9d3b865ed8',
+                    currentBalance: '0x77f9fd8d99e7e0',
+                    error: '',
+                    tokenFees: [
+                      {
+                        token: {
+                          address: '0x1234567890abcdef1234567890abcdef12345678',
+                          decimals: 6,
+                          symbol: 'USDC',
                         },
-                        {
-                          token: {
-                            address:
-                              '0x01234567890abcdef1234567890abcdef1234567',
-                            decimals: 3,
-                            symbol: 'DAI',
-                          },
-                          balanceNeededToken: '0xC8A',
-                          currentBalanceToken: '0x2710',
-                          feeRecipient:
-                            '0xBAB951a55b61dfAe21Ff7C3501142B397367F026',
-                          rateWei: '0x216FF33813A80',
+                        balanceNeededToken: '0x12C4B0',
+                        currentBalanceToken: '0x4C4B40',
+                        feeRecipient:
+                          '0xBAB951a55b61dfAe21Ff7C3501142B397367F026',
+                        rateWei: '0x216FF33813A80',
+                      },
+                      {
+                        token: {
+                          address: '0x01234567890abcdef1234567890abcdef1234567',
+                          decimals: 3,
+                          symbol: 'DAI',
                         },
-                      ],
-                    },
-                  ],
-                  stateDiff: {},
-                  feeEstimate: 972988071597550,
-                  baseFeePerGas: 40482817574,
-                },
-              ],
-              blockNumber: '0x1293669',
-              id: 'faaab4c5-edf5-4077-ac75-8d26278ca2c5',
-            },
+                        balanceNeededToken: '0xC8A',
+                        currentBalanceToken: '0x2710',
+                        feeRecipient:
+                          '0xBAB951a55b61dfAe21Ff7C3501142B397367F026',
+                        rateWei: '0x216FF33813A80',
+                      },
+                    ],
+                  },
+                ],
+                stateDiff: {},
+                feeEstimate: 972988071597550,
+                baseFeePerGas: 40482817574,
+              },
+            ],
+            blockNumber: '0x1293669',
+            id: 'faaab4c5-edf5-4077-ac75-8d26278ca2c5',
           },
-        };
-      }),
-  ];
+        },
+      };
+    });
 }
 
-async function mockTransactionRelay(
+async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/networks`)
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: {
+          '1': {
+            network: 'ethereum-mainnet',
+            confirmations: true,
+            relayTransactions: true,
+          },
+        },
+      };
+    });
+}
+
+async function mockTransactionRelaySubmit(mockServer: MockttpServer) {
+  await mockServer
+    .forPost(TX_SENTINEL_URL)
+    .withBodyIncluding('eth_sendRelayTransaction')
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          result: {
+            uuid: UUID,
+          },
+        },
+      };
+    });
+}
+
+async function mockTransactionRelayStatus(
   mockServer: MockttpServer,
   { success }: { success?: boolean } = { success: true },
 ) {
-  return [
-    await mockServer
-      .forPost(TX_SENTINEL_URL)
-      .withBodyIncluding('eth_sendRelayTransaction')
-      .thenCallback(() => {
-        return {
-          ok: true,
-          statusCode: success ? 200 : 500,
-          json: {
-            jsonrpc: '2.0',
-            ...(success
-              ? {
-                  result: {
-                    transactionHash: TRANSACTION_HASH,
-                  },
-                }
-              : { error: 'Test error' }),
-          },
-        };
-      }),
-  ];
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/smart-transactions/${UUID}`)
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: {
+          transactions: [
+            {
+              hash: TRANSACTION_HASH,
+              status: success ? RelayStatus.Success : 'FAILED',
+            },
+          ],
+        },
+      };
+    });
 }
 
 async function mockSmartTransactionFeatureFlags(mockServer: MockttpServer) {
-  return [
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/featureFlags')
-      .thenCallback(() => {
-        return {
-          ok: true,
-          statusCode: 200,
-          json: {},
-        };
-      }),
-  ];
+  await mockServer
+    .forGet('https://swap.api.cx.metamask.io/featureFlags')
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: {},
+      };
+    });
 }
