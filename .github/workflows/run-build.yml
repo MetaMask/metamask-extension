@@ -11,6 +11,10 @@ on:
         type: string
         required: true
         description: The build command to run
+      validate-source-maps:
+        type: boolean
+        default: true
+        description: Whether to validate source maps
       mozilla-lint:
         type: boolean
         default: false
@@ -62,6 +66,7 @@ jobs:
         run: ${{ inputs.build-command }}
 
       - name: Validate source maps
+        if: ${{ inputs.validate-source-maps }}
         run: yarn validate-source-maps
 
       - name: Run mozilla-lint

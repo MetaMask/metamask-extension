@@ -194,6 +194,7 @@ jobs:
     with:
       build-name: build-test-webpack
       build-command: yarn build:test:webpack
+      validate-source-maps: false # webpack outputs are not supported by validate-source-maps
     secrets: inherit
 
   run-benchmarks:
