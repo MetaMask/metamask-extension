@@ -80,6 +80,7 @@ export const TokenCellSecondaryDisplay = React.memo(
         ellipsis={token.isStakeable}
         isHidden={privacyMode}
         length={SensitiveTextLength.Medium}
+        style={{ whiteSpace: 'nowrap', paddingInlineStart: 8 }}
       >
         {getSecondaryDisplayText()}
       </SensitiveText>
