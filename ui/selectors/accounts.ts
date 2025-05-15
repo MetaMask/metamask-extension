@@ -13,12 +13,6 @@ export type AccountsState = {
   metamask: AccountsControllerState;
 };
 
-function isBtcAccount(account: InternalAccount) {
-  const { P2wpkh } = BtcAccountType;
-
-  return Boolean(account && account.type === P2wpkh);
-}
-
 export function isSolanaAccount(account: InternalAccount) {
   const { DataAccount } = SolAccountType;
 
@@ -59,10 +53,6 @@ export function isSelectedInternalAccountEth(state: AccountsState) {
   const { Eoa, Erc4337 } = EthAccountType;
 
   return Boolean(account && (account.type === Eoa || account.type === Erc4337));
-}
-
-export function isSelectedInternalAccountBtc(state: AccountsState) {
-  return isBtcAccount(getSelectedInternalAccount(state));
 }
 
 export function isSelectedInternalAccountSolana(state: AccountsState) {
