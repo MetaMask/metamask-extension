@@ -125,6 +125,7 @@ const mockState: TestState = {
   metamask: {
     remoteFeatureFlags: {
       addSolanaAccount: true,
+      addBitcoinAccount: true,
     },
     bitcoinSupportEnabled: true,
     multichainNetworkConfigurationsByChainId: {
@@ -292,6 +293,7 @@ describe('Multichain network selectors', () => {
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
             addSolanaAccount: false,
+            addBitcoinAccount: true,
           },
           bitcoinSupportEnabled: false,
           internalAccounts: {
@@ -327,6 +329,7 @@ describe('Multichain network selectors', () => {
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
             addSolanaAccount: false,
+            addBitcoinAccount: true,
           },
           bitcoinSupportEnabled: false,
           internalAccounts: {

@@ -267,7 +267,7 @@
     "@metamask/approval-controller": "^7.0.0",
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A62.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-62.0.0-e019b7a559.patch",
     "@metamask/base-controller": "^8.0.0",
-    "@metamask/bitcoin-wallet-snap": "^0.12.1",
+    "@metamask/bitcoin-wallet-snap": "file:../snap-bitcoin-wallet/packages/snap",
     "@metamask/bridge-controller": "patch:@metamask/bridge-controller@npm%3A20.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-20.0.0-ddd6003340.patch",
     "@metamask/bridge-status-controller": "^20.0.0",
     "@metamask/browser-passworder": "^4.3.0",
