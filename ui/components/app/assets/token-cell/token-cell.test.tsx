@@ -1,7 +1,7 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -12,6 +12,7 @@ import {
   getPreferences,
   getCurrencyRates,
   getUseCurrencyRateCheck,
+  useSafeChainsListValidationSelector,
 } from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -149,6 +150,11 @@ describe('Token Cell', () => {
     },
     onClick: jest.fn(),
   };
+  const mockProviderConfig = jest.fn().mockReturnValue({
+    chainId: '0x1',
+    ticker: 'ETH',
+    rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+  });
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
     if (selector === getPreferences) {
@@ -173,13 +179,12 @@ describe('Token Cell', () => {
       return { POL: '' };
     }
     if (selector === getProviderConfig) {
-      return {
-        chainId: '0x1',
-        ticker: 'ETH',
-        rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
-      };
+      return mockProviderConfig();
     }
     if (selector === getUseCurrencyRateCheck) {
+      return true;
+    }
+    if (selector === useSafeChainsListValidationSelector) {
       return true;
     }
     return undefined;
@@ -231,5 +236,28 @@ describe('Token Cell', () => {
 
     expect(amountElement).toBeInTheDocument();
     expect(amountElement.textContent).toBe('5,000,000 TEST');
+  });
+
+  it('should show a scam warning if the native ticker does not match the expected ticker', async () => {
+    const token = { ...propToken };
+    token.chainId = '0x1';
+    token.isNative = true;
+    token.symbol = 'BTC'; // incorrect ticker
+    mockProviderConfig.mockReturnValue({
+      chainId: '0x1',
+      ticker: 'BTC', // incorrect ticker
+      rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+      type: 'mainnet',
+      rpcUrl: '',
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <TokenCell {...({ token } as TokenCellProps)} />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('scam-warning')).toBeInTheDocument();
+    });
   });
 });
