@@ -14,7 +14,7 @@ export const TokenCellTitle = React.memo(
     return (
       <Box display={Display.Flex}>
         <AssetCellTitle title={token.title} />
-        {token.isStakeable ?? (
+        {token.isStakeable && (
           <StakeableLink chainId={token.chainId} symbol={token.symbol} />
         )}
       </Box>

@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { useHistory, useParams, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
-  BackgroundColor,
   Display,
   FlexDirection,
   IconColor,
@@ -10,10 +9,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  BadgeWrapper,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -30,8 +25,7 @@ import { getPreferences, getSelectedAccount } from '../../../selectors';
 import { getDefiPositions } from '../../../components/app/assets/defi-list/defi-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatWithThreshold } from '../../../components/app/assets/util/formatWithThreshold';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import DefiDetailsList, {
   PositionTypeKeys,
   PositionTypeLabels,
@@ -59,7 +53,6 @@ const DeFiPage = () => {
 
   const defiPositions = useSelector(getDefiPositions);
   const selectedAccount = useSelector(getSelectedAccount);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   const history = useHistory();
   const t = useI18nContext();
@@ -124,25 +117,12 @@ const DeFiPage = () => {
         >
           {protocolPosition.protocolDetails.name}
         </Text>
-        <BadgeWrapper
-          badge={
-            <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
-              name={allNetworks?.[chainId]?.name}
-              src={getImageForChainId(chainId) || undefined}
-              backgroundColor={BackgroundColor.backgroundMuted}
-              borderWidth={2}
-            />
-          }
-          marginRight={4}
-          style={{ alignSelf: 'center' }}
-        >
-          <AvatarToken
-            name={protocolPosition.protocolDetails.name}
-            backgroundColor={BackgroundColor.backgroundMuted}
-            src={protocolPosition.protocolDetails.iconUrl}
-          />
-        </BadgeWrapper>
+        <AssetCellBadge
+          chainId={chainId}
+          tokenImage={protocolPosition.protocolDetails.iconUrl}
+          symbol={protocolPosition.protocolDetails.name}
+          data-testid="defi-details-page-protocol-badge"
+        />
       </Box>
       <Box paddingLeft={4} paddingBottom={4}>
         <SensitiveText

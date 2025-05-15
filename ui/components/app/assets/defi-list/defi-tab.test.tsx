@@ -59,15 +59,36 @@ const allDeFiPositions = {
     },
   },
 };
+const loadingDefiPositions = {
+  [mockState.metamask.selectedAddress]: undefined,
+};
+const noOpenPositions = {
+  [mockState.metamask.selectedAddress]: [],
+};
+const defiApiError = null;
 
-const render = () => {
+const render = (
+  state: 'with-positions' | 'loading-positions' | 'error' | 'no-open-positions',
+) => {
+  let selectedDeFiPositions;
+
+  if (state === 'with-positions') {
+    selectedDeFiPositions = allDeFiPositions;
+  } else if (state === 'loading-positions') {
+    selectedDeFiPositions = loadingDefiPositions;
+  } else if (state === 'no-open-positions') {
+    selectedDeFiPositions = noOpenPositions;
+  } else {
+    selectedDeFiPositions = defiApiError;
+  }
+
   const mockStore = {
     ...mockState,
 
     metamask: {
       ...mockState.metamask,
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-      allDeFiPositions,
+      allDeFiPositions: selectedDeFiPositions,
       currencyRates: {
         ETH: {
           conversionRate: 1597.32,
@@ -82,16 +103,79 @@ const render = () => {
 describe('DefiList', () => {
   it('renders DeFiList component and shows control bar', async () => {
     await act(async () => {
-      render();
+      render('with-positions');
     });
 
     await waitFor(() => {
       expect(
-        screen.getByTestId('multichain-token-list-item-secondary-value'),
-      ).toHaveTextContent('$20,000.00');
+        screen.getByTestId('defi-list-protocol-badge'),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('defi-list-market-value')).toHaveTextContent(
+        '$20,000.00',
+      );
+      expect(screen.getByTestId('defi-list-symbol-group')).toHaveTextContent(
+        'stETH only',
+      );
+      expect(screen.getByTestId('avatar-group')).toBeInTheDocument();
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
       expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
-      expect(screen.getByTestId('avatar-group')).toBeInTheDocument();
+
+      expect(
+        screen.queryByTestId('import-token-button'),
+      ).not.toBeInTheDocument();
+    });
+  });
+  it('renders loading spinner', async () => {
+    await act(async () => {
+      render('loading-positions');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('pulse-loader')).toBeInTheDocument();
+
+      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
+      expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
+
+      expect(
+        screen.queryByTestId('import-token-button'),
+      ).not.toBeInTheDocument();
+    });
+  });
+  it('renders error message', async () => {
+    await act(async () => {
+      render('error');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('defi-tab-error-message')).toHaveTextContent(
+        'We could not load this page.',
+      );
+      expect(screen.getByTestId('defi-tab-error-message')).toHaveTextContent(
+        'Try visiting again later.',
+      );
+      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
+      expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
+
+      expect(
+        screen.queryByTestId('import-token-button'),
+      ).not.toBeInTheDocument();
+    });
+  });
+  it('renders no positions message', async () => {
+    await act(async () => {
+      render('no-open-positions');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('defi-tab-no-positions')).toHaveTextContent(
+        'No positions yet',
+      );
+      expect(screen.getByTestId('defi-tab-no-positions')).toHaveTextContent(
+        'Start earning',
+      );
+      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
+      expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
+
       expect(
         screen.queryByTestId('import-token-button'),
       ).not.toBeInTheDocument();

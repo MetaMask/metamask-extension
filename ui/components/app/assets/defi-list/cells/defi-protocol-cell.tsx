@@ -54,6 +54,7 @@ export function DefiProtocolCell({ onClick, position }: DeFiProtocolCellProps) {
       badge={
         <AssetCellBadge
           chainId={position.chainId}
+          data-testid="defi-list-protocol-badge"
           tokenImage={position.tokenImage}
           symbol={position.protocolId}
         />
@@ -64,6 +65,7 @@ export function DefiProtocolCell({ onClick, position }: DeFiProtocolCellProps) {
           color={TextColor.textAlternativeSoft}
           variant={TextVariant.bodySmMedium}
           isHidden={privacyMode}
+          data-testid="defi-list-market-value"
         >
           {position.marketValue}
         </SensitiveText>
@@ -72,7 +74,7 @@ export function DefiProtocolCell({ onClick, position }: DeFiProtocolCellProps) {
         <SensitiveText
           variant={TextVariant.bodyMd}
           textAlign={TextAlign.End}
-          data-testid="defi-list-item-secondary-value"
+          data-testid="defi-list-symbol-group"
           isHidden={privacyMode}
           length={SensitiveTextLength.Medium}
         >
@@ -84,7 +86,6 @@ export function DefiProtocolCell({ onClick, position }: DeFiProtocolCellProps) {
           avatarType={AvatarType.TOKEN}
           limit={4}
           members={position.iconGroup}
-          data-testid="defi-list-avatar-group"
         />
       }
     />

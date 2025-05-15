@@ -38,6 +38,7 @@ export function DeFiEmptyState({
         color={TextColor.textAlternative}
         variant={TextVariant.bodyMdMedium}
         textAlign={TextAlign.Center}
+        data-testid="defi-tab-no-positions"
       >
         {primaryText}
       </Text>
@@ -46,6 +47,7 @@ export function DeFiEmptyState({
           size={ButtonLinkSize.Md}
           href={getPortfolioUrl('stake', 'ext_stake_button')}
           externalLink
+          data-testid="defi-tab-start-earning-link"
         >
           {secondaryText}
         </ButtonLink>

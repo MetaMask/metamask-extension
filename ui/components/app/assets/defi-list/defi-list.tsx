@@ -1,10 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  DeFiPositionsControllerState,
-  GroupedDeFiPositions,
-} from '@metamask/assets-controllers';
+import { DeFiPositionsControllerState } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { getSelectedAccount, getTokenSortConfig } from '../../../../selectors';
 import { useNetworkFilter } from '../hooks';
@@ -23,6 +20,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 
+import { extractUniqueIconAndSymbols } from '../util/extractDeFiIconAndSymbol';
+import { buildSymbolGroup } from '../util/buildDefiSymbolGroup';
 import { DefiProtocolCell } from './cells/defi-protocol-cell';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyState } from './cells/defi-empty-state';
@@ -88,68 +87,15 @@ export default function DefiList({ onClick }: DefiListProps) {
       currentAddressDefiPositions,
     ).flatMap(([chainId, chainData]) =>
       Object.entries(chainData.protocols).map(([protocolId, protocol]) => {
-        const extractIconAndSymbols = (
-          protocolPositions: GroupedDeFiPositions['protocols'][keyof GroupedDeFiPositions['protocols']],
-        ) => {
-          if (!protocolPositions?.positionTypes) {
-            return [];
-          }
-
-          const iconsAndSymbols = Object.values(protocolPositions.positionTypes)
-            .flatMap(
-              (displayTokens) =>
-                displayTokens?.positions?.flatMap(
-                  (nestedToken) =>
-                    nestedToken?.flatMap(
-                      (token) =>
-                        token?.tokens?.map((underlying) => ({
-                          symbol: underlying?.symbol || '',
-                          avatarValue: underlying?.iconUrl || '',
-                        })) || [],
-                    ) || [],
-                ) || [],
-            )
-            .filter(Boolean);
-
-          // Ensure 'ETH' or 'WETH' is at position 1
-          const symbolPriority = ['ETH', 'WETH'];
-          const firstTokenIndex = iconsAndSymbols.findIndex((item) =>
-            symbolPriority.includes(item.symbol),
-          );
-
-          if (firstTokenIndex > -1) {
-            const [firstItem] = iconsAndSymbols.splice(firstTokenIndex, 1);
-            iconsAndSymbols.unshift(firstItem);
-          }
-
-          return iconsAndSymbols;
-        };
-
-        const buildSymbolGroup = (
-          symbols: {
-            symbol: string;
-            avatarValue: string;
-          }[],
-        ): string => {
-          if (symbols.length === 1) {
-            return `${symbols[0].symbol} only`;
-          } else if (symbols.length === 2) {
-            return `${symbols[0].symbol} +${symbols.length - 1} other`;
-          } else if (symbols.length > 2) {
-            return `${symbols[0].symbol} +${symbols.length - 1} others`;
-          }
-          return '';
-        };
-
         const { name: protocolName, iconUrl } = protocol.protocolDetails;
         const marketValue = protocol.aggregatedMarketValue;
-        const iconGroup = extractIconAndSymbols(protocol);
+        const iconGroup = extractUniqueIconAndSymbols(protocol);
 
         return {
           protocolId,
           title: protocolName,
           tokenImage: iconUrl,
-          symbolGroup: buildSymbolGroup(iconGroup),
+          symbolGroup: buildSymbolGroup(iconGroup.map(({ symbol }) => symbol)),
           marketValue: formatWithThreshold(marketValue, 0.01, locale, {
             style: 'currency',
             currency: 'USD',
