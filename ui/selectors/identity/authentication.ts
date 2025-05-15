@@ -30,7 +30,8 @@ export const selectIsSignedIn = createSelector(
  * @param {AppState} state - The current state of the Redux store.
  * @returns {any} Returns the session data associated with the current user session.
  */
-export const selectSessionData = createSelector(
-  [getMetamask],
-  (metamask) => metamask.sessionData,
+export const selectSessionData = createSelector([getMetamask], (metamask) =>
+  metamask.srpSessionData
+    ? Object.entries(metamask.srpSessionData)?.[0]
+    : undefined,
 );
