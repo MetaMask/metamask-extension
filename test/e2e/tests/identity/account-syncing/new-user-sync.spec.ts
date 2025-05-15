@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures } from '../../../helpers';
+import { veryLargeDelayMs, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../../constants';
 import { mockIdentityServices } from '../mocks';
@@ -63,6 +63,10 @@ describe('Account syncing - New User', function () {
           await accountListPage.check_accountDisplayedInAccountList(
             defaultAccountOneName,
           );
+
+          // Wait for the message signing snap to list entropy sources
+          // And for internal accounts to be updated with entropySourceIds and derivationPaths
+          await driver.delay(veryLargeDelayMs);
 
           // Add a second account
           const {
