@@ -1,7 +1,7 @@
 import { hasProperty } from '@metamask/utils';
 import { cloneDeep, isObject } from 'lodash';
 
-export const version = 156.2;
+export const version = 156.1;
 
 /**
  * Remove `keyringsMetadata` from `KeyringController` state.
