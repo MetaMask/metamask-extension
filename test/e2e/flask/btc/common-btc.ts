@@ -1,5 +1,4 @@
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { ACCOUNT_TYPE } from '../../constants';
 import { Driver } from '../../webdriver/driver';
@@ -13,19 +12,11 @@ import {
 } from './mocks';
 
 export async function withBtcAccountSnap(
-  {
-    title,
-    bitcoinSupportEnabled,
-  }: { title?: string; bitcoinSupportEnabled?: boolean; isFunded?: boolean },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
+  title?: string,
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilder()
-        .withPreferencesController({
-          bitcoinSupportEnabled: bitcoinSupportEnabled ?? true,
-        })
-        .build(),
       title,
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [
