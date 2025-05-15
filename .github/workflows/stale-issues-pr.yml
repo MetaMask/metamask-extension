@@ -10,4 +10,4 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: metamask/github-tools/.github/workflows/stale-issue-pr.yml@90cfe5370ad6496b1c61eaaf81c51751290b1c33
+      - uses: metamask/github-tools/.github/workflows/stale-issue-pr.yml@566da3332757544da431707bde71a242b182b3ac
