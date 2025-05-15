@@ -13,6 +13,10 @@ import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { getTokenExchangeRate } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
+import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
+import { handleSnapRequest } from '../../store/actions';
+import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
+import { HandlerType } from '@metamask/snaps-utils';
 
 const initialState: BridgeState = {
   toChainId: null,
@@ -26,6 +30,7 @@ const initialState: BridgeState = {
   selectedQuote: null,
   wasTxDeclined: false,
   slippage: BRIDGE_DEFAULT_SLIPPAGE,
+  minimumBalanceForRentExemptionInLamports: '0',
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -41,6 +46,31 @@ export const setDestTokenExchangeRates = createAsyncThunk(
 export const setDestTokenUsdExchangeRates = createAsyncThunk(
   'bridge/setDestTokenUsdExchangeRates',
   getTokenExchangeRate,
+);
+
+export const getMinimumBalanceForRentExemptionInLamports = async () => {
+  try {
+    const { value: fees } = (await handleSnapRequest({
+      snapId: 'local:http://localhost:8080', //SOLANA_WALLET_SNAP_ID,
+      origin: 'metamask',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        method: 'getMinimumBalanceForRentExemption',
+        params: {
+          scope: MultichainNetwork.Solana,
+          accountSize: '0',
+        },
+      },
+    })) as { value: string };
+    return fees;
+  } catch (error) {
+    return '0';
+  }
+};
+
+export const setMinimumBalanceForRentExemptionInLamports = createAsyncThunk(
+  'bridge/setMinimumBalanceForRentExemptionInLamports',
+  getMinimumBalanceForRentExemptionInLamports,
 );
 
 const getTokenImage = (payload: TokenPayload['payload']) => {
@@ -142,6 +172,12 @@ const bridgeSlice = createSlice({
     builder.addCase(setSrcTokenExchangeRates.fulfilled, (state, action) => {
       state.fromTokenExchangeRate = action.payload ?? null;
     });
+    builder.addCase(
+      setMinimumBalanceForRentExemptionInLamports.fulfilled,
+      (state, action) => {
+        state.minimumBalanceForRentExemptionInLamports = action.payload ?? null;
+      },
+    );
   },
 });
 
