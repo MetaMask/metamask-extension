@@ -96,6 +96,9 @@ export const useTokensWithFiltering = (
             url: url as string,
             ...requestOptions,
             fetchOptions: { method: 'GET', headers },
+            cacheOptions: {
+              cacheRefreshTime: 10 * MINUTE,
+            },
             functionName: 'fetchBridgeTokens',
           });
         },
@@ -278,7 +281,7 @@ export const useTokensWithFiltering = (
           const token = buildTokenData(token_);
           if (
             token &&
-            !token.symbol.includes('$') &&
+            token.symbol.indexOf('$') === -1 &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             yield token;

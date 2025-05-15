@@ -37,6 +37,7 @@ export const buttonLocator = {
   connectManageStateButton: '#connectmanage-state',
   connectstateButton: '#connectstate',
   connectPreinstalledButton: '#connectpreinstalled-snap',
+  connectProtocolButton: '#connectprotocol',
   connectTransactionInsightButton: '#connecttransaction-insights',
   connectUpdateButton: '#connectUpdate',
   connectUpdateNewButton: '#connectUpdateNew',

@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   formatTokenAmount,
   formatCurrencyAmount,
