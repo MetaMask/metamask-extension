@@ -200,6 +200,7 @@ describe('Multichain API', function () {
               });
             }
 
+            await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
