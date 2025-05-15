@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
-import { DeFiPositionsControllerState } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { getSelectedAccount, getTokenSortConfig } from '../../../../selectors';
 import { useNetworkFilter } from '../hooks';
@@ -22,31 +20,14 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 
 import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
 import { buildSymbolGroup } from '../util/buildSymbolGroup';
-import { DefiProtocolCell } from './cells/defi-protocol-cell';
+import { getDefiPositions } from '../../../../selectors/assets';
+import { DeFiProtocolPosition } from '../types';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
-
-export type DefiState = {
-  metamask: DeFiPositionsControllerState;
-};
-export function getDefiPositions(
-  state: DefiState,
-): DeFiPositionsControllerState['allDeFiPositions'] {
-  return state?.metamask?.allDeFiPositions;
-}
+import DefiProtocolCell from './cells/defi-protocol-cell';
 
 type DefiListProps = {
   onClick: (chainId: string, protocolId: string) => void;
-};
-
-export type DeFiProtocolPosition = {
-  chainId: Hex;
-  tokenImage: string;
-  symbolGroup: string;
-  marketValue: string;
-  title: string;
-  protocolId: string;
-  iconGroup: { avatarValue: string; symbol: string }[];
 };
 
 export default function DefiList({ onClick }: DefiListProps) {

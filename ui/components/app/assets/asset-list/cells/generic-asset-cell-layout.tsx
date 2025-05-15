@@ -7,7 +7,7 @@ import {
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 
-export type GenericAssetCellLayoutProps = {
+type GenericAssetCellLayoutProps = {
   onClick?: () => void;
   disableHover?: boolean;
   badge: ReactNode;

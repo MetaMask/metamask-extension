@@ -47,10 +47,6 @@
   ],
   [
     "ui/components/app/assets/defi-list/cells/defi-protocol-cell.tsx",
-    "ui/components/app/assets/defi-list/defi-list.tsx"
-  ],
-  [
-    "ui/components/app/assets/defi-list/cells/defi-protocol-cell.tsx",
     "ui/components/app/assets/defi-list/defi-list.tsx",
     "ui/components/app/assets/defi-list/defi-tab.tsx",
     "ui/components/multichain/account-overview/account-overview-eth.tsx",
