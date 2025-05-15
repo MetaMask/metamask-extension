@@ -644,7 +644,8 @@ export default function TransactionList({
       }
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
-        {pendingTransactions.length === 0 &&
+        {process.env.REMOVE_GNS &&
+        pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
           <NoTransactions />
         ) : (
