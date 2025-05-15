@@ -12,9 +12,12 @@ import {
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { useMultichainSelector } from '../useMultichainSelector';
 import { useIsMultichainSwap } from '../../pages/bridge/hooks/useIsMultichainSwap';
-import useLatestBalance from './useLatestBalance';
+import { BigNumber } from 'bignumber.js';
 
-export const useIsTxSubmittable = () => {
+export const useIsTxSubmittable = (
+  nativeAssetBalance?: BigNumber,
+  srcTokenBalance?: BigNumber,
+) => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
@@ -29,12 +32,10 @@ export const useIsTxSubmittable = () => {
     isInsufficientGasForQuote,
   } = useSelector(getValidationErrors);
 
-  const balanceAmount = useLatestBalance(fromToken);
   const nativeAsset = useMemo(
     () => getNativeAssetForChainId(fromChainId),
     [fromChainId],
   );
-  const nativeAssetBalance = useLatestBalance(nativeAsset);
 
   return Boolean(
     fromToken &&
@@ -43,7 +44,7 @@ export const useIsTxSubmittable = () => {
       (isSwap || toChain) &&
       fromAmount &&
       activeQuote &&
-      !isInsufficientBalance(balanceAmount) &&
+      !isInsufficientBalance(srcTokenBalance) &&
       !isInsufficientGasBalance(nativeAssetBalance) &&
       !isInsufficientGasForQuote(nativeAssetBalance),
   );

@@ -18,7 +18,6 @@ import {
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
   isNativeAddress,
-  type BridgeController,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import {
