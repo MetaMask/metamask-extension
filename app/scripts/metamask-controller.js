@@ -5566,6 +5566,10 @@ export default class MetamaskController extends EventEmitter {
         }
 
         const [newAddress] = await keyring.addAccounts(1);
+        if (oldAccounts.includes(newAddress)) {
+          await keyring.removeAccount(newAddress);
+          throw new Error(`Cannot add duplicate ${newAddress} account`);
+        }
         return newAddress;
       },
     );
@@ -7145,8 +7149,8 @@ export default class MetamaskController extends EventEmitter {
             .map((keyring, index) => {
               if (keyring.type === KeyringTypes.hd) {
                 return {
-                  id: state.keyringsMetadata[index].id,
-                  name: state.keyringsMetadata[index].name,
+                  id: keyring.metadata.id,
+                  name: keyring.metadata.name,
                   type: 'mnemonic',
                   primary: index === 0,
                 };
