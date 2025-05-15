@@ -5,7 +5,6 @@ import {
   formatCurrencyAmount,
   formatProviderLabel,
 } from './quote';
-import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 describe('Bridge quote utils', () => {
   describe('getNativeAssetForChainId', () => {
