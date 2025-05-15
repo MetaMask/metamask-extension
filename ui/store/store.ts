@@ -4,6 +4,7 @@ import devtoolsEnhancer from 'remote-redux-devtools';
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import type { KeyringMetadata } from '@metamask/keyring-controller';
 import {
   NftControllerState,
   TokensControllerState,
@@ -81,7 +82,7 @@ type TemporaryBackgroundState = NftControllerState &
       };
       selectedAccount: string;
     };
-    keyrings: { type: string; accounts: string[] }[];
+    keyrings: { type: string; accounts: string[]; metadata: KeyringMetadata }[];
   };
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
