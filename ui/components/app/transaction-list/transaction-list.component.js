@@ -533,6 +533,11 @@ export default function TransactionList({
     );
 
     const metricsLocation = 'Activity Tab';
+
+    const groupedTransactionsList = tokenAddress
+      ? nonEvmTransactionFilteredByToken
+      : modifiedNonEvmTransactions;
+
     return (
       <>
         {selectedTransaction &&
@@ -555,46 +560,45 @@ export default function TransactionList({
           <Box className="transaction-list__transactions">
             {nonEvmTransactions?.transactions?.length > 0 ? (
               <Box className="transaction-list__completed-transactions">
-                {groupNonEvmTransactionsByDate(
-                  modifiedNonEvmTransactions ||
-                    nonEvmTransactionFilteredByToken,
-                ).map((dateGroup) => (
-                  <Fragment key={dateGroup.date}>
-                    <Text
-                      paddingTop={4}
-                      paddingInline={4}
-                      variant={TextVariant.bodyMd}
-                      color={TextColor.textDefault}
-                    >
-                      {dateGroup.date}
-                    </Text>
-                    {dateGroup.transactionGroups.map((transaction) => {
-                      // Check for bridging transactions
-                      if (
-                        transaction.isBridgeOriginated ||
-                        (transaction.isBridgeTx && transaction.bridgeInfo)
-                      ) {
+                {groupNonEvmTransactionsByDate(groupedTransactionsList).map(
+                  (dateGroup) => (
+                    <Fragment key={dateGroup.date}>
+                      <Text
+                        paddingTop={4}
+                        paddingInline={4}
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
+                      >
+                        {dateGroup.date}
+                      </Text>
+                      {dateGroup.transactionGroups.map((transaction) => {
+                        // Check for bridging transactions
+                        if (
+                          transaction.isBridgeOriginated ||
+                          (transaction.isBridgeTx && transaction.bridgeInfo)
+                        ) {
+                          return (
+                            <MultichainBridgeTransactionListItem
+                              key={`bridge-${transaction.id}`}
+                              transaction={transaction}
+                              toggleShowDetails={toggleShowDetails}
+                            />
+                          );
+                        }
+
+                        // Default: Render standard Multichain list item
                         return (
-                          <MultichainBridgeTransactionListItem
-                            key={`bridge-${transaction.id}`}
+                          <MultichainTransactionListItem
+                            key={`${transaction.id}`}
                             transaction={transaction}
+                            networkConfig={multichainNetworkConfig}
                             toggleShowDetails={toggleShowDetails}
                           />
                         );
-                      }
-
-                      // Default: Render standard Multichain list item
-                      return (
-                        <MultichainTransactionListItem
-                          key={`${transaction.id}`}
-                          transaction={transaction}
-                          networkConfig={multichainNetworkConfig}
-                          toggleShowDetails={toggleShowDetails}
-                        />
-                      );
-                    })}
-                  </Fragment>
-                ))}
+                      })}
+                    </Fragment>
+                  ),
+                )}
 
                 <Box className="transaction-list__view-on-block-explorer">
                   <Button
