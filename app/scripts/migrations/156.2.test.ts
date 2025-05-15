@@ -1,7 +1,7 @@
-import { migrate } from './159';
+import { migrate } from './156.2';
 
-const expectedVersion = 159;
-const previousVersion = 158;
+const expectedVersion = 156.2;
+const previousVersion = 155.1;
 
 describe(`migration #${expectedVersion}`, () => {
   it('does nothing if state has no KeyringController property', async () => {
