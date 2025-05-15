@@ -4,21 +4,21 @@ const fs = require('fs');
 const { AssertionError } = require('assert');
 const path = require('path');
 const {
-  object,
-  string,
-  record,
-  optional,
   array,
-  refine,
   boolean,
   coerce,
+  integer,
+  literal,
+  never,
+  nullable,
+  object,
+  optional,
+  record,
+  refine,
+  string,
   union,
-  number,
   unknown,
   validate,
-  nullable,
-  never,
-  literal,
 } = require('@metamask/superstruct');
 const yaml = require('yaml');
 const { cloneDeep, merge, uniqWith } = require('lodash');
@@ -138,11 +138,11 @@ const EnvObjectStruct = coerce(
  */
 const RangeStruct = (min, max) => {
   return refine(
-    number(),
+    integer(),
     'range',
     (value) =>
       (value >= min && value <= max) ||
-      `Number must be ${min} <= ${max}. Received: ${value}`,
+      `Number must be an integer ${min} <= ${max}. Received: ${value}`,
   );
 };
 

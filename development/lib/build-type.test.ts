@@ -69,7 +69,17 @@ describe('loadBuildTypesConfig', () => {
     yamlParseMock.mockReturnValueOnce(nextBuildsYml);
 
     expect(() => loadBuildTypesConfig(null)).toThrow(
-      `Number must be 10 <= 64. Received: 99`,
+      `Number must be an integer 10 <= 64. Received: 99`,
+    );
+  });
+
+  it('should throw if build type id is not an integer', () => {
+    const nextBuildsYml = makeBuildsYml();
+    nextBuildsYml.buildTypes.main.id = 10.5;
+    yamlParseMock.mockReturnValueOnce(nextBuildsYml);
+
+    expect(() => loadBuildTypesConfig(null)).toThrow(
+      `Expected an integer, but received: 10.5`,
     );
   });
 
