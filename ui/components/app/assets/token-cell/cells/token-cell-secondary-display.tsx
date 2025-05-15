@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
@@ -26,6 +26,11 @@ type TokenCellSecondaryDisplayProps = {
   token: TokenFiatDisplayInfo;
   handleScamWarningModal: (arg: boolean) => void;
   privacyMode: boolean;
+};
+
+const secondaryDisplayStyle: CSSProperties = {
+  whiteSpace: 'nowrap',
+  paddingInlineStart: 8,
 };
 
 export const TokenCellSecondaryDisplay = React.memo(
@@ -80,7 +85,7 @@ export const TokenCellSecondaryDisplay = React.memo(
         ellipsis={token.isStakeable}
         isHidden={privacyMode}
         length={SensitiveTextLength.Medium}
-        style={{ whiteSpace: 'nowrap', paddingInlineStart: 8 }}
+        style={secondaryDisplayStyle}
       >
         {getSecondaryDisplayText()}
       </SensitiveText>
