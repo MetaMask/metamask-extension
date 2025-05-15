@@ -1,26 +1,16 @@
 diff --git a/PATCH.txt b/PATCH.txt
 new file mode 100644
-<<<<<<<< HEAD:.yarn/patches/@metamask-network-controller-npm-23.4.0-5a36020ff8.patch
-index 0000000000000000000000000000000000000000..b6d859c86b0214d776287821e8058252fcd891fd
-========
 index 0000000000000000000000000000000000000000..ce3b18534f055ee00aa5821793f855fd300fb72c
->>>>>>>> main:.yarn/patches/@metamask-network-controller-npm-23.5.0-56b87eea93.patch
 --- /dev/null
 +++ b/PATCH.txt
-@@ -0,0 +1,5 @@
+@@ -0,0 +1,4 @@
 +We remove lookupNetwork from initializeProvider in the network controller to prevent network requests before user onboarding is completed.
 +The network lookup is done after onboarding is completed, and when the extension reloads if onboarding has been completed.
 +This patch is part of a temporary fix that will be reverted soon to make way for a more permanent solution. https://github.com/MetaMask/metamask-extension/pull/23005
 +You can see the changes before compilation on this branch: https://github.com/MetaMask/core/compare/pnf/ext-23622-review?expand=1
-<<<<<<<< HEAD:.yarn/patches/@metamask-network-controller-npm-23.4.0-5a36020ff8.patch
-+
-diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
-index 00b24d49acfd88df1d26ba31dcba47927e2471aa..82f42b53742ea3953d003f278d05934563679ce4 100644
-========
 \ No newline at end of file
 diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
 index 00b24d49acfd88df1d26ba31dcba47927e2471aa..164d7cbc710ba3272c09a3956cb15e4bd6a715e8 100644
->>>>>>>> main:.yarn/patches/@metamask-network-controller-npm-23.5.0-56b87eea93.patch
 --- a/dist/NetworkController.cjs
 +++ b/dist/NetworkController.cjs
 @@ -549,7 +549,6 @@ class NetworkController extends base_controller_1.BaseController {
@@ -32,11 +22,7 @@ index 00b24d49acfd88df1d26ba31dcba47927e2471aa..164d7cbc710ba3272c09a3956cb15e4b
      /**
       * Refreshes the network meta with EIP-1559 support and the network status
 diff --git a/dist/NetworkController.mjs b/dist/NetworkController.mjs
-<<<<<<<< HEAD:.yarn/patches/@metamask-network-controller-npm-23.4.0-5a36020ff8.patch
-index 3a2341a661225d48317c53cbc2e076633eb2157f..724544d7cbefed84067df48b8087ee9d778b424b 100644
-========
 index 3a2341a661225d48317c53cbc2e076633eb2157f..444f6f28f0a65fef746e2fe289666fe8c07f048e 100644
->>>>>>>> main:.yarn/patches/@metamask-network-controller-npm-23.5.0-56b87eea93.patch
 --- a/dist/NetworkController.mjs
 +++ b/dist/NetworkController.mjs
 @@ -525,7 +525,6 @@ export class NetworkController extends BaseController {
