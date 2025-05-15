@@ -23,7 +23,6 @@ import {
   MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import {
-  EIP5792ErrorCode,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
@@ -1252,7 +1251,7 @@ async function addBatchProperties(
 
     properties.eip7702_upgrade_rejection =
       // @ts-expect-error Code has string type in controller
-      isUpgrade && error.code === EIP5792ErrorCode.RejectedUpgrade;
+      isUpgrade && error.code === 4001; // user rejected request
   }
 
   properties.eip7702_upgrade_transaction = isUpgrade;

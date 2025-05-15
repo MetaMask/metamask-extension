@@ -1,11 +1,9 @@
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { JsonRpcError, serializeError } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-
 import { rejectPendingApproval } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
-import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
 
 export function useSmartAccountActions() {
   const dispatch = useDispatch();
@@ -18,10 +16,7 @@ export function useSmartAccountActions() {
       return;
     }
 
-    const error = new JsonRpcError(
-      EIP5792ErrorCode.RejectedUpgrade,
-      'User rejected account upgrade',
-    );
+    const error = providerErrors.userRejectedRequest();
 
     const serializedError = serializeError(error);
 

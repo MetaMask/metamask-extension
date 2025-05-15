@@ -15,7 +15,6 @@ import {
 } from '../../../../shared/constants/app';
 import {
   AssetType,
-  EIP5792ErrorCode,
   TokenStandard,
   TransactionMetaMetricsEvent,
 } from '../../../../shared/constants/transaction';
@@ -1194,7 +1193,7 @@ describe('Transaction metrics', () => {
             authorizationList: [{}],
           },
           error: {
-            code: EIP5792ErrorCode.RejectedUpgrade,
+            code: 4001,
           },
           status: TransactionStatus.rejected,
         } as unknown as TransactionMeta,
