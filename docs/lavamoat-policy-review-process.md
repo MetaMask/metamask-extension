@@ -53,6 +53,9 @@ When there's a need to change policy (because of new or updated packages that re
    This sentence is indented three spaces.
    This code block is indented three spaces.
 
+> [!TIP]
+> Do not limit yourself to the TL;DR if it's your first policy review with the new process.
+
 - This is a bulleted list example (one space after the bullet before the letter T).
   This sentence is indented two spaces.
   > [!TIP]
