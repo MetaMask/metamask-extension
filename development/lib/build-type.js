@@ -252,15 +252,15 @@ const BuildTypesStruct = refine(
 );
 
 /**
- * @typedef {Infer<typeof BuildTypesStruct>} BuildConfig
+ * @typedef {Infer<typeof BuildTypesStruct>} BuildTypesConfig
  */
 
 /**
  * Loads and parses the `builds.yml` file, which contains the definitions of
  * our build types.
  *
- * @param {BuildConfig | null} cachedBuildTypes - The cached build types, if any.
- * @returns {BuildConfig} The parsed builds configuration.
+ * @param {BuildTypesConfig | null} cachedBuildTypes - The cached build types, if any.
+ * @returns {BuildTypesConfig} The parsed builds configuration.
  */
 module.exports.loadBuildTypesConfig = function loadBuildTypesConfig(
   cachedBuildTypes = _cachedBuildTypes,
@@ -288,7 +288,7 @@ module.exports.loadBuildTypesConfig = function loadBuildTypesConfig(
  * Extends any extended build types with their parent build types. This is accomplished
  * by merging the extending build type into a copy of its parent build type.
  *
- * @param {BuildConfig} buildsConfig
+ * @param {BuildTypesConfig} buildsConfig
  */
 function applyBuildTypeExtensions({ buildTypes }) {
   for (const [buildType, config] of Object.entries(buildTypes)) {

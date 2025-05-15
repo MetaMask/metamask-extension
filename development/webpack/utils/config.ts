@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
-import type { BuildConfig, BuildType } from '../../lib/build-type';
+import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
 
@@ -90,7 +90,7 @@ export function getBuildName(
  */
 export function getVariables(
   { type, env, ...args }: Args,
-  buildConfig: BuildConfig,
+  buildConfig: BuildTypesConfig,
 ) {
   const activeBuild = buildConfig.buildTypes[type];
   const variables = loadConfigVars(activeBuild, buildConfig);
@@ -174,7 +174,7 @@ export function getVariables(
  */
 function loadConfigVars(
   activeBuild: Pick<BuildType, 'env' | 'features'>,
-  { env }: BuildConfig,
+  { env }: BuildTypesConfig,
 ) {
   const definitions = loadEnv();
   addRc(definitions, join(__dirname, '../../../.metamaskrc'));
