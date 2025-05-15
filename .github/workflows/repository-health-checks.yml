@@ -28,7 +28,7 @@ jobs:
 
       - name: Validate release candidate changelog
         if: ${{ startsWith(env.BRANCH, 'Version-v') }}
-        run: .circleci/scripts/validate-changelog-in-rc.sh
+        run: .github/scripts/validate-changelog-in-rc.sh
 
       - name: Lint lockfile
         if: ${{ !cancelled() }}
