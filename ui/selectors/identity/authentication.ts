@@ -22,9 +22,9 @@ export const selectIsSignedIn = createSelector(
 );
 
 /**
- * Selector to retrieve session data.
+ * Selector to retrieve the primary SRP session data.
  *
- * This selector fetches the `sessionData` from the `metamask` state using the `createSelector` function.
+ * This selector fetches the `srpSessionData` from the `metamask` state using the `createSelector` function, and gets the first entry.
  * It provides a memoized selector that returns the session data stored in the MetaMask state.
  *
  * @param {AppState} state - The current state of the Redux store.
@@ -32,6 +32,6 @@ export const selectIsSignedIn = createSelector(
  */
 export const selectSessionData = createSelector([getMetamask], (metamask) =>
   metamask.srpSessionData
-    ? Object.entries(metamask.srpSessionData)?.[0]
+    ? Object.entries(metamask.srpSessionData)?.[0]?.[1]
     : undefined,
 );

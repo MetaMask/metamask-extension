@@ -368,7 +368,7 @@
     "delegations": "object",
     "encryptionKey": "string",
     "encryptionSalt": "string",
-    "srpSessionData": { "01JV9K06VM5RFKJK5XFJK4M0A2": "object" }
+    "srpSessionData": "object"
   },
   "ramps": "object",
   "send": "object",

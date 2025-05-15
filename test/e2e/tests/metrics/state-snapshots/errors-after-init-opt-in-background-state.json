@@ -62,7 +62,7 @@
   },
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "srpSessionData": { "01JV9JZVWNWVGNS6GK46WQVCYT": "object" }
+    "srpSessionData": "object"
   },
   "BridgeController": {
     "quoteRequest": {

@@ -42,12 +42,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AuthenticationController: {
     isSignedIn: false,
-    srpSessionData: {
-      [AllProperties]: {
-        token: false,
-        profile: true,
-      },
-    },
+    srpSessionData: false,
   },
   NetworkOrderController: {
     orderedNetworkList: [],
