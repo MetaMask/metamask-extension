@@ -4803,9 +4803,12 @@ export default class MetamaskController extends EventEmitter {
   async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        false,
-      );
+      await Promise.all([
+        this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+          false,
+        ),
+        this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(false),
+      ]);
 
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
@@ -4847,9 +4850,10 @@ export default class MetamaskController extends EventEmitter {
 
       return newAccountAddress;
     } finally {
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        true,
-      );
+      await Promise.all([
+        this.userStorageController.setIsAccountSyncingReadyToBeDispatched(true),
+        this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(true),
+      ]);
 
       releaseLock();
     }
@@ -4964,7 +4968,12 @@ export default class MetamaskController extends EventEmitter {
 
   async _addAccountsWithBalance(keyringId) {
     try {
-      this.userStorageController.setIsAccountSyncingReadyToBeDispatched(false);
+      await Promise.all([
+        this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+          false,
+        ),
+        this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(false),
+      ]);
 
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
@@ -5040,9 +5049,10 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
-      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        true,
-      );
+      await Promise.all([
+        this.userStorageController.setIsAccountSyncingReadyToBeDispatched(true),
+        this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(true),
+      ]);
     }
   }
 
