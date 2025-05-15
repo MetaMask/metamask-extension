@@ -72,3 +72,29 @@ index 5d4d4cba5f494ce276eda44e96bb88467a39b21e..2ead49fc4359aede7eba724a70151671
      if (isExternal && permittedAddresses && !permittedAddresses.includes(from)) {
          throw providerErrors.unauthorized({ data: { origin } });
      }
+diff --git a/dist/TransactionController.cjs b/dist/TransactionController.cjs
+index 7ba44e1fbfcc9644be7e1c9dc43526c854158dbc..dc4936c43634aa8fc43025601e9015ae8e3606bc 100644
+--- a/dist/TransactionController.cjs
++++ b/dist/TransactionController.cjs
+@@ -2112,7 +2112,7 @@ async function _TransactionController_approveTransaction(transactionId, traceCon
+ }, _TransactionController_isRejectError = function _TransactionController_isRejectError(error) {
+     return [
+         rpc_errors_1.errorCodes.provider.userRejectedRequest,
+-        rpc_errors_1.errorCodes.rpc.methodNotSupported,
++        5750,
+     ].includes(error.code);
+ }, _TransactionController_rejectTransactionAndThrow = function _TransactionController_rejectTransactionAndThrow(transactionId, actionId, error) {
+     __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_rejectTransaction).call(this, transactionId, actionId, error);
+diff --git a/dist/TransactionController.mjs b/dist/TransactionController.mjs
+index ec8769bac826d788846613ddb82e2320ba22462b..2dca7f38aa60a02c7d2e6ba2aefc23f28f85155d 100644
+--- a/dist/TransactionController.mjs
++++ b/dist/TransactionController.mjs
+@@ -2113,7 +2113,7 @@ async function _TransactionController_approveTransaction(transactionId, traceCon
+ }, _TransactionController_isRejectError = function _TransactionController_isRejectError(error) {
+     return [
+         errorCodes.provider.userRejectedRequest,
+-        errorCodes.rpc.methodNotSupported,
++        5750,
+     ].includes(error.code);
+ }, _TransactionController_rejectTransactionAndThrow = function _TransactionController_rejectTransactionAndThrow(transactionId, actionId, error) {
+     __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_rejectTransaction).call(this, transactionId, actionId, error);
