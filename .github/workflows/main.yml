@@ -343,6 +343,7 @@ jobs:
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-beta-browserify
+      - build-beta-mv2-browserify
       - build-flask-browserify
       - build-flask-mv2-browserify
       - build-test-browserify
@@ -374,6 +375,7 @@ jobs:
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-beta-browserify
+      - build-beta-mv2-browserify
       - build-flask-browserify
       - build-flask-mv2-browserify
       - build-test-browserify
