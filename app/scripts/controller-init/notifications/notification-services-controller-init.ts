@@ -12,8 +12,8 @@ export const NotificationServicesControllerInit: ControllerInitFunction<
     env: {
       featureAnnouncements: {
         platform: 'extension',
-        spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '',
-        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? '',
+        spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? ':spaceId',
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? ':accessToken',
       },
     },
   });
