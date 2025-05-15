@@ -4803,6 +4803,10 @@ export default class MetamaskController extends EventEmitter {
   async importMnemonicToVault(mnemonic) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        false,
+      );
+
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
       const alreadyImportedSrp = this.keyringController
@@ -4843,6 +4847,10 @@ export default class MetamaskController extends EventEmitter {
 
       return newAccountAddress;
     } finally {
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        true,
+      );
+
       releaseLock();
     }
   }
@@ -4956,6 +4964,8 @@ export default class MetamaskController extends EventEmitter {
 
   async _addAccountsWithBalance(keyringId) {
     try {
+      this.userStorageController.setIsAccountSyncingReadyToBeDispatched(false);
+
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
 
