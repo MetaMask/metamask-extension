@@ -1,3 +1,5 @@
+// @ts-check
+
 const fs = require('fs');
 const { AssertionError } = require('assert');
 const path = require('path');
@@ -31,16 +33,6 @@ const BUILDS_YML_PATH = path.resolve(__dirname, '../../builds.yml');
 /* eslint-enable jsdoc/check-tag-names */
 
 /**
- * Ensures that the array item contains only elements that are distinct from each other
- *
- * @template {Struct<unknown>} Element
- * @typedef {(
- *   struct: Struct<Infer<Element>[], Infer<Element>>,
- *   eq?: (a: Infer<Element>, b: Infer<Element>) => boolean
- * ) => Struct<Infer<Element>[], Infer<Element>>} Unique
- */
-
-/**
  * @type {Infer<typeof BuildTypesStruct> | null}
  */
 let _cachedBuildTypes = null;
@@ -69,7 +61,9 @@ const getDuplicates = (source, uniqueValues) => {
  * Ensures that the array item contains only elements that are distinct from each other
  *
  * @template {unknown} Element
- * @type {Unique<Struct<Element[]>>}
+ * @param {Struct<Element[]>} struct
+ * @param {(a: Element, b: Element) => boolean} [eq]
+ * @returns {Struct<Element[]>}
  */
 const unique = (struct, eq) =>
   refine(struct, 'unique', (value) => {
@@ -196,8 +190,7 @@ const AssetStruct = union([CopyAssetStruct, ExclusiveIncludeAssetStruct]);
 
 /**
  * @type {Struct<{
- *   env: Infer<typeof EnvObjectStruct> | undefined,
- *   assets: Infer<typeof AssetStruct>[] | undefined,
+ *   assets?: Infer<typeof AssetStruct>[] | undefined,
  * }>} FeatureStruct
  */
 const FeatureStruct = object({

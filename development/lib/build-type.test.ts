@@ -1,3 +1,8 @@
+import path from 'path';
+import { cloneDeep } from 'lodash';
+import { parse as yamlParse } from 'yaml';
+import { loadBuildTypesConfig } from './build-type';
+
 jest.mock('fs', () => ({
   readFileSync: jest.fn(),
 }));
@@ -6,15 +11,12 @@ jest.mock('yaml', () => ({
   parse: jest.fn(),
 }));
 
-const path = require('path');
-const { cloneDeep } = require('lodash');
-const yamlParseMock = require('yaml').parse;
-const { loadBuildTypesConfig } = require('./build-type');
+const yamlParseMock = jest.mocked(yamlParse);
 
 const makeBuildsYml = (() => {
   const { readFileSync } = jest.requireActual('fs');
-  const { parse: yamlParse } = jest.requireActual('yaml');
-  const buildsYml = yamlParse(
+  const { parse } = jest.requireActual('yaml');
+  const buildsYml = parse(
     readFileSync(path.resolve(__dirname, '../../builds.yml'), 'utf8'),
   );
 
