@@ -518,17 +518,14 @@ export const getValidationErrors = createDeepEqualSelector(
   getFromToken,
   getFromAmount,
   (
-    { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
+    { activeQuote, quotesLastFetchedMs, isLoading },
     validatedSrcAmount,
     fromToken,
     fromTokenInputValue,
   ) => {
     return {
       isNoQuotesAvailable: Boolean(
-        !activeQuote &&
-          quotesLastFetchedMs &&
-          !isLoading &&
-          quotesRefreshCount > 0,
+        !activeQuote && quotesLastFetchedMs && !isLoading,
       ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: (balance?: BigNumber) => {
