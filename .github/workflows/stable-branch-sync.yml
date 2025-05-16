@@ -42,3 +42,4 @@ jobs:
     secrets: inherit
     with:
       semver-version: ${{ needs.get-next-version.outputs.next-version }}
+      repo-type: 'extension' # Accepts 'mobile' or 'extension'
