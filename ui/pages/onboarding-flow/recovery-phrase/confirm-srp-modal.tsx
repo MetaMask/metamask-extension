@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import {
   IconColor,
@@ -21,15 +20,17 @@ import {
   IconName,
 } from '../../../components/component-library';
 
+type ConfirmSrpModalProps = {
+  onContinue: () => void;
+  onClose: () => void;
+  isError: boolean;
+};
+
 export default function ConfirmSrpModal({
   onContinue,
   onClose,
   isError,
-}: {
-  onContinue: () => void;
-  onClose: () => void;
-  isError: boolean;
-}) {
+}: ConfirmSrpModalProps) {
   const t = useI18nContext();
 
   const handleContinue = () => {
@@ -93,9 +94,3 @@ export default function ConfirmSrpModal({
     </Modal>
   );
 }
-
-ConfirmSrpModal.propTypes = {
-  onContinue: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  isError: PropTypes.bool.isRequired,
-};
