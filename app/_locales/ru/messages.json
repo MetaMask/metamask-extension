@@ -659,13 +659,6 @@
     "message": "Б",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinSupportToggleDescription": {
-    "message": "Включение этой функции даст вам возможность добавить в ваше расширение MetaMask счет для биткойнов, созданный на основе вашей существующей секретной фразы для восстановления. Это экспериментальная бета-функция, которая используется на свой страх и риск. Пожалуйста, оставьте нам отзыв об этом новом способе взаимодействия с биткойном, заполнив эту $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Включить «Добавить новый счет в биткойнах (бета-версия)»"
-  },
   "blockExplorerAccountAction": {
     "message": "Счет",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
