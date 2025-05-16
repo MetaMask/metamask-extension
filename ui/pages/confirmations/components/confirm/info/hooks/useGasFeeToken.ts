@@ -52,7 +52,11 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
   const amountFiat = useFiatTokenValue(gasFeeToken, gasFeeToken?.amount);
   const balanceFiat = useFiatTokenValue(gasFeeToken, gasFeeToken?.balance);
   const metamaskFeeFiat = useFiatTokenValue(gasFeeToken, metaMaskFee);
-  const transferTransaction = getTransferTransaction(gasFeeToken);
+
+  const transferTransaction =
+    tokenAddress === NATIVE_TOKEN_ADDRESS
+      ? getNativeTransferTransaction(gasFeeToken)
+      : getTokenTransferTransaction(gasFeeToken);
 
   return {
     ...gasFeeToken,
@@ -130,7 +134,7 @@ function useFiatTokenValue(
   return gasFeeToken ? fiatValue : '';
 }
 
-function getTransferTransaction(
+function getTokenTransferTransaction(
   gasFeeToken: GasFeeToken,
 ): BatchTransactionParams {
   const data = new Interface(abiERC20).encodeFunctionData('transfer', [
@@ -144,5 +148,17 @@ function getTransferTransaction(
     maxFeePerGas: gasFeeToken.maxFeePerGas,
     maxPriorityFeePerGas: gasFeeToken.maxPriorityFeePerGas,
     to: gasFeeToken.tokenAddress,
+  };
+}
+
+function getNativeTransferTransaction(
+  gasFeeToken: GasFeeToken,
+): BatchTransactionParams {
+  return {
+    gas: gasFeeToken.gasTransfer,
+    maxFeePerGas: gasFeeToken.maxFeePerGas,
+    maxPriorityFeePerGas: gasFeeToken.maxPriorityFeePerGas,
+    to: gasFeeToken.recipient,
+    value: gasFeeToken.amount,
   };
 }
