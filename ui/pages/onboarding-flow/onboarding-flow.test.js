@@ -244,7 +244,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_COMPLETION_ROUTE,
     );
 
-    const creationSuccessful = queryByTestId('creation-successful');
+    const creationSuccessful = queryByTestId('wallet-ready');
     expect(creationSuccessful).toBeInTheDocument();
   });
 

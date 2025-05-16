@@ -4,7 +4,6 @@ import thunk from 'redux-thunk';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  ONBOARDING_PASSWORD_HINT,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -77,19 +76,9 @@ describe('Wallet Ready Page', () => {
     ).toBeInTheDocument();
   });
 
-  it('should redirect to password hint view when "Create password hint" button is clicked', () => {
-    const mockStore = configureMockStore([thunk])(mockState);
-    const { getByTestId } = renderWithProvider(
-      <CreationSuccessful />,
-      mockStore,
-    );
-    const passwordHintButton = getByTestId('password-hint-create');
-    fireEvent.click(passwordHintButton);
-    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_PASSWORD_HINT);
-  });
-
   it('should redirect to privacy-settings view when "Manage default privacy settings" button is clicked', () => {
-    const { getByText } = renderWithProvider(<CreationSuccessful />, store);
+    const mockStore = configureMockStore([thunk])(mockState);
+    const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
     const privacySettingsButton = getByText('Manage default settings');
     fireEvent.click(privacySettingsButton);
     expect(mockHistoryPush).toHaveBeenCalledWith(
