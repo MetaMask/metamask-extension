@@ -8,9 +8,11 @@ import {
 import LoginPage from '../../page-objects/pages/login-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-
-type UiAddress = `0x${string}${'...' | '…'}${string}`;
+import HomePage from '../../page-objects/pages/home/homepage';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
+import TermsOfUseUpdateModal from '../../page-objects/pages/dialog/terms-of-use-update-modal';
 
 describe('Vault Corruption', function () {
   /**
@@ -21,16 +23,16 @@ describe('Vault Corruption', function () {
   const createCorruptionScript = (code: string) => `
     // callback is injected by Selenium
     const callback = arguments[arguments.length - 1];
+
     // browser and chrome are NOT scuttled in test builds, so we can use them
     // to access the storage API here
-    const browser =  globalThis.browser ?? globalThis.chrome;
-    browser.storage.local.get(({ data }) => {
-      // corrupt the primary database by deleting the KeyringController
-      delete data.KeyringController;
-      browser.storage.local.set({ data }, () => {
-        ${code}
-      });
-  });`;
+    const browser = globalThis.browser ?? globalThis.chrome;
+
+    // corrupt the primary database by deleting the data key
+    browser.storage.local.set({ data: null }, () => {
+      ${code}
+    });
+`;
 
   /**
    * Common code to reload the extension; used by both the primary and backup
@@ -93,39 +95,27 @@ describe('Vault Corruption', function () {
   }
 
   /**
-   * Guard against the UI changing in some way that would break this test. Like
-   * if we changed the way we display the account address to "Account 1" in
-   * which case this test would just always pass since the value here would
-   * always* be the same, even if the underlying vault accidentally differed.
+   * Onboard the user.
    *
-   * @param address - The address to check, should be a string.
-   * @returns `true` if the address is in the expected format.
+   * @param driver - The WebDriver instance.
    */
-  function isAddressFormatExpected(address: unknown): address is UiAddress {
-    if (typeof address !== 'string') {
-      return false;
-    }
-
-    /**
-     * The regex used to match the account address in the UI.
-     */
-    const accountRe = /0x[a-fA-F0-9]{5}(?:...|…)[a-fA-F0-9]{5}/u;
-
-    return accountRe.test(address);
+  async function onboard(driver: Driver) {
+    return await completeCreateNewWalletOnboardingFlow({
+      driver,
+      password: WALLET_PASSWORD,
+      skipSRPBackup: true,
+    });
   }
 
   /**
    * Breaks the databases and then begins recovery.
    *
    * @param driver - The WebDriver instance.
-   * @param script - The script to break the DB that will be executed in
+   * @param script - The script to break the DB that will be executed in the
    * background page for MV2 or offscreen page for MV3.
    * @returns The initial first account's address.
    */
-  async function corruptVault(
-    driver: Driver,
-    script: string,
-  ): Promise<UiAddress> {
+  async function corruptVault(driver: Driver, script: string) {
     const initialWindow = await driver.driver.getWindowHandle();
 
     // open a spare tab so the browser doesn't exit once we `reload()` the
@@ -133,27 +123,20 @@ describe('Vault Corruption', function () {
     // we do -- and that will close the whole browser 😱
     await driver.openNewPage('about:blank');
 
-    await completeCreateNewWalletOnboardingFlow({
-      driver,
-      password: WALLET_PASSWORD,
-    });
+    await onboard(driver);
 
-    const firstAccountElement = await driver.waitForSelector(
-      '[data-testid="app-header-copy-button"]',
-    );
-    // initialAccount is something like: "0xaBcDe...54321"
-    const firstAddress = await firstAccountElement.getAttribute('textContent');
-    // check that the address is in the expected format
-    assert.ok(isAddressFormatExpected(firstAddress));
+    const homePage = new HomePage(driver);
+    homePage.check_pageIsLoaded();
 
-    if (isManifestV3) {
-      await driver.navigate(PAGES.OFFSCREEN, { waitForControllers: false });
-    } else {
-      await driver.navigate(PAGES.BACKGROUND, { waitForControllers: false });
-    }
+    const headerNavbar = new HeaderNavbar(driver);
+    const firstAddress = await getFirstAddress(headerNavbar, driver);
+    await headerNavbar.lockMetaMask();
 
+    // use the home page to destroy the vault
     await driver.executeAsyncScript(script);
 
+    // the previous tab we were using is now closed, so we need to tell Selenium
+    // to switch back to the other page
     await driver.switchToWindow(initialWindow);
 
     // since reloading the background restarts the extension the UI isn't
@@ -165,8 +148,8 @@ describe('Vault Corruption', function () {
         waitForControllers: false,
       });
       title = await driver.driver.getTitle();
-      // the browser will return an error message for our UI's HOME page until the
-      // extension has restarted
+      // the browser will return an error message for our UI's HOME page until
+      // the extension has restarted
     } while (title !== WINDOW_TITLES.ExtensionInFullScreenView);
 
     return firstAddress;
@@ -206,10 +189,10 @@ describe('Vault Corruption', function () {
 
     // the button should be disabled while the recovery process is in progress
     // and enabled if the user dismissed the prompt
-    const status = await recoveryButton.getAttribute('disabled');
+    const isEnabled = await recoveryButton.isEnabled();
     assert.equal(
-      status,
-      String(confirm),
+      isEnabled,
+      !confirm,
       confirm
         ? 'Recovery button should be disabled'
         : 'Recovery button should be enabled',
@@ -222,10 +205,10 @@ describe('Vault Corruption', function () {
    * @param driver - The WebDriver instance.
    */
   async function recoverVault(driver: Driver) {
-    // Then log in to the wallet!
+    // Log back in to the wallet
     const loginPage = new LoginPage(driver);
     await loginPage.check_pageIsLoaded();
-    await loginPage.loginToHomepage();
+    await loginPage.loginToHomepage(WALLET_PASSWORD);
 
     // complete metrics onboarding flow
     await onboardingMetricsFlow(driver, {
@@ -233,7 +216,6 @@ describe('Vault Corruption', function () {
       dataCollectionForMarketing: false,
     });
 
-    // complete (skip, for test speed reasons only) SRP backup flow
     const secureWalletPage = new SecureWalletPage(driver);
     await secureWalletPage.check_pageIsLoaded();
     await secureWalletPage.skipSRPBackup();
@@ -243,7 +225,18 @@ describe('Vault Corruption', function () {
     await onboardingCompletePage.check_pageIsLoaded();
     await onboardingCompletePage.completeOnboarding();
 
-    return await getFirstAddress(driver);
+    // it should take us to the home page automatically
+    const homePage = new HomePage(driver);
+    homePage.check_pageIsLoaded();
+
+    // our state has mostly been reset, so we need to accept the terms of use
+    // again
+    const updateTermsOfUseModal = new TermsOfUseUpdateModal(driver);
+    await updateTermsOfUseModal.check_pageIsLoaded();
+    await updateTermsOfUseModal.confirmAcceptTermsOfUseUpdate();
+
+    const headerNavbar = new HeaderNavbar(driver);
+    return await getFirstAddress(headerNavbar, driver);
   }
 
   /**
@@ -251,13 +244,17 @@ describe('Vault Corruption', function () {
    *
    * @param driver - The WebDriver instance.
    */
-  async function getFirstAddress(driver: Driver) {
-    const addressElement = await driver.waitForSelector(
-      '[data-testid="app-header-copy-button"]',
-    );
-    const firstAddress = await addressElement.getAttribute('textContent');
-    assert.ok(isAddressFormatExpected(firstAddress));
-    return firstAddress;
+  async function getFirstAddress(headerNavbar: HeaderNavbar, driver: Driver) {
+    await headerNavbar.openAccountMenu();
+    const accountListPage = new AccountListPage(driver);
+    await accountListPage.check_pageIsLoaded();
+    await accountListPage.openAccountDetailsModal('Account 1');
+
+    const accountDetailsModal = new AccountDetailsModal(driver);
+    await accountDetailsModal.check_pageIsLoaded();
+
+    const accountAddress = await accountDetailsModal.getAccountAddress();
+    return accountAddress;
   }
 
   it('recovers metamask vault when primary database is broken but backup is intact', async function () {
@@ -296,16 +293,14 @@ describe('Vault Corruption', function () {
         await clickRecover(driver, true);
 
         // Now onboard like a first-time user :-(
-        await completeCreateNewWalletOnboardingFlow({
-          driver,
-          password: WALLET_PASSWORD,
-        });
+        await onboard(driver);
 
-        const newFirstAddress = await getFirstAddress(driver);
-        // make sure the account is different than before
+        const headerNavbar = new HeaderNavbar(driver);
+        const newFirstAddress = await getFirstAddress(headerNavbar, driver);
+        // make sure the account is different than the first time we onboarded
         assert.notEqual(
-          initialFirstAddress,
           newFirstAddress,
+          initialFirstAddress,
           'Addresses should differ',
         );
       },
@@ -313,6 +308,10 @@ describe('Vault Corruption', function () {
   });
 
   it('does *not* reset metamask state when recovery is *not* confirmed', async function () {
+    // The `recovers metamask vault when primary database is broken but backup
+    // is intact` test verifies that *first* attempts at recovery work, this
+    // test verifies that not recoverying, then trying to recovering again later
+    // works too.
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
@@ -321,28 +320,22 @@ describe('Vault Corruption', function () {
           breakPrimaryDatabaseOnlyScript,
         );
 
+        // click recover but don't confirm
+        await clickRecover(driver, false);
+        // make sure the button can be clicked yet again, don't confirm
         await clickRecover(driver, false);
 
-        // verify that the UI did not reload
-        assert.ok(
-          await getVaultRecoveryButton(driver),
-          'Recovery button should be visible after dismissing the prompt',
-        );
-
+        // reload to make sure the UI is still in the same Vault Corrupted state
         await driver.navigate(PAGES.HOME, {
           waitForControllers: false,
         });
-
-        // verify that the UI is still showing the Vault Corruption page
-        assert.ok(
-          await getVaultRecoveryButton(driver),
-          'Recovery button should be visible after dismissing the prompt',
-        );
-
+        // make sure the button can be clicked yet again, don't confirm
+        await clickRecover(driver, false);
+        // actually recover the vault this time just to make sure
+        // it all still works after *not* confirming the prompt before
         await clickRecover(driver, true);
 
-        // verify that the UI can still recover after the prompt was dismissed
-        // the first time
+        // verify that the UI has completed recovered this time
         const restoredFirstAddress = await recoverVault(driver);
         assert.equal(
           restoredFirstAddress,

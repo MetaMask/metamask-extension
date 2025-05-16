@@ -8,7 +8,6 @@
 // It must be run first in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 
-import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
@@ -165,9 +164,6 @@ const phishingPageHref = phishingPageUrl.toString();
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
-
-// Event emitter for state persistence
-export const statePersistenceEvents = new EventEmitter();
 
 if (!isManifestV3) {
   /**
@@ -1015,7 +1011,6 @@ export function setupController(
     debounce(1000),
     createStreamSink(async (state) => {
       await persistenceManager.set(state);
-      statePersistenceEvents.emit('state-persisted', state);
     }),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
