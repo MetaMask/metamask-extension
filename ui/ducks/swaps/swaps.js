@@ -840,7 +840,6 @@ export const fetchQuotesAndSetQuoteState = (
             destinationTokenInfo,
             accountBalance: selectedAccount.balance,
             networkClientId: selectedNetwork.clientId,
-            chainId: selectedNetwork.chainId,
           },
         ),
       );
