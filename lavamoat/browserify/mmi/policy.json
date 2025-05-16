@@ -5152,21 +5152,11 @@
     },
     "react-idle-timer": {
       "globals": {
-        "BroadcastChannel": true,
-        "addEventListener": true,
-        "clearInterval": true,
         "clearTimeout": true,
-        "console.error": true,
-        "dispatchEvent": true,
         "document": true,
-        "localStorage": true,
-        "navigator.userAgent.toLowerCase": true,
-        "removeEventListener": true,
-        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
-        "@babel/runtime": true,
         "prop-types": true,
         "react": true
       }
