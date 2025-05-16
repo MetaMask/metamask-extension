@@ -45,10 +45,9 @@ export default function WelcomeLogin({
   };
 
   const handleLogin = (loginType: LoginType) => {
-    if (!loginOption) {
-      return;
+    if (loginOption) {
+      onLogin(loginType, loginOption);
     }
-    onLogin(loginType, loginOption);
   };
 
   return (

@@ -3,10 +3,11 @@
 exports[`OnboardingAppHeader should match snapshot 1`] = `
 <div>
   <div
-    class="onboarding-app-header"
+    class="onboarding-app-header "
   >
     <div
       class="onboarding-app-header__contents"
+      data-theme=""
     >
       <button
         class="mm-box onboarding-app-header__logo-container mm-box--background-color-transparent"
@@ -32,10 +33,11 @@ exports[`OnboardingAppHeader should match snapshot 1`] = `
         />
       </button>
       <div
-        class="dropdown"
+        class="dropdown onboarding-app-header__dropdown "
       >
         <select
           class="dropdown__select"
+          data-testid="select-locale"
         >
           <option
             value="en"
