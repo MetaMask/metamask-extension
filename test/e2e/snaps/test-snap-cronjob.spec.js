@@ -63,6 +63,7 @@ describe('Test Snap Cronjob', function () {
         });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const dialogHandle = await driver.driver.getWindowHandle();
 
         // look for the dialog popup to verify cronjob fired
         await driver.waitForSelector({
@@ -71,10 +72,12 @@ describe('Test Snap Cronjob', function () {
         });
 
         // try to click on the Ok button and pass test if window closes
-        await driver.clickElementAndWaitForWindowToClose({
+        await driver.clickElement({
           text: 'OK',
           tag: 'button',
         });
+
+        await driver.waitForWindowToClose(dialogHandle);
       },
     );
   });
