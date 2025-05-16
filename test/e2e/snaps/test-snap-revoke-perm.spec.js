@@ -47,10 +47,6 @@ describe('Test Snap revoke permission', function () {
         });
 
         // wait and scroll if necessary
-        await driver.waitForSelector({
-          tag: 'h3',
-          text: 'Add to MetaMask',
-        });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // wait for and click confirm

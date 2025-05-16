@@ -40,6 +40,10 @@ describe('Test Snap Cronjob', function () {
           tag: 'button',
         });
 
+        await driver.waitForSelector({
+          tag: 'h3',
+          text: 'Add to MetaMask',
+        });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click confirm
