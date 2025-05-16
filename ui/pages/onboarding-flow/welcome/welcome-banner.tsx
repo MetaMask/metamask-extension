@@ -25,7 +25,12 @@ export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
   return (
     <div className="welcome-banner">
       <div className="welcome-banner__wrapper">
-        <Text className="welcome-banner__title" as="h2" marginBottom={8}>
+        <Text
+          data-testid="onboarding-welcome-banner-title"
+          className="welcome-banner__title"
+          as="h2"
+          marginBottom={8}
+        >
           {t('welcomeTitle')}
         </Text>
         <Text className="welcome-banner__description" marginBottom={6}>
