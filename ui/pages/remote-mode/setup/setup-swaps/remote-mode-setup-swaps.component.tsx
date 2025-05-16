@@ -120,7 +120,7 @@ export default function RemoteModeSetupSwaps() {
   const isUpdate = params.get('update') === 'true';
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-  const { enableRemoteMode, disableRemoteMode, remoteModeConfig } =
+  const { enableRemoteMode, updateRemoteMode, remoteModeConfig } =
     useRemoteMode({
       account: selectedHardwareAccount.address as Hex,
     });
@@ -226,25 +226,27 @@ export default function RemoteModeSetupSwaps() {
       return;
     }
 
-    if (isUpdate) {
-      await disableRemoteMode({
-        mode: REMOTE_MODES.SWAP,
-      });
-    }
-
     try {
-      await enableRemoteMode({
-        selectedAccount: selectedHardwareAccount,
-        authorizedAccount: selectedAccount,
-        mode: REMOTE_MODES.SWAP,
-        meta: JSON.stringify({ allowances: swapAllowance }),
-      });
+      if (isUpdate) {
+        await updateRemoteMode({
+          selectedAccount: selectedHardwareAccount,
+          authorizedAccount: selectedAccount,
+          mode: REMOTE_MODES.SWAP,
+          meta: JSON.stringify({ allowances: swapAllowance }),
+        });
+      } else {
+        await enableRemoteMode({
+          selectedAccount: selectedHardwareAccount,
+          authorizedAccount: selectedAccount,
+          mode: REMOTE_MODES.SWAP,
+          meta: JSON.stringify({ allowances: swapAllowance }),
+        });
+        history.replace(REMOTE_ROUTE);
+      }
     } catch (error) {
       // TODO: show error on UI
       console.error(error);
     }
-
-    history.replace(REMOTE_ROUTE);
   };
 
   const onCancel = () => {

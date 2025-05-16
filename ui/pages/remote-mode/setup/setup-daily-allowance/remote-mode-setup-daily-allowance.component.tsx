@@ -1,5 +1,5 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 
@@ -18,12 +18,15 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
+import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
+import { AccountPicker } from '../../../../components/multichain/account-picker';
 import {
   Content,
   Footer,
   Header,
   Page,
 } from '../../../../components/multichain/pages/page';
+import Card from '../../../../components/ui/card';
 import Dropdown from '../../../../components/ui/dropdown';
 import Tooltip from '../../../../components/ui/tooltip';
 import UnitInput from '../../../../components/ui/unit-input';
@@ -41,9 +44,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import Card from '../../../../components/ui/card';
-import { AccountPicker } from '../../../../components/multichain/account-picker';
-import { AccountListMenu } from '../../../../components/multichain/account-list-menu';
 import {
   DEFAULT_ROUTE,
   REMOTE_ROUTE,
@@ -53,10 +53,12 @@ import { InternalAccountWithBalance } from '../../../../selectors/selectors.type
 import {
   DailyAllowance,
   REMOTE_MODES,
-  TokenSymbol,
   TOKEN_DETAILS,
+  TokenSymbol,
 } from '../../remote.types';
 
+import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
+import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import {
   getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
@@ -66,8 +68,6 @@ import {
   RemoteModeHardwareWalletConfirm,
   StepIndicator,
 } from '../../components';
-import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
-import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { useRemoteMode } from '../../hooks/useRemoteMode';
 
 const TOTAL_STEPS = 2;
@@ -116,17 +116,20 @@ export default function RemoteModeSetupDailyAllowance() {
 
   const { assetsWithBalance } = useMultichainBalances();
 
-  const { enableRemoteMode, disableRemoteMode, remoteModeConfig } =
+  const { enableRemoteMode, updateRemoteMode, remoteModeConfig } =
     useRemoteMode({
       account: selectedHardwareAccount.address as Hex,
     });
 
-  const updateSelectedTokenBalance = (value: string) => {
-    setSelectedAllowanceBalance(
-      storedAssets.find((asset) => asset.symbol.includes(value))?.balance ??
-        '0',
-    );
-  };
+  const updateSelectedTokenBalance = useCallback(
+    (value: string) => {
+      setSelectedAllowanceBalance(
+        storedAssets.find((asset) => asset.symbol.includes(value))?.balance ??
+          '0',
+      );
+    },
+    [storedAssets],
+  );
 
   useEffect(() => {
     if (remoteModeConfig?.dailyAllowance) {
@@ -158,7 +161,7 @@ export default function RemoteModeSetupDailyAllowance() {
 
   useEffect(() => {
     updateSelectedTokenBalance(selectedAllowanceToken);
-  }, [storedAssets, selectedAllowanceToken]);
+  }, [storedAssets, selectedAllowanceToken, updateSelectedTokenBalance]);
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -213,21 +216,25 @@ export default function RemoteModeSetupDailyAllowance() {
       return;
     }
 
-    if (isUpdate) {
-      await disableRemoteMode({
-        mode: REMOTE_MODES.DAILY_ALLOWANCE,
-      });
-    }
-
     try {
-      await enableRemoteMode({
-        selectedAccount: selectedHardwareAccount,
-        authorizedAccount: selectedAccount,
-        mode: REMOTE_MODES.DAILY_ALLOWANCE,
-        meta: JSON.stringify({ allowances: dailyAllowance }),
-      });
-      // TODO: check better way to route to remote mode if upgrade is needed
-      history.replace(REMOTE_ROUTE);
+      if (isUpdate) {
+        await updateRemoteMode({
+          selectedAccount: selectedHardwareAccount,
+          authorizedAccount: selectedAccount,
+          mode: REMOTE_MODES.DAILY_ALLOWANCE,
+          meta: JSON.stringify({ allowances: dailyAllowance }),
+        });
+      } else {
+        await enableRemoteMode({
+          selectedAccount: selectedHardwareAccount,
+          authorizedAccount: selectedAccount,
+          mode: REMOTE_MODES.DAILY_ALLOWANCE,
+          meta: JSON.stringify({ allowances: dailyAllowance }),
+        });
+
+        // TODO: check better way to route to remote mode if upgrade is needed
+        history.replace(REMOTE_ROUTE);
+      }
     } catch (error) {
       // TODO: show error on UI
       console.error(error);
