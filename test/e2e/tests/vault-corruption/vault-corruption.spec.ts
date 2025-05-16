@@ -108,14 +108,34 @@ describe('Vault Corruption', function () {
   }
 
   /**
-   * Breaks the databases and then begins recovery.
+   * Since reloading the background restarts the extension the UI isn't
+   * available immediately. So we just keep reloading the UI until it is. This
+   * is a bit of a hack, but I can't figure out a better way.
+   *
+   * @param driver - The WebDriver instance.
+   */
+  async function waitForVaultRestorePage(driver: Driver) {
+    let title: string;
+    do {
+      await driver.navigate(PAGES.HOME, {
+        waitForControllers: false,
+      });
+      title = await driver.driver.getTitle();
+      // the browser will return an error message for our UI's HOME page until
+      // the extension has restarted
+    } while (title !== WINDOW_TITLES.ExtensionInFullScreenView);
+  }
+
+  /**
+   * Breaks the databases and then begins recovery. Only returns once the
+   * background page has reloaded and the UI is available again.
    *
    * @param driver - The WebDriver instance.
    * @param script - The script to break the DB that will be executed in the
    * background page for MV2 or offscreen page for MV3.
    * @returns The initial first account's address.
    */
-  async function corruptVault(driver: Driver, script: string) {
+  async function onboardThenCorruptVault(driver: Driver, script: string) {
     const initialWindow = await driver.driver.getWindowHandle();
 
     // open a spare tab so the browser doesn't exit once we `reload()` the
@@ -129,7 +149,7 @@ describe('Vault Corruption', function () {
     homePage.check_pageIsLoaded();
 
     const headerNavbar = new HeaderNavbar(driver);
-    const firstAddress = await getFirstAddress(headerNavbar, driver);
+    const firstAddress = await getFirstAddress(driver, headerNavbar);
     await headerNavbar.lockMetaMask();
 
     // use the home page to destroy the vault
@@ -139,18 +159,8 @@ describe('Vault Corruption', function () {
     // to switch back to the other page
     await driver.switchToWindow(initialWindow);
 
-    // since reloading the background restarts the extension the UI isn't
-    // available immediately. So we just keep reloading the UI until it is.
-    // This is a bit of a hack, but I can't figure out a better way.
-    let title: string;
-    do {
-      await driver.navigate(PAGES.HOME, {
-        waitForControllers: false,
-      });
-      title = await driver.driver.getTitle();
-      // the browser will return an error message for our UI's HOME page until
-      // the extension has restarted
-    } while (title !== WINDOW_TITLES.ExtensionInFullScreenView);
+    // wait for the background page to reload
+    await waitForVaultRestorePage(driver);
 
     return firstAddress;
   }
@@ -169,7 +179,7 @@ describe('Vault Corruption', function () {
   }
 
   /**
-   * Click the recovery/reset button and confirm or dismiss the action.
+   * Click the recovery/reset button then confirm or dismiss the action.
    *
    * @param driver - The WebDriver instance.
    * @param confirm - Whether to confirm the action or not.
@@ -187,15 +197,15 @@ describe('Vault Corruption', function () {
       await prompt.dismiss();
     }
 
-    // the button should be disabled while the recovery process is in progress
+    // the button should be disabled while the recovery process is in progress,
     // and enabled if the user dismissed the prompt
     const isEnabled = await recoveryButton.isEnabled();
     assert.equal(
       isEnabled,
       !confirm,
       confirm
-        ? 'Recovery button should be disabled'
-        : 'Recovery button should be enabled',
+        ? 'Recovery button should be disabled when prompt is accepted'
+        : 'Recovery button should be enabled when prompt is dismissed',
     );
   }
 
@@ -204,7 +214,7 @@ describe('Vault Corruption', function () {
    *
    * @param driver - The WebDriver instance.
    */
-  async function recoverVault(driver: Driver) {
+  async function onboardAfterRecovery(driver: Driver) {
     // Log back in to the wallet
     const loginPage = new LoginPage(driver);
     await loginPage.check_pageIsLoaded();
@@ -229,23 +239,28 @@ describe('Vault Corruption', function () {
     const homePage = new HomePage(driver);
     homePage.check_pageIsLoaded();
 
-    // our state has mostly been reset, so we need to accept the terms of use
-    // again
+    // since our state has been reset, but we skip the welcome screen we now
+    // need to accept the terms of use again
     const updateTermsOfUseModal = new TermsOfUseUpdateModal(driver);
     await updateTermsOfUseModal.check_pageIsLoaded();
     await updateTermsOfUseModal.confirmAcceptTermsOfUseUpdate();
 
-    const headerNavbar = new HeaderNavbar(driver);
-    return await getFirstAddress(headerNavbar, driver);
+    // finally, get the first account's address
+    return await getFirstAddress(driver);
   }
 
   /**
-   * Returns the first address from the UI.
+   * Returns the first (truncated) address from the account list in UI.
    *
    * @param driver - The WebDriver instance.
+   * @param headerNavbar
    */
-  async function getFirstAddress(headerNavbar: HeaderNavbar, driver: Driver) {
+  async function getFirstAddress(
+    driver: Driver,
+    headerNavbar: HeaderNavbar = new HeaderNavbar(driver),
+  ) {
     await headerNavbar.openAccountMenu();
+
     const accountListPage = new AccountListPage(driver);
     await accountListPage.check_pageIsLoaded();
     await accountListPage.openAccountDetailsModal('Account 1');
@@ -261,15 +276,17 @@ describe('Vault Corruption', function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await corruptVault(
+        const initialFirstAddress = await onboardThenCorruptVault(
           driver,
           breakPrimaryDatabaseOnlyScript,
         );
 
-        // recover vault
+        // start recovery
         await clickRecover(driver, true);
 
-        const restoredFirstAddress = await recoverVault(driver);
+        // onboard again
+        const restoredFirstAddress = await onboardAfterRecovery(driver);
+
         // make sure the address is the same as before
         assert.equal(
           restoredFirstAddress,
@@ -284,20 +301,19 @@ describe('Vault Corruption', function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await corruptVault(
+        const initialFirstAddress = await onboardThenCorruptVault(
           driver,
           breakAllDatabasesScript,
         );
 
-        // reset vault
+        // start reset
         await clickRecover(driver, true);
 
-        // Now onboard like a first-time user :-(
+        // Now onboard again, like a first-time user :-(
         await onboard(driver);
 
-        const headerNavbar = new HeaderNavbar(driver);
-        const newFirstAddress = await getFirstAddress(headerNavbar, driver);
         // make sure the account is different than the first time we onboarded
+        const newFirstAddress = await getFirstAddress(driver);
         assert.notEqual(
           newFirstAddress,
           initialFirstAddress,
@@ -310,33 +326,34 @@ describe('Vault Corruption', function () {
   it('does *not* reset metamask state when recovery is *not* confirmed', async function () {
     // The `recovers metamask vault when primary database is broken but backup
     // is intact` test verifies that *first* attempts at recovery work, this
-    // test verifies that not recoverying, then trying to recovering again later
+    // test verifies that not recovering, then trying to recovering again later
     // works too.
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await corruptVault(
+        const initialFirstAddress = await onboardThenCorruptVault(
           driver,
           breakPrimaryDatabaseOnlyScript,
         );
 
-        // click recover but don't confirm
+        // click recover but dismiss the prompt
         await clickRecover(driver, false);
-        // make sure the button can be clicked yet again, don't confirm
+        // make sure the button can be clicked yet again; dismiss again
         await clickRecover(driver, false);
 
         // reload to make sure the UI is still in the same Vault Corrupted state
         await driver.navigate(PAGES.HOME, {
           waitForControllers: false,
         });
-        // make sure the button can be clicked yet again, don't confirm
+
+        // make sure the button can be clicked yet again; dismiss the prompt
         await clickRecover(driver, false);
         // actually recover the vault this time just to make sure
-        // it all still works after *not* confirming the prompt before
+        // it all still works after dismiss the prompt previously
         await clickRecover(driver, true);
 
-        // verify that the UI has completed recovered this time
-        const restoredFirstAddress = await recoverVault(driver);
+        // verify that the UI has completed recovery this time
+        const restoredFirstAddress = await onboardAfterRecovery(driver);
         assert.equal(
           restoredFirstAddress,
           initialFirstAddress,
