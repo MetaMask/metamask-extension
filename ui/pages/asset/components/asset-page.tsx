@@ -138,22 +138,38 @@ const AssetPage = ({
         default:
           return false;
       }
-    });
+    }) ?? {
+    // TODO: remve the fallback case where the mutichainTokenWithFiatAmount is undefined
+    // Root cause: There is a race condition where when switching from a non-EVM network
+    // to an EVM network, the mutichainTokenWithFiatAmount is undefined
+    // This is a workaround to avoid the error
+    // Look into the isEvm selector
+    // We might be switching network before account.
+    address: '',
+    chainId: '',
+    symbol: '',
+    title: '',
+    image: '',
+    tokenFiatAmount: 0,
+    string: '',
+    decimals: 0,
+    aggregators: [],
+    isNative: false,
+    primary: '',
+    secondary: 0,
+  };
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  const address = (() => {
-    if (type === AssetType.token) {
-      return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
-    }
-    return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
-  })();
-
-  if (!address) {
-    throw new Error('Could not determine address for asset');
-  }
+  const address =
+    (() => {
+      if (type === AssetType.token) {
+        return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
+      }
+      return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
+    })() ?? '';
 
   const shouldShowContractAddress = type === AssetType.token;
   const contractAddress = (() => {
@@ -230,10 +246,6 @@ const AssetPage = ({
         secondary: balance ? Number(balance) : 0,
       }
     : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
-
-  if (!tokenWithFiatAmount) {
-    throw new Error('Token with fiat amount not found');
-  }
 
   return (
     <Box
