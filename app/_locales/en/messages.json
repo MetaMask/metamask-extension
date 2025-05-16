@@ -496,7 +496,7 @@
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
   "appDescription": {
-    "message": "An Ethereum Wallet in your Browser",
+    "message": "The world's most trusted crypto wallet",
     "description": "The description of the application"
   },
   "appName": {
@@ -6245,6 +6245,9 @@
   },
   "termsOfUseTitle": {
     "message": "Our Terms of Use have updated"
+  },
+  "testNetworks": {
+    "message": "Test networks"
   },
   "testnets": {
     "message": "Testnets"

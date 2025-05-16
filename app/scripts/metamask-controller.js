@@ -423,6 +423,7 @@ import {
   onRpcEndpointDegraded,
 } from './lib/network-controller/messenger-action-handlers';
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
+import { isRelaySupported } from './lib/transaction/transaction-relay';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -4467,8 +4468,9 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsDataDeletionController.updateDataDeletionTaskStatus.bind(
           this.metaMetricsDataDeletionController,
         ),
-      // Trace
+      // Other
       endTrace,
+      isRelaySupported,
     };
   }
 
@@ -7119,8 +7121,8 @@ export default class MetamaskController extends EventEmitter {
             .map((keyring, index) => {
               if (keyring.type === KeyringTypes.hd) {
                 return {
-                  id: state.keyringsMetadata[index].id,
-                  name: state.keyringsMetadata[index].name,
+                  id: keyring.metadata.id,
+                  name: keyring.metadata.name,
                   type: 'mnemonic',
                   primary: index === 0,
                 };

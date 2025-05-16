@@ -157,7 +157,6 @@ export type ControllerStatePropertiesEnumerated = {
   isUnlocked: KeyringControllerState['isUnlocked'];
   vault?: KeyringControllerState['vault'];
   keyrings: KeyringControllerState['keyrings'];
-  keyringsMetadata: KeyringControllerState['keyringsMetadata'];
   encryptionKey?: KeyringControllerState['encryptionKey'];
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];

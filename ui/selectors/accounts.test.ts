@@ -52,7 +52,9 @@ describe('Accounts Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
