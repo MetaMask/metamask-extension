@@ -2,8 +2,10 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { SnapId } from '@metamask/snaps-sdk';
 import { getInternalAccounts } from '../../selectors/accounts';
 import { getMetaMaskHdKeyrings } from '../../selectors';
+import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
 // TODO: Move this data type to the @metamask/keyring-controller module
 type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
@@ -24,7 +26,8 @@ export const useHdKeyringsWithSnapAccounts = () => {
       const firstPartySnapAccounts = internalAccounts
         .filter(
           (account: InternalAccount) =>
-            account.metadata.snap?.id &&
+            account.metadata.snap &&
+            isSnapPreinstalled(account.metadata.snap.id as SnapId) &&
             account.options?.entropySource === keyring.metadata.id,
         )
         .map((account: InternalAccount) => account.address);
