@@ -945,6 +945,7 @@ describe('Bridge selectors', () => {
           toChainId: formatChainIdToCaip('0x1'),
           fromToken: { decimals: 6, address: zeroAddress() },
           fromChain: { chainId: CHAIN_IDS.MAINNET },
+          minimumBalanceForRentExemption: '890880',
         },
         bridgeStateOverrides: {
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
