@@ -111,6 +111,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       }, []);
 
       const [newAccountName, setNewAccountName] = useState('');
+      const [creationError, setCreationError] = useState('');
       const trimmedAccountName = newAccountName.trim();
 
       const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
@@ -139,6 +140,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       const onSubmit = useCallback(
         async (event: KeyboardEvent<HTMLFormElement>) => {
           setLoading(true);
+          setCreationError('');
           event.preventDefault();
           try {
             trace({ name: TraceName.CreateAccount });
@@ -158,13 +160,20 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             });
             history.push(mostRecentOverviewPage);
           } catch (error) {
+            setLoading(false);
+            let message = 'An unexpected error occurred.';
+            if (error instanceof Error) {
+              message = (error as Error).message;
+            }
+            setCreationError(message);
+
             if (selectedKeyringId) {
               trackEvent({
                 category: MetaMetricsEventCategory.Accounts,
                 event: MetaMetricsEventName.AccountImportFailed,
                 properties: {
                   account_type: MetaMetricsEventAccountType.Imported,
-                  error: (error as Error).message,
+                  error: message,
                   hd_entropy_index: hdEntropyIndex,
                   chain_id_caip: scope,
                 },
@@ -175,7 +184,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 event: MetaMetricsEventName.AccountAddFailed,
                 properties: {
                   account_type: MetaMetricsEventAccountType.Default,
-                  error: (error as Error).message,
+                  error: message,
                   hd_entropy_index: hdEntropyIndex,
                   chain_id_caip: scope,
                 },
@@ -204,8 +213,8 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setNewAccountName(e.target.value)
             }
-            helpText={errorMessage}
-            error={!isValidAccountName}
+            helpText={creationError || errorMessage}
+            error={!isValidAccountName || Boolean(creationError)}
             onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
               if (e.key === 'Enter') {
                 onSubmit(e);

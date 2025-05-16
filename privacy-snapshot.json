@@ -27,7 +27,7 @@
   "configuration.metamask-institutional.io",
   "connect.trezor.io",
   "customnetwork.test",
-  "defiadapters.dev-api.cx.metamask.io",
+  "defiadapters.api.cx.metamask.io",
   "doesntexist.test",
   "etherscan.io",
   "execution.metamask.io",
@@ -87,5 +87,7 @@
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "i.seadn.io",
+  "images.ctfassets.net"
 ]
