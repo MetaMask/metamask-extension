@@ -62,7 +62,6 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
-    "assetExchangeRates": "object",
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
@@ -71,7 +70,8 @@
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
-    "quotesRefreshCount": 0
+    "quotesRefreshCount": 0,
+    "assetExchangeRates": "object"
   },
   "BridgeStatusController": { "txHistory": "object" },
   "CronjobController": { "jobs": "object", "events": "object" },
@@ -79,21 +79,6 @@
     "currentCurrency": "usd",
     "currencyRates": {
       "ETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "SepoliaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "LineaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "MegaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
