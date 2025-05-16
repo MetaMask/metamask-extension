@@ -7,6 +7,10 @@ class SendTokenPage {
 
   private readonly assetPickerButton = '[data-testid="asset-picker-button"]';
 
+  private readonly contactsButton = { css: 'button', text: 'Contacts' };
+
+  private readonly contactListItem = '[data-testid="address-list-item-label"]';
+
   private readonly continueButton = {
     text: 'Continue',
     tag: 'button',
@@ -162,6 +166,20 @@ class SendTokenPage {
       text: '$0.75',
     });
     console.log('Send fees validation successful');
+  }
+
+  /**
+   * Select a contact item on the send token screen.
+   *
+   * @param contactName - The name of the contact to select.
+   */
+  async selectContactItem(contactName: string): Promise<void> {
+    console.log(`Selecting contact item: ${contactName} on send token screen`);
+    await this.driver.clickElement(this.contactsButton);
+    await this.driver.clickElement({
+      text: contactName,
+      css: this.contactListItem,
+    });
   }
 
   /**
