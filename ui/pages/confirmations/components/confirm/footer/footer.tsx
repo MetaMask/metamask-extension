@@ -33,9 +33,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
-import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
-import { UpgradeCancelModal } from './upgrade-cancel-modal';
 import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
@@ -159,7 +157,6 @@ const ConfirmButton = ({
 const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const [isUpgradeCancelModalOpen, setUpgradeCancelModalOpen] = useState(false);
   const { onTransactionConfirm } = useTransactionConfirm();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
@@ -178,7 +175,6 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
-  const isUpgradeTransaction = useIsUpgradeTransaction();
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
@@ -211,20 +207,10 @@ const Footer = () => {
         return;
       }
 
-      if (isUpgradeTransaction) {
-        setUpgradeCancelModalOpen(true);
-        return;
-      }
-
       rejectApproval({ location });
       resetTransactionState();
     },
-    [
-      currentConfirmation,
-      isUpgradeTransaction,
-      rejectApproval,
-      resetTransactionState,
-    ],
+    [currentConfirmation, rejectApproval, resetTransactionState],
   );
 
   const onSubmit = useCallback(() => {
@@ -266,11 +252,6 @@ const Footer = () => {
         isOpen={showOriginThrottleModal}
         onConfirmationCancel={onCancel}
       />
-      <UpgradeCancelModal
-        isOpen={isUpgradeCancelModalOpen}
-        onClose={() => setUpgradeCancelModalOpen(false)}
-        onReject={rejectApproval}
-      />
       <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
         <Button
           block
@@ -278,7 +259,6 @@ const Footer = () => {
           onClick={handleFooterCancel}
           size={ButtonSize.Lg}
           variant={ButtonVariant.Secondary}
-          endIconName={isUpgradeTransaction ? IconName.ArrowDown : undefined}
         >
           {t('cancel')}
         </Button>

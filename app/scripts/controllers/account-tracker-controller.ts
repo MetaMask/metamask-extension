@@ -718,6 +718,8 @@ export default class AccountTrackerController extends BaseController<
     }
 
     const selectedAddress =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       address ||
       this.messagingSystem.call('AccountsController:getSelectedAccount')
         .address;

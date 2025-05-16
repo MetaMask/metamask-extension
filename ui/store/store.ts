@@ -4,6 +4,7 @@ import devtoolsEnhancer from 'remote-redux-devtools';
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import type { KeyringMetadata } from '@metamask/keyring-controller';
 import {
   NftControllerState,
   TokensControllerState,
@@ -81,7 +82,7 @@ type TemporaryBackgroundState = NftControllerState &
       };
       selectedAccount: string;
     };
-    keyrings: { type: string; accounts: string[] }[];
+    keyrings: { type: string; accounts: string[]; metadata: KeyringMetadata }[];
   };
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
@@ -103,7 +104,7 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
   localeMessages: RootReducerReturnType['localeMessages'];
 };
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
   const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);

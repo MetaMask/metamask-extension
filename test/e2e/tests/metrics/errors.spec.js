@@ -126,6 +126,7 @@ async function matchesSnapshot({
   update = process.env.UPDATE_SNAPSHOTS === 'true',
 }) {
   const snapshotPath = resolve(__dirname, `./state-snapshots/${snapshot}.json`);
+  console.log('snapshotPath', snapshotPath);
   const rawSnapshotData = await fs.readFile(snapshotPath, {
     encoding: 'utf-8',
   });

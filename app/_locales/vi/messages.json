@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Chi tiết tài khoản"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Chuyển về tài khoản thông thường"
-  },
   "accountIdenticon": {
     "message": "Biểu tượng nhận dạng tài khoản"
   },
@@ -958,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Chúng tôi sử dụng Infura làm nhà cung cấp dịch vụ gọi hàm từ xa (RPC) để cung cấp quyền truy cập riêng tư và đáng tin cậy nhất vào dữ liệu Ethereum mà chúng tôi có thể. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ thu thập địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Đọc $1 của chúng tôi để tìm hiểu thêm về cách Infura xử lý dữ liệu.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Bạn cần sử dụng MetaMask trên Google Chrome để kết nối với Ví cứng của bạn."
@@ -1027,9 +1024,6 @@
   },
   "confirm": {
     "message": "Xác nhận"
-  },
-  "confirmAccountType": {
-    "message": "Loại"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Tài khoản thông minh"
@@ -1120,18 +1114,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Yêu cầu giao dịch"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Hủy giao dịch"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Hủy cập nhật & giao dịch"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Nếu bạn không muốn cập nhật tài khoản của mình, bạn có thể hủy tại đây.\n\nĐể hoàn tất giao dịch này mà không cập nhật, bạn sẽ cần thực hiện lại yêu cầu này trên trang web. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Hủy giao dịch"
   },
   "confirmationAlertDetails": {
     "message": "Để bảo vệ tài sản của bạn, chúng tôi đề nghị bạn từ chối yêu cầu này."
@@ -1323,9 +1305,6 @@
   },
   "copyAddress": {
     "message": "Sao chép địa chỉ vào bộ nhớ đệm"
-  },
-  "copyAddressShort": {
-    "message": "Sao chép địa chỉ"
   },
   "copyPrivateKey": {
     "message": "Sao chép khóa riêng tư"
@@ -2006,9 +1985,6 @@
   },
   "existingChainId": {
     "message": "Thông tin bạn đã nhập được liên kết với một ID chuỗi hiện có."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Để xem và xác nhận yêu cầu gần đây nhất của bạn, trước tiên bạn cần phải chấp thuận hoặc từ chối các yêu cầu hiện có."
   },
   "expandView": {
     "message": "Chế độ xem mở rộng"
@@ -3688,22 +3664,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Quá trình cài đặt MetaMask đã hoàn tất!"
-  },
-  "oneDayAbbreviation": {
-    "message": "1 Ngày",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1 Tháng",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1 Tuần",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1 Năm",
-    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng. $1",
@@ -5998,10 +5958,6 @@
   "thirdPartySoftware": {
     "message": "Thông báo phần mềm của bên thứ ba",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3 Tháng",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "Thời gian"

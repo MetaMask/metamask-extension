@@ -95,6 +95,9 @@ async function main() {
     {} as { [method: string]: string },
   );
 
+  const server = mockServer(port, await parseOpenRPCDocument(transformedDoc));
+  server.start();
+
   // Multichain API excluding `wallet_invokeMethod`
   await withFixtures(
     {
@@ -117,12 +120,6 @@ async function main() {
 
       // Open Dapp
       await openDapp(driver, undefined, DAPP_URL);
-
-      const server = mockServer(
-        port,
-        await parseOpenRPCDocument(transformedDoc),
-      );
-      server.start();
 
       const getSession = doc.methods.find(
         (m) => (m as MethodObject).name === 'wallet_getSession',

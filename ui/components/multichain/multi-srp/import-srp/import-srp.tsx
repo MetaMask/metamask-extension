@@ -28,6 +28,7 @@ import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-r
 import { clearClipboard } from '../../../../helpers/utils/util';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
+import ShowHideToggle from '../../../ui/show-hide-toggle';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -51,6 +52,9 @@ export const ImportSrp = ({
   const [numberOfWords, setNumberOfWords] = useState(defaultNumberOfWords);
   const [invalidSrpWords, setInvalidSrpWords] = useState(
     Array(defaultNumberOfWords).fill(false),
+  );
+  const [showSrp, setShowSrp] = useState(
+    new Array(defaultNumberOfWords).fill(false),
   );
 
   const [loading, setLoading] = useState(false);
@@ -181,6 +185,19 @@ export const ImportSrp = ({
     [t, setSrpError, setSecretRecoveryPhrase, numberOfWords],
   );
 
+  const toggleShowSrp = useCallback((index) => {
+    setShowSrp((currentShowSrp) => {
+      const newShowSrp = currentShowSrp.slice();
+      if (newShowSrp[index]) {
+        newShowSrp[index] = false;
+      } else {
+        newShowSrp.fill(false);
+        newShowSrp[index] = true;
+      }
+      return newShowSrp;
+    });
+  }, []);
+
   const onSrpPaste = useCallback(
     (rawSrp) => {
       const parsedSrp = parseSecretRecoveryPhrase(rawSrp);
@@ -211,6 +228,7 @@ export const ImportSrp = ({
           new Array(newNumberOfWords - newDraftSrp.length).fill(''),
         );
       }
+      setShowSrp(new Array(newNumberOfWords).fill(false));
       onSrpChange(newDraftSrp);
       clearClipboard();
     },
@@ -270,7 +288,11 @@ export const ImportSrp = ({
                     data-testid={id}
                     borderRadius={BorderRadius.LG}
                     error={invalidSrpWords[index]}
-                    type={TextFieldType.Text}
+                    type={
+                      showSrp[index]
+                        ? TextFieldType.Text
+                        : TextFieldType.Password
+                    }
                     onChange={(e) => {
                       e.preventDefault();
                       onSrpWordChange(index, e.target.value);
@@ -285,6 +307,15 @@ export const ImportSrp = ({
                         onSrpPaste(newSrp);
                       }
                     }}
+                  />
+                  <ShowHideToggle
+                    id={`${id}-checkbox`}
+                    ariaLabelHidden={t('srpWordHidden')}
+                    ariaLabelShown={t('srpWordShown')}
+                    shown={showSrp[index]}
+                    data-testid={`${id}-checkbox`}
+                    onChange={() => toggleShowSrp(index)}
+                    title={t('srpToggleShow')}
                   />
                 </Box>
               </Box>
@@ -314,6 +345,9 @@ export const ImportSrp = ({
                 setSrpError('');
                 setInvalidSrpWords(
                   Array(numberOfWords === 12 ? 24 : 12).fill(false),
+                );
+                setShowSrp(
+                  new Array(numberOfWords === 12 ? 24 : 12).fill(false),
                 );
               }}
               data-testid="import-srp__multi-srp__switch-word-count-button"

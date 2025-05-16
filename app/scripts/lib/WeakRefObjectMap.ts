@@ -200,6 +200,8 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
     ) => void,
     // this is an unbound method, so the this value is unknown.
     // Also the Map type this is based on uses any for this parameter as well.
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     thisArg?: any,
   ): void {

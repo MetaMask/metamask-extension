@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "アカウントの詳細"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": "再び通常アカウントに切り替えます"
-  },
   "accountIdenticon": {
     "message": "アカウントのアイデンティコン"
   },
@@ -958,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "当社では、遠隔手続き呼び出し (RPC) プロバイダーにInfuraを使用して、イーサリアムデータにできるだけ信頼性の高いプライベートな形でアクセスできるようにしています。独自のRPCをお選びいただくこともできますが、どのRPCもトランザクションを実行するために、ユーザーのIPアドレスとイーサリアムウォレットを取得する点にご注意ください。Infuraによるデータの取扱いに関する詳細は、$1をご覧ください。",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "ハードウェアウォレットに接続するには、MetaMaskをGoogle Chromeで使用する必要があります。"
@@ -1027,9 +1024,6 @@
   },
   "confirm": {
     "message": "確認"
-  },
-  "confirmAccountType": {
-    "message": "タイプ"
   },
   "confirmAccountTypeSmartContract": {
     "message": "スマートアカウント"
@@ -1120,18 +1114,6 @@
   },
   "confirmTitleTransaction": {
     "message": "トランザクションの要求"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "トランザクションをキャンセル"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "更新とトランザクションをキャンセル"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "アカウントを更新しない場合は、こちらからキャンセルできます。\n\n更新せずにこのトランザクションを完了させるには、サイトでこの要求をもう一度行う必要があります。$1。"
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "トランザクションのキャンセル"
   },
   "confirmationAlertDetails": {
     "message": "資産を守るため、リクエストを拒否することをお勧めします。"
@@ -1323,9 +1305,6 @@
   },
   "copyAddress": {
     "message": "アドレスをクリップボードにコピー"
-  },
-  "copyAddressShort": {
-    "message": "アドレスをコピー"
   },
   "copyPrivateKey": {
     "message": "秘密鍵をコピー"
@@ -2006,9 +1985,6 @@
   },
   "existingChainId": {
     "message": "入力された情報は、既存のチェーンIDと関連付けられています。"
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "一番最近の要求を表示して確定するには、はじめに既存の要求を承認または拒否する必要があります。"
   },
   "expandView": {
     "message": "ビューを展開"
@@ -3688,22 +3664,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMaskのインストールが完了しました！"
-  },
-  "oneDayAbbreviation": {
-    "message": "1日",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1か月",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1週間",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1年",
-    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続してください。$1",
@@ -5998,10 +5958,6 @@
   "thirdPartySoftware": {
     "message": "サードパーティソフトウェアに関する通知",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3か月",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "時間"

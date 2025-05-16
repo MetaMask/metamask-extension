@@ -12,6 +12,7 @@ import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import {
   assertChangedSpendingCap,
   editSpendingCap,
+  mocked4BytesIncreaseAllowance,
   openDAppWithContract,
   TestSuiteArguments,
 } from './shared';
@@ -115,32 +116,6 @@ async function createAndAssertIncreaseAllowanceSubmission(
 
 async function mocks(server: Mockttp) {
   return [await mocked4BytesIncreaseAllowance(server)];
-}
-
-export async function mocked4BytesIncreaseAllowance(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
-    .always()
-    .withQuery({ hex_signature: '0x39509351' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [
-            {
-              id: 46002,
-              created_at: '2018-06-24T21:43:27.354648Z',
-              text_signature: 'increaseAllowance(address,uint256)',
-              hex_signature: '0x39509351',
-              bytes_signature: '9PQ',
-            },
-          ],
-        },
-      };
-    });
 }
 
 async function createERC20IncreaseAllowanceTransaction(driver: Driver) {

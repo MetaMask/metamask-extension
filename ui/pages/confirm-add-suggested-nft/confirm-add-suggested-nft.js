@@ -180,7 +180,7 @@ const ConfirmAddSuggestedNFT = () => {
     };
 
     addImageUrlToSuggestedNFTs();
-  }, []); // Empty dependency array to run only on mount
+  }, [suggestedNfts]); // rerender when suggestedNfts changes
 
   return (
     <Box
@@ -269,7 +269,6 @@ const ConfirmAddSuggestedNFT = () => {
                 const nftImageURL = found
                   ? found.requestData.asset.assetImageUrl
                   : '';
-
                 const blockExplorerLink = getTokenTrackerLink(
                   address,
                   chainId,

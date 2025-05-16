@@ -8,7 +8,7 @@ import { isHexPrefixed } from 'ethereumjs-util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import type { CombinedBackgroundAndReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/store';
 import {
   AlignItems,
   Display,
@@ -25,7 +25,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
-function mapStateToProps(state: CombinedBackgroundAndReduxState) {
+function mapStateToProps(state: Pick<MetaMaskReduxState, 'appState'>) {
   const { buyView, warning } = state.appState;
   return {
     buyView,
@@ -34,14 +34,13 @@ function mapStateToProps(state: CombinedBackgroundAndReduxState) {
 }
 const PREFIX_LEN = 6;
 const SUFFIX_LEN = 5;
-
 function QrCodeView({
   Qr,
   warning,
   accountName,
 }: {
   Qr: { message: string; data: string };
-  warning: null | string;
+  warning: string | null | undefined;
   accountName?: string;
 }) {
   const trackEvent = useContext(MetaMetricsContext);
@@ -58,14 +57,12 @@ function QrCodeView({
   const header = message ? (
     <div className="qr-code__header">{message}</div>
   ) : null;
-
   const addressStart = data.substring(0, PREFIX_LEN);
   const addressMiddle: string = data.substring(
     PREFIX_LEN,
     data.length - SUFFIX_LEN,
   );
   const addressEnd: string = data.substring(data.length - SUFFIX_LEN);
-
   return (
     <div className="qr-code">
       {Array.isArray(message) ? (
@@ -159,6 +156,7 @@ QrCodeView.propTypes = {
     ]),
     data: PropTypes.string.isRequired,
   }).isRequired,
+  accountName: PropTypes.string,
 };
 
 export default connect(mapStateToProps)(QrCodeView);

@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Mga detalye ng account"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Bumalik sa regular na account"
-  },
   "accountIdenticon": {
     "message": "Identicon ng Account"
   },
@@ -958,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Gumagamit kami ng Infura bilang aming provider ng remote procedure call (RPC) para mag-alok ng pinakamaaasahan at pribadong access sa Ethereum data na kaya namin. Maaari kang pumili ng iyong sariling RPC, ngunit tandaan na ang anumang RPC ay makakatanggap ng iyong IP address at Ethereum wallet upang gumawa ng mga transaksyon. Basahin ang aming $1 para matuto pa tungkol sa kung paano pinangangasiwaan ng Infura ang datos.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome para maikonekta sa iyong Wallet na Hardware."
@@ -1027,9 +1024,6 @@
   },
   "confirm": {
     "message": "Kumpirmahin"
-  },
-  "confirmAccountType": {
-    "message": "Uri"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Smart account"
@@ -1120,18 +1114,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Hiling na Transaksyon"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Kanselahin ang transaksyon"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Kanselahin ang pag-update at transaksyon"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "Kung ayaw mong i-update ang account mo, puwede mo itong kanselahin dito. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Kanselahin ang transaksyon"
   },
   "confirmationAlertDetails": {
     "message": "Para protektahan ang iyong mga asset, iminumungkahi namin na tanggihan mo ang kahilingan."
@@ -1323,9 +1305,6 @@
   },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
-  },
-  "copyAddressShort": {
-    "message": "Kopyahin ang address"
   },
   "copyPrivateKey": {
     "message": "Kopyahin ang pribadong key"
@@ -2006,9 +1985,6 @@
   },
   "existingChainId": {
     "message": "Ang impormasyon na iyong inilagay ay nauugnay sa isang umiiral na ID ng chain."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "Para tingnan at kumpirmahin ang iyong pinakabagong hiling, kailangan mo munang aprubahan o tanggihan ang mga umiiral na hiling."
   },
   "expandView": {
     "message": "I-expand ang view"
@@ -3688,22 +3664,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Ang pag-install ng iyong MetaMask ay kumpleto na!"
-  },
-  "oneDayAbbreviation": {
-    "message": "1D",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1M",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1W",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1Y",
-    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo. $1",
@@ -5998,10 +5958,6 @@
   "thirdPartySoftware": {
     "message": "Paunawa ng third-party na software",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
-  },
-  "threeMonthsAbbreviation": {
-    "message": "3M",
-    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "Oras"

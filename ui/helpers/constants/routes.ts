@@ -104,6 +104,17 @@ PATH_NAME_MAP[CONNECT_HARDWARE_ROUTE] = 'Connect Hardware Wallet Page';
 export const SEND_ROUTE = '/send';
 PATH_NAME_MAP[SEND_ROUTE] = 'Send Page';
 
+export const REMOTE_ROUTE = '/remote';
+PATH_NAME_MAP[REMOTE_ROUTE] = 'Remote Mode Page';
+
+export const REMOTE_ROUTE_SETUP_SWAPS = '/remote/setup-swaps';
+PATH_NAME_MAP[REMOTE_ROUTE_SETUP_SWAPS] = 'Remote Mode Setup Swaps Page';
+
+export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
+  '/remote/setup-daily-allowance';
+PATH_NAME_MAP[REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE] =
+  'Remote Mode Setup Daily Allowance Page';
+
 export const CONNECTIONS = '/connections';
 PATH_NAME_MAP[CONNECTIONS] = 'Connections';
 

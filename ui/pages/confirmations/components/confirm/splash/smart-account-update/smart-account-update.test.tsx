@@ -79,6 +79,20 @@ describe('Splash', () => {
     );
     await flushPromises();
     expect(rejectPendingApproval).toHaveBeenCalledTimes(1);
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not render for confirmation not coming from DAPP', () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction({
+        ...upgradeAccountConfirmation,
+        origin: 'metamask',
+      } as Confirmation),
+    );
+    const { container } = renderWithConfirmContextProvider(
+      <SmartAccountUpdate />,
+      mockStore,
+    );
+
+    expect(container.firstChild).toBeNull();
   });
 });

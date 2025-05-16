@@ -65,6 +65,8 @@ export function NotificationsSettingsAllowNotifications({
     useEnableNotifications();
   const { disableNotifications, error: errorDisableNotifications } =
     useDisableNotifications();
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const error = errorEnableNotifications || errorDisableNotifications;
 
   useEffect(() => {

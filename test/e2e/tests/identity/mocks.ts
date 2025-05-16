@@ -136,3 +136,31 @@ export async function mockInfuraAndAccountSync(
 
   mockIdentityServices(mockServer, userStorageMockttpController);
 }
+
+/**
+ * Sets up mock responses for NFT API calls
+ *
+ * @param mockServer - The Mockttp server instance
+ * @param userAddress - The user address to mock the NFT API call for
+ */
+export async function mockNftApiCall(
+  mockServer: Mockttp,
+  userAddress: string,
+): Promise<void> {
+  mockServer
+    .forGet(`https://nft.api.cx.metamask.io/users/${userAddress}/tokens`)
+    .withQuery({
+      limit: 50,
+      includeTopBid: 'true',
+      chainIds: ['1', '59144'],
+      continuation: '',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+        },
+      };
+    });
+}

@@ -40,6 +40,8 @@ const ProfileSyncToggle = () => {
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const error = enableProfileSyncingError || disableProfileSyncingError;
 
   const isProfileSyncingUpdateLoading = useSelector(

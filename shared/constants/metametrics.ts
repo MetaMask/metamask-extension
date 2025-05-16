@@ -304,7 +304,7 @@ export type SegmentEventPayload = {
     params?: Record<string, string>;
     legacy_event?: boolean;
     locale: string;
-    chain_id: string;
+    chain_id: string | null;
     environment_type?: string;
     revenue?: number;
     value?: number;
@@ -614,6 +614,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user signs in
    */
   ProfileId = 'profile_id',
+  /**
+   * Identified when the user adds or removes configured chains (evm or non-evm)
+   */
+  ChainIdList = 'chain_id_list',
 }
 
 /**
@@ -645,6 +649,7 @@ export enum MetaMetricsEventName {
   AccountAdded = 'Account Added',
   AccountAddSelected = 'Account Add Selected',
   AccountAddFailed = 'Account Add Failed',
+  AccountImportFailed = 'Account Import Failed',
   AccountDetailsOpened = 'Account Details Opened',
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
@@ -666,6 +671,7 @@ export enum MetaMetricsEventName {
   BannerSelect = 'Banner Select',
   BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
+  SwapLinkClicked = 'Swap Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
   CurrentCurrency = 'Current Currency',
@@ -924,7 +930,6 @@ export enum MetaMetricsEventAccountType {
 
 export enum QueueType {
   NavigationHeader = 'navigation_header',
-  QueueController = 'queue_controller',
 }
 
 export enum MetaMetricsEventAccountImportType {
@@ -946,6 +951,7 @@ export enum MetaMetricsEventCategory {
   Footer = 'Footer',
   Home = 'Home',
   InpageProvider = 'inpage_provider',
+  MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
   Navigation = 'Navigation',
@@ -1017,6 +1023,11 @@ export enum MetaMetricsTokenEventSource {
 export enum MetaMetricsTransactionEventSource {
   Dapp = 'dapp',
   User = 'user',
+}
+
+export enum MetaMetricsRequestedThrough {
+  EthereumProvider = 'ethereum_provider',
+  MultichainApi = 'multichain_api',
 }
 
 export enum MetaMetricsEventLocation {

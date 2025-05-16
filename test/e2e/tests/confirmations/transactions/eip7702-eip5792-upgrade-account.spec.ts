@@ -33,11 +33,13 @@ describe('Upgrade Account', function (this: Suite) {
         testSpecificMock: mockEip7702FeatureFlag,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, localNodes }: { driver: Driver, localNodes: Anvil }) => {
+      async ({ driver, localNodes }: { driver: Driver; localNodes: Anvil }) => {
         await loginWithBalanceValidation(driver);
 
         // We check that we have an EOA account
-        let accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
+        let accountBytecode = await localNodes[0].getCode(
+          DEFAULT_FIXTURE_ACCOUNT,
+        );
         assert.strictEqual(accountBytecode, undefined);
 
         const testDapp = new TestDapp(driver);
@@ -49,7 +51,7 @@ describe('Upgrade Account', function (this: Suite) {
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
         // acknowledge splash page
-        await upgradeAndBatchTxConfirmation.tickSplashUpgradeButton();
+        await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
 
         await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
           'Smart account',
@@ -80,7 +82,70 @@ describe('Upgrade Account', function (this: Suite) {
 
         // We check that we have an upgraded account
         accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
-        assert.strictEqual(accountBytecode, '0xef01008438ad1c834623cff278ab6829a248e37c2d7e3f');
+        assert.strictEqual(
+          accountBytecode,
+          '0xef01008438ad1c834623cff278ab6829a248e37c2d7e3f',
+        );
+      },
+    );
+  });
+
+  it('an EOA account is not upgraded when rejecting a batch transaction, but can trigger a new send call', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        localNodeOptions: [
+          {
+            type: 'anvil',
+            options: {
+              hardfork: 'prague',
+              loadState:
+                './test/e2e/seeder/network-states/eip7702-state/withDelegatorContracts.json',
+            },
+          },
+        ],
+        testSpecificMock: mockEip7702FeatureFlag,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver, localNodes }: { driver: Driver; localNodes: Anvil }) => {
+        await loginWithBalanceValidation(driver);
+
+        // We check that we have an EOA account
+        let accountBytecode = await localNodes[0].getCode(
+          DEFAULT_FIXTURE_ACCOUNT,
+        );
+        assert.strictEqual(accountBytecode, undefined);
+
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.clickSendCalls();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
+
+        // Reject batch tx
+        await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
+        await upgradeAndBatchTxConfirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+
+        // We check that we continue to have an EOA account
+        accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
+        assert.strictEqual(accountBytecode, undefined);
+
+        // We check that we can trigger a new send call, as upgrade tx was not rejected
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.clickSendCalls();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
+          'Smart account',
+        );
+        await upgradeAndBatchTxConfirmation.check_expectedInteractingWithIsDisplayed(
+          'Account 1',
+        );
       },
     );
   });

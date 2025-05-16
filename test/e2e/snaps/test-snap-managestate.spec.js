@@ -40,6 +40,7 @@ describe('Test Snap manageState', function () {
           text: 'Connect',
           tag: 'button',
         });
+
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -47,6 +48,10 @@ describe('Test Snap manageState', function () {
 
         // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
+
+        // click and dismiss possible scroll element
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -184,6 +189,7 @@ describe('Test Snap manageState', function () {
           text: 'Connect',
           tag: 'button',
         });
+
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -191,6 +197,10 @@ describe('Test Snap manageState', function () {
 
         // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
+
+        // click and dismiss possible scroll element
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',

@@ -90,9 +90,6 @@
   "accountDetails": {
     "message": "Account details"
   },
-  "accountDetailsRevokeDelegationButton": {
-    "message": " Switch back to regular account"
-  },
   "accountIdenticon": {
     "message": "Account identicon"
   },
@@ -360,6 +357,12 @@
   "alert": {
     "message": "Alert"
   },
+  "alertAccountTypeUpgradeMessage": {
+    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1."
+  },
+  "alertAccountTypeUpgradeTitle": {
+    "message": "Account type"
+  },
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
   },
@@ -496,7 +499,7 @@
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
   "appDescription": {
-    "message": "An Ethereum Wallet in your Browser",
+    "message": "The world's most trusted crypto wallet",
     "description": "The description of the application"
   },
   "appName": {
@@ -548,6 +551,9 @@
   },
   "asset": {
     "message": "Asset"
+  },
+  "assetChartNoHistoricalPrices": {
+    "message": "We could not fetch any historical data"
   },
   "assetMultipleNFTsBalance": {
     "message": "$1 NFTs"
@@ -1010,8 +1016,11 @@
     "message": "Choose your network"
   },
   "chooseYourNetworkDescription": {
-    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data.",
-    "description": "$1 is a link to the privacy policy"
+    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data for EVM accounts, for Solana accounts $2.",
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
+  },
+  "chooseYourNetworkDescriptionCallToAction": {
+    "message": "click here"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
@@ -1081,9 +1090,6 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmAccountType": {
-    "message": "Type"
-  },
   "confirmAccountTypeSmartContract": {
     "message": "Smart account"
   },
@@ -1120,6 +1126,12 @@
   "confirmGasFeeTokenTooltip": {
     "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
   },
+  "confirmInfoAccountNow": {
+    "message": "Now"
+  },
+  "confirmInfoSwitchingTo": {
+    "message": "Switching To"
+  },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
   },
@@ -1132,11 +1144,11 @@
   "confirmSimulationApprove": {
     "message": "You approve"
   },
+  "confirmTitleAccountTypeSwitch": {
+    "message": "Account update"
+  },
   "confirmTitleApproveTransactionNFT": {
     "message": "Withdrawal request"
-  },
-  "confirmTitleDelegationRevoke": {
-    "message": "Account update"
   },
   "confirmTitleDeployContract": {
     "message": "Deploy a contract"
@@ -1146,6 +1158,9 @@
   },
   "confirmTitleDescDelegationRevoke": {
     "message": "You're switching back to a standard account (EOA)."
+  },
+  "confirmTitleDescDelegationUpgrade": {
+    "message": "You're switching to a smart account"
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
@@ -1179,18 +1194,6 @@
   },
   "confirmTitleTransaction": {
     "message": "Transaction request"
-  },
-  "confirmUpgradeCancelModalButtonCancelTransaction": {
-    "message": "Cancel transaction"
-  },
-  "confirmUpgradeCancelModalButtonCancelUpgrade": {
-    "message": "Cancel update & transaction"
-  },
-  "confirmUpgradeCancelModalDescription": {
-    "message": "If you don't want to update your account, you can cancel it here.\n\nTo finish this transaction without an update, you'll need to make this request again on the site. $1."
-  },
-  "confirmUpgradeCancelModalTitle": {
-    "message": "Cancel transaction"
   },
   "confirmationAlertDetails": {
     "message": "To protect your assets, we suggest you reject the request."
@@ -1784,6 +1787,38 @@
   "duplicateContactWarning": {
     "message": "You have duplicate contacts"
   },
+  "durationSuffixDay": {
+    "message": "D",
+    "description": "Shortened form of 'day'"
+  },
+  "durationSuffixHour": {
+    "message": "H",
+    "description": "Shortened form of 'hour'"
+  },
+  "durationSuffixMillisecond": {
+    "message": "MS",
+    "description": "Shortened form of 'millisecond'"
+  },
+  "durationSuffixMinute": {
+    "message": "M",
+    "description": "Shortened form of 'minute'"
+  },
+  "durationSuffixMonth": {
+    "message": "M",
+    "description": "Shortened form of 'month'"
+  },
+  "durationSuffixSecond": {
+    "message": "S",
+    "description": "Shortened form of 'second'"
+  },
+  "durationSuffixWeek": {
+    "message": "W",
+    "description": "Shortened form of 'week'"
+  },
+  "durationSuffixYear": {
+    "message": "Y",
+    "description": "Shortened form of 'year'"
+  },
   "edit": {
     "message": "Edit"
   },
@@ -2075,9 +2110,6 @@
   },
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
-  },
-  "existingRequestsBannerAlertDesc": {
-    "message": "To view and confirm your most recent request, you'll need to approve or reject existing requests first."
   },
   "expandView": {
     "message": "Expand view"
@@ -2562,6 +2594,9 @@
   "included": {
     "message": "included"
   },
+  "includesXTransactions": {
+    "message": "Includes $1 transactions"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -2768,6 +2803,9 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Learn more about privacy best practices."
+  },
+  "learnMoreAboutSolanaAccounts": {
+    "message": "Learn more about Solana accounts"
   },
   "learnMoreKeystone": {
     "message": "Learn More"
@@ -3212,6 +3250,9 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
+  },
+  "networkNameBitcoinTestnet": {
+    "message": "Bitcoin Testnet"
   },
   "networkNameDefinition": {
     "message": "The name associated with this network."
@@ -3690,7 +3731,10 @@
     "message": "IPFS gateway URL is valid"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data."
+    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our Privacy policy to learn more about how Infura handles data for EVM accounts, for Solana accounts $2."
+  },
+  "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
+    "message": "click here"
   },
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
@@ -3782,22 +3826,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
-  },
-  "oneDayAbbreviation": {
-    "message": "1D",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1M",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1W",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1Y",
-    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
@@ -5074,11 +5102,29 @@
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
   },
+  "slideMultiSrpDescription": {
+    "message": "Import and use multiple wallets in MetaMask"
+  },
+  "slideMultiSrpTitle": {
+    "message": "Add multiple Secret Recovery Phrases"
+  },
   "slideRemoteModeDescription": {
     "message": "Access your hardware wallet without plugging it in"
   },
   "slideRemoteModeTitle": {
     "message": "Remote mode is here!"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Same address, smarter features"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Start using smart accounts"
+  },
+  "slideSolanaDescription": {
+    "message": "Create a Solana account to get started"
+  },
+  "slideSolanaTitle": {
+    "message": "Solana is now supported"
   },
   "slideSweepStakeDescription": {
     "message": "Mint an NFT now for a chance to win"
@@ -5095,11 +5141,11 @@
   "smartAccountBetterTransactionDescription": {
     "message": "Save time and money by processing transactions together."
   },
-  "smartAccountFeatures": {
-    "message": "Same account, smarter features"
-  },
   "smartAccountFeaturesDescription": {
     "message": "Keep the same account address, and you can switch back anytime."
+  },
+  "smartAccountLabel": {
+    "message": "Smart Account"
   },
   "smartAccountPayToken": {
     "message": "Pay with any token, any time"
@@ -5113,8 +5159,17 @@
   "smartAccountRequestFor": {
     "message": "Request for"
   },
+  "smartAccountSameAccount": {
+    "message": "Same account, smarter features."
+  },
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
+  },
+  "smartAccountUpgradeBannerDescription": {
+    "message": "Same address. Smarter features."
+  },
+  "smartAccountUpgradeBannerTitle": {
+    "message": "Switch to smart account"
   },
   "smartContracts": {
     "message": "Smart contracts"
@@ -5334,13 +5389,13 @@
     "message": "Import Solana accounts"
   },
   "solanaImportAccountsDescription": {
-    "message": "Import a Secret Recovery Phrase to migrate your Solana account from an other wallet."
+    "message": "Import a Secret Recovery Phrase to migrate your Solana account from another wallet."
   },
   "solanaMoreFeaturesComingSoon": {
     "message": "More features coming soon"
   },
   "solanaMoreFeaturesComingSoonDescription": {
-    "message": "Solana dapps, NFTs, hardware wallet support, and more coming soon."
+    "message": "NFTs, hardware wallet support, and more coming soon."
   },
   "solanaOnMetaMask": {
     "message": "Solana on MetaMask"
@@ -5545,6 +5600,9 @@
   },
   "stake": {
     "message": "Stake"
+  },
+  "standardAccountLabel": {
+    "message": "Standard Account"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -6138,10 +6196,6 @@
     "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "threeMonthsAbbreviation": {
-    "message": "3M",
-    "description": "Shortened form of '3 months'"
-  },
   "time": {
     "message": "Time"
   },
@@ -6300,6 +6354,9 @@
   "transactionIdLabel": {
     "message": "Transaction ID",
     "description": "Label for the source transaction ID field."
+  },
+  "transactionIncludesTypes": {
+    "message": "This transaction includes: $1."
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
@@ -6565,6 +6622,9 @@
   "viewOnOpensea": {
     "message": "View on Opensea"
   },
+  "viewSolanaAccount": {
+    "message": "View Solana account"
+  },
   "viewTransaction": {
     "message": "View transaction"
   },
@@ -6643,7 +6703,7 @@
     "description": "Used in the 'permission_rpc' message."
   },
   "welcomeBack": {
-    "message": "Welcome back!"
+    "message": "Welcome back"
   },
   "welcomeExploreDescription": {
     "message": "Store, send, and spend crypto currencies and assets."

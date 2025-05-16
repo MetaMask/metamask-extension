@@ -10,7 +10,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
 
-export type TestSuiteArguments = {
+type TestSuiteArguments = {
   driver: Driver;
   mockedEndpoint?: MockedEndpoint | MockedEndpoint[];
 };

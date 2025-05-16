@@ -7,6 +7,7 @@
   "api.segment.io",
   "api.simplehash.com",
   "api.testnet.solana.com",
+  "api.devnet.solana.com",
   "api.web3modal.com",
   "api.web3modal.org",
   "app.ens.domains",

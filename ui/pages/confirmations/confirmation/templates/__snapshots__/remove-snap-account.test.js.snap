@@ -93,6 +93,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
               >
                 <div
                   class="mm-box multichain-account-list-item multichain-account-list-item--selected mm-box--padding-4 mm-box--display-flex mm-box--background-color-primary-muted"
+                  data-testid="account-item"
                 >
                   <div
                     class="mm-box multichain-account-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"

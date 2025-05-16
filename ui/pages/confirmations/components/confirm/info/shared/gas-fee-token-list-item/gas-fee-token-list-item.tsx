@@ -99,7 +99,7 @@ function ListItem({
 }) {
   return (
     <Box
-      data-testid="gas-fee-token-list-item"
+      data-testid={`gas-fee-token-list-item-${leftPrimary}`}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
@@ -126,6 +126,7 @@ function ListItem({
             gap={2}
           >
             <Text
+              data-testid="gas-fee-token-list-item-symbol"
               as="button"
               variant={TextVariant.bodyMdMedium}
               backgroundColor={BackgroundColor.transparent}
@@ -136,6 +137,7 @@ function ListItem({
             {warning}
           </Box>
           <Text
+            data-testid="gas-fee-token-list-item-balance"
             variant={TextVariant.bodySmMedium}
             color={TextColor.textAlternative}
           >
@@ -144,8 +146,14 @@ function ListItem({
         </Box>
       </Box>
       <Box textAlign={TextAlign.Right} paddingRight={2}>
-        <Text variant={TextVariant.bodyMdMedium}>{rightPrimary}</Text>
         <Text
+          data-testid="gas-fee-token-list-item-amount-fiat"
+          variant={TextVariant.bodyMdMedium}
+        >
+          {rightPrimary}
+        </Text>
+        <Text
+          data-testid="gas-fee-token-list-item-amount-token"
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
         >
