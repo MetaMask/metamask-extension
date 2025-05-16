@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -67,7 +67,6 @@ import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
-import { ReceiveModal } from '../../multichain/receive-modal';
 import {
   setSwitchedNetworkDetails,
   setActiveNetworkWithError,
@@ -81,7 +80,6 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
-import { trace, TraceName } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
@@ -89,7 +87,6 @@ import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 type CoinButtonsProps = {
   account: InternalAccount;
   chainId: `0x${string}` | CaipChainId | number;
-  trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -98,13 +95,11 @@ type CoinButtonsProps = {
   defaultSwapsToken?: SwapsEthToken;
   ///: END:ONLY_INCLUDE_IF
   classPrefix?: string;
-  iconButtonClassName?: string;
 };
 
 const CoinButtons = ({
   account,
   chainId,
-  trackingLocation,
   isSwapsChain,
   isSigningEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -113,15 +108,12 @@ const CoinButtons = ({
   defaultSwapsToken,
   ///: END:ONLY_INCLUDE_IF
   classPrefix = 'coin',
-  iconButtonClassName = '',
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
   const trackEvent = useContext(MetaMetricsContext);
-  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const { address: selectedAddress } = account;
   const history = useHistory();
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
@@ -186,7 +178,11 @@ const CoinButtons = ({
     const tooltipInfo = conditions.find(({ condition }) => condition);
     if (tooltipInfo?.message) {
       return (
-        <Tooltip title={t(tooltipInfo.message)} position="bottom">
+        <Tooltip
+          title={t(tooltipInfo.message)}
+          position="bottom"
+          wrapperClassName="tooltip-button-wrapper"
+        >
           {contents}
         </Tooltip>
       );
@@ -363,35 +359,34 @@ const CoinButtons = ({
   return (
     <Box
       display={Display.Flex}
-      justifyContent={JustifyContent.spaceEvenly}
+      justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
+      gap={4}
     >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
-          iconButtonClassName={iconButtonClassName}
           Icon={
             <Icon
               name={IconName.PlusAndMinus}
               color={IconColor.iconDefault}
-              size={IconSize.Sm}
+              size={IconSize.Md}
             />
           }
           disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
           label={t('buyAndSell')}
           onClick={handleBuyAndSellOnClick}
+          width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('buyButton', contents)
           }
         />
         ///: END:ONLY_INCLUDE_IF
       }
-
       <IconButton
         className={`${classPrefix}-overview__button`}
-        iconButtonClassName={iconButtonClassName}
         disabled={
           !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled
         }
@@ -399,12 +394,13 @@ const CoinButtons = ({
           <Icon
             name={IconName.SwapHorizontal}
             color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            size={IconSize.Md}
           />
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
         data-testid="token-overview-button-swap"
+        width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('swapButton', contents)
         }
@@ -413,7 +409,6 @@ const CoinButtons = ({
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
-          iconButtonClassName={iconButtonClassName}
           disabled={
             !isBridgeChain ||
             !isSigningEnabled ||
@@ -424,11 +419,12 @@ const CoinButtons = ({
             <Icon
               name={IconName.Bridge}
               color={IconColor.iconDefault}
-              size={IconSize.Sm}
+              size={IconSize.Md}
             />
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
+          width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('bridgeButton', contents)
           }
@@ -437,58 +433,22 @@ const CoinButtons = ({
       }
       <IconButton
         className={`${classPrefix}-overview__button`}
-        iconButtonClassName={iconButtonClassName}
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
             name={IconName.Arrow2UpRight}
             color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            size={IconSize.Md}
           />
         }
         disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
         label={t('send')}
         onClick={handleSendOnClick}
+        width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('sendButton', contents)
         }
       />
-      {
-        <>
-          {showReceiveModal && (
-            <ReceiveModal
-              address={selectedAddress}
-              onClose={() => setShowReceiveModal(false)}
-            />
-          )}
-          <IconButton
-            className={`${classPrefix}-overview__button`}
-            iconButtonClassName={iconButtonClassName}
-            data-testid={`${classPrefix}-overview-receive`}
-            Icon={
-              <Icon
-                name={IconName.ScanBarcode}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            }
-            label={t('receive')}
-            onClick={() => {
-              trace({ name: TraceName.ReceiveModal });
-              trackEvent({
-                event: MetaMetricsEventName.NavReceiveButtonClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  text: 'Receive',
-                  location: trackingLocation,
-                  chain_id: chainId,
-                },
-              });
-              setShowReceiveModal(true);
-            }}
-          />
-        </>
-      }
     </Box>
   );
 };

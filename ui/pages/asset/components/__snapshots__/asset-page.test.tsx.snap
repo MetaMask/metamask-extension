@@ -105,101 +105,83 @@ exports[`AssetPage should render a native asset 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--margin-top-4"
+      class="mm-box mm-box--margin-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--width-full"
       >
         <button
-          class="icon-button coin-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
           data-testid="coin-overview-buy"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/plus-and-minus.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Buy/Sell
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Buy/Sell
+            </span>
+          </span>
         </button>
         <button
-          class="icon-button coin-overview__button icon-button--disabled"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
           data-testid="token-overview-button-swap"
           disabled=""
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Swap
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Swap
+            </span>
+          </span>
         </button>
         <button
-          class="icon-button coin-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
           data-testid="coin-overview-bridge"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Bridge
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Bridge
+            </span>
+          </span>
         </button>
         <button
-          class="icon-button coin-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
           data-testid="coin-overview-send"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Send
-          </p>
-        </button>
-        <button
-          class="icon-button coin-overview__button"
-          data-testid="coin-overview-receive"
-        >
-          <div
-            class="icon-button__circle"
-          >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/scan-barcode.svg');"
-            />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Receive
-          </p>
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Send
+            </span>
+          </span>
         </button>
       </div>
     </div>
@@ -550,81 +532,81 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--margin-top-4"
+      class="mm-box mm-box--margin-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
       >
         <button
-          class="icon-button token-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
           data-testid="token-overview-buy"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/plus-and-minus.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Buy/Sell
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Buy/Sell
+            </span>
+          </span>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
           data-testid="eth-overview-send"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Send
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Send
+            </span>
+          </span>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Swap
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Swap
+            </span>
+          </span>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
           data-testid="token-overview-bridge"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Bridge
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Bridge
+            </span>
+          </span>
         </button>
       </div>
     </div>
@@ -1016,81 +998,81 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--margin-top-4"
+      class="mm-box mm-box--margin-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
       >
         <button
-          class="icon-button token-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
           data-testid="token-overview-buy"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/plus-and-minus.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Buy/Sell
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Buy/Sell
+            </span>
+          </span>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
           data-testid="eth-overview-send"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Send
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Send
+            </span>
+          </span>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Swap
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Swap
+            </span>
+          </span>
         </button>
         <button
-          class="icon-button token-overview__button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
           data-testid="token-overview-bridge"
         >
-          <div
-            class="icon-button__circle"
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
-          </div>
-          <p
-            class="mm-box mm-text icon-button__label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
-          >
-            Bridge
-          </p>
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Bridge
+            </span>
+          </span>
         </button>
       </div>
     </div>
