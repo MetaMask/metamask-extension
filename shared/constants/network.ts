@@ -186,6 +186,8 @@ export const CHAIN_IDS = {
   PLUME: '0x18232',
   MATCHAIN: '0x2ba',
   FLOW: '0x2eb',
+  ABSTRACT: '0xab5',
+  ABSTRACT_SEPOLIA: '0x2b74',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -324,6 +326,8 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
+export const ABSTRACT_DISPLAY_NAME = 'Abstract';
+export const ABSTRACT_SEPOLIA_DISPLAY_NAME = 'Abstract Sepolia';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -460,6 +464,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
   XRPLEVM_TESTNET: 'XRP',
+  ABSTRACT: 'ETH',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -566,6 +571,8 @@ export const PLUME_IMAGE_URL = './images/plume.svg';
 export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
+export const ABSTRACT_IMAGE_URL = './images/abstract.svg';
+export const ABSTRACT_SEPOLIA_IMAGE_URL = './images/abstract-sepolia.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -695,6 +702,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_DISPLAY_NAME,
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
   [CHAIN_IDS.FLOW]: FLOW_DISPLAY_NAME,
+  [CHAIN_IDS.ABSTRACT]: ABSTRACT_DISPLAY_NAME,
+  [CHAIN_IDS.ABSTRACT_SEPOLIA]: ABSTRACT_SEPOLIA_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -831,6 +840,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.PLUME]: CURRENCY_SYMBOLS.PLUME,
   [CHAIN_IDS.MATCHAIN]: CURRENCY_SYMBOLS.BNB,
   [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
+  [CHAIN_IDS.ABSTRACT]: CHAINLIST_CURRENCY_SYMBOLS_MAP.ABSTRACT,
+  [CHAIN_IDS.ABSTRACT_SEPOLIA]: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
 } as const;
 
 /**
@@ -973,6 +984,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
+  [CHAIN_IDS.ABSTRACT]: ABSTRACT_IMAGE_URL,
+  [CHAIN_IDS.ABSTRACT_SEPOLIA]: ABSTRACT_SEPOLIA_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1031,6 +1044,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
+  [CHAIN_IDS.ABSTRACT]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ABSTRACT_SEPOLIA]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
 /**
@@ -1135,6 +1150,14 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     domain: 'gnosisscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
   },
+  [CHAIN_IDS.ABSTRACT]: {
+    domain: 'abscan.org',
+    subdomain: `${defaultEtherscanSubdomainPrefix}`,
+  },
+  [CHAIN_IDS.ABSTRACT_SEPOLIA]: {
+    domain: 'abscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-sepolia`,
+  }
 };
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
@@ -1293,6 +1316,21 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.ABSTRACT,
+    name: ABSTRACT_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://api.mainnet.abs.xyz`,
+        failoverUrls: [],
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://abscan.org'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];
