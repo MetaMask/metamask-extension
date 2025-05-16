@@ -15,6 +15,7 @@ import {
   CONNECTIONS,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  HARDWARE_ONEKEY_ERRORS_ROUTE,
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
@@ -143,6 +144,17 @@ export function hideAppHeader(props) {
   );
 
   if (isPermissionsPage) {
+    return true;
+  }
+
+  const isOneKeyErrorsPage = Boolean(
+    matchPath(location.pathname, {
+      path: HARDWARE_ONEKEY_ERRORS_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isOneKeyErrorsPage) {
     return true;
   }
 
