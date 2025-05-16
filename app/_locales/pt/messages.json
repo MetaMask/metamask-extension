@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Conta Bitcoin (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Conta Bitcoin (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Adicionar um explorador de blocos"
   },
@@ -662,21 +659,12 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
   "bitcoinSupportToggleDescription": {
     "message": "Ativar esse recurso lhe dará a opção de adicionar uma conta Bitcoin à sua extensão da MetaMask derivada de sua Frase de Recuperação Secreta existente. Este é um recurso beta experimental, portanto seu uso será por sua conta e risco. Para nos dar seu feedback sobre esta nova experiência Bitcoin, preencha este $1.",
     "description": "$1 is the link to a product feedback form"
   },
   "bitcoinSupportToggleTitle": {
     "message": "Ative \"Adicionar uma nova conta Bitcoin (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Ao ativar esse recurso, você terá a opção de adicionar uma conta Bitcoin para a rede de teste."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Ative \"Adicionar uma nova conta Bitcoin (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Conta",

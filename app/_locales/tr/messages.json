@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin hesabı (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin hesabı (Test Ağı)"
-  },
   "addBlockExplorer": {
     "message": "Bir blok gezgini ekle"
   },
@@ -662,21 +659,12 @@
     "message": "MR",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
   "bitcoinSupportToggleDescription": {
     "message": "Bu özelliği açtığınızda mevcut Gizli Kurtarma İfadenizden türetilen MetaMask Uzantınıza bir Bitcoin Hesabı ekleme seçeneğiniz olacaktır. Bu, deneysel bir Beta özelliğidir, bu yüzden riski kendinize ait olarak kullanmalısınız. Bu yeni Bitcoin deneyimi hakkında bize geri bildirim göndermek için lütfen bu $1 bölümünü doldurun.",
     "description": "$1 is the link to a product feedback form"
   },
   "bitcoinSupportToggleTitle": {
     "message": "\"Yeni bir Bitcoin hesabı ekle (Beta)\" seçeneğini etkinleştir"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Bu özelliği açtığınızda test ağı için bir Bitcoin Hesabı ekleme seçeneğiniz olacak."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "\"Yeni bir Bitcoin hesabı ekle (Test Ağı)\" seçeneğini etkinleştir"
   },
   "blockExplorerAccountAction": {
     "message": "Hesap",

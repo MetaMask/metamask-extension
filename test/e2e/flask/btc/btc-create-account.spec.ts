@@ -20,7 +20,7 @@ describe('Create BTC Account', function (this: Suite) {
     }, this.test?.fullTitle());
   });
 
-  it('cannot create multiple BTC accounts', async function () {
+  it('can create multiple BTC accounts', async function () {
     await withBtcAccountSnap(async (driver) => {
       // check that we have one BTC account
       const headerNavbar = new HeaderNavbar(driver);
@@ -35,7 +35,7 @@ describe('Create BTC Account', function (this: Suite) {
       await accountListPage.openAddAccountModal();
       assert.equal(
         await accountListPage.isBtcAccountCreationButtonEnabled(),
-        false,
+        true,
       );
     }, this.test?.fullTitle());
   });

@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin account (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin account (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Magdagdag ng block explorer"
   },
@@ -662,21 +659,12 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
   "bitcoinSupportToggleDescription": {
     "message": "Ang pag-on sa tampok na ito ay nagbibigay sa iyo ng opsyon na magdagdag ng Account sa Bitcoin sa iyong MetaMask Extension na nagmula sa iyong umiiral na Lihim na Parirala sa Pagbawi. Ito ay isang eksperimental na tampok sa Beta, kaya gamitin ito nang may-pag-iingat. Upang bigyan kami ng feedback sa bagong karanasan na ito sa Bitcoin, mangyaring sagutan ito $1.",
     "description": "$1 is the link to a product feedback form"
   },
   "bitcoinSupportToggleTitle": {
     "message": "Paganahin ang \"Magdagdag ng bagong account sa Bitcoin (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Ang pag-on sa tampok na ito ay magbibigay sa iyo ng opsyon na magdagdag ng Account sa Bitcoin para sa test network."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Paganahin ang \"Magdagdag ng bagong account sa Bitcoin (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",
