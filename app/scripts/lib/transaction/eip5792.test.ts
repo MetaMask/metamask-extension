@@ -105,14 +105,26 @@ describe('EIP-5792', () => {
     () => boolean
   > = jest.fn();
 
+  const getKeyringTypeMock: jest.MockedFn<
+    (account: string) => string | undefined
+  > = jest.fn();
+
   let messenger: EIP5792Messenger;
 
   const sendCallsHooks = {
     addTransactionBatch: addTransactionBatchMock,
     getDismissSmartAccountSuggestionEnabled:
       getDismissSmartAccountSuggestionEnabledMock,
+    getKeyringType: getKeyringTypeMock,
     isAtomicBatchSupported: isAtomicBatchSupportedMock,
     validateSecurity: validateSecurityMock,
+  };
+
+  const getCapabilitiesHooks = {
+    getDismissSmartAccountSuggestionEnabled:
+      getDismissSmartAccountSuggestionEnabledMock,
+    getKeyringType: getKeyringTypeMock,
+    isAtomicBatchSupported: isAtomicBatchSupportedMock,
   };
 
   beforeEach(() => {
@@ -155,6 +167,8 @@ describe('EIP-5792', () => {
         upgradeContractAddress: DELEGATION_ADDRESS_MOCK,
       },
     ]);
+
+    getKeyringTypeMock.mockReturnValue('HD Key Tree');
   });
 
   describe('processSendCalls', () => {
@@ -317,6 +331,19 @@ describe('EIP-5792', () => {
           REQUEST_MOCK,
         ),
       ).rejects.toThrow(`EIP-7702 not supported on chain: ${CHAIN_ID_MOCK}`);
+    });
+
+    it('throws if keyring type not supported', async () => {
+      getKeyringTypeMock.mockReturnValue('unsupported');
+
+      await expect(
+        processSendCalls(
+          sendCallsHooks,
+          messenger,
+          SEND_CALLS_MOCK,
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(`EIP-7702 upgrade not supported on account`);
     });
   });
 
@@ -481,11 +508,7 @@ describe('EIP-5792', () => {
       ]);
 
       const capabilities = await getCapabilities(
-        {
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
-        },
+        getCapabilitiesHooks,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -510,11 +533,7 @@ describe('EIP-5792', () => {
       ]);
 
       const capabilities = await getCapabilities(
-        {
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
-        },
+        getCapabilitiesHooks,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -532,11 +551,7 @@ describe('EIP-5792', () => {
       isAtomicBatchSupportedMock.mockResolvedValueOnce([]);
 
       const capabilities = await getCapabilities(
-        {
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
-        },
+        getCapabilitiesHooks,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -557,11 +572,7 @@ describe('EIP-5792', () => {
       getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
 
       const capabilities = await getCapabilities(
-        {
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
-        },
+        getCapabilitiesHooks,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -580,11 +591,28 @@ describe('EIP-5792', () => {
       ]);
 
       const capabilities = await getCapabilities(
+        getCapabilitiesHooks,
+        FROM_MOCK,
+        [CHAIN_ID_MOCK],
+      );
+
+      expect(capabilities).toStrictEqual({});
+    });
+
+    it('does not include atomic capability if keyring type not supported', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
         {
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
+          chainId: CHAIN_ID_MOCK,
+          delegationAddress: undefined,
+          isSupported: false,
+          upgradeContractAddress: DELEGATION_ADDRESS_MOCK,
         },
+      ]);
+
+      getKeyringTypeMock.mockReturnValue('unsupported');
+
+      const capabilities = await getCapabilities(
+        getCapabilitiesHooks,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );

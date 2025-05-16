@@ -37,11 +37,13 @@ export enum AtomicCapabilityStatus {
 }
 
 const VERSION = '2.0.0';
+const SUPPORTED_KEYRING_TYPES = ['HD Key Tree'];
 
 export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
     getDismissSmartAccountSuggestionEnabled: () => boolean;
+    getKeyringType: (account: Hex) => string | undefined;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
     validateSecurity: (
       securityAlertId: string,
@@ -55,6 +57,7 @@ export async function processSendCalls(
 ): Promise<SendCallsResult> {
   const {
     addTransactionBatch,
+    getKeyringType,
     getDismissSmartAccountSuggestionEnabled,
     isAtomicBatchSupported,
     validateSecurity: validateSecurityHook,
@@ -82,12 +85,14 @@ export async function processSendCalls(
   });
 
   const chainBatchSupport = batchSupport?.[0];
+  const keyringType = getKeyringType(from) ?? '';
 
   validateSendCalls(
     params,
     dappChainId,
     dismissSmartAccountSuggestionEnabled,
     chainBatchSupport,
+    keyringType,
   );
 
   const securityAlertId = generateSecurityAlertId();
@@ -154,13 +159,17 @@ export function getCallsStatus(
 export async function getCapabilities(
   hooks: {
     getDismissSmartAccountSuggestionEnabled: () => boolean;
+    getKeyringType(account: Hex): string | undefined;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
   },
   address: Hex,
   chainIds: Hex[] | undefined,
 ) {
-  const { getDismissSmartAccountSuggestionEnabled, isAtomicBatchSupported } =
-    hooks;
+  const {
+    getDismissSmartAccountSuggestionEnabled,
+    getKeyringType,
+    isAtomicBatchSupported,
+  } = hooks;
 
   const chainIdsNormalized = chainIds?.map(
     (chainId) => chainId.toLowerCase() as Hex,
@@ -180,8 +189,15 @@ export async function getCapabilities(
 
       const isUpgradeDisabled = getDismissSmartAccountSuggestionEnabled();
 
+      const isSupportedAccount = SUPPORTED_KEYRING_TYPES.includes(
+        getKeyringType(address.toLowerCase() as Hex) ?? '',
+      );
+
       const canUpgrade =
-        !isUpgradeDisabled && upgradeContractAddress && !delegationAddress;
+        !isUpgradeDisabled &&
+        upgradeContractAddress &&
+        !delegationAddress &&
+        isSupportedAccount;
 
       if (!isSupported && !canUpgrade) {
         return acc;
@@ -208,11 +224,16 @@ function validateSendCalls(
   dappChainId: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
+  keyringType: string,
 ) {
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId, chainBatchSupport);
   validateCapabilities(sendCalls);
-  validateUserDisabled(dismissSmartAccountSuggestionEnabled, chainBatchSupport);
+  validateUpgrade(
+    dismissSmartAccountSuggestionEnabled,
+    chainBatchSupport,
+    keyringType,
+  );
 }
 
 function validateSendCallsVersion(sendCalls: SendCalls) {
@@ -277,9 +298,10 @@ function validateCapabilities(sendCalls: SendCalls) {
   }
 }
 
-function validateUserDisabled(
+function validateUpgrade(
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
+  keyringType: string,
 ) {
   if (chainBatchSupport?.delegationAddress) {
     return;
@@ -289,6 +311,13 @@ function validateUserDisabled(
     throw new JsonRpcError(
       EIP5792ErrorCode.RejectedUpgrade,
       'EIP-7702 upgrade disabled by the user',
+    );
+  }
+
+  if (!SUPPORTED_KEYRING_TYPES.includes(keyringType)) {
+    throw new JsonRpcError(
+      EIP5792ErrorCode.RejectedUpgrade,
+      'EIP-7702 upgrade not supported on account',
     );
   }
 }

@@ -2180,6 +2180,7 @@ export default class MetamaskController extends EventEmitter {
           getDismissSmartAccountSuggestionEnabled: () =>
             this.preferencesController.state.preferences
               .dismissSmartAccountSuggestionEnabled,
+          getKeyringType: this.#getKeyringType.bind(this),
           isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
             this.txController,
           ),
@@ -2200,6 +2201,7 @@ export default class MetamaskController extends EventEmitter {
         getDismissSmartAccountSuggestionEnabled: () =>
           this.preferencesController.state.preferences
             .dismissSmartAccountSuggestionEnabled,
+        getKeyringType: this.#getKeyringType.bind(this),
         isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
           this.txController,
         ),
@@ -8727,6 +8729,16 @@ export default class MetamaskController extends EventEmitter {
    */
   #getGlobalNetworkClientId() {
     return this.networkController.state.selectedNetworkClientId;
+  }
+
+  #getKeyringType(accountAddress) {
+    const { accounts } = this.accountsController.state.internalAccounts;
+
+    const account = Object.values(accounts).find(
+      (acc) => acc.address === accountAddress.toLowerCase(),
+    );
+
+    return account?.metadata?.keyring?.type;
   }
 
   #initControllers({ existingControllers, initFunctions, initState }) {
