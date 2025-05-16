@@ -51,7 +51,6 @@ describe('Wallet Ready Page', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
     expect(getByText('Your wallet is ready!')).toBeInTheDocument();
-
     expect(
       getByText(
         /If you lose your Secret Recovery Phrase, you won’t be able to use your wallet./u,
@@ -90,12 +89,8 @@ describe('Wallet Ready Page', () => {
   });
 
   it('should redirect to privacy-settings view when "Manage default privacy settings" button is clicked', () => {
-    const mockStore = configureMockStore([thunk])(mockState);
-    const { getByTestId } = renderWithProvider(
-      <CreationSuccessful />,
-      mockStore,
-    );
-    const privacySettingsButton = getByTestId('manage-default-settings');
+    const { getByText } = renderWithProvider(<CreationSuccessful />, store);
+    const privacySettingsButton = getByText('Manage default settings');
     fireEvent.click(privacySettingsButton);
     expect(mockHistoryPush).toHaveBeenCalledWith(
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
