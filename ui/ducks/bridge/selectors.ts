@@ -479,8 +479,10 @@ const _getValidatedSrcAmount = createSelector(
       : null,
 );
 
-const getMinimumBalanceForRentExemptionInLamports = (state: BridgeAppState) =>
-  state.bridge.minimumBalanceForRentExemptionInLamports;
+export const getMinimumBalanceForRentExemptionInSOL = (state: BridgeAppState) =>
+  new BigNumber(state.bridge.minimumBalanceForRentExemptionInLamports)
+    .div(10 ** 9)
+    .toString();
 
 export const getFromAmountInCurrency = createSelector(
   getFromToken,
@@ -520,18 +522,18 @@ export const getValidationErrors = createDeepEqualSelector(
   _getValidatedSrcAmount,
   getFromToken,
   getFromAmount,
-  getMinimumBalanceForRentExemptionInLamports,
+  getMinimumBalanceForRentExemptionInSOL,
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
     fromToken,
     fromTokenInputValue,
-    minimumBalanceForRentExemptionInLamports,
+    minimumBalanceForRentExemptionInSOL,
   ) => {
-    const minimumBalanceForRentExemptionInSOL = new BigNumber(
-      minimumBalanceForRentExemptionInLamports,
-    ).div(10 ** 9);
-
+    const minimumBalanceToUse =
+      activeQuote?.quote && isSolanaChainId(activeQuote.quote.srcChainId)
+        ? minimumBalanceForRentExemptionInSOL
+        : '0';
     return {
       isNoQuotesAvailable: Boolean(
         !activeQuote &&
@@ -543,9 +545,7 @@ export const getValidationErrors = createDeepEqualSelector(
       isInsufficientGasBalance: (balance?: BigNumber) => {
         if (balance && !activeQuote && validatedSrcAmount && fromToken) {
           return isNativeAddress(fromToken.address)
-            ? balance
-                .sub(minimumBalanceForRentExemptionInSOL)
-                .lte(validatedSrcAmount)
+            ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
             : balance.lte(0);
         }
         return false;
@@ -557,7 +557,7 @@ export const getValidationErrors = createDeepEqualSelector(
             ? balance
                 .sub(activeQuote.totalMaxNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
-                .sub(minimumBalanceForRentExemptionInSOL)
+                .sub(minimumBalanceToUse)
                 .lte(0)
             : balance.lte(activeQuote.totalMaxNetworkFee.amount);
         }
