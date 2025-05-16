@@ -2960,7 +2960,7 @@ export function getIsAddSnapAccountEnabled(state) {
  */
 export function getIsSolanaTestnetSupportEnabled(state) {
   const { solanaTestnetsEnabled } = getRemoteFeatureFlags(state);
-  return Boolean(solanaTestnetsEnabled);
+  return false;
 }
 
 export function getIsWatchEthereumAccountEnabled(state) {

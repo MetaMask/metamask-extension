@@ -10,8 +10,6 @@ import {
 import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { CaipChainId } from '@metamask/utils';
-// eslint-disable-next-line import/no-restricted-paths
-import { getIsSolanaTestnetSupportEnabled } from '../../../ui/selectors/selectors';
 import { NetworkStatus } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
 import { createDeepEqualSelector } from './util';
@@ -139,12 +137,10 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
   (state: {
     metamask: { internalAccounts: AccountsControllerState['internalAccounts'] };
   }) => state.metamask.internalAccounts,
-  (state) => getIsSolanaTestnetSupportEnabled(state),
   (
     networkConfigurationsByChainId,
     multichainNetworkConfigurationsByChainId,
     internalAccounts,
-    isSolanaTestnetSupportEnabled,
   ) => {
     // We have this logic here to filter out non EVM test networks
     // to properly handle this we should use the selector from
@@ -194,7 +190,7 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
       multichainNetworkConfigurationsByChainId: {
         ...nonEvmNetworks,
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-        ...(isSolanaTestnetSupportEnabled && nonEvmTestNetworks),
+        ...nonEvmTestNetworks,
         ///: END:ONLY_INCLUDE_IF
       },
       networkConfigurationsByChainId,
