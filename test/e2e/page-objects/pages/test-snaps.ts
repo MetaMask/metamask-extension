@@ -17,6 +17,9 @@ const inputLocator = {
   dataUnencryptedStateInput: '#dataUnencryptedState',
   getUnencryptedStateInput: '#getUnencryptedState',
   wasmInput: '#wasmInput',
+  backgroundEventDateInput: '#backgroundEventDate',
+  backgroundEventDurationInput: '#backgroundEventDuration',
+  cancelBackgroundEventInput: '#backgroundEventId',
 } satisfies Record<string, string>;
 
 export const buttonLocator = {
@@ -79,6 +82,11 @@ export const buttonLocator = {
   sendUnencryptedStateButton: '#sendUnencryptedState',
   sendGetUnencryptedStateButton: '#sendGetUnencryptedState',
   clearStateUnencryptedButton: '#clearStateUnencrypted',
+  connectBackgroundEventsButton: '#connectbackground-events',
+  scheduleBackgroundEventWithDateButton: '#scheduleBackgroundEventWithDate',
+  scheduleBackgroundEventWithDurationButton: '#scheduleBackgroundEventWithDuration',
+  cancelBackgroundEventButton: '#cancelBackgroundEvent',
+  getBackgroundEventResultButton: '#getBackgroundEvents',
 } satisfies Record<string, string>;
 
 const spanLocator = {
@@ -111,6 +119,8 @@ const spanLocator = {
   wasmResultSpan: '#wasmResult',
   unencryptedStateResultSpan: '#unencryptedStateResult',
   getStateUnencryptedResultSpan: '#getStateUnencryptedResult',
+  backgroundEventResultSpan: '#schedulebackgroundEventResult',
+  getBackgroundEventResultSpan: '#getBackgroundEventResult',
 } satisfies Record<string, string>;
 
 const dropDownLocator = {
@@ -210,6 +220,16 @@ export class TestSnaps {
       css: spanLocator[spanSelectorId],
       text: expectedMessage,
     });
+  }
+
+  async check_messageResultSpanIncludes(spanSelectorId: keyof typeof spanLocator, partialMessage: string) {
+    const element = await this.driver.findElement(
+      spanLocator[spanSelectorId],
+    );
+    const spanText = await element.getAttribute('textContent');
+    if (!spanText.includes(partialMessage)) {
+      throw new Error(`Expected partial message "${partialMessage}" not found`);
+    }
   }
 
   async check_Count(expectedCount: string) {
