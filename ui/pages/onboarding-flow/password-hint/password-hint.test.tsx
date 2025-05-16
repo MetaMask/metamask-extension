@@ -44,19 +44,12 @@ describe('Password Hint', () => {
   });
 
   it('should render the password hint component', () => {
-    const { getByText } = renderWithProvider(
-      // eslint-disable-next-line no-empty-function
-      <PasswordHint validatePasswordHint={() => {}} />,
-      mockStore,
-    );
+    const { getByText } = renderWithProvider(<PasswordHint />, mockStore);
     expect(getByText('Password hint')).toBeInTheDocument();
   });
 
   it('should show error when password hint is the same as the password', () => {
-    const { getByTestId } = renderWithProvider(
-      <PasswordHint validatePasswordHint={validatePasswordHint} />,
-      mockStore,
-    );
+    const { getByTestId } = renderWithProvider(<PasswordHint />, mockStore);
     const passwordHintInput = getByTestId('password-hint-text-field');
     fireEvent.change(passwordHintInput, { target: { value: password } });
 
@@ -72,10 +65,7 @@ describe('Password Hint', () => {
   });
 
   it('should save the password hint when there is no error', () => {
-    const { getByTestId } = renderWithProvider(
-      <PasswordHint validatePasswordHint={validatePasswordHint} />,
-      mockStore,
-    );
+    const { getByTestId } = renderWithProvider(<PasswordHint />, mockStore);
     const passwordHintInput = getByTestId('password-hint-text-field');
     fireEvent.change(passwordHintInput, {
       target: { value: 'password-hint' },
