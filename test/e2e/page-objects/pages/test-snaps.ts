@@ -80,6 +80,7 @@ export const buttonLocator = {
   sendUnencryptedStateButton: '#sendUnencryptedState',
   sendGetUnencryptedStateButton: '#sendGetUnencryptedState',
   clearStateUnencryptedButton: '#clearStateUnencrypted',
+  showPreinstalledDialogButton: '#showPreinstalledDialog',
 } satisfies Record<string, string>;
 
 const spanLocator = {
