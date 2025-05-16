@@ -1,24 +1,24 @@
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
 import { TransactionMeta } from '@metamask/transaction-controller';
+
+import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
+  getMultichainNetworkConfigurationsByChainId,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
   selectTransactionValue,
 } from '../../../../../selectors';
-import { getMultichainNativeCurrency } from '../../../../../selectors/multichain';
-import { isBalanceSufficient } from '../../../send/send.utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
+import { isBalanceSufficient } from '../../../send/send.utils';
 import { useConfirmContext } from '../../../context/confirm';
-import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
   const t = useI18nContext();
@@ -48,7 +48,12 @@ export function useInsufficientBalanceAlerts(): Alert[] {
     selectTransactionFeeById(state, transactionId),
   );
 
-  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  const [multichainNetworks, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+  const nativeCurrency = (
+    multichainNetworks[chainId as CaipChainId] ?? evmNetworks[chainId]
+  )?.nativeCurrency;
 
   const insufficientBalance = !isBalanceSufficient({
     amount: totalValue,

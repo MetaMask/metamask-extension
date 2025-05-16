@@ -314,10 +314,25 @@ describe('Multichain Selectors', () => {
       expect(getMultichainShouldShowFiat(state)).toBe(getShouldShowFiat(state));
     });
 
-    it('returns true if account is non-EVM', () => {
-      const state = getNonEvmState();
-
+    it('returns true if account is non-EVM and setting currencyRateCheck is true', () => {
+      const state = {
+        metamask: {
+          ...getNonEvmState().metamask,
+          useCurrencyRateCheck: true,
+        },
+      };
       expect(getMultichainShouldShowFiat(state)).toBe(true);
+    });
+    it('returns false if account is non-EVM and setting currencyRateCheck is false', () => {
+      const state = {
+        ...getNonEvmState(),
+        metamask: {
+          ...getNonEvmState().metamask,
+          useCurrencyRateCheck: false,
+        },
+      };
+
+      expect(getMultichainShouldShowFiat(state)).toBe(false);
     });
   });
 

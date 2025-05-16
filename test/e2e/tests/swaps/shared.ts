@@ -21,6 +21,7 @@ type SwapOptions = {
   amount: number;
   swapTo?: string;
   swapToContractAddress?: string;
+  mainnet?: boolean;
 };
 
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
@@ -29,7 +30,14 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
     'input[data-testid="prepare-swap-page-from-token-amount"]',
     options.amount.toString(),
   );
-  await driver.delay(veryLargeDelayMs); // Need an extra delay after typing an amount.
+
+  if (options.swapTo && options.mainnet) {
+    await driver.waitForSelector({
+      tag: 'h6',
+      text: 'Estimated gas fee',
+    });
+  };
+
   await driver.clickElement('[data-testid="prepare-swap-page-swap-to"]');
   await driver.waitForSelector('[id="list-with-search__text-search"]');
 

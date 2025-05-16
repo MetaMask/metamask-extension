@@ -304,7 +304,7 @@ export type SegmentEventPayload = {
     params?: Record<string, string>;
     legacy_event?: boolean;
     locale: string;
-    chain_id: string;
+    chain_id: string | null;
     environment_type?: string;
     revenue?: number;
     value?: number;

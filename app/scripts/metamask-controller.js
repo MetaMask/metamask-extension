@@ -217,6 +217,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
+  PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -313,6 +314,7 @@ import {
   getEnvironmentType,
   getMethodDataName,
   previousValueComparator,
+  getPlatform,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
@@ -2040,10 +2042,6 @@ export default class MetamaskController extends EventEmitter {
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
-          getDisabledUpgradeAccountsByChain:
-            this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
-              this.preferencesController,
-            ),
           getDismissSmartAccountSuggestionEnabled: () =>
             this.preferencesController.state.preferences
               .dismissSmartAccountSuggestionEnabled,
@@ -2064,10 +2062,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
       getCapabilities: getCapabilities.bind(null, {
-        getDisabledUpgradeAccountsByChain:
-          this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
-            this.preferencesController,
-          ),
         getDismissSmartAccountSuggestionEnabled: () =>
           this.preferencesController.state.preferences
             .dismissSmartAccountSuggestionEnabled,
@@ -3646,9 +3640,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      disableAccountUpgrade: preferencesController.disableAccountUpgrade.bind(
-        preferencesController,
-      ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
@@ -4808,7 +4799,7 @@ export default class MetamaskController extends EventEmitter {
       this.permissionController.clearState();
 
       // Clear snap state
-      this.snapController.clearState();
+      await this.snapController.clearState();
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
@@ -6799,6 +6790,11 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions(
             { origin },
             requestedPermissions,
+            {
+              metadata: {
+                isEip1193Request: true,
+              },
+            },
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
           try {
@@ -7029,8 +7025,8 @@ export default class MetamaskController extends EventEmitter {
             .map((keyring, index) => {
               if (keyring.type === KeyringTypes.hd) {
                 return {
-                  id: state.keyringsMetadata[index].id,
-                  name: state.keyringsMetadata[index].name,
+                  id: keyring.metadata.id,
+                  name: keyring.metadata.name,
                   type: 'mnemonic',
                   primary: index === 0,
                 };
@@ -7920,16 +7916,24 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - the domain to safelist
    */
   safelistPhishingDomain(origin) {
-    this.metaMetricsController.trackEvent({
-      category: MetaMetricsEventCategory.Phishing,
-      event: MetaMetricsEventName.ProceedAnywayClicked,
-      properties: {
-        url: origin,
-        referrer: {
-          url: origin,
+    const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+    if (!isFirefox) {
+      this.metaMetricsController.trackEvent(
+        {
+          category: MetaMetricsEventCategory.Phishing,
+          event: MetaMetricsEventName.ProceedAnywayClicked,
+          properties: {
+            url: origin,
+            referrer: {
+              url: origin,
+            },
+          },
         },
-      },
-    });
+        {
+          excludeMetaMetricsId: true,
+        },
+      );
+    }
 
     return this.phishingController.bypass(origin);
   }

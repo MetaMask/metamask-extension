@@ -143,7 +143,6 @@
   "KeyringController": {
     "isUnlocked": true,
     "keyrings": "object",
-    "keyringsMetadata": "object",
     "vault": "string",
     "encryptionKey": "string",
     "encryptionSalt": "string"
@@ -284,8 +283,7 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean",
-    "disabledUpgradeAccountsByChain": "object"
+    "manageInstitutionalWallets": "boolean"
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
