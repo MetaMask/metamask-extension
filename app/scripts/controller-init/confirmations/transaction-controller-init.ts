@@ -104,6 +104,13 @@ export const TransactionControllerInit: ControllerInitFunction<
       updateTransactions: false,
     },
     isAutomaticGasFeeUpdateEnabled: () => true,
+    isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
+      const { chainId } = transactionMeta;
+      const uiState = getUIState(getFlatState());
+
+      // @ts-expect-error Smart transaction selector types does not match controller state
+      return !getIsSmartTransaction(uiState, chainId);
+    },
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
     isSimulationEnabled: () =>
