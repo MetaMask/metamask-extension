@@ -65,12 +65,18 @@ function transformState(
   const newNonEvmTransactions: NewTransactionsState = {};
 
   // Migrate each account's transactions to the new nested structure
-  for (const [accountId, accountTransactions] of Object.entries(nonEvmTransactions as LegacyTransactionsState)) {
+  for (const [accountId, accountTransactions] of Object.entries(
+    nonEvmTransactions as LegacyTransactionsState,
+  )) {
     // If the account already has the new structure, meaning the accountTransactions
     // doesn't have a direct transactions property, instead it has a chainId as a key,
     // so we can skip it and continue to the next account
-    if (isObject(accountTransactions) && !Array.isArray(accountTransactions.transactions)) {
-      newNonEvmTransactions[accountId] = accountTransactions as any;
+    if (
+      isObject(accountTransactions) &&
+      !Array.isArray(accountTransactions.transactions)
+    ) {
+      newNonEvmTransactions[accountId] =
+        accountTransactions as unknown as NewTransactionsState[string];
       continue;
     }
 
@@ -79,9 +85,14 @@ function transformState(
     // 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' is Solana mainnet (the only supported so far)
     newNonEvmTransactions[accountId] = {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-        transactions: Array.isArray(accountTransactions.transactions) ? accountTransactions.transactions : [],
+        transactions: Array.isArray(accountTransactions.transactions)
+          ? accountTransactions.transactions
+          : [],
         next: accountTransactions.next || null,
-        lastUpdated: typeof accountTransactions.lastUpdated === 'number' ? accountTransactions.lastUpdated : Date.now(),
+        lastUpdated:
+          typeof accountTransactions.lastUpdated === 'number'
+            ? accountTransactions.lastUpdated
+            : Date.now(),
       },
     };
   }

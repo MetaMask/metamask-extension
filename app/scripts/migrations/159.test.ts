@@ -126,9 +126,9 @@ describe(`migration #${version}`, () => {
           },
           'account 2': {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-                transactions: [],
-                next: null,
-                lastUpdated: 9876543210,
+              transactions: [],
+              next: null,
+              lastUpdated: 9876543210,
             },
           },
         },

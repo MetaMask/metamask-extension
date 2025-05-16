@@ -538,7 +538,7 @@ export default function TransactionList({
       ? nonEvmTransactionFilteredByToken
       : modifiedNonEvmTransactions;
 
-    return (
+      return (
       <>
         {selectedTransaction &&
           (selectedTransaction.isBridgeTx && selectedTransaction.bridgeInfo ? (
