@@ -90,6 +90,8 @@ describe('Account syncing - Multi SRP', function () {
             IDENTITY_TEAM_SEED_PHRASE_2,
           );
 
+          await driver.delay(veryLargeDelayMs);
+
           await header.openAccountMenu();
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
@@ -130,6 +132,8 @@ describe('Account syncing - Multi SRP', function () {
           await accountListPage.startImportSecretPhrase(
             IDENTITY_TEAM_SEED_PHRASE_2,
           );
+
+          await driver.delay(veryLargeDelayMs);
 
           await header.openAccountMenu();
           await accountListPage.check_pageIsLoaded();
