@@ -145,10 +145,9 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
     // We have this logic here to filter out non EVM test networks
     // to properly handle this we should use the selector from
     // multichain/networks.ts in the UI side
-    const {
-      nonEvmNetworks,
-      nonEvmTestNetworks,
-    } = Object.keys(multichainNetworkConfigurationsByChainId).reduce(
+    const { nonEvmNetworks, nonEvmTestNetworks } = Object.keys(
+      multichainNetworkConfigurationsByChainId,
+    ).reduce(
       (
         result: {
           nonEvmNetworks: Record<
