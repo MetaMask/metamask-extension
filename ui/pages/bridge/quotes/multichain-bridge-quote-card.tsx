@@ -26,6 +26,7 @@ import {
   getIsBridgeTx,
   getToToken,
   getFromToken,
+  getMinimumBalanceForRentExemptionInSOL,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -52,8 +53,13 @@ import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+import BigNumber from 'bignumber.js';
 
-export const MultichainBridgeQuoteCard = () => {
+export const MultichainBridgeQuoteCard = ({
+  balanceAmount,
+}: {
+  balanceAmount: BigNumber;
+}) => {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
@@ -71,6 +77,9 @@ export const MultichainBridgeQuoteCard = () => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const dispatch = useDispatch();
+  const minimumBalanceForRentExemption = useSelector(
+    getMinimumBalanceForRentExemptionInSOL,
+  );
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -168,12 +177,25 @@ export const MultichainBridgeQuoteCard = () => {
               >
                 {t('networkFee')}
               </Text>
+              <Text>{activeQuote.totalMaxNetworkFee?.amount}</Text>
+            </Row>
+
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+              >
+                TOTAL
+              </Text>
               <Text>
-                {formatCurrencyAmount(
-                  activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                  currency,
-                  2,
-                )}
+                {activeQuote.sentAmount.amount} +{' '}
+                {minimumBalanceForRentExemption} +
+                {activeQuote.totalMaxNetworkFee?.amount} ={' '}
+                {new BigNumber(activeQuote.sentAmount.amount)
+                  .add(minimumBalanceForRentExemption)
+                  .add(activeQuote.totalMaxNetworkFee?.amount)
+                  .toString()}{' '}
+                = {balanceAmount.toString()}
               </Text>
             </Row>
 

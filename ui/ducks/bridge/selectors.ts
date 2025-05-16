@@ -479,6 +479,11 @@ const _getValidatedSrcAmount = createSelector(
       : null,
 );
 
+export const getMinimumBalanceForRentExemptionInSOL = (state: BridgeAppState) =>
+  new BigNumber(state.bridge.minimumBalanceForRentExemptionInLamports)
+    .div(10 ** 9)
+    .toString();
+
 export const getFromAmountInCurrency = createSelector(
   getFromToken,
   getFromChain,
@@ -517,12 +522,18 @@ export const getValidationErrors = createDeepEqualSelector(
   _getValidatedSrcAmount,
   getFromToken,
   getFromAmount,
+  getMinimumBalanceForRentExemptionInSOL,
   (
     { activeQuote, quotesLastFetchedMs, isLoading },
     validatedSrcAmount,
     fromToken,
     fromTokenInputValue,
+    minimumBalanceForRentExemptionInSOL,
   ) => {
+    const minimumBalanceToUse =
+      activeQuote?.quote && isSolanaChainId(activeQuote.quote.srcChainId)
+        ? minimumBalanceForRentExemptionInSOL
+        : '0';
     return {
       isNoQuotesAvailable: Boolean(
         !activeQuote && quotesLastFetchedMs && !isLoading,
@@ -531,7 +542,7 @@ export const getValidationErrors = createDeepEqualSelector(
       isInsufficientGasBalance: (balance?: BigNumber) => {
         if (balance && !activeQuote && validatedSrcAmount && fromToken) {
           return isNativeAddress(fromToken.address)
-            ? balance.eq(validatedSrcAmount)
+            ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
             : balance.lte(0);
         }
         return false;
@@ -543,6 +554,7 @@ export const getValidationErrors = createDeepEqualSelector(
             ? balance
                 .sub(activeQuote.totalMaxNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
+                .sub(minimumBalanceToUse)
                 .lte(0)
             : balance.lte(activeQuote.totalMaxNetworkFee.amount);
         }
