@@ -37,6 +37,7 @@ import {
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { getCaretCoordinates } from './unlock-page.util';
+import ResetPasswordModal from './reset-password-modal';
 
 const formatTimeToUnlock = (timeInSeconds) => {
   if (timeInSeconds <= 60) {
@@ -112,12 +113,17 @@ export default class UnlockPage extends Component {
      * Password hint
      */
     passwordHint: PropTypes.string.optional,
+    /**
+     * Whether social login is enabled
+     */
+    socialLoginEnabled: PropTypes.bool,
   };
 
   state = {
     password: '',
     error: null,
     showHint: false,
+    showResetPasswordModal: false,
     isLocked: false,
   };
 
@@ -315,10 +321,20 @@ export default class UnlockPage extends Component {
     );
   };
 
+  onForgotPassword = () => {
+    const { socialLoginEnabled } = this.props;
+    if (socialLoginEnabled) {
+      this.setState({ showResetPasswordModal: true });
+    } else {
+      this.props.onRestore();
+    }
+  };
+
   render() {
-    const { password, error, showHint, isLocked } = this.state;
+    const { password, error, showHint, isLocked, showResetPasswordModal } =
+      this.state;
     const { t } = this.context;
-    const { passwordHint, onRestore } = this.props;
+    const { passwordHint } = this.props;
 
     const needHelpText = t('needHelpLinkText');
 
@@ -327,6 +343,13 @@ export default class UnlockPage extends Component {
         <div className="unlock-page" data-testid="unlock-page">
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <div className="unlock-page__content">
+              {showResetPasswordModal && (
+                <ResetPasswordModal
+                  onClose={() =>
+                    this.setState({ showResetPasswordModal: false })
+                  }
+                />
+              )}
               <div className="unlock-page__mascot-container">
                 {this.renderMascot()}
                 {isBeta() ? (
@@ -411,7 +434,7 @@ export default class UnlockPage extends Component {
                 <ButtonLink
                   data-testid="unlock-forgot-password-button"
                   key="import-account"
-                  onClick={() => onRestore()}
+                  onClick={() => this.onForgotPassword()}
                 >
                   {t('forgotPassword')}
                 </ButtonLink>
