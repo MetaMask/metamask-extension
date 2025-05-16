@@ -25,6 +25,8 @@ import {
   FontWeight,
   TextAlign,
   TextVariant,
+  FlexDirection,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -33,6 +35,9 @@ import {
   BadgeWrapperAnchorElementShape,
   Box,
   Text,
+  Icon,
+  IconName,
+  IconSize,
 } from '../../component-library';
 
 import {
@@ -60,6 +65,7 @@ import EditGasPopover from '../../../pages/confirmations/components/edit-gas-pop
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
+import { useRemoteModeTransaction } from '../../../hooks/useRemoteModeTransaction';
 // import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   useBridgeTxHistoryData,
@@ -79,7 +85,11 @@ function TransactionListItemInner({
 }) {
   const t = useI18nContext();
   const history = useHistory();
-  const { hasCancelled } = transactionGroup;
+  const { hasCancelled, initialTransaction } = transactionGroup;
+  const { isRemoteModeTransaction, isRemoteModeGasTransaction } =
+    useRemoteModeTransaction({
+      transaction: initialTransaction,
+    });
   const [showDetails, setShowDetails] = useState(false);
   const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
     useState(false);
@@ -325,18 +335,27 @@ function TransactionListItemInner({
           !isSignatureReq &&
           !isApproval && (
             <>
-              <Text
-                variant={TextVariant.bodyLgMedium}
-                fontWeight={FontWeight.Medium}
-                color={Color.textDefault}
-                title={primaryCurrency}
-                textAlign={TextAlign.Right}
-                data-testid="transaction-list-item-primary-currency"
-                className="activity-list-item__primary-currency"
-                ellipsis
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+                alignItems={AlignItems.center}
               >
-                {primaryCurrency}
-              </Text>
+                {isRemoteModeGasTransaction && (
+                  <Icon name={IconName.Gas} size={IconSize.Md} />
+                )}
+                <Text
+                  variant={TextVariant.bodyLgMedium}
+                  fontWeight={FontWeight.Medium}
+                  color={Color.textDefault}
+                  title={primaryCurrency}
+                  textAlign={TextAlign.Right}
+                  data-testid="transaction-list-item-primary-currency"
+                  className="activity-list-item__primary-currency"
+                  ellipsis
+                >
+                  {primaryCurrency}
+                </Text>
+              </Box>
               <Text
                 variant={TextVariant.bodyMd}
                 color={Color.textAlternative}
@@ -348,6 +367,7 @@ function TransactionListItemInner({
             </>
           )
         }
+        isRemoteModeItem={isRemoteModeTransaction || isRemoteModeGasTransaction}
       >
         {Boolean(showCancelButton || speedUpButton) && (
           <Box
