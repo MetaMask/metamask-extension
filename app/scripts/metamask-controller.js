@@ -424,6 +424,7 @@ import {
 } from './lib/network-controller/messenger-action-handlers';
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
+import { removeDataFromTransactions } from './lib/state-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -3462,6 +3463,12 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  getUiState() {
+    const bigState = this.getState();
+    removeDataFromTransactions(bigState);
+    return bigState;
+  }
+
   /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
@@ -3509,6 +3516,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: this.getState.bind(this),
+      getUiState: this.getUiState.bind(this),
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
