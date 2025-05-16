@@ -1,4 +1,4 @@
-name: "Check PR Max Lines"
+name: 'Check PR Max Lines'
 
 on:
   pull_request:
