@@ -19,11 +19,15 @@ import {
   SendCalls,
   SendCallsResult,
 } from '@metamask/eth-json-rpc-middleware';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+} from '@metamask/accounts-controller';
 import { generateSecurityAlertId } from '../ppom/ppom-util';
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
 
 type Actions =
+  | AccountsControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetNetworkClientByIdAction
   | TransactionControllerGetStateAction;
@@ -43,7 +47,6 @@ export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
     getDismissSmartAccountSuggestionEnabled: () => boolean;
-    getKeyringType: (account: Hex) => string | undefined;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
     validateSecurity: (
       securityAlertId: string,
@@ -57,7 +60,6 @@ export async function processSendCalls(
 ): Promise<SendCallsResult> {
   const {
     addTransactionBatch,
-    getKeyringType,
     getDismissSmartAccountSuggestionEnabled,
     isAtomicBatchSupported,
     validateSecurity: validateSecurityHook,
@@ -85,7 +87,7 @@ export async function processSendCalls(
   });
 
   const chainBatchSupport = batchSupport?.[0];
-  const keyringType = getKeyringType(from) ?? '';
+  const keyringType = getAccountKeyringType(from, messenger) ?? '';
 
   validateSendCalls(
     params,
@@ -159,17 +161,14 @@ export function getCallsStatus(
 export async function getCapabilities(
   hooks: {
     getDismissSmartAccountSuggestionEnabled: () => boolean;
-    getKeyringType(account: Hex): string | undefined;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
   },
+  messenger: EIP5792Messenger,
   address: Hex,
   chainIds: Hex[] | undefined,
 ) {
-  const {
-    getDismissSmartAccountSuggestionEnabled,
-    getKeyringType,
-    isAtomicBatchSupported,
-  } = hooks;
+  const { getDismissSmartAccountSuggestionEnabled, isAtomicBatchSupported } =
+    hooks;
 
   const chainIdsNormalized = chainIds?.map(
     (chainId) => chainId.toLowerCase() as Hex,
@@ -189,9 +188,9 @@ export async function getCapabilities(
 
       const isUpgradeDisabled = getDismissSmartAccountSuggestionEnabled();
 
-      const isSupportedAccount = SUPPORTED_KEYRING_TYPES.includes(
-        getKeyringType(address.toLowerCase() as Hex) ?? '',
-      );
+      const keyringType = getAccountKeyringType(address, messenger) ?? '';
+
+      const isSupportedAccount = SUPPORTED_KEYRING_TYPES.includes(keyringType);
 
       const canUpgrade =
         !isUpgradeDisabled &&
@@ -340,4 +339,19 @@ function getStatusCode(transactionMeta: TransactionMeta) {
   }
 
   return GetCallsStatusCode.PENDING;
+}
+
+function getAccountKeyringType(
+  accountAddress: Hex,
+  messenger: EIP5792Messenger,
+) {
+  const { accounts } = messenger.call(
+    'AccountsController:getState',
+  ).internalAccounts;
+
+  const account = Object.values(accounts).find(
+    (acc) => acc.address === accountAddress.toLowerCase(),
+  );
+
+  return account?.metadata?.keyring?.type;
 }
