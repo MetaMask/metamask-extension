@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { useSafeChainsListValidationSelector } from '../selectors';
 import {
   getMultichainIsEvm,
   getMultichainCurrentNetwork,
 } from '../selectors/multichain';
 
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { getValidUrl } from '../../app/scripts/lib/util';
 import { isOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
-import { CaipChainId, Hex } from '@metamask/utils';
 
 export function useIsOriginalNativeTokenSymbol(
   chainId: Hex | CaipChainId,

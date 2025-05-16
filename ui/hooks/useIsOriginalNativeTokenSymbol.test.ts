@@ -1,10 +1,10 @@
 import { waitFor } from '@testing-library/react';
+import { Hex } from '@metamask/utils';
 import { renderHookWithProviderTyped } from '../../test/lib/render-helpers';
 import * as SelectorsModule from '../selectors/selectors';
 import * as MultichainSelectorsModule from '../selectors/multichain';
 import * as IsOriginalNativeTokenSymbolModule from '../helpers/utils/isOriginalNativeTokenSymbol';
 import { useIsOriginalNativeTokenSymbol } from './useIsOriginalNativeTokenSymbol'; // Adjust the import path accordingly
-import { Hex } from '@metamask/utils';
 
 const arrangeMocks = () => {
   // Mock Selectors
@@ -80,8 +80,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
   });
 
   it('should return the correct value when the native symbol does not match the ticker', async () => {
-    const { hook, mocks } = arrangeActHook((mocks, params) => {
-      mocks.mockIsOriginalNativeTokenSymbol.mockResolvedValue(false);
+    const { hook, mocks } = arrangeActHook((m, params) => {
+      m.mockIsOriginalNativeTokenSymbol.mockResolvedValue(false);
       params.chainId = '0x13a';
       params.ticker = 'FIL';
     });
@@ -93,8 +93,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
   });
 
   it('should return false if fails to fetch chainlist and evaluate if is original native token', async () => {
-    const { hook, mocks } = arrangeActHook((mocks) => {
-      mocks.mockIsOriginalNativeTokenSymbol.mockRejectedValue(
+    const { hook, mocks } = arrangeActHook((m) => {
+      m.mockIsOriginalNativeTokenSymbol.mockRejectedValue(
         new Error('TEST ERROR'),
       );
     });
@@ -106,10 +106,10 @@ describe('useIsOriginalNativeTokenSymbol', () => {
   });
 
   it('should return true if non-evm symbol matches', async () => {
-    const { hook, mocks } = arrangeActHook((mocks, params) => {
-      mocks.mockGetMultichainIsEVM.mockReturnValue(false);
-      mocks.mockGetMultichainCurrentNetwork.mockReturnValue({
-        ...mocks.createMockProviderConfig(),
+    const { hook, mocks } = arrangeActHook((m, params) => {
+      m.mockGetMultichainIsEVM.mockReturnValue(false);
+      m.mockGetMultichainCurrentNetwork.mockReturnValue({
+        ...m.createMockProviderConfig(),
         ticker: 'SOL',
       });
       params.ticker = 'SOL';
@@ -122,8 +122,8 @@ describe('useIsOriginalNativeTokenSymbol', () => {
   });
 
   it('should return true if not using safe chains list validation', async () => {
-    const { hook, mocks } = arrangeActHook((mocks) => {
-      mocks.mockUseSafeChainsListValidationSelector.mockReturnValue(false);
+    const { hook, mocks } = arrangeActHook((m) => {
+      m.mockUseSafeChainsListValidationSelector.mockReturnValue(false);
     });
 
     await waitFor(() => {
