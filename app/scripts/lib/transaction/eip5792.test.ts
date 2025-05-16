@@ -16,7 +16,11 @@ import {
 } from '@metamask/eth-json-rpc-middleware';
 import { JsonRpcRequest } from '@metamask/utils';
 import { Messenger } from '@metamask/base-controller';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+  AccountsControllerState,
+} from '@metamask/accounts-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   AtomicCapabilityStatus,
@@ -105,8 +109,8 @@ describe('EIP-5792', () => {
     () => boolean
   > = jest.fn();
 
-  const getKeyringTypeMock: jest.MockedFn<
-    (account: string) => string | undefined
+  const getAccountsStateMock: jest.MockedFn<
+    AccountsControllerGetStateAction['handler']
   > = jest.fn();
 
   let messenger: EIP5792Messenger;
@@ -115,7 +119,6 @@ describe('EIP-5792', () => {
     addTransactionBatch: addTransactionBatchMock,
     getDismissSmartAccountSuggestionEnabled:
       getDismissSmartAccountSuggestionEnabledMock,
-    getKeyringType: getKeyringTypeMock,
     isAtomicBatchSupported: isAtomicBatchSupportedMock,
     validateSecurity: validateSecurityMock,
   };
@@ -123,7 +126,6 @@ describe('EIP-5792', () => {
   const getCapabilitiesHooks = {
     getDismissSmartAccountSuggestionEnabled:
       getDismissSmartAccountSuggestionEnabledMock,
-    getKeyringType: getKeyringTypeMock,
     isAtomicBatchSupported: isAtomicBatchSupportedMock,
   };
 
@@ -147,6 +149,11 @@ describe('EIP-5792', () => {
       getSelectedAccountMock,
     );
 
+    messenger.registerActionHandler(
+      'AccountsController:getState',
+      getAccountsStateMock,
+    );
+
     getNetworkClientByIdMock.mockReturnValue({
       configuration: {
         chainId: CHAIN_ID_MOCK,
@@ -168,7 +175,20 @@ describe('EIP-5792', () => {
       },
     ]);
 
-    getKeyringTypeMock.mockReturnValue('HD Key Tree');
+    getAccountsStateMock.mockReturnValue({
+      internalAccounts: {
+        accounts: {
+          [FROM_MOCK]: {
+            address: FROM_MOCK,
+            metadata: {
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
+    } as unknown as AccountsControllerState);
   });
 
   describe('processSendCalls', () => {
@@ -334,7 +354,20 @@ describe('EIP-5792', () => {
     });
 
     it('throws if keyring type not supported', async () => {
-      getKeyringTypeMock.mockReturnValue('unsupported');
+      getAccountsStateMock.mockReturnValue({
+        internalAccounts: {
+          accounts: {
+            [FROM_MOCK]: {
+              address: FROM_MOCK,
+              metadata: {
+                keyring: {
+                  type: 'Unsupported',
+                },
+              },
+            },
+          },
+        },
+      } as unknown as AccountsControllerState);
 
       await expect(
         processSendCalls(
@@ -509,6 +542,7 @@ describe('EIP-5792', () => {
 
       const capabilities = await getCapabilities(
         getCapabilitiesHooks,
+        messenger,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -534,6 +568,7 @@ describe('EIP-5792', () => {
 
       const capabilities = await getCapabilities(
         getCapabilitiesHooks,
+        messenger,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -552,6 +587,7 @@ describe('EIP-5792', () => {
 
       const capabilities = await getCapabilities(
         getCapabilitiesHooks,
+        messenger,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -573,6 +609,7 @@ describe('EIP-5792', () => {
 
       const capabilities = await getCapabilities(
         getCapabilitiesHooks,
+        messenger,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -592,6 +629,7 @@ describe('EIP-5792', () => {
 
       const capabilities = await getCapabilities(
         getCapabilitiesHooks,
+        messenger,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -609,10 +647,24 @@ describe('EIP-5792', () => {
         },
       ]);
 
-      getKeyringTypeMock.mockReturnValue('unsupported');
+      getAccountsStateMock.mockReturnValue({
+        internalAccounts: {
+          accounts: {
+            [FROM_MOCK]: {
+              address: FROM_MOCK,
+              metadata: {
+                keyring: {
+                  type: 'Unsupported',
+                },
+              },
+            },
+          },
+        },
+      } as unknown as AccountsControllerState);
 
       const capabilities = await getCapabilities(
         getCapabilitiesHooks,
+        messenger,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
