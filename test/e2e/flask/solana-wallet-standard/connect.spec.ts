@@ -326,4 +326,2044 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
   });
+
+  describe('Bruteforce flakyness - 1', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 2', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 3', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 4', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 5', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 6', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 7', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 8', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 9', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 10', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 11', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 12', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 13', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 14', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
+
+  describe('Bruteforce flakyness - 15', function () {
+    it('Switching between them should NOT reflect in the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2, // we create two account
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+
+          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: false,
+          });
+
+          // Check that we're connected to the second account
+          const header = await testDapp.getHeader();
+          let account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Now switch to the first account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 1');
+          await testDapp.switchTo();
+          await driver.delay(regularDelayMs);
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+
+          // Switch back to the second account
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Check that we're still connected to the second account
+          account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not disconnect the dapp', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp);
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          await driver.refresh();
+
+          const accountAfterRefresh = await header.getAccount();
+          assertConnected(accountAfterRefresh, account1Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+          numberOfAccounts: 2,
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            selectAllAccounts: true,
+          });
+
+          await driver.refresh();
+
+          const header = await testDapp.getHeader();
+          const account = await header.getAccount();
+          assertConnected(account, account2Short);
+        },
+      );
+    });
+
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it('Should use the Mainnet scope by default', async function () {
+      await withSolanaAccountSnap(
+        {
+          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappSolana(driver);
+          await testDapp.openTestDappPage();
+          await connectSolanaTestDapp(driver, testDapp, {
+            includeDevnet: true,
+          });
+
+          // Refresh the page
+          await driver.refresh();
+
+          // Set the endpoint to devnet as it has been reset after the refresh
+          const header = await testDapp.getHeader();
+          await header.setEndpoint(SOLANA_DEVNET_URL);
+          await driver.clickElement({ text: 'Update', tag: 'button' });
+
+          const signMessageTest = await testDapp.getSignMessageTest();
+          await signMessageTest.setMessage('Hello, world!');
+          await signMessageTest.signMessage();
+
+          await driver.delay(regularDelayMs);
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          // Check that mainnet appears in the dialog
+          const el = await driver.waitForSelector({
+            text: 'Solana Mainnet',
+            tag: 'p',
+          });
+          assert.ok(el);
+        },
+      );
+    });
+  });
 });
