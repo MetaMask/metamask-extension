@@ -6386,18 +6386,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "@metamask/selected-network-controller@npm:19.0.0"
+"@metamask/selected-network-controller@npm:^22.1.0":
+  version: 22.1.0
+  resolution: "@metamask/selected-network-controller@npm:22.1.0"
   dependencies:
-    "@metamask/base-controller": "npm:^7.0.1"
-    "@metamask/json-rpc-engine": "npm:^10.0.0"
-    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
-    "@metamask/utils": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/json-rpc-engine": "npm:^10.0.3"
+    "@metamask/swappable-obj-proxy": "npm:^2.3.0"
+    "@metamask/utils": "npm:^11.2.0"
   peerDependencies:
-    "@metamask/network-controller": ^22.0.0
+    "@metamask/network-controller": ^23.0.0
     "@metamask/permission-controller": ^11.0.0
-  checksum: 10/738a1c749f442b732c279c7446e0db2cc7d72fa03fd485da15121559077bb6ffeaa3233435a028f4ea69015a40ca35ba66972dc0fd3a7f61a7ea5eee43df30a6
+  checksum: 10/e1baeb274cddf62a2b6962cbcac34a1a0e7fd7da9321c392652f95a3a63d9e0bd898dc5ed0334b47c7f1502355873299bf8d45a6fae515f7b13b3af1915a8e20
   languageName: node
   linkType: hard
 
@@ -6649,7 +6649,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/swappable-obj-proxy@npm:^2.2.0, @metamask/swappable-obj-proxy@npm:^2.3.0":
+"@metamask/swappable-obj-proxy@npm:^2.3.0":
   version: 2.3.0
   resolution: "@metamask/swappable-obj-proxy@npm:2.3.0"
   checksum: 10/1255c599de9237f06df2390719d6dfcb1f168873df61bbaad5ce376efbc057e2030260b94855569313faeb412b7df9b062d209f4b0b163a3dc02f29d42139e1f
@@ -6798,23 +6798,6 @@ __metadata:
     "@metamask/network-controller": ^23.0.0
     "@metamask/transaction-controller": ^55.0.0
   checksum: 10/ec5ae866964a456c65412c6e763d4913dae2b913c6a7e11e2b0f84b84e811c45de599c6635c53f71badeb6048c2a2b3821d9ff1cde945d4e5d94eb1db2c81235
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^10.0.0":
-  version: 10.0.1
-  resolution: "@metamask/utils@npm:10.0.1"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@noble/hashes": "npm:^1.3.1"
-    "@scure/base": "npm:^1.1.3"
-    "@types/debug": "npm:^4.1.7"
-    debug: "npm:^4.3.4"
-    pony-cause: "npm:^2.1.10"
-    semver: "npm:^7.5.4"
-    uuid: "npm:^9.0.1"
-  checksum: 10/c8e3d7578d05a1da4abb6c6712ec78ef6990801269f6529f4bb237b7d6e228d10a40738ccab81ad554f2fd51670267d086dc5be1a31c6d1f7040d4c0469d9d13
   languageName: node
   linkType: hard
 
@@ -30096,7 +30079,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^19.0.0"
+    "@metamask/selected-network-controller": "npm:^22.1.0"
     "@metamask/signature-controller": "npm:^27.1.0"
     "@metamask/smart-transactions-controller": "npm:^16.3.1"
     "@metamask/snaps-controllers": "npm:^12.1.0"
