@@ -385,7 +385,7 @@ export const CURRENCY_SYMBOLS = {
   LENS: 'GHO',
   PLUME: 'PLUME',
   FLOW: 'FLOW',
-  KATANA: 'KATANA', // to confirm with the team
+  KATANA: 'ETH',
 } as const;
 
 // Non-EVM currency symbols
