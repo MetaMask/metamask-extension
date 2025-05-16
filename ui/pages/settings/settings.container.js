@@ -43,6 +43,7 @@ import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
 import { getSnapName } from '../../helpers/utils/util';
 import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
+import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
 import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
@@ -153,6 +154,7 @@ const mapStateToProps = (state, ownProps) => {
     settingsPageSnaps,
     snapSettingsTitle,
     useExternalServices,
+    isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
   };
 };
 
