@@ -341,6 +341,7 @@ export const CoinOverview = ({
         <CoinButtons
           {...{
             account,
+            trackingLocation: 'home',
             chainId,
             isSwapsChain,
             isSigningEnabled,
