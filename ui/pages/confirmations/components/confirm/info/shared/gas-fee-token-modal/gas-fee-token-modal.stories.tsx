@@ -25,10 +25,24 @@ const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
   tokenAddress: '0x1234567890123456789012345678901234567893',
 };
 
+const GAS_FEE_TOKEN_3_MOCK: GasFeeToken = {
+  amount: toHex(1230000000000000000),
+  balance: toHex(2340000000000000000),
+  decimals: 18,
+  gas: '0x3',
+  gasTransfer: '0x3a',
+  maxFeePerGas: '0x4',
+  maxPriorityFeePerGas: '0x5',
+  rateWei: toHex('1000000000000000000'),
+  recipient: '0x1234567890123456789012345678901234567892',
+  symbol: 'ETH',
+  tokenAddress: '0x0000000000000000000000000000000000000000',
+};
+
 const store = configureStore(
   getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
-      gasFeeTokens: [GAS_FEE_TOKEN_MOCK, GAS_FEE_TOKEN_2_MOCK],
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK, GAS_FEE_TOKEN_2_MOCK, GAS_FEE_TOKEN_3_MOCK],
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
     }),
     {

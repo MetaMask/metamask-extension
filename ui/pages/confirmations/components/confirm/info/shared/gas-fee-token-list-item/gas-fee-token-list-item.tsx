@@ -33,7 +33,7 @@ import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 
 export type GasFeeTokenListItemProps = {
-  tokenAddress: Hex;
+  tokenAddress?: Hex;
   isSelected?: boolean;
   onClick?: (token: GasFeeToken) => void;
 };
@@ -48,8 +48,10 @@ export function GasFeeTokenListItem({
   const currentCurrency = useSelector(getCurrentCurrency);
 
   const hasInsufficientNative =
-    Boolean(useInsufficientBalanceAlerts().length) &&
-    tokenAddress === NATIVE_TOKEN_ADDRESS;
+    Boolean(useInsufficientBalanceAlerts({ ignoreGasFeeToken: true }).length) &&
+    !tokenAddress;
+
+  const isFutureNative = tokenAddress === NATIVE_TOKEN_ADDRESS;
 
   if (!gasFeeToken) {
     return null;
@@ -61,15 +63,15 @@ export function GasFeeTokenListItem({
     <ListItem
       image={
         <GasFeeTokenIcon
-          tokenAddress={tokenAddress}
+          tokenAddress={tokenAddress ?? NATIVE_TOKEN_ADDRESS}
           size={GasFeeTokenIconSize.Md}
         />
       }
       isSelected={isSelected}
       leftPrimary={symbol}
-      leftSecondary={`${t(
-        'confirmGasFeeTokenBalance',
-      )} ${balanceFiat} ${currentCurrency.toUpperCase()}`}
+      leftSecondary={`${
+        isFutureNative ? 'Funds added:' : t('confirmGasFeeTokenBalance')
+      } ${balanceFiat} ${currentCurrency.toUpperCase()}`}
       rightPrimary={amountFiat}
       rightSecondary={`${amountFormatted} ${symbol}`}
       warning={hasInsufficientNative && <InsufficientBalanceIndicator />}
