@@ -2554,6 +2554,7 @@ export default class MetamaskController extends EventEmitter {
 
     return {
       privacyMode: preferences.privacyMode,
+      showTestnets: preferences.showTestNetworks,
       securityAlertsEnabled,
       useCurrencyRateCheck,
       useTransactionSimulations,
@@ -2585,6 +2586,7 @@ export default class MetamaskController extends EventEmitter {
               useMultiAccountBalanceChecker,
               openSeaEnabled,
               useNftDetection,
+              showTestnets,
             } = this.getPreferences();
             return {
               locale,
@@ -2597,6 +2599,7 @@ export default class MetamaskController extends EventEmitter {
               batchCheckBalances: useMultiAccountBalanceChecker,
               displayNftMedia: openSeaEnabled,
               useNftDetection,
+              showTestnets,
             };
           },
           clearSnapState: this.controllerMessenger.call.bind(
