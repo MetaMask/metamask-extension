@@ -11,7 +11,10 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
-const { MOCK_META_METRICS_ID } = require('./constants');
+const {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  MOCK_META_METRICS_ID,
+} = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
 const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
@@ -875,7 +878,7 @@ async function setupMocking(
       };
     });
 
-  // Client Side Detecition: Request Blocklist
+  // Client Side Detection: Request Blocklist
   const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
     CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
   );
@@ -887,6 +890,21 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: JSON.parse(CLIENT_SIDE_DETECTION_BLOCKLIST),
+      };
+    });
+
+  // Nft API: tokens
+  await server
+    .forGet(
+      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+          continuation: null,
+        },
       };
     });
 
