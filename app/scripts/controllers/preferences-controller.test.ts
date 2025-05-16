@@ -152,12 +152,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -203,12 +201,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -260,12 +256,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -301,12 +295,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -511,12 +503,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },

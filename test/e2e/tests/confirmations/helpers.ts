@@ -220,7 +220,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet(
-        'https://defiadapters.dev-api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       )
       .thenCallback(() => {
         return {
@@ -565,7 +565,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet(
-        'https://defiadapters.dev-api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       )
       .thenCallback(() => {
         return {
@@ -594,7 +594,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet(
-        'https://defiadapters.dev-api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       )
       .thenCallback(() => {
         return {
